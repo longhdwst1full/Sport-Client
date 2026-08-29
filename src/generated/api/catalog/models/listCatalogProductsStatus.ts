@@ -6,10 +6,12 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type ProductBundleDtoBundleType =
-  (typeof ProductBundleDtoBundleType)[keyof typeof ProductBundleDtoBundleType];
+export type ListCatalogProductsStatus =
+  (typeof ListCatalogProductsStatus)[keyof typeof ListCatalogProductsStatus];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
-export const ProductBundleDtoBundleType = {
-  FIXED_VIRTUAL: 'FIXED_VIRTUAL',
+export const ListCatalogProductsStatus = {
+  DRAFT: 'DRAFT',
+  PUBLISHED: 'PUBLISHED',
+  ARCHIVED: 'ARCHIVED',
 } as const;
