@@ -1,10 +1,9 @@
 'use client';
 
 import Image from 'next/image';
-import { ArrowRight, ShoppingBag, Star } from 'lucide-react';
+import { ShoppingBag, Star } from 'lucide-react';
 import { useListCatalogProducts } from '@/generated/api/storefront-catalog/storefront-catalog';
-
-const money = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' });
+import { vndMoney } from '@/shared/format/money';
 
 export function ProductShowcase() {
   const { data, isPending, isError } = useListCatalogProducts({ page: 1, limit: 8 });
@@ -12,6 +11,12 @@ export function ProductShowcase() {
     return <div className="rounded-3xl bg-white p-10 text-center">Đang tải sản phẩm…</div>;
   if (isError || !data)
     return <div className="rounded-3xl bg-red-50 p-10 text-red-700">Không thể tải sản phẩm.</div>;
+  if (!data.items.length)
+    return (
+      <div className="rounded-3xl bg-white p-10 text-center text-stone-500">
+        Chưa có sản phẩm phù hợp.
+      </div>
+    );
 
   return (
     <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
@@ -25,6 +30,7 @@ export function ProductShowcase() {
               src={product.imageUrl}
               alt={product.name}
               fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 25vw"
               className="object-cover transition duration-500 group-hover:scale-105"
             />
             <span className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-bold">
@@ -41,7 +47,7 @@ export function ProductShowcase() {
               <span className="text-stone-400">({product.reviewCount})</span>
             </div>
             <div className="mt-5 flex items-center justify-between">
-              <strong className="text-lg">{money.format(product.price)}</strong>
+              <strong className="text-lg">{vndMoney.format(product.price)}</strong>
               <button
                 aria-label={`Thêm ${product.name} vào giỏ`}
                 className="grid size-11 place-items-center rounded-full bg-ink text-white transition hover:bg-brand-600"

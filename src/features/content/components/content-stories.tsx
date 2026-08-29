@@ -1,12 +1,15 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 import { useListPublishedPosts } from '@/generated/api/storefront-content/storefront-content';
 
 export function ContentStories() {
   const query = useListPublishedPosts();
   if (query.isPending) return <div className="h-72 animate-pulse rounded-[32px] bg-white" />;
+  if (query.isError)
+    return <div className="rounded-[32px] bg-red-50 p-8 text-red-700">Không thể tải bài viết.</div>;
   if (!query.data?.items.length) return null;
 
   return (
@@ -21,6 +24,7 @@ export function ContentStories() {
               src={post.coverUrl}
               alt={post.title}
               fill
+              sizes="(max-width: 768px) 100vw, 45vw"
               className="object-cover transition duration-500 group-hover:scale-105"
             />
           </div>
@@ -32,12 +36,12 @@ export function ContentStories() {
               <h3 className="mt-3 text-2xl font-extrabold">{post.title}</h3>
               <p className="mt-3 leading-7 text-stone-600">{post.excerpt}</p>
             </div>
-            <a
+            <Link
               href={`/stories/${post.slug}`}
               className="mt-6 inline-flex items-center gap-2 font-bold"
             >
               Đọc bài viết <ArrowUpRight className="size-4" />
-            </a>
+            </Link>
           </div>
         </article>
       ))}

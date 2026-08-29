@@ -5,6 +5,7 @@ import { useListProductReviews } from '@/generated/api/storefront-reviews/storef
 
 export function ProductReviews() {
   const query = useListProductReviews('may-chay-bo-dctd-pro-x1');
+  if (query.isPending) return <div className="h-64 animate-pulse rounded-[36px] bg-ink/80" />;
   if (!query.data?.items.length) return null;
   const review = query.data.items[0];
 
