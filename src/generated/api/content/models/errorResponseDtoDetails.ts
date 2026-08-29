@@ -5,9 +5,5 @@
  * Contract for storefront and admin applications
  * OpenAPI spec version: 1.0.0
  */
-import type { ModerateReviewDtoStatus } from './moderateReviewDtoStatus';
 
-export interface ModerateReviewDto {
-  status: ModerateReviewDtoStatus;
-  reason?: string;
-}
+export type ErrorResponseDtoDetails = { [key: string]: unknown };
