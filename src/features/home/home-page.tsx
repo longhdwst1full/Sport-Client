@@ -9,6 +9,7 @@ import {
   Goal,
   HeartPulse,
   MoveUpRight,
+  Play,
   Trophy,
 } from 'lucide-react';
 import { BenefitsStrip } from '@/widgets/benefits-strip/benefits-strip';
@@ -17,6 +18,7 @@ import { SectionHeading } from '@/foundation/components/section-heading';
 import { ProductShowcase } from '@/features/catalog/components/product-showcase';
 import { ContentStories } from '@/features/content/components/content-stories';
 import { ProductReviews } from '@/features/reviews/components/product-reviews';
+import { TrainingSpaceGuide } from './components/training-space-guide';
 
 const SPORT_CATEGORIES = [
   {
@@ -49,7 +51,7 @@ export function HomePage() {
   return (
     <StorefrontLayout>
       <section className="px-4 pb-6 sm:px-6 lg:px-8">
-        <div className="relative mx-auto min-h-[620px] max-w-[1480px] overflow-hidden rounded-[28px] bg-ink text-white sm:rounded-[40px]">
+        <div className="relative mx-auto min-h-[640px] max-w-[1480px] overflow-hidden rounded-[28px] bg-ink text-white sm:rounded-[40px] lg:min-h-[680px]">
           <Image
             src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=2000&q=90"
             alt="Không gian tập luyện với thiết bị gym hiện đại"
@@ -59,11 +61,13 @@ export function HomePage() {
             className="object-cover object-center opacity-55"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/55 to-black/10" />
-          <div className="relative z-10 flex min-h-[620px] max-w-4xl flex-col justify-center px-6 py-16 sm:px-12 lg:px-20">
-            <p className="mb-6 flex w-fit items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-[.2em] backdrop-blur">
-              <BadgeCheck className="size-4 text-emerald-300" /> Thiết bị chính hãng · Giá đã gồm VAT
+          <div className="relative z-10 flex min-h-[640px] max-w-4xl flex-col justify-center px-6 py-16 sm:px-12 lg:min-h-[680px] lg:px-20">
+            <p className="mb-6 flex w-fit max-w-full items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-2 text-[10px] font-bold uppercase tracking-[.12em] backdrop-blur sm:px-4 sm:text-xs sm:tracking-[.2em]">
+              <BadgeCheck className="size-4 shrink-0 text-emerald-300" />
+              <span className="sm:hidden">Chính hãng · Giá gồm VAT</span>
+              <span className="hidden sm:inline">Thiết bị chính hãng · Giá đã gồm VAT</span>
             </p>
-            <h1 className="max-w-3xl text-5xl font-black leading-[.98] tracking-[-.05em] sm:text-6xl lg:text-[84px]">
+            <h1 className="max-w-3xl text-balance text-5xl font-black leading-[.98] tracking-[-.05em] sm:text-6xl lg:text-[84px]">
               Xây không gian tập <span className="text-emerald-400">đúng chất bạn.</span>
             </h1>
             <p className="mt-7 max-w-2xl text-base leading-7 text-white/75 sm:text-xl sm:leading-8">
@@ -79,15 +83,15 @@ export function HomePage() {
               </Link>
               <Link
                 href="#shop-by-sport"
-                className="rounded-full border border-white/35 bg-white/5 px-7 py-4 font-bold backdrop-blur transition hover:bg-white/15"
+                className="inline-flex items-center gap-2 rounded-full border border-white/35 bg-white/5 px-7 py-4 font-bold backdrop-blur transition hover:bg-white/15"
               >
-                Chọn theo môn tập
+                <Play className="size-4 fill-current" /> Chọn theo môn tập
               </Link>
             </div>
-            <div className="mt-12 grid max-w-2xl grid-cols-3 divide-x divide-white/20 border-t border-white/20 pt-6">
-              <div className="pr-4"><strong className="block text-2xl">1–1</strong><span className="text-xs text-white/60 sm:text-sm">Chi nhánh · kho</span></div>
-              <div className="px-4"><strong className="block text-2xl">100%</strong><span className="text-xs text-white/60 sm:text-sm">Giá gồm VAT</span></div>
-              <div className="pl-4"><strong className="block text-2xl">7 ngày</strong><span className="text-xs text-white/60 sm:text-sm">Hỗ trợ mỗi tuần</span></div>
+            <div className="mt-12 grid w-full max-w-2xl grid-cols-3 divide-x divide-white/20 border-t border-white/20 pt-6">
+              <div className="min-w-0 pr-2 sm:pr-4"><strong className="block text-xl sm:text-2xl">1–1</strong><span className="text-[10px] text-white/60 sm:text-sm">Chi nhánh · kho</span></div>
+              <div className="min-w-0 px-2 sm:px-4"><strong className="block text-xl sm:text-2xl">100%</strong><span className="text-[10px] text-white/60 sm:text-sm">Giá gồm VAT</span></div>
+              <div className="min-w-0 pl-2 sm:pl-4"><strong className="block text-xl sm:text-2xl">7 ngày</strong><span className="text-[10px] text-white/60 sm:text-sm">Hỗ trợ mỗi tuần</span></div>
             </div>
           </div>
           <div className="absolute bottom-6 right-6 z-10 hidden max-w-xs rounded-3xl border border-white/20 bg-white/90 p-5 text-ink shadow-2xl backdrop-blur lg:block">
@@ -100,6 +104,23 @@ export function HomePage() {
       </section>
 
       <BenefitsStrip />
+
+      <section className="mx-auto max-w-7xl px-6 pt-10 lg:px-10" aria-label="Tìm kiếm phổ biến">
+        <div className="flex flex-wrap items-center justify-center gap-2 text-sm">
+          <span className="mr-2 font-bold text-stone-500">Được tìm nhiều:</span>
+          {['Máy chạy bộ gia đình', 'Tạ điều chỉnh', 'Combo home gym', 'Thảm yoga', 'Đồ tập'].map(
+            (keyword) => (
+              <Link
+                key={keyword}
+                href="#products"
+                className="rounded-full border border-ink/10 bg-white px-4 py-2 font-semibold transition hover:border-brand-600 hover:text-brand-600"
+              >
+                {keyword}
+              </Link>
+            ),
+          )}
+        </div>
+      </section>
 
       <section id="shop-by-sport" className="mx-auto max-w-7xl px-6 py-20 lg:px-10">
         <SectionHeading eyebrow="Tìm nhanh hơn" title="Bạn muốn tập gì hôm nay?" />
@@ -130,6 +151,8 @@ export function HomePage() {
           ))}
         </div>
       </section>
+
+      <TrainingSpaceGuide />
 
       <section id="products" className="mx-auto max-w-7xl px-6 py-20 lg:px-10">
         <SectionHeading

@@ -17,10 +17,11 @@ export function useProductShowcase() {
         category: product.primaryCategory ?? 'Thiết bị thể thao',
         badge: product.primaryCategory ?? 'Sản phẩm mới',
         imageUrl: product.imageUrl ?? '/icon.svg',
-        rating: 0,
-        reviewCount: 0,
         price: Number(product.minPrice ?? 0),
-        displayPrice: vndMoney.format(Number(product.minPrice ?? 0)),
+        displayPrice:
+          product.minPrice === null || product.minPrice === undefined
+            ? 'Liên hệ tư vấn'
+            : vndMoney.format(Number(product.minPrice)),
       })),
     [query.data?.items],
   );
@@ -29,5 +30,6 @@ export function useProductShowcase() {
     products,
     isPending: query.isPending,
     isError: query.isError,
+    refetch: query.refetch,
   };
 }
