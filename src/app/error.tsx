@@ -11,6 +11,7 @@ import {
   ShieldAlert,
 } from 'lucide-react';
 import { KineticBallCanvas } from '@/components/3d/kinetic-ball-canvas';
+import { STORE_CONFIG, STORE_CONTACT } from '@/constants';
 
 export default function ErrorPage({
   error,
@@ -41,17 +42,17 @@ export default function ErrorPage({
         {/* Status Badge */}
         <div className="mt-4 flex items-center justify-center">
           <span className="inline-flex items-center gap-2 rounded-full border border-red-400/30 bg-red-950/60 px-4 py-1.5 text-xs font-black uppercase tracking-widest text-red-400 backdrop-blur-md">
-            <ShieldAlert className="size-3.5" /> Tạm hoãn kỹ thuật · Time-out
+            <ShieldAlert className="size-3.5" /> Sự cố hệ thống · Gián đoạn kết nối
           </span>
         </div>
 
         {/* Heading */}
         <h1 className="mt-4 text-balance text-3xl font-black tracking-tight sm:text-5xl">
-          Đã xảy ra gián đoạn trận đấu!
+          Đã có sự cố kết nối tới hệ thống!
         </h1>
 
         <p className="mx-auto mt-4 max-w-lg text-base leading-relaxed text-stone-300">
-          Hệ thống máy chủ tạm thời không thể xử lý yêu cầu hoặc đường truyền kết nối mạng không ổn định. Vui lòng bấm thử lại để tiếp tục.
+          Hệ thống tạm thời không thể xử lý yêu cầu hoặc đường truyền mạng không ổn định. Vui lòng bấm thử lại hoặc liên hệ hỗ trợ để tiếp tục.
         </p>
 
         {/* Actions */}
@@ -78,14 +79,14 @@ export default function ErrorPage({
         {/* Support Hotline */}
         <div className="mt-12 rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md">
           <p className="text-xs text-stone-400">
-            Nếu sự cố vẫn tiếp diễn, vui lòng liên hệ đội ngũ Bảo An Sport để được hỗ trợ tức thời:
+            Nếu sự cố vẫn tiếp diễn, vui lòng liên hệ đội ngũ {STORE_CONFIG.name} để được hỗ trợ tức thời:
           </p>
           <div className="mt-3 flex flex-wrap items-center justify-center gap-6 text-sm font-bold">
-            <a href="tel:0939987456" className="inline-flex items-center gap-2 text-emerald-400 hover:underline">
-              <Phone className="size-4" /> 0939 987 456 (Hỗ trợ 09h-21h)
+            <a href={`tel:${STORE_CONTACT.primaryHotlineRaw}`} className="inline-flex items-center gap-2 text-emerald-400 hover:underline">
+              <Phone className="size-4" /> {STORE_CONTACT.primaryHotline} ({STORE_CONTACT.openingHours})
             </a>
             <span className="text-stone-600">·</span>
-            <span className="text-stone-300">info@baoansport.vn</span>
+            <span className="text-stone-300">{STORE_CONTACT.email}</span>
           </div>
         </div>
       </div>

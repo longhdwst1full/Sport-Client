@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Phone, MessageSquare, MapPin, ArrowUp, X } from 'lucide-react';
+import { STORE_CONTACT } from '@/constants';
 
 export function FloatingContactBar() {
   const [showBackToTop, setShowBackToTop] = useState(false);
@@ -26,14 +27,14 @@ export function FloatingContactBar() {
       <div className="flex flex-col items-end gap-2 pointer-events-auto sm:gap-2.5">
         {/* Zalo Chat Button */}
         <a
-          href="https://zalo.me/0939987456"
+          href={STORE_CONTACT.zaloUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="group relative flex items-center gap-2.5 rounded-full bg-blue-600 p-2.5 sm:p-3 text-white shadow-xl shadow-blue-600/30 transition-all duration-300 hover:bg-blue-500 hover:scale-110 active:scale-95"
           aria-label="Tư vấn Zalo"
         >
           <span className="pointer-events-none absolute right-full mr-3 hidden whitespace-nowrap rounded-xl bg-slate-900/90 px-3 py-1.5 text-xs font-bold text-white opacity-0 shadow-lg backdrop-blur transition-opacity duration-200 group-hover:opacity-100 sm:block">
-            Chat Zalo: 0939 987 456
+            Chat Zalo: {STORE_CONTACT.primaryHotline}
           </span>
           <div className="relative size-4.5 sm:size-5">
             <span className="absolute -inset-1 animate-ping rounded-full bg-blue-400 opacity-40"></span>
@@ -43,13 +44,13 @@ export function FloatingContactBar() {
 
         {/* 24/7 Hotline Call Button */}
         <a
-          href="tel:0939987456"
+          href={`tel:${STORE_CONTACT.primaryHotlineRaw}`}
           className="group relative flex items-center gap-2.5 rounded-full bg-emerald-600 p-2.5 sm:p-3 text-white shadow-xl shadow-emerald-600/30 transition-all duration-300 hover:bg-emerald-500 hover:scale-110 active:scale-95"
           aria-label="Gọi tổng đài tư vấn"
         >
           {/* Label Tooltip */}
           <span className="pointer-events-none absolute right-full mr-3 hidden whitespace-nowrap rounded-xl bg-slate-900/90 px-3 py-1.5 text-xs font-bold text-white opacity-0 shadow-lg backdrop-blur transition-opacity duration-200 group-hover:opacity-100 sm:block">
-            Hotline: 0939 987 456
+            Hotline: {STORE_CONTACT.primaryHotline}
           </span>
           <div className="relative size-4.5 sm:size-5">
             <span className="absolute -inset-1 animate-ping rounded-full bg-emerald-400 opacity-40"></span>

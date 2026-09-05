@@ -25,6 +25,8 @@ import { StatsCounter } from './components/stats-counter';
 import { FlashSaleSection } from './components/flash-sale-section';
 import { GymProjectPlanner } from './components/gym-project-planner';
 
+import { STORE_CONFIG } from '@/constants';
+
 const SPORT_CATEGORIES = [
   {
     title: 'Gym & Fitness',
@@ -68,7 +70,7 @@ export function HomePage() {
               <div className="mb-5 flex flex-wrap items-center gap-2.5">
                 <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-950/60 px-3.5 py-1.5 text-xs font-black uppercase tracking-wider text-emerald-300 backdrop-blur-md">
                   <BadgeCheck className="size-4 text-emerald-400" />
-                  BẢO AN SPORT · CHÍNH HÃNG 100%
+                  {STORE_CONFIG.name.toUpperCase()} · CHÍNH HÃNG 100%
                 </span>
                 <span className="hidden rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold text-slate-300 backdrop-blur sm:inline-flex">
                   ⭐ 4.9/5 (1,200+ đánh giá)

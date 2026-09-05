@@ -6,9 +6,6 @@ import { useRouter } from 'next/navigation';
 import {
   ChevronDown,
   Dumbbell,
-  Footprints,
-  Goal,
-  HeartPulse,
   Menu,
   Phone,
   Search,
@@ -18,73 +15,13 @@ import {
 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useAppSelector } from '@/app/store/hooks';
-
-const QUICK_LINKS = [
-  'Máy chạy bộ',
-  'Xe đạp tập',
-  'Gym & sức mạnh',
-  'Yoga & phục hồi',
-  'Đồ thể thao',
-  'Combo home gym',
-] as const;
-
-const ANNOUNCEMENTS = [
-  'Giao từ kho gần nhất · Giá hiển thị đã gồm VAT',
-  'Miễn phí tư vấn không gian tập · Hotline: 0939 987 456',
-  'Đổi trả trong 7 ngày · Bảo hành chính hãng',
-] as const;
-
-const MEGA_MENU_CATEGORIES = [
-  {
-    label: 'Máy Tập Thể Dục',
-    href: '/category/may-tap-the-duc',
-    icon: Dumbbell,
-    image: 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=400&q=80',
-    children: [
-      { label: 'Máy chạy bộ', href: '/category/may-chay-bo' },
-      { label: 'Xe đạp tập thể dục', href: '/category/xe-dap-tap' },
-      { label: 'Máy tập bụng', href: '/category/may-tap-bung' },
-      { label: 'Máy tập chân', href: '/category/may-tap-chan' },
-    ],
-  },
-  {
-    label: 'Dụng Cụ Tập Gym',
-    href: '/category/dung-cu-tap-gym',
-    icon: Dumbbell,
-    image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=400&q=80',
-    children: [
-      { label: 'Ghế tập tạ', href: '/category/ghe-tap-ta' },
-      { label: 'Giàn tạ đa năng', href: '/category/gian-ta-da-nang' },
-      { label: 'Tạ tay - Tạ đơn', href: '/category/ta-tay' },
-      { label: 'Xà đơn - Xà kép', href: '/category/xa-don-xa-kep' },
-      { label: 'Phụ kiện Gym', href: '/category/phu-kien-gym' },
-    ],
-  },
-  {
-    label: 'Dụng Cụ Võ Thuật',
-    href: '/category/dung-cu-vo-thuat',
-    icon: Goal,
-    image: 'https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?auto=format&fit=crop&w=400&q=80',
-    children: [
-      { label: 'Bao cát đấm bốc', href: '/category/bao-cat' },
-      { label: 'Găng tay Boxing', href: '/category/gang-tay-boxing' },
-      { label: 'Đích đá - Đích đấm', href: '/category/dich-da-dich-dam' },
-      { label: 'Dụng cụ tập thể lực', href: '/category/dung-cu-the-luc' },
-    ],
-  },
-  {
-    label: 'Dụng Cụ Bóng Bàn',
-    href: '/category/dung-cu-bong-ban',
-    icon: HeartPulse,
-    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?auto=format&fit=crop&w=400&q=80',
-    children: [
-      { label: 'Bàn bóng bàn', href: '/category/ban-bong-ban' },
-      { label: 'Vợt bóng bàn', href: '/category/vot-bong-ban' },
-      { label: 'Quả bóng bàn', href: '/category/qua-bong-ban' },
-      { label: 'Phụ kiện bóng bàn', href: '/category/phu-kien-bong-ban' },
-    ],
-  },
-] as const;
+import {
+  STORE_CONFIG,
+  STORE_CONTACT,
+  STORE_ANNOUNCEMENTS,
+  QUICK_LINKS,
+  MEGA_MENU_CATEGORIES,
+} from '@/constants';
 
 export function SiteHeader() {
   const router = useRouter();
@@ -111,7 +48,7 @@ export function SiteHeader() {
   // Rotate announcements
   useEffect(() => {
     const timer = setInterval(() => {
-      setAnnouncementIndex((prev) => (prev + 1) % ANNOUNCEMENTS.length);
+      setAnnouncementIndex((prev) => (prev + 1) % STORE_ANNOUNCEMENTS.length);
     }, 4000);
     return () => clearInterval(timer);
   }, []);
@@ -137,11 +74,11 @@ export function SiteHeader() {
         <div className="mx-auto flex max-w-7xl items-center justify-between">
           <div className="hidden items-center gap-2 text-xs font-semibold text-emerald-400 md:flex">
             <span className="inline-block size-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>Showroom mở cửa 8:00 - 21:30 cả Chủ nhật</span>
+            <span>Showroom mở cửa 8:30 - 21:30 cả Chủ nhật</span>
           </div>
 
           <div className="relative flex flex-1 items-center justify-center h-5 overflow-hidden">
-            {ANNOUNCEMENTS.map((text, i) => (
+            {STORE_ANNOUNCEMENTS.map((text, i) => (
               <span
                 key={text}
                 className={`absolute inset-0 flex items-center justify-center transition-all duration-500 truncate ${
@@ -169,18 +106,17 @@ export function SiteHeader() {
           {/* Logo */}
           <Link
             href="/"
-            className="group flex min-w-0 shrink-0 items-center gap-2.5 transition sm:gap-3"
+            className="group flex min-w-0 shrink-0 items-center transition-transform hover:scale-[1.02]"
+            aria-label="Bảo An Sport - Trang chủ"
           >
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 text-white shadow-md shadow-emerald-600/20 transition group-hover:scale-105">
-              <Dumbbell className="size-5" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-lg font-black tracking-tight text-slate-900 leading-none">
-                BẢO AN <span className="text-emerald-600">SPORT</span>
-              </span>
-              <span className="hidden text-[9px] font-bold uppercase tracking-widest text-slate-600 sm:block">
-                Dụng Cụ Thể Thao Chính Hãng
-              </span>
+            <div className="relative h-11 w-44 sm:h-12 sm:w-56">
+              <Image
+                src="/images/logo.png"
+                alt="Bảo An Sport — Dụng Cụ Thể Thao Chính Hãng"
+                fill
+                priority
+                className="object-contain object-left"
+              />
             </div>
           </Link>
 
@@ -206,7 +142,7 @@ export function SiteHeader() {
 
           {/* Hotline — Desktop */}
           <a
-            href="tel:0939987456"
+            href={`tel:${STORE_CONTACT.primaryHotlineRaw}`}
             className="group hidden items-center gap-2.5 rounded-full border border-slate-200/80 bg-slate-50/80 px-4 py-2 transition hover:border-emerald-400/40 hover:bg-emerald-50 lg:flex"
             aria-label="Gọi tư vấn"
           >
@@ -215,7 +151,7 @@ export function SiteHeader() {
             </div>
             <div className="flex flex-col">
               <span className="text-[10px] font-bold uppercase text-slate-400">Hotline tư vấn</span>
-              <strong className="text-xs font-black text-slate-900">0939 987 456</strong>
+              <strong className="text-xs font-black text-slate-900">{STORE_CONTACT.primaryHotline}</strong>
             </div>
           </a>
 
@@ -448,11 +384,11 @@ export function SiteHeader() {
             {/* Mobile Contact & Account */}
             <div className="flex flex-wrap gap-2.5 px-5 py-4 bg-slate-50">
               <a
-                href="tel:0939987456"
+                href={`tel:${STORE_CONTACT.primaryHotlineRaw}`}
                 className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-black shadow-sm"
               >
                 <Phone className="size-3.5 text-emerald-600" />
-                0939 987 456
+                {STORE_CONTACT.primaryHotline}
               </a>
               <Link
                 href="/cart"

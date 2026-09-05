@@ -17,6 +17,7 @@ import {
 import type { Metadata } from 'next';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { ProductPurchasePanel } from '@/features/catalog/components/product-purchase-panel';
+import { ProductRelatedSection } from '@/features/catalog/components/product-related-section';
 import { Product3DViewer } from '@/components/3d/product-3d-viewer';
 import { getCatalogProduct } from '@/generated/api/catalog/catalog';
 import { ApiError } from '@/lib/api/fetcher';
@@ -29,7 +30,7 @@ const FALLBACK_DETAILS: Record<string, any> = {
     productNo: 'PRD-X1-001',
     name: 'Máy Chạy Bộ Điện Đa Năng DCTD Pro X1',
     slug: 'may-chay-bo-dctd-pro-x1',
-    brand: 'DCTD Sport',
+    brand: 'Bảo An Sport',
     primaryCategory: 'Máy chạy bộ',
     productType: 'SIMPLE',
     status: 'ACTIVE',
@@ -74,7 +75,7 @@ const FALLBACK_DETAILS: Record<string, any> = {
     productNo: 'PRD-DMB-024',
     name: 'Bộ Tạ Tay Điều Chỉnh Thông Minh 24KG Pro',
     slug: 'bo-ta-tay-dieu-chinh-24kg',
-    brand: 'DCTD Sport',
+    brand: 'Bảo An Sport',
     primaryCategory: 'Gym & Sức mạnh',
     productType: 'SIMPLE',
     status: 'ACTIVE',
@@ -118,7 +119,7 @@ const FALLBACK_DETAILS: Record<string, any> = {
     productNo: 'PRD-SMT-003',
     name: 'Combo Giàn Tạ Đa Năng Smith Machine All-in-One',
     slug: 'gian-ta-da-nang-smith-pro',
-    brand: 'DCTD Sport',
+    brand: 'Bảo An Sport',
     primaryCategory: 'Combo Home Gym',
     productType: 'BUNDLE',
     status: 'ACTIVE',
@@ -170,7 +171,7 @@ const FALLBACK_DETAILS: Record<string, any> = {
     productNo: 'PRD-BIKE-004',
     name: 'Xe Đạp Tập Thể Dục Kháng Lực Từ DCTD AirBike',
     slug: 'xe-dap-tap-the-duc-spin-bike',
-    brand: 'DCTD Sport',
+    brand: 'Bảo An Sport',
     primaryCategory: 'Xe đạp tập',
     productType: 'SIMPLE',
     status: 'ACTIVE',
@@ -214,7 +215,7 @@ const FALLBACK_DETAILS: Record<string, any> = {
     productNo: 'PRD-BNCH-005',
     name: 'Ghế Tập Tạ Đa Năng Điều Chỉnh 7 Cấp Độ',
     slug: 'ghe-tap-ta-dieu-chinh-gap-gon',
-    brand: 'DCTD Sport',
+    brand: 'Bảo An Sport',
     primaryCategory: 'Gym & Sức mạnh',
     productType: 'SIMPLE',
     status: 'ACTIVE',
@@ -258,7 +259,7 @@ const FALLBACK_DETAILS: Record<string, any> = {
     productNo: 'PRD-YOGA-006',
     name: 'Thảm Yoga Định Tuyến Cao Su Tự Nhiên PU 5mm',
     slug: 'tham-yoga-dinh-tuyen-cao-su',
-    brand: 'DCTD Sport',
+    brand: 'Bảo An Sport',
     primaryCategory: 'Yoga & Phục hồi',
     productType: 'SIMPLE',
     status: 'ACTIVE',
@@ -309,7 +310,7 @@ const FALLBACK_DETAILS: Record<string, any> = {
     productNo: 'PRD-KTB-007',
     name: 'Tạ Bình Vôi Kettlebell Gang Đúc Bọc Neoprene 16KG',
     slug: 'ta-binh-voi-kettlebell-gang-duc',
-    brand: 'DCTD Sport',
+    brand: 'Bảo An Sport',
     primaryCategory: 'Gym & Sức mạnh',
     productType: 'SIMPLE',
     status: 'ACTIVE',
@@ -360,7 +361,7 @@ const FALLBACK_DETAILS: Record<string, any> = {
     productNo: 'PRD-MSG-008',
     name: 'Súng Massage Cầm Tay Trị Liệu Cơ Bắp DCTD Recovery',
     slug: 'sung-massage-cam-tay-phuc-hoi',
-    brand: 'DCTD Sport',
+    brand: 'Bảo An Sport',
     primaryCategory: 'Yoga & Phục hồi',
     productType: 'SIMPLE',
     status: 'ACTIVE',
@@ -404,7 +405,7 @@ const FALLBACK_DETAILS: Record<string, any> = {
     productNo: 'PRD-OLY-009',
     name: 'Giàn Tạ Đa Năng 3 Vị Trí Olympic Pro (Kèm Xô Đôi)',
     slug: 'gian-ta-da-nang-olympic-pro',
-    brand: 'DCTD Sport',
+    brand: 'Bảo An Sport',
     primaryCategory: 'Gym & Sức mạnh',
     productType: 'BUNDLE',
     status: 'ACTIVE',
@@ -446,7 +447,7 @@ const FALLBACK_DETAILS: Record<string, any> = {
     productNo: 'PRD-DMB20-010',
     name: 'Bộ Tạ Tay Tháo Lắp Cao Cấp 20KG (Đĩa Cao Su Đúc)',
     slug: 'bo-ta-tay-thao-lap-cao-cap-20kg',
-    brand: 'DCTD Sport',
+    brand: 'Bảo An Sport',
     primaryCategory: 'Gym & Sức mạnh',
     productType: 'SIMPLE',
     status: 'ACTIVE',
@@ -488,7 +489,7 @@ const FALLBACK_DETAILS: Record<string, any> = {
     productNo: 'PRD-RUN-011',
     name: 'Máy Chạy Bộ Điện Gia Đình King-Pro Động Cơ 3.5HP',
     slug: 'may-chay-bo-dien-gia-dinh-king-pro',
-    brand: 'DCTD Sport',
+    brand: 'Bảo An Sport',
     primaryCategory: 'Máy chạy bộ',
     productType: 'SIMPLE',
     status: 'ACTIVE',
@@ -532,7 +533,7 @@ const FALLBACK_DETAILS: Record<string, any> = {
     productNo: 'PRD-PWRBNCH-012',
     name: 'Ghế Tập Tạ Điều Chỉnh 7 Góc Độ Tiêu Chuẩn PowerBench',
     slug: 'ghe-tap-ta-dieu-chinh-7-goc-do',
-    brand: 'DCTD Sport',
+    brand: 'Bảo An Sport',
     primaryCategory: 'Gym & Sức mạnh',
     productType: 'SIMPLE',
     status: 'ACTIVE',
@@ -878,6 +879,13 @@ export default async function ProductDetailPage({
             <ProductPurchasePanel product={product} />
           </div>
         </main>
+
+        {/* Related Products ("Cùng loại"), Flash Sale & Category List */}
+        <ProductRelatedSection
+          currentSlug={slug}
+          currentCategory={product.primaryCategory}
+          productName={product.name}
+        />
       </div>
     </StorefrontLayout>
   );

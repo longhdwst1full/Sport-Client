@@ -51,6 +51,11 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/',
   },
+  icons: {
+    icon: '/images/favicon.png',
+    shortcut: '/images/favicon.png',
+    apple: '/images/favicon.png',
+  },
   openGraph: {
     type: 'website',
     locale: 'vi_VN',
@@ -95,7 +100,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
         '@id': `${SITE_URL}/#organization`,
         name: SITE_NAME,
         url: SITE_URL,
-        logo: `${SITE_URL}/icon.svg`,
+        logo: `${SITE_URL}/images/logo.png`,
         description: DEFAULT_DESC,
         telephone: '+84939987456',
         contactPoint: [

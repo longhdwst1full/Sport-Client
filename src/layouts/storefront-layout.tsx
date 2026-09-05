@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   ArrowUpRight,
   CreditCard,
@@ -16,27 +17,18 @@ import {
 import { SiteHeader } from '@/widgets/site-header/site-header';
 import { NewsletterForm } from '@/widgets/newsletter-form/newsletter-form';
 import { FloatingContactBar } from '@/widgets/floating-contact-bar/floating-contact-bar';
-
-const FOOTER_SHOP_LINKS = [
-  { label: 'Theo môn thể thao', href: '/category' },
-  { label: 'Sản phẩm nổi bật', href: '/#products' },
-  { label: 'Combo Home Gym', href: '/#products' },
-  { label: 'Kiến thức luyện tập', href: '/news' },
-  { label: 'Hệ thống Showroom', href: '/contact' },
-];
-
-const FOOTER_POLICY_LINKS = [
-  { label: 'Chính sách vận chuyển', href: '/#benefits' },
-  { label: 'Chính sách đổi trả', href: '/#benefits' },
-  { label: 'Chính sách bảo hành', href: '/#benefits' },
-  { label: 'Câu hỏi thường gặp', href: '/#about' },
-  { label: 'Điều khoản sử dụng', href: '/#about' },
-];
+import {
+  STORE_CONFIG,
+  STORE_CONTACT,
+  STORE_SHOWROOMS,
+  FOOTER_SHOP_LINKS,
+  FOOTER_POLICY_LINKS,
+} from '@/constants';
 
 const SOCIAL_LINKS = [
-  { icon: Facebook, href: 'https://www.facebook.com/baoansportvn/', label: 'Facebook' },
-  { icon: Instagram, href: 'https://www.youtube.com/@baoansport', label: 'YouTube' },
-  { icon: MessageCircle, href: 'https://zalo.me/0939987456', label: 'Zalo' },
+  { icon: Facebook, href: STORE_CONTACT.facebookUrl, label: 'Facebook' },
+  { icon: Instagram, href: STORE_CONTACT.youtubeUrl, label: 'YouTube' },
+  { icon: MessageCircle, href: STORE_CONTACT.zaloUrl, label: 'Zalo' },
 ];
 
 export function StorefrontLayout({ children }: { children: ReactNode }) {
@@ -74,21 +66,18 @@ export function StorefrontLayout({ children }: { children: ReactNode }) {
         <div className="mx-auto grid max-w-7xl gap-10 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
           {/* Column 1: Brand + Social */}
           <div>
-            <div className="flex items-center gap-3 text-xl font-black">
-              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 text-white shadow-md shadow-emerald-600/20">
-                <Dumbbell className="size-5" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-lg font-black tracking-tight text-white leading-none">
-                  BẢO AN <span className="text-emerald-500">SPORT</span>
-                </span>
-                <span className="text-[9px] font-bold uppercase tracking-widest text-slate-400">
-                  Dụng Cụ Thể Thao Chính Hãng
-                </span>
+            <div className="inline-flex rounded-xl bg-white px-3 py-2 shadow-md">
+              <div className="relative h-9 w-44">
+                <Image
+                  src="/images/logo.png"
+                  alt="Bảo An Sport — Dụng Cụ Thể Thao Chính Hãng"
+                  fill
+                  className="object-contain"
+                />
               </div>
             </div>
             <p className="mt-4 max-w-md text-sm leading-relaxed text-slate-400">
-              Bảo An Sport chuyên cung cấp dụng cụ thể thao, thiết bị Gym, máy tập thể hình và phụ kiện chính hãng. Mẫu mã đa dạng, giao hàng toàn quốc, tư vấn tận tâm.
+              {STORE_CONFIG.description}
             </p>
             <div className="mt-6 flex gap-2.5">
               {SOCIAL_LINKS.map(({ icon: Icon, href, label }) => (
@@ -131,27 +120,27 @@ export function StorefrontLayout({ children }: { children: ReactNode }) {
           <div>
             <h2 className="text-sm font-black uppercase tracking-wider text-white">Liên hệ</h2>
             <div className="mt-4 grid gap-2.5 text-sm text-slate-400">
-              <a className="inline-flex items-center gap-2 transition hover:text-emerald-400" href="tel:0939987456">
+              <a className="inline-flex items-center gap-2 transition hover:text-emerald-400" href={`tel:${STORE_CONTACT.hotlineHnRaw}`}>
                 <Phone className="size-4 shrink-0 text-emerald-500" />
-                Hotline HN: 0939 987 456
+                Hotline HN: {STORE_CONTACT.hotlineHn}
               </a>
-              <a className="inline-flex items-center gap-2 transition hover:text-emerald-400" href="tel:0969131990">
+              <a className="inline-flex items-center gap-2 transition hover:text-emerald-400" href={`tel:${STORE_CONTACT.hotlineHcmRaw}`}>
                 <Phone className="size-4 shrink-0 text-emerald-500" />
-                Hotline HCM: 0969 131 990
+                Hotline HCM: {STORE_CONTACT.hotlineHcm}
               </a>
-              <a className="inline-flex items-center gap-2 transition hover:text-emerald-400" href="mailto:info@baoansport.vn">
+              <a className="inline-flex items-center gap-2 transition hover:text-emerald-400" href={`mailto:${STORE_CONTACT.email}`}>
                 <Mail className="size-4 shrink-0 text-emerald-500" />
-                info@baoansport.vn
+                {STORE_CONTACT.email}
               </a>
               <span className="inline-flex items-start gap-2">
                 <MapPin className="mt-0.5 size-4 shrink-0 text-emerald-500" />
                 <span>
-                  <strong className="text-slate-300">HN:</strong> 234 Định Công, Hoàng Mai<br />
-                  <strong className="text-slate-300">HCM:</strong> 34 Đường số 2, P.11, Q.6
+                  <strong className="text-slate-300">HN:</strong> {STORE_SHOWROOMS[0]?.address.replace('Số ', '')}<br />
+                  <strong className="text-slate-300">HCM:</strong> {STORE_SHOWROOMS[1]?.address.replace('Số ', '')}
                 </span>
               </span>
               <span className="inline-flex items-center gap-2 text-[11px] text-slate-500">
-                Mở cửa 09h - 21h tất cả các ngày trong tuần
+                Mở cửa {STORE_CONTACT.openingHours}
               </span>
             </div>
           </div>

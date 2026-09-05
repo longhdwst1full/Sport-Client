@@ -14,25 +14,7 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
-
-const SHOWROOMS = [
-  {
-    city: 'Hà Nội',
-    name: 'Showroom Bảo An Sport Hà Nội',
-    address: 'Số 234 Định Công, Quận Hoàng Mai, Hà Nội',
-    phone: '0939 987 456',
-    hours: '09:00 - 21:00 (Cả tuần)',
-    tag: 'Showroom chính - Kho hàng & Trung tâm bảo hành',
-  },
-  {
-    city: 'TP. Hồ Chí Minh',
-    name: 'Showroom Bảo An Sport TP.HCM',
-    address: 'Số 34 Đường số 2, Phường 11, Quận 6, TP.HCM',
-    phone: '0969 131 990',
-    hours: '09:00 - 21:00 (Cả tuần)',
-    tag: 'Showroom miền Nam - Giao hàng toàn miền Nam',
-  },
-];
+import { STORE_CONFIG, STORE_CONTACT, STORE_SHOWROOMS } from '@/constants';
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
@@ -79,9 +61,9 @@ export default function ContactPage() {
           <div className="mt-14 grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
             {/* Showroom List */}
             <div className="space-y-6">
-              <h2 className="text-xl font-black text-ink">Hệ thống 4 Showroom chính hãng</h2>
+              <h2 className="text-xl font-black text-ink">Hệ thống Showroom chính hãng</h2>
               <div className="grid gap-4 sm:grid-cols-2">
-                {SHOWROOMS.map((s) => (
+                {STORE_SHOWROOMS.map((s) => (
                   <div
                     key={s.name}
                     className="flex flex-col justify-between rounded-3xl border border-stone-200/80 bg-white p-6 shadow-sm transition hover:border-emerald-400 hover:shadow-md"
@@ -91,7 +73,9 @@ export default function ContactPage() {
                         {s.city}
                       </span>
                       <h3 className="mt-2 text-base font-black text-ink">{s.name}</h3>
-                      <p className="mt-1 text-xs font-semibold text-emerald-700">{s.tag}</p>
+                      <p className="mt-1 text-xs font-semibold text-emerald-700">
+                        {s.isHeadquarter ? 'Trụ sở chính & Kho trung tâm' : 'Chi nhánh miền Nam & Kho hàng'}
+                      </p>
 
                       <div className="mt-4 space-y-2 text-xs text-stone-600">
                         <div className="flex items-start gap-2">
@@ -110,7 +94,7 @@ export default function ContactPage() {
                     </div>
 
                     <a
-                      href={`tel:${s.phone.replace(/\s/g, '')}`}
+                      href={`tel:${s.phoneRaw}`}
                       className="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-stone-100 py-2.5 text-xs font-bold text-ink transition hover:bg-emerald-50 hover:text-emerald-700"
                     >
                       Gọi showroom này
@@ -128,8 +112,8 @@ export default function ContactPage() {
                       <Phone className="size-5" />
                     </span>
                     <div>
-                      <span className="block text-xs text-white/60">Hotline tư vấn (09h-21h)</span>
-                      <strong className="text-base text-white">0939 987 456</strong>
+                      <span className="block text-xs text-white/60">Hotline tư vấn (08:30 - 21:30)</span>
+                      <strong className="text-base text-white">{STORE_CONTACT.primaryHotline}</strong>
                     </div>
                   </div>
 
@@ -139,7 +123,7 @@ export default function ContactPage() {
                     </span>
                     <div>
                       <span className="block text-xs text-white/60">Email liên hệ</span>
-                      <strong className="text-base text-white">info@baoansport.vn</strong>
+                      <strong className="text-base text-white">{STORE_CONTACT.email}</strong>
                     </div>
                   </div>
                 </div>
@@ -150,7 +134,7 @@ export default function ContactPage() {
             <div className="rounded-3xl border border-stone-200/80 bg-white p-6 shadow-sm sm:p-8">
               <h2 className="text-xl font-black text-ink">Đăng ký tư vấn thiết kế Home Gym</h2>
               <p className="mt-1 text-xs text-stone-500">
-                Đội ngũ kỹ sư thể hình DCTD sẽ liên hệ gửi bản vẽ 3D và báo giá tối ưu trong 30 phút.
+                Đội ngũ kỹ sư thể hình {STORE_CONFIG.name} sẽ liên hệ gửi bản vẽ 3D và báo giá tối ưu trong 30 phút.
               </p>
 
               {submitted ? (
@@ -158,7 +142,7 @@ export default function ContactPage() {
                   <CheckCircle2 className="mx-auto size-12 text-emerald-600" />
                   <h3 className="mt-3 text-lg font-bold text-ink">Gửi yêu cầu thành công!</h3>
                   <p className="mt-1 text-xs text-stone-600">
-                    Cảm ơn bạn. Chuyên viên DCTD sẽ gọi điện tư vấn trực tiếp qua số {form.phone}.
+                    Cảm ơn bạn. Chuyên viên {STORE_CONFIG.name} sẽ gọi điện tư vấn trực tiếp qua số {form.phone}.
                   </p>
                   <button
                     type="button"

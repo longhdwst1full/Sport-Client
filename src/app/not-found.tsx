@@ -11,6 +11,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { KineticBallCanvas } from '@/components/3d/kinetic-ball-canvas';
+import { STORE_CONTACT } from '@/constants';
 
 export default function NotFound() {
   const QUICK_CATEGORIES = [
@@ -34,13 +35,13 @@ export default function NotFound() {
         {/* Status Badge */}
         <div className="mt-4 flex items-center justify-center">
           <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-950/60 px-4 py-1.5 text-xs font-black uppercase tracking-widest text-emerald-400 backdrop-blur-md">
-            <Sparkles className="size-3.5" /> Lỗi 404 · Ngoài sân thi đấu
+            <Sparkles className="size-3.5" /> Lỗi 404 · Không tìm thấy trang
           </span>
         </div>
 
         {/* Main Heading */}
         <h1 className="mt-4 text-balance text-4xl font-black tracking-tight sm:text-5xl lg:text-6xl">
-          Pha bóng đi chệch cột dọc!
+          Không tìm thấy trang bạn yêu cầu!
         </h1>
 
         <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-stone-300 sm:text-lg">
@@ -57,11 +58,11 @@ export default function NotFound() {
             <span>Về trang chủ mua sắm</span>
           </Link>
           <a
-            href="tel:0939987456"
+            href={`tel:${STORE_CONTACT.primaryHotlineRaw}`}
             className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-7 py-4 font-bold text-white backdrop-blur-md transition hover:bg-white/10"
           >
             <Phone className="size-4.5 text-emerald-400" />
-            <span>Hotline hỗ trợ: 0939 987 456</span>
+            <span>Hotline hỗ trợ: {STORE_CONTACT.primaryHotline}</span>
           </a>
         </div>
 
