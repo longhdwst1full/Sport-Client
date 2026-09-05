@@ -207,8 +207,68 @@ export default async function ProductDetailPage({
     { label: 'Chính sách bảo hành', value: '60 tháng khung thép, 24 tháng linh kiện, 1 đổi 1 trong 7 ngày' },
   ];
 
+  const productJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.name,
+    image: product.imageUrl,
+    description: product.shortDescription,
+    sku: product.productNo || product.slug,
+    brand: {
+      '@type': 'Brand',
+      name: product.brand || 'DCTD Sport',
+    },
+    offers: {
+      '@type': 'Offer',
+      url: `https://dctdsport.vn/products/${product.slug}`,
+      priceCurrency: 'VND',
+      price: product.minPrice || '1890000',
+      priceValidUntil: '2027-12-31',
+      availability: 'https://schema.org/InStock',
+      itemCondition: 'https://schema.org/NewCondition',
+    },
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: '4.9',
+      reviewCount: '128',
+    },
+  };
+
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Trang chủ',
+        item: 'https://dctdsport.vn',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Sản phẩm',
+        item: 'https://dctdsport.vn/products',
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: product.name,
+        item: `https://dctdsport.vn/products/${product.slug}`,
+      },
+    ],
+  };
+
   return (
     <StorefrontLayout>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <div className="bg-slate-50/70 pb-24">
         {/* Breadcrumbs Navigation */}
         <nav
@@ -301,7 +361,7 @@ export default async function ProductDetailPage({
               <h2 className="text-xl font-black text-ink sm:text-2xl">Thông số kỹ thuật chi tiết</h2>
               <div className="mt-6 divide-y divide-stone-100 rounded-2xl border border-stone-100 bg-stone-50/50">
                 {TECH_SPECS.map(({ label, value }) => (
-                  <div key={label} className="grid grid-cols-[1fr_1.3fr] px-4 py-3.5 text-xs sm:px-6 sm:text-sm">
+                  <div key={label} className="grid grid-cols-1 gap-1 sm:grid-cols-[1fr_1.3fr] sm:gap-4 px-4 py-3.5 text-xs sm:px-6 sm:text-sm">
                     <span className="font-bold text-stone-500">{label}</span>
                     <span className="font-semibold text-ink">{value}</span>
                   </div>

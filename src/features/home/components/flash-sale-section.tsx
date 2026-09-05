@@ -120,21 +120,21 @@ export function FlashSaleSection() {
           </div>
 
           {/* Countdown Clock Box */}
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
             <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-400">
               <Clock className="size-4 text-rose-400" />
               Kết thúc trong:
             </span>
-            <div className="flex items-center gap-1.5 font-mono text-base font-black">
-              <span className="grid size-10 place-items-center rounded-xl bg-rose-600/90 text-white shadow-md shadow-rose-600/20">
+            <div className="flex items-center gap-1.5 font-mono text-sm sm:text-base font-black">
+              <span className="grid size-9 sm:size-10 place-items-center rounded-xl bg-rose-600/90 text-white shadow-md shadow-rose-600/20">
                 {format2Digits(timeLeft.hours)}
               </span>
               <span className="text-slate-500 font-bold">:</span>
-              <span className="grid size-10 place-items-center rounded-xl bg-rose-600/90 text-white shadow-md shadow-rose-600/20">
+              <span className="grid size-9 sm:size-10 place-items-center rounded-xl bg-rose-600/90 text-white shadow-md shadow-rose-600/20">
                 {format2Digits(timeLeft.minutes)}
               </span>
               <span className="text-slate-500 font-bold">:</span>
-              <span className="grid size-10 place-items-center rounded-xl bg-rose-600/90 text-white shadow-md shadow-rose-600/20">
+              <span className="grid size-9 sm:size-10 place-items-center rounded-xl bg-rose-600/90 text-white shadow-md shadow-rose-600/20">
                 {format2Digits(timeLeft.seconds)}
               </span>
             </div>

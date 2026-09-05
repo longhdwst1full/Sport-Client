@@ -138,14 +138,14 @@ export function SiteHeader() {
             <span>Showroom mở cửa 8:00 - 21:30 cả Chủ nhật</span>
           </div>
 
-          <div className="relative flex flex-1 items-center justify-center h-4">
+          <div className="relative flex flex-1 items-center justify-center h-5 overflow-hidden">
             {ANNOUNCEMENTS.map((text, i) => (
               <span
                 key={text}
-                className={`absolute inset-0 flex items-center justify-center transition-all duration-500 ${
+                className={`absolute inset-0 flex items-center justify-center transition-all duration-500 truncate ${
                   i === announcementIndex
                     ? 'translate-y-0 opacity-100'
-                    : 'translate-y-full opacity-0'
+                    : 'translate-y-4 opacity-0 pointer-events-none'
                 }`}
               >
                 {text}

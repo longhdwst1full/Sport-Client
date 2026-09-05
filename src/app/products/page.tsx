@@ -79,7 +79,7 @@ export default function ProductsPage() {
           {/* Category Quick Filters & Sorting Bar */}
           <div className="mt-10">
             <div className="mb-6 flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 pb-4">
-              <div className="flex flex-wrap items-center gap-2">
+              <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 sm:flex-wrap">
                 {[
                   { label: 'Tất cả sản phẩm', href: '/products', active: true },
                   { label: 'Gym & Sức mạnh', href: '/category/gym-fitness', active: false },
@@ -90,7 +90,7 @@ export default function ProductsPage() {
                   <Link
                     key={tag.label}
                     href={tag.href}
-                    className={`rounded-full px-4 py-2 text-xs font-bold transition ${
+                    className={`shrink-0 rounded-full px-4 py-2 text-xs font-bold transition ${
                       tag.active
                         ? 'bg-slate-900 text-white shadow-sm'
                         : 'border border-slate-200 bg-white text-slate-700 hover:border-emerald-500 hover:text-emerald-700'
