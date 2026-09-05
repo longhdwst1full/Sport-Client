@@ -2,9 +2,9 @@ import type { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'DCTD Sport — Dụng Cụ & Thiết Bị Thể Thao Cao Cấp',
-    short_name: 'DCTD Sport',
-    description: 'Hệ thống phân phối thiết bị gym, máy chạy bộ, giàn tạ và phụ kiện thể thao chính hãng toàn quốc.',
+    name: 'Bảo An Sport — Dụng Cụ Thể Thao Chính Hãng Giá Tốt Nhất',
+    short_name: 'Bảo An Sport',
+    description: 'Bảo An Sport chuyên cung cấp dụng cụ thể thao, thiết bị thể dục và thể hình. Máy chạy bộ, xe đạp tập, giàn tạ, dụng cụ võ thuật, bóng bàn. Giao hàng toàn quốc.',
     start_url: '/',
     display: 'standalone',
     background_color: '#0f172a',

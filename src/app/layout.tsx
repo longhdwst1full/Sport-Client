@@ -3,11 +3,11 @@ import type { ReactNode } from 'react';
 import { Providers } from './providers';
 import './globals.css';
 
-const SITE_URL = 'https://dctdsport.vn';
-const SITE_NAME = 'DCTD Sport';
-const DEFAULT_TITLE = 'DCTD Sport — Dụng Cụ Thể Thao & Thiết Bị Gym Chính Hãng';
+const SITE_URL = 'https://baoansport.vn';
+const SITE_NAME = 'Bảo An Sport';
+const DEFAULT_TITLE = 'Bảo An Sport — Dụng Cụ Thể Thao Chính Hãng Giá Tốt Nhất';
 const DEFAULT_DESC =
-  'Hệ thống phân phối thiết bị gym, giàn tạ đa năng, máy chạy bộ gia đình, tạ tay và phụ kiện thể thao chính hãng. Tư vấn bản vẽ 3D và lắp đặt phòng tập Home Gym miễn phí toàn quốc.';
+  'Bảo An Sport chuyên cung cấp dụng cụ thể thao, thiết bị thể dục và thể hình. Máy chạy bộ, xe đạp tập, giàn tạ đa năng, dụng cụ võ thuật, bóng bàn, bóng rổ. Sản phẩm đa dạng, giá tốt, giao hàng toàn quốc. Hotline: 0939 987 456.';
 
 export const viewport: Viewport = {
   themeColor: '#059669',
@@ -24,20 +24,25 @@ export const metadata: Metadata = {
   },
   description: DEFAULT_DESC,
   keywords: [
-    'dụng cụ thể dục',
     'bảo an sport',
-    'thiết bị gym',
-    'giàn tạ đa năng',
-    'máy chạy bộ gia đình',
-    'ghế tập tạ',
-    'tạ tay tháo lắp',
-    'setup home gym',
+    'dụng cụ thể dục',
     'dụng cụ thể thao',
-    'dctd sport',
+    'thiết bị gym',
+    'máy chạy bộ',
+    'xe đạp tập thể dục',
+    'giàn tạ đa năng',
+    'ghế tập tạ',
+    'tạ tay',
+    'dụng cụ võ thuật',
+    'bóng bàn',
+    'bóng rổ',
+    'thiết bị dạy học thể dục',
+    'setup home gym',
+    'baoansport',
   ],
-  authors: [{ name: 'DCTD Sport Việt Nam' }],
-  creator: 'DCTD Sport',
-  publisher: 'CTCP DCTD Sport Việt Nam',
+  authors: [{ name: 'Bảo An Sport' }],
+  creator: 'Bảo An Sport',
+  publisher: 'Bảo An Sport',
   formatDetection: {
     email: false,
     address: false,
@@ -58,7 +63,7 @@ export const metadata: Metadata = {
         url: 'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?auto=format&fit=crop&w=1200&q=85',
         width: 1200,
         height: 630,
-        alt: 'DCTD Sport — Thiết bị thể thao chuẩn vận động viên',
+        alt: 'Bảo An Sport — Dụng Cụ Thể Thao Chính Hãng Giá Tốt Nhất',
       },
     ],
   },
@@ -92,11 +97,11 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
         url: SITE_URL,
         logo: `${SITE_URL}/icon.svg`,
         description: DEFAULT_DESC,
-        telephone: '18000000',
+        telephone: '+84939987456',
         contactPoint: [
           {
             '@type': 'ContactPoint',
-            telephone: '18000000',
+            telephone: '+84939987456',
             contactType: 'customer service',
             areaServed: 'VN',
             availableLanguage: ['Vietnamese', 'English'],

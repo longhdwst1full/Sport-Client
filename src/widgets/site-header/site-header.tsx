@@ -30,56 +30,58 @@ const QUICK_LINKS = [
 
 const ANNOUNCEMENTS = [
   'Giao từ kho gần nhất · Giá hiển thị đã gồm VAT',
-  'Miễn phí tư vấn không gian tập · Hotline: 1800 0000',
+  'Miễn phí tư vấn không gian tập · Hotline: 0939 987 456',
   'Đổi trả trong 7 ngày · Bảo hành chính hãng',
 ] as const;
 
 const MEGA_MENU_CATEGORIES = [
   {
-    label: 'Gym & Fitness',
-    href: '/category/gym-fitness',
+    label: 'Máy Tập Thể Dục',
+    href: '/category/may-tap-the-duc',
     icon: Dumbbell,
     image: 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=400&q=80',
     children: [
-      { label: 'Máy chạy bộ', href: '/category/chay-bo-cardio' },
-      { label: 'Xe đạp tập', href: '/category/xe-dap-the-thao' },
-      { label: 'Giàn tạ đa năng', href: '/category/gym-fitness' },
-      { label: 'Tạ điều chỉnh', href: '/category/gym-fitness' },
-      { label: 'Ghế tập tạ', href: '/category/gym-fitness' },
+      { label: 'Máy chạy bộ', href: '/category/may-chay-bo' },
+      { label: 'Xe đạp tập thể dục', href: '/category/xe-dap-tap' },
+      { label: 'Máy tập bụng', href: '/category/may-tap-bung' },
+      { label: 'Máy tập chân', href: '/category/may-tap-chan' },
     ],
   },
   {
-    label: 'Chạy bộ',
-    href: '/category/chay-bo-cardio',
-    icon: Footprints,
-    image: 'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&w=400&q=80',
+    label: 'Dụng Cụ Tập Gym',
+    href: '/category/dung-cu-tap-gym',
+    icon: Dumbbell,
+    image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=400&q=80',
     children: [
-      { label: 'Giày chạy bộ', href: '/category/chay-bo-cardio' },
-      { label: 'Máy chạy bộ gia đình', href: '/category/chay-bo-cardio' },
-      { label: 'Phụ kiện chạy bộ', href: '/category/chay-bo-cardio' },
+      { label: 'Ghế tập tạ', href: '/category/ghe-tap-ta' },
+      { label: 'Giàn tạ đa năng', href: '/category/gian-ta-da-nang' },
+      { label: 'Tạ tay - Tạ đơn', href: '/category/ta-tay' },
+      { label: 'Xà đơn - Xà kép', href: '/category/xa-don-xa-kep' },
+      { label: 'Phụ kiện Gym', href: '/category/phu-kien-gym' },
     ],
   },
   {
-    label: 'Bóng đá',
-    href: '/category/bong-da',
+    label: 'Dụng Cụ Võ Thuật',
+    href: '/category/dung-cu-vo-thuat',
     icon: Goal,
-    image: 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=400&q=80',
+    image: 'https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?auto=format&fit=crop&w=400&q=80',
     children: [
-      { label: 'Bóng đá các loại', href: '/category/bong-da' },
-      { label: 'Giày bóng đá', href: '/category/bong-da' },
-      { label: 'Đồ tập bóng đá', href: '/category/bong-da' },
+      { label: 'Bao cát đấm bốc', href: '/category/bao-cat' },
+      { label: 'Găng tay Boxing', href: '/category/gang-tay-boxing' },
+      { label: 'Đích đá - Đích đấm', href: '/category/dich-da-dich-dam' },
+      { label: 'Dụng cụ tập thể lực', href: '/category/dung-cu-the-luc' },
     ],
   },
   {
-    label: 'Yoga & Phục hồi',
-    href: '/category/yoga-phuc-hoi',
+    label: 'Dụng Cụ Bóng Bàn',
+    href: '/category/dung-cu-bong-ban',
     icon: HeartPulse,
-    image: 'https://images.unsplash.com/photo-1599447421416-3414500d18a5?auto=format&fit=crop&w=400&q=80',
+    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?auto=format&fit=crop&w=400&q=80',
     children: [
-      { label: 'Thảm yoga', href: '/category/yoga-phuc-hoi' },
-      { label: 'Dụng cụ yoga', href: '/category/yoga-phuc-hoi' },
-      { label: 'Foam roller', href: '/category/yoga-phuc-hoi' },
-      { label: 'Dây kháng lực', href: '/category/yoga-phuc-hoi' },
+      { label: 'Bàn bóng bàn', href: '/category/ban-bong-ban' },
+      { label: 'Vợt bóng bàn', href: '/category/vot-bong-ban' },
+      { label: 'Quả bóng bàn', href: '/category/qua-bong-ban' },
+      { label: 'Phụ kiện bóng bàn', href: '/category/phu-kien-bong-ban' },
     ],
   },
 ] as const;
@@ -174,10 +176,10 @@ export function SiteHeader() {
             </div>
             <div className="flex flex-col">
               <span className="text-lg font-black tracking-tight text-slate-900 leading-none">
-                DCTD <span className="text-emerald-600">SPORT</span>
+                BẢO AN <span className="text-emerald-600">SPORT</span>
               </span>
               <span className="hidden text-[9px] font-bold uppercase tracking-widest text-slate-600 sm:block">
-                Performance Gear
+                Dụng Cụ Thể Thao Chính Hãng
               </span>
             </div>
           </Link>
@@ -204,18 +206,16 @@ export function SiteHeader() {
 
           {/* Hotline — Desktop */}
           <a
-            href="tel:18000000"
-            className="hidden shrink-0 items-center gap-2.5 rounded-full border border-slate-200/80 bg-slate-50/70 px-3.5 py-1.5 transition hover:border-emerald-300 hover:bg-emerald-50/50 xl:flex"
+            href="tel:0939987456"
+            className="group hidden items-center gap-2.5 rounded-full border border-slate-200/80 bg-slate-50/80 px-4 py-2 transition hover:border-emerald-400/40 hover:bg-emerald-50 lg:flex"
+            aria-label="Gọi tư vấn"
           >
-            <div className="relative flex size-2.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex size-2.5 rounded-full bg-emerald-500"></span>
+            <div className="grid size-7 place-items-center rounded-full bg-emerald-600 text-white">
+              <Phone className="size-3.5" />
             </div>
-            <div className="text-left leading-tight">
-              <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-600">
-                Hotline 24/7
-              </span>
-              <strong className="text-xs font-black text-slate-900">1800 0000</strong>
+            <div className="flex flex-col">
+              <span className="text-[10px] font-bold uppercase text-slate-400">Hotline tư vấn</span>
+              <strong className="text-xs font-black text-slate-900">0939 987 456</strong>
             </div>
           </a>
 
@@ -389,7 +389,7 @@ export function SiteHeader() {
               { label: 'Danh mục', href: '/category' },
               { label: 'Kiến thức tập', href: '/news' },
               { label: 'Showroom', href: '/contact' },
-              { label: 'Về DCTD', href: '/#about' },
+              { label: 'Về Bảo An', href: '/#about' },
             ].map(({ label, href }) => (
               <Link
                 key={label}
@@ -432,7 +432,7 @@ export function SiteHeader() {
                 ['Tất cả danh mục sản phẩm', '/category'],
                 ['Kiến thức luyện tập chuyên sâu', '/news'],
                 ['Hệ thống Showroom toàn quốc', '/contact'],
-                ['Về thương hiệu DCTD Sport', '/#about'],
+                ['Về thương hiệu Bảo An Sport', '/#about'],
               ].map(([label, href]) => (
                 <Link
                   key={href}
@@ -448,11 +448,11 @@ export function SiteHeader() {
             {/* Mobile Contact & Account */}
             <div className="flex flex-wrap gap-2.5 px-5 py-4 bg-slate-50">
               <a
-                href="tel:18000000"
+                href="tel:0939987456"
                 className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-black shadow-sm"
               >
                 <Phone className="size-3.5 text-emerald-600" />
-                1800 0000
+                0939 987 456
               </a>
               <Link
                 href="/cart"

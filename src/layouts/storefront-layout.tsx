@@ -34,9 +34,9 @@ const FOOTER_POLICY_LINKS = [
 ];
 
 const SOCIAL_LINKS = [
-  { icon: Facebook, href: '#', label: 'Facebook' },
-  { icon: Instagram, href: '#', label: 'Instagram' },
-  { icon: MessageCircle, href: '#', label: 'Zalo' },
+  { icon: Facebook, href: 'https://www.facebook.com/baoansportvn/', label: 'Facebook' },
+  { icon: Instagram, href: 'https://www.youtube.com/@baoansport', label: 'YouTube' },
+  { icon: MessageCircle, href: 'https://zalo.me/0939987456', label: 'Zalo' },
 ];
 
 export function StorefrontLayout({ children }: { children: ReactNode }) {
@@ -80,15 +80,15 @@ export function StorefrontLayout({ children }: { children: ReactNode }) {
               </div>
               <div className="flex flex-col">
                 <span className="text-lg font-black tracking-tight text-white leading-none">
-                  DCTD <span className="text-emerald-500">SPORT</span>
+                  BẢO AN <span className="text-emerald-500">SPORT</span>
                 </span>
                 <span className="text-[9px] font-bold uppercase tracking-widest text-slate-400">
-                  Performance Gear
+                  Dụng Cụ Thể Thao Chính Hãng
                 </span>
               </div>
             </div>
             <p className="mt-4 max-w-md text-sm leading-relaxed text-slate-400">
-              Thiết bị tập luyện và dụng cụ thể thao cao cấp cho người Việt, từ góc tập tại nhà đến không gian chuyên nghiệp.
+              Bảo An Sport chuyên cung cấp dụng cụ thể thao, thiết bị Gym, máy tập thể hình và phụ kiện chính hãng. Mẫu mã đa dạng, giao hàng toàn quốc, tư vấn tận tâm.
             </p>
             <div className="mt-6 flex gap-2.5">
               {SOCIAL_LINKS.map(({ icon: Icon, href, label }) => (
@@ -128,29 +128,31 @@ export function StorefrontLayout({ children }: { children: ReactNode }) {
             </div>
           </div>
 
-          {/* Column 4: Liên hệ */}
           <div>
             <h2 className="text-sm font-black uppercase tracking-wider text-white">Liên hệ</h2>
             <div className="mt-4 grid gap-2.5 text-sm text-slate-400">
-              <a className="inline-flex items-center gap-2 transition hover:text-emerald-400" href="tel:18000000">
+              <a className="inline-flex items-center gap-2 transition hover:text-emerald-400" href="tel:0939987456">
                 <Phone className="size-4 shrink-0 text-emerald-500" />
-                Hotline: 1800 0000
+                Hotline HN: 0939 987 456
               </a>
-              <a className="inline-flex items-center gap-2 transition hover:text-emerald-400" href="mailto:contact@dctdsport.vn">
+              <a className="inline-flex items-center gap-2 transition hover:text-emerald-400" href="tel:0969131990">
+                <Phone className="size-4 shrink-0 text-emerald-500" />
+                Hotline HCM: 0969 131 990
+              </a>
+              <a className="inline-flex items-center gap-2 transition hover:text-emerald-400" href="mailto:info@baoansport.vn">
                 <Mail className="size-4 shrink-0 text-emerald-500" />
-                contact@dctdsport.vn
+                info@baoansport.vn
               </a>
               <span className="inline-flex items-start gap-2">
                 <MapPin className="mt-0.5 size-4 shrink-0 text-emerald-500" />
-                Hà Nội & TP. Hồ Chí Minh, Việt Nam
+                <span>
+                  <strong className="text-slate-300">HN:</strong> 234 Định Công, Hoàng Mai<br />
+                  <strong className="text-slate-300">HCM:</strong> 34 Đường số 2, P.11, Q.6
+                </span>
               </span>
-              <Link
-                className="inline-flex items-center gap-2 text-emerald-400 transition hover:underline"
-                href="/contact"
-              >
-                <ArrowUpRight className="size-4 shrink-0" />
-                Đăng ký tư vấn góc tập
-              </Link>
+              <span className="inline-flex items-center gap-2 text-[11px] text-slate-500">
+                Mở cửa 09h - 21h tất cả các ngày trong tuần
+              </span>
             </div>
           </div>
         </div>
@@ -184,7 +186,7 @@ export function StorefrontLayout({ children }: { children: ReactNode }) {
 
         {/* Copyright */}
         <div className="mx-auto mt-8 max-w-7xl border-t border-slate-800/80 pt-6 text-xs text-slate-500">
-          © 2026 DCTD Sport. Nền tảng thương mại điện tử dụng cụ thể thao cao cấp.
+          © 2026 Bảo An Sport. Chuyên cung cấp dụng cụ thể thao, thiết bị thể dục và thể hình chính hãng.
         </div>
       </footer>
 

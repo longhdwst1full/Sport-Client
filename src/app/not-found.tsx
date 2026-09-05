@@ -57,11 +57,11 @@ export default function NotFound() {
             <span>Về trang chủ mua sắm</span>
           </Link>
           <a
-            href="tel:18000000"
+            href="tel:0939987456"
             className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-7 py-4 font-bold text-white backdrop-blur-md transition hover:bg-white/10"
           >
             <Phone className="size-4.5 text-emerald-400" />
-            <span>Hotline hỗ trợ: 1800 0000</span>
+            <span>Hotline hỗ trợ: 0939 987 456</span>
           </a>
         </div>
 

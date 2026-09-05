@@ -78,14 +78,14 @@ export default function ErrorPage({
         {/* Support Hotline */}
         <div className="mt-12 rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md">
           <p className="text-xs text-stone-400">
-            Nếu sự cố vẫn tiếp diễn, vui lòng liên hệ đội ngũ kỹ thuật DCTD Sport để được hỗ trợ tức thời:
+            Nếu sự cố vẫn tiếp diễn, vui lòng liên hệ đội ngũ Bảo An Sport để được hỗ trợ tức thời:
           </p>
           <div className="mt-3 flex flex-wrap items-center justify-center gap-6 text-sm font-bold">
-            <a href="tel:18000000" className="inline-flex items-center gap-2 text-emerald-400 hover:underline">
-              <Phone className="size-4" /> 1800 0000 (Miễn phí 24/7)
+            <a href="tel:0939987456" className="inline-flex items-center gap-2 text-emerald-400 hover:underline">
+              <Phone className="size-4" /> 0939 987 456 (Hỗ trợ 09h-21h)
             </a>
             <span className="text-stone-600">·</span>
-            <span className="text-stone-300">support@dctdsport.vn</span>
+            <span className="text-stone-300">info@baoansport.vn</span>
           </div>
         </div>
       </div>

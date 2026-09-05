@@ -32,7 +32,6 @@ export function FloatingContactBar() {
           className="group relative flex items-center gap-2.5 rounded-full bg-blue-600 p-2.5 sm:p-3 text-white shadow-xl shadow-blue-600/30 transition-all duration-300 hover:bg-blue-500 hover:scale-110 active:scale-95"
           aria-label="Tư vấn Zalo"
         >
-          {/* Label Tooltip */}
           <span className="pointer-events-none absolute right-full mr-3 hidden whitespace-nowrap rounded-xl bg-slate-900/90 px-3 py-1.5 text-xs font-bold text-white opacity-0 shadow-lg backdrop-blur transition-opacity duration-200 group-hover:opacity-100 sm:block">
             Chat Zalo: 0939 987 456
           </span>
@@ -44,13 +43,13 @@ export function FloatingContactBar() {
 
         {/* 24/7 Hotline Call Button */}
         <a
-          href="tel:18000000"
+          href="tel:0939987456"
           className="group relative flex items-center gap-2.5 rounded-full bg-emerald-600 p-2.5 sm:p-3 text-white shadow-xl shadow-emerald-600/30 transition-all duration-300 hover:bg-emerald-500 hover:scale-110 active:scale-95"
           aria-label="Gọi tổng đài tư vấn"
         >
           {/* Label Tooltip */}
           <span className="pointer-events-none absolute right-full mr-3 hidden whitespace-nowrap rounded-xl bg-slate-900/90 px-3 py-1.5 text-xs font-bold text-white opacity-0 shadow-lg backdrop-blur transition-opacity duration-200 group-hover:opacity-100 sm:block">
-            Hotline miễn phí: 1800 0000
+            Hotline: 0939 987 456
           </span>
           <div className="relative size-4.5 sm:size-5">
             <span className="absolute -inset-1 animate-ping rounded-full bg-emerald-400 opacity-40"></span>
@@ -65,7 +64,7 @@ export function FloatingContactBar() {
           aria-label="Tìm Showroom gần nhất"
         >
           <span className="pointer-events-none absolute right-full mr-3 hidden whitespace-nowrap rounded-xl bg-slate-900/90 px-3 py-1.5 text-xs font-bold text-white opacity-0 shadow-lg backdrop-blur transition-opacity duration-200 group-hover:opacity-100 sm:block">
-            Hệ thống 4 Showroom DCTD
+            Showroom Bảo An Sport
           </span>
           <MapPin className="size-4.5 sm:size-5 text-emerald-400" />
         </Link>

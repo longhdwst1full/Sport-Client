@@ -9,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/cart', '/checkout', '/profile', '/login', '/register'],
       },
     ],
-    sitemap: 'https://dctdsport.vn/sitemap.xml',
+    sitemap: 'https://baoansport.vn/sitemap.xml',
   };
 }

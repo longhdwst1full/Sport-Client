@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next';
 
-const BASE_URL = 'https://dctdsport.vn';
+const BASE_URL = 'https://baoansport.vn';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
@@ -55,12 +55,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   const categoryRoutes: MetadataRoute.Sitemap = [
-    'gym-fitness',
-    'chay-bo-cardio',
-    'bong-da',
-    'yoga-phuc-hoi',
-    'xe-dap-the-thao',
-    'vo-thuat-boxing',
+    'may-tap-the-duc',
+    'dung-cu-tap-gym',
+    'dung-cu-vo-thuat',
+    'dung-cu-bong-ban',
+    'dung-cu-bong-ro',
+    'thiet-bi-day-hoc-the-duc',
+    'dung-cu-the-thao-ngoai-troi',
+    'dung-cu-tap-yoga',
   ].map((slug) => ({
     url: `${BASE_URL}/category/${slug}`,
     lastModified: now,

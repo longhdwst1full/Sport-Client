@@ -662,7 +662,7 @@ export default async function ProductDetailPage({
     },
     offers: {
       '@type': 'Offer',
-      url: `https://dctdsport.vn/products/${product.slug}`,
+      url: `https://baoansport.vn/products/${product.slug}`,
       priceCurrency: 'VND',
       price: product.minPrice || '1890000',
       priceValidUntil: '2027-12-31',
@@ -684,19 +684,19 @@ export default async function ProductDetailPage({
         '@type': 'ListItem',
         position: 1,
         name: 'Trang chủ',
-        item: 'https://dctdsport.vn',
+        item: 'https://baoansport.vn',
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Sản phẩm',
-        item: 'https://dctdsport.vn/products',
+        item: 'https://baoansport.vn/products',
       },
       {
         '@type': 'ListItem',
         position: 3,
         name: product.name,
-        item: `https://dctdsport.vn/products/${product.slug}`,
+        item: `https://baoansport.vn/products/${product.slug}`,
       },
     ],
   };

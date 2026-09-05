@@ -30,13 +30,13 @@ export function FloatingActions() {
 
       {/* Phone */}
       <a
-        href="tel:18000000"
+        href="tel:0939987456"
         className="group relative grid size-12 place-items-center rounded-full bg-brand-600 text-white shadow-lg shadow-brand-600/25 transition-all hover:scale-110 hover:shadow-xl hover:shadow-brand-600/30 sm:size-14"
         aria-label="Gọi hotline"
       >
         <Phone className="size-5 sm:size-6" />
         <span className="pointer-events-none absolute right-full mr-3 hidden whitespace-nowrap rounded-lg bg-ink px-3 py-1.5 text-xs font-bold text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100 sm:block">
-          1800 0000
+          0939 987 456
         </span>
         {/* Pulsing ring */}
         <span className="absolute inset-0 animate-ping rounded-full bg-brand-600/30" />

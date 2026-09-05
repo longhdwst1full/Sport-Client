@@ -17,36 +17,20 @@ import { StorefrontLayout } from '@/layouts/storefront-layout';
 
 const SHOWROOMS = [
   {
-    city: 'TP. Hồ Chí Minh',
-    name: 'Showroom Flagship Nam Sài Gòn',
-    address: '123 Nguyễn Hữu Thọ, P. Tân Phong, Quận 7, TP.HCM',
-    phone: '028 7777 8888',
-    hours: '8:00 - 21:30 (Cả tuần)',
-    tag: 'Trung tâm trải nghiệm 3D lớn nhất',
-  },
-  {
     city: 'Hà Nội',
-    name: 'Showroom Thủ Đô Cầu Giấy',
-    address: '88 Duy Tân, P. Dịch Vọng Hậu, Q. Cầu Giấy, Hà Nội',
-    phone: '024 7777 8888',
-    hours: '8:00 - 21:00 (Cả tuần)',
-    tag: 'Kho hàng & Trung tâm bảo hành',
+    name: 'Showroom Bảo An Sport Hà Nội',
+    address: 'Số 234 Định Công, Quận Hoàng Mai, Hà Nội',
+    phone: '0939 987 456',
+    hours: '09:00 - 21:00 (Cả tuần)',
+    tag: 'Showroom chính - Kho hàng & Trung tâm bảo hành',
   },
   {
-    city: 'Đà Nẵng',
-    name: 'Showroom Miền Trung Hải Châu',
-    address: '45 Nguyễn Văn Linh, P. Nam Dương, Q. Hải Châu, Đà Nẵng',
-    phone: '0236 7777 888',
-    hours: '8:00 - 20:30 (Cả tuần)',
-    tag: 'Trưng bày đầy đủ dòng Home Gym',
-  },
-  {
-    city: 'Cần Thơ',
-    name: 'Showroom Tây Nam Bộ Ninh Kiều',
-    address: '24 Đại lộ Hòa Bình, P. An Cư, Q. Ninh Kiều, Cần Thơ',
-    phone: '0292 7777 888',
-    hours: '8:00 - 20:30 (Cả tuần)',
-    tag: 'Giao hỏa tốc các tỉnh miền Tây',
+    city: 'TP. Hồ Chí Minh',
+    name: 'Showroom Bảo An Sport TP.HCM',
+    address: 'Số 34 Đường số 2, Phường 11, Quận 6, TP.HCM',
+    phone: '0969 131 990',
+    hours: '09:00 - 21:00 (Cả tuần)',
+    tag: 'Showroom miền Nam - Giao hàng toàn miền Nam',
   },
 ];
 
@@ -144,8 +128,8 @@ export default function ContactPage() {
                       <Phone className="size-5" />
                     </span>
                     <div>
-                      <span className="block text-xs text-white/60">Hotline miễn phí (24/7)</span>
-                      <strong className="text-base text-white">1800 0000</strong>
+                      <span className="block text-xs text-white/60">Hotline tư vấn (09h-21h)</span>
+                      <strong className="text-base text-white">0939 987 456</strong>
                     </div>
                   </div>
 
@@ -154,8 +138,8 @@ export default function ContactPage() {
                       <Mail className="size-5" />
                     </span>
                     <div>
-                      <span className="block text-xs text-white/60">Email phòng dự án</span>
-                      <strong className="text-base text-white">contact@dctdsport.vn</strong>
+                      <span className="block text-xs text-white/60">Email liên hệ</span>
+                      <strong className="text-base text-white">info@baoansport.vn</strong>
                     </div>
                   </div>
                 </div>
