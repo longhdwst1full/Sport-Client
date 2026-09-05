@@ -8,21 +8,32 @@ export function useProductShowcase() {
   const query = useListCatalogProducts({ page: 1, limit: 8 });
   const products = useMemo(
     () =>
-      (query.data?.items ?? []).map((product) => ({
-        id: product.id,
-        slug: product.slug,
-        productType: product.productType,
-        name: product.name,
-        brand: product.brand ?? 'DCTD Sport',
-        category: product.primaryCategory ?? 'Thiết bị thể thao',
-        badge: product.primaryCategory ?? 'Sản phẩm mới',
-        imageUrl: product.imageUrl ?? '/icon.svg',
-        price: Number(product.minPrice ?? 0),
-        displayPrice:
-          product.minPrice === null || product.minPrice === undefined
-            ? 'Liên hệ tư vấn'
-            : vndMoney.format(Number(product.minPrice)),
-      })),
+      (query.data?.items ?? []).map((product) => {
+        const minPrice = Number(product.minPrice ?? 0);
+        // originalPrice will be available from API when promo pricing exists
+        const raw = product as unknown as Record<string, unknown>;
+        const originalPrice = raw.originalPrice
+          ? Number(raw.originalPrice)
+          : undefined;
+
+        return {
+          id: product.id,
+          slug: product.slug,
+          productType: product.productType,
+          name: product.name,
+          brand: product.brand ?? 'DCTD Sport',
+          category: product.primaryCategory ?? 'Thiết bị thể thao',
+          badge: product.primaryCategory ?? 'Sản phẩm mới',
+          imageUrl: product.imageUrl ?? '/icon.svg',
+          numericPrice: minPrice,
+          displayPrice:
+            product.minPrice === null || product.minPrice === undefined
+              ? 'Liên hệ tư vấn'
+              : vndMoney.format(minPrice),
+          originalPrice,
+          displayOriginalPrice: originalPrice ? vndMoney.format(originalPrice) : undefined,
+        };
+      }),
     [query.data?.items],
   );
 

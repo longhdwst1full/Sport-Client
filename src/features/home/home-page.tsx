@@ -13,12 +13,15 @@ import {
   Trophy,
 } from 'lucide-react';
 import { BenefitsStrip } from '@/widgets/benefits-strip/benefits-strip';
+import { FloatingActions } from '@/widgets/floating-actions/floating-actions';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { SectionHeading } from '@/foundation/components/section-heading';
 import { ProductShowcase } from '@/features/catalog/components/product-showcase';
 import { ContentStories } from '@/features/content/components/content-stories';
 import { ProductReviews } from '@/features/reviews/components/product-reviews';
 import { TrainingSpaceGuide } from './components/training-space-guide';
+import { BrandPartners } from './components/brand-partners';
+import { StatsCounter } from './components/stats-counter';
 
 const SPORT_CATEGORIES = [
   {
@@ -50,7 +53,8 @@ const SPORT_CATEGORIES = [
 export function HomePage() {
   return (
     <StorefrontLayout>
-      <section className="px-4 pb-6 sm:px-6 lg:px-8">
+      {/* Hero Section */}
+      <section className="px-4 pb-6 pt-4 sm:px-6 lg:px-8">
         <div className="relative mx-auto min-h-[640px] max-w-[1480px] overflow-hidden rounded-[28px] bg-ink text-white sm:rounded-[40px] lg:min-h-[680px]">
           <Image
             src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=2000&q=90"
@@ -103,8 +107,13 @@ export function HomePage() {
         </div>
       </section>
 
+      {/* Benefits Strip */}
       <BenefitsStrip />
 
+      {/* Brand Partners Carousel */}
+      <BrandPartners />
+
+      {/* Popular Search Tags */}
       <section className="mx-auto max-w-7xl px-6 pt-10 lg:px-10" aria-label="Tìm kiếm phổ biến">
         <div className="flex flex-wrap items-center justify-center gap-2 text-sm">
           <span className="mr-2 font-bold text-stone-500">Được tìm nhiều:</span>
@@ -122,6 +131,7 @@ export function HomePage() {
         </div>
       </section>
 
+      {/* Shop by Sport */}
       <section id="shop-by-sport" className="mx-auto max-w-7xl px-6 py-20 lg:px-10">
         <SectionHeading eyebrow="Tìm nhanh hơn" title="Bạn muốn tập gì hôm nay?" />
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -152,8 +162,13 @@ export function HomePage() {
         </div>
       </section>
 
+      {/* Training Space Guide */}
       <TrainingSpaceGuide />
 
+      {/* Stats Counter */}
+      <StatsCounter />
+
+      {/* Featured Products */}
       <section id="products" className="mx-auto max-w-7xl px-6 py-20 lg:px-10">
         <SectionHeading
           eyebrow="Tuyển chọn cho bạn"
@@ -167,6 +182,7 @@ export function HomePage() {
         <ProductShowcase />
       </section>
 
+      {/* Training Lab CTA */}
       <section className="mx-auto max-w-7xl px-6 pb-20 lg:px-10">
         <div className="grid overflow-hidden rounded-[36px] bg-[#d9ff45] lg:grid-cols-[1fr_.9fr]">
           <div className="flex flex-col justify-center p-8 sm:p-12 lg:p-16">
@@ -188,13 +204,19 @@ export function HomePage() {
         </div>
       </section>
 
+      {/* Product Reviews */}
       <section className="mx-auto max-w-7xl px-6 pb-20 lg:px-10">
         <ProductReviews />
       </section>
+
+      {/* Content Stories */}
       <section id="stories" className="mx-auto max-w-7xl px-6 pb-24 lg:px-10">
         <SectionHeading eyebrow="Kiến thức luyện tập" title="Bài viết mới" />
         <ContentStories />
       </section>
+
+      {/* Floating Action Buttons */}
+      <FloatingActions />
     </StorefrontLayout>
   );
 }
