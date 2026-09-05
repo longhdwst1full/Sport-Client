@@ -6,6 +6,7 @@ export type CartItem = {
   sku: string;
   productType: 'STANDARD' | 'BUNDLE';
   name: string;
+  imageUrl?: string;
   price: number;
   quantity: number;
 };
@@ -23,6 +24,13 @@ export const cartSlice = createSlice({
       if (existing) existing.quantity += 1;
       else state.items.push({ ...action.payload, quantity: 1 });
     },
+    updateQuantity: (state, action: PayloadAction<{ variantId: string; quantity: number }>) => {
+      const item = state.items.find((i) => i.variantId === action.payload.variantId);
+      if (item) item.quantity = Math.max(1, action.payload.quantity);
+    },
+    removeCartItem: (state, action: PayloadAction<string>) => {
+      state.items = state.items.filter((i) => i.variantId !== action.payload);
+    },
     hydrateCart: (state, action: PayloadAction<CartItem[]>) => {
       state.items = action.payload;
     },
@@ -32,4 +40,4 @@ export const cartSlice = createSlice({
   },
 });
 
-export const { addCartItem, clearCart, hydrateCart } = cartSlice.actions;
+export const { addCartItem, updateQuantity, removeCartItem, clearCart, hydrateCart } = cartSlice.actions;

@@ -19,6 +19,7 @@ import { SectionHeading } from '@/foundation/components/section-heading';
 import { ProductShowcase } from '@/features/catalog/components/product-showcase';
 import { ContentStories } from '@/features/content/components/content-stories';
 import { ProductReviews } from '@/features/reviews/components/product-reviews';
+import { Hero3DScene } from '@/components/3d/hero-3d-scene';
 import { TrainingSpaceGuide } from './components/training-space-guide';
 import { BrandPartners } from './components/brand-partners';
 import { StatsCounter } from './components/stats-counter';
@@ -53,56 +54,78 @@ const SPORT_CATEGORIES = [
 export function HomePage() {
   return (
     <StorefrontLayout>
-      {/* Hero Section */}
+      {/* Elevated Hero Section with Interactive 3D Studio */}
       <section className="px-4 pb-6 pt-4 sm:px-6 lg:px-8">
-        <div className="relative mx-auto min-h-[640px] max-w-[1480px] overflow-hidden rounded-[28px] bg-ink text-white sm:rounded-[40px] lg:min-h-[680px]">
-          <Image
-            src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=2000&q=90"
-            alt="Không gian tập luyện với thiết bị gym hiện đại"
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover object-center opacity-55"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/55 to-black/10" />
-          <div className="relative z-10 flex min-h-[640px] max-w-4xl flex-col justify-center px-6 py-16 sm:px-12 lg:min-h-[680px] lg:px-20">
-            <p className="mb-6 flex w-fit max-w-full items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-2 text-[10px] font-bold uppercase tracking-[.12em] backdrop-blur sm:px-4 sm:text-xs sm:tracking-[.2em]">
-              <BadgeCheck className="size-4 shrink-0 text-emerald-300" />
-              <span className="sm:hidden">Chính hãng · Giá gồm VAT</span>
-              <span className="hidden sm:inline">Thiết bị chính hãng · Giá đã gồm VAT</span>
-            </p>
-            <h1 className="max-w-3xl text-balance text-5xl font-black leading-[.98] tracking-[-.05em] sm:text-6xl lg:text-[84px]">
-              Xây không gian tập <span className="text-emerald-400">đúng chất bạn.</span>
-            </h1>
-            <p className="mt-7 max-w-2xl text-base leading-7 text-white/75 sm:text-xl sm:leading-8">
-              Từ một góc tập tại nhà đến phòng gym hoàn chỉnh — chọn đúng thiết bị, đúng mục tiêu
-              và nhận hàng từ chi nhánh gần nhất.
-            </p>
-            <div className="mt-9 flex flex-wrap gap-3">
-              <Link
-                href="#products"
-                className="inline-flex items-center gap-2 rounded-full bg-emerald-400 px-7 py-4 font-extrabold text-ink transition hover:-translate-y-0.5 hover:bg-emerald-300"
-              >
-                Mua sắm ngay <ArrowRight className="size-5" />
-              </Link>
-              <Link
-                href="#shop-by-sport"
-                className="inline-flex items-center gap-2 rounded-full border border-white/35 bg-white/5 px-7 py-4 font-bold backdrop-blur transition hover:bg-white/15"
-              >
-                <Play className="size-4 fill-current" /> Chọn theo môn tập
-              </Link>
+        <div className="relative mx-auto min-h-[640px] max-w-[1480px] overflow-hidden rounded-[32px] bg-gradient-to-br from-[#0c130f] via-[#141e18] to-[#0a0f0c] text-white shadow-2xl sm:rounded-[44px] lg:min-h-[720px]">
+          {/* Subtle Ambient Radial Gradients */}
+          <div className="pointer-events-none absolute -left-40 -top-40 size-[500px] rounded-full bg-emerald-500/15 blur-[120px]" />
+          <div className="pointer-events-none absolute -bottom-40 right-20 size-[600px] rounded-full bg-emerald-400/10 blur-[140px]" />
+
+          <div className="relative z-10 grid min-h-[640px] items-center gap-8 px-6 py-12 sm:px-10 lg:min-h-[720px] lg:grid-cols-[1.1fr_0.9fr] lg:px-16 xl:px-20">
+            {/* Left Column: Hero Content */}
+            <div className="flex flex-col justify-center">
+              <div className="mb-6 flex flex-wrap items-center gap-2">
+                <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-950/40 px-3.5 py-1.5 text-xs font-extrabold uppercase tracking-widest text-emerald-300 backdrop-blur-md">
+                  <BadgeCheck className="size-4 text-emerald-400" />
+                  DCTD INNOVATION LAB · CHÍNH HÃNG 100%
+                </span>
+                <span className="hidden rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white/70 backdrop-blur sm:inline-flex">
+                  ⭐ 4.9/5 (1,200+ đánh giá)
+                </span>
+              </div>
+
+              <h1 className="text-balance text-4xl font-black leading-[1.04] tracking-tight sm:text-6xl lg:text-[72px]">
+                Xây không gian tập <br className="hidden sm:inline" />
+                <span className="bg-gradient-to-r from-emerald-300 via-emerald-400 to-teal-300 bg-clip-text text-transparent">
+                  chuẩn vận động viên.
+                </span>
+              </h1>
+
+              <p className="mt-6 max-w-xl text-base leading-relaxed text-stone-300 sm:text-lg sm:leading-8">
+                Trang bị thiết bị thể thao thế hệ mới: Thiết kế công thái học, chịu tải công nghiệp,
+                bảo hành chính hãng 24/7 và giao hỏa tốc từ showroom gần nhất.
+              </p>
+
+              {/* Action Buttons */}
+              <div className="mt-8 flex flex-wrap items-center gap-4">
+                <Link
+                  href="#products"
+                  className="group relative inline-flex items-center gap-2.5 overflow-hidden rounded-full bg-emerald-400 px-8 py-4 text-base font-black text-ink shadow-lg shadow-emerald-400/25 transition duration-300 hover:-translate-y-0.5 hover:bg-emerald-300 hover:shadow-emerald-400/40"
+                >
+                  <span>Khám phá thiết bị</span>
+                  <ArrowRight className="size-5 transition group-hover:translate-x-1" />
+                </Link>
+                <Link
+                  href="#shop-by-sport"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-7 py-4 font-bold text-white backdrop-blur-md transition hover:border-emerald-400/40 hover:bg-white/10"
+                >
+                  <Play className="size-4 fill-current text-emerald-400" /> Chọn theo môn tập
+                </Link>
+              </div>
+
+              {/* Metrics & Trust Highlights */}
+              <div className="mt-12 grid grid-cols-3 gap-4 border-t border-white/15 pt-7 sm:gap-6">
+                <div>
+                  <strong className="block text-2xl font-black text-white sm:text-3xl">500+</strong>
+                  <span className="text-xs font-medium text-white/60 sm:text-sm">Thiết bị tiêu chuẩn</span>
+                </div>
+                <div>
+                  <strong className="block text-2xl font-black text-emerald-400 sm:text-3xl">2 Giờ</strong>
+                  <span className="text-xs font-medium text-white/60 sm:text-sm">Giao & ráp tận nơi</span>
+                </div>
+                <div>
+                  <strong className="block text-2xl font-black text-white sm:text-3xl">5 Năm</strong>
+                  <span className="text-xs font-medium text-white/60 sm:text-sm">Bảo hành khung thép</span>
+                </div>
+              </div>
             </div>
-            <div className="mt-12 grid w-full max-w-2xl grid-cols-3 divide-x divide-white/20 border-t border-white/20 pt-6">
-              <div className="min-w-0 pr-2 sm:pr-4"><strong className="block text-xl sm:text-2xl">1–1</strong><span className="text-[10px] text-white/60 sm:text-sm">Chi nhánh · kho</span></div>
-              <div className="min-w-0 px-2 sm:px-4"><strong className="block text-xl sm:text-2xl">100%</strong><span className="text-[10px] text-white/60 sm:text-sm">Giá gồm VAT</span></div>
-              <div className="min-w-0 pl-2 sm:pl-4"><strong className="block text-xl sm:text-2xl">7 ngày</strong><span className="text-[10px] text-white/60 sm:text-sm">Hỗ trợ mỗi tuần</span></div>
+
+            {/* Right Column: Real-time Interactive 3D Experience */}
+            <div className="relative flex items-center justify-center">
+              <div className="relative aspect-square w-full max-w-[560px] overflow-hidden rounded-[32px] border border-white/15 bg-black/40 p-2 shadow-2xl backdrop-blur-xl">
+                <Hero3DScene />
+              </div>
             </div>
-          </div>
-          <div className="absolute bottom-6 right-6 z-10 hidden max-w-xs rounded-3xl border border-white/20 bg-white/90 p-5 text-ink shadow-2xl backdrop-blur lg:block">
-            <p className="text-xs font-bold uppercase tracking-[.18em] text-brand-600">Gợi ý tuần này</p>
-            <strong className="mt-2 block text-xl">Combo Home Gym</strong>
-            <p className="mt-2 text-sm leading-6 text-stone-600">Một bộ cố định, đủ dụng cụ cho lịch tập toàn thân tại nhà.</p>
-            <Link href="#products" className="mt-4 inline-flex items-center gap-1 text-sm font-bold">Xem combo <ChevronRight className="size-4" /></Link>
           </div>
         </div>
       </section>
