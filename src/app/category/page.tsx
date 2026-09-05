@@ -51,7 +51,7 @@ const ALL_CATEGORIES = [
     description: 'Xe đạp kháng lực từ, xe đạp spinning tập đùi và phụ kiện đồng hồ đo nhịp tim.',
     itemCount: '45+ mẫu mã',
     icon: Bike,
-    image: 'https://images.unsplash.com/photo-1517649763962-0c623266ddc0?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?auto=format&fit=crop&w=800&q=80',
   },
   {
     slug: 'vo-thuat-boxing',

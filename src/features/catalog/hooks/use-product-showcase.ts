@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import { useListCatalogProducts } from '@/generated/api/catalog/catalog';
 import { vndMoney } from '@/shared/format/money';
 
-const FALLBACK_PRODUCTS = [
+export const FALLBACK_PRODUCTS = [
   {
     id: 'prod-1',
     slug: 'may-chay-bo-dctd-pro-x1',
@@ -13,7 +13,7 @@ const FALLBACK_PRODUCTS = [
     brand: 'DCTD Sport',
     category: 'Máy chạy bộ',
     badge: 'Bán chạy nhất',
-    imageUrl: 'https://images.unsplash.com/photo-1576678927484-cc907957088c?auto=format&fit=crop&w=800&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1538805060514-97d9cc17730c?auto=format&fit=crop&w=800&q=80',
     numericPrice: 14500000,
     displayPrice: '14.500.000 ₫',
     originalPrice: 18900000,
@@ -27,7 +27,7 @@ const FALLBACK_PRODUCTS = [
     brand: 'DCTD Sport',
     category: 'Gym & Sức mạnh',
     badge: 'Mới ra mắt',
-    imageUrl: 'https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?auto=format&fit=crop&w=800&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&w=800&q=80',
     numericPrice: 3850000,
     displayPrice: '3.850.000 ₫',
     originalPrice: 4800000,
@@ -55,7 +55,7 @@ const FALLBACK_PRODUCTS = [
     brand: 'DCTD Sport',
     category: 'Xe đạp tập',
     badge: 'Giảm 25%',
-    imageUrl: 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=800&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1571008887538-b36bb32f4571?auto=format&fit=crop&w=800&q=80',
     numericPrice: 6200000,
     displayPrice: '6.200.000 ₫',
     originalPrice: 8200000,
@@ -111,7 +111,7 @@ const FALLBACK_PRODUCTS = [
     brand: 'DCTD Sport',
     category: 'Yoga & Phục hồi',
     badge: 'Pin 8 giờ',
-    imageUrl: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=800&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=800&q=80',
     numericPrice: 1850000,
     displayPrice: '1.850.000 ₫',
     originalPrice: 2500000,

@@ -69,7 +69,7 @@ export default async function CategoryDetailPage({
               </div>
             </div>
 
-            <ProductShowcase />
+            <ProductShowcase categorySlug={slug} />
           </div>
         </main>
       </div>

@@ -1,12 +1,29 @@
 'use client';
 
+import { useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, BadgeCheck, Eye, RefreshCw } from 'lucide-react';
 import { useProductShowcase } from '../hooks/use-product-showcase';
 
-export function ProductShowcase() {
+export function ProductShowcase({ categorySlug }: { categorySlug?: string } = {}) {
   const { products, isPending, isError, refetch } = useProductShowcase();
+
+  const displayedProducts = useMemo(() => {
+    if (!categorySlug) return products;
+    const cat = categorySlug.toLowerCase();
+    const filtered = products.filter((p) => {
+      const pCat = p.category.toLowerCase();
+      const pSlug = p.slug.toLowerCase();
+      if (cat.includes('gym') || cat.includes('fitness')) return pCat.includes('gym') || pCat.includes('sức mạnh') || pSlug.includes('ta-') || pSlug.includes('smith') || pSlug.includes('ghe-');
+      if (cat.includes('chay-bo') || cat.includes('cardio')) return pCat.includes('chạy bộ') || pSlug.includes('chay-bo') || pCat.includes('xe đạp');
+      if (cat.includes('xe-dap')) return pCat.includes('xe đạp') || pSlug.includes('bike');
+      if (cat.includes('yoga') || cat.includes('phuc-hoi')) return pCat.includes('yoga') || pCat.includes('phục hồi') || pSlug.includes('yoga') || pSlug.includes('massage');
+      return pCat.includes(cat);
+    });
+    return filtered.length > 0 ? filtered : products;
+  }, [products, categorySlug]);
+
   if (isPending)
     return (
       <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4" aria-label="Đang tải sản phẩm">
@@ -35,7 +52,7 @@ export function ProductShowcase() {
         </button>
       </div>
     );
-  if (!products.length)
+  if (!displayedProducts.length)
     return (
       <div className="rounded-3xl bg-white p-10 text-center text-stone-500">
         Chưa có sản phẩm phù hợp.
@@ -44,7 +61,7 @@ export function ProductShowcase() {
 
   return (
     <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-      {products.map((product) => {
+      {displayedProducts.map((product: any) => {
         // Calculate discount percentage if original price exists
         const hasDiscount = product.originalPrice && product.originalPrice > product.numericPrice;
         const discountPercent = hasDiscount

@@ -8,7 +8,7 @@ import {
   BadgePercent,
 } from 'lucide-react';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
-import { ProductShowcase } from '@/features/catalog/components/product-showcase';
+import { ProductsCatalogView } from '@/features/catalog/components/products-catalog-view';
 import { FlashSaleSection } from '@/features/home/components/flash-sale-section';
 
 export const metadata = {
@@ -76,44 +76,9 @@ export default function ProductsPage() {
             })}
           </div>
 
-          {/* Category Quick Filters & Sorting Bar */}
+          {/* Interactive Products Catalog View */}
           <div className="mt-10">
-            <div className="mb-6 flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 pb-4">
-              <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 sm:flex-wrap">
-                {[
-                  { label: 'Tất cả sản phẩm', href: '/products', active: true },
-                  { label: 'Gym & Sức mạnh', href: '/category/gym-fitness', active: false },
-                  { label: 'Chạy bộ & Cardio', href: '/category/chay-bo-cardio', active: false },
-                  { label: 'Bóng đá', href: '/category/bong-da', active: false },
-                  { label: 'Yoga & Phục hồi', href: '/category/yoga-phuc-hoi', active: false },
-                ].map((tag) => (
-                  <Link
-                    key={tag.label}
-                    href={tag.href}
-                    className={`shrink-0 rounded-full px-4 py-2 text-xs font-bold transition ${
-                      tag.active
-                        ? 'bg-slate-900 text-white shadow-sm'
-                        : 'border border-slate-200 bg-white text-slate-700 hover:border-emerald-500 hover:text-emerald-700'
-                    }`}
-                  >
-                    {tag.label}
-                  </Link>
-                ))}
-              </div>
-
-              <div className="flex items-center gap-3 text-xs font-semibold">
-                <span className="text-slate-400">Sắp xếp:</span>
-                <select className="rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-800 shadow-sm outline-none focus:border-emerald-500">
-                  <option>Bán chạy nhất</option>
-                  <option>Giá: Thấp đến Cao</option>
-                  <option>Giá: Cao đến Thấp</option>
-                  <option>Mới ra mắt</option>
-                </select>
-              </div>
-            </div>
-
-            {/* Product Grid Showcase */}
-            <ProductShowcase />
+            <ProductsCatalogView />
           </div>
 
           {/* Flash Deals Banner for Catalog */}
