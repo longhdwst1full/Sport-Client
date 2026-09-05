@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { SiteHeader } from '@/widgets/site-header/site-header';
 import { NewsletterForm } from '@/widgets/newsletter-form/newsletter-form';
+import { FloatingContactBar } from '@/widgets/floating-contact-bar/floating-contact-bar';
 
 const FOOTER_SHOP_LINKS = [
   { label: 'Theo môn thể thao', href: '/category' },
@@ -186,6 +187,9 @@ export function StorefrontLayout({ children }: { children: ReactNode }) {
           © 2026 DCTD Sport. Nền tảng thương mại điện tử dụng cụ thể thao cao cấp.
         </div>
       </footer>
+
+      {/* Persistent Floating Quick Support Widget */}
+      <FloatingContactBar />
     </div>
   );
 }

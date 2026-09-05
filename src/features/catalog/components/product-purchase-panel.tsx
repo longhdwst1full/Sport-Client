@@ -15,6 +15,7 @@ import {
   Plus,
   CreditCard,
   Check,
+  Gift,
 } from 'lucide-react';
 import { addCartItem } from '@/app/store/cart.slice';
 import { useAppDispatch } from '@/app/store/hooks';
@@ -209,6 +210,40 @@ export function ProductPurchasePanel({ product }: { product: ProductDetailDto })
             <Plus className="size-3.5" />
           </button>
         </div>
+      </div>
+
+      {/* Exclusive Gifts Bundling (Inspired by Elipsport & Kingsport) */}
+      <div className="rounded-2xl border border-amber-200 bg-amber-50/60 p-4">
+        <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-amber-900">
+          <Gift className="size-4 text-amber-600" />
+          <span>Quà tặng độc quyền theo đơn hàng:</span>
+        </div>
+        <div className="mt-2.5 space-y-1.5 text-xs">
+          <div className="flex items-center justify-between rounded-xl bg-white p-2.5 shadow-sm border border-amber-100">
+            <span className="font-semibold text-slate-800">🎁 Găng tay thể hình DCTD Pro Grip</span>
+            <span className="text-[11px] font-bold text-amber-700">Trị giá 350.000đ (0đ)</span>
+          </div>
+          <div className="flex items-center justify-between rounded-xl bg-white p-2.5 shadow-sm border border-amber-100">
+            <span className="font-semibold text-slate-800">🎁 Thảm cao su giảm chấn sàn EPDM 15mm</span>
+            <span className="text-[11px] font-bold text-amber-700">Trị giá 450.000đ (0đ)</span>
+          </div>
+          <div className="flex items-center justify-between rounded-xl bg-white p-2.5 shadow-sm border border-amber-100">
+            <span className="font-semibold text-slate-800">🎁 Bình nước thể thao Inox DCTD giữ nhiệt 24h</span>
+            <span className="text-[11px] font-bold text-amber-700">Trị giá 250.000đ (0đ)</span>
+          </div>
+        </div>
+        <p className="mt-2 text-[11px] text-amber-800/80">
+          * Quà tặng tự động đóng gói cùng kiện hàng chính khi xuất kho.
+        </p>
+      </div>
+
+      {/* Installment Support Note */}
+      <div className="flex items-center justify-between rounded-2xl border border-slate-200/80 bg-slate-50 px-4 py-2.5 text-xs">
+        <div className="flex items-center gap-2">
+          <CreditCard className="size-4 text-emerald-600" />
+          <span className="font-semibold text-slate-700">Hỗ trợ trả góp 0% lãi suất</span>
+        </div>
+        <span className="font-bold text-emerald-700">Chỉ từ ~490.000đ/tháng</span>
       </div>
 
       {/* Toast Feedback */}

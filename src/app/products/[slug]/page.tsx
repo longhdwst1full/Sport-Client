@@ -14,6 +14,7 @@ import {
   Flame,
   Info,
 } from 'lucide-react';
+import type { Metadata } from 'next';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { ProductPurchasePanel } from '@/features/catalog/components/product-purchase-panel';
 import { Product3DViewer } from '@/components/3d/product-3d-viewer';
@@ -129,6 +130,47 @@ const FALLBACK_DETAILS: Record<string, any> = {
   },
 };
 
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const product = FALLBACK_DETAILS[slug] || {
+    name: slug.replace(/-/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()),
+    shortDescription:
+      'Thiết bị thể thao chính hãng DCTD Sport — Đạt tiêu chuẩn an toàn thể thao châu Âu, bảo hành 2-5 năm, hỗ trợ giao lắp tận nhà.',
+    imageUrl: 'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?auto=format&fit=crop&w=1200&q=85',
+  };
+
+  const title = `${product.name} — Chính Hãng, Trả Góp 0%`;
+  const description = product.shortDescription;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: 'website',
+      images: [
+        {
+          url: product.imageUrl,
+          width: 1200,
+          height: 630,
+          alt: product.name,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [product.imageUrl],
+    },
+  };
+}
+
 export default async function ProductDetailPage({
   params,
 }: {
@@ -156,12 +198,13 @@ export default async function ProductDetailPage({
 
   const TECH_SPECS = [
     { label: 'Thương hiệu', value: product.brand ?? 'DCTD Pro Series' },
-    { label: 'Phân loại', value: product.primaryCategory ?? 'Thiết bị thể hình cao cấp' },
-    { label: 'Chất liệu chế tạo', value: 'Thép hợp kim mạ Chrome & Cao su đúc nguyên khối' },
-    { label: 'Tải trọng an toàn', value: 'Tối đa 500 KG' },
-    { label: 'Quy cách đóng gói', value: 'Thùng carton 5 lớp + Mút định hình chống sốc' },
-    { label: 'Tiêu chuẩn kiểm định', value: 'ISO 9001:2015 & CE Athletic Standard' },
-    { label: 'Bảo hành chính hãng', value: '24 Tháng (1 đổi 1 trong 7 ngày đầu)' },
+    { label: 'Phân loại', value: product.primaryCategory ?? 'Thiết bị thể hình & Home Gym chuyên nghiệp' },
+    { label: 'Quy cách khung thép', value: 'Thép hộp cường lực Q235 (độ dày 2.5mm - 3.0mm), sơn tĩnh điện sần' },
+    { label: 'Tải trọng chịu lực', value: 'Tối đa 500 KG (Thử nghiệm quá tải chu kỳ 100.000 lần)' },
+    { label: 'Kích thước lắp đặt', value: '1450 x 1200 x 2150 mm (Diện tích sàn an toàn tối thiểu 6m²)' },
+    { label: 'Vật liệu đệm & tay cầm', value: 'Đệm PU mật độ cao 60mm bọc da Carbon + Tay cầm khía vân Diamond Knurl' },
+    { label: 'Tiêu chuẩn kiểm định', value: 'Đạt chứng nhận an toàn thiết bị thể thao Châu Âu CE & EN957' },
+    { label: 'Chính sách bảo hành', value: '60 tháng khung thép, 24 tháng linh kiện, 1 đổi 1 trong 7 ngày' },
   ];
 
   return (

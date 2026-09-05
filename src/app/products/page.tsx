@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { ProductShowcase } from '@/features/catalog/components/product-showcase';
+import { FlashSaleSection } from '@/features/home/components/flash-sale-section';
 
 export const metadata = {
   title: 'Tất cả thiết bị & Phụ kiện thể thao — DCTD Sport',
@@ -113,6 +114,11 @@ export default function ProductsPage() {
 
             {/* Product Grid Showcase */}
             <ProductShowcase />
+          </div>
+
+          {/* Flash Deals Banner for Catalog */}
+          <div className="mt-16 overflow-hidden rounded-[32px]">
+            <FlashSaleSection />
           </div>
         </main>
       </div>

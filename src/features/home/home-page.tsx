@@ -13,7 +13,6 @@ import {
   Trophy,
 } from 'lucide-react';
 import { BenefitsStrip } from '@/widgets/benefits-strip/benefits-strip';
-import { FloatingActions } from '@/widgets/floating-actions/floating-actions';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { SectionHeading } from '@/foundation/components/section-heading';
 import { ProductShowcase } from '@/features/catalog/components/product-showcase';
@@ -23,6 +22,8 @@ import { Hero3DScene } from '@/components/3d/hero-3d-scene';
 import { TrainingSpaceGuide } from './components/training-space-guide';
 import { BrandPartners } from './components/brand-partners';
 import { StatsCounter } from './components/stats-counter';
+import { FlashSaleSection } from './components/flash-sale-section';
+import { GymProjectPlanner } from './components/gym-project-planner';
 
 const SPORT_CATEGORIES = [
   {
@@ -136,6 +137,9 @@ export function HomePage() {
       {/* Brand Partners Carousel */}
       <BrandPartners />
 
+      {/* Live Flash Sale Section */}
+      <FlashSaleSection />
+
       {/* Popular Search Tags */}
       <section className="mx-auto max-w-7xl px-6 pt-10 lg:px-10" aria-label="Tìm kiếm phổ biến">
         <div className="flex flex-wrap items-center justify-center gap-2 text-sm">
@@ -188,6 +192,9 @@ export function HomePage() {
       {/* Training Space Guide */}
       <TrainingSpaceGuide />
 
+      {/* Gym Project Turnkey Solutions Planner */}
+      <GymProjectPlanner />
+
       {/* Stats Counter */}
       <StatsCounter />
 
@@ -239,9 +246,6 @@ export function HomePage() {
         <SectionHeading eyebrow="Kiến thức luyện tập" title="Bài viết mới" />
         <ContentStories />
       </section>
-
-      {/* Floating Action Buttons */}
-      <FloatingActions />
     </StorefrontLayout>
   );
 }
