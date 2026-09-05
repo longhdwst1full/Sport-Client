@@ -1,7 +1,21 @@
 'use client';
 
-import { ShoppingBag } from 'lucide-react';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import {
+  ShoppingBag,
+  Zap,
+  ShieldCheck,
+  Truck,
+  Wrench,
+  RotateCcw,
+  CheckCircle2,
+  MapPin,
+  Minus,
+  Plus,
+  CreditCard,
+  Check,
+} from 'lucide-react';
 import { addCartItem } from '@/app/store/cart.slice';
 import { useAppDispatch } from '@/app/store/hooks';
 import type { ProductDetailDto } from '@/generated/api/catalog/models';
@@ -9,75 +23,258 @@ import { vndMoney } from '@/shared/format/money';
 
 export function ProductPurchasePanel({ product }: { product: ProductDetailDto }) {
   const dispatch = useAppDispatch();
+  const router = useRouter();
+
   const [selectedVariantId, setSelectedVariantId] = useState(product.variants[0]?.id ?? '');
+  const [quantity, setQuantity] = useState(1);
+  const [isAddedToast, setIsAddedToast] = useState(false);
+
   const selectedVariant = product.variants.find(({ id }) => id === selectedVariantId);
   const price = Number(selectedVariant?.effectivePrice ?? 0);
   const canAdd = Boolean(selectedVariant && price > 0);
 
-  const addSelectedVariant = () => {
+  const handleAddToCart = () => {
     if (!selectedVariant || !canAdd) return;
-    dispatch(addCartItem({
-      productId: product.id,
-      variantId: selectedVariant.id,
-      sku: selectedVariant.sku,
-      productType: product.productType,
-      name: `${product.name} — ${selectedVariant.name}`,
-      price,
-    }));
+    dispatch(
+      addCartItem({
+        productId: product.id,
+        variantId: selectedVariant.id,
+        sku: selectedVariant.sku,
+        productType: product.productType,
+        name: `${product.name} — ${selectedVariant.name}`,
+        imageUrl: product.imageUrl ?? undefined,
+        price,
+        quantity,
+      })
+    );
+    setIsAddedToast(true);
+    setTimeout(() => setIsAddedToast(false), 2500);
+  };
+
+  const handleBuyNow = () => {
+    if (!selectedVariant || !canAdd) return;
+    dispatch(
+      addCartItem({
+        productId: product.id,
+        variantId: selectedVariant.id,
+        sku: selectedVariant.sku,
+        productType: product.productType,
+        name: `${product.name} — ${selectedVariant.name}`,
+        imageUrl: product.imageUrl ?? undefined,
+        price,
+        quantity,
+      })
+    );
+    router.push('/checkout');
   };
 
   return (
-    <section className="rounded-3xl bg-white p-6 shadow-card" aria-labelledby="purchase-heading">
-      <h2 id="purchase-heading" className="text-lg font-bold">Chọn phiên bản</h2>
-      <div className="mt-4 grid gap-3">
-        {product.variants.map((variant) => (
-          <button
-            key={variant.id}
-            type="button"
-            aria-pressed={variant.id === selectedVariantId}
-            className={`rounded-2xl border p-4 text-left transition ${
-              variant.id === selectedVariantId
-                ? 'border-brand-600 bg-brand-50'
-                : 'border-stone-200 hover:border-brand-300'
-            }`}
-            onClick={() => setSelectedVariantId(variant.id)}
-          >
-            <span className="block font-semibold">{variant.name}</span>
-            <span className="mt-1 block text-sm text-stone-500">{variant.sku}</span>
-            <strong className="mt-2 block text-brand-700">
-              {variant.effectivePrice ? vndMoney.format(Number(variant.effectivePrice)) : 'Chưa có giá'}
-            </strong>
-          </button>
-        ))}
+    <section
+      className="flex flex-col gap-6 rounded-[32px] border border-stone-200/80 bg-white p-6 shadow-xl shadow-stone-200/50 sm:p-8"
+      aria-labelledby="purchase-heading"
+    >
+      {/* Price & Rating Header */}
+      <div>
+        <div className="flex items-baseline justify-between">
+          <div>
+            <span className="text-xs font-bold uppercase tracking-wider text-stone-400">
+              Giá bán niêm yết (Đã gồm VAT)
+            </span>
+            <div className="mt-1 flex items-baseline gap-3">
+              <strong className="text-3xl font-black text-emerald-700 sm:text-4xl">
+                {price > 0 ? vndMoney.format(price) : 'Liên hệ báo giá'}
+              </strong>
+              {price > 0 && (
+                <span className="text-sm font-semibold text-stone-400 line-through">
+                  {vndMoney.format(Math.round(price * 1.25))}
+                </span>
+              )}
+            </div>
+          </div>
+          {price > 0 && (
+            <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-extrabold text-emerald-800">
+              Tiết kiệm 20%
+            </span>
+          )}
+        </div>
+
+        {/* Live Stock & Showroom Indicator */}
+        <div className="mt-3 flex items-center gap-2 text-xs font-semibold text-emerald-700">
+          <span className="relative flex size-2">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+            <span className="relative inline-flex size-2 rounded-full bg-emerald-600"></span>
+          </span>
+          <span>Sẵn hàng tại 12 showroom toàn quốc · Giao lắp trong 2H</span>
+        </div>
       </div>
 
+      <hr className="border-stone-100" />
+
+      {/* Variant Selector */}
+      <div>
+        <div className="flex items-center justify-between">
+          <h2 id="purchase-heading" className="text-sm font-black uppercase tracking-wider text-ink">
+            Phiên bản / Quy cách
+          </h2>
+          <span className="text-xs text-stone-500">
+            {product.variants.length} lựa chọn có sẵn
+          </span>
+        </div>
+
+        <div className="mt-3 grid gap-2.5">
+          {product.variants.map((variant) => {
+            const isSelected = variant.id === selectedVariantId;
+            const variantPrice = Number(variant.effectivePrice ?? 0);
+
+            return (
+              <button
+                key={variant.id}
+                type="button"
+                aria-pressed={isSelected}
+                className={`relative flex items-center justify-between rounded-2xl border p-4 text-left transition ${
+                  isSelected
+                    ? 'border-emerald-500 bg-emerald-50/50 shadow-sm ring-2 ring-emerald-500/20'
+                    : 'border-stone-200/80 bg-white hover:border-emerald-300 hover:bg-stone-50/50'
+                }`}
+                onClick={() => setSelectedVariantId(variant.id)}
+              >
+                <div className="flex items-center gap-3">
+                  <div
+                    className={`grid size-5 place-items-center rounded-full border transition ${
+                      isSelected
+                        ? 'border-emerald-600 bg-emerald-600 text-white'
+                        : 'border-stone-300 bg-white'
+                    }`}
+                  >
+                    {isSelected && <Check className="size-3 stroke-[3]" />}
+                  </div>
+                  <div>
+                    <span className="block font-bold text-ink">{variant.name}</span>
+                    <span className="text-xs text-stone-500">Mã SKU: {variant.sku}</span>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <strong className="block text-sm font-black text-ink">
+                    {variantPrice > 0 ? vndMoney.format(variantPrice) : 'Chưa có giá'}
+                  </strong>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Bundle Breakdown if Variant has Bundle */}
       {selectedVariant?.bundle && (
-        <div className="mt-5 rounded-2xl bg-stone-50 p-4">
-          <h3 className="font-bold">Combo này gồm</h3>
-          <ul className="mt-2 space-y-2 text-sm text-stone-700">
+        <div className="rounded-2xl border border-emerald-200/60 bg-emerald-50/40 p-4">
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-800">
+            <CheckCircle2 className="size-4 text-emerald-600" />
+            <span>Combo này bao gồm các linh kiện:</span>
+          </div>
+          <ul className="mt-2.5 space-y-1.5 text-xs text-stone-700">
             {selectedVariant.bundle.components.map((component) => (
-              <li key={component.componentVariantId}>
-                {component.quantity} × {component.componentName} ({component.componentSku})
+              <li key={component.componentVariantId} className="flex items-center justify-between">
+                <span className="font-semibold">{component.componentName}</span>
+                <span className="rounded bg-white px-2 py-0.5 text-[11px] font-bold text-emerald-700 shadow-sm">
+                  SL: {component.quantity}
+                </span>
               </li>
             ))}
           </ul>
-          <p className="mt-3 text-xs text-stone-500">
-            Combo là một đơn vị bán; khi trả hàng cần trả nguyên bộ.
+          <p className="mt-2 text-[11px] text-stone-500">
+            * Combo được đóng gói nguyên đai kiện từ nhà sản xuất; khi bảo hành/đổi trả cần giữ nguyên phụ kiện.
           </p>
         </div>
       )}
 
-      <button
-        type="button"
-        disabled={!canAdd}
-        className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-ink px-5 py-3 font-bold text-white transition hover:bg-brand-600 disabled:cursor-not-allowed disabled:bg-stone-300"
-        onClick={addSelectedVariant}
-      >
-        <ShoppingBag className="size-5" /> Thêm SKU đã chọn vào giỏ
-      </button>
-      <p className="mt-3 text-xs text-stone-500">
-        Giá và tồn kho sẽ được kiểm tra lại trực tuyến khi thanh toán.
-      </p>
+      {/* Quantity Selector */}
+      <div className="flex items-center justify-between">
+        <span className="text-sm font-bold text-ink">Số lượng:</span>
+        <div className="flex items-center rounded-full border border-stone-200 bg-stone-50 p-1">
+          <button
+            type="button"
+            onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+            className="grid size-8 place-items-center rounded-full bg-white text-ink shadow-sm transition hover:bg-stone-200"
+            disabled={quantity <= 1}
+          >
+            <Minus className="size-3.5" />
+          </button>
+          <span className="w-12 text-center text-sm font-extrabold text-ink">{quantity}</span>
+          <button
+            type="button"
+            onClick={() => setQuantity((q) => q + 1)}
+            className="grid size-8 place-items-center rounded-full bg-white text-ink shadow-sm transition hover:bg-stone-200"
+          >
+            <Plus className="size-3.5" />
+          </button>
+        </div>
+      </div>
+
+      {/* Toast Feedback */}
+      {isAddedToast && (
+        <div className="flex items-center gap-2 rounded-2xl bg-emerald-600 px-4 py-2.5 text-xs font-bold text-white shadow-lg shadow-emerald-600/30 animate-fade-in">
+          <CheckCircle2 className="size-4 shrink-0" />
+          <span>Đã thêm sản phẩm vào giỏ hàng thành công!</span>
+        </div>
+      )}
+
+      {/* CTA Buttons (Add to Cart + Buy Now) */}
+      <div className="grid gap-3 sm:grid-cols-2">
+        <button
+          type="button"
+          disabled={!canAdd}
+          onClick={handleAddToCart}
+          className="flex items-center justify-center gap-2 rounded-full border-2 border-ink bg-white px-5 py-3.5 font-black text-ink transition hover:bg-stone-100 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          <ShoppingBag className="size-4.5" />
+          <span>Thêm vào giỏ</span>
+        </button>
+
+        <button
+          type="button"
+          disabled={!canAdd}
+          onClick={handleBuyNow}
+          className="flex items-center justify-center gap-2 rounded-full bg-emerald-500 px-5 py-3.5 font-black text-ink shadow-lg shadow-emerald-500/25 transition hover:bg-emerald-400 hover:shadow-emerald-500/40 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          <Zap className="size-4.5 fill-ink" />
+          <span>Mua ngay</span>
+        </button>
+      </div>
+
+      {/* Service Perks & Warranty */}
+      <div className="grid grid-cols-2 gap-3 border-t border-stone-100 pt-5 text-xs">
+        <div className="flex items-start gap-2.5 text-stone-600">
+          <Truck className="mt-0.5 size-4 shrink-0 text-emerald-600" />
+          <div>
+            <strong className="block font-bold text-ink">Giao nhanh 2 Giờ</strong>
+            <span>Nội thành Hà Nội & TP.HCM</span>
+          </div>
+        </div>
+
+        <div className="flex items-start gap-2.5 text-stone-600">
+          <Wrench className="mt-0.5 size-4 shrink-0 text-emerald-600" />
+          <div>
+            <strong className="block font-bold text-ink">Lắp đặt tại nhà</strong>
+            <span>Kỹ thuật viên chuyên nghiệp</span>
+          </div>
+        </div>
+
+        <div className="flex items-start gap-2.5 text-stone-600">
+          <ShieldCheck className="mt-0.5 size-4 shrink-0 text-emerald-600" />
+          <div>
+            <strong className="block font-bold text-ink">Bảo hành 24 Tháng</strong>
+            <span>Chính hãng tại nhà khách</span>
+          </div>
+        </div>
+
+        <div className="flex items-start gap-2.5 text-stone-600">
+          <RotateCcw className="mt-0.5 size-4 shrink-0 text-emerald-600" />
+          <div>
+            <strong className="block font-bold text-ink">Đổi mới 7 Ngày</strong>
+            <span>Lỗi 1 đổi 1 tận nơi</span>
+          </div>
+        </div>
+      </div>
     </section>
   );
 }

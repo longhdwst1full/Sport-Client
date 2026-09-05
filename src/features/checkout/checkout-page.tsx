@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, CheckCircle2, CreditCard, Truck } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { clearCart } from '@/app/store/cart.slice';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
@@ -26,6 +26,12 @@ export function CheckoutPage() {
     name: '', phone: '', address: '', city: '', note: '',
   });
 
+  useEffect(() => {
+    if (items.length === 0 && !ordered) {
+      router.replace('/cart');
+    }
+  }, [items.length, ordered, router]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -37,7 +43,6 @@ export function CheckoutPage() {
   };
 
   if (items.length === 0 && !ordered) {
-    router.replace('/cart');
     return null;
   }
 
