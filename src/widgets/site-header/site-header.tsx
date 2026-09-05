@@ -5,7 +5,9 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import {
   ChevronDown,
+  ChevronRight,
   Dumbbell,
+  MapPin,
   Menu,
   Phone,
   Search,
@@ -26,6 +28,7 @@ import {
 export function SiteHeader() {
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [expandedMobileCat, setExpandedMobileCat] = useState<string | null>(null);
   const [announcementIndex, setAnnouncementIndex] = useState(0);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -42,6 +45,7 @@ export function SiteHeader() {
     if (searchQuery.trim()) {
       router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
       setSearchOpen(false);
+      setMobileMenuOpen(false);
     }
   };
 
@@ -72,12 +76,12 @@ export function SiteHeader() {
       {/* Top Utility Announcement Bar */}
       <div className="relative overflow-hidden bg-slate-950 px-3 py-2 text-center text-[11px] font-bold uppercase tracking-[.14em] text-slate-300 sm:px-4 sm:tracking-[.16em]">
         <div className="mx-auto flex max-w-7xl items-center justify-between">
-          <div className="hidden items-center gap-2 text-xs font-semibold text-emerald-400 md:flex">
+          <div className="hidden items-center gap-2 text-xs font-semibold text-emerald-400 xl:flex">
             <span className="inline-block size-2 rounded-full bg-emerald-400 animate-pulse" />
             <span>Showroom mở cửa 8:30 - 21:30 cả Chủ nhật</span>
           </div>
 
-          <div className="relative flex flex-1 items-center justify-center h-5 overflow-hidden">
+          <div className="relative flex flex-1 items-center justify-center h-5 overflow-hidden px-4 min-w-0">
             {STORE_ANNOUNCEMENTS.map((text, i) => (
               <span
                 key={text}
@@ -92,7 +96,7 @@ export function SiteHeader() {
             ))}
           </div>
 
-          <div className="hidden items-center gap-4 text-xs font-semibold text-slate-400 md:flex">
+          <div className="hidden items-center gap-4 text-xs font-semibold text-slate-400 xl:flex">
             <Link href="/contact" className="hover:text-white transition">Hệ thống Showroom</Link>
             <span className="text-slate-700">|</span>
             <Link href="/profile" className="hover:text-white transition">Tra cứu bảo hành</Link>
@@ -226,16 +230,16 @@ export function SiteHeader() {
         )}
       </div>
 
-      {/* Streamlined Desktop Navigation Bar with Integrated Mega Menus & Hot Links */}
+      {/* Streamlined Desktop Navigation Bar with Integrated Mega Menus */}
       <nav
-        className="hidden border-b border-slate-200/70 bg-white/95 backdrop-blur-md lg:block"
+        className="hidden border-b border-slate-200/80 bg-white lg:block"
         aria-label="Điều hướng chính"
       >
-        <div className="mx-auto flex h-11 max-w-7xl items-center justify-between px-6 lg:px-8 text-sm font-semibold">
-          {/* Sports Categories with Dropdowns */}
+        <div className="mx-auto flex h-12 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+          {/* Main Category Dropdowns */}
           <div className="flex items-center gap-1">
             {MEGA_MENU_CATEGORIES.map((cat) => {
-              const Icon = cat.icon;
+              const isOpen = activeMegaMenu === cat.label;
               return (
                 <div
                   key={cat.label}
@@ -245,40 +249,42 @@ export function SiteHeader() {
                 >
                   <Link
                     href={cat.href}
-                    className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition ${
-                      activeMegaMenu === cat.label
-                        ? 'bg-emerald-50 text-emerald-700'
+                    className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3.5 py-2 text-[13px] font-bold transition-all ${
+                      isOpen
+                        ? 'bg-slate-100 text-emerald-700'
                         : 'text-slate-700 hover:bg-slate-50 hover:text-emerald-700'
                     }`}
                   >
-                    <Icon className="size-3.5" />
-                    {cat.label}
+                    <span>{cat.label}</span>
                     <ChevronDown
-                      className={`size-3 text-slate-400 transition-transform ${activeMegaMenu === cat.label ? 'rotate-180' : ''}`}
+                      className={`size-3.5 text-slate-400 transition-transform duration-200 ${
+                        isOpen ? 'rotate-180 text-emerald-600' : ''
+                      }`}
                     />
                   </Link>
 
                   {/* Mega Dropdown */}
-                  {activeMegaMenu === cat.label && (
+                  {isOpen && (
                     <div
-                      className="absolute left-0 top-full z-50 w-[520px] pt-1.5 animate-in fade-in slide-in-from-top-2 duration-150"
+                      className="absolute left-0 top-full z-50 w-[540px] pt-1.5 animate-in fade-in slide-in-from-top-1 duration-150"
                       onMouseEnter={() => handleMegaMenuEnter(cat.label)}
                       onMouseLeave={handleMegaMenuLeave}
                     >
-                      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl ring-1 ring-black/5">
-                        <div className="grid grid-cols-[1.1fr_.9fr]">
-                          <div className="p-5">
-                            <p className="mb-3 text-[11px] font-extrabold uppercase tracking-[.15em] text-emerald-700">
-                              {cat.label} chuyên nghiệp
-                            </p>
-                            <div className="grid gap-1">
+                      <div className="overflow-hidden rounded-2xl border border-slate-200/90 bg-white p-6 shadow-2xl ring-1 ring-black/5">
+                        <div className="grid grid-cols-[1.2fr_0.8fr] gap-6">
+                          <div>
+                            <span className="text-[11px] font-black uppercase tracking-wider text-emerald-700">
+                              {cat.label}
+                            </span>
+                            <div className="mt-3 divide-y divide-slate-100">
                               {cat.children.map((child) => (
                                 <Link
                                   key={child.label}
                                   href={child.href}
-                                  className="rounded-lg px-3 py-2 text-xs font-bold text-slate-700 transition hover:bg-emerald-50 hover:text-emerald-700"
+                                  className="group flex items-center justify-between py-2.5 text-xs font-bold text-slate-700 transition hover:text-emerald-700"
                                 >
-                                  {child.label}
+                                  <span>{child.label}</span>
+                                  <ChevronRight className="size-3 text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-emerald-600" />
                                 </Link>
                               ))}
                             </div>
@@ -286,19 +292,23 @@ export function SiteHeader() {
                               href={cat.href}
                               className="mt-4 inline-flex items-center gap-1 text-xs font-extrabold text-emerald-700 hover:underline"
                             >
-                              Xem tất cả thiết bị →
+                              Xem tất cả {cat.label} →
                             </Link>
                           </div>
-                          <div className="relative min-h-[200px] overflow-hidden bg-slate-900">
+
+                          {/* Image preview banner */}
+                          <div className="relative min-h-[190px] overflow-hidden rounded-xl bg-slate-100">
                             <Image
                               src={cat.image}
                               alt={cat.label}
                               fill
-                              sizes="250px"
-                              className="object-cover opacity-90 transition duration-500 hover:scale-105"
+                              sizes="240px"
+                              className="object-cover transition duration-500 hover:scale-105"
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-4">
-                              <span className="text-xs font-bold text-white">Chính hãng 100% · Lắp ráp tận nhà</span>
+                            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent flex items-end p-3.5">
+                              <span className="text-xs font-bold text-white leading-snug">
+                                Cam kết 100% chính hãng · Bảo hành 2 - 5 năm
+                              </span>
                             </div>
                           </div>
                         </div>
@@ -310,105 +320,217 @@ export function SiteHeader() {
             })}
           </div>
 
-          {/* Quick Hub Links & Hot Tag */}
-          <div className="flex items-center gap-2">
+          {/* Quick Features & Highlights */}
+          <div className="flex items-center gap-1 text-[13px] font-bold">
             <Link
               href="/#products"
-              className="flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1 text-xs font-extrabold text-emerald-700 transition hover:bg-emerald-100"
+              className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-2 text-slate-700 transition hover:bg-slate-50 hover:text-emerald-700"
             >
-              <span className="size-1.5 rounded-full bg-emerald-500 animate-ping" />
-              Combo Home Gym
+              <span>Combo Home Gym</span>
+              <span className="rounded-full bg-rose-500 px-1.5 py-0.5 text-[9px] font-black uppercase text-white shadow-sm">
+                Hot
+              </span>
             </Link>
 
-            {[
-              { label: 'Tất cả thiết bị', href: '/products' },
-              { label: 'Danh mục', href: '/category' },
-              { label: 'Kiến thức tập', href: '/news' },
-              { label: 'Showroom', href: '/contact' },
-              { label: 'Về Bảo An', href: '/#about' },
-            ].map(({ label, href }) => (
-              <Link
-                key={label}
-                href={href}
-                className="rounded-lg px-2.5 py-1 text-xs font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-emerald-700"
-              >
-                {label}
-              </Link>
-            ))}
+            <Link
+              href="/news"
+              className="inline-flex items-center whitespace-nowrap rounded-lg px-3 py-2 text-slate-700 transition hover:bg-slate-50 hover:text-emerald-700"
+            >
+              Cẩm nang tập luyện
+            </Link>
+
+            <Link
+              href="/contact"
+              className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-2 text-slate-700 transition hover:bg-slate-50 hover:text-emerald-700"
+            >
+              <MapPin className="size-3.5 text-emerald-600" />
+              <span>Hệ thống Showroom</span>
+            </Link>
           </div>
         </div>
       </nav>
 
-      {/* Mobile Menu Drawer */}
+      {/* Mobile Menu Drawer & Overlay */}
       {mobileMenuOpen && (
-        <nav
-          className="border-t border-slate-200 bg-white shadow-xl lg:hidden"
-          aria-label="Điều hướng di động"
-        >
-          <div className="mx-auto max-w-7xl divide-y divide-slate-100">
-            {/* Mobile Nav Links */}
-            <div className="grid gap-1 px-5 py-4 text-base font-bold">
-              {MEGA_MENU_CATEGORIES.map((cat) => (
+        <>
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 top-[110px] z-40 bg-slate-950/60 backdrop-blur-sm lg:hidden animate-in fade-in duration-200"
+            onClick={() => setMobileMenuOpen(false)}
+            aria-hidden="true"
+          />
+
+          {/* Drawer Content */}
+          <nav
+            className="relative z-50 border-t border-slate-200 bg-white shadow-2xl lg:hidden max-h-[calc(100vh-120px)] overflow-y-auto animate-in slide-in-from-top duration-200"
+            aria-label="Điều hướng di động"
+          >
+            <div className="mx-auto max-w-7xl divide-y divide-slate-100">
+              {/* Mobile In-Drawer Search */}
+              <div className="p-4 bg-slate-50">
+                <form onSubmit={handleSearchSubmit} className="relative">
+                  <input
+                    type="text"
+                    placeholder="Tìm thiết bị, môn tập, thương hiệu..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full rounded-full border border-slate-200 bg-white px-4 py-2.5 pr-11 text-sm shadow-sm placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+                  />
+                  <button
+                    type="submit"
+                    className="absolute right-1.5 top-1/2 grid size-7 -translate-y-1/2 place-items-center rounded-full bg-emerald-600 text-white shadow-sm"
+                    aria-label="Tìm kiếm"
+                  >
+                    <Search className="size-3.5" />
+                  </button>
+                </form>
+              </div>
+
+              {/* Main Categories Accordion */}
+              <div className="px-4 py-3 space-y-1">
+                <div className="px-3 py-1 text-[11px] font-black uppercase tracking-wider text-slate-400">
+                  Danh mục thiết bị chính hãng
+                </div>
+                {MEGA_MENU_CATEGORIES.map((cat) => {
+                  const isExpanded = expandedMobileCat === cat.label;
+                  return (
+                    <div key={cat.label} className="rounded-xl border border-transparent overflow-hidden">
+                      <div className="flex items-center justify-between rounded-xl hover:bg-slate-50 transition">
+                        <Link
+                          href={cat.href}
+                          className="flex flex-1 items-center gap-3 px-3 py-2.5 text-sm font-bold text-slate-800 hover:text-emerald-700"
+                          onClick={() => setMobileMenuOpen(false)}
+                        >
+                          <cat.icon className="size-4.5 text-emerald-600 shrink-0" />
+                          <span>{cat.label}</span>
+                        </Link>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setExpandedMobileCat(isExpanded ? null : cat.label)
+                          }
+                          className="p-2.5 text-slate-400 hover:text-slate-700"
+                          aria-label={`Mở rộng ${cat.label}`}
+                        >
+                          <ChevronDown
+                            className={`size-4 transition-transform duration-200 ${
+                              isExpanded ? 'rotate-180 text-emerald-600' : ''
+                            }`}
+                          />
+                        </button>
+                      </div>
+
+                      {/* Subcategories dropdown in drawer */}
+                      {isExpanded && (
+                        <div className="ml-8 mr-2 my-1 space-y-1 border-l-2 border-emerald-500/40 pl-3 py-1 animate-in fade-in duration-150">
+                          {cat.children.map((child) => (
+                            <Link
+                              key={child.label}
+                              href={child.href}
+                              className="flex items-center justify-between py-1.5 text-xs font-semibold text-slate-600 hover:text-emerald-700"
+                              onClick={() => setMobileMenuOpen(false)}
+                            >
+                              <span>{child.label}</span>
+                              <ChevronRight className="size-3 text-slate-300" />
+                            </Link>
+                          ))}
+                          <Link
+                            href={cat.href}
+                            className="inline-block pt-1 text-xs font-extrabold text-emerald-700 hover:underline"
+                            onClick={() => setMobileMenuOpen(false)}
+                          >
+                            Xem tất cả {cat.label} →
+                          </Link>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Special Features Links */}
+              <div className="px-4 py-3 space-y-1">
                 <Link
-                  key={cat.label}
-                  href={cat.href}
-                  className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-slate-800 hover:bg-emerald-50 hover:text-emerald-700 transition"
+                  href="/#products"
+                  className="flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-bold text-slate-800 hover:bg-emerald-50 hover:text-emerald-700 transition"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  <cat.icon className="size-5 text-emerald-600" />
-                  {cat.label}
+                  <span className="flex items-center gap-2.5">
+                    <span className="size-2 rounded-full bg-rose-500 animate-pulse" />
+                    Combo Home Gym Trọn Gói
+                  </span>
+                  <span className="rounded-full bg-rose-500 px-2 py-0.5 text-[10px] font-black uppercase text-white shadow-sm">
+                    Hot
+                  </span>
                 </Link>
-              ))}
-            </div>
 
-            {/* Mobile Secondary Links */}
-            <div className="grid gap-1 px-5 py-3 text-sm font-semibold text-slate-600">
-              {[
-                ['Tất cả thiết bị thể thao', '/products'],
-                ['Tất cả danh mục sản phẩm', '/category'],
-                ['Kiến thức luyện tập chuyên sâu', '/news'],
-                ['Hệ thống Showroom toàn quốc', '/contact'],
-                ['Về thương hiệu Bảo An Sport', '/#about'],
-              ].map(([label, href]) => (
                 <Link
-                  key={href}
-                  href={href}
-                  className="rounded-xl px-3 py-2 hover:bg-slate-50 hover:text-slate-900 transition"
+                  href="/news"
+                  className="flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-bold text-slate-800 hover:bg-emerald-50 hover:text-emerald-700 transition"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  {label}
+                  <span>Cẩm nang & Kinh nghiệm tập luyện</span>
+                  <ChevronRight className="size-3.5 text-slate-400" />
                 </Link>
-              ))}
-            </div>
 
-            {/* Mobile Contact & Account */}
-            <div className="flex flex-wrap gap-2.5 px-5 py-4 bg-slate-50">
-              <a
-                href={`tel:${STORE_CONTACT.primaryHotlineRaw}`}
-                className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-black shadow-sm"
-              >
-                <Phone className="size-3.5 text-emerald-600" />
-                {STORE_CONTACT.primaryHotline}
-              </a>
-              <Link
-                href="/cart"
-                className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-black text-white shadow-sm"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <ShoppingBag className="size-3.5" />
-                Giỏ hàng ({cartQuantity})
-              </Link>
-              <Link
-                href="/login"
-                className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-black shadow-sm"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <UserRound className="size-3.5 text-emerald-600" />
-                Đăng nhập
-              </Link>
+                <Link
+                  href="/contact"
+                  className="flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-bold text-slate-800 hover:bg-emerald-50 hover:text-emerald-700 transition"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <span className="flex items-center gap-2">
+                    <MapPin className="size-4 text-emerald-600" />
+                    Hệ thống Showroom Bảo An Sport
+                  </span>
+                  <ChevronRight className="size-3.5 text-slate-400" />
+                </Link>
+
+                <Link
+                  href="/profile"
+                  className="flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-bold text-slate-800 hover:bg-emerald-50 hover:text-emerald-700 transition"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <span>Tra cứu kích hoạt bảo hành</span>
+                  <ChevronRight className="size-3.5 text-slate-400" />
+                </Link>
+              </div>
+
+              {/* Showrooms & Hotlines info */}
+              <div className="px-5 py-3 text-xs text-slate-500 space-y-1.5 bg-slate-50/50">
+                <div className="font-bold text-slate-700">Showroom mở cửa 08:30 - 21:30 cả CN:</div>
+                <div>📍 <strong className="text-slate-800">Hà Nội:</strong> 234 Định Công, P. Định Công, Hoàng Mai</div>
+                <div>📍 <strong className="text-slate-800">TP.HCM:</strong> 34 Đường số 2, Cư xá Đài Ra Đa, Q.6</div>
+              </div>
+
+              {/* Mobile Contact & Action Buttons */}
+              <div className="flex flex-wrap gap-2.5 px-4 py-4 bg-slate-50">
+                <a
+                  href={`tel:${STORE_CONTACT.primaryHotlineRaw}`}
+                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-black text-white shadow-sm"
+                >
+                  <Phone className="size-3.5 text-emerald-400" />
+                  <span>{STORE_CONTACT.primaryHotline}</span>
+                </a>
+                <Link
+                  href="/cart"
+                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-black text-white shadow-sm"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <ShoppingBag className="size-3.5" />
+                  <span>Giỏ hàng ({cartQuantity})</span>
+                </Link>
+                <Link
+                  href="/login"
+                  className="flex items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 shadow-sm"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <UserRound className="size-3.5 text-emerald-600" />
+                  <span>Đăng nhập</span>
+                </Link>
+              </div>
             </div>
-          </div>
-        </nav>
+          </nav>
+        </>
       )}
     </header>
   );

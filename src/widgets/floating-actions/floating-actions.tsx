@@ -14,17 +14,17 @@ export function FloatingActions() {
   }, []);
 
   return (
-    <div className="fixed bottom-6 right-5 z-40 flex flex-col items-center gap-3 sm:bottom-8 sm:right-6">
+    <div className="fixed bottom-4 right-3.5 z-40 flex flex-col items-center gap-2 sm:bottom-6 sm:right-5 sm:gap-2.5">
       {/* Zalo */}
       <a
         href={STORE_CONTACT.zaloUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="group relative grid size-12 place-items-center rounded-full bg-blue-500 text-white shadow-lg shadow-blue-500/25 transition-all hover:scale-110 hover:shadow-xl hover:shadow-blue-500/30 sm:size-14"
+        className="group relative grid size-10 place-items-center rounded-full bg-blue-500 text-white shadow-md shadow-blue-500/25 transition-all hover:scale-105 hover:shadow-lg sm:size-12"
         aria-label="Chat Zalo"
       >
-        <MessageCircle className="size-5 sm:size-6" />
-        <span className="pointer-events-none absolute right-full mr-3 hidden whitespace-nowrap rounded-lg bg-ink px-3 py-1.5 text-xs font-bold text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100 sm:block">
+        <MessageCircle className="size-4.5 sm:size-5" />
+        <span className="pointer-events-none absolute right-full mr-3 hidden whitespace-nowrap rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-bold text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100 sm:block">
           Chat Zalo
         </span>
       </a>
@@ -32,27 +32,27 @@ export function FloatingActions() {
       {/* Phone */}
       <a
         href={`tel:${STORE_CONTACT.primaryHotlineRaw}`}
-        className="group relative grid size-12 place-items-center rounded-full bg-brand-600 text-white shadow-lg shadow-brand-600/25 transition-all hover:scale-110 hover:shadow-xl hover:shadow-brand-600/30 sm:size-14"
+        className="group relative grid size-10 place-items-center rounded-full bg-emerald-600 text-white shadow-md shadow-emerald-600/25 transition-all hover:scale-105 hover:shadow-lg sm:size-12"
         aria-label="Gọi hotline"
       >
-        <Phone className="size-5 sm:size-6" />
-        <span className="pointer-events-none absolute right-full mr-3 hidden whitespace-nowrap rounded-lg bg-ink px-3 py-1.5 text-xs font-bold text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100 sm:block">
+        <Phone className="size-4.5 sm:size-5" />
+        <span className="pointer-events-none absolute right-full mr-3 hidden whitespace-nowrap rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-bold text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100 sm:block">
           {STORE_CONTACT.primaryHotline}
         </span>
         {/* Pulsing ring */}
-        <span className="absolute inset-0 animate-ping rounded-full bg-brand-600/30" />
+        <span className="absolute inset-0 animate-ping rounded-full bg-emerald-600/30" />
       </a>
 
       {/* Back to top */}
       <button
         type="button"
         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        className={`grid size-11 place-items-center rounded-full bg-white text-ink shadow-lg ring-1 ring-ink/10 transition-all hover:bg-ink hover:text-white sm:size-12 ${
-          showBackToTop ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-4 opacity-0'
+        className={`grid size-9 place-items-center rounded-full bg-white text-slate-800 shadow-md ring-1 ring-slate-200 transition-all hover:bg-slate-900 hover:text-white sm:size-10 ${
+          showBackToTop ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-3 opacity-0'
         }`}
         aria-label="Lên đầu trang"
       >
-        <ArrowUp className="size-5" />
+        <ArrowUp className="size-4 sm:size-4.5" />
       </button>
     </div>
   );

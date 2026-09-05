@@ -16,6 +16,9 @@ import {
   ChevronRight,
   Layers,
   CheckCircle2,
+  ShieldCheck,
+  Truck,
+  Check,
 } from 'lucide-react';
 import { vndMoney } from '@/shared/format/money';
 import { useAppDispatch } from '@/app/store/hooks';
@@ -27,159 +30,216 @@ export interface CatalogProductSummary {
   slug: string;
   name: string;
   brand?: string;
-  primaryCategory?: string;
-  imageUrl?: string;
-  minPrice?: string | number;
-  originalPrice?: number;
-  shortDescription?: string;
+  categoryGroup: 'cardio' | 'gym' | 'combo' | 'table_tennis' | 'martial_arts';
+  primaryCategory: string;
+  imageUrl: string;
+  minPrice: number;
+  originalPrice: number;
+  rating: number;
+  reviewCount: number;
+  soldCount: number;
   badge?: string;
+  specs: string[];
+  installmentMonthly: number;
 }
 
-// Complete catalog for related products recommendations
+// Curated high-quality catalog products with studio photography and precise specifications
 const ALL_CATALOG_PRODUCTS: CatalogProductSummary[] = [
   {
-    id: 'prod-1',
-    slug: 'may-chay-bo-dctd-pro-x1',
-    name: 'Máy Chạy Bộ Điện Đa Năng DCTD Pro X1',
-    brand: 'Bảo An Sport',
-    primaryCategory: 'Máy chạy bộ',
-    imageUrl: 'https://images.unsplash.com/photo-1538805060514-97d9cc17730c?auto=format&fit=crop&w=800&q=80',
-    minPrice: 14500000,
-    originalPrice: 18900000,
-    badge: 'Bán chạy nhất',
-  },
-  {
-    id: 'prod-4',
+    id: 'prod-bike-1',
     slug: 'xe-dap-tap-the-duc-spin-bike',
-    name: 'Xe Đạp Tập Thể Dục Kháng Lực Từ DCTD AirBike',
+    name: 'Xe Đạp Tập Thể Dục Kháng Lực Từ DCTD AirBike Pro',
     brand: 'Bảo An Sport',
+    categoryGroup: 'cardio',
     primaryCategory: 'Xe đạp tập',
-    imageUrl: 'https://images.unsplash.com/photo-1571008887538-b36bb32f4571?auto=format&fit=crop&w=800&q=80',
+    imageUrl: '/images/products/spin-bike.jpg',
     minPrice: 6200000,
     originalPrice: 8200000,
-    badge: 'Giảm 25%',
+    rating: 5.0,
+    reviewCount: 96,
+    soldCount: 148,
+    badge: 'Bán chạy nhất',
+    specs: ['Bánh đà 12kg', 'Kháng từ êm ái <25dB', 'Bảo hành 5 năm'],
+    installmentMonthly: 516000,
   },
   {
-    id: 'prod-5',
-    slug: 'ghe-tap-ta-dieu-chinh-gap-gon',
-    name: 'Ghế Tập Tạ Đa Năng Điều Chỉnh 7 Cấp Độ',
+    id: 'prod-bike-2',
+    slug: 'xe-dap-tap-the-thao-spinning-speed7',
+    name: 'Xe Đạp Tập Thể Thao Spinning Bike Speed-7 Vô Cấp',
     brand: 'Bảo An Sport',
-    primaryCategory: 'Gym & Sức mạnh',
-    imageUrl: 'https://images.unsplash.com/photo-1517963879433-6ad2b056d712?auto=format&fit=crop&w=800&q=80',
-    minPrice: 2150000,
-    originalPrice: 2800000,
-    badge: 'Chịu tải 400kg',
+    categoryGroup: 'cardio',
+    primaryCategory: 'Xe đạp tập',
+    imageUrl: '/images/products/spin-bike.jpg',
+    minPrice: 7850000,
+    originalPrice: 9900000,
+    rating: 4.9,
+    reviewCount: 64,
+    soldCount: 89,
+    badge: 'Kết nối Kinomap',
+    specs: ['Bánh đà thép đúc 16kg', 'Khung chữ V chịu lực 160kg', 'Kháng lực vô cấp'],
+    installmentMonthly: 654000,
   },
   {
-    id: 'prod-9',
+    id: 'prod-treadmill-1',
+    slug: 'may-chay-bo-dctd-pro-x1',
+    name: 'Máy Chạy Bộ Điện Đa Năng DCTD Pro X1 Động Cơ 3.5HP',
+    brand: 'Bảo An Sport',
+    categoryGroup: 'cardio',
+    primaryCategory: 'Máy chạy bộ',
+    imageUrl: '/images/products/treadmill.jpg',
+    minPrice: 14500000,
+    originalPrice: 18900000,
+    rating: 5.0,
+    reviewCount: 118,
+    soldCount: 210,
+    badge: 'Nâng dốc tự động',
+    specs: ['Motor 3.5HP biến tần', 'Thảm Diamond 7 lớp 140x52cm', 'Gập thủy lực'],
+    installmentMonthly: 1208000,
+  },
+  {
+    id: 'prod-elliptical-1',
+    slug: 'may-truot-tuyet-toan-than-elliptical-orbit',
+    name: 'Xe Đạp Trượt Tuyết Toàn Thân Elliptical Cross-Trainer',
+    brand: 'Bảo An Sport',
+    categoryGroup: 'cardio',
+    primaryCategory: 'Xe đạp tập',
+    imageUrl: '/images/products/elliptical.jpg',
+    minPrice: 8900000,
+    originalPrice: 11500000,
+    rating: 4.9,
+    reviewCount: 52,
+    soldCount: 75,
+    badge: 'Bảo vệ khớp gối',
+    specs: ['Kháng lực từ 16 cấp', 'Chuyển động tự nhiên', 'Đo nhịp tim tay cầm'],
+    installmentMonthly: 741000,
+  },
+  {
+    id: 'prod-gym-1',
     slug: 'gian-ta-da-nang-olympic-pro',
-    name: 'Giàn Tạ Đa Năng 3 Vị Trí Olympic Pro (Kèm Xô Đôi)',
+    name: 'Giàn Tạ Đa Năng 3 Vị Trí Olympic Pro Kèm Xô Đôi',
     brand: 'Bảo An Sport',
+    categoryGroup: 'gym',
     primaryCategory: 'Gym & Sức mạnh',
     imageUrl: 'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?auto=format&fit=crop&w=800&q=80',
     minPrice: 18900000,
     originalPrice: 24500000,
-    badge: 'Combo Trọn Bộ',
+    rating: 5.0,
+    reviewCount: 82,
+    soldCount: 94,
+    badge: 'Đầy đủ bài tập',
+    specs: ['Thép hộp 50x100mm dày 2.5mm', 'Xô đôi + Ép ngực + Đạp đùi', 'Tải trọng 500kg'],
+    installmentMonthly: 1575000,
   },
   {
-    id: 'prod-10',
-    slug: 'bo-ta-tay-thao-lap-cao-cap-20kg',
-    name: 'Bộ Tạ Tay Tháo Lắp Cao Cấp 20KG (Đĩa Cao Su Đúc)',
+    id: 'prod-gym-2',
+    slug: 'bo-ta-tay-dieu-chinh-24kg',
+    name: 'Bộ Tạ Tay Điều Chỉnh Thông Minh 24KG Pro (15 Cặp Trong 1)',
     brand: 'Bảo An Sport',
+    categoryGroup: 'gym',
     primaryCategory: 'Gym & Sức mạnh',
     imageUrl: 'https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&w=800&q=80',
-    minPrice: 1890000,
-    originalPrice: 2450000,
-    badge: 'Kèm thanh nối Barbell',
+    minPrice: 3850000,
+    originalPrice: 4800000,
+    rating: 4.9,
+    reviewCount: 142,
+    soldCount: 320,
+    badge: 'Thay thế 15 cặp tạ',
+    specs: ['Chuyển nấc xoay 1 giây', 'Dải tạ 2.5kg - 24kg', 'Đế khay chống va đập'],
+    installmentMonthly: 320000,
   },
   {
-    id: 'prod-6',
-    slug: 'tham-yoga-dinh-tuyen-cao-su',
-    name: 'Thảm Yoga Định Tuyến Cao Su Tự Nhiên PU 5mm',
+    id: 'prod-gym-3',
+    slug: 'ghe-tap-ta-dieu-chinh-gap-gon',
+    name: 'Ghế Tập Tạ Đa Năng Điều Chỉnh 7 Cấp Độ Chịu Tải 400kg',
     brand: 'Bảo An Sport',
-    primaryCategory: 'Yoga & Phục hồi',
-    imageUrl: 'https://images.unsplash.com/photo-1599447421416-3414500d18a5?auto=format&fit=crop&w=800&q=80',
-    minPrice: 890000,
-    originalPrice: 1200000,
-    badge: 'Chống trượt Pro',
-  },
-  {
-    id: 'prod-7',
-    slug: 'ta-binh-voi-kettlebell-gang-duc',
-    name: 'Tạ Bình Vôi Kettlebell Gang Đúc Bọc Neoprene 16KG',
-    brand: 'Bảo An Sport',
+    categoryGroup: 'gym',
     primaryCategory: 'Gym & Sức mạnh',
-    imageUrl: 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=800&q=80',
-    minPrice: 790000,
-    originalPrice: 990000,
-    badge: 'Tiêu chuẩn CE',
+    imageUrl: 'https://images.unsplash.com/photo-1517963879433-6ad2b056d712?auto=format&fit=crop&w=800&q=80',
+    minPrice: 2150000,
+    originalPrice: 2800000,
+    rating: 4.8,
+    reviewCount: 95,
+    soldCount: 230,
+    badge: 'Gập gọn thông minh',
+    specs: ['Đệm da PU êm chống trượt', '7 nấc góc nghiêng & dốc âm', 'Khung thép tam giác'],
+    installmentMonthly: 179000,
   },
   {
-    id: 'prod-8',
-    slug: 'sung-massage-cam-tay-phuc-hoi',
-    name: 'Súng Massage Cầm Tay Trị Liệu Cơ Bắp DCTD Recovery',
+    id: 'prod-combo-1',
+    slug: 'combo-home-gym-smith-machine',
+    name: 'Combo Home Gym Trọn Bộ Smith Machine + Ghế + 100kg Đĩa Tạ',
     brand: 'Bảo An Sport',
-    primaryCategory: 'Yoga & Phục hồi',
-    imageUrl: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=800&q=80',
-    minPrice: 1850000,
-    originalPrice: 2500000,
-    badge: 'Pin 8 giờ',
+    categoryGroup: 'combo',
+    primaryCategory: 'Combo Home Gym',
+    imageUrl: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=800&q=80',
+    minPrice: 28900000,
+    originalPrice: 36000000,
+    rating: 5.0,
+    reviewCount: 45,
+    soldCount: 68,
+    badge: 'Tiết kiệm 7.1 triệu',
+    specs: ['Ray trượt tuyến tính siêu êm', 'Tặng thảm cao su EPDM', 'Bảo hành khung 10 năm'],
+    installmentMonthly: 2408000,
   },
 ];
 
 // Curated Flash Deals for promotion under product detail
 const FLASH_SALE_DEALS = [
   {
-    id: 'fs-detail-1',
-    slug: 'gian-ta-da-nang-olympic-pro',
-    name: 'Giàn tạ đa năng 3 vị trí Olympic Pro (Kèm xô đôi & Đẩy ngực)',
-    price: 18900000,
-    originalPrice: 24500000,
-    discount: 23,
-    imageUrl: 'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?auto=format&fit=crop&w=800&q=80',
-    sold: 16,
-    total: 20,
-    gift: 'Tặng bộ tạ đĩa 50kg + Thảm sàn EPDM',
-    badge: 'Giá sốc hôm nay',
-  },
-  {
-    id: 'fs-detail-2',
-    slug: 'bo-ta-tay-thao-lap-cao-cap-20kg',
-    name: 'Bộ tạ tay tháo lắp cao cấp 20kg (2x10kg đĩa cao su đúc)',
-    price: 1890000,
-    originalPrice: 2450000,
-    discount: 23,
-    imageUrl: 'https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&w=800&q=80',
-    sold: 28,
-    total: 30,
-    gift: 'Tặng găng tay thể hình cao cấp',
-    badge: 'Sắp cháy hàng',
-  },
-  {
-    id: 'fs-detail-3',
+    id: 'fs-detail-bike',
     slug: 'xe-dap-tap-the-duc-spin-bike',
     name: 'Xe Đạp Tập Thể Dục Kháng Lực Từ DCTD AirBike Bánh Đà 12kg',
     price: 6200000,
     originalPrice: 8200000,
-    discount: 25,
-    imageUrl: 'https://images.unsplash.com/photo-1571008887538-b36bb32f4571?auto=format&fit=crop&w=800&q=80',
-    sold: 11,
-    total: 15,
-    gift: 'Tặng bình nước thể thao & Thảm lót sàn',
-    badge: 'Giao nhanh 2H',
+    discount: 24,
+    imageUrl: '/images/products/spin-bike.jpg',
+    sold: 14,
+    total: 18,
+    gift: 'Tặng thảm lót chống ồn + Bình nước thể thao',
+    badge: 'Giảm sốc 24%',
+    specs: 'Bánh đà 12kg · Kháng từ êm ái',
   },
   {
-    id: 'fs-detail-4',
+    id: 'fs-detail-treadmill',
     slug: 'may-chay-bo-dctd-pro-x1',
-    name: 'Máy Chạy Bộ Điện Đa Năng DCTD Pro X1 Động Cơ 3.5HP',
+    name: 'Máy Chạy Bộ Điện Đa Năng DCTD Pro X1 Động Cơ 3.5HP Nâng Dốc',
     price: 14500000,
     originalPrice: 18900000,
     discount: 23,
-    imageUrl: 'https://images.unsplash.com/photo-1538805060514-97d9cc17730c?auto=format&fit=crop&w=800&q=80',
-    sold: 14,
-    total: 18,
-    gift: 'Tặng đai massage bụng rung nhiệt',
-    badge: 'Bán chạy số 1',
+    imageUrl: '/images/products/treadmill.jpg',
+    sold: 17,
+    total: 20,
+    gift: 'Tặng cân điện tử thông minh + Đai massage',
+    badge: 'Giao nhanh 2H',
+    specs: 'Động cơ 3.5HP · Nâng dốc 15%',
+  },
+  {
+    id: 'fs-detail-elliptical',
+    slug: 'may-truot-tuyet-toan-than-elliptical-orbit',
+    name: 'Xe Đạp Trượt Tuyết Toàn Thân Elliptical Cross-Trainer DCTD',
+    price: 8900000,
+    originalPrice: 11500000,
+    discount: 23,
+    imageUrl: '/images/products/elliptical.jpg',
+    sold: 9,
+    total: 15,
+    gift: 'Tặng găng tay thể thao + Dầu tra bảo dưỡng',
+    badge: 'Sắp cháy hàng',
+    specs: 'Kháng lực từ 16 nấc · Êm khớp gối',
+  },
+  {
+    id: 'fs-detail-weights',
+    slug: 'bo-ta-tay-dieu-chinh-24kg',
+    name: 'Bộ Tạ Tay Điều Chỉnh Thông Minh 24KG Pro Kèm Khay Chống Va',
+    price: 3850000,
+    originalPrice: 4800000,
+    discount: 20,
+    imageUrl: 'https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&w=800&q=80',
+    sold: 26,
+    total: 30,
+    gift: 'Tặng đôi găng tay nâng tạ Pro Grip',
+    badge: 'Giá độc quyền',
+    specs: 'Thay thế 15 cặp tạ · Thép carbon',
   },
 ];
 
@@ -191,11 +251,13 @@ interface ProductRelatedSectionProps {
 
 export function ProductRelatedSection({
   currentSlug,
-  currentCategory = 'Gym & Sức mạnh',
-  productName = '',
+  currentCategory = 'Xe đạp tập',
 }: ProductRelatedSectionProps) {
   const dispatch = useAppDispatch();
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  // Active filter tab: 'all' | 'cardio' | 'gym' | 'combo'
+  const [activeTab, setActiveTab] = useState<'all' | 'cardio' | 'gym' | 'combo'>('all');
 
   // Flash sale countdown timer
   const [timeLeft, setTimeLeft] = useState({
@@ -216,182 +278,318 @@ export function ProductRelatedSection({
     return () => clearInterval(timer);
   }, []);
 
-  // Filter related products: same category first, excluding current product
-  const relatedProducts = useMemo(() => {
-    const normCat = (currentCategory || '').toLowerCase();
-
+  // Filter products by tab and exclude current product
+  const displayedProducts = useMemo(() => {
     // Candidates excluding current product
-    const otherProducts = ALL_CATALOG_PRODUCTS.filter(
-      (p) => p.slug !== currentSlug,
-    );
+    const otherProducts = ALL_CATALOG_PRODUCTS.filter((p) => p.slug !== currentSlug);
 
-    // Exact or partial category matches
-    const sameCat = otherProducts.filter((p) => {
-      const pCat = (p.primaryCategory || '').toLowerCase();
-      if (normCat.includes('gym') || normCat.includes('sức mạnh')) {
-        return pCat.includes('gym') || pCat.includes('sức mạnh');
+    if (activeTab === 'cardio') {
+      return otherProducts.filter((p) => p.categoryGroup === 'cardio');
+    }
+    if (activeTab === 'gym') {
+      return otherProducts.filter((p) => p.categoryGroup === 'gym');
+    }
+    if (activeTab === 'combo') {
+      return otherProducts.filter((p) => p.categoryGroup === 'combo');
+    }
+
+    // Default 'all': Prioritize products from same category or group first
+    const isCurrentCardio =
+      currentCategory.toLowerCase().includes('xe đạp') ||
+      currentCategory.toLowerCase().includes('chạy') ||
+      currentCategory.toLowerCase().includes('máy tập');
+
+    const sorted = [...otherProducts].sort((a, b) => {
+      if (isCurrentCardio) {
+        if (a.categoryGroup === 'cardio' && b.categoryGroup !== 'cardio') return -1;
+        if (b.categoryGroup === 'cardio' && a.categoryGroup !== 'cardio') return 1;
+      } else {
+        if (a.categoryGroup === 'gym' && b.categoryGroup !== 'gym') return -1;
+        if (b.categoryGroup === 'gym' && a.categoryGroup !== 'gym') return 1;
       }
-      if (normCat.includes('chạy') || normCat.includes('cardio') || normCat.includes('xe đạp')) {
-        return pCat.includes('chạy') || pCat.includes('xe đạp') || pCat.includes('cardio');
-      }
-      if (normCat.includes('yoga') || normCat.includes('phục hồi')) {
-        return pCat.includes('yoga') || pCat.includes('phục hồi');
-      }
-      return pCat.includes(normCat) || normCat.includes(pCat);
+      return 0;
     });
 
-    // Fill remaining slots up to 4 if needed
-    const rest = otherProducts.filter((p) => !sameCat.some((sc) => sc.id === p.id));
-    return [...sameCat, ...rest].slice(0, 4);
-  }, [currentSlug, currentCategory]);
+    return sorted.slice(0, 4);
+  }, [currentSlug, activeTab, currentCategory]);
 
   // Filter flash sale deals excluding current product
   const activeFlashDeals = useMemo(() => {
     return FLASH_SALE_DEALS.filter((d) => d.slug !== currentSlug).slice(0, 4);
   }, [currentSlug]);
 
-  const handleAddFlashDealToCart = (deal: (typeof FLASH_SALE_DEALS)[0]) => {
+  const handleAddToCart = (product: {
+    id: string;
+    slug: string;
+    name: string;
+    price: number;
+    imageUrl: string;
+  }) => {
     dispatch(
       addCartItem({
-        productId: deal.id,
-        variantId: `${deal.id}-default`,
-        sku: deal.slug.toUpperCase(),
+        productId: product.id,
+        variantId: `${product.id}-default`,
+        sku: product.slug.toUpperCase(),
         productType: 'STANDARD',
-        name: deal.name,
-        price: deal.price,
-        imageUrl: deal.imageUrl,
+        name: product.name,
+        price: product.price,
+        imageUrl: product.imageUrl,
         quantity: 1,
       }),
     );
-    setToastMessage(`Đã thêm "${deal.name.slice(0, 32)}..." vào giỏ hàng!`);
+    setToastMessage(`Đã thêm "${product.name.slice(0, 35)}..." vào giỏ hàng!`);
     setTimeout(() => setToastMessage(null), 3500);
   };
 
   return (
     <div className="mt-16 space-y-20 border-t border-slate-200/80 pt-16">
-      {/* Toast notification */}
+      {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-24 left-1/2 z-50 -translate-x-1/2 flex items-center gap-2 rounded-2xl bg-slate-900/95 px-5 py-3 text-sm font-bold text-white shadow-2xl backdrop-blur-md animate-fade-in border border-emerald-500/30">
-          <CheckCircle2 className="size-4.5 text-emerald-400 shrink-0" />
+        <div className="fixed bottom-24 left-1/2 z-50 flex -translate-x-1/2 items-center gap-3 rounded-2xl border border-emerald-500/40 bg-slate-900/95 px-6 py-3.5 text-sm font-bold text-white shadow-2xl backdrop-blur-md animate-in fade-in slide-in-from-bottom-3">
+          <CheckCircle2 className="size-5 shrink-0 text-emerald-400" />
           <span>{toastMessage}</span>
+          <Link
+            href="/cart"
+            className="ml-2 rounded-lg bg-emerald-600 px-3 py-1 text-xs font-black uppercase text-white hover:bg-emerald-500"
+          >
+            Xem giỏ hàng
+          </Link>
         </div>
       )}
 
       {/* ======================================================== */}
-      {/* SECTION 1: RELATED PRODUCTS (SẢN PHẨM CÙNG LOẠI)         */}
+      {/* SECTION 1: RELATED PRODUCTS (SẢN PHẨM CÙNG LOẠI CHỈNH CHU) */}
       {/* ======================================================== */}
       <section aria-labelledby="related-products-heading">
-        <div className="flex flex-wrap items-end justify-between gap-4">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-1 text-xs font-black uppercase tracking-wider text-emerald-800">
-              <Sparkles className="size-3.5" /> Gợi ý cùng phân khúc
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-1 text-xs font-black uppercase tracking-wider text-emerald-800">
+                <Sparkles className="size-3.5 text-emerald-700" /> Gợi ý cùng phân khúc
+              </span>
+              <span className="hidden items-center gap-1 text-xs font-bold text-slate-500 sm:inline-flex">
+                <ShieldCheck className="size-3.5 text-emerald-600" /> Cam kết chính hãng 100%
+              </span>
+            </div>
             <h2
               id="related-products-heading"
               className="mt-2 text-2xl font-black text-slate-900 sm:text-3xl"
             >
               Sản phẩm cùng loại & Danh mục liên quan
             </h2>
-            <p className="mt-1 text-sm text-slate-500">
-              Các thiết bị {currentCategory} chính hãng được khách hàng yêu thích và lựa chọn nhiều nhất
+            <p className="mt-1 text-sm text-slate-600">
+              Các thiết bị {currentCategory} chính hãng được khách hàng yêu thích và lựa chọn nhiều nhất tại Bảo An Sport
             </p>
           </div>
 
-          <Link
-            href="/category"
-            className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-2.5 text-xs font-bold text-slate-700 shadow-sm transition hover:border-emerald-500 hover:bg-emerald-50 hover:text-emerald-700"
-          >
-            <span>Xem tất cả sản phẩm</span>
-            <ChevronRight className="size-3.5" />
-          </Link>
+          {/* Quick Filter Tabs */}
+          <div className="flex max-w-full items-center gap-1.5 overflow-x-auto rounded-2xl border border-slate-200/80 bg-slate-100/80 p-1.5 backdrop-blur-sm scrollbar-none">
+            <button
+              type="button"
+              onClick={() => setActiveTab('all')}
+              className={`whitespace-nowrap rounded-xl px-3.5 py-1.5 text-xs font-bold transition ${
+                activeTab === 'all'
+                  ? 'bg-emerald-700 text-white shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Tất cả gợi ý
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('cardio')}
+              className={`whitespace-nowrap rounded-xl px-3.5 py-1.5 text-xs font-bold transition ${
+                activeTab === 'cardio'
+                  ? 'bg-emerald-700 text-white shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Xe đạp & Máy chạy bộ
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('gym')}
+              className={`whitespace-nowrap rounded-xl px-3.5 py-1.5 text-xs font-bold transition ${
+                activeTab === 'gym'
+                  ? 'bg-emerald-700 text-white shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Gym & Thể hình
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('combo')}
+              className={`whitespace-nowrap rounded-xl px-3.5 py-1.5 text-xs font-bold transition ${
+                activeTab === 'combo'
+                  ? 'bg-emerald-700 text-white shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Combo Home Gym
+            </button>
+          </div>
         </div>
 
-        {/* Related Product Cards Grid */}
+        {/* Product Cards Grid with E-commerce Polish */}
         <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {relatedProducts.map((p) => {
-            const numericPrice = typeof p.minPrice === 'string' ? parseInt(p.minPrice, 10) : (p.minPrice ?? 0);
-            const hasDiscount = p.originalPrice && p.originalPrice > numericPrice;
+          {displayedProducts.map((p) => {
+            const hasDiscount = p.originalPrice > p.minPrice;
             const discountPct = hasDiscount
-              ? Math.round(((p.originalPrice! - numericPrice) / p.originalPrice!) * 100)
+              ? Math.round(((p.originalPrice - p.minPrice) / p.originalPrice) * 100)
               : 0;
 
             return (
               <article
                 key={p.id}
-                className="group flex flex-col overflow-hidden rounded-[24px] border border-slate-200/80 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:border-emerald-500/40 hover:shadow-xl"
+                className="group relative flex flex-col overflow-hidden rounded-[24px] border border-slate-200/90 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-emerald-500/50 hover:shadow-xl"
               >
-                <Link href={`/products/${p.slug}`} className="flex w-full flex-1 flex-col">
-                  {/* Product Image */}
-                  <div className="relative aspect-[4/3] overflow-hidden bg-slate-100">
+                {/* Product Thumbnail with Studio Background */}
+                <div className="relative aspect-[4/3] w-full overflow-hidden bg-gradient-to-b from-slate-50 to-slate-100/70 p-4">
+                  <Link
+                    href={`/products/${p.slug}`}
+                    className="relative block size-full"
+                    aria-label={p.name}
+                  >
                     <Image
-                      src={p.imageUrl || 'https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?auto=format&fit=crop&w=800&q=80'}
+                      src={p.imageUrl}
                       alt={p.name}
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                      className="object-cover transition duration-500 group-hover:scale-105"
+                      className="object-contain p-2 transition-transform duration-500 group-hover:scale-105"
                     />
+                  </Link>
 
-                    {/* Badges */}
-                    <div className="absolute left-3 right-3 top-3 flex items-start justify-between gap-1.5">
-                      <span className="rounded-full border border-slate-100 bg-white/95 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-slate-800 shadow-sm backdrop-blur">
-                        {p.badge || 'Chính hãng'}
+                  {/* Top Badges */}
+                  <div className="pointer-events-none absolute inset-x-3 top-3 flex items-start justify-between gap-2">
+                    <span className="rounded-full border border-slate-200/80 bg-white/95 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-slate-800 shadow-sm backdrop-blur">
+                      {p.badge || 'Chính hãng'}
+                    </span>
+                    {hasDiscount && (
+                      <span className="rounded-full bg-rose-600 px-2.5 py-1 text-[11px] font-black text-white shadow-md shadow-rose-600/30">
+                        -{discountPct}%
                       </span>
-                      {hasDiscount && (
-                        <span className="rounded-full bg-rose-600 px-2 py-0.5 text-[11px] font-black text-white shadow-sm">
-                          -{discountPct}%
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Quick Preview overlay */}
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition duration-300 group-hover:bg-black/15">
-                      <span className="flex items-center gap-1.5 rounded-full bg-white/95 px-3.5 py-1.5 text-xs font-bold text-slate-900 opacity-0 shadow-lg backdrop-blur transition duration-300 group-hover:-translate-y-0.5 group-hover:opacity-100">
-                        <Eye className="size-3.5" /> Xem chi tiết
-                      </span>
-                    </div>
+                    )}
                   </div>
 
-                  {/* Body */}
-                  <div className="flex flex-1 flex-col p-4 sm:p-5">
-                    <div className="flex items-center justify-between text-[10px] font-extrabold uppercase tracking-wider">
-                      <span className="text-emerald-700">{p.brand || STORE_CONFIG.name}</span>
-                      <span className="truncate text-slate-400">{p.primaryCategory}</span>
-                    </div>
+                  {/* Quick Action Overlay on Image Hover */}
+                  <div className="absolute inset-x-3 bottom-3 flex items-center justify-between gap-2 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                    <Link
+                      href={`/products/${p.slug}`}
+                      className="flex flex-1 items-center justify-center gap-1 rounded-xl bg-white/95 py-2 text-xs font-bold text-slate-800 shadow-md backdrop-blur transition hover:bg-emerald-600 hover:text-white"
+                    >
+                      <Eye className="size-3.5" /> Chi tiết
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleAddToCart({
+                          id: p.id,
+                          slug: p.slug,
+                          name: p.name,
+                          price: p.minPrice,
+                          imageUrl: p.imageUrl,
+                        })
+                      }
+                      className="grid size-9 place-items-center rounded-xl bg-emerald-600 text-white shadow-md transition hover:bg-emerald-500 active:scale-95"
+                      aria-label="Thêm vào giỏ"
+                    >
+                      <ShoppingBag className="size-4" />
+                    </button>
+                  </div>
+                </div>
 
-                    <h3 className="mt-2 min-h-[44px] text-sm font-bold text-slate-900 leading-snug line-clamp-2 transition group-hover:text-emerald-700">
-                      {p.name}
-                    </h3>
+                {/* Card Body */}
+                <div className="flex flex-1 flex-col p-4 sm:p-5">
+                  {/* Category & Stock Status */}
+                  <div className="flex items-center justify-between text-[11px] font-bold">
+                    <span className="uppercase tracking-wider text-emerald-700">
+                      {p.primaryCategory}
+                    </span>
+                    <span className="inline-flex items-center gap-1 text-slate-500">
+                      <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      Còn hàng · Giao 2H
+                    </span>
+                  </div>
 
-                    <div className="mt-2 flex items-center gap-1.5 text-xs">
-                      <div className="flex text-amber-400">
-                        {[1, 2, 3, 4, 5].map((s) => (
-                          <Star key={s} className="size-3 fill-amber-400" />
-                        ))}
-                      </div>
-                      <span className="font-bold text-slate-700">5.0</span>
-                      <span className="text-[11px] text-slate-400">(90+ đánh giá)</span>
-                      <span className="ml-auto rounded bg-emerald-50 px-1.5 py-0.5 text-[10px] font-bold text-emerald-700">
-                        Trả góp 0%
+                  {/* Title */}
+                  <h3 className="mt-2 min-h-[44px] text-sm font-bold leading-snug text-slate-900 transition line-clamp-2 group-hover:text-emerald-700">
+                    <Link href={`/products/${p.slug}`}>{p.name}</Link>
+                  </h3>
+
+                  {/* Key Specifications Tag Pills */}
+                  <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                    {p.specs.slice(0, 2).map((spec) => (
+                      <span
+                        key={spec}
+                        className="rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-600"
+                      >
+                        {spec}
                       </span>
-                    </div>
+                    ))}
+                  </div>
 
-                    <div className="mt-auto flex items-baseline justify-between border-t border-slate-100 pt-3">
+                  {/* Rating & Social Proof */}
+                  <div className="mt-3 flex items-center gap-1.5 text-xs">
+                    <div className="flex text-amber-400">
+                      {[1, 2, 3, 4, 5].map((s) => (
+                        <Star key={s} className="size-3 fill-amber-400" />
+                      ))}
+                    </div>
+                    <span className="font-extrabold text-slate-800">{p.rating.toFixed(1)}</span>
+                    <span className="text-[11px] text-slate-400">({p.reviewCount})</span>
+                    <span className="ml-auto text-[11px] font-semibold text-slate-400">
+                      Đã bán {p.soldCount}+
+                    </span>
+                  </div>
+
+                  {/* Price & Installment Tag */}
+                  <div className="mt-auto border-t border-slate-100 pt-3">
+                    <div className="flex items-baseline justify-between gap-1">
                       <div>
-                        <span className="block text-[10px] font-semibold text-slate-400">Giá khuyến mại</span>
-                        <div className="flex items-baseline gap-1.5">
-                          <strong className="text-base sm:text-lg font-black text-emerald-700">
-                            {vndMoney.format(numericPrice)}
+                        <span className="block text-[10px] font-semibold text-slate-400">
+                          Giá ưu đãi chính hãng
+                        </span>
+                        <div className="flex items-baseline gap-2">
+                          <strong className="text-base font-black text-emerald-700 sm:text-lg">
+                            {vndMoney.format(p.minPrice)}
                           </strong>
                           {hasDiscount && (
                             <span className="text-xs text-slate-400 line-through">
-                              {vndMoney.format(p.originalPrice!)}
+                              {vndMoney.format(p.originalPrice)}
                             </span>
                           )}
                         </div>
                       </div>
                     </div>
+
+                    {/* Installment Badge */}
+                    <div className="mt-2 flex items-center justify-between rounded-lg bg-emerald-50/70 px-2.5 py-1 text-[11px]">
+                      <span className="font-bold text-emerald-800">Trả góp 0% lãi suất:</span>
+                      <strong className="font-black text-emerald-700">
+                        Chỉ ~{vndMoney.format(p.installmentMonthly)}/tháng
+                      </strong>
+                    </div>
+
+                    {/* Action Button at Card Footer */}
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleAddToCart({
+                          id: p.id,
+                          slug: p.slug,
+                          name: p.name,
+                          price: p.minPrice,
+                          imageUrl: p.imageUrl,
+                        })
+                      }
+                      className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 py-2.5 text-xs font-bold text-white transition hover:bg-emerald-600 active:scale-[0.98]"
+                    >
+                      <ShoppingBag className="size-3.5" />
+                      <span>Thêm vào giỏ hàng</span>
+                    </button>
                   </div>
-                </Link>
+                </div>
               </article>
             );
           })}
@@ -399,13 +597,13 @@ export function ProductRelatedSection({
       </section>
 
       {/* ======================================================== */}
-      {/* SECTION 2: FLASH SALE GIỜ VÀNG (NẾU CÓ FLASH SALE)       */}
+      {/* SECTION 2: FLASH SALE GIỜ VÀNG GIÁ SỐC                   */}
       {/* ======================================================== */}
       <section
         aria-labelledby="flash-sale-heading"
         className="relative overflow-hidden rounded-[32px] border border-rose-500/20 bg-gradient-to-br from-rose-950 via-slate-950 to-slate-900 p-6 text-white shadow-2xl sm:p-10"
       >
-        {/* Glow ambient background effect */}
+        {/* Ambient glow backgrounds */}
         <div className="pointer-events-none absolute -left-20 -top-20 size-72 rounded-full bg-rose-600/20 blur-[100px]" />
         <div className="pointer-events-none absolute -bottom-20 -right-20 size-72 rounded-full bg-emerald-600/15 blur-[100px]" />
 
@@ -418,7 +616,7 @@ export function ProductRelatedSection({
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="rounded-full bg-rose-500/20 px-2.5 py-0.5 text-[11px] font-black uppercase tracking-wider text-rose-400 border border-rose-500/30">
+                  <span className="rounded-full border border-rose-500/30 bg-rose-500/20 px-2.5 py-0.5 text-[11px] font-black uppercase tracking-wider text-rose-400">
                     Flash Sale Có Hạn
                   </span>
                   <span className="inline-block size-2 rounded-full bg-rose-500 animate-ping" />
@@ -462,19 +660,19 @@ export function ProductRelatedSection({
                   key={deal.id}
                   className="group relative flex flex-col overflow-hidden rounded-[24px] border border-white/10 bg-white/5 backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:border-rose-500/50 hover:bg-white/10"
                 >
-                  {/* Photo with discount */}
-                  <div className="relative aspect-[4/3] overflow-hidden bg-slate-900">
+                  {/* Studio image with discount */}
+                  <div className="relative aspect-[4/3] overflow-hidden bg-slate-900/60 p-3">
                     <Image
                       src={deal.imageUrl}
                       alt={deal.name}
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                      className="object-cover transition duration-500 group-hover:scale-105"
+                      className="object-contain p-2 transition duration-500 group-hover:scale-105"
                     />
                     <div className="absolute left-3 top-3 rounded-full bg-rose-600 px-2.5 py-1 text-xs font-black text-white shadow-lg">
                       -{deal.discount}%
                     </div>
-                    <div className="absolute right-3 top-3 rounded-full bg-black/60 px-2.5 py-1 text-[10px] font-bold text-amber-300 backdrop-blur-md border border-amber-400/30">
+                    <div className="absolute right-3 top-3 rounded-full border border-amber-400/30 bg-black/60 px-2.5 py-1 text-[10px] font-bold text-amber-300 backdrop-blur-md">
                       {deal.badge}
                     </div>
                   </div>
@@ -519,7 +717,7 @@ export function ProductRelatedSection({
                     </div>
 
                     {/* Action buttons */}
-                    <div className="mt-4 grid grid-cols-2 gap-2 pt-3 border-t border-white/10">
+                    <div className="mt-4 grid grid-cols-2 gap-2 border-t border-white/10 pt-3">
                       <Link
                         href={`/products/${deal.slug}`}
                         className="flex items-center justify-center gap-1 rounded-xl border border-white/20 bg-white/5 py-2 text-xs font-bold text-white transition hover:bg-white/10"
@@ -528,7 +726,15 @@ export function ProductRelatedSection({
                       </Link>
                       <button
                         type="button"
-                        onClick={() => handleAddFlashDealToCart(deal)}
+                        onClick={() =>
+                          handleAddToCart({
+                            id: deal.id,
+                            slug: deal.slug,
+                            name: deal.name,
+                            price: deal.price,
+                            imageUrl: deal.imageUrl,
+                          })
+                        }
                         className="flex items-center justify-center gap-1 rounded-xl bg-gradient-to-r from-rose-600 to-amber-600 py-2 text-xs font-bold text-white shadow-md shadow-rose-600/30 transition hover:from-rose-500 hover:to-amber-500 active:scale-95"
                       >
                         <Zap className="size-3.5 fill-white" /> Mua ngay
@@ -543,13 +749,13 @@ export function ProductRelatedSection({
       </section>
 
       {/* ======================================================== */}
-      {/* SECTION 3: CATEGORIES DIRECTORY (LIST CATE THỂ THAO)    */}
+      {/* SECTION 3: CATEGORIES DIRECTORY (DANH MỤC LIÊN QUAN)    */}
       {/* ======================================================== */}
       <section aria-labelledby="categories-list-heading">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 text-xs font-black uppercase tracking-wider text-slate-800">
-              <Layers className="size-3.5 text-emerald-600" /> Danh mục thiết bị
+              <Layers className="size-3.5 text-emerald-600" /> Hệ sinh thái thể thao
             </span>
             <h2
               id="categories-list-heading"
@@ -600,7 +806,7 @@ export function ProductRelatedSection({
                 <p className="mt-1 text-[11px] leading-relaxed text-slate-500 line-clamp-2">
                   {cat.description}
                 </p>
-                <div className="mt-auto pt-3 text-[11px] font-bold text-emerald-700 flex items-center gap-1">
+                <div className="mt-auto flex items-center gap-1 pt-3 text-[11px] font-bold text-emerald-700">
                   <span>Khám phá ngay</span>
                   <ChevronRight className="size-3 transition group-hover:translate-x-0.5" />
                 </div>
