@@ -17,9 +17,9 @@ export function ContentStories() {
       {stories.map((post) => (
         <article
           key={post.id}
-          className="group grid overflow-hidden rounded-[32px] bg-white md:grid-cols-[.9fr_1.1fr]"
+          className="group grid overflow-hidden rounded-[28px] border border-slate-200/80 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:border-emerald-500/40 hover:shadow-xl md:grid-cols-[.9fr_1.1fr]"
         >
-          <div className="relative min-h-64 overflow-hidden">
+          <div className="relative min-h-64 overflow-hidden bg-slate-900">
             <Image
               src={post.coverUrl}
               alt={post.title}
@@ -28,17 +28,21 @@ export function ContentStories() {
               className="object-cover transition duration-500 group-hover:scale-105"
             />
           </div>
-          <div className="flex flex-col justify-between p-7">
+          <div className="flex flex-col justify-between p-6 sm:p-7">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[.18em] text-brand-600">
+              <span className="inline-block rounded-full bg-emerald-50 px-3 py-1 text-[10px] font-extrabold uppercase tracking-[.18em] text-emerald-700">
                 {post.typeLabel}
+              </span>
+              <h3 className="mt-3 text-lg sm:text-xl font-bold text-slate-900 leading-snug group-hover:text-emerald-700 transition">
+                {post.title}
+              </h3>
+              <p className="mt-2.5 text-xs sm:text-sm leading-relaxed text-slate-500 line-clamp-3">
+                {post.excerpt}
               </p>
-              <h3 className="mt-3 text-2xl font-extrabold">{post.title}</h3>
-              <p className="mt-3 leading-7 text-stone-600">{post.excerpt}</p>
             </div>
             <Link
-              href={`/stories/${post.slug}`}
-              className="mt-6 inline-flex items-center gap-2 font-bold"
+              href={`/news/${post.slug}`}
+              className="mt-6 inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-emerald-700 hover:text-emerald-800"
             >
               Đọc bài viết <ArrowUpRight className="size-4" />
             </Link>

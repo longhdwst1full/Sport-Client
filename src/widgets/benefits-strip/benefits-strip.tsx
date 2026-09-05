@@ -21,16 +21,16 @@ const BENEFITS: Array<{ icon: LucideIcon; title: string; description: string }> 
 
 export function BenefitsStrip() {
   return (
-    <section id="benefits" className="border-y border-ink/10 bg-white">
-      <div className="mx-auto grid max-w-7xl gap-6 px-6 py-7 sm:grid-cols-2 lg:grid-cols-4 lg:px-10">
+    <section id="benefits" className="border-y border-slate-200/80 bg-white py-6 shadow-sm">
+      <div className="mx-auto grid max-w-7xl gap-6 px-6 sm:grid-cols-2 lg:grid-cols-4 lg:px-8">
         {BENEFITS.map(({ icon: Icon, title, description }) => (
-          <div key={title} className="flex items-start gap-4 rounded-2xl p-2">
-            <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-brand-50 text-brand-600">
+          <div key={title} className="flex items-start gap-3.5 p-1">
+            <span className="grid size-11 shrink-0 place-items-center rounded-xl border border-emerald-100 bg-emerald-50 text-emerald-700 shadow-sm">
               <Icon className="size-5" aria-hidden="true" />
             </span>
             <div>
-              <h2 className="font-bold">{title}</h2>
-              <p className="mt-1 text-sm text-stone-500">{description}</p>
+              <h2 className="text-sm font-black text-slate-900">{title}</h2>
+              <p className="mt-0.5 text-xs leading-relaxed text-slate-500">{description}</p>
             </div>
           </div>
         ))}

@@ -194,40 +194,40 @@ export function CheckoutPage() {
           </div>
 
           {/* Order Summary Sidebar */}
-          <aside className="h-fit rounded-2xl border border-ink/5 bg-white p-6 shadow-sm lg:sticky lg:top-40">
-            <h2 className="text-lg font-bold">Đơn hàng ({items.length} sản phẩm)</h2>
+          <aside className="h-fit rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm lg:sticky lg:top-40">
+            <h2 className="text-lg font-black text-slate-900">Đơn hàng ({items.length} sản phẩm)</h2>
             <div className="mt-4 max-h-64 space-y-3 overflow-y-auto pr-1">
               {items.map((item) => (
                 <div key={item.variantId} className="flex items-center gap-3 text-sm">
-                  <span className="grid size-6 shrink-0 place-items-center rounded bg-stone-100 text-xs font-bold text-stone-500">{item.quantity}</span>
-                  <span className="min-w-0 flex-1 truncate">{item.name}</span>
-                  <span className="shrink-0 font-semibold">{vndMoney.format(item.price * item.quantity)}</span>
+                  <span className="grid size-6 shrink-0 place-items-center rounded bg-slate-100 text-xs font-bold text-slate-600">{item.quantity}</span>
+                  <span className="min-w-0 flex-1 truncate text-slate-800">{item.name}</span>
+                  <span className="shrink-0 font-semibold text-slate-900">{vndMoney.format(item.price * item.quantity)}</span>
                 </div>
               ))}
             </div>
-            <hr className="my-4 border-ink/5" />
+            <hr className="my-4 border-slate-100" />
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-stone-500">Tạm tính</span>
-                <span className="font-semibold">{vndMoney.format(subtotal)}</span>
+                <span className="text-slate-500">Tạm tính</span>
+                <span className="font-semibold text-slate-900">{vndMoney.format(subtotal)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-stone-500">Phí vận chuyển</span>
-                <span className="font-semibold">{vndMoney.format(SHIPPING_FEE)}</span>
+                <span className="text-slate-500">Phí vận chuyển</span>
+                <span className="font-semibold text-slate-900">{vndMoney.format(SHIPPING_FEE)}</span>
               </div>
-              <hr className="border-ink/5" />
+              <hr className="border-slate-100" />
               <div className="flex justify-between text-base">
-                <span className="font-bold">Tổng cộng</span>
-                <strong className="text-lg text-brand-600">{vndMoney.format(total)}</strong>
+                <span className="font-bold text-slate-900">Tổng cộng</span>
+                <strong className="text-xl font-black text-emerald-700">{vndMoney.format(total)}</strong>
               </div>
             </div>
             <button
               type="submit"
-              className="mt-6 w-full rounded-full bg-ink px-5 py-3.5 font-bold text-white transition hover:bg-brand-600"
+              className="mt-6 w-full rounded-full bg-emerald-600 px-5 py-3.5 font-bold text-white shadow-lg shadow-emerald-600/20 transition hover:bg-emerald-500"
             >
-              Đặt hàng
+              Xác nhận đặt hàng
             </button>
-            <Link href="/cart" className="mt-3 block text-center text-sm font-semibold text-stone-500 hover:text-brand-600">
+            <Link href="/cart" className="mt-3 block text-center text-xs font-semibold text-slate-500 hover:text-emerald-700">
               <ArrowLeft className="mr-1 inline size-3.5" /> Quay lại giỏ hàng
             </Link>
           </aside>

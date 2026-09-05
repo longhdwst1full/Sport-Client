@@ -117,32 +117,32 @@ export function CartPage() {
             </div>
 
             {/* Order Summary */}
-            <aside className="h-fit rounded-2xl border border-ink/5 bg-white p-6 shadow-sm lg:sticky lg:top-40">
-              <h2 className="text-lg font-bold">Tóm tắt đơn hàng</h2>
+            <aside className="h-fit rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm lg:sticky lg:top-40">
+              <h2 className="text-lg font-black text-slate-900">Tóm tắt đơn hàng</h2>
               <div className="mt-5 space-y-3 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-stone-500">Tạm tính ({items.length} sản phẩm)</span>
-                  <span className="font-semibold">{vndMoney.format(subtotal)}</span>
+                  <span className="text-slate-500">Tạm tính ({items.length} sản phẩm)</span>
+                  <span className="font-semibold text-slate-900">{vndMoney.format(subtotal)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-stone-500">Phí vận chuyển</span>
-                  <span className="font-semibold">{vndMoney.format(SHIPPING_FEE)}</span>
+                  <span className="text-slate-500">Phí vận chuyển</span>
+                  <span className="font-semibold text-slate-900">{vndMoney.format(SHIPPING_FEE)}</span>
                 </div>
-                <hr className="border-ink/5" />
+                <hr className="border-slate-100" />
                 <div className="flex justify-between text-base">
-                  <span className="font-bold">Tổng thanh toán</span>
-                  <strong className="text-lg text-brand-600">{vndMoney.format(total)}</strong>
+                  <span className="font-bold text-slate-900">Tổng thanh toán</span>
+                  <strong className="text-xl font-black text-emerald-700">{vndMoney.format(total)}</strong>
                 </div>
               </div>
               <Link
                 href="/checkout"
-                className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-ink px-5 py-3.5 font-bold text-white transition hover:bg-brand-600"
+                className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-emerald-600 px-5 py-3.5 font-bold text-white shadow-lg shadow-emerald-600/20 transition hover:bg-emerald-500"
               >
                 Tiến hành thanh toán
               </Link>
               <Link
                 href="/#products"
-                className="mt-3 block text-center text-sm font-semibold text-stone-500 transition hover:text-brand-600"
+                className="mt-3 block text-center text-xs font-semibold text-slate-500 transition hover:text-emerald-700"
               >
                 ← Tiếp tục mua sắm
               </Link>

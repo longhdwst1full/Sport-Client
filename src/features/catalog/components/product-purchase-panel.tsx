@@ -71,7 +71,7 @@ export function ProductPurchasePanel({ product }: { product: ProductDetailDto })
 
   return (
     <section
-      className="flex flex-col gap-6 rounded-[32px] border border-stone-200/80 bg-white p-6 shadow-xl shadow-stone-200/50 sm:p-8"
+      className="flex flex-col gap-6 rounded-[28px] border border-slate-200/80 bg-white p-6 shadow-xl shadow-slate-200/40 sm:p-8"
       aria-labelledby="purchase-heading"
     >
       {/* Price & Rating Header */}
@@ -225,9 +225,9 @@ export function ProductPurchasePanel({ product }: { product: ProductDetailDto })
           type="button"
           disabled={!canAdd}
           onClick={handleAddToCart}
-          className="flex items-center justify-center gap-2 rounded-full border-2 border-ink bg-white px-5 py-3.5 font-black text-ink transition hover:bg-stone-100 disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex items-center justify-center gap-2 rounded-full border-2 border-slate-900 bg-white px-5 py-3.5 font-bold text-slate-900 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          <ShoppingBag className="size-4.5" />
+          <ShoppingBag className="size-4" />
           <span>Thêm vào giỏ</span>
         </button>
 
@@ -235,9 +235,9 @@ export function ProductPurchasePanel({ product }: { product: ProductDetailDto })
           type="button"
           disabled={!canAdd}
           onClick={handleBuyNow}
-          className="flex items-center justify-center gap-2 rounded-full bg-emerald-500 px-5 py-3.5 font-black text-ink shadow-lg shadow-emerald-500/25 transition hover:bg-emerald-400 hover:shadow-emerald-500/40 disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex items-center justify-center gap-2 rounded-full bg-emerald-600 px-5 py-3.5 font-bold text-white shadow-lg shadow-emerald-600/25 transition hover:bg-emerald-500 hover:shadow-emerald-600/40 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          <Zap className="size-4.5 fill-ink" />
+          <Zap className="size-4 fill-white" />
           <span>Mua ngay</span>
         </button>
       </div>

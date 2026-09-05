@@ -48,7 +48,7 @@ export default async function ProductDetailPage({
 
   return (
     <StorefrontLayout>
-      <div className="bg-stone-50/60 pb-20">
+      <div className="bg-slate-50/70 pb-24">
         {/* Breadcrumbs Navigation */}
         <nav
           aria-label="Breadcrumb"
