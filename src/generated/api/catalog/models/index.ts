@@ -23,7 +23,6 @@ export * from './productListMetaDto';
 export * from './productListResponseDto';
 export * from './productMediaDto';
 export * from './productMediaDtoStatus';
-export * from './productMediaDtoVariantId';
 export * from './productSummaryDto';
 export * from './productSummaryDtoCurrency';
 export * from './productSummaryDtoProductType';

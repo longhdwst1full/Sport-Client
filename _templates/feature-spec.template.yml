@@ -1,0 +1,15 @@
+feature: storefront-journey
+version: 1
+routes: []
+actors: [GUEST, CUSTOMER]
+rendering: server-first
+api_operations: []
+seo: []
+responsive_states: []
+ui_states: [loading, empty, error, offline, success]
+pwa_cache_policy: network-first
+offline_mutations: forbidden
+analytics_events: []
+accessibility: []
+acceptance_criteria: []
+open_questions: []

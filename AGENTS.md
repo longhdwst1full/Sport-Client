@@ -1,6 +1,6 @@
 # Storefront client instructions
 
-Scope: `client/` only. Do not load admin Ant Design rules or backend module rules for ordinary storefront work.
+Scope: this Storefront repository only. Do not load Admin Ant Design rules or backend module rules for ordinary Storefront work.
 
 ## Stack and boundaries
 

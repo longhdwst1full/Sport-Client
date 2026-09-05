@@ -101,7 +101,8 @@ components:
       properties:
         id:
           type: string
-          format: uuid
+          pattern: ^[1-9][0-9]*$
+          example: "1"
         productNo:
           type: string
         name:
@@ -141,11 +142,13 @@ components:
           nullable: true
         brandId:
           type: string
-          format: uuid
+          pattern: ^[1-9][0-9]*$
+          example: "1"
           nullable: true
         primaryCategoryId:
           type: string
-          format: uuid
+          pattern: ^[1-9][0-9]*$
+          example: "1"
           nullable: true
         shortDescription:
           type: string
@@ -164,10 +167,12 @@ components:
           items:
             $ref: "#/components/schemas/ProductCategoryDto"
         categoryIds:
+          example:
+            - "1"
           type: array
           items:
             type: string
-            format: uuid
+            pattern: ^[1-9][0-9]*$
       required:
         - id
         - productNo
@@ -220,7 +225,8 @@ components:
       properties:
         id:
           type: string
-          format: uuid
+          pattern: ^[1-9][0-9]*$
+          example: "1"
         productNo:
           type: string
         name:
@@ -292,7 +298,8 @@ components:
       properties:
         id:
           type: string
-          format: uuid
+          pattern: ^[1-9][0-9]*$
+          example: "1"
         sku:
           type: string
         barcode:
@@ -328,7 +335,8 @@ components:
           nullable: true
         effectivePriceId:
           type: string
-          format: uuid
+          pattern: ^[1-9][0-9]*$
+          example: "1"
           nullable: true
         effectivePriceVersion:
           type: number
@@ -351,13 +359,16 @@ components:
       properties:
         id:
           type: string
-          format: uuid
+          pattern: ^[1-9][0-9]*$
+          example: "1"
         mediaAssetId:
           type: string
-          format: uuid
+          pattern: ^[1-9][0-9]*$
+          example: "1"
         variantId:
-          type: object
-          format: uuid
+          type: string
+          pattern: ^[1-9][0-9]*$
+          example: "1"
           nullable: true
         secureUrl:
           type: string
@@ -391,7 +402,8 @@ components:
       properties:
         id:
           type: string
-          format: uuid
+          pattern: ^[1-9][0-9]*$
+          example: "1"
         name:
           type: string
         isPrimary:
@@ -440,7 +452,8 @@ components:
       properties:
         componentVariantId:
           type: string
-          format: uuid
+          pattern: ^[1-9][0-9]*$
+          example: "1"
         componentSku:
           type: string
         componentName:
