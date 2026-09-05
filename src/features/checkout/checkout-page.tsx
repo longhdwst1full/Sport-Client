@@ -161,6 +161,35 @@ export function CheckoutPage() {
                   </button>
                 ))}
               </div>
+
+              {payment === 'bank' && (
+                <div className="mt-4 rounded-2xl border border-emerald-200/80 bg-emerald-50/60 p-4 text-xs text-stone-700">
+                  <strong className="block font-bold text-emerald-900">
+                    Thông tin tài khoản nhận chuyển khoản:
+                  </strong>
+                  <div className="mt-2.5 grid gap-1.5 sm:grid-cols-2">
+                    <div>
+                      <span className="text-stone-500">Ngân hàng:</span>{' '}
+                      <strong className="text-ink">Techcombank (TCB)</strong>
+                    </div>
+                    <div>
+                      <span className="text-stone-500">Số tài khoản:</span>{' '}
+                      <strong className="font-mono font-bold text-emerald-700">1903 6868 8888</strong>
+                    </div>
+                    <div>
+                      <span className="text-stone-500">Chủ tài khoản:</span>{' '}
+                      <strong className="text-ink">CTCP DCTD SPORT VIET NAM</strong>
+                    </div>
+                    <div>
+                      <span className="text-stone-500">Cú pháp:</span>{' '}
+                      <strong className="font-mono text-ink">DCTD {formData.name || 'HOTEN'} {formData.phone || 'SDT'}</strong>
+                    </div>
+                  </div>
+                  <p className="mt-2 text-[11px] text-stone-500">
+                    * Đơn hàng sẽ được nhân viên xác nhận và xuất kho ngay sau khi nhận được thông báo chuyển khoản.
+                  </p>
+                </div>
+              )}
             </section>
           </div>
 

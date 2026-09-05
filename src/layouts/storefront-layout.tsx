@@ -17,11 +17,11 @@ import { SiteHeader } from '@/widgets/site-header/site-header';
 import { NewsletterForm } from '@/widgets/newsletter-form/newsletter-form';
 
 const FOOTER_SHOP_LINKS = [
-  { label: 'Theo môn thể thao', href: '/#shop-by-sport' },
+  { label: 'Theo môn thể thao', href: '/category' },
   { label: 'Sản phẩm nổi bật', href: '/#products' },
   { label: 'Combo Home Gym', href: '/#products' },
-  { label: 'Hướng dẫn chọn hàng', href: '/#stories' },
-  { label: 'Tất cả sản phẩm', href: '/#products' },
+  { label: 'Kiến thức luyện tập', href: '/news' },
+  { label: 'Hệ thống Showroom', href: '/contact' },
 ];
 
 const FOOTER_POLICY_LINKS = [
@@ -134,7 +134,7 @@ export function StorefrontLayout({ children }: { children: ReactNode }) {
               </span>
               <Link
                 className="inline-flex items-center gap-2 transition hover:text-white"
-                href="/#consulting"
+                href="/contact"
               >
                 <ArrowUpRight className="size-4 shrink-0 text-emerald-400" />
                 Tư vấn không gian tập

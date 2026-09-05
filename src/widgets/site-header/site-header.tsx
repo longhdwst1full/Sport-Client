@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import {
   ChevronDown,
   Dumbbell,
@@ -84,6 +85,7 @@ const MEGA_MENU_CATEGORIES = [
 ] as const;
 
 export function SiteHeader() {
+  const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [announcementIndex, setAnnouncementIndex] = useState(0);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -95,6 +97,14 @@ export function SiteHeader() {
   const cartQuantity = useAppSelector((state) =>
     state.cart.items.reduce((total, item) => total + item.quantity, 0),
   );
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchOpen(false);
+    }
+  };
 
   // Rotate announcements
   useEffect(() => {
@@ -154,22 +164,22 @@ export function SiteHeader() {
 
           {/* Search Bar — Desktop */}
           <div className="hidden flex-1 lg:block">
-            <div className="relative mx-auto max-w-xl">
+            <form onSubmit={handleSearchSubmit} className="relative mx-auto max-w-xl">
               <input
                 type="text"
-                placeholder="Tìm sản phẩm, thương hiệu, danh mục..."
+                placeholder="Tìm sản phẩm, thương hiệu, môn tập..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full rounded-xl border border-ink/10 bg-white px-4 py-2.5 pr-11 text-sm shadow-sm transition-all placeholder:text-stone-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
               />
               <button
-                type="button"
+                type="submit"
                 className="absolute right-1 top-1/2 grid size-8 -translate-y-1/2 place-items-center rounded-lg bg-brand-600 text-white transition hover:bg-brand-500"
                 aria-label="Tìm kiếm"
               >
                 <Search className="size-4" />
               </button>
-            </div>
+            </form>
           </div>
 
           {/* Hotline — Desktop */}
@@ -210,17 +220,18 @@ export function SiteHeader() {
             </Link>
 
             {/* Cart */}
-            <button
+            <Link
+              href="/cart"
               className="relative grid size-10 place-items-center rounded-full transition hover:bg-white sm:size-11"
               aria-label={`Giỏ hàng, ${cartQuantity} sản phẩm`}
             >
-              <ShoppingBag className="size-5" />
+              <ShoppingBag className="size-5 text-ink" />
               {cartQuantity > 0 && (
-                <span className="absolute right-0 top-0 grid min-w-5 place-items-center rounded-full bg-brand-600 px-1 text-[10px] font-bold text-white">
+                <span className="absolute right-0 top-0 grid min-w-5 place-items-center rounded-full bg-emerald-500 px-1 text-[10px] font-extrabold text-ink shadow-sm">
                   {cartQuantity > 99 ? '99+' : cartQuantity}
                 </span>
               )}
-            </button>
+            </Link>
 
             {/* Mobile Menu Toggle */}
             <button
@@ -237,7 +248,7 @@ export function SiteHeader() {
         {/* Mobile Search Overlay */}
         {searchOpen && (
           <div className="border-t border-ink/5 bg-cream px-4 py-3 lg:hidden">
-            <div className="relative">
+            <form onSubmit={handleSearchSubmit} className="relative">
               <input
                 ref={searchInputRef}
                 type="text"
@@ -247,13 +258,13 @@ export function SiteHeader() {
                 className="w-full rounded-xl border border-ink/10 bg-white px-4 py-3 pr-11 text-sm shadow-sm placeholder:text-stone-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
               />
               <button
-                type="button"
+                type="submit"
                 className="absolute right-1.5 top-1/2 grid size-8 -translate-y-1/2 place-items-center rounded-lg bg-brand-600 text-white"
                 aria-label="Tìm kiếm"
               >
                 <Search className="size-4" />
               </button>
-            </div>
+            </form>
           </div>
         )}
       </div>
@@ -338,10 +349,15 @@ export function SiteHeader() {
 
           <span className="mx-2 h-5 border-l border-ink/10" />
 
-          {['Dịch vụ', 'Kiến thức', 'Về DCTD'].map((label) => (
+          {[
+            { label: 'Danh mục', href: '/category' },
+            { label: 'Kiến thức', href: '/news' },
+            { label: 'Showroom', href: '/contact' },
+            { label: 'Về DCTD', href: '/#about' },
+          ].map(({ label, href }) => (
             <Link
               key={label}
-              href={`/#${label === 'Dịch vụ' ? 'benefits' : label === 'Kiến thức' ? 'stories' : 'about'}`}
+              href={href}
               className="rounded-lg px-3 py-2 text-stone-600 transition hover:bg-stone-50 hover:text-brand-600"
             >
               {label}
@@ -393,9 +409,10 @@ export function SiteHeader() {
             {/* Mobile Secondary Links */}
             <div className="grid gap-1 px-5 py-4 text-sm font-semibold text-stone-600">
               {[
-                ['Dịch vụ', '/#benefits'],
-                ['Kiến thức', '/#stories'],
-                ['Về DCTD', '/#about'],
+                ['Tất cả danh mục', '/category'],
+                ['Kiến thức luyện tập', '/news'],
+                ['Hệ thống Showroom', '/contact'],
+                ['Về DCTD Sport', '/#about'],
               ].map(([label, href]) => (
                 <Link
                   key={href}
@@ -417,6 +434,14 @@ export function SiteHeader() {
                 <Phone className="size-4 text-brand-600" />
                 1800 0000
               </a>
+              <Link
+                href="/cart"
+                className="inline-flex items-center gap-2 rounded-xl bg-emerald-400 px-4 py-3 text-sm font-black text-ink shadow-sm"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <ShoppingBag className="size-4" />
+                Giỏ hàng ({cartQuantity})
+              </Link>
               <Link
                 href="/login"
                 className="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-3 text-sm font-bold shadow-sm"

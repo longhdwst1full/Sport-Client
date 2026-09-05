@@ -25,11 +25,12 @@ export function ProductPurchasePanel({ product }: { product: ProductDetailDto })
   const dispatch = useAppDispatch();
   const router = useRouter();
 
-  const [selectedVariantId, setSelectedVariantId] = useState(product.variants[0]?.id ?? '');
+  const variants = product.variants ?? [];
+  const [selectedVariantId, setSelectedVariantId] = useState(variants[0]?.id ?? '');
   const [quantity, setQuantity] = useState(1);
   const [isAddedToast, setIsAddedToast] = useState(false);
 
-  const selectedVariant = product.variants.find(({ id }) => id === selectedVariantId);
+  const selectedVariant = variants.find(({ id }) => id === selectedVariantId) ?? variants[0];
   const price = Number(selectedVariant?.effectivePrice ?? 0);
   const canAdd = Boolean(selectedVariant && price > 0);
 
@@ -117,12 +118,12 @@ export function ProductPurchasePanel({ product }: { product: ProductDetailDto })
             Phiên bản / Quy cách
           </h2>
           <span className="text-xs text-stone-500">
-            {product.variants.length} lựa chọn có sẵn
+            {variants.length} lựa chọn có sẵn
           </span>
         </div>
 
         <div className="mt-3 grid gap-2.5">
-          {product.variants.map((variant) => {
+          {variants.map((variant) => {
             const isSelected = variant.id === selectedVariantId;
             const variantPrice = Number(variant.effectivePrice ?? 0);
 
