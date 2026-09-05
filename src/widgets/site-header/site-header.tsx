@@ -37,49 +37,49 @@ const ANNOUNCEMENTS = [
 const MEGA_MENU_CATEGORIES = [
   {
     label: 'Gym & Fitness',
-    href: '/#products',
+    href: '/category/gym-fitness',
     icon: Dumbbell,
     image: 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=400&q=80',
     children: [
-      { label: 'Máy chạy bộ', href: '/#products' },
-      { label: 'Xe đạp tập', href: '/#products' },
-      { label: 'Giàn tạ đa năng', href: '/#products' },
-      { label: 'Tạ điều chỉnh', href: '/#products' },
-      { label: 'Ghế tập tạ', href: '/#products' },
+      { label: 'Máy chạy bộ', href: '/category/chay-bo-cardio' },
+      { label: 'Xe đạp tập', href: '/category/xe-dap-the-thao' },
+      { label: 'Giàn tạ đa năng', href: '/category/gym-fitness' },
+      { label: 'Tạ điều chỉnh', href: '/category/gym-fitness' },
+      { label: 'Ghế tập tạ', href: '/category/gym-fitness' },
     ],
   },
   {
     label: 'Chạy bộ',
-    href: '/#products',
+    href: '/category/chay-bo-cardio',
     icon: Footprints,
     image: 'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&w=400&q=80',
     children: [
-      { label: 'Giày chạy bộ', href: '/#products' },
-      { label: 'Máy chạy bộ gia đình', href: '/#products' },
-      { label: 'Phụ kiện chạy bộ', href: '/#products' },
+      { label: 'Giày chạy bộ', href: '/category/chay-bo-cardio' },
+      { label: 'Máy chạy bộ gia đình', href: '/category/chay-bo-cardio' },
+      { label: 'Phụ kiện chạy bộ', href: '/category/chay-bo-cardio' },
     ],
   },
   {
     label: 'Bóng đá',
-    href: '/#products',
+    href: '/category/bong-da',
     icon: Goal,
     image: 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=400&q=80',
     children: [
-      { label: 'Bóng đá các loại', href: '/#products' },
-      { label: 'Giày bóng đá', href: '/#products' },
-      { label: 'Đồ tập bóng đá', href: '/#products' },
+      { label: 'Bóng đá các loại', href: '/category/bong-da' },
+      { label: 'Giày bóng đá', href: '/category/bong-da' },
+      { label: 'Đồ tập bóng đá', href: '/category/bong-da' },
     ],
   },
   {
     label: 'Yoga & Phục hồi',
-    href: '/#products',
+    href: '/category/yoga-phuc-hoi',
     icon: HeartPulse,
     image: 'https://images.unsplash.com/photo-1599447421416-3414500d18a5?auto=format&fit=crop&w=400&q=80',
     children: [
-      { label: 'Thảm yoga', href: '/#products' },
-      { label: 'Dụng cụ yoga', href: '/#products' },
-      { label: 'Foam roller', href: '/#products' },
-      { label: 'Dây kháng lực', href: '/#products' },
+      { label: 'Thảm yoga', href: '/category/yoga-phuc-hoi' },
+      { label: 'Dụng cụ yoga', href: '/category/yoga-phuc-hoi' },
+      { label: 'Foam roller', href: '/category/yoga-phuc-hoi' },
+      { label: 'Dây kháng lực', href: '/category/yoga-phuc-hoi' },
     ],
   },
 ] as const;
@@ -385,7 +385,8 @@ export function SiteHeader() {
             </Link>
 
             {[
-              { label: 'Tất cả danh mục', href: '/category' },
+              { label: 'Tất cả thiết bị', href: '/products' },
+              { label: 'Danh mục', href: '/category' },
               { label: 'Kiến thức tập', href: '/news' },
               { label: 'Showroom', href: '/contact' },
               { label: 'Về DCTD', href: '/#about' },
@@ -427,6 +428,7 @@ export function SiteHeader() {
             {/* Mobile Secondary Links */}
             <div className="grid gap-1 px-5 py-3 text-sm font-semibold text-slate-600">
               {[
+                ['Tất cả thiết bị thể thao', '/products'],
                 ['Tất cả danh mục sản phẩm', '/category'],
                 ['Kiến thức luyện tập chuyên sâu', '/news'],
                 ['Hệ thống Showroom toàn quốc', '/contact'],
