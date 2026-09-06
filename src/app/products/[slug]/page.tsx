@@ -19,6 +19,7 @@ import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { ProductPurchasePanel } from '@/features/catalog/components/product-purchase-panel';
 import { ProductRelatedSection } from '@/features/catalog/components/product-related-section';
 import { Product3DViewer } from '@/components/3d/product-3d-viewer';
+import { ProductReviewSection } from '@/features/reviews/components/product-review-section';
 import { getCatalogProduct } from '@/generated/api/catalog/catalog';
 import { ApiError } from '@/lib/api/fetcher';
 
@@ -813,65 +814,7 @@ export default async function ProductDetailPage({
             </div>
 
             {/* Customer Rating & Reviews Summary */}
-            <div className="rounded-[28px] border border-stone-200/80 bg-white p-6 shadow-sm sm:p-8">
-              <div className="flex flex-wrap items-center justify-between gap-4">
-                <div>
-                  <h2 className="text-xl font-black text-ink sm:text-2xl">Đánh giá từ khách hàng</h2>
-                  <p className="mt-1 text-xs text-stone-500">Được xác thực từ người mua hàng thực tế</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="flex text-amber-400">
-                    {[1, 2, 3, 4, 5].map((i) => (
-                      <Star key={i} className="size-4 fill-amber-400" />
-                    ))}
-                  </div>
-                  <strong className="text-sm font-black text-ink">4.9 / 5.0</strong>
-                  <span className="text-xs text-stone-400">(128 nhận xét)</span>
-                </div>
-              </div>
-
-              <div className="mt-6 space-y-4">
-                <div className="rounded-2xl bg-stone-50 p-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <strong className="text-sm font-bold text-ink">Trần Quang Huy</strong>
-                      <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-extrabold text-emerald-800">
-                        Đã mua hàng
-                      </span>
-                    </div>
-                    <span className="text-xs text-stone-400">2 ngày trước</span>
-                  </div>
-                  <div className="mt-1 flex text-amber-400">
-                    {[1, 2, 3, 4, 5].map((i) => (
-                      <Star key={i} className="size-3 fill-amber-400" />
-                    ))}
-                  </div>
-                  <p className="mt-2 text-xs leading-relaxed text-stone-600">
-                    "Tạ cầm rất đầm tay, lớp cao su đúc sắc nét không có mùi hôi như hàng chợ. Giao hàng hỏa tốc trong 2h tại Q7 đúng như cam kết. Rất hài lòng!"
-                  </p>
-                </div>
-
-                <div className="rounded-2xl bg-stone-50 p-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <strong className="text-sm font-bold text-ink">Lê Minh Tuấn (HLV Thể hình)</strong>
-                      <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-extrabold text-emerald-800">
-                        Đã mua hàng
-                      </span>
-                    </div>
-                    <span className="text-xs text-stone-400">1 tuần trước</span>
-                  </div>
-                  <div className="mt-1 flex text-amber-400">
-                    {[1, 2, 3, 4, 5].map((i) => (
-                      <Star key={i} className="size-3 fill-amber-400" />
-                    ))}
-                  </div>
-                  <p className="mt-2 text-xs leading-relaxed text-stone-600">
-                    "Khóa tạ rất chắc chắn, tập bài drop set hay bài tạ nặng không lo bị xộc xệch. Bản 3D xoay trên web xem trực quan đúng với thiết bị thực tế bên ngoài."
-                  </p>
-                </div>
-              </div>
-            </div>
+            <ProductReviewSection productName={product.name} productSlug={slug} />
           </div>
 
           {/* Right Column: Sticky Purchase Panel */}

@@ -8,6 +8,8 @@ import { readPersistedCart } from '@/app/store/root.saga';
 import { storefrontStore } from '@/app/store/store';
 import { PwaRegistration } from '@/pwa/pwa-registration';
 
+import { GlobalToastProvider } from '@/shared/components/global-toast';
+
 export function Providers({ children }: { children: ReactNode }) {
   const [queryClient] = useState(
     () => new QueryClient({ defaultOptions: { queries: { staleTime: 30_000, retry: 1 } } }),
@@ -20,8 +22,10 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <ReduxProvider store={storefrontStore}>
       <QueryClientProvider client={queryClient}>
-        {children}
-        <PwaRegistration />
+        <GlobalToastProvider>
+          {children}
+          <PwaRegistration />
+        </GlobalToastProvider>
       </QueryClientProvider>
     </ReduxProvider>
   );

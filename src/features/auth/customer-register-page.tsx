@@ -81,7 +81,7 @@ export function CustomerRegisterPage() {
               <span className="grid size-10 place-items-center rounded-xl bg-emerald-400 text-ink shadow-md shadow-emerald-400/30">
                 <Dumbbell className="size-5" />
               </span>
-              <span>DCTD SPORT CLUB</span>
+              <span>BẢO AN SPORT CLUB</span>
             </Link>
           </div>
 
@@ -134,7 +134,7 @@ export function CustomerRegisterPage() {
                 <span className="grid size-9 place-items-center rounded-xl bg-emerald-400 text-ink">
                   <Dumbbell className="size-4.5" />
                 </span>
-                <span>DCTD SPORT</span>
+                <span>BẢO AN SPORT</span>
               </Link>
             </div>
 
@@ -284,8 +284,37 @@ export function CustomerRegisterPage() {
               </button>
             </form>
 
+            {/* Social Logins Divider */}
+            <div className="my-6 flex items-center gap-3">
+              <div className="h-px flex-1 bg-white/10" />
+              <span className="text-[11px] font-bold uppercase tracking-wider text-stone-500">Hoặc đăng ký nhanh với</span>
+              <div className="h-px flex-1 bg-white/10" />
+            </div>
+
+            {/* Social Buttons */}
+            <div className="grid grid-cols-3 gap-3">
+              <button
+                type="button"
+                className="flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 py-2.5 text-xs font-bold text-stone-200 transition hover:bg-white/10 hover:border-white/20"
+              >
+                <span className="font-extrabold text-red-400">G</span> Google
+              </button>
+              <button
+                type="button"
+                className="flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 py-2.5 text-xs font-bold text-stone-200 transition hover:bg-white/10 hover:border-white/20"
+              >
+                <span className="font-extrabold text-blue-400">Z</span> Zalo
+              </button>
+              <button
+                type="button"
+                className="flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 py-2.5 text-xs font-bold text-stone-200 transition hover:bg-white/10 hover:border-white/20"
+              >
+                <span className="font-extrabold text-blue-500">f</span> Facebook
+              </button>
+            </div>
+
             <p className="mt-6 text-center text-xs text-stone-400">
-              Bằng việc đăng ký, bạn đồng ý với Điều khoản dịch vụ và Chính sách bảo mật của DCTD Sport.
+              Bằng việc đăng ký, bạn đồng ý với Điều khoản dịch vụ và Chính sách bảo mật của Bảo An Sport.
             </p>
 
             <div className="mt-8 text-center">

@@ -32,7 +32,7 @@ const FLASH_DEALS = [
     imageUrl: 'https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&w=800&q=80',
     sold: 28,
     total: 30,
-    gift: 'Tặng găng tay thể hình DCTD Pro',
+    gift: 'Tặng găng tay thể hình Bảo An Pro Grip',
     badge: 'Sắp cháy hàng',
   },
   {
@@ -236,7 +236,7 @@ export function FlashSaleSection() {
               Cần lắp đặt phòng tập trọn gói theo ngân sách riêng?
             </strong>
             <span className="text-xs text-slate-400">
-              Kỹ sư thể hình DCTD khảo sát diện tích và lên bản vẽ 3D miễn phí trong 24 giờ.
+              Kỹ sư thể hình Bảo An Sport khảo sát diện tích và lên bản vẽ 3D miễn phí trong 24 giờ.
             </span>
           </div>
           <Link

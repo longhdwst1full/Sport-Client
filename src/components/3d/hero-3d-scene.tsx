@@ -366,7 +366,7 @@ export function Hero3DScene() {
                     ? 'https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?auto=format&fit=crop&w=800&q=85'
                     : 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=800&q=85'
                 }
-                alt={activePreset === 'dumbbell' ? 'Bộ tạ tay chuyên nghiệp DCTD Pro' : 'Tạ bình vôi kettlebell'}
+                alt={activePreset === 'dumbbell' ? 'Bộ tạ tay chuyên nghiệp Bảo An Pro' : 'Tạ bình vôi kettlebell'}
                 fill
                 priority
                 sizes="300px"
@@ -392,7 +392,7 @@ export function Hero3DScene() {
           <span className="relative inline-flex size-2 rounded-full bg-emerald-500"></span>
         </span>
         <span className="text-[10px] font-extrabold uppercase tracking-widest text-emerald-400">
-          DCTD 3D Studio
+          Bảo An 3D Studio
         </span>
       </div>
 

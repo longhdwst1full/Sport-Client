@@ -80,7 +80,7 @@ export function PwaRegistration() {
           className="fixed bottom-5 left-1/2 z-50 flex w-[min(92vw,580px)] -translate-x-1/2 items-center justify-between gap-4 rounded-2xl bg-ink px-5 py-4 text-sm text-white shadow-card"
           role="status"
         >
-          <span>Đã có phiên bản mới của DCTD Sport.</span>
+          <span>Đã có phiên bản mới của Bảo An Sport.</span>
           <button
             className="shrink-0 rounded-full bg-white px-4 py-2 font-bold text-ink"
             onClick={updateNow}

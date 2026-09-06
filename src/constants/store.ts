@@ -18,6 +18,7 @@ export enum AppRoute {
   LOGIN = '/login',
   REGISTER = '/register',
   SEARCH = '/search',
+  FLASH_SALE = '/flash-sale',
   ABOUT = '/#about',
   BENEFITS = '/#benefits',
 }

@@ -12,9 +12,9 @@ import { ProductsCatalogView } from '@/features/catalog/components/products-cata
 import { FlashSaleSection } from '@/features/home/components/flash-sale-section';
 
 export const metadata = {
-  title: 'Tất cả thiết bị & Phụ kiện thể thao — DCTD Sport',
+  title: 'Tất cả thiết bị & Phụ kiện thể thao — Bảo An Sport',
   description:
-    'Danh mục trọn bộ thiết bị tập gym, máy chạy bộ, xe đạp thể thao và phụ kiện chính hãng đạt chuẩn vận động viên.',
+    'Danh mục trọn bộ thiết bị tập gym, máy chạy bộ, xe đạp thể thao, bóng bàn, bóng rổ và phụ kiện chính hãng Bảo An Sport.',
 };
 
 export default function ProductsPage() {
@@ -33,7 +33,7 @@ export default function ProductsPage() {
           <div className="relative overflow-hidden rounded-[36px] bg-gradient-to-br from-slate-950 via-slate-900 to-[#032617] p-8 text-white shadow-xl sm:p-12">
             <div className="relative z-10 max-w-2xl">
               <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/30 bg-emerald-950/60 px-3.5 py-1 text-xs font-extrabold uppercase tracking-widest text-emerald-300 backdrop-blur-md">
-                <Sparkles className="size-3.5" /> Kho thiết bị chính hãng DCTD
+                <Sparkles className="size-3.5" /> Kho thiết bị chính hãng Bảo An Sport
               </span>
               <h1 className="mt-4 text-3xl font-black text-white sm:text-5xl">
                 Thiết Bị Thể Thao Chuẩn Thi Đấu

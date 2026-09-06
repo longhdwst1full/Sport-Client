@@ -72,7 +72,7 @@ export function GymProjectPlanner() {
         {/* Header */}
         <div className="mx-auto max-w-3xl text-center">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3.5 py-1 text-xs font-extrabold uppercase tracking-widest text-emerald-800">
-            <Sparkles className="size-3.5 text-emerald-600" /> Giải pháp setup trọn gói DCTD
+            <Sparkles className="size-3.5 text-emerald-600" /> Giải pháp setup trọn gói Bảo An Sport
           </span>
           <h2 className="mt-3 text-3xl font-black text-slate-900 sm:text-4xl lg:text-5xl">
             Thiết Kế Phòng Gym Theo Diện Tích Của Bạn
@@ -181,7 +181,7 @@ export function GymProjectPlanner() {
           {[
             { title: 'Khảo sát 24H', desc: 'Đo đạc diện tích tận nơi miễn phí' },
             { title: 'Bản vẽ 3D', desc: 'Phối cảnh góc nhìn thực tế' },
-            { title: 'Lắp ráp chuẩn xác', desc: 'Đội ngũ kỹ thuật cơ khí DCTD' },
+            { title: 'Lắp ráp chuẩn xác', desc: 'Đội ngũ kỹ thuật Bảo An Sport' },
             { title: 'Bảo trì trọn đời', desc: 'Định kỳ tra dầu & cân chỉnh cáp' },
           ].map((item, i) => (
             <div key={i} className="text-center sm:text-left">

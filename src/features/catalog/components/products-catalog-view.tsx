@@ -19,14 +19,18 @@ import {
 } from 'lucide-react';
 import { useAppDispatch } from '@/app/store/hooks';
 import { addCartItem } from '@/app/store/cart.slice';
-import { useProductShowcase, FALLBACK_PRODUCTS } from '../hooks/use-product-showcase';
+import { useProductShowcase } from '../hooks/use-product-showcase';
 import { vndMoney } from '@/shared/format/money';
+import { useToast } from '@/shared/components/global-toast';
 
 const CATEGORY_TABS = [
   { id: 'all', label: 'Tất cả sản phẩm' },
   { id: 'gym', label: 'Gym & Sức mạnh' },
   { id: 'treadmill', label: 'Máy chạy bộ & Cardio' },
   { id: 'bike', label: 'Xe đạp tập' },
+  { id: 'table-tennis', label: 'Dụng Cụ Bóng Bàn' },
+  { id: 'basketball', label: 'Dụng Cụ Bóng Rổ' },
+  { id: 'martial-arts', label: 'Dụng Cụ Võ Thuật' },
   { id: 'yoga', label: 'Yoga & Phục hồi' },
   { id: 'combo', label: 'Combo Home Gym' },
 ];
@@ -40,13 +44,13 @@ const PRICE_RANGES = [
 
 export function ProductsCatalogView() {
   const dispatch = useAppDispatch();
+  const { toast } = useToast();
   const { products } = useProductShowcase();
 
   const [activeCategory, setActiveCategory] = useState('all');
   const [activePriceRange, setActivePriceRange] = useState('all');
   const [sortBy, setSortBy] = useState<'featured' | 'price-asc' | 'price-desc' | 'name'>('featured');
   const [searchQuery, setSearchQuery] = useState('');
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const filteredProducts = useMemo(() => {
     let list = [...products];
@@ -70,6 +74,9 @@ export function ProductsCatalogView() {
         if (activeCategory === 'gym') return cat.includes('gym') || cat.includes('sức mạnh') || slug.includes('ta-');
         if (activeCategory === 'treadmill') return cat.includes('chạy bộ') || slug.includes('chay-bo');
         if (activeCategory === 'bike') return cat.includes('xe đạp') || slug.includes('bike');
+        if (activeCategory === 'table-tennis') return cat.includes('bóng bàn') || slug.includes('bong-ban') || slug.includes('stiga') || slug.includes('double-fish');
+        if (activeCategory === 'basketball') return cat.includes('bóng rổ') || slug.includes('bong-ro') || slug.includes('s206');
+        if (activeCategory === 'martial-arts') return cat.includes('võ thuật') || cat.includes('boxing') || slug.includes('boxing') || slug.includes('fairtex');
         if (activeCategory === 'yoga') return cat.includes('yoga') || cat.includes('phục hồi') || slug.includes('yoga') || slug.includes('massage');
         if (activeCategory === 'combo') return cat.includes('combo') || slug.includes('smith');
         return true;
@@ -118,10 +125,11 @@ export function ProductsCatalogView() {
       })
     );
 
-    setToastMessage(`Đã thêm "${product.name}" vào giỏ hàng!`);
-    setTimeout(() => {
-      setToastMessage(null);
-    }, 3000);
+    toast({
+      type: 'success',
+      title: 'Đã thêm vào giỏ hàng!',
+      message: product.name,
+    });
   };
 
   const hasActiveFilters = activeCategory !== 'all' || activePriceRange !== 'all' || searchQuery.trim() !== '';
@@ -135,21 +143,6 @@ export function ProductsCatalogView() {
 
   return (
     <section className="relative">
-      {/* Toast Notification */}
-      {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 rounded-2xl border border-emerald-500/30 bg-slate-950/95 px-5 py-3.5 text-white shadow-2xl backdrop-blur-md animate-in fade-in slide-in-from-bottom-5">
-          <span className="grid size-7 place-items-center rounded-full bg-emerald-500 text-slate-950 font-black">
-            <Check className="size-4 stroke-[3]" />
-          </span>
-          <p className="text-xs font-bold sm:text-sm">{toastMessage}</p>
-          <Link
-            href="/cart"
-            className="ml-2 rounded-lg bg-emerald-500 px-3 py-1 text-xs font-extrabold text-slate-950 transition hover:bg-emerald-400"
-          >
-            Xem giỏ
-          </Link>
-        </div>
-      )}
 
       {/* Interactive Controls Bar */}
       <div className="space-y-4 rounded-[28px] border border-slate-200/80 bg-white p-5 shadow-sm sm:p-6">

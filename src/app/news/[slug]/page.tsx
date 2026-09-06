@@ -41,7 +41,7 @@ export default async function NewsDetailPage({
           <article className="rounded-3xl border border-stone-200/80 bg-white p-6 shadow-sm sm:p-12">
             <div className="flex flex-wrap items-center gap-3 text-xs font-bold text-emerald-700">
               <span className="rounded-full bg-emerald-100 px-3 py-1 uppercase tracking-wider text-emerald-800">
-                Tư vấn chuyên gia DCTD
+                Tư vấn chuyên gia Bảo An Sport
               </span>
               <span>·</span>
               <span className="flex items-center gap-1 text-stone-400">
@@ -74,12 +74,12 @@ export default async function NewsDetailPage({
 
             <div className="prose prose-stone max-w-none text-base leading-8 text-stone-700 space-y-6">
               <p>
-                Khi bắt đầu thiết lập không gian tập luyện tại nhà, đa số người tập thường băn khoăn giữa việc đầu tư từng món rời rạc hay chọn một combo giàn tạ hoàn chỉnh. Theo khảo sát từ hơn 10.000 khách hàng tại DCTD Sport, việc lựa chọn đúng thiết bị nền tảng ngay từ đầu giúp tiết kiệm đến 40% chi phí nâng cấp về sau.
+                Khi bắt đầu thiết lập không gian tập luyện tại nhà, đa số người tập thường băn khoăn giữa việc đầu tư từng món rời rạc hay chọn một combo giàn tạ hoàn chỉnh. Theo khảo sát từ hơn 10.000 khách hàng tại Bảo An Sport, việc lựa chọn đúng thiết bị nền tảng ngay từ đầu giúp tiết kiệm đến 40% chi phí nâng cấp về sau.
               </p>
 
               <h2 className="text-2xl font-bold text-ink">1. Tiêu chí lựa chọn kết cấu khung thép</h2>
               <p>
-                Độ dày thành thép là yếu tố sống còn quyết định độ vững chắc khi gánh tạ nặng. Các dòng khung power rack đạt tiêu chuẩn Olympic của DCTD luôn sử dụng thép hộp 75x75mm với độ dày từ 2.5mm đến 3.0mm, sơn tĩnh điện sần chống trầy xước.
+                Độ dày thành thép là yếu tố sống còn quyết định độ vững chắc khi gánh tạ nặng. Các dòng khung power rack đạt tiêu chuẩn Olympic của Bảo An Sport luôn sử dụng thép hộp 75x75mm với độ dày từ 2.5mm đến 3.0mm, sơn tĩnh điện sần chống trầy xước.
               </p>
 
               <h2 className="text-2xl font-bold text-ink">2. Tối ưu sàn nhà và giảm chấn cách âm</h2>
@@ -100,7 +100,7 @@ export default async function NewsDetailPage({
                   HLV
                 </div>
                 <div>
-                  <strong className="block text-sm font-bold text-ink">Ban Chuyên Môn DCTD Sport</strong>
+                  <strong className="block text-sm font-bold text-ink">Ban Chuyên Môn Bảo An Sport</strong>
                   <span className="text-xs text-stone-400">Đội ngũ kỹ sư thiết bị & HLV Thể hình</span>
                 </div>
               </div>

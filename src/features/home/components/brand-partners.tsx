@@ -1,7 +1,7 @@
 const BRAND_NAMES = [
-  'Nike', 'Adidas', 'Under Armour', 'Reebok', 'Life Fitness',
-  'Technogym', 'Matrix', 'Impulse', 'BH Fitness', 'DCTD Sport',
-  'Manduka', 'TRX',
+  'Nike', 'Adidas', 'Stiga', 'Double Fish', 'Under Armour', 'Life Fitness',
+  'Technogym', 'Matrix', 'Impulse', 'BH Fitness', 'Bảo An Sport',
+  'Fairtex', 'Manduka', 'TRX',
 ];
 
 export function BrandPartners() {

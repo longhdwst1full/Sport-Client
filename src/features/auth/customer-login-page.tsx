@@ -20,6 +20,7 @@ import {
 import { useLoginCustomer } from '@/generated/api/auth/auth';
 import type { LoginDto } from '@/generated/api/auth/models';
 import { KineticBallCanvas } from '@/components/3d/kinetic-ball-canvas';
+import { useToast } from '@/shared/components/global-toast';
 import { getCustomerAuthError } from './auth-error';
 import { saveCustomerAuthTokens } from './auth-token.store';
 
@@ -30,6 +31,7 @@ const schema: yup.ObjectSchema<LoginDto> = yup.object({
 
 export function CustomerLoginPage() {
   const router = useRouter();
+  const { toast } = useToast();
   const [submitError, setSubmitError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
@@ -64,7 +66,7 @@ export function CustomerLoginPage() {
               <span className="grid size-10 place-items-center rounded-xl bg-emerald-400 text-ink shadow-md shadow-emerald-400/30">
                 <Dumbbell className="size-5" />
               </span>
-              <span>DCTD SPORT CLUB</span>
+              <span>BẢO AN SPORT CLUB</span>
             </Link>
           </div>
 
@@ -76,7 +78,7 @@ export function CustomerLoginPage() {
 
             <div className="mt-4 text-center">
               <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-950/50 px-3.5 py-1 text-xs font-bold text-emerald-300 backdrop-blur-md">
-                <Sparkles className="size-3.5" /> Đặc quyền hội viên DCTD
+                <Sparkles className="size-3.5" /> Đặc quyền hội viên Bảo An Sport
               </span>
               <h2 className="mt-4 text-3xl font-black text-white">
                 Bứt phá giới hạn thể lực cùng trang bị chuyên nghiệp
@@ -117,7 +119,7 @@ export function CustomerLoginPage() {
                 <span className="grid size-9 place-items-center rounded-xl bg-emerald-400 text-ink">
                   <Dumbbell className="size-4.5" />
                 </span>
-                <span>DCTD SPORT</span>
+                <span>BẢO AN SPORT</span>
               </Link>
             </div>
 
@@ -186,9 +188,13 @@ export function CustomerLoginPage() {
                   <label className="block text-xs font-bold uppercase tracking-wider text-stone-300">
                     Mật khẩu
                   </label>
-                  <a href="#" className="text-xs font-medium text-emerald-400 hover:underline">
+                  <button
+                    type="button"
+                    onClick={() => toast({ title: 'Cấp lại mật khẩu', message: 'Vui lòng liên hệ Hotline Bảo An Sport: 0939 987 456 hoặc gửi email tới cskh@baoansport.vn để được hỗ trợ nhanh nhất.' })}
+                    className="text-xs font-medium text-emerald-400 hover:underline"
+                  >
                     Quên mật khẩu?
-                  </a>
+                  </button>
                 </div>
                 <div className="relative mt-2">
                   <input
@@ -229,6 +235,38 @@ export function CustomerLoginPage() {
                 )}
               </button>
             </form>
+
+            {/* Social Logins Divider */}
+            <div className="my-6 flex items-center gap-3">
+              <div className="h-px flex-1 bg-white/10" />
+              <span className="text-[11px] font-bold uppercase tracking-wider text-stone-500">Hoặc tiếp tục với</span>
+              <div className="h-px flex-1 bg-white/10" />
+            </div>
+
+            {/* Social Buttons */}
+            <div className="grid grid-cols-3 gap-3">
+              <button
+                type="button"
+                onClick={() => toast({ title: 'Đăng nhập Google', message: 'Tính năng liên kết tài khoản Google One-Tap đang kết nối hệ thống thử nghiệm.' })}
+                className="flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 py-2.5 text-xs font-bold text-stone-200 transition hover:bg-white/10 hover:border-white/20"
+              >
+                <span className="font-extrabold text-red-400">G</span> Google
+              </button>
+              <button
+                type="button"
+                onClick={() => toast({ title: 'Đăng nhập Zalo', message: 'Tính năng Zalo Login đang mở cổng kiểm thử qua Zalo OA Bảo An Sport.' })}
+                className="flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 py-2.5 text-xs font-bold text-stone-200 transition hover:bg-white/10 hover:border-white/20"
+              >
+                <span className="font-extrabold text-blue-400">Z</span> Zalo
+              </button>
+              <button
+                type="button"
+                onClick={() => toast({ title: 'Đăng nhập Facebook', message: 'Tính năng xác thực Facebook Login sẵn sàng tích hợp.' })}
+                className="flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 py-2.5 text-xs font-bold text-stone-200 transition hover:bg-white/10 hover:border-white/20"
+              >
+                <span className="font-extrabold text-blue-500">f</span> Facebook
+              </button>
+            </div>
 
             {/* Quick Demo Credentials Info Note */}
             <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-4 text-xs text-stone-400">

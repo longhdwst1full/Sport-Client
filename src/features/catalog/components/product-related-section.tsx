@@ -48,7 +48,7 @@ const ALL_CATALOG_PRODUCTS: CatalogProductSummary[] = [
   {
     id: 'prod-bike-1',
     slug: 'xe-dap-tap-the-duc-spin-bike',
-    name: 'Xe Đạp Tập Thể Dục Kháng Lực Từ DCTD AirBike Pro',
+    name: 'Xe Đạp Tập Thể Dục Kháng Lực Từ Bảo An AirBike Pro',
     brand: 'Bảo An Sport',
     categoryGroup: 'cardio',
     primaryCategory: 'Xe đạp tập',
@@ -82,7 +82,7 @@ const ALL_CATALOG_PRODUCTS: CatalogProductSummary[] = [
   {
     id: 'prod-treadmill-1',
     slug: 'may-chay-bo-dctd-pro-x1',
-    name: 'Máy Chạy Bộ Điện Đa Năng DCTD Pro X1 Động Cơ 3.5HP',
+    name: 'Máy Chạy Bộ Điện Đa Năng Bảo An Pro X1 Động Cơ 3.5HP',
     brand: 'Bảo An Sport',
     categoryGroup: 'cardio',
     primaryCategory: 'Máy chạy bộ',
@@ -188,7 +188,7 @@ const FLASH_SALE_DEALS = [
   {
     id: 'fs-detail-bike',
     slug: 'xe-dap-tap-the-duc-spin-bike',
-    name: 'Xe Đạp Tập Thể Dục Kháng Lực Từ DCTD AirBike Bánh Đà 12kg',
+    name: 'Xe Đạp Tập Thể Dục Kháng Lực Từ Bảo An AirBike Bánh Đà 12kg',
     price: 6200000,
     originalPrice: 8200000,
     discount: 24,
@@ -202,7 +202,7 @@ const FLASH_SALE_DEALS = [
   {
     id: 'fs-detail-treadmill',
     slug: 'may-chay-bo-dctd-pro-x1',
-    name: 'Máy Chạy Bộ Điện Đa Năng DCTD Pro X1 Động Cơ 3.5HP Nâng Dốc',
+    name: 'Máy Chạy Bộ Điện Đa Năng Bảo An Pro X1 Động Cơ 3.5HP Nâng Dốc',
     price: 14500000,
     originalPrice: 18900000,
     discount: 23,
@@ -216,7 +216,7 @@ const FLASH_SALE_DEALS = [
   {
     id: 'fs-detail-elliptical',
     slug: 'may-truot-tuyet-toan-than-elliptical-orbit',
-    name: 'Xe Đạp Trượt Tuyết Toàn Thân Elliptical Cross-Trainer DCTD',
+    name: 'Xe Đạp Trượt Tuyết Toàn Thân Elliptical Cross-Trainer Bảo An Sport',
     price: 8900000,
     originalPrice: 11500000,
     discount: 23,

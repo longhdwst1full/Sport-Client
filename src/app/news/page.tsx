@@ -55,7 +55,7 @@ const FALLBACK_ARTICLES = [
     coverUrl: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=900&q=85',
     date: '28/08/2026',
     readTime: '5 phút đọc',
-    author: 'KTS. Thể thao DCTD',
+    author: 'KTS. Thể thao Bảo An',
   },
   {
     id: '4',
@@ -85,7 +85,7 @@ export default function NewsPage() {
           coverUrl: s.coverUrl || FALLBACK_ARTICLES[idx % FALLBACK_ARTICLES.length].coverUrl,
           date: '05/09/2026',
           readTime: '5 phút đọc',
-          author: 'Ban chuyên môn DCTD',
+          author: 'Ban chuyên môn Bảo An Sport',
         }))
       : FALLBACK_ARTICLES;
 
@@ -110,13 +110,13 @@ export default function NewsPage() {
           {/* Heading */}
           <div className="max-w-2xl">
             <span className="rounded-full bg-emerald-100 px-3.5 py-1 text-xs font-extrabold uppercase tracking-widest text-emerald-800">
-              DCTD Training Journal
+              Bảo An Sport Journal
             </span>
             <h1 className="mt-3 text-3xl font-black text-ink sm:text-5xl">
-              Kiến thức tập luyện chuẩn khoa học
+              Kiến thức tập luyện & Tin tức thể thao
             </h1>
             <p className="mt-3 text-base text-stone-600 sm:text-lg">
-              Tổng hợp bài viết phân tích kỹ thuật, giáo án xây dựng không gian tập và kinh nghiệm bảo dưỡng thiết bị từ chuyên gia.
+              Tổng hợp bài viết phân tích kỹ thuật, cẩm nang chọn thiết bị tập gym, xe đạp tập, bàn bóng bàn và kinh nghiệm bảo dưỡng từ chuyên gia Bảo An Sport.
             </p>
           </div>
 

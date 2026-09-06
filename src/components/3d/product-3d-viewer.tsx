@@ -55,7 +55,7 @@ const COLOR_PRESETS: ColorPreset[] = [
   },
 ];
 
-export function Product3DViewer({ productName = 'Thiết bị thể thao DCTD' }: { productName?: string }) {
+export function Product3DViewer({ productName = 'Thiết bị thể thao Bảo An Sport' }: { productName?: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [wireframe, setWireframe] = useState(false);
   const [exploded, setExploded] = useState(false);

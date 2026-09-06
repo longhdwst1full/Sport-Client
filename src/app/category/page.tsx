@@ -61,11 +61,19 @@ const ALL_CATEGORIES = [
     icon: Swords,
     image: 'https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?auto=format&fit=crop&w=800&q=80',
   },
+  {
+    slug: 'dung-cu-bong-ban',
+    title: 'Dụng cụ bóng bàn',
+    description: 'Bàn bóng bàn thi đấu đạt chuẩn ITTF, vợt bóng bàn carbon và máy bắn bóng tự động.',
+    itemCount: '40+ sản phẩm',
+    icon: Goal,
+    image: 'https://images.unsplash.com/photo-1534158914592-062992fbe900?auto=format&fit=crop&w=800&q=80',
+  },
 ];
 
 export const metadata = {
-  title: 'Danh mục thiết bị thể thao — DCTD Sport',
-  description: 'Khám phá trọn bộ các dòng thiết bị thể hình, cardio, yoga và thể thao đồng đội chính hãng.',
+  title: 'Danh mục thiết bị thể thao chính hãng — Bảo An Sport',
+  description: 'Khám phá trọn bộ các dòng thiết bị thể hình, máy chạy bộ, xe đạp tập, bàn bóng bàn và dụng cụ võ thuật chính hãng tại Bảo An Sport.',
 };
 
 export default function CategoriesIndexPage() {

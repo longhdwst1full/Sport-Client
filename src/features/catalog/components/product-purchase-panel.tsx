@@ -220,7 +220,7 @@ export function ProductPurchasePanel({ product }: { product: ProductDetailDto })
         </div>
         <div className="mt-2.5 space-y-1.5 text-xs">
           <div className="flex items-center justify-between rounded-xl bg-white p-2.5 shadow-sm border border-amber-100">
-            <span className="font-semibold text-slate-800">🎁 Găng tay thể hình DCTD Pro Grip</span>
+            <span className="font-semibold text-slate-800">🎁 Găng tay thể hình Bảo An Pro Grip</span>
             <span className="text-[11px] font-bold text-amber-700">Trị giá 350.000đ (0đ)</span>
           </div>
           <div className="flex items-center justify-between rounded-xl bg-white p-2.5 shadow-sm border border-amber-100">
@@ -228,7 +228,7 @@ export function ProductPurchasePanel({ product }: { product: ProductDetailDto })
             <span className="text-[11px] font-bold text-amber-700">Trị giá 450.000đ (0đ)</span>
           </div>
           <div className="flex items-center justify-between rounded-xl bg-white p-2.5 shadow-sm border border-amber-100">
-            <span className="font-semibold text-slate-800">🎁 Bình nước thể thao Inox DCTD giữ nhiệt 24h</span>
+            <span className="font-semibold text-slate-800">🎁 Bình nước thể thao Inox Bảo An giữ nhiệt 24h</span>
             <span className="text-[11px] font-bold text-amber-700">Trị giá 250.000đ (0đ)</span>
           </div>
         </div>

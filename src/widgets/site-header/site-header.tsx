@@ -24,6 +24,8 @@ import {
   QUICK_LINKS,
   MEGA_MENU_CATEGORIES,
 } from '@/constants';
+import { AutocompleteSearch } from './autocomplete-search';
+import { HeaderNotifications } from './header-notifications';
 
 export function SiteHeader() {
   const router = useRouter();
@@ -31,23 +33,11 @@ export function SiteHeader() {
   const [expandedMobileCat, setExpandedMobileCat] = useState<string | null>(null);
   const [announcementIndex, setAnnouncementIndex] = useState(0);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const [activeMegaMenu, setActiveMegaMenu] = useState<string | null>(null);
   const megaMenuTimeout = useRef<ReturnType<typeof setTimeout>>(null);
-  const searchInputRef = useRef<HTMLInputElement>(null);
-
   const cartQuantity = useAppSelector((state) =>
     state.cart.items.reduce((total, item) => total + item.quantity, 0),
   );
-
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
-      setSearchOpen(false);
-      setMobileMenuOpen(false);
-    }
-  };
 
   // Rotate announcements
   useEffect(() => {
@@ -56,11 +46,6 @@ export function SiteHeader() {
     }, 4000);
     return () => clearInterval(timer);
   }, []);
-
-  // Focus search on open
-  useEffect(() => {
-    if (searchOpen) searchInputRef.current?.focus();
-  }, [searchOpen]);
 
   const handleMegaMenuEnter = useCallback((label: string) => {
     if (megaMenuTimeout.current) clearTimeout(megaMenuTimeout.current);
@@ -105,7 +90,10 @@ export function SiteHeader() {
       </div>
 
       {/* Main Header Row */}
-      <div className="border-b border-slate-200/80 bg-white/95 backdrop-blur-xl">
+      <div
+        style={{ zIndex: 60 }}
+        className="relative border-b border-slate-200/80 bg-white shadow-sm"
+      >
         <div className="mx-auto flex h-[68px] max-w-7xl items-center gap-4 px-4 sm:gap-6 sm:px-6 lg:px-8">
           {/* Logo */}
           <Link
@@ -124,24 +112,9 @@ export function SiteHeader() {
             </div>
           </Link>
 
-          {/* Search Bar — Desktop */}
-          <div className="hidden flex-1 lg:block">
-            <form onSubmit={handleSearchSubmit} className="relative mx-auto max-w-xl">
-              <input
-                type="text"
-                placeholder="Tìm sản phẩm, thương hiệu, môn tập..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full rounded-full border border-slate-200 bg-slate-50/80 px-5 py-2.5 pr-12 text-sm text-slate-800 transition placeholder:text-slate-400 hover:bg-slate-100/70 focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-emerald-500/10"
-              />
-              <button
-                type="submit"
-                className="absolute right-1.5 top-1/2 grid size-8 -translate-y-1/2 place-items-center rounded-full bg-emerald-600 text-white transition hover:bg-emerald-500"
-                aria-label="Tìm kiếm"
-              >
-                <Search className="size-4" />
-              </button>
-            </form>
+          {/* Search Bar — Desktop Live Autocomplete */}
+          <div className="hidden flex-1 max-w-xl mx-auto lg:block">
+            <AutocompleteSearch />
           </div>
 
           {/* Hotline — Desktop */}
@@ -170,6 +143,9 @@ export function SiteHeader() {
             >
               <Search className="size-4" />
             </button>
+
+            {/* Notifications Popover */}
+            <HeaderNotifications />
 
             {/* User Account */}
             <Link
@@ -209,30 +185,15 @@ export function SiteHeader() {
         {/* Mobile Search Overlay */}
         {searchOpen && (
           <div className="border-t border-slate-100 bg-slate-50/90 px-4 py-3 lg:hidden">
-            <form onSubmit={handleSearchSubmit} className="relative">
-              <input
-                ref={searchInputRef}
-                type="text"
-                placeholder="Tìm sản phẩm, thương hiệu..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full rounded-full border border-slate-200 bg-white px-4 py-2.5 pr-11 text-sm shadow-sm placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
-              />
-              <button
-                type="submit"
-                className="absolute right-1.5 top-1/2 grid size-7 -translate-y-1/2 place-items-center rounded-full bg-emerald-600 text-white"
-                aria-label="Tìm kiếm"
-              >
-                <Search className="size-3.5" />
-              </button>
-            </form>
+            <AutocompleteSearch isMobile onCloseMobile={() => setSearchOpen(false)} />
           </div>
         )}
       </div>
 
       {/* Streamlined Desktop Navigation Bar with Integrated Mega Menus */}
       <nav
-        className="hidden border-b border-slate-200/80 bg-white lg:block"
+        style={{ zIndex: 10 }}
+        className="relative hidden border-b border-slate-200/80 bg-white lg:block"
         aria-label="Điều hướng chính"
       >
         <div className="mx-auto flex h-12 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -323,6 +284,16 @@ export function SiteHeader() {
           {/* Quick Features & Highlights */}
           <div className="flex items-center gap-1 text-[13px] font-bold">
             <Link
+              href="/flash-sale"
+              className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-2 text-rose-600 transition hover:bg-rose-50 font-black"
+            >
+              <span>⚡ Flash Sale</span>
+              <span className="rounded-full bg-rose-600 px-1.5 py-0.5 text-[9px] font-black uppercase text-white animate-pulse">
+                -45%
+              </span>
+            </Link>
+
+            <Link
               href="/#products"
               className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-2 text-slate-700 transition hover:bg-slate-50 hover:text-emerald-700"
             >
@@ -368,22 +339,7 @@ export function SiteHeader() {
             <div className="mx-auto max-w-7xl divide-y divide-slate-100">
               {/* Mobile In-Drawer Search */}
               <div className="p-4 bg-slate-50">
-                <form onSubmit={handleSearchSubmit} className="relative">
-                  <input
-                    type="text"
-                    placeholder="Tìm thiết bị, môn tập, thương hiệu..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full rounded-full border border-slate-200 bg-white px-4 py-2.5 pr-11 text-sm shadow-sm placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
-                  />
-                  <button
-                    type="submit"
-                    className="absolute right-1.5 top-1/2 grid size-7 -translate-y-1/2 place-items-center rounded-full bg-emerald-600 text-white shadow-sm"
-                    aria-label="Tìm kiếm"
-                  >
-                    <Search className="size-3.5" />
-                  </button>
-                </form>
+                <AutocompleteSearch isMobile onCloseMobile={() => setMobileMenuOpen(false)} />
               </div>
 
               {/* Main Categories Accordion */}
@@ -450,6 +406,20 @@ export function SiteHeader() {
 
               {/* Special Features Links */}
               <div className="px-4 py-3 space-y-1">
+                <Link
+                  href="/flash-sale"
+                  className="flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-black text-rose-600 hover:bg-rose-50 transition"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <span className="flex items-center gap-2">
+                    <span className="size-2 rounded-full bg-rose-600 animate-ping" />
+                    ⚡ Giờ Vàng Flash Sale Giảm 45%
+                  </span>
+                  <span className="rounded-full bg-rose-600 px-2 py-0.5 text-[10px] font-black uppercase text-white">
+                    SỐC
+                  </span>
+                </Link>
+
                 <Link
                   href="/#products"
                   className="flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-bold text-slate-800 hover:bg-emerald-50 hover:text-emerald-700 transition"
