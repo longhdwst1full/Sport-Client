@@ -10,6 +10,7 @@ import {
   HeartPulse,
   MoveUpRight,
   Play,
+  Sparkles,
   Trophy,
 } from 'lucide-react';
 import { BenefitsStrip } from '@/widgets/benefits-strip/benefits-strip';
@@ -27,30 +28,28 @@ import { StatsCounter } from './components/stats-counter';
 import { FlashSaleSection } from './components/flash-sale-section';
 import { GymProjectPlanner } from './components/gym-project-planner';
 
-import { STORE_CONFIG } from '@/constants';
-
 const SPORT_CATEGORIES = [
   {
     title: 'Gym & Fitness',
-    description: 'Tạ, ghế tập và phụ kiện',
+    description: 'Tạ tay, giàn tạ và ghế tập đa năng',
     image: 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=900&q=85',
     icon: Dumbbell,
   },
   {
-    title: 'Chạy bộ',
-    description: 'Trang bị cho từng cung đường',
+    title: 'Chạy bộ & Cardio',
+    description: 'Máy chạy bộ, xe đạp tập tại nhà',
     image: 'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&w=900&q=85',
     icon: Footprints,
   },
   {
-    title: 'Bóng đá',
-    description: 'Bóng, giày và đồ tập',
-    image: 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=900&q=85',
-    icon: Goal,
+    title: 'Bóng bàn & Đối kháng',
+    description: 'Bàn bóng bàn thi đấu, trụ bóng rổ, bao cát',
+    image: 'https://images.unsplash.com/photo-1534158914592-062992fbe900?auto=format&fit=crop&w=900&q=85',
+    icon: Trophy,
   },
   {
     title: 'Yoga & Phục hồi',
-    description: 'Tập đúng, hồi phục tốt',
+    description: 'Thảm định tuyến, súng massage cơ',
     image: 'https://images.unsplash.com/photo-1599447421416-3414500d18a5?auto=format&fit=crop&w=900&q=85',
     icon: HeartPulse,
   },
@@ -59,50 +58,82 @@ const SPORT_CATEGORIES = [
 export function HomePage() {
   return (
     <StorefrontLayout>
-      {/* Event Promotion Announcement Modal */}
+      {/* 1. Event Promotion Announcement Modal */}
       <EventAnnouncementModal />
 
-      {/* Modern E-commerce Hero Banner Slider & Promo Cards */}
+      {/* 2. Modern E-commerce Hero Banner Slider & Promo Cards */}
       <HeroBannerSlider />
 
-      {/* Core Service Commitments Strip */}
+      {/* 3. Core Service Commitments Strip */}
       <BenefitsStrip />
 
-      {/* Visual Sports Category Showcase with Real Product Images */}
+      {/* 4. Visual Sports Category Showcase with Real Product Images */}
       <CategoryVisualShowcase />
 
-      {/* Live Flash Sale Section */}
+      {/* 5. Live Flash Sale Section */}
       <FlashSaleSection />
 
-      {/* Brand Partners Carousel */}
-      <BrandPartners />
+      {/* 6. [CORE REQUIREMENT] Product Selling Lists - NGAY DƯỚI FLASH SALE */}
+      <section id="products" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
+          <div>
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100/80 px-3 py-1 text-[11px] font-black uppercase tracking-wider text-emerald-800 mb-2">
+              <Sparkles className="size-3.5" />
+              <span>TUYỂN CHỌN THIẾT BỊ BÁN CHẠY NHẤT</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-slate-900">
+              Sản Phẩm Nổi Bật & Bán Chạy
+            </h2>
+            <p className="mt-1 text-xs sm:text-sm text-slate-500 max-w-2xl">
+              Khám phá trang thiết bị thể lực, cardio, bóng bàn, bóng rổ và võ thuật chính hãng được đông đảo khách hàng và huấn luyện viên tin chọn
+            </p>
+          </div>
 
-      {/* Popular Search Tags */}
-      <section className="mx-auto max-w-7xl px-6 pt-10 lg:px-10" aria-label="Tìm kiếm phổ biến">
-        <div className="flex flex-wrap items-center justify-center gap-2 text-sm">
-          <span className="mr-2 font-bold text-slate-500">Được tìm nhiều:</span>
-          {['Máy chạy bộ gia đình', 'Tạ điều chỉnh', 'Combo home gym', 'Thảm yoga', 'Đồ tập'].map(
-            (keyword) => (
-              <Link
-                key={keyword}
-                href="#products"
-                className="rounded-full border border-slate-200 bg-white px-4 py-1.5 text-xs font-semibold text-slate-700 shadow-sm transition hover:border-emerald-500 hover:bg-emerald-50/50 hover:text-emerald-700"
-              >
-                {keyword}
-              </Link>
-            ),
-          )}
+          <Link
+            href="/catalog"
+            className="inline-flex items-center gap-2 rounded-full border border-emerald-600/30 bg-emerald-50 px-5 py-2.5 text-xs font-black uppercase tracking-wider text-emerald-700 transition hover:bg-emerald-600 hover:text-white"
+          >
+            <span>Xem tất cả danh mục (120+)</span>
+            <ArrowRight className="size-4" />
+          </Link>
+        </div>
+
+        <ProductShowcase />
+      </section>
+
+      {/* 7. Popular Search Tags */}
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-12" aria-label="Tìm kiếm phổ biến">
+        <div className="flex flex-wrap items-center justify-center gap-2 text-sm bg-slate-50/80 rounded-2xl p-4 border border-slate-200/70">
+          <span className="mr-2 font-bold text-slate-500 text-xs">Từ khóa tìm nhiều:</span>
+          {[
+            'Máy chạy bộ gia đình',
+            'Bộ tạ điều chỉnh 24kg',
+            'Bàn bóng bàn Double Fish',
+            'Trụ bóng rổ S206',
+            'Bao cát Boxing Fairtex',
+            'Combo giàn tạ Smith',
+            'Thảm yoga định tuyến',
+            'Xe đạp tập AirBike',
+          ].map((keyword) => (
+            <Link
+              key={keyword}
+              href={`/catalog?search=${encodeURIComponent(keyword)}`}
+              className="rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-slate-700 shadow-sm transition hover:border-emerald-500 hover:bg-emerald-50/50 hover:text-emerald-700"
+            >
+              {keyword}
+            </Link>
+          ))}
         </div>
       </section>
 
-      {/* Shop by Sport */}
-      <section id="shop-by-sport" className="mx-auto max-w-7xl px-6 py-20 lg:px-10">
-        <SectionHeading eyebrow="Tìm nhanh hơn" title="Bạn muốn tập gì hôm nay?" />
+      {/* 8. Shop by Sport */}
+      <section id="shop-by-sport" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-20 border-t border-slate-100">
+        <SectionHeading eyebrow="Tìm nhanh theo bộ môn" title="Bạn muốn tập luyện bộ môn nào?" />
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {SPORT_CATEGORIES.map(({ title, description, image, icon: Icon }, index) => (
             <Link
               key={title}
-              href="#products"
+              href="/catalog"
               className={`group relative overflow-hidden rounded-[28px] bg-slate-900 ${index === 0 ? 'sm:col-span-2 lg:col-span-1' : ''}`}
             >
               <div className="relative aspect-[4/5]">
@@ -116,9 +147,11 @@ export function HomePage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent" />
                 <div className="absolute inset-x-0 bottom-0 p-6 text-white">
                   <Icon className="mb-4 size-8 text-emerald-400" />
-                  <h3 className="text-2xl font-black">{title}</h3>
+                  <h3 className="text-xl sm:text-2xl font-black">{title}</h3>
                   <p className="mt-1 text-sm text-slate-300">{description}</p>
-                  <span className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-emerald-400">Khám phá <MoveUpRight className="size-4 transition group-hover:translate-x-1 group-hover:-translate-y-1" /></span>
+                  <span className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-emerald-400">
+                    Khám phá ngay <MoveUpRight className="size-4 transition group-hover:translate-x-1 group-hover:-translate-y-1" />
+                  </span>
                 </div>
               </div>
             </Link>
@@ -126,31 +159,23 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* Training Space Guide */}
+      {/* 9. Training Space Guide */}
       <TrainingSpaceGuide />
 
-      {/* Gym Project Turnkey Solutions Planner */}
+      {/* 10. Gym Project Turnkey Solutions Planner */}
       <GymProjectPlanner />
 
-      {/* Stats Counter */}
-      <StatsCounter />
-
-      {/* Featured Products */}
-      <section id="products" className="mx-auto max-w-7xl px-6 py-20 lg:px-10">
-        <SectionHeading
-          eyebrow="Tuyển chọn cho bạn"
-          title="Sản phẩm nổi bật"
-          action={
-            <Link href="#stories" className="hidden items-center gap-2 font-bold text-emerald-700 hover:text-emerald-800 md:flex">
-              Xem hướng dẫn chọn hàng <ArrowRight className="size-4" />
-            </Link>
-          }
-        />
-        <ProductShowcase />
+      {/* 11. Product Reviews */}
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
+        <ProductReviews />
       </section>
 
-      {/* Training Lab CTA */}
-      <section className="mx-auto max-w-7xl px-6 pb-20 lg:px-10">
+      {/* 12. Brand Partners & Stats Counter */}
+      <BrandPartners />
+      <StatsCounter />
+
+      {/* 13. Training Lab CTA */}
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
         <div className="grid overflow-hidden rounded-[32px] bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 text-white border border-slate-800 shadow-xl lg:grid-cols-[1.1fr_.9fr]">
           <div className="flex flex-col justify-center p-8 sm:p-12 lg:p-16">
             <div className="flex size-14 items-center justify-center rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
@@ -173,13 +198,8 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* Product Reviews */}
-      <section className="mx-auto max-w-7xl px-6 pb-20 lg:px-10">
-        <ProductReviews />
-      </section>
-
-      {/* Content Stories */}
-      <section id="stories" className="mx-auto max-w-7xl px-6 pb-24 lg:px-10">
+      {/* 14. Content Stories */}
+      <section id="stories" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-24">
         <SectionHeading eyebrow="Kiến thức luyện tập" title="Bài viết mới" />
         <ContentStories />
       </section>

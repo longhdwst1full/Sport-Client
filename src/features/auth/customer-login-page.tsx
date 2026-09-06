@@ -66,7 +66,7 @@ export function CustomerLoginPage() {
               <span className="grid size-10 place-items-center rounded-xl bg-emerald-400 text-ink shadow-md shadow-emerald-400/30">
                 <Dumbbell className="size-5" />
               </span>
-              <span>BẢO AN SPORT CLUB</span>
+              <span>BẢO AN SPORT</span>
             </Link>
           </div>
 

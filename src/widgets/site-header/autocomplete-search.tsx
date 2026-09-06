@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { Search, X, ChevronRight } from 'lucide-react';
+import { Search, X, ChevronRight, Sparkles } from 'lucide-react';
 import { vndMoney } from '@/shared/format/money';
 import {
   searchProducts,
@@ -17,8 +17,17 @@ interface AutocompleteSearchProps {
   onCloseMobile?: () => void;
 }
 
+const POPULAR_SUGGESTIONS = [
+  'Máy chạy bộ',
+  'Bộ tạ 24kg',
+  'Bàn bóng bàn',
+  'Trụ bóng rổ',
+  'Găng boxing',
+  'Thảm yoga',
+];
+
 export function AutocompleteSearch({
-  placeholder = 'Tìm sản phẩm, thương hiệu...',
+  placeholder = 'Tìm kiếm máy chạy bộ, tạ tay, bóng bàn, bóng rổ...',
   className = '',
   isMobile = false,
   onCloseMobile,
@@ -110,11 +119,13 @@ export function AutocompleteSearch({
 
   return (
     <div ref={containerRef} className={`relative w-full ${className}`}>
-      {/* Search Bar matching the user's screenshot layout */}
+      {/* Search Bar - Modern Rounded Pill Design */}
       <form
         onSubmit={handleSearchSubmit}
-        className="relative flex items-stretch overflow-hidden rounded-md border border-slate-300 bg-white shadow-sm transition hover:border-slate-400 focus-within:border-emerald-600 focus-within:ring-2 focus-within:ring-emerald-500/20"
+        className="group relative flex items-center overflow-hidden rounded-full border border-slate-200/90 bg-slate-50/80 shadow-sm transition-all duration-300 hover:border-emerald-400/60 hover:bg-white focus-within:border-emerald-500 focus-within:bg-white focus-within:ring-4 focus-within:ring-emerald-500/15 focus-within:shadow-md"
       >
+        <Search className="ml-4 size-4 shrink-0 text-emerald-600 transition group-focus-within:text-emerald-700 group-focus-within:scale-110" />
+
         <input
           ref={inputRef}
           type="text"
@@ -125,7 +136,7 @@ export function AutocompleteSearch({
           }}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
-          className="w-full bg-transparent px-3.5 py-2 text-xs font-medium text-slate-800 outline-none placeholder:text-slate-400 sm:px-4 sm:py-2.5 sm:text-sm"
+          className="w-full bg-transparent px-3 py-2 text-xs font-medium text-slate-800 outline-none placeholder:text-slate-400 sm:py-2.5 sm:text-sm"
           aria-label="Tìm kiếm sản phẩm"
           autoComplete="off"
         />
@@ -135,37 +146,40 @@ export function AutocompleteSearch({
           <button
             type="button"
             onClick={handleClear}
-            className="flex items-center px-2 text-slate-400 hover:text-slate-600 transition"
+            className="mr-1 grid size-6 shrink-0 place-items-center rounded-full text-slate-400 transition hover:bg-slate-200/70 hover:text-slate-700"
             aria-label="Xóa từ khóa"
           >
-            <X className="size-4" />
+            <X className="size-3.5" />
           </button>
         )}
 
-        {/* "Q TÌM KIẾM" Button on the right matching user screenshot */}
+        {/* Rounded Pill Submit Button */}
         <button
           type="submit"
-          className="flex shrink-0 items-center gap-1.5 border-l border-slate-200 bg-slate-100 px-3.5 py-2 text-xs font-bold uppercase tracking-wider text-slate-800 transition hover:bg-slate-200 sm:px-5 sm:py-2.5 sm:text-xs"
+          className="my-1 mr-1.5 inline-flex shrink-0 items-center gap-1.5 rounded-full bg-gradient-to-r from-emerald-600 to-emerald-700 px-4 py-1.5 text-xs font-black uppercase tracking-wider text-white shadow-sm shadow-emerald-700/20 transition duration-200 hover:from-emerald-500 hover:to-emerald-600 hover:shadow-md hover:shadow-emerald-600/30 active:scale-95 sm:px-5 sm:py-2 sm:text-xs"
           aria-label="Thực hiện tìm kiếm"
         >
-          <Search className="size-3.5 sm:size-4 text-slate-700" />
-          <span className="font-black text-slate-800">TÌM KIẾM</span>
+          <Search className="size-3.5 text-white" />
+          <span className="font-black">TÌM KIẾM</span>
         </button>
       </form>
 
-      {/* Autocomplete Suggestions Popover Dropdown */}
+      {/* Autocomplete Suggestions Popover Dropdown - Curved Rounded-3xl */}
       {isOpen && query.trim() && (
-        <div className="absolute left-0 right-0 top-full z-50 mt-1 overflow-hidden rounded-md border border-slate-200 bg-white shadow-2xl animate-in fade-in slide-in-from-top-1 duration-150">
+        <div className="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-3xl border border-slate-200/90 bg-white/95 p-2 shadow-2xl shadow-slate-900/15 backdrop-blur-xl animate-in fade-in slide-in-from-top-1 duration-150 ring-1 ring-black/5">
           {results.length > 0 ? (
             <div>
               {/* Header hint */}
-              <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50 px-3.5 py-1.5 text-[11px] font-bold text-slate-500">
-                <span>GỢI Ý SẢN PHẨM ({results.length})</span>
-                <span className="text-[10px] font-normal text-slate-400">↑↓ di chuyển • Enter chọn</span>
+              <div className="flex items-center justify-between rounded-2xl bg-emerald-50/80 px-4 py-2 text-[11px] font-extrabold uppercase tracking-wider text-emerald-800">
+                <span className="inline-flex items-center gap-1.5">
+                  <Sparkles className="size-3 text-emerald-600" />
+                  GỢI Ý SẢN PHẨM ({results.length})
+                </span>
+                <span className="text-[10px] font-medium text-slate-400">↑↓ di chuyển • Enter chọn</span>
               </div>
 
-              {/* Scrollable list of suggestions matching screenshot format */}
-              <div className="max-h-[340px] overflow-y-auto divide-y divide-slate-100">
+              {/* Scrollable list of suggestions */}
+              <div className="mt-1 max-h-[360px] overflow-y-auto pr-0.5 space-y-1 scrollbar-thin">
                 {results.map((product, index) => {
                   const isSelected = selectedIndex === index;
 
@@ -174,36 +188,36 @@ export function AutocompleteSearch({
                       key={product.id}
                       onClick={() => handleSelectProduct(product.slug)}
                       onMouseEnter={() => setSelectedIndex(index)}
-                      className={`flex cursor-pointer items-center gap-3 px-3.5 py-2.5 transition ${
+                      className={`flex cursor-pointer items-center gap-3.5 rounded-2xl px-3.5 py-2.5 transition-all duration-200 ${
                         isSelected
-                          ? 'bg-emerald-50/80 text-emerald-900'
-                          : 'hover:bg-slate-50 text-slate-800'
+                          ? 'bg-emerald-50/90 text-emerald-950 shadow-sm ring-1 ring-emerald-500/20'
+                          : 'text-slate-800 hover:bg-slate-50'
                       }`}
                     >
-                      {/* Product Thumbnail on the left */}
-                      <div className="relative size-10 shrink-0 overflow-hidden rounded border border-slate-200 bg-white p-0.5">
+                      {/* Product Thumbnail */}
+                      <div className="relative size-12 shrink-0 overflow-hidden rounded-xl border border-slate-200/80 bg-white p-1 shadow-sm">
                         <Image
                           src={product.imageUrl}
                           alt={product.name}
                           fill
-                          sizes="40px"
+                          sizes="48px"
                           className="object-contain"
                         />
                       </div>
 
-                      {/* Product Name matching screenshot layout */}
+                      {/* Product Info */}
                       <div className="min-w-0 flex-1">
                         <h4
-                          className={`text-xs sm:text-[13px] font-medium leading-tight truncate ${
-                            isSelected ? 'text-emerald-700 font-semibold' : 'text-slate-800'
+                          className={`text-xs font-bold leading-snug line-clamp-1 sm:text-[13px] transition ${
+                            isSelected ? 'text-emerald-700' : 'text-slate-900'
                           }`}
                         >
                           {product.name}
                         </h4>
-                        <div className="mt-0.5 flex items-center gap-2 text-[10px] text-slate-400">
+                        <div className="mt-1 flex items-center gap-2 text-[10px] font-semibold text-slate-400">
                           <span>{product.category}</span>
                           {product.badge && (
-                            <span className="rounded bg-slate-100 px-1 py-0.2 text-[9px] font-bold text-emerald-700">
+                            <span className="rounded-full bg-emerald-50 border border-emerald-200/60 px-2 py-0.5 text-[9px] font-bold text-emerald-700">
                               {product.badge}
                             </span>
                           )}
@@ -212,9 +226,9 @@ export function AutocompleteSearch({
 
                       {/* Price on right */}
                       <div className="shrink-0 text-right">
-                        <span className="block text-xs font-bold text-red-600 sm:text-slate-900">
+                        <strong className="block text-xs font-black text-emerald-700 sm:text-sm">
                           {vndMoney.format(product.price)}
-                        </span>
+                        </strong>
                         {product.originalPrice && product.originalPrice > product.price && (
                           <span className="block text-[10px] text-slate-400 line-through">
                             {vndMoney.format(product.originalPrice)}
@@ -227,11 +241,11 @@ export function AutocompleteSearch({
               </div>
 
               {/* Footer "Xem tất cả kết quả" action */}
-              <div className="border-t border-slate-100 bg-slate-50 p-2 text-center">
+              <div className="mt-1.5 border-t border-slate-100 pt-1.5">
                 <button
                   type="button"
                   onClick={handleSearchSubmit}
-                  className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 hover:text-emerald-800 transition"
+                  className="inline-flex w-full items-center justify-center gap-1.5 rounded-2xl border border-slate-200/60 bg-slate-50/80 py-2.5 text-xs font-bold text-emerald-700 transition hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-800"
                 >
                   <span>Xem tất cả kết quả cho "{query.trim()}"</span>
                   <ChevronRight className="size-3.5" />
@@ -239,14 +253,32 @@ export function AutocompleteSearch({
               </div>
             </div>
           ) : (
-            /* No Results Found State */
-            <div className="p-6 text-center text-xs text-slate-500">
-              <p className="font-bold text-slate-700">
+            /* No Results Found State with Helpful Suggestions */
+            <div className="p-6 text-center text-xs">
+              <div className="mx-auto mb-3 grid size-12 place-items-center rounded-2xl bg-slate-100 text-slate-400">
+                <Search className="size-6" />
+              </div>
+              <p className="font-bold text-slate-700 sm:text-sm">
                 Không tìm thấy sản phẩm nào khớp với "{query.trim()}"
               </p>
               <p className="mt-1 text-[11px] text-slate-400">
-                Gợi ý tìm kiếm: "bóng", "vợt", "bàn bóng bàn", "tạ tay", "máy chạy bộ"...
+                Thử tìm kiếm với các từ khóa phổ biến bên dưới:
               </p>
+              <div className="mt-3.5 flex flex-wrap items-center justify-center gap-1.5">
+                {POPULAR_SUGGESTIONS.map((kw) => (
+                  <button
+                    key={kw}
+                    type="button"
+                    onClick={() => {
+                      setQuery(kw);
+                      inputRef.current?.focus();
+                    }}
+                    className="rounded-full border border-slate-200 bg-white px-3 py-1 text-[11px] font-semibold text-slate-700 shadow-sm transition hover:border-emerald-500 hover:bg-emerald-50/50 hover:text-emerald-700"
+                  >
+                    {kw}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
         </div>

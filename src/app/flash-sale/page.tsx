@@ -24,171 +24,12 @@ import { useAppDispatch } from '@/app/store/hooks';
 import { addCartItem } from '@/app/store/cart.slice';
 import { STORE_CONFIG } from '@/constants';
 
-interface FlashProduct {
-  id: string;
-  slug: string;
-  name: string;
-  category: string;
-  categoryGroup: 'cardio' | 'gym' | 'sports' | 'accessories';
-  imageUrl: string;
-  price: number;
-  originalPrice: number;
-  discountPct: number;
-  soldCount: number;
-  totalQuota: number;
-  gift: string;
-  specs: string;
-  badge: string;
-}
-
-const FLASH_PRODUCTS: FlashProduct[] = [
-  {
-    id: 'fs-1',
-    slug: 'xe-dap-tap-the-duc-spin-bike',
-    name: 'Xe Đạp Tập Thể Dục Kháng Lực Từ Bảo An AirBike Pro',
-    category: 'Xe đạp tập',
-    categoryGroup: 'cardio',
-    imageUrl: '/images/products/spin-bike.jpg',
-    price: 6200000,
-    originalPrice: 8200000,
-    discountPct: 24,
-    soldCount: 16,
-    totalQuota: 20,
-    gift: 'Tặng thảm lót chống ồn + Bình nước thể thao',
-    specs: 'Bánh đà 12kg · Kháng từ êm <25dB',
-    badge: 'Cháy hàng 80%',
-  },
-  {
-    id: 'fs-2',
-    slug: 'may-chay-bo-dctd-pro-x1',
-    name: 'Máy Chạy Bộ Điện Đa Năng Bảo An Pro X1 Động Cơ 3.5HP',
-    category: 'Máy chạy bộ',
-    categoryGroup: 'cardio',
-    imageUrl: '/images/products/treadmill.jpg',
-    price: 14500000,
-    originalPrice: 18900000,
-    discountPct: 23,
-    soldCount: 18,
-    totalQuota: 20,
-    gift: 'Tặng cân điện tử thông minh + Đai massage bụng',
-    specs: 'Động cơ 3.5HP · Nâng dốc tự động 15%',
-    badge: 'Chỉ còn 2 suất',
-  },
-  {
-    id: 'fs-bb-1',
-    slug: 'vot-bong-ban-stiga-crystal-4-sao',
-    name: 'Vợt Bóng Bàn Stiga Crystal 4 Sao Cao Cấp Chuẩn ITTF',
-    category: 'Bóng bàn',
-    categoryGroup: 'sports',
-    imageUrl: 'https://images.unsplash.com/photo-1609710228159-0fa9bd7c0827?auto=format&fit=crop&w=800&q=80',
-    price: 950000,
-    originalPrice: 1350000,
-    discountPct: 30,
-    soldCount: 22,
-    totalQuota: 25,
-    gift: 'Tặng bao vợt cao cấp + Hộp 6 bóng thi đấu',
-    specs: 'Cốt vợt 5 lớp gỗ Thuỵ Điển · Mút Stiga 2.0mm',
-    badge: 'Giảm 30%',
-  },
-  {
-    id: 'fs-bb-2',
-    slug: 'ban-bong-ban-double-fish-df-201c',
-    name: 'Bàn Bóng Bàn Song Ngư Double Fish DF 201C Thi Đấu',
-    category: 'Bóng bàn',
-    categoryGroup: 'sports',
-    imageUrl: 'https://images.unsplash.com/photo-1534158914592-062992fbe900?auto=format&fit=crop&w=800&q=80',
-    price: 9800000,
-    originalPrice: 12500000,
-    discountPct: 22,
-    soldCount: 5,
-    totalQuota: 8,
-    gift: 'Tặng bộ cọc lưới thi đấu + 2 cây vợt Double Fish',
-    specs: 'Mặt bàn MDF dày 18mm · Khung thép sơn tĩnh điện',
-    badge: 'Miễn phí giao lắp',
-  },
-  {
-    id: 'fs-br-1',
-    slug: 'tru-bong-ro-s206',
-    name: 'Trụ Bóng Rổ Di Động Vành Lò Xo Chuyên Nghiệp S206',
-    category: 'Bóng rổ',
-    categoryGroup: 'sports',
-    imageUrl: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=800&q=80',
-    price: 7900000,
-    originalPrice: 9900000,
-    discountPct: 20,
-    soldCount: 6,
-    totalQuota: 10,
-    gift: 'Tặng bóng rổ da thi đấu số 7 + Lưới dự phòng',
-    specs: 'Chiều cao điều chỉnh 2.3m - 3.05m · Bảng Acrylic',
-    badge: 'Hot thể thao trường học',
-  },
-  {
-    id: 'fs-3',
-    slug: 'bo-ta-tay-dieu-chinh-24kg',
-    name: 'Bộ Tạ Tay Điều Chỉnh Thông Minh 24KG Pro (15 Cặp Trong 1)',
-    category: 'Gym & Sức mạnh',
-    categoryGroup: 'gym',
-    imageUrl: 'https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&w=800&q=80',
-    price: 3850000,
-    originalPrice: 4800000,
-    discountPct: 20,
-    soldCount: 27,
-    totalQuota: 30,
-    gift: 'Tặng đôi găng tay nâng tạ Bảo An Grip',
-    specs: 'Thay thế 15 cặp tạ · Thép carbon nguyên khối',
-    badge: 'Hot nhất hôm nay',
-  },
-  {
-    id: 'fs-4',
-    slug: 'ghe-tap-ta-dieu-chinh-gap-gon',
-    name: 'Ghế Tập Tạ Đa Năng Điều Chỉnh 7 Cấp Độ Chịu Tải 400kg',
-    category: 'Gym & Sức mạnh',
-    categoryGroup: 'gym',
-    imageUrl: 'https://images.unsplash.com/photo-1517963879433-6ad2b056d712?auto=format&fit=crop&w=800&q=80',
-    price: 2150000,
-    originalPrice: 2800000,
-    discountPct: 23,
-    soldCount: 14,
-    totalQuota: 18,
-    gift: 'Tặng đai bảo hộ cổ tay thể hình',
-    specs: 'Đệm da PU cao cấp · 7 nấc góc nghiêng',
-    badge: 'Giá sốc trong tuần',
-  },
-  {
-    id: 'fs-5',
-    slug: 'may-truot-tuyet-toan-than-elliptical-orbit',
-    name: 'Xe Đạp Trượt Tuyết Toàn Thân Elliptical Cross-Trainer',
-    category: 'Xe đạp tập',
-    categoryGroup: 'cardio',
-    imageUrl: '/images/products/elliptical.jpg',
-    price: 8900000,
-    originalPrice: 11500000,
-    discountPct: 23,
-    soldCount: 11,
-    totalQuota: 15,
-    gift: 'Tặng dầu tra bảo dưỡng định kỳ 1 năm',
-    specs: 'Chuyển động tự nhiên · Đo nhịp tim tay cầm',
-    badge: 'Bảo vệ khớp gối',
-  },
-  {
-    id: 'fs-6',
-    slug: 'gian-ta-da-nang-olympic-pro',
-    name: 'Giàn Tạ Đa Năng 3 Vị Trí Olympic Pro Kèm Xô Đôi',
-    category: 'Gym & Sức mạnh',
-    categoryGroup: 'gym',
-    imageUrl: 'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?auto=format&fit=crop&w=800&q=80',
-    price: 18900000,
-    originalPrice: 24500000,
-    discountPct: 23,
-    soldCount: 7,
-    totalQuota: 10,
-    gift: 'Tặng thanh kéo xô dài + Dây kéo đôi Tricep',
-    specs: 'Thép hộp 50x100mm · Tải trọng 500kg',
-    badge: 'Giảm 5.6 Triệu',
-  },
-];
-
 import { useToast } from '@/shared/components/global-toast';
+import {
+  FlashProduct,
+  MOCK_FLASH_PRODUCTS,
+  MOCK_FLASH_SLOTS,
+} from '@/shared/data/mocks';
 
 export default function FlashSalePage() {
   const dispatch = useAppDispatch();
@@ -217,15 +58,15 @@ export default function FlashSalePage() {
 
   const filteredProducts = useMemo(() => {
     if (activeCategory === 'cardio') {
-      return FLASH_PRODUCTS.filter((p) => p.categoryGroup === 'cardio');
+      return MOCK_FLASH_PRODUCTS.filter((p) => p.categoryGroup === 'cardio');
     }
     if (activeCategory === 'gym') {
-      return FLASH_PRODUCTS.filter((p) => p.categoryGroup === 'gym');
+      return MOCK_FLASH_PRODUCTS.filter((p) => p.categoryGroup === 'gym');
     }
     if (activeCategory === 'sports') {
-      return FLASH_PRODUCTS.filter((p) => p.categoryGroup === 'sports');
+      return MOCK_FLASH_PRODUCTS.filter((p) => p.categoryGroup === 'sports');
     }
-    return FLASH_PRODUCTS;
+    return MOCK_FLASH_PRODUCTS;
   }, [activeCategory]);
 
   const handleAddToCart = (product: FlashProduct) => {
@@ -298,12 +139,7 @@ export default function FlashSalePage() {
 
           {/* Time Slot Tabs */}
           <div className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-4">
-            {[
-              { slot: '09:00 - 12:00', label: 'Đang diễn ra', active: true },
-              { slot: '12:00 - 17:00', label: 'Sắp bắt đầu', active: false },
-              { slot: '17:00 - 21:00', label: 'Sắp bắt đầu', active: false },
-              { slot: '21:00 - 24:00', label: 'Phiên đêm muộn', active: false },
-            ].map((slot, idx) => (
+            {MOCK_FLASH_SLOTS.map((slot, idx) => (
               <button
                 key={idx}
                 type="button"

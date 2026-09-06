@@ -8,60 +8,7 @@ import { vndMoney } from '@/shared/format/money';
 import { useAppDispatch } from '@/app/store/hooks';
 import { addCartItem } from '@/app/store/cart.slice';
 
-const FLASH_DEALS = [
-  {
-    id: 'fs-1',
-    slug: 'gian-ta-da-nang-olympic-pro',
-    name: 'Giàn tạ đa năng 3 vị trí Olympic Pro (Kèm xô đôi & Đẩy ngực)',
-    price: 18900000,
-    originalPrice: 24500000,
-    discount: 23,
-    imageUrl: 'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?auto=format&fit=crop&w=800&q=80',
-    sold: 14,
-    total: 20,
-    gift: 'Tặng bộ tạ đĩa 50kg + Thảm EPDM',
-    badge: 'Giờ vàng - Giá sốc',
-  },
-  {
-    id: 'fs-2',
-    slug: 'bo-ta-tay-thao-lap-cao-cap-20kg',
-    name: 'Bộ tạ tay tháo lắp cao cấp 20kg (2x10kg đĩa cao su đúc)',
-    price: 1890000,
-    originalPrice: 2450000,
-    discount: 23,
-    imageUrl: 'https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&w=800&q=80',
-    sold: 28,
-    total: 30,
-    gift: 'Tặng găng tay thể hình Bảo An Pro Grip',
-    badge: 'Sắp cháy hàng',
-  },
-  {
-    id: 'fs-3',
-    slug: 'may-chay-bo-dien-gia-dinh-king-pro',
-    name: 'Máy chạy bộ điện gia đình King-Pro động cơ 3.5HP đa năng',
-    price: 13500000,
-    originalPrice: 16900000,
-    discount: 20,
-    imageUrl: 'https://images.unsplash.com/photo-1538805060514-97d9cc17730c?auto=format&fit=crop&w=800&q=80',
-    sold: 9,
-    total: 15,
-    gift: 'Tặng đai massage bụng + Cân điện tử',
-    badge: 'Miễn phí giao lắp',
-  },
-  {
-    id: 'fs-4',
-    slug: 'ghe-tap-ta-dieu-chinh-7-goc-do',
-    name: 'Ghế tập tạ điều chỉnh 7 góc độ tiêu chuẩn thi đấu PowerBench',
-    price: 3850000,
-    originalPrice: 4800000,
-    discount: 20,
-    imageUrl: 'https://images.unsplash.com/photo-1517963879433-6ad2b056d712?auto=format&fit=crop&w=800&q=80',
-    sold: 19,
-    total: 25,
-    gift: 'Tặng đệm Barbell Pad gánh tạ',
-    badge: 'Hot Deal',
-  },
-];
+import { MOCK_HOMEPAGE_FLASH_DEALS as FLASH_DEALS } from '@/shared/data/mocks';
 
 export function FlashSaleSection() {
   const dispatch = useAppDispatch();
@@ -230,20 +177,20 @@ export function FlashSaleSection() {
         </div>
 
         {/* Bottom Banner with All Deals CTA */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 rounded-3xl border border-slate-800 bg-slate-900/50 p-6 sm:flex-row sm:px-8">
+        <div className="mt-12 flex flex-col items-center justify-between gap-4 rounded-3xl border border-rose-900/40 bg-gradient-to-r from-rose-950/40 via-slate-900/70 to-slate-900/90 p-6 sm:flex-row sm:px-8">
           <div className="text-center sm:text-left">
             <strong className="block text-base font-black text-white">
-              Cần lắp đặt phòng tập trọn gói theo ngân sách riêng?
+              Còn hơn 45+ sản phẩm đang giảm giá tới 40% trong các khung giờ hôm nay!
             </strong>
             <span className="text-xs text-slate-400">
-              Kỹ sư thể hình Bảo An Sport khảo sát diện tích và lên bản vẽ 3D miễn phí trong 24 giờ.
+              Khám phá toàn bộ 5 ca giờ vàng Flash Sale và săn voucher giảm thêm độc quyền từ Bảo An Sport.
             </span>
           </div>
           <Link
-            href="/contact"
-            className="inline-flex shrink-0 items-center gap-2 rounded-full bg-emerald-500 px-6 py-3 text-xs font-black text-slate-950 shadow-lg shadow-emerald-500/20 transition hover:bg-emerald-400"
+            href="/flash-sale"
+            className="inline-flex shrink-0 items-center gap-2 rounded-full bg-rose-600 px-6 py-3 text-xs font-black text-white shadow-lg shadow-rose-600/20 transition hover:bg-rose-500"
           >
-            <span>Nhận tư vấn dự án Home Gym</span>
+            <span>Xem tất cả Deal Flash Sale</span>
             <ArrowRight className="size-3.5" />
           </Link>
         </div>

@@ -846,7 +846,7 @@ export function CheckoutPage() {
                   <div key={item.variantId} className="flex items-center gap-3 text-xs">
                     <div className="relative size-12 shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
                       <Image
-                        src={item.imageUrl || '/images/products/spin-bike.jpg'}
+                        src={item.imageUrl || 'https://images.unsplash.com/photo-1571008887538-b36bb32f4571?auto=format&fit=crop&w=600&q=80'}
                         alt={item.name}
                         fill
                         sizes="48px"
