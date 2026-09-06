@@ -3,67 +3,13 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import {
-  Building2,
-  Home,
   CheckCircle2,
   ArrowRight,
   Sparkles,
   Ruler,
-  Layers,
   Wrench,
 } from 'lucide-react';
-
-const GYM_PACKAGES = [
-  {
-    id: 'pkg-condo',
-    title: 'Gói Căn Hộ & Phòng Ngủ',
-    space: '10m² - 15m²',
-    budget: 'Từ 25.000.000đ',
-    badge: 'Tối ưu diện tích',
-    icon: Home,
-    image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=800&q=80',
-    description: 'Bố trí gọn gàng, cách âm sàn chung cư và triệt tiêu rung chấn bằng đệm EPDM đa tầng.',
-    equipment: [
-      'Bộ tạ tay tháo lắp Quick-Lock 20kg',
-      'Ghế tập tạ điều chỉnh 7 góc độ phẳng/dốc',
-      'Xà đơn gắn tường chịu lực 250kg',
-      'Thảm sàn cao su giảm chấn cách âm 15mm',
-    ],
-  },
-  {
-    id: 'pkg-villa',
-    title: 'Gói Biệt Thự & Tầng Thượng',
-    space: '20m² - 35m²',
-    budget: 'Từ 65.000.000đ',
-    badge: 'Được chọn nhiều nhất',
-    featured: true,
-    icon: Layers,
-    image: 'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?auto=format&fit=crop&w=800&q=80',
-    description: 'Tổ hợp tập luyện toàn diện thân trên, thân dưới và cardio tốc độ cao chuẩn vận động viên.',
-    equipment: [
-      'Giàn tạ đa năng 3 vị trí Olympic Pro (kèm kéo xô)',
-      'Máy chạy bộ điện gia đình King-Pro 3.5HP',
-      'Bộ tạ đòn Olympic + 80kg tạ đĩa bọc cao su',
-      'Giá đỡ tạ chữ A + Gương tràn viền LED',
-    ],
-  },
-  {
-    id: 'pkg-commercial',
-    title: 'Gói Doanh Nghiệp & Khách Sạn',
-    space: '50m² - 120m²',
-    budget: 'Từ 160.000.000đ',
-    badge: 'Chuẩn thương mại',
-    icon: Building2,
-    image: 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=800&q=80',
-    description: 'Thiết kế theo nhận diện thương hiệu doanh nghiệp, phục vụ nhiều nhân sự cùng tập luyện đồng thời.',
-    equipment: [
-      'Cụm máy khối đôi Dual-Cable Column thương mại',
-      'Dàn Half Rack đôi thi đấu chuyên nghiệp',
-      '2 Máy chạy bộ cao cấp + 1 Xe đạp kháng lực từ',
-      'Khu vực giãn cơ, yoga và tạ ấm kettlebell',
-    ],
-  },
-];
+import { MOCK_GYM_PACKAGES as GYM_PACKAGES } from '@/shared/data/mocks';
 
 export function GymProjectPlanner() {
   return (

@@ -26,6 +26,7 @@ import {
 } from '@/constants';
 import { AutocompleteSearch } from './autocomplete-search';
 import { HeaderNotifications } from './header-notifications';
+import { useCustomerAuth } from '@/features/auth/use-customer-auth';
 
 export function SiteHeader() {
   const router = useRouter();
@@ -35,9 +36,19 @@ export function SiteHeader() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [activeMegaMenu, setActiveMegaMenu] = useState<string | null>(null);
   const megaMenuTimeout = useRef<ReturnType<typeof setTimeout>>(null);
-  const cartQuantity = useAppSelector((state) =>
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const rawCartQuantity = useAppSelector((state) =>
     state.cart.items.reduce((total, item) => total + item.quantity, 0),
   );
+  // Avoid hydration mismatch by waiting until mounted to show client-persisted cart quantity and auth
+  const cartQuantity = isMounted ? rawCartQuantity : 0;
+  const { isAuthenticated } = useCustomerAuth();
+  const isLoggedIn = isMounted && isAuthenticated;
 
   // Rotate announcements
   useEffect(() => {
@@ -107,6 +118,7 @@ export function SiteHeader() {
                 alt="Bảo An Sport — Dụng Cụ Thể Thao Chính Hãng"
                 fill
                 priority
+                sizes="(max-width: 640px) 176px, 224px"
                 className="object-contain object-left"
               />
             </div>
@@ -144,14 +156,15 @@ export function SiteHeader() {
               <Search className="size-4" />
             </button>
 
-            {/* Notifications Popover */}
-            <HeaderNotifications />
+            {/* Notifications Popover: Chỉ hiển thị khi khách hàng đã đăng nhập */}
+            {isLoggedIn && <HeaderNotifications />}
 
             {/* User Account */}
             <Link
-              href="/login"
+              href={isLoggedIn ? '/profile' : '/login'}
               className="hidden size-10 place-items-center rounded-full border border-slate-200/80 bg-slate-50 text-slate-700 transition hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-700 sm:grid"
-              aria-label="Đăng nhập tài khoản"
+              aria-label={isLoggedIn ? 'Tài khoản cá nhân' : 'Đăng nhập tài khoản'}
+              title={isLoggedIn ? 'Tài khoản cá nhân' : 'Đăng nhập'}
             >
               <UserRound className="size-4" />
             </Link>
@@ -160,7 +173,7 @@ export function SiteHeader() {
             <Link
               href="/cart"
               className="relative grid size-10 place-items-center rounded-full border border-slate-200/80 bg-slate-50 text-slate-700 transition hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-700"
-              aria-label={`Giỏ hàng, ${cartQuantity} sản phẩm`}
+              aria-label={cartQuantity > 0 ? `Giỏ hàng, ${cartQuantity} sản phẩm` : 'Giỏ hàng, 0 sản phẩm'}
             >
               <ShoppingBag className="size-4" />
               {cartQuantity > 0 && (
@@ -490,12 +503,12 @@ export function SiteHeader() {
                   <span>Giỏ hàng ({cartQuantity})</span>
                 </Link>
                 <Link
-                  href="/login"
+                  href={isLoggedIn ? '/profile' : '/login'}
                   className="flex items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 shadow-sm"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <UserRound className="size-3.5 text-emerald-600" />
-                  <span>Đăng nhập</span>
+                  <span>{isLoggedIn ? 'Tài khoản' : 'Đăng nhập'}</span>
                 </Link>
               </div>
             </div>

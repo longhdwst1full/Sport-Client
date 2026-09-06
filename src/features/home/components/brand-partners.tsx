@@ -1,8 +1,4 @@
-const BRAND_NAMES = [
-  'Nike', 'Adidas', 'Stiga', 'Double Fish', 'Under Armour', 'Life Fitness',
-  'Technogym', 'Matrix', 'Impulse', 'BH Fitness', 'Bảo An Sport',
-  'Fairtex', 'Manduka', 'TRX',
-];
+import { MOCK_BRAND_PARTNERS as BRAND_NAMES } from '@/shared/data/mocks';
 
 export function BrandPartners() {
   return (

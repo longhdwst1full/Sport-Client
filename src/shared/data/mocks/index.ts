@@ -10,3 +10,7 @@ export * from './product-related.mock';
 export * from './product-reviews.mock';
 export * from './profile.mock';
 export * from './news.mock';
+export * from './notifications.mock';
+export * from './category-showcase.mock';
+export * from './home.mock';
+export * from './content-stories.mock';

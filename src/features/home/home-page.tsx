@@ -4,15 +4,13 @@ import {
   ArrowRight,
   BadgeCheck,
   ChevronRight,
-  Dumbbell,
-  Footprints,
   Goal,
-  HeartPulse,
   MoveUpRight,
   Play,
   Sparkles,
   Trophy,
 } from 'lucide-react';
+import { MOCK_HOME_SPORT_CATEGORIES, MOCK_POPULAR_SEARCH_KEYWORDS } from '@/shared/data/mocks';
 import { BenefitsStrip } from '@/widgets/benefits-strip/benefits-strip';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { SectionHeading } from '@/foundation/components/section-heading';
@@ -28,32 +26,7 @@ import { StatsCounter } from './components/stats-counter';
 import { FlashSaleSection } from './components/flash-sale-section';
 import { GymProjectPlanner } from './components/gym-project-planner';
 
-const SPORT_CATEGORIES = [
-  {
-    title: 'Gym & Fitness',
-    description: 'Tạ tay, giàn tạ và ghế tập đa năng',
-    image: 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=900&q=85',
-    icon: Dumbbell,
-  },
-  {
-    title: 'Chạy bộ & Cardio',
-    description: 'Máy chạy bộ, xe đạp tập tại nhà',
-    image: 'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&w=900&q=85',
-    icon: Footprints,
-  },
-  {
-    title: 'Bóng bàn & Đối kháng',
-    description: 'Bàn bóng bàn thi đấu, trụ bóng rổ, bao cát',
-    image: 'https://images.unsplash.com/photo-1534158914592-062992fbe900?auto=format&fit=crop&w=900&q=85',
-    icon: Trophy,
-  },
-  {
-    title: 'Yoga & Phục hồi',
-    description: 'Thảm định tuyến, súng massage cơ',
-    image: 'https://images.unsplash.com/photo-1599447421416-3414500d18a5?auto=format&fit=crop&w=900&q=85',
-    icon: HeartPulse,
-  },
-] as const;
+
 
 export function HomePage() {
   return (
@@ -105,16 +78,7 @@ export function HomePage() {
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-12" aria-label="Tìm kiếm phổ biến">
         <div className="flex flex-wrap items-center justify-center gap-2 text-sm bg-slate-50/80 rounded-2xl p-4 border border-slate-200/70">
           <span className="mr-2 font-bold text-slate-500 text-xs">Từ khóa tìm nhiều:</span>
-          {[
-            'Máy chạy bộ gia đình',
-            'Bộ tạ điều chỉnh 24kg',
-            'Bàn bóng bàn Double Fish',
-            'Trụ bóng rổ S206',
-            'Bao cát Boxing Fairtex',
-            'Combo giàn tạ Smith',
-            'Thảm yoga định tuyến',
-            'Xe đạp tập AirBike',
-          ].map((keyword) => (
+          {MOCK_POPULAR_SEARCH_KEYWORDS.map((keyword) => (
             <Link
               key={keyword}
               href={`/catalog?search=${encodeURIComponent(keyword)}`}
@@ -130,7 +94,7 @@ export function HomePage() {
       <section id="shop-by-sport" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-20 border-t border-slate-100">
         <SectionHeading eyebrow="Tìm nhanh theo bộ môn" title="Bạn muốn tập luyện bộ môn nào?" />
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {SPORT_CATEGORIES.map(({ title, description, image, icon: Icon }, index) => (
+          {MOCK_HOME_SPORT_CATEGORIES.map(({ title, description, image, icon: Icon }, index) => (
             <Link
               key={title}
               href="/catalog"

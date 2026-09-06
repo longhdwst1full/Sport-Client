@@ -70,7 +70,7 @@ export function CustomerRegisterPage() {
   return (
     <main className="min-h-screen bg-[#0d1410] text-white">
       <div className="mx-auto grid min-h-screen max-w-7xl lg:grid-cols-[1.1fr_0.9fr]">
-        {/* Left Side: Sports Club Branding & 3D Interactive Canvas */}
+        {/* Left Side: Bảo An Sport Branding & 3D Interactive Canvas */}
         <div className="relative hidden flex-col justify-between overflow-hidden border-r border-white/10 bg-gradient-to-br from-[#0c130f] via-[#121c16] to-[#0a100d] p-12 lg:flex">
           <div className="pointer-events-none absolute -left-20 -top-20 size-96 rounded-full bg-emerald-500/15 blur-[100px]" />
           <div className="pointer-events-none absolute -bottom-20 right-0 size-96 rounded-full bg-emerald-400/10 blur-[120px]" />

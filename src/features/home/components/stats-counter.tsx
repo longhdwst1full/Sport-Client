@@ -1,14 +1,8 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { Award, MapPin, Package, Users } from 'lucide-react';
-
-const STATS = [
-  { icon: MapPin, value: 5, suffix: '+', label: 'Showroom & Chi nhánh' },
-  { icon: Award, value: 3, suffix: '+', label: 'Năm kinh nghiệm' },
-  { icon: Package, value: 500, suffix: '+', label: 'Sản phẩm chính hãng' },
-  { icon: Users, value: 10000, suffix: '+', label: 'Khách hàng tin tưởng' },
-] as const;
+import type { LucideIcon } from 'lucide-react';
+import { MOCK_HOME_STATS as STATS } from '@/shared/data/mocks';
 
 function useCountUp(target: number, duration = 2000, trigger = false) {
   const [count, setCount] = useState(0);
@@ -72,7 +66,7 @@ function StatCard({
   label,
   visible,
 }: {
-  icon: typeof MapPin;
+  icon: LucideIcon;
   value: number;
   suffix: string;
   label: string;

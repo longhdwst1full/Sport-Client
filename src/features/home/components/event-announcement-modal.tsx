@@ -13,33 +13,9 @@ import {
   ShieldCheck,
   Percent,
 } from 'lucide-react';
+import { MOCK_HOME_VOUCHERS as VOUCHERS } from '@/shared/data/mocks';
 
 const STORAGE_KEY = 'baoan_promo_modal_dismissed_until';
-
-interface VoucherItem {
-  code: string;
-  discount: string;
-  minSpend: string;
-  desc: string;
-  expiry: string;
-}
-
-const VOUCHERS: VoucherItem[] = [
-  {
-    code: 'BAOAN200',
-    discount: '200.000 đ',
-    minSpend: 'Đơn từ 2.000.000 đ',
-    desc: 'Giảm trực tiếp vào giỏ hàng',
-    expiry: 'HSD: 30/09/2026',
-  },
-  {
-    code: 'BAOAN500',
-    discount: '500.000 đ',
-    minSpend: 'Đơn từ 5.000.000 đ',
-    desc: 'Áp dụng máy tập & giàn tạ',
-    expiry: 'HSD: 30/09/2026',
-  },
-];
 
 export function EventAnnouncementModal() {
   const [isOpen, setIsOpen] = useState(false);

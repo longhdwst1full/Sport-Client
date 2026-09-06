@@ -13,65 +13,7 @@ import {
   Truck,
   RotateCw,
 } from 'lucide-react';
-
-interface SlideItem {
-  id: string;
-  title: string;
-  highlight: string;
-  subtitle: string;
-  badge: string;
-  ctaText: string;
-  ctaLink: string;
-  imageUrl: string;
-  theme: 'emerald' | 'amber' | 'cyan' | 'rose';
-}
-
-const HERO_SLIDES: SlideItem[] = [
-  {
-    id: 'slide-1',
-    title: 'Máy Chạy Bộ Điện Chính Hãng',
-    highlight: 'Động Cơ Siêu Bền AC/DC',
-    subtitle: 'Nâng dốc tự động 15%, giảm chấn 8 lớp bảo vệ khớp gối. Tặng kèm đai massage 1.500.000đ.',
-    badge: 'GIẢM TỚI 40% · BẢO HÀNH 5 NĂM',
-    ctaText: 'Xem Ưu Đãi Máy Chạy',
-    ctaLink: '/catalog?category=may-chay-bo',
-    imageUrl: '/images/banners/slide-may-chay-bo.jpg',
-    theme: 'emerald',
-  },
-  {
-    id: 'slide-2',
-    title: 'Xe Đạp Tập Kháng Lực Từ',
-    highlight: 'Êm Ái Tuyệt Đối Tại Gia',
-    subtitle: 'Bánh đà thép 18kg, đồng hồ đo nhịp tim & calo tiêu chuẩn quốc tế. Giao lắp hỏa tốc 2h.',
-    badge: 'HOT SALE MÙA THU 2026',
-    ctaText: 'Khám Phá Xe Đạp Tập',
-    ctaLink: '/catalog?category=xe-dap-tap',
-    imageUrl: '/images/banners/slide-xe-dap-tap.jpg',
-    theme: 'amber',
-  },
-  {
-    id: 'slide-3',
-    title: 'Trọn Bộ Home Gym Chuyên Nghiệp',
-    highlight: 'Giàn Tạ Smith 3 Vị Trí',
-    subtitle: 'Tích hợp xô đôi, gánh đùi, đẩy ngực. Giải pháp phòng tập thể hình toàn diện ngay tại nhà.',
-    badge: 'MIỄN PHÍ KHẢO SÁT & LẮP ĐẶT',
-    ctaText: 'Xem Combo Home Gym',
-    ctaLink: '/#products',
-    imageUrl: 'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?auto=format&fit=crop&w=1200&q=80',
-    theme: 'cyan',
-  },
-  {
-    id: 'slide-4',
-    title: 'Dụng Cụ Bóng Bàn & Bóng Rổ',
-    highlight: 'Tiêu Chuẩn Thi Đấu ITTF',
-    subtitle: 'Bàn bóng bàn Song Ngư Double Fish, vợt Stiga chính hãng, trụ bóng rổ học đường & gia đình.',
-    badge: 'CHÍNH HÃNG 100% · GIÁ TỐT NHẤT',
-    ctaText: 'Mua Ngay Giá Tốt',
-    ctaLink: '/catalog?category=dung-cu-bong-ban',
-    imageUrl: 'https://images.unsplash.com/photo-1534158914592-062992fbe900?auto=format&fit=crop&w=1200&q=80',
-    theme: 'rose',
-  },
-];
+import { MOCK_HERO_SLIDES as HERO_SLIDES, HeroSlideItem as SlideItem } from '@/shared/data/mocks';
 
 export function HeroBannerSlider() {
   const [currentSlide, setCurrentSlide] = useState(0);

@@ -1,27 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, Building2, Check, Home, Ruler, Warehouse } from 'lucide-react';
-
-const SPACES = [
-  {
-    icon: Home,
-    title: 'Góc tập nhỏ',
-    meta: 'Dưới 8 m²',
-    description: 'Ưu tiên thiết bị gấp gọn, tạ điều chỉnh và phụ kiện đa năng.',
-  },
-  {
-    icon: Building2,
-    title: 'Home gym gia đình',
-    meta: 'Từ 8–20 m²',
-    description: 'Kết hợp cardio và sức mạnh cho nhiều thành viên cùng sử dụng.',
-  },
-  {
-    icon: Warehouse,
-    title: 'Studio & phòng tập',
-    meta: 'Trên 20 m²',
-    description: 'Chọn theo công suất, tần suất vận hành và khả năng mở rộng.',
-  },
-] as const;
+import { ArrowRight, Check, Ruler } from 'lucide-react';
+import { MOCK_TRAINING_SPACES as SPACES } from '@/shared/data/mocks';
 
 export function TrainingSpaceGuide() {
   return (
