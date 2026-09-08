@@ -1,7 +1,7 @@
 const { mkdir, writeFile } = require('node:fs/promises');
 const { resolve } = require('node:path');
 
-const domains = ['auth', 'catalog', 'content', 'reviews'];
+const domains = ['auth', 'catalog', 'content', 'reviews', 'cart', 'customer', 'shipping', 'checkout'];
 const defaultBaseUrl =
   'https://raw.githubusercontent.com/longhdwst1full/dctd-utc/main/document/api/storefront';
 const baseUrl = (process.env.SPORT_API_CONTRACT_BASE_URL || defaultBaseUrl).replace(/\/$/, '');

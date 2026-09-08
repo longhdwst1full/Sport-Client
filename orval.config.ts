@@ -26,4 +26,8 @@ export default defineConfig({
   catalog: createDomainConfig('catalog'),
   content: createDomainConfig('content'),
   reviews: createDomainConfig('reviews'),
+  cart: createDomainConfig('cart'),
+  customer: createDomainConfig('customer'),
+  shipping: createDomainConfig('shipping'),
+  checkout: createDomainConfig('checkout'),
 });
