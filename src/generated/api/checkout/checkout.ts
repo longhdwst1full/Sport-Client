@@ -143,7 +143,7 @@ export const getGetGuestCheckoutQuoteQueryKey = (checkoutToken?: string) => {
 
 export const getGetGuestCheckoutQuoteQueryOptions = <
   TData = Awaited<ReturnType<typeof getGuestCheckoutQuote>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponseDto>,
 >(
   checkoutToken: string,
   options?: {
@@ -170,11 +170,11 @@ export const getGetGuestCheckoutQuoteQueryOptions = <
 export type GetGuestCheckoutQuoteQueryResult = NonNullable<
   Awaited<ReturnType<typeof getGuestCheckoutQuote>>
 >;
-export type GetGuestCheckoutQuoteQueryError = ErrorType<unknown>;
+export type GetGuestCheckoutQuoteQueryError = ErrorType<ErrorResponseDto>;
 
 export function useGetGuestCheckoutQuote<
   TData = Awaited<ReturnType<typeof getGuestCheckoutQuote>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponseDto>,
 >(
   checkoutToken: string,
   options: {
@@ -195,7 +195,7 @@ export function useGetGuestCheckoutQuote<
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useGetGuestCheckoutQuote<
   TData = Awaited<ReturnType<typeof getGuestCheckoutQuote>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponseDto>,
 >(
   checkoutToken: string,
   options?: {
@@ -216,7 +216,7 @@ export function useGetGuestCheckoutQuote<
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useGetGuestCheckoutQuote<
   TData = Awaited<ReturnType<typeof getGuestCheckoutQuote>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponseDto>,
 >(
   checkoutToken: string,
   options?: {
@@ -233,7 +233,7 @@ export function useGetGuestCheckoutQuote<
 
 export function useGetGuestCheckoutQuote<
   TData = Awaited<ReturnType<typeof getGuestCheckoutQuote>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponseDto>,
 >(
   checkoutToken: string,
   options?: {
@@ -534,7 +534,7 @@ export const getGetAccountCheckoutQuoteQueryKey = (checkoutToken?: string) => {
 
 export const getGetAccountCheckoutQuoteQueryOptions = <
   TData = Awaited<ReturnType<typeof getAccountCheckoutQuote>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponseDto>,
 >(
   checkoutToken: string,
   options?: {
@@ -562,11 +562,11 @@ export const getGetAccountCheckoutQuoteQueryOptions = <
 export type GetAccountCheckoutQuoteQueryResult = NonNullable<
   Awaited<ReturnType<typeof getAccountCheckoutQuote>>
 >;
-export type GetAccountCheckoutQuoteQueryError = ErrorType<unknown>;
+export type GetAccountCheckoutQuoteQueryError = ErrorType<ErrorResponseDto>;
 
 export function useGetAccountCheckoutQuote<
   TData = Awaited<ReturnType<typeof getAccountCheckoutQuote>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponseDto>,
 >(
   checkoutToken: string,
   options: {
@@ -587,7 +587,7 @@ export function useGetAccountCheckoutQuote<
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useGetAccountCheckoutQuote<
   TData = Awaited<ReturnType<typeof getAccountCheckoutQuote>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponseDto>,
 >(
   checkoutToken: string,
   options?: {
@@ -608,7 +608,7 @@ export function useGetAccountCheckoutQuote<
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useGetAccountCheckoutQuote<
   TData = Awaited<ReturnType<typeof getAccountCheckoutQuote>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponseDto>,
 >(
   checkoutToken: string,
   options?: {
@@ -625,7 +625,7 @@ export function useGetAccountCheckoutQuote<
 
 export function useGetAccountCheckoutQuote<
   TData = Awaited<ReturnType<typeof getAccountCheckoutQuote>>,
-  TError = ErrorType<unknown>,
+  TError = ErrorType<ErrorResponseDto>,
 >(
   checkoutToken: string,
   options?: {

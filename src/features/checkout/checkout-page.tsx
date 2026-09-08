@@ -14,7 +14,7 @@ import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { ApiError } from '@/lib/api/fetcher';
 import { useToast } from '@/shared/components/global-toast';
 import { vndMoney } from '@/shared/format/money';
-import { confirmCheckout, prepareCheckout, type CheckoutContext } from './checkout-api.workflow';
+import { confirmCheckout, prepareCheckout, reloadCheckout, type CheckoutContext } from './checkout-api.workflow';
 
 const initialAddress: SelectedAddressData = {
   provinceCode: 79,
@@ -49,6 +49,7 @@ export function CheckoutPage() {
   const [address, setAddress] = useState<SelectedAddressData>(initialAddress);
   const [coordinates, setCoordinates] = useState<{ latitude: number; longitude: number }>();
   const [paymentMethod, setPaymentMethod] = useState<CreateCheckoutQuoteDtoPaymentMethod>('COD');
+  const [requestConsultation, setRequestConsultation] = useState(false);
   const [quote, setQuote] = useState<CheckoutQuoteDto>();
   const [context, setContext] = useState<CheckoutContext>();
   const [reservation, setReservation] = useState<ReservationDto>();
@@ -93,8 +94,30 @@ export function CheckoutPage() {
       ...coordinates,
     },
     paymentMethod,
+    requestShippingConsultation: requestConsultation,
     ...(note.trim() ? { note: note.trim() } : {}),
   });
+
+  const refreshConsultedQuote = async () => {
+    if (!quote || !context || busy) return;
+    setBusy(true);
+    setError('');
+    try {
+      const refreshed = await reloadCheckout(context, quote.checkoutToken);
+      setQuote(refreshed);
+      toast({
+        type: refreshed.requiresShippingConsultation ? 'warning' : 'success',
+        title: refreshed.requiresShippingConsultation ? 'Đang chờ nhân viên xác nhận' : 'Phí giao đã được xác nhận',
+        message: refreshed.requiresShippingConsultation
+          ? 'Vui lòng kiểm tra lại sau khi nhân viên liên hệ.'
+          : 'Bạn có thể xác nhận giữ hàng với mức phí đã thống nhất.',
+      });
+    } catch (caught) {
+      setError(messageOf(caught));
+    } finally {
+      setBusy(false);
+    }
+  };
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -188,6 +211,21 @@ export function CheckoutPage() {
               <div className="mt-5"><VietnamAddressSelector initialData={address} onChange={(value) => { setAddress(value); invalidateQuote(); }} required /></div>
               <button type="button" onClick={useCurrentLocation} className="mt-4 inline-flex items-center gap-2 rounded-xl border border-emerald-200 px-3 py-2 text-xs font-bold text-emerald-700"><LocateFixed className="size-4" /> Dùng vị trí hiện tại để tìm chi nhánh gần nhất</button>
               <label className="mt-4 block text-xs font-bold text-slate-700">Ghi chú giao hàng<textarea rows={3} value={note} onChange={(e) => { setNote(e.target.value); invalidateQuote(); }} className="mt-1.5 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm" placeholder="Gọi trước khi giao, thời gian nhận, yêu cầu xe khách..." /></label>
+              <label className="mt-4 flex cursor-pointer items-start gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-950">
+                <input
+                  type="checkbox"
+                  checked={requestConsultation}
+                  onChange={(event) => {
+                    setRequestConsultation(event.target.checked);
+                    invalidateQuote();
+                  }}
+                  className="mt-0.5 size-4 accent-emerald-600"
+                />
+                <span>
+                  <strong className="block">Nhờ nhân viên tư vấn phương án giao riêng</strong>
+                  Dùng cho hàng cồng kềnh, gửi xe khách hoặc trường hợp cần thống nhất phí và thời gian qua điện thoại.
+                </span>
+              </label>
             </section>
 
             <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -213,7 +251,19 @@ export function CheckoutPage() {
                   <p>Phí giao: <strong>{quote.shippingTotal === null || quote.shippingTotal === undefined ? 'Chờ tư vấn' : vndMoney.format(Number(quote.shippingTotal))}</strong></p>
                   <p>ETA: <strong>{quote.etaMinDays === null || quote.etaMinDays === undefined ? 'Chờ tư vấn' : `${quote.etaMinDays}-${quote.etaMaxDays} ngày`}</strong></p>
                 </div>
-                {quote.requiresShippingConsultation && <p className="mt-4 text-sm font-semibold text-amber-900">Nhân viên sẽ gọi để thống nhất phí, thời gian và hình thức giao như xe khách. Chưa giữ tồn cho đến khi bạn xác nhận lại quote.</p>}
+                {quote.requiresShippingConsultation && (
+                  <div className="mt-4 flex flex-col gap-3 rounded-2xl border border-amber-200 bg-white/70 p-4 sm:flex-row sm:items-center sm:justify-between">
+                    <p className="text-sm font-semibold text-amber-900">Nhân viên sẽ gọi để thống nhất phí, thời gian và hình thức giao. Hàng chỉ được giữ sau khi phí đã cập nhật và bạn xác nhận.</p>
+                    <button
+                      type="button"
+                      onClick={refreshConsultedQuote}
+                      disabled={busy}
+                      className="shrink-0 rounded-xl bg-amber-600 px-4 py-2.5 text-xs font-black text-white disabled:bg-slate-300"
+                    >
+                      {busy ? 'Đang kiểm tra...' : 'Kiểm tra lại phí'}
+                    </button>
+                  </div>
+                )}
               </section>
             )}
 

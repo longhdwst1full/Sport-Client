@@ -10,6 +10,8 @@ import {
 import {
   confirmAccountCheckout,
   confirmGuestCheckout,
+  getAccountCheckoutQuote,
+  getGuestCheckoutQuote,
   quoteAccountCheckout,
   quoteGuestCheckout,
 } from '@/generated/api/checkout/checkout';
@@ -108,4 +110,14 @@ export async function confirmCheckout(
     return confirmAccountCheckout(checkoutToken, { headers: { 'idempotency-key': idempotencyKey } });
   }
   return confirmGuestCheckout(checkoutToken, guestHeaders(context.cartToken, idempotencyKey));
+}
+
+export async function reloadCheckout(
+  context: CheckoutContext,
+  checkoutToken: string,
+): Promise<CheckoutQuoteDto> {
+  if (context.mode === 'ACCOUNT') {
+    return getAccountCheckoutQuote(checkoutToken);
+  }
+  return getGuestCheckoutQuote(checkoutToken, guestHeaders(context.cartToken));
 }
