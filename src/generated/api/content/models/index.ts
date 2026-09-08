@@ -8,6 +8,7 @@
 
 export * from './contentPostDto';
 export * from './contentPostDtoPostType';
+export * from './contentPostDtoStatus';
 export * from './contentPostListDto';
 export * from './errorDetailDto';
 export * from './errorResponseDto';
