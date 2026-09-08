@@ -51,6 +51,30 @@ paths:
       summary: Revalidate a guest cart and choose an eligible fulfillment branch
       tags:
         - Storefront Guest Checkout
+  /api/v1/checkouts/guest/{checkoutToken}:
+    get:
+      operationId: getGuestCheckoutQuote
+      parameters:
+        - name: checkoutToken
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: x-cart-token
+          required: true
+          in: header
+          schema:
+            type: string
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CheckoutQuoteDto"
+      summary: Reload an owned guest quote after staff consultation
+      tags:
+        - Storefront Guest Checkout
   /api/v1/checkouts/guest/{checkoutToken}/confirm:
     post:
       operationId: confirmGuestCheckout
@@ -155,6 +179,27 @@ paths:
       summary: Revalidate an account cart and choose an eligible fulfillment branch
       tags:
         - Storefront Account Checkout
+  /api/v1/account/checkouts/{checkoutToken}:
+    get:
+      operationId: getAccountCheckoutQuote
+      parameters:
+        - name: checkoutToken
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CheckoutQuoteDto"
+      security:
+        - bearer: []
+      summary: Reload an owned account quote after staff consultation
+      tags:
+        - Storefront Account Checkout
   /api/v1/account/checkouts/{checkoutToken}/confirm:
     post:
       operationId: confirmAccountCheckout
@@ -221,6 +266,10 @@ components:
             - BANK_TRANSFER
             - COD
           example: BANK_TRANSFER
+        requestShippingConsultation:
+          type: boolean
+          default: false
+          description: Request a staff-agreed fee/ETA for coach bus or special delivery
         note:
           type: string
           maxLength: 1000

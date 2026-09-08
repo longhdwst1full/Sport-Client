@@ -11,6 +11,8 @@ import type { CreateCheckoutQuoteDtoPaymentMethod } from './createCheckoutQuoteD
 export interface CreateCheckoutQuoteDto {
   recipient: CheckoutRecipientDto;
   paymentMethod: CreateCheckoutQuoteDtoPaymentMethod;
+  /** Request a staff-agreed fee/ETA for coach bus or special delivery */
+  requestShippingConsultation?: boolean;
   /** @maxLength 1000 */
   note?: string;
 }

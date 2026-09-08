@@ -5,12 +5,20 @@
  * Contract for storefront and admin applications
  * OpenAPI spec version: 1.0.0
  */
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import type {
+  DataTag,
+  DefinedInitialDataOptions,
+  DefinedUseQueryResult,
   MutationFunction,
   QueryClient,
+  QueryFunction,
+  QueryKey,
+  UndefinedInitialDataOptions,
   UseMutationOptions,
   UseMutationResult,
+  UseQueryOptions,
+  UseQueryResult,
 } from '@tanstack/react-query';
 
 import type {
@@ -114,6 +122,138 @@ export const useQuoteGuestCheckout = <
 
   return useMutation(mutationOptions, queryClient);
 };
+
+/**
+ * @summary Reload an owned guest quote after staff consultation
+ */
+export const getGuestCheckoutQuote = (
+  checkoutToken: string,
+  options?: SecondParameter<typeof apiFetcher>,
+  signal?: AbortSignal,
+) => {
+  return apiFetcher<CheckoutQuoteDto>(
+    { url: `/api/v1/checkouts/guest/${checkoutToken}`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getGetGuestCheckoutQuoteQueryKey = (checkoutToken?: string) => {
+  return [`/api/v1/checkouts/guest/${checkoutToken}`] as const;
+};
+
+export const getGetGuestCheckoutQuoteQueryOptions = <
+  TData = Awaited<ReturnType<typeof getGuestCheckoutQuote>>,
+  TError = ErrorType<unknown>,
+>(
+  checkoutToken: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getGuestCheckoutQuote>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetGuestCheckoutQuoteQueryKey(checkoutToken);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getGuestCheckoutQuote>>> = ({ signal }) =>
+    getGuestCheckoutQuote(checkoutToken, requestOptions, signal);
+
+  return { queryKey, queryFn, enabled: !!checkoutToken, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getGuestCheckoutQuote>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetGuestCheckoutQuoteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getGuestCheckoutQuote>>
+>;
+export type GetGuestCheckoutQuoteQueryError = ErrorType<unknown>;
+
+export function useGetGuestCheckoutQuote<
+  TData = Awaited<ReturnType<typeof getGuestCheckoutQuote>>,
+  TError = ErrorType<unknown>,
+>(
+  checkoutToken: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getGuestCheckoutQuote>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getGuestCheckoutQuote>>,
+          TError,
+          Awaited<ReturnType<typeof getGuestCheckoutQuote>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetGuestCheckoutQuote<
+  TData = Awaited<ReturnType<typeof getGuestCheckoutQuote>>,
+  TError = ErrorType<unknown>,
+>(
+  checkoutToken: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getGuestCheckoutQuote>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getGuestCheckoutQuote>>,
+          TError,
+          Awaited<ReturnType<typeof getGuestCheckoutQuote>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetGuestCheckoutQuote<
+  TData = Awaited<ReturnType<typeof getGuestCheckoutQuote>>,
+  TError = ErrorType<unknown>,
+>(
+  checkoutToken: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getGuestCheckoutQuote>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Reload an owned guest quote after staff consultation
+ */
+
+export function useGetGuestCheckoutQuote<
+  TData = Awaited<ReturnType<typeof getGuestCheckoutQuote>>,
+  TError = ErrorType<unknown>,
+>(
+  checkoutToken: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getGuestCheckoutQuote>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetGuestCheckoutQuoteQueryOptions(checkoutToken, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
 
 /**
  * @summary Confirm a guest quote and reserve its physical SKU demand atomically
@@ -373,6 +513,139 @@ export const useQuoteAccountCheckout = <
 
   return useMutation(mutationOptions, queryClient);
 };
+
+/**
+ * @summary Reload an owned account quote after staff consultation
+ */
+export const getAccountCheckoutQuote = (
+  checkoutToken: string,
+  options?: SecondParameter<typeof apiFetcher>,
+  signal?: AbortSignal,
+) => {
+  return apiFetcher<CheckoutQuoteDto>(
+    { url: `/api/v1/account/checkouts/${checkoutToken}`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getGetAccountCheckoutQuoteQueryKey = (checkoutToken?: string) => {
+  return [`/api/v1/account/checkouts/${checkoutToken}`] as const;
+};
+
+export const getGetAccountCheckoutQuoteQueryOptions = <
+  TData = Awaited<ReturnType<typeof getAccountCheckoutQuote>>,
+  TError = ErrorType<unknown>,
+>(
+  checkoutToken: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getAccountCheckoutQuote>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetAccountCheckoutQuoteQueryKey(checkoutToken);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getAccountCheckoutQuote>>> = ({
+    signal,
+  }) => getAccountCheckoutQuote(checkoutToken, requestOptions, signal);
+
+  return { queryKey, queryFn, enabled: !!checkoutToken, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getAccountCheckoutQuote>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetAccountCheckoutQuoteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getAccountCheckoutQuote>>
+>;
+export type GetAccountCheckoutQuoteQueryError = ErrorType<unknown>;
+
+export function useGetAccountCheckoutQuote<
+  TData = Awaited<ReturnType<typeof getAccountCheckoutQuote>>,
+  TError = ErrorType<unknown>,
+>(
+  checkoutToken: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getAccountCheckoutQuote>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getAccountCheckoutQuote>>,
+          TError,
+          Awaited<ReturnType<typeof getAccountCheckoutQuote>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetAccountCheckoutQuote<
+  TData = Awaited<ReturnType<typeof getAccountCheckoutQuote>>,
+  TError = ErrorType<unknown>,
+>(
+  checkoutToken: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getAccountCheckoutQuote>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getAccountCheckoutQuote>>,
+          TError,
+          Awaited<ReturnType<typeof getAccountCheckoutQuote>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetAccountCheckoutQuote<
+  TData = Awaited<ReturnType<typeof getAccountCheckoutQuote>>,
+  TError = ErrorType<unknown>,
+>(
+  checkoutToken: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getAccountCheckoutQuote>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Reload an owned account quote after staff consultation
+ */
+
+export function useGetAccountCheckoutQuote<
+  TData = Awaited<ReturnType<typeof getAccountCheckoutQuote>>,
+  TError = ErrorType<unknown>,
+>(
+  checkoutToken: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getAccountCheckoutQuote>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetAccountCheckoutQuoteQueryOptions(checkoutToken, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
 
 /**
  * @summary Confirm an account quote and reserve its physical SKU demand atomically
