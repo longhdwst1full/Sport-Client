@@ -1,10 +1,9 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
-import { CheckCircle2, CreditCard, LoaderCircle, LocateFixed, MapPin, ShieldCheck, Truck } from 'lucide-react';
+import { CreditCard, LocateFixed, MapPin, Truck } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { clearCart } from '@/app/store/cart.slice';
 import { VietnamAddressSelector, type SelectedAddressData } from '@/components/address/vietnam-address-selector';
@@ -14,7 +13,9 @@ import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { ApiError } from '@/lib/api/fetcher';
 import { useToast } from '@/shared/components/global-toast';
 import { vndMoney } from '@/shared/format/money';
-import { confirmCheckout, prepareCheckout, reloadCheckout, type CheckoutContext } from './checkout-api.workflow';
+import { confirmCheckout, prepareCheckout, reloadCheckout, type CheckoutContext } from '../api/checkout.workflow';
+import { CheckoutOrderSummary } from '../components/checkout-order-summary';
+import { CheckoutSuccess } from '../components/checkout-success';
 
 const initialAddress: SelectedAddressData = {
   provinceCode: 79,
@@ -164,32 +165,11 @@ export function CheckoutPage() {
   if (reservation) {
     return (
       <StorefrontLayout>
-        <main className="mx-auto max-w-3xl px-4 py-14 sm:px-6">
-          <section className="rounded-[32px] border border-emerald-200 bg-white p-7 text-center shadow-xl sm:p-12">
-            <div className="mx-auto grid size-20 place-items-center rounded-3xl bg-emerald-100 text-emerald-700">
-              <CheckCircle2 className="size-11" />
-            </div>
-            <h1 className="mt-5 text-2xl font-black text-slate-950">Đã xác nhận và giữ hàng</h1>
-            <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-slate-600">
-              Mã giữ hàng <strong className="font-mono text-emerald-700">{reservation.id}</strong>. Hàng được giữ đến{' '}
-              <strong>{new Date(reservation.expiresAt).toLocaleString('vi-VN')}</strong>.
-            </p>
-            <p className="mt-2 text-sm text-slate-600">
-              {paymentMethod === 'COD'
-                ? 'Bạn thanh toán đủ một lần khi nhận hàng. Doanh thu chỉ ghi nhận sau khi giao hoàn tất.'
-                : 'Đơn đang chờ bước tạo chỉ dẫn chuyển khoản và xác nhận tiền ở module thanh toán.'}
-            </p>
-            <div className="mt-7 flex flex-wrap justify-center gap-3">
-              <Link href="/" className="rounded-xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white">Tiếp tục mua sắm</Link>
-              <Link href="/profile" className="rounded-xl border border-slate-200 px-5 py-3 text-sm font-bold text-slate-700">Tài khoản của tôi</Link>
-            </div>
-          </section>
-        </main>
+        <CheckoutSuccess reservation={reservation} paymentMethod={paymentMethod} />
       </StorefrontLayout>
     );
   }
 
-  const payable = quote?.grandTotal ? Number(quote.grandTotal) : localSubtotal;
   return (
     <StorefrontLayout>
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -270,20 +250,13 @@ export function CheckoutPage() {
             {error && <div role="alert" className="rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm font-semibold text-rose-700">{error}</div>}
           </div>
 
-          <aside>
-            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm lg:sticky lg:top-28">
-              <div className="flex items-center justify-between"><h2 className="font-black text-slate-900">Đơn hàng ({items.length})</h2><Link href="/cart" className="text-xs font-bold text-emerald-700">Chỉnh sửa</Link></div>
-              <div className="mt-4 max-h-72 space-y-3 overflow-auto">
-                {items.map((item) => <div key={item.variantId} className="flex items-center gap-3"><div className="relative size-12 overflow-hidden rounded-xl border bg-slate-50"><Image src={item.imageUrl || '/icon.svg'} alt={item.name} fill sizes="48px" className="object-contain p-1" /></div><div className="min-w-0 flex-1"><p className="truncate text-xs font-bold text-slate-900">{item.name}</p><p className="text-xs text-slate-500">{item.sku} · ×{item.quantity}</p></div><strong className="text-xs">{vndMoney.format(item.price * item.quantity)}</strong></div>)}
-              </div>
-              <div className="mt-5 space-y-2 border-t pt-4 text-sm"><div className="flex justify-between"><span>Tạm tính tham khảo</span><span>{vndMoney.format(localSubtotal)}</span></div>{quote && <><div className="flex justify-between"><span>Phí giao</span><span>{quote.shippingTotal == null ? 'Chờ tư vấn' : vndMoney.format(Number(quote.shippingTotal))}</span></div><div className="flex justify-between border-t pt-3 text-base font-black"><span>Khách thanh toán</span><span className="text-emerald-700">{quote.grandTotal == null ? 'Chờ tư vấn' : vndMoney.format(payable)}</span></div></>}</div>
-              <button type="submit" disabled={busy || !isLoaded || quote?.requiresShippingConsultation} className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-600 py-3.5 text-sm font-black text-white disabled:cursor-not-allowed disabled:bg-slate-300">
-                {busy ? <LoaderCircle className="size-5 animate-spin" /> : quote ? <CheckCircle2 className="size-5" /> : <Truck className="size-5" />}
-                {busy ? 'Đang xử lý...' : quote ? 'Xác nhận và giữ hàng 30 phút' : 'Kiểm tra tồn và tính phí'}
-              </button>
-              <div className="mt-4 flex gap-2 text-xs leading-5 text-slate-500"><ShieldCheck className="mt-0.5 size-4 shrink-0 text-emerald-600" /><span>Không lấy giá hoặc tồn từ dữ liệu lưu trên trình duyệt. Backend là nguồn quyết định cuối cùng.</span></div>
-            </div>
-          </aside>
+          <CheckoutOrderSummary
+            items={items}
+            localSubtotal={localSubtotal}
+            quote={quote}
+            busy={busy}
+            authLoaded={isLoaded}
+          />
         </form>
       </main>
     </StorefrontLayout>
