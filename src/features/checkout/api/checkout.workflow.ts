@@ -17,6 +17,8 @@ import {
 } from '@/generated/api/checkout/checkout';
 import type { CartDto } from '@/generated/api/cart/models';
 import type { CheckoutQuoteDto, CreateCheckoutQuoteDto, ReservationDto } from '@/generated/api/checkout/models';
+import { placeAccountOrder, placeGuestOrder } from '@/generated/api/orders/orders';
+import type { OrderDetailDto } from '@/generated/api/orders/models';
 import { ApiError } from '@/lib/api/fetcher';
 
 const GUEST_CART_TOKEN_KEY = 'dctd-storefront-guest-cart-token-v1';
@@ -110,6 +112,17 @@ export async function confirmCheckout(
     return confirmAccountCheckout(checkoutToken, { headers: { 'idempotency-key': idempotencyKey } });
   }
   return confirmGuestCheckout(checkoutToken, guestHeaders(context.cartToken, idempotencyKey));
+}
+
+export async function placeOrder(
+  context: CheckoutContext,
+  checkoutToken: string,
+  idempotencyKey: string,
+): Promise<OrderDetailDto> {
+  if (context.mode === 'ACCOUNT') {
+    return placeAccountOrder(checkoutToken, { headers: { 'idempotency-key': idempotencyKey } });
+  }
+  return placeGuestOrder(checkoutToken, guestHeaders(context.cartToken, idempotencyKey));
 }
 
 export async function reloadCheckout(

@@ -30,4 +30,5 @@ export default defineConfig({
   customer: createDomainConfig('customer'),
   shipping: createDomainConfig('shipping'),
   checkout: createDomainConfig('checkout'),
+  orders: createDomainConfig('orders'),
 });

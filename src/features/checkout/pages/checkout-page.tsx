@@ -2,18 +2,19 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { CreditCard, LocateFixed, MapPin, Truck } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { clearCart } from '@/app/store/cart.slice';
 import { VietnamAddressSelector, type SelectedAddressData } from '@/components/address/vietnam-address-selector';
 import { useCustomerAuth } from '@/features/auth/use-customer-auth';
-import type { CheckoutQuoteDto, CreateCheckoutQuoteDtoPaymentMethod, ReservationDto } from '@/generated/api/checkout/models';
+import type { CheckoutQuoteDto, CreateCheckoutQuoteDtoPaymentMethod } from '@/generated/api/checkout/models';
+import type { OrderDetailDto } from '@/generated/api/orders/models';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { ApiError } from '@/lib/api/fetcher';
 import { useToast } from '@/shared/components/global-toast';
 import { vndMoney } from '@/shared/format/money';
-import { confirmCheckout, prepareCheckout, reloadCheckout, type CheckoutContext } from '../api/checkout.workflow';
+import { confirmCheckout, placeOrder, prepareCheckout, reloadCheckout, type CheckoutContext } from '../api/checkout.workflow';
 import { CheckoutOrderSummary } from '../components/checkout-order-summary';
 import { CheckoutSuccess } from '../components/checkout-success';
 
@@ -53,17 +54,22 @@ export function CheckoutPage() {
   const [requestConsultation, setRequestConsultation] = useState(false);
   const [quote, setQuote] = useState<CheckoutQuoteDto>();
   const [context, setContext] = useState<CheckoutContext>();
-  const [reservation, setReservation] = useState<ReservationDto>();
+  const [placedOrder, setPlacedOrder] = useState<OrderDetailDto>();
+  // Retry cùng ý định phải dùng lại key; tạo key mới sau timeout mạng có thể biến retry thành lệnh thứ hai.
+  const confirmIdempotencyKey = useRef<string | undefined>(undefined);
+  const orderIdempotencyKey = useRef<string | undefined>(undefined);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (!items.length && !reservation) router.replace('/cart');
-  }, [items.length, reservation, router]);
+    if (!items.length && !placedOrder) router.replace('/cart');
+  }, [items.length, placedOrder, router]);
 
   const invalidateQuote = () => {
     setQuote(undefined);
     setContext(undefined);
+    confirmIdempotencyKey.current = undefined;
+    orderIdempotencyKey.current = undefined;
     setError('');
   };
 
@@ -149,10 +155,13 @@ export function CheckoutPage() {
         return;
       }
       if (!context || quote.requiresShippingConsultation) return;
-      const result = await confirmCheckout(context, quote.checkoutToken, crypto.randomUUID());
-      setReservation(result);
+      confirmIdempotencyKey.current ??= crypto.randomUUID();
+      orderIdempotencyKey.current ??= crypto.randomUUID();
+      await confirmCheckout(context, quote.checkoutToken, confirmIdempotencyKey.current);
+      const order = await placeOrder(context, quote.checkoutToken, orderIdempotencyKey.current);
+      setPlacedOrder(order);
       dispatch(clearCart());
-      toast({ type: 'success', title: 'Đã xác nhận', message: 'Hệ thống đã giữ hàng trong 30 phút.' });
+      toast({ type: 'success', title: 'Đặt hàng thành công', message: `Mã đơn ${order.orderNo} đã được tiếp nhận.` });
     } catch (caught) {
       setError(messageOf(caught));
     } finally {
@@ -160,12 +169,12 @@ export function CheckoutPage() {
     }
   };
 
-  if (!items.length && !reservation) return null;
+  if (!items.length && !placedOrder) return null;
 
-  if (reservation) {
+  if (placedOrder) {
     return (
       <StorefrontLayout>
-        <CheckoutSuccess reservation={reservation} paymentMethod={paymentMethod} />
+        <CheckoutSuccess order={placedOrder} />
       </StorefrontLayout>
     );
   }
