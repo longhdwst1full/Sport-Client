@@ -13,7 +13,7 @@ import {
   TrendingUp,
 } from 'lucide-react';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
-import { useContentStories } from '@/features/content/hooks/use-content-stories';
+import { useContentStories } from '../hooks/use-content-stories';
 
 import {
   MOCK_NEWS_CATEGORIES as CATEGORIES,

@@ -12,3 +12,4 @@ export {
   type CategoryCardView,
   type CategoryRailView,
 } from './model/category.mapper';
+export { ProductsCatalogView } from './components/products-catalog-view';

@@ -14,11 +14,11 @@ import { MOCK_HOME_SPORT_CATEGORIES, MOCK_POPULAR_SEARCH_KEYWORDS } from '@/shar
 import { BenefitsStrip } from '@/widgets/benefits-strip/benefits-strip';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { SectionHeading } from '@/foundation/components/section-heading';
-import { ProductShowcase } from '@/features/catalog/components/product-showcase';
+import { ProductShowcase } from '@/features/catalog';
 import { toCategoryRailView } from '@/features/catalog';
 import { listCatalogCategories } from '@/generated/api/catalog/catalog';
-import { ContentStories } from '@/features/content/components/content-stories';
-import { ProductReviews } from '@/features/reviews/components/product-reviews';
+import { ContentStories } from '@/features/content';
+import { ProductReviews } from '@/features/reviews';
 import { EventAnnouncementModal } from '../components/event-announcement-modal';
 import { HeroBannerSlider } from '../components/hero-banner-slider';
 import { CategoryVisualShowcase } from '../components/category-visual-showcase';

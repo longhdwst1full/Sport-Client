@@ -8,7 +8,7 @@ import {
   BadgePercent,
 } from 'lucide-react';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
-import { ProductsCatalogView } from '@/features/catalog/components/products-catalog-view';
+import { ProductsCatalogView } from '../components/products-catalog-view';
 import { FlashSaleSection } from '@/features/promotions';
 
 

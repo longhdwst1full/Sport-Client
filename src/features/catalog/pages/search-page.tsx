@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Search, Sparkles, Filter, ChevronRight } from 'lucide-react';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
-import { ProductShowcase } from '@/features/catalog/components/product-showcase';
+import { ProductShowcase } from '../components/product-showcase';
 import { AutocompleteSearch } from '@/widgets/site-header/autocomplete-search';
 
 function SearchContent() {
