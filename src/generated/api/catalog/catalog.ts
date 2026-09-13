@@ -19,6 +19,7 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  CatalogCategoryListDto,
   ErrorResponseDto,
   ListCatalogProductsParams,
   ProductDetailDto,
@@ -28,6 +29,130 @@ import type {
 import { apiFetcher } from '../../../lib/api/fetcher';
 import type { ErrorType } from '../../../lib/api/fetcher';
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
+
+/**
+ * @summary List active storefront categories
+ */
+export const listCatalogCategories = (
+  options?: SecondParameter<typeof apiFetcher>,
+  signal?: AbortSignal,
+) => {
+  return apiFetcher<CatalogCategoryListDto>(
+    { url: `/api/v1/catalog/categories`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getListCatalogCategoriesQueryKey = () => {
+  return [`/api/v1/catalog/categories`] as const;
+};
+
+export const getListCatalogCategoriesQueryOptions = <
+  TData = Awaited<ReturnType<typeof listCatalogCategories>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof listCatalogCategories>>, TError, TData>
+  >;
+  request?: SecondParameter<typeof apiFetcher>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListCatalogCategoriesQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listCatalogCategories>>> = ({ signal }) =>
+    listCatalogCategories(requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listCatalogCategories>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListCatalogCategoriesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listCatalogCategories>>
+>;
+export type ListCatalogCategoriesQueryError = ErrorType<unknown>;
+
+export function useListCatalogCategories<
+  TData = Awaited<ReturnType<typeof listCatalogCategories>>,
+  TError = ErrorType<unknown>,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listCatalogCategories>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listCatalogCategories>>,
+          TError,
+          Awaited<ReturnType<typeof listCatalogCategories>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListCatalogCategories<
+  TData = Awaited<ReturnType<typeof listCatalogCategories>>,
+  TError = ErrorType<unknown>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listCatalogCategories>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listCatalogCategories>>,
+          TError,
+          Awaited<ReturnType<typeof listCatalogCategories>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListCatalogCategories<
+  TData = Awaited<ReturnType<typeof listCatalogCategories>>,
+  TError = ErrorType<unknown>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listCatalogCategories>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary List active storefront categories
+ */
+
+export function useListCatalogCategories<
+  TData = Awaited<ReturnType<typeof listCatalogCategories>>,
+  TError = ErrorType<unknown>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listCatalogCategories>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListCatalogCategoriesQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
 
 /**
  * @summary List published products

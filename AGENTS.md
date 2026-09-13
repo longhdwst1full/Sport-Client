@@ -12,6 +12,7 @@ Scope: this Storefront repository only. Do not load Admin Ant Design rules or ba
 
 ## Required routing
 
+- Read `.agent/rules/RULE_INDEX.md` first; it maps each task type to the exact rules to load.
 - Unfamiliar code, rendering/PWA flow search or impact analysis: read `.agent/skills/storefront-codebase-navigation/SKILL.md` first.
 - New/changed storefront feature: read `.agent/skills/storefront-feature-development/SKILL.md`.
 - API integration or SDK regeneration: read `.agent/skills/client-api-integration/SKILL.md`.

@@ -6,7 +6,8 @@ describe('readPersistedCart', () => {
 
   it('keeps only the minimal valid cart shape', () => {
     const removeItem = vi.fn();
-    vi.stubGlobal('localStorage', {
+    // `safeStorage()` đọc qua `window.localStorage`, nên stub phải đặt ở `window`.
+    const localStorage = {
       getItem: () =>
         JSON.stringify([
           {
@@ -22,7 +23,8 @@ describe('readPersistedCart', () => {
           { productId: 'product-2', name: 'Thảm', price: 200_000 },
         ]),
       removeItem,
-    });
+    };
+    vi.stubGlobal('window', { localStorage });
 
     expect(readPersistedCart()).toEqual([
       {

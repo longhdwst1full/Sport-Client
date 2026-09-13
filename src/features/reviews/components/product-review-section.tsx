@@ -15,7 +15,7 @@ import {
   Sparkles,
   Send,
 } from 'lucide-react';
-import { STORE_CONFIG } from '@/constants';
+import { STORE_CONFIG } from '@/shared/constants';
 import { useToast } from '@/shared/components/global-toast';
 
 import {

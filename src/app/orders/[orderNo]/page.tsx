@@ -1,4 +1,4 @@
-import { OrderDetailPage } from '@/features/orders/pages/order-detail-page';
+import { OrderDetailPage } from '@/features/orders';
 
 export const dynamic = 'force-dynamic';
 

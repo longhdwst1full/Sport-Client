@@ -5,7 +5,7 @@ import {
   readCustomerAuthTokens,
   saveCustomerAuthTokens,
   usesCustomerAuthCookieTransport,
-} from '../../features/auth/auth-token.store';
+} from '../../features/auth/model/auth-token.store';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
 

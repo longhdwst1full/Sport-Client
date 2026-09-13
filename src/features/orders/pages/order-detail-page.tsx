@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { LoaderCircle, PackageCheck, XCircle } from 'lucide-react';
-import { useCustomerAuth } from '@/features/auth/use-customer-auth';
+import { useCustomerAuth } from '@/features/auth';
 import {
   cancelAccountOrder,
   cancelGuestOrder,
@@ -18,8 +18,8 @@ import type { OrderDetailDto } from '@/generated/api/orders/models';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { ApiError } from '@/lib/api/fetcher';
 import { vndMoney } from '@/shared/format/money';
-import { orderStatusLabels, paymentStatusLabels } from '../order.constants';
-import { readGuestOrderAccessToken, retireGuestOrderAccessToken } from '../guest-order-access.store';
+import { orderStatusLabels, paymentStatusLabels } from '../model/order.constants';
+import { readGuestOrderAccessToken, retireGuestOrderAccessToken } from '../model/guest-order-access.store';
 import { OrderPaymentPanel } from '../components/order-payment-panel';
 
 function errorMessage(error: unknown): string {

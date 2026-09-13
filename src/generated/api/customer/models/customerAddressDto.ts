@@ -5,9 +5,6 @@
  * Contract for storefront and admin applications
  * OpenAPI spec version: 1.0.0
  */
-import type { CustomerAddressDtoWard } from './customerAddressDtoWard';
-import type { CustomerAddressDtoDistrict } from './customerAddressDtoDistrict';
-import type { CustomerAddressDtoPostalCode } from './customerAddressDtoPostalCode';
 import type { CustomerAddressDtoCountryCode } from './customerAddressDtoCountryCode';
 
 export interface CustomerAddressDto {
@@ -17,12 +14,12 @@ export interface CustomerAddressDto {
   phone: string;
   addressLine: string;
   /** @nullable */
-  ward?: CustomerAddressDtoWard;
+  ward?: string | null;
   /** @nullable */
-  district?: CustomerAddressDtoDistrict;
+  district?: string | null;
   provinceCode: string;
   /** @nullable */
-  postalCode?: CustomerAddressDtoPostalCode;
+  postalCode?: string | null;
   countryCode: CustomerAddressDtoCountryCode;
   isDefault: boolean;
   /** @minimum 0 */

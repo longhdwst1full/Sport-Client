@@ -10,9 +10,9 @@ import {
   Sparkles,
   ArrowRight,
 } from 'lucide-react';
-import { MOCK_VISUAL_CATEGORIES, VisualCategoryItem } from '@/shared/data/mocks';
+import type { CategoryRailView } from '@/features/catalog';
 
-export function CategoryVisualShowcase() {
+export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] }) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
@@ -30,8 +30,8 @@ export function CategoryVisualShowcase() {
     // Calculate approximate active index for indicator dots
     const itemWidth = 190; // Average card width + gap
     const index = Math.round(scrollLeft / itemWidth);
-    setActiveIndex(Math.min(index, MOCK_VISUAL_CATEGORIES.length - 1));
-  }, []);
+    setActiveIndex(Math.min(index, items.length - 1));
+  }, [items.length]);
 
   useEffect(() => {
     const el = scrollContainerRef.current;
@@ -165,28 +165,27 @@ export function CategoryVisualShowcase() {
             role="region"
             aria-label="Thanh trượt danh mục ngành hàng"
           >
-            {MOCK_VISUAL_CATEGORIES.map((cat: VisualCategoryItem, index: number) => (
+            {items.map((cat, index) => (
               <Link
                 key={cat.id}
                 href={cat.href}
                 className="group relative flex flex-col items-center justify-between p-4 sm:p-5 w-[160px] sm:w-[190px] md:w-[200px] shrink-0 snap-start rounded-3xl border border-slate-200/90 bg-white shadow-sm transition-all duration-300 hover:-translate-y-2 hover:border-emerald-400 hover:shadow-xl hover:shadow-emerald-500/10 text-center"
               >
-                {/* Rounded Promotion Badge */}
-                {cat.badge && (
-                  <span className="absolute top-3 right-3 rounded-full bg-emerald-500 text-white px-2 py-0.5 text-[9px] font-black uppercase tracking-wider shadow-sm ring-2 ring-white">
-                    {cat.badge}
-                  </span>
-                )}
-
                 {/* Ultra-Rounded Circular Image Avatar (Border Tròn Đi) */}
                 <div className="relative mt-2 size-24 sm:size-28 rounded-full bg-gradient-to-b from-slate-50 to-emerald-50/40 p-2.5 border-2 border-slate-200/80 group-hover:border-emerald-500 group-hover:ring-4 group-hover:ring-emerald-500/15 shadow-inner transition-all duration-300 overflow-hidden">
-                  <Image
-                    src={cat.imageUrl}
-                    alt={cat.name}
-                    fill
-                    sizes="112px"
-                    className="object-contain p-2 transition-transform duration-500 group-hover:scale-110"
-                  />
+                  {cat.imageUrl ? (
+                    <Image
+                      src={cat.imageUrl}
+                      alt={cat.name}
+                      fill
+                      sizes="112px"
+                      className="object-contain p-2 transition-transform duration-500 group-hover:scale-110"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 grid place-items-center text-xs font-black text-stone-400">
+                      {cat.name.slice(0, 2).toUpperCase()}
+                    </div>
+                  )}
                 </div>
 
                 {/* Category Name & Count with Rounded Tag */}
@@ -204,7 +203,7 @@ export function CategoryVisualShowcase() {
 
           {/* Slider Pagination Dots Indicator */}
           <div className="mt-6 flex items-center justify-center gap-1.5">
-            {MOCK_VISUAL_CATEGORIES.map((cat, idx) => (
+            {items.map((cat, idx) => (
               <button
                 key={cat.id}
                 type="button"

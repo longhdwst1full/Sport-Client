@@ -1,15 +1,21 @@
 'use client';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useEffect, useState, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 import { hydrateCart } from '@/app/store/cart.slice';
 import { readPersistedCart } from '@/app/store/root.saga';
 import { storefrontStore } from '@/app/store/store';
-import { readCustomerAuthTokens } from '@/features/auth/auth-token.store';
+import { readCustomerAuthTokens } from '@/features/auth';
 import { PwaRegistration } from '@/pwa/pwa-registration';
 
 import { GlobalToastProvider } from '@/shared/components/global-toast';
+
+const CartHydrationContext = createContext(false);
+
+export function useCartHydrated(): boolean {
+  return useContext(CartHydrationContext);
+}
 
 function readAuthenticatedSubject(): string | undefined {
   const accessToken = readCustomerAuthTokens()?.accessToken;
@@ -27,12 +33,14 @@ function readAuthenticatedSubject(): string | undefined {
 }
 
 export function Providers({ children }: { children: ReactNode }) {
+  const [cartHydrated, setCartHydrated] = useState(false);
   const [queryClient] = useState(
     () => new QueryClient({ defaultOptions: { queries: { staleTime: 30_000, retry: 1 } } }),
   );
 
   useEffect(() => {
     storefrontStore.dispatch(hydrateCart(readPersistedCart()));
+    setCartHydrated(true);
   }, []);
 
   useEffect(() => {
@@ -58,10 +66,12 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <ReduxProvider store={storefrontStore}>
       <QueryClientProvider client={queryClient}>
-        <GlobalToastProvider>
-          {children}
-          <PwaRegistration />
-        </GlobalToastProvider>
+        <CartHydrationContext.Provider value={cartHydrated}>
+          <GlobalToastProvider>
+            {children}
+            <PwaRegistration />
+          </GlobalToastProvider>
+        </CartHydrationContext.Provider>
       </QueryClientProvider>
     </ReduxProvider>
   );

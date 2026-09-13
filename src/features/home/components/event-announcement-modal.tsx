@@ -14,27 +14,20 @@ import {
   Percent,
 } from 'lucide-react';
 import { MOCK_HOME_VOUCHERS as VOUCHERS } from '@/shared/data/mocks';
+import { createBrowserStore, LocalStorageKey } from '@/core/storage';
 
-const STORAGE_KEY = 'baoan_promo_modal_dismissed_until';
+const dismissedUntilStore = createBrowserStore<number>(
+  LocalStorageKey.PROMO_MODAL_DISMISSED_UNTIL,
+);
 
 export function EventAnnouncementModal() {
   const [isOpen, setIsOpen] = useState(false);
   const [dontShowToday, setDontShowToday] = useState(false);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
-  // Check localStorage and show modal after 1.5s
   useEffect(() => {
-    try {
-      const dismissedUntil = localStorage.getItem(STORAGE_KEY);
-      if (dismissedUntil) {
-        const expiry = parseInt(dismissedUntil, 10);
-        if (Date.now() < expiry) {
-          return; // Still suppressed
-        }
-      }
-    } catch {
-      // ignore
-    }
+    const dismissedUntil = dismissedUntilStore.read();
+    if (dismissedUntil && Date.now() < dismissedUntil) return;
 
     const timer = setTimeout(() => {
       setIsOpen(true);
@@ -45,15 +38,8 @@ export function EventAnnouncementModal() {
 
   const handleClose = useCallback(() => {
     setIsOpen(false);
-    if (dontShowToday) {
-      try {
-        // Suppress for 24 hours
-        const nextDay = Date.now() + 24 * 60 * 60 * 1000;
-        localStorage.setItem(STORAGE_KEY, nextDay.toString());
-      } catch {
-        // ignore
-      }
-    }
+    // Ẩn trong 24 giờ.
+    if (dontShowToday) dismissedUntilStore.write(Date.now() + 24 * 60 * 60 * 1000);
   }, [dontShowToday]);
 
   // Handle ESC key

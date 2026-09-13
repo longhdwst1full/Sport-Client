@@ -6,8 +6,9 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { CreditCard, LocateFixed, MapPin, Truck } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { clearCart } from '@/app/store/cart.slice';
-import { VietnamAddressSelector, type SelectedAddressData } from '@/components/address/vietnam-address-selector';
-import { useCustomerAuth } from '@/features/auth/use-customer-auth';
+import { useCartHydrated } from '@/app/providers';
+import { VietnamAddressSelector, type SelectedAddressData } from '@/shared/components/address/vietnam-address-selector';
+import { useCustomerAuth } from '@/features/auth';
 import type { CheckoutQuoteDto, CreateCheckoutQuoteDtoPaymentMethod } from '@/generated/api/checkout/models';
 import type { OrderDetailDto } from '@/generated/api/orders/models';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
@@ -23,7 +24,7 @@ const initialAddress: SelectedAddressData = {
   provinceName: 'Thành phố Hồ Chí Minh',
   districtCode: 778,
   districtName: 'Quận 7',
-  wardCode: 27502,
+  wardCode: 27490,
   wardName: 'Phường Tân Phong',
   streetAddress: '',
   fullAddress: '',
@@ -43,6 +44,7 @@ export function CheckoutPage() {
   const { toast } = useToast();
   const { isAuthenticated, isLoaded } = useCustomerAuth();
   const items = useAppSelector((state) => state.cart.items);
+  const cartHydrated = useCartHydrated();
   const localSubtotal = useMemo(() => items.reduce((sum, item) => sum + item.price * item.quantity, 0), [items]);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -62,8 +64,10 @@ export function CheckoutPage() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (!items.length && !placedOrder) router.replace('/cart');
-  }, [items.length, placedOrder, router]);
+    // Providers chỉ bật gate sau khi Redux nhận persisted cart. Nếu bỏ điều kiện
+    // này, checkout có thể redirect nhầm trước khi các dòng hàng được khôi phục.
+    if (cartHydrated && !items.length && !placedOrder) router.replace('/cart');
+  }, [cartHydrated, items.length, placedOrder, router]);
 
   const invalidateQuote = () => {
     setQuote(undefined);
@@ -175,7 +179,7 @@ export function CheckoutPage() {
     }
   };
 
-  if (!items.length && !placedOrder) return null;
+  if (!cartHydrated || (!items.length && !placedOrder)) return null;
 
   if (placedOrder) {
     return (

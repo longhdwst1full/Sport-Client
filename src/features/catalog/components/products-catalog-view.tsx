@@ -111,12 +111,13 @@ export function ProductsCatalogView() {
   const handleQuickAddToCart = (e: React.MouseEvent, product: typeof products[0]) => {
     e.preventDefault();
     e.stopPropagation();
+    if (!product.defaultVariantId || !product.defaultVariantSku) return;
 
     dispatch(
       addCartItem({
         productId: product.id,
-        variantId: `${product.id}-default`,
-        sku: product.slug.toUpperCase(),
+        variantId: product.defaultVariantId,
+        sku: product.defaultVariantSku,
         productType: product.productType === 'BUNDLE' ? 'BUNDLE' : 'STANDARD',
         name: product.name,
         imageUrl: product.imageUrl,
@@ -350,8 +351,9 @@ export function ProductsCatalogView() {
                         <button
                           type="button"
                           onClick={(e) => handleQuickAddToCart(e, product)}
-                          className="grid size-9 shrink-0 place-items-center rounded-full bg-slate-900 text-white shadow-md transition duration-300 hover:bg-emerald-600 hover:scale-105 active:scale-95"
-                          title="Thêm nhanh vào giỏ hàng"
+                          disabled={!product.defaultVariantId}
+                          className="grid size-9 shrink-0 place-items-center rounded-full bg-slate-900 text-white shadow-md transition duration-300 hover:scale-105 hover:bg-emerald-600 active:scale-95 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:hover:scale-100"
+                          title={product.defaultVariantId ? 'Thêm nhanh vào giỏ hàng' : 'Mở chi tiết để chọn phiên bản'}
                           aria-label={`Thêm ${product.name} vào giỏ`}
                         >
                           <ShoppingBag className="size-4" />

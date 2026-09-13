@@ -1,4 +1,4 @@
-import { CartPage } from '@/features/cart/cart-page';
+import { CartPage } from '@/features/cart';
 
 export const metadata = { title: 'Giỏ hàng — Bảo An Sport' };
 export default function Page() {

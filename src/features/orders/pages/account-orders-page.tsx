@@ -3,12 +3,12 @@
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight, LoaderCircle, PackageSearch } from 'lucide-react';
 import { useState } from 'react';
-import { useCustomerAuth } from '@/features/auth/use-customer-auth';
+import { useCustomerAuth } from '@/features/auth';
 import { useListAccountOrders } from '@/generated/api/orders/orders';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { ApiError } from '@/lib/api/fetcher';
 import { vndMoney } from '@/shared/format/money';
-import { orderStatusLabels, paymentStatusLabels } from '../order.constants';
+import { orderStatusLabels, paymentStatusLabels } from '../model/order.constants';
 
 function errorMessage(error: unknown): string {
   if (error instanceof ApiError && error.payload && typeof error.payload === 'object' && 'message' in error.payload) {

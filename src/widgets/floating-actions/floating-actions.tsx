@@ -2,7 +2,7 @@
 
 import { ArrowUp, MessageCircle, Phone } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { STORE_CONTACT } from '@/constants';
+import { STORE_CONTACT } from '@/shared/constants';
 
 export function FloatingActions() {
   const [showBackToTop, setShowBackToTop] = useState(false);

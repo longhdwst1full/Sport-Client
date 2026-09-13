@@ -1,6 +1,42 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
 # Storefront context
 
 Read `AGENTS.md` and the task-relevant files under `.agent/rules` and `.agent/skills` before changing this repository. Do not import API or Admin rules.
+
+## Commands
+
+```bash
+yarn dev                 # Next dev server on :3000
+yarn build && yarn start # production build / serve (required before handoff)
+yarn lint                # type-check only (tsc --noEmit); there is no ESLint step
+yarn test                # vitest run --pool=threads
+yarn verify              # lint + test + generate:api + build (full quality gate)
+
+yarn contracts:sync      # pull Storefront OpenAPI slices into contracts/storefront/*.yaml
+yarn generate:api        # clean + regenerate src/generated/api from those contracts
+```
+
+Single test: `yarn vitest run src/app/store/cart.slice.test.ts` (add `-t "name"` for one case).
+Tests live next to the code (`*.test.ts`), currently transport + Redux cart/saga.
+
+Node >= 22, Yarn 1 (`yarn add <pkg>` from this repo only — it deploys independently).
+
+## Architecture
+
+Next.js 15 App Router storefront + PWA. Canonical flow:
+
+`src/app` route (server-first) → `src/features/<domain>` composition → narrow `'use client'` island → `src/generated/api` SDK → `src/lib/api/fetcher.ts` (Axios).
+
+- **Generated SDK per domain.** `orval.config.ts` builds one isolated client+models folder per business domain (auth, catalog, content, reviews, cart, customer, shipping, checkout, orders, payments) from `contracts/storefront/<domain>.yaml`. All of `src/generated/api` is disposable — never hand-edit; regenerate when the contract changes. Some operations opt into `requestOptions: true` (cancel order, submit payment evidence) so callers can pass per-request config.
+- **Transport.** `apiFetcher` in `src/lib/api/fetcher.ts` is the single Orval mutator: base URL from `NEXT_PUBLIC_API_URL`, `withCredentials`, bearer header from `features/auth/auth-token.store`, a de-duplicated refresh-token rotation on 401 (skipped for `/auth/` endpoints), and `ApiError(status, payload)` normalization. It owns no endpoint path or DTO.
+- **State ownership.** TanStack Query (configured in `src/app/providers.tsx`, `staleTime` 30s, `retry` 1) owns remote state; Redux Toolkit + Saga (`src/app/store`) owns only the interactive cart — `cart.slice.ts` plus `root.saga.ts` persistence/hydration. Never mirror an API payload into both. `Providers` also clears the query cache when the authenticated subject changes (logout/account switch) so personalized data cannot leak between sessions.
+- **Layers.** `src/layouts` route shells, `src/widgets` cross-route sections, `src/foundation` low-level presentation, `src/shared` domain-neutral utilities, `src/components` legacy leaf components (no new feature orchestration), `src/lib` framework/transport adapters.
+- **PWA.** Service worker entry is `public/sw.js`; client utilities in `src/pwa` (registration + `/pwa` reset). Caches are prefixed `dctd-storefront-` and versioned; account/orders/profile/checkout navigations and `/api/*` are network-only with an `/offline` fallback, public navigation caching is limited to an explicit allowlist. Any change here needs `.agent/skills/pwa-development/SKILL.md`.
+
+`src/features/README.md` holds the current feature map, state-ownership table and per-change checklist.
 
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence

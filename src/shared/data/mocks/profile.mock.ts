@@ -23,19 +23,6 @@ export interface UserOrder {
   items: OrderItem[];
 }
 
-export interface AddressItem {
-  id: string;
-  name: string;
-  phone: string;
-  fullAddress: string;
-  label: 'home' | 'office' | 'other';
-  isDefault: boolean;
-  provinceCode?: number;
-  districtCode?: number;
-  wardCode?: number;
-  streetAddress?: string;
-}
-
 export interface WarrantyItem {
   serial: string;
   productName: string;
@@ -91,33 +78,6 @@ export const MOCK_INITIAL_ORDERS: UserOrder[] = [
         imageUrl: 'https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&w=800&q=80',
       },
     ],
-  },
-];
-
-export const MOCK_INITIAL_ADDRESSES: AddressItem[] = [
-  {
-    id: 'addr-1',
-    name: 'Nguyễn Văn An',
-    phone: '0912 345 678',
-    label: 'home',
-    isDefault: true,
-    provinceCode: 79,
-    districtCode: 778,
-    wardCode: 27502,
-    streetAddress: 'Số 123 Đường Nguyễn Hữu Thọ',
-    fullAddress: 'Số 123 Đường Nguyễn Hữu Thọ, Phường Tân Phong, Quận 7, Thành phố Hồ Chí Minh',
-  },
-  {
-    id: 'addr-2',
-    name: 'Nguyễn Văn An (Văn phòng)',
-    phone: '0912 345 678',
-    label: 'office',
-    isDefault: false,
-    provinceCode: 79,
-    districtCode: 765,
-    wardCode: 26860,
-    streetAddress: 'Tầng 8, Tòa nhà Landmark 81, 720A Điện Biên Phủ',
-    fullAddress: 'Tầng 8, Tòa nhà Landmark 81, 720A Điện Biên Phủ, Phường 22, Quận Bình Thạnh, Thành phố Hồ Chí Minh',
   },
 ];
 

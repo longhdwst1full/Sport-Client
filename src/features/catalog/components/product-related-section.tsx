@@ -23,7 +23,7 @@ import {
 import { vndMoney } from '@/shared/format/money';
 import { useAppDispatch } from '@/app/store/hooks';
 import { addCartItem } from '@/app/store/cart.slice';
-import { STORE_CATEGORIES, STORE_CONFIG } from '@/constants';
+import { STORE_CATEGORIES, STORE_CONFIG } from '@/shared/constants';
 
 import {
   type CatalogProductSummary,

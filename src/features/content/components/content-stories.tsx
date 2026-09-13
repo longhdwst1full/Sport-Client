@@ -15,7 +15,7 @@ import {
   Eye,
 } from 'lucide-react';
 import { useContentStories } from '../hooks/use-content-stories';
-import { STORE_CONFIG } from '@/constants';
+import { STORE_CONFIG } from '@/shared/constants';
 import { MOCK_CURATED_STORIES as CURATED_STORIES, StoryArticle } from '@/shared/data/mocks';
 
 export function ContentStories() {

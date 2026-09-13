@@ -1,8 +1,28 @@
 import { select, takeEvery } from 'redux-saga/effects';
 import { addCartItem, clearCart, type CartItem } from './cart.slice';
 import type { RootState } from './store';
+import { createBrowserStore, LocalStorageKey } from '@/core/storage';
 
-const CART_STORAGE_KEY = 'dctd-storefront-cart-v2';
+const CART_STORAGE_KEY = LocalStorageKey.CART;
+
+// Hydration chỉ nhận field trong allowlist và bỏ bản ghi sai schema
+// (`07-state-tools-performance.md`, RULE-CORE-01).
+const cartStore = createBrowserStore<CartItem[]>(CART_STORAGE_KEY, {
+  parse: (parsed) =>
+    Array.isArray(parsed)
+      ? parsed
+          .filter(isCartItem)
+          .map(({ productId, variantId, sku, productType, name, price, quantity }) => ({
+            productId,
+            variantId,
+            sku,
+            productType,
+            name,
+            price,
+            quantity,
+          }))
+      : [],
+});
 
 function isCartItem(value: unknown): value is CartItem {
   return (
@@ -27,30 +47,12 @@ function isCartItem(value: unknown): value is CartItem {
 }
 
 export function readPersistedCart(): CartItem[] {
-  try {
-    const value = localStorage.getItem(CART_STORAGE_KEY);
-    if (!value) return [];
-    const parsed: unknown = JSON.parse(value);
-    return Array.isArray(parsed)
-      ? parsed.filter(isCartItem).map(({ productId, variantId, sku, productType, name, price, quantity }) => ({
-          productId,
-          variantId,
-          sku,
-          productType,
-          name,
-          price,
-          quantity,
-        }))
-      : [];
-  } catch {
-    localStorage.removeItem(CART_STORAGE_KEY);
-    return [];
-  }
+  return cartStore.read() ?? [];
 }
 
 function* persistCart() {
   const items: CartItem[] = yield select((state: RootState) => state.cart.items);
-  localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+  cartStore.write(items);
 }
 
 export function* rootSaga() {

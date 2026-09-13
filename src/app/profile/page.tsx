@@ -1,4 +1,4 @@
-import { ProfilePage } from '@/features/profile/profile-page';
+import { ProfilePage } from '@/features/profile';
 
 export const metadata = {
   title: 'Tài khoản thành viên — Bảo An Sport',

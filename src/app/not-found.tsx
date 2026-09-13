@@ -10,8 +10,8 @@ import {
   Phone,
   Sparkles,
 } from 'lucide-react';
-import { KineticBallCanvas } from '@/components/3d/kinetic-ball-canvas';
-import { STORE_CONTACT } from '@/constants';
+import { KineticBallCanvas } from '@/foundation/3d/kinetic-ball-canvas';
+import { STORE_CONTACT } from '@/shared/constants';
 
 export default function NotFound() {
   const QUICK_CATEGORIES = [

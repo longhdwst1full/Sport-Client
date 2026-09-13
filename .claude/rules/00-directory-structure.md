@@ -2,8 +2,8 @@
 
 - `src/app`: routes, layouts, metadata, manifest and route-level composition.
 - `src/features/<feature>`: commerce/content capability UI and orchestration, including the current `home`, `catalog`, `content` and `reviews` slices.
-- `src/layouts`: route shells; `src/widgets`: reusable page sections; `src/foundation`: low-level presentation; `src/shared`: small domain-neutral utilities.
-- `src/components`: compatibility/leaf components only; new feature orchestration does not belong here.
+- `src/layouts`: route shells; `src/widgets`: reusable page sections; `src/foundation`: low-level presentation; `src/shared`: domain-neutral components/constants/format/hooks/services/utils.
+- `src/core`: hạ tầng trình duyệt dùng chung (`core/storage`); feature không gọi `localStorage` trực tiếp.
 - `src/app/store`: storefront Redux composition; feature slices stay narrowly client-owned.
 - `src/lib`: framework and transport adapters.
 - `src/pwa`: client-side PWA utilities; the service worker entry remains in `public/sw.js`.

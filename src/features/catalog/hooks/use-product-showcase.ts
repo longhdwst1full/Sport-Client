@@ -21,6 +21,8 @@ export function useProductShowcase() {
 
         return {
           id: product.id,
+          defaultVariantId: product.defaultVariantId ?? null,
+          defaultVariantSku: product.defaultVariantSku ?? null,
           slug: product.slug,
           productType: product.productType,
           name: product.name,
@@ -40,7 +42,11 @@ export function useProductShowcase() {
     }
 
     // When API is offline or empty, provide high-quality fallback products
-    return FALLBACK_PRODUCTS;
+    return FALLBACK_PRODUCTS.map((product) => ({
+      ...product,
+      defaultVariantId: null,
+      defaultVariantSku: null,
+    }));
   }, [query.data?.items]);
 
   return {

@@ -20,8 +20,8 @@ import type { CheckoutQuoteDto, CreateCheckoutQuoteDto, ReservationDto } from '@
 import { placeAccountOrder, placeGuestOrder } from '@/generated/api/orders/orders';
 import type { OrderDetailDto } from '@/generated/api/orders/models';
 import { ApiError } from '@/lib/api/fetcher';
-import { clearGuestCartToken, readGuestCartToken, saveGuestCartToken } from '@/features/cart/guest-cart-token.store';
-import { saveGuestOrderAccessToken } from '@/features/orders/guest-order-access.store';
+import { clearGuestCartToken, readGuestCartToken, saveGuestCartToken } from '@/features/cart';
+import { saveGuestOrderAccessToken } from '@/features/orders';
 
 export type CheckoutLine = { variantId: string; quantity: number };
 export type CheckoutContext = { mode: 'ACCOUNT' } | { mode: 'GUEST'; cartToken: string };

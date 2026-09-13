@@ -1,10 +1,10 @@
 # Storefront checkout — maintenance note
 
-> **Document version:** 1.1.0
+> **Document version:** 1.2.0
 >
-> **Last updated:** 2026-09-11
+> **Last updated:** 2026-09-13
 >
-> **Change summary:** Nối confirm reservation với tạo Order idempotent và hiển thị order snapshot thật ở màn thành công.
+> **Change summary:** Chặn redirect sớm và hydration mismatch khi khôi phục persisted cart.
 
 ## Phạm vi
 
@@ -41,6 +41,8 @@ Order mới ở `PENDING_CONFIRMATION`, chưa ghi nhận doanh thu và chưa đ�
 - `Idempotency-Key` đại diện một ý định quote/confirm/place order. Confirm và Order có key riêng, nhưng mỗi key phải được giữ nguyên khi retry do lỗi mạng.
 - Lỗi Backend hiển thị từ error envelope tiếng Việt; lỗi mạng/client mới dùng fallback tại feature.
 - Chỉ clear Redux cart sau khi Order tạo thành công; reservation thành công nhưng Order lỗi phải cho phép retry cùng key.
+- Chỉ kiểm tra cart trống và redirect sau lượt hydrate đầu tiên để Redux có cơ hội
+  khôi phục snapshot từ `localStorage`; không bỏ gate này khi refactor checkout.
 
 ## Checklist khi sửa
 
@@ -56,5 +58,6 @@ Order mới ở `PENDING_CONFIRMATION`, chưa ghi nhận doanh thu và chưa đ�
 
 | Version | Date | Change summary | Source |
 | --- | --- | --- | --- |
+| 1.2.0 | 2026-09-13 | Đồng bộ SSR/browser trước khi đọc và redirect theo persisted cart. | Browser E2E Sprint 4 |
 | 1.1.0 | 2026-09-11 | Thêm bước tạo Order idempotent sau reservation và success state theo Order. | API-20260911-ORDER-FOUNDATION |
 | 1.0.0 | 2026-09-09 | Tạo maintenance note cho Storefront Checkout. | DOC-20260909-FEATURE-MAINTENANCE-NOTES |

@@ -23,7 +23,7 @@ import {
   STORE_SHOWROOMS,
   FOOTER_SHOP_LINKS,
   FOOTER_POLICY_LINKS,
-} from '@/constants';
+} from '@/shared/constants';
 
 const SOCIAL_LINKS = [
   { icon: Facebook, href: STORE_CONTACT.facebookUrl, label: 'Facebook' },

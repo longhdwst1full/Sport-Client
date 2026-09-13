@@ -7,6 +7,8 @@
  */
 
 export * from './bundleComponentDto';
+export * from './catalogCategoryDto';
+export * from './catalogCategoryListDto';
 export * from './errorDetailDto';
 export * from './errorResponseDto';
 export * from './listCatalogProductsParams';

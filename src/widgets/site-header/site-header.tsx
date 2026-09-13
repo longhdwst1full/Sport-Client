@@ -23,10 +23,10 @@ import {
   STORE_ANNOUNCEMENTS,
   QUICK_LINKS,
   MEGA_MENU_CATEGORIES,
-} from '@/constants';
+} from '@/shared/constants';
 import { AutocompleteSearch } from './autocomplete-search';
 import { HeaderNotifications } from './header-notifications';
-import { useCustomerAuth } from '@/features/auth/use-customer-auth';
+import { useCustomerAuth } from '@/features/auth';
 
 export function SiteHeader() {
   const router = useRouter();

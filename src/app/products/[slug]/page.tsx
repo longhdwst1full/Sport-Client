@@ -11,9 +11,8 @@ import {
 } from 'lucide-react';
 import type { Metadata } from 'next';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
-import { ProductPurchasePanel } from '@/features/catalog/components/product-purchase-panel';
-import { ProductRelatedSection } from '@/features/catalog/components/product-related-section';
-import { ProductReviewSection } from '@/features/reviews/components/product-review-section';
+import { ProductPurchasePanel, ProductRelatedSection } from '@/features/catalog';
+import { ProductReviewSection } from '@/features/reviews';
 import { getCatalogProduct } from '@/generated/api/catalog/catalog';
 import { ApiError } from '@/lib/api/fetcher';
 import { getMockProductDetail } from '@/shared/data/mocks';

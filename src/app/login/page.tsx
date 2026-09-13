@@ -1,4 +1,4 @@
-import { CustomerLoginPage } from '@/features/auth/customer-login-page';
+import { CustomerLoginPage } from '@/features/auth';
 
 export default function LoginPage() {
   return <CustomerLoginPage />;

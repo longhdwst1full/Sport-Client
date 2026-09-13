@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Phone, MessageSquare, MapPin, ArrowUp, X } from 'lucide-react';
-import { STORE_CONTACT } from '@/constants';
+import { STORE_CONTACT } from '@/shared/constants';
 
 export function FloatingContactBar() {
   const [showBackToTop, setShowBackToTop] = useState(false);

@@ -8,7 +8,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
-import { ProductShowcase } from '@/features/catalog/components/product-showcase';
+import { ProductShowcase } from '@/features/catalog';
 
 export default async function CategoryDetailPage({
   params,
