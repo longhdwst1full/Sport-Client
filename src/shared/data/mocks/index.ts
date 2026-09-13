@@ -3,7 +3,6 @@
  * Provides high-fidelity demo fixtures separated from UI page components
  */
 
-export * from './flash-sale.mock';
 export * from './product-catalog.mock';
 export * from './product-detail.mock';
 export * from './product-related.mock';

@@ -2,7 +2,7 @@ const { existsSync } = require('node:fs');
 const { mkdir, readFile, writeFile } = require('node:fs/promises');
 const { resolve } = require('node:path');
 
-const domains = ['auth', 'catalog', 'content', 'reviews', 'cart', 'customer', 'shipping', 'checkout', 'orders', 'payments'];
+const domains = ['auth', 'catalog', 'content', 'reviews', 'cart', 'customer', 'shipping', 'checkout', 'orders', 'payments', 'promotions'];
 const defaultBaseUrl =
   'https://raw.githubusercontent.com/longhdwst1full/dctd-utc/main/document/api/storefront';
 const baseUrl = (process.env.SPORT_API_CONTRACT_BASE_URL || defaultBaseUrl).replace(/\/$/, '');

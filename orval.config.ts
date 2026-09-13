@@ -46,6 +46,7 @@ export default defineConfig({
   cart: createDomainConfig('cart'),
   customer: createDomainConfig('customer'),
   shipping: createDomainConfig('shipping'),
+  promotions: createDomainConfig('promotions'),
   checkout: createDomainConfig('checkout'),
   orders: createDomainConfig('orders'),
   payments: createDomainConfig('payments'),
