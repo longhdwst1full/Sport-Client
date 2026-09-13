@@ -4,15 +4,31 @@
 
 :root {
   color-scheme: light;
+  /* DC design tokens: shared visual language with admin-client/dragon-web. */
+  --dc-primary-50: #eefff7;
+  --dc-primary-100: #cce2de;
+  --dc-primary-500: #00bf6f;
+  --dc-primary-600: #049157;
+  --dc-primary-700: #006c5b;
+  --dc-primary-800: #00443c;
+  --dc-primary-900: #003129;
+  --dc-info-500: #00bad1;
+  --dc-warning-500: #ff9f43;
+  --dc-error-500: #ff4c51;
+  --dc-text-primary: #434050;
+  --dc-text-secondary: #6d6b77;
+  --dc-border: #dddde3;
+  --dc-surface: #ffffff;
+  --dc-canvas: #f8f7fa;
 }
 * {
   box-sizing: border-box;
 }
 body {
   margin: 0;
-  background: #f8fafc;
-  color: #0f172a;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  background: var(--dc-canvas);
+  color: var(--dc-text-primary);
+  font-family: 'Noto Sans', system-ui, Avenir, Helvetica, Arial, sans-serif;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -24,8 +40,8 @@ body::before {
   content: '';
   pointer-events: none;
   background:
-    radial-gradient(circle at 15% 10%, rgba(16, 185, 129, 0.04), transparent 35rem),
-    radial-gradient(circle at 85% 30%, rgba(6, 182, 212, 0.04), transparent 35rem);
+    radial-gradient(circle at 15% 10%, rgba(0, 191, 111, 0.04), transparent 35rem),
+    radial-gradient(circle at 85% 30%, rgba(0, 186, 209, 0.04), transparent 35rem);
 }
 h1,
 h2,
@@ -45,7 +61,7 @@ html {
   scroll-behavior: smooth;
 }
 ::selection {
-  background: #10b981;
+  background: var(--dc-primary-500);
   color: #ffffff;
 }
 .text-balance {

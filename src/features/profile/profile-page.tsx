@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import {
   User,
@@ -26,42 +25,31 @@ import {
   Wrench,
   AlertCircle,
   X,
-  RefreshCw,
 } from 'lucide-react';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
-import { clearCustomerAuthTokens } from '@/features/auth/auth-token.store';
-import { vndMoney } from '@/shared/format/money';
+import { useCustomerAuth } from '@/features/auth/use-customer-auth';
 import { STORE_CONFIG, STORE_CONTACT } from '@/constants';
-import { useAppDispatch } from '@/app/store/hooks';
-import { addCartItem } from '@/app/store/cart.slice';
 import {
   VietnamAddressSelector,
   type SelectedAddressData,
 } from '@/components/address/vietnam-address-selector';
 import { useToast } from '@/shared/components/global-toast';
 
-type ProfileTab = 'orders' | 'warranty' | 'address' | 'settings';
-type OrderFilter = 'all' | 'pending' | 'shipping' | 'completed' | 'cancelled';
+type ProfileTab = 'warranty' | 'address' | 'settings';
 
 import {
-  type OrderItem,
-  type UserOrder,
   type AddressItem,
   type WarrantyItem,
-  MOCK_INITIAL_ORDERS as INITIAL_MOCK_ORDERS,
   MOCK_INITIAL_ADDRESSES as INITIAL_ADDRESSES,
   MOCK_WARRANTIES,
 } from '@/shared/data/mocks';
 
 export function ProfilePage() {
   const router = useRouter();
-  const dispatch = useAppDispatch();
-  const [activeTab, setActiveTab] = useState<ProfileTab>('orders');
-  const [orderFilter, setOrderFilter] = useState<OrderFilter>('all');
-
-  // Orders state (merged from localStorage + initial)
-  const [orders, setOrders] = useState<UserOrder[]>([]);
-  const [selectedOrderForDetail, setSelectedOrderForDetail] = useState<UserOrder | null>(null);
+  const { logout } = useCustomerAuth();
+  // Order history now has a dedicated API-backed feature. Keep Profile focused
+  // on account preferences instead of rendering the legacy local fixture first.
+  const [activeTab, setActiveTab] = useState<ProfileTab>('settings');
 
   // Address state
   const [addresses, setAddresses] = useState<AddressItem[]>([]);
@@ -97,24 +85,9 @@ export function ProfilePage() {
     success('Thông báo', msg);
   };
 
-  // Load orders & addresses from localStorage
+  // Address persistence remains local until the customer-address API enters scope.
   useEffect(() => {
     try {
-      const storedOrders = localStorage.getItem('baoan_user_orders');
-      if (storedOrders) {
-        const parsedOrders = JSON.parse(storedOrders);
-        if (Array.isArray(parsedOrders) && parsedOrders.length > 0) {
-          // Merge unique by ID
-          const existingIds = new Set(parsedOrders.map((o: any) => o.id));
-          const unmergedMock = INITIAL_MOCK_ORDERS.filter((o) => !existingIds.has(o.id));
-          setOrders([...parsedOrders, ...unmergedMock]);
-        } else {
-          setOrders(INITIAL_MOCK_ORDERS);
-        }
-      } else {
-        setOrders(INITIAL_MOCK_ORDERS);
-      }
-
       const storedAddresses = localStorage.getItem('baoan_saved_addresses');
       if (storedAddresses) {
         const parsedAddrs = JSON.parse(storedAddresses);
@@ -127,7 +100,6 @@ export function ProfilePage() {
         setAddresses(INITIAL_ADDRESSES);
       }
     } catch {
-      setOrders(INITIAL_MOCK_ORDERS);
       setAddresses(INITIAL_ADDRESSES);
     }
   }, []);
@@ -140,59 +112,6 @@ export function ProfilePage() {
     } catch {
       // ignore
     }
-  };
-
-  // Filter orders by tab
-  const displayedOrders = orders.filter((order) => {
-    if (orderFilter === 'all') return true;
-    if (orderFilter === 'pending') {
-      return (
-        order.statusCode === 'pending' ||
-        order.status.toLowerCase().includes('chờ') ||
-        order.status.toLowerCase().includes('tiếp nhận')
-      );
-    }
-    if (orderFilter === 'shipping') {
-      return (
-        order.statusCode === 'shipping' ||
-        order.status.toLowerCase().includes('đang giao') ||
-        order.status.toLowerCase().includes('vận chuyển')
-      );
-    }
-    if (orderFilter === 'completed') {
-      return (
-        order.statusCode === 'completed' ||
-        order.status.toLowerCase().includes('hoàn thành') ||
-        order.status.toLowerCase().includes('đã giao')
-      );
-    }
-    if (orderFilter === 'cancelled') {
-      return (
-        order.statusCode === 'cancelled' ||
-        order.status.toLowerCase().includes('hủy')
-      );
-    }
-    return true;
-  });
-
-  // Re-order items
-  const handleReorder = (order: UserOrder) => {
-    order.items.forEach((item) => {
-      dispatch(
-        addCartItem({
-          productId: item.id,
-          variantId: `${item.id}-default`,
-          sku: item.sku || 'BA-REORDER',
-          productType: 'STANDARD',
-          name: item.name,
-          price: item.price,
-          imageUrl: item.imageUrl || 'https://images.unsplash.com/photo-1571008887538-b36bb32f4571?auto=format&fit=crop&w=600&q=80',
-          quantity: item.qty,
-        }),
-      );
-    });
-    showToast(`Đã thêm ${order.items.length} sản phẩm vào giỏ hàng!`);
-    router.push('/cart');
   };
 
   // Address Modal Handlers
@@ -328,7 +247,7 @@ export function ProfilePage() {
   };
 
   const handleLogout = () => {
-    clearCustomerAuthTokens();
+    logout();
     router.push('/login');
   };
 
@@ -394,7 +313,13 @@ export function ProfilePage() {
                     <button
                       key={id}
                       type="button"
-                      onClick={() => setActiveTab(id)}
+                      onClick={() => {
+                        if (id === 'orders') {
+                          router.push('/orders');
+                          return;
+                        }
+                        setActiveTab(id);
+                      }}
                       className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-xs font-bold transition sm:text-sm ${
                         activeTab === id
                           ? 'bg-emerald-50 text-emerald-700'
@@ -438,150 +363,6 @@ export function ProfilePage() {
             {/* MAIN CONTENT PANE                                        */}
             {/* ======================================================== */}
             <div className="rounded-[28px] border border-slate-200/80 bg-white p-6 shadow-sm sm:p-8">
-              {/* TAB 1: ORDERS (LỊCH SỬ ĐƠN HÀNG) */}
-              {activeTab === 'orders' && (
-                <div>
-                  <div className="flex flex-col gap-4 border-b border-slate-100 pb-5 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                      <h2 className="text-xl font-black text-slate-900">Lịch sử đơn hàng</h2>
-                      <p className="mt-1 text-xs text-slate-500">
-                        Theo dõi tiến độ giao hàng và xem chi tiết các đơn đã đặt
-                      </p>
-                    </div>
-
-                    <Link
-                      href="/products"
-                      className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 hover:underline"
-                    >
-                      <span>Mua sắm thêm sản phẩm</span>
-                      <ChevronRight className="size-3.5" />
-                    </Link>
-                  </div>
-
-                  {/* Status filter tabs */}
-                  <div className="mt-6 flex max-w-full items-center gap-1 overflow-x-auto rounded-2xl border border-slate-200/80 bg-slate-100/80 p-1.5 scrollbar-none">
-                    {[
-                      { id: 'all' as const, label: 'Tất cả' },
-                      { id: 'pending' as const, label: 'Chờ xác nhận' },
-                      { id: 'shipping' as const, label: 'Đang vận chuyển' },
-                      { id: 'completed' as const, label: 'Hoàn thành' },
-                      { id: 'cancelled' as const, label: 'Đã hủy' },
-                    ].map((f) => (
-                      <button
-                        key={f.id}
-                        type="button"
-                        onClick={() => setOrderFilter(f.id)}
-                        className={`whitespace-nowrap rounded-xl px-3.5 py-1.5 text-xs font-bold transition ${
-                          orderFilter === f.id
-                            ? 'bg-emerald-700 text-white shadow-sm'
-                            : 'text-slate-600 hover:text-slate-900'
-                        }`}
-                      >
-                        {f.label}
-                      </button>
-                    ))}
-                  </div>
-
-                  {/* Orders List */}
-                  {displayedOrders.length === 0 ? (
-                    <div className="py-16 text-center">
-                      <Package className="mx-auto size-12 text-slate-300" />
-                      <p className="mt-3 text-sm font-bold text-slate-600">
-                        Chưa có đơn hàng nào trong mục này.
-                      </p>
-                      <Link
-                        href="/products"
-                        className="mt-4 inline-flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-xs font-bold text-white transition hover:bg-emerald-600"
-                      >
-                        Khám phá thiết bị ngay
-                      </Link>
-                    </div>
-                  ) : (
-                    <div className="mt-6 space-y-5">
-                      {displayedOrders.map((order) => (
-                        <div
-                          key={order.id}
-                          className="group rounded-2xl border border-slate-200/80 p-5 transition duration-200 hover:border-emerald-300 hover:shadow-md"
-                        >
-                          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
-                            <div className="flex items-center gap-2 sm:gap-3">
-                              <strong className="font-mono text-sm font-black text-slate-900">
-                                #{order.id}
-                              </strong>
-                              <span className="text-xs text-slate-400">· {order.date}</span>
-                            </div>
-                            <span
-                              className={`rounded-full px-3 py-1 text-xs font-bold ${order.statusColor}`}
-                            >
-                              {order.status}
-                            </span>
-                          </div>
-
-                          {/* Items in order */}
-                          <div className="mt-4 divide-y divide-slate-100">
-                            {order.items.map((item, idx) => (
-                              <div
-                                key={idx}
-                                className="flex items-center justify-between py-2 text-xs sm:text-sm"
-                              >
-                                <div className="flex items-center gap-3">
-                                  {item.imageUrl && (
-                                    <div className="relative size-10 shrink-0 overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
-                                      <Image
-                                        src={item.imageUrl}
-                                        alt={item.name}
-                                        fill
-                                        sizes="40px"
-                                        className="object-contain p-0.5"
-                                      />
-                                    </div>
-                                  )}
-                                  <div>
-                                    <span className="font-bold text-slate-900">{item.name}</span>
-                                    <p className="text-[11px] text-slate-400">Số lượng: ×{item.qty}</p>
-                                  </div>
-                                </div>
-                                <strong className="font-black text-slate-900">
-                                  {vndMoney.format(item.price * item.qty)}
-                                </strong>
-                              </div>
-                            ))}
-                          </div>
-
-                          {/* Order Footer Actions */}
-                          <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-3">
-                            <div>
-                              <span className="text-xs text-slate-500">Tổng thanh toán: </span>
-                              <strong className="text-sm font-black text-emerald-700 sm:text-base">
-                                {vndMoney.format(order.total)}
-                              </strong>
-                            </div>
-
-                            <div className="flex items-center gap-2">
-                              <button
-                                type="button"
-                                onClick={() => setSelectedOrderForDetail(order)}
-                                className="rounded-xl border border-slate-200 px-3 py-1.5 text-xs font-bold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
-                              >
-                                Xem chi tiết
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => handleReorder(order)}
-                                className="inline-flex items-center gap-1.5 rounded-xl bg-slate-900 px-3.5 py-1.5 text-xs font-bold text-white transition hover:bg-emerald-600"
-                              >
-                                <RefreshCw className="size-3" />
-                                <span>Mua lại</span>
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-
               {/* TAB 2: ADDRESS MANAGEMENT (SỔ ĐỊA CHỈ & VIETNAMESE DIVISION API) */}
               {activeTab === 'address' && (
                 <div>
@@ -930,136 +711,6 @@ export function ProfilePage() {
           </div>
         )}
 
-        {/* ======================================================== */}
-        {/* MODAL: ORDER TRACKING & DETAIL POPUP                     */}
-        {/* ======================================================== */}
-        {selectedOrderForDetail && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-[32px] border border-slate-200/80 bg-white p-6 shadow-2xl sm:p-8">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-                <div>
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                    Chi tiết đơn hàng
-                  </span>
-                  <h3 className="text-lg font-black text-slate-900">
-                    Mã đơn #{selectedOrderForDetail.id}
-                  </h3>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setSelectedOrderForDetail(null)}
-                  className="rounded-xl p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
-                >
-                  <X className="size-5" />
-                </button>
-              </div>
-
-              {/* Delivery Progress Timeline */}
-              <div className="mt-6 rounded-2xl bg-slate-50 p-4">
-                <span className="text-xs font-bold text-slate-700">Trạng thái vận chuyển:</span>
-                <div className="mt-4 grid grid-cols-4 gap-2 text-center text-[10px] font-bold text-slate-500">
-                  <div className="space-y-1">
-                    <div className="mx-auto flex size-6 items-center justify-center rounded-full bg-emerald-600 text-white">
-                      ✓
-                    </div>
-                    <span className="text-slate-900">Đã đặt</span>
-                  </div>
-                  <div className="space-y-1">
-                    <div className="mx-auto flex size-6 items-center justify-center rounded-full bg-emerald-600 text-white">
-                      ✓
-                    </div>
-                    <span className="text-slate-900">Đã xác nhận</span>
-                  </div>
-                  <div className="space-y-1">
-                    <div className="mx-auto flex size-6 items-center justify-center rounded-full bg-emerald-600 text-white animate-pulse">
-                      🚚
-                    </div>
-                    <span className="text-emerald-700">Đang giao</span>
-                  </div>
-                  <div className="space-y-1">
-                    <div className="mx-auto flex size-6 items-center justify-center rounded-full bg-slate-200 text-slate-400">
-                      4
-                    </div>
-                    <span>Đã nhận</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Items List */}
-              <div className="mt-6 border-t border-slate-100 pt-4">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                  Danh sách sản phẩm
-                </h4>
-                <div className="mt-3 divide-y divide-slate-100">
-                  {selectedOrderForDetail.items.map((item, i) => (
-                    <div key={i} className="flex items-center justify-between py-2 text-xs">
-                      <div>
-                        <strong className="text-slate-900">{item.name}</strong>
-                        <p className="text-slate-400">Số lượng: ×{item.qty}</p>
-                      </div>
-                      <strong className="font-black text-slate-900">
-                        {vndMoney.format(item.price * item.qty)}
-                      </strong>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Delivery Info */}
-              <div className="mt-4 rounded-xl border border-slate-100 bg-slate-50/70 p-4 text-xs">
-                <div className="grid gap-2 sm:grid-cols-2">
-                  <div>
-                    <span className="text-slate-400">Người nhận:</span>{' '}
-                    <strong className="text-slate-800">{selectedOrderForDetail.customerName}</strong>
-                  </div>
-                  <div>
-                    <span className="text-slate-400">Số điện thoại:</span>{' '}
-                    <strong className="font-mono text-slate-800">{selectedOrderForDetail.customerPhone}</strong>
-                  </div>
-                  <div className="sm:col-span-2">
-                    <span className="text-slate-400">Địa chỉ:</span>{' '}
-                    <strong className="text-slate-800">{selectedOrderForDetail.deliveryAddress}</strong>
-                  </div>
-                </div>
-              </div>
-
-              {/* Cost summary */}
-              <div className="mt-4 space-y-1 border-t border-slate-100 pt-3 text-xs">
-                <div className="flex justify-between text-slate-600">
-                  <span>Tổng tiền hàng:</span>
-                  <span>{vndMoney.format(selectedOrderForDetail.total)}</span>
-                </div>
-                <div className="flex items-baseline justify-between text-sm font-black text-slate-900 pt-2 border-t border-slate-100">
-                  <span>Tổng thanh toán:</span>
-                  <strong className="text-base text-emerald-700">
-                    {vndMoney.format(selectedOrderForDetail.total)}
-                  </strong>
-                </div>
-              </div>
-
-              {/* Footer */}
-              <div className="mt-6 flex justify-end gap-2 border-t border-slate-100 pt-4">
-                <button
-                  type="button"
-                  onClick={() => setSelectedOrderForDetail(null)}
-                  className="rounded-xl border border-slate-200 px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50"
-                >
-                  Đóng
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    handleReorder(selectedOrderForDetail);
-                    setSelectedOrderForDetail(null);
-                  }}
-                  className="rounded-xl bg-emerald-600 px-5 py-2 text-xs font-bold text-white hover:bg-emerald-500"
-                >
-                  Đặt lại đơn này
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </StorefrontLayout>
   );

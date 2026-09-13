@@ -5,18 +5,33 @@
  * Contract for storefront and admin applications
  * OpenAPI spec version: 1.0.0
  */
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import type {
+  DataTag,
+  DefinedInitialDataOptions,
+  DefinedUseQueryResult,
   MutationFunction,
   QueryClient,
+  QueryFunction,
+  QueryKey,
+  UndefinedInitialDataOptions,
   UseMutationOptions,
   UseMutationResult,
+  UseQueryOptions,
+  UseQueryResult,
 } from '@tanstack/react-query';
 
-import type { ErrorResponseDto, OrderDetailDto } from './models';
+import type {
+  AccountOrderListDto,
+  ErrorResponseDto,
+  GuestOrderPlacementDto,
+  ListAccountOrdersParams,
+  OrderCancelCommandDto,
+  OrderDetailDto,
+} from './models';
 
 import { apiFetcher } from '../../../lib/api/fetcher';
-import type { ErrorType } from '../../../lib/api/fetcher';
+import type { ErrorType, BodyType } from '../../../lib/api/fetcher';
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 /**
@@ -27,14 +42,14 @@ export const placeGuestOrder = (
   options?: SecondParameter<typeof apiFetcher>,
   signal?: AbortSignal,
 ) => {
-  return apiFetcher<OrderDetailDto>(
+  return apiFetcher<GuestOrderPlacementDto>(
     { url: `/api/v1/orders/guest/from-checkout/${checkoutToken}`, method: 'POST', signal },
     options,
   );
 };
 
 export const getPlaceGuestOrderMutationOptions = <
-  TError = ErrorType<ErrorResponseDto | ErrorResponseDto>,
+  TError = ErrorType<ErrorResponseDto | ErrorResponseDto | ErrorResponseDto>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
@@ -73,13 +88,15 @@ export type PlaceGuestOrderMutationResult = NonNullable<
   Awaited<ReturnType<typeof placeGuestOrder>>
 >;
 
-export type PlaceGuestOrderMutationError = ErrorType<ErrorResponseDto | ErrorResponseDto>;
+export type PlaceGuestOrderMutationError = ErrorType<
+  ErrorResponseDto | ErrorResponseDto | ErrorResponseDto
+>;
 
 /**
  * @summary Tạo đơn idempotent từ checkout và reservation đã xác nhận của khách vãng lai
  */
 export const usePlaceGuestOrder = <
-  TError = ErrorType<ErrorResponseDto | ErrorResponseDto>,
+  TError = ErrorType<ErrorResponseDto | ErrorResponseDto | ErrorResponseDto>,
   TContext = unknown,
 >(
   options?: {
@@ -104,6 +121,219 @@ export const usePlaceGuestOrder = <
 };
 
 /**
+ * @summary Xem đơn bằng mã đơn và token bí mật của khách vãng lai
+ */
+export const getGuestOrder = (
+  orderNo: string,
+  options?: SecondParameter<typeof apiFetcher>,
+  signal?: AbortSignal,
+) => {
+  return apiFetcher<OrderDetailDto>(
+    { url: `/api/v1/orders/guest/${orderNo}`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getGetGuestOrderQueryKey = (orderNo?: string) => {
+  return [`/api/v1/orders/guest/${orderNo}`] as const;
+};
+
+export const getGetGuestOrderQueryOptions = <
+  TData = Awaited<ReturnType<typeof getGuestOrder>>,
+  TError = ErrorType<ErrorResponseDto | ErrorResponseDto>,
+>(
+  orderNo: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getGuestOrder>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetGuestOrderQueryKey(orderNo);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getGuestOrder>>> = ({ signal }) =>
+    getGuestOrder(orderNo, requestOptions, signal);
+
+  return { queryKey, queryFn, enabled: !!orderNo, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getGuestOrder>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetGuestOrderQueryResult = NonNullable<Awaited<ReturnType<typeof getGuestOrder>>>;
+export type GetGuestOrderQueryError = ErrorType<ErrorResponseDto | ErrorResponseDto>;
+
+export function useGetGuestOrder<
+  TData = Awaited<ReturnType<typeof getGuestOrder>>,
+  TError = ErrorType<ErrorResponseDto | ErrorResponseDto>,
+>(
+  orderNo: string,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getGuestOrder>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getGuestOrder>>,
+          TError,
+          Awaited<ReturnType<typeof getGuestOrder>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetGuestOrder<
+  TData = Awaited<ReturnType<typeof getGuestOrder>>,
+  TError = ErrorType<ErrorResponseDto | ErrorResponseDto>,
+>(
+  orderNo: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getGuestOrder>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getGuestOrder>>,
+          TError,
+          Awaited<ReturnType<typeof getGuestOrder>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetGuestOrder<
+  TData = Awaited<ReturnType<typeof getGuestOrder>>,
+  TError = ErrorType<ErrorResponseDto | ErrorResponseDto>,
+>(
+  orderNo: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getGuestOrder>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Xem đơn bằng mã đơn và token bí mật của khách vãng lai
+ */
+
+export function useGetGuestOrder<
+  TData = Awaited<ReturnType<typeof getGuestOrder>>,
+  TError = ErrorType<ErrorResponseDto | ErrorResponseDto>,
+>(
+  orderNo: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getGuestOrder>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetGuestOrderQueryOptions(orderNo, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * @summary Khách vãng lai hủy đơn chưa thanh toán/xử lý
+ */
+export const cancelGuestOrder = (
+  orderNo: string,
+  orderCancelCommandDto: BodyType<OrderCancelCommandDto>,
+  options?: SecondParameter<typeof apiFetcher>,
+  signal?: AbortSignal,
+) => {
+  return apiFetcher<OrderDetailDto>(
+    {
+      url: `/api/v1/orders/guest/${orderNo}/cancel`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: orderCancelCommandDto,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getCancelGuestOrderMutationOptions = <
+  TError = ErrorType<ErrorResponseDto | ErrorResponseDto | ErrorResponseDto>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof cancelGuestOrder>>,
+    TError,
+    { orderNo: string; data: BodyType<OrderCancelCommandDto> },
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetcher>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof cancelGuestOrder>>,
+  TError,
+  { orderNo: string; data: BodyType<OrderCancelCommandDto> },
+  TContext
+> => {
+  const mutationKey = ['cancelGuestOrder'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof cancelGuestOrder>>,
+    { orderNo: string; data: BodyType<OrderCancelCommandDto> }
+  > = (props) => {
+    const { orderNo, data } = props ?? {};
+
+    return cancelGuestOrder(orderNo, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CancelGuestOrderMutationResult = NonNullable<
+  Awaited<ReturnType<typeof cancelGuestOrder>>
+>;
+export type CancelGuestOrderMutationBody = BodyType<OrderCancelCommandDto>;
+export type CancelGuestOrderMutationError = ErrorType<
+  ErrorResponseDto | ErrorResponseDto | ErrorResponseDto
+>;
+
+/**
+ * @summary Khách vãng lai hủy đơn chưa thanh toán/xử lý
+ */
+export const useCancelGuestOrder = <
+  TError = ErrorType<ErrorResponseDto | ErrorResponseDto | ErrorResponseDto>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof cancelGuestOrder>>,
+      TError,
+      { orderNo: string; data: BodyType<OrderCancelCommandDto> },
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof cancelGuestOrder>>,
+  TError,
+  { orderNo: string; data: BodyType<OrderCancelCommandDto> },
+  TContext
+> => {
+  const mutationOptions = getCancelGuestOrderMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
  * @summary Tạo đơn idempotent từ checkout và reservation đã xác nhận của khách đăng nhập
  */
 export const placeAccountOrder = (
@@ -118,7 +348,7 @@ export const placeAccountOrder = (
 };
 
 export const getPlaceAccountOrderMutationOptions = <
-  TError = ErrorType<ErrorResponseDto | ErrorResponseDto>,
+  TError = ErrorType<ErrorResponseDto | ErrorResponseDto | ErrorResponseDto | ErrorResponseDto>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
@@ -157,13 +387,15 @@ export type PlaceAccountOrderMutationResult = NonNullable<
   Awaited<ReturnType<typeof placeAccountOrder>>
 >;
 
-export type PlaceAccountOrderMutationError = ErrorType<ErrorResponseDto | ErrorResponseDto>;
+export type PlaceAccountOrderMutationError = ErrorType<
+  ErrorResponseDto | ErrorResponseDto | ErrorResponseDto | ErrorResponseDto
+>;
 
 /**
  * @summary Tạo đơn idempotent từ checkout và reservation đã xác nhận của khách đăng nhập
  */
 export const usePlaceAccountOrder = <
-  TError = ErrorType<ErrorResponseDto | ErrorResponseDto>,
+  TError = ErrorType<ErrorResponseDto | ErrorResponseDto | ErrorResponseDto | ErrorResponseDto>,
   TContext = unknown,
 >(
   options?: {
@@ -183,6 +415,343 @@ export const usePlaceAccountOrder = <
   TContext
 > => {
   const mutationOptions = getPlaceAccountOrderMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * @summary Danh sách đơn hàng của khách đang đăng nhập
+ */
+export const listAccountOrders = (
+  params?: ListAccountOrdersParams,
+  options?: SecondParameter<typeof apiFetcher>,
+  signal?: AbortSignal,
+) => {
+  return apiFetcher<AccountOrderListDto>(
+    { url: `/api/v1/account/orders`, method: 'GET', params, signal },
+    options,
+  );
+};
+
+export const getListAccountOrdersQueryKey = (params?: ListAccountOrdersParams) => {
+  return [`/api/v1/account/orders`, ...(params ? [params] : [])] as const;
+};
+
+export const getListAccountOrdersQueryOptions = <
+  TData = Awaited<ReturnType<typeof listAccountOrders>>,
+  TError = ErrorType<ErrorResponseDto>,
+>(
+  params?: ListAccountOrdersParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listAccountOrders>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListAccountOrdersQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listAccountOrders>>> = ({ signal }) =>
+    listAccountOrders(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listAccountOrders>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListAccountOrdersQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listAccountOrders>>
+>;
+export type ListAccountOrdersQueryError = ErrorType<ErrorResponseDto>;
+
+export function useListAccountOrders<
+  TData = Awaited<ReturnType<typeof listAccountOrders>>,
+  TError = ErrorType<ErrorResponseDto>,
+>(
+  params: undefined | ListAccountOrdersParams,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof listAccountOrders>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listAccountOrders>>,
+          TError,
+          Awaited<ReturnType<typeof listAccountOrders>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListAccountOrders<
+  TData = Awaited<ReturnType<typeof listAccountOrders>>,
+  TError = ErrorType<ErrorResponseDto>,
+>(
+  params?: ListAccountOrdersParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listAccountOrders>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listAccountOrders>>,
+          TError,
+          Awaited<ReturnType<typeof listAccountOrders>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListAccountOrders<
+  TData = Awaited<ReturnType<typeof listAccountOrders>>,
+  TError = ErrorType<ErrorResponseDto>,
+>(
+  params?: ListAccountOrdersParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listAccountOrders>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Danh sách đơn hàng của khách đang đăng nhập
+ */
+
+export function useListAccountOrders<
+  TData = Awaited<ReturnType<typeof listAccountOrders>>,
+  TError = ErrorType<ErrorResponseDto>,
+>(
+  params?: ListAccountOrdersParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listAccountOrders>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListAccountOrdersQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * @summary Chi tiết đơn hàng thuộc khách đang đăng nhập
+ */
+export const getAccountOrder = (
+  orderNo: string,
+  options?: SecondParameter<typeof apiFetcher>,
+  signal?: AbortSignal,
+) => {
+  return apiFetcher<OrderDetailDto>(
+    { url: `/api/v1/account/orders/${orderNo}`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getGetAccountOrderQueryKey = (orderNo?: string) => {
+  return [`/api/v1/account/orders/${orderNo}`] as const;
+};
+
+export const getGetAccountOrderQueryOptions = <
+  TData = Awaited<ReturnType<typeof getAccountOrder>>,
+  TError = ErrorType<ErrorResponseDto | ErrorResponseDto | ErrorResponseDto>,
+>(
+  orderNo: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getAccountOrder>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetAccountOrderQueryKey(orderNo);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getAccountOrder>>> = ({ signal }) =>
+    getAccountOrder(orderNo, requestOptions, signal);
+
+  return { queryKey, queryFn, enabled: !!orderNo, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getAccountOrder>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetAccountOrderQueryResult = NonNullable<Awaited<ReturnType<typeof getAccountOrder>>>;
+export type GetAccountOrderQueryError = ErrorType<
+  ErrorResponseDto | ErrorResponseDto | ErrorResponseDto
+>;
+
+export function useGetAccountOrder<
+  TData = Awaited<ReturnType<typeof getAccountOrder>>,
+  TError = ErrorType<ErrorResponseDto | ErrorResponseDto | ErrorResponseDto>,
+>(
+  orderNo: string,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getAccountOrder>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getAccountOrder>>,
+          TError,
+          Awaited<ReturnType<typeof getAccountOrder>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetAccountOrder<
+  TData = Awaited<ReturnType<typeof getAccountOrder>>,
+  TError = ErrorType<ErrorResponseDto | ErrorResponseDto | ErrorResponseDto>,
+>(
+  orderNo: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getAccountOrder>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getAccountOrder>>,
+          TError,
+          Awaited<ReturnType<typeof getAccountOrder>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetAccountOrder<
+  TData = Awaited<ReturnType<typeof getAccountOrder>>,
+  TError = ErrorType<ErrorResponseDto | ErrorResponseDto | ErrorResponseDto>,
+>(
+  orderNo: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getAccountOrder>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Chi tiết đơn hàng thuộc khách đang đăng nhập
+ */
+
+export function useGetAccountOrder<
+  TData = Awaited<ReturnType<typeof getAccountOrder>>,
+  TError = ErrorType<ErrorResponseDto | ErrorResponseDto | ErrorResponseDto>,
+>(
+  orderNo: string,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getAccountOrder>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetAccountOrderQueryOptions(orderNo, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * @summary Khách đăng nhập hủy đơn chưa thanh toán/xử lý
+ */
+export const cancelAccountOrder = (
+  orderNo: string,
+  orderCancelCommandDto: BodyType<OrderCancelCommandDto>,
+  options?: SecondParameter<typeof apiFetcher>,
+  signal?: AbortSignal,
+) => {
+  return apiFetcher<OrderDetailDto>(
+    {
+      url: `/api/v1/account/orders/${orderNo}/cancel`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: orderCancelCommandDto,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getCancelAccountOrderMutationOptions = <
+  TError = ErrorType<ErrorResponseDto | ErrorResponseDto | ErrorResponseDto | ErrorResponseDto>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof cancelAccountOrder>>,
+    TError,
+    { orderNo: string; data: BodyType<OrderCancelCommandDto> },
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetcher>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof cancelAccountOrder>>,
+  TError,
+  { orderNo: string; data: BodyType<OrderCancelCommandDto> },
+  TContext
+> => {
+  const mutationKey = ['cancelAccountOrder'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof cancelAccountOrder>>,
+    { orderNo: string; data: BodyType<OrderCancelCommandDto> }
+  > = (props) => {
+    const { orderNo, data } = props ?? {};
+
+    return cancelAccountOrder(orderNo, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CancelAccountOrderMutationResult = NonNullable<
+  Awaited<ReturnType<typeof cancelAccountOrder>>
+>;
+export type CancelAccountOrderMutationBody = BodyType<OrderCancelCommandDto>;
+export type CancelAccountOrderMutationError = ErrorType<
+  ErrorResponseDto | ErrorResponseDto | ErrorResponseDto | ErrorResponseDto
+>;
+
+/**
+ * @summary Khách đăng nhập hủy đơn chưa thanh toán/xử lý
+ */
+export const useCancelAccountOrder = <
+  TError = ErrorType<ErrorResponseDto | ErrorResponseDto | ErrorResponseDto | ErrorResponseDto>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof cancelAccountOrder>>,
+      TError,
+      { orderNo: string; data: BodyType<OrderCancelCommandDto> },
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof cancelAccountOrder>>,
+  TError,
+  { orderNo: string; data: BodyType<OrderCancelCommandDto> },
+  TContext
+> => {
+  const mutationOptions = getCancelAccountOrderMutationOptions(options);
 
   return useMutation(mutationOptions, queryClient);
 };

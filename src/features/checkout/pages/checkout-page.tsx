@@ -161,7 +161,13 @@ export function CheckoutPage() {
       const order = await placeOrder(context, quote.checkoutToken, orderIdempotencyKey.current);
       setPlacedOrder(order);
       dispatch(clearCart());
-      toast({ type: 'success', title: 'Đặt hàng thành công', message: `Mã đơn ${order.orderNo} đã được tiếp nhận.` });
+      toast({
+        type: order.guestAccessPersisted === false ? 'warning' : 'success',
+        title: 'Đặt hàng thành công',
+        message: order.guestAccessPersisted === false
+          ? `Mã đơn ${order.orderNo} đã được tạo nhưng trình duyệt không lưu được quyền truy cập. Hãy lưu mã đơn và liên hệ cửa hàng khi cần tra cứu.`
+          : `Mã đơn ${order.orderNo} đã được tiếp nhận.`,
+      });
     } catch (caught) {
       setError(messageOf(caught));
     } finally {

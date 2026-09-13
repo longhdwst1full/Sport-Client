@@ -1,5 +1,6 @@
-const CACHE_NAME = 'dctd-storefront-v1';
-const APP_SHELL = ['/', '/manifest.webmanifest', '/icon.svg'];
+const CACHE_PREFIX = 'dctd-storefront-';
+const CACHE_NAME = `${CACHE_PREFIX}v2`;
+const APP_SHELL = ['/', '/offline', '/manifest.webmanifest', '/icon.svg'];
 const PUBLIC_NAVIGATIONS = new Set(['/']);
 
 self.addEventListener('install', (event) => {
@@ -11,7 +12,11 @@ self.addEventListener('activate', (event) => {
     caches
       .keys()
       .then((keys) =>
-        Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))),
+        Promise.all(
+          keys
+            .filter((key) => key.startsWith(CACHE_PREFIX) && key !== CACHE_NAME)
+            .map((key) => caches.delete(key)),
+        ),
       ),
   );
   self.clients.claim();
@@ -20,12 +25,18 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const requestUrl = new URL(event.request.url);
   if (event.request.method !== 'GET' || requestUrl.origin !== self.location.origin) return;
-  if (
-    requestUrl.pathname.startsWith('/api/') ||
-    requestUrl.pathname.startsWith('/admin') ||
-    requestUrl.pathname.startsWith('/account') ||
-    requestUrl.pathname.startsWith('/checkout')
-  ) {
+  if (requestUrl.pathname.startsWith('/api/') || requestUrl.pathname.startsWith('/admin')) return;
+
+  const isOnlineOnlyNavigation = event.request.mode === 'navigate' && [
+    '/account',
+    '/orders',
+    '/profile',
+    '/checkout',
+  ].some((prefix) => requestUrl.pathname.startsWith(prefix));
+  if (isOnlineOnlyNavigation) {
+    // SECURITY: Customer/Order/Checkout luôn network-only; offline chỉ trả trang
+    // thông báo tĩnh, không dùng lại personalized HTML từ cache.
+    event.respondWith(fetch(event.request).catch(() => caches.match('/offline')));
     return;
   }
 
@@ -39,7 +50,7 @@ self.addEventListener('fetch', (event) => {
           }
           return response;
         })
-        .catch(() => caches.match(event.request).then((cached) => cached ?? caches.match('/'))),
+        .catch(() => caches.match(event.request).then((cached) => cached ?? caches.match('/offline'))),
     );
     return;
   }

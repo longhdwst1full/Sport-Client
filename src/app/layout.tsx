@@ -1,5 +1,11 @@
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
+import '@fontsource/noto-sans/vietnamese-400.css';
+import '@fontsource/noto-sans/vietnamese-500.css';
+import '@fontsource/noto-sans/vietnamese-600.css';
+import '@fontsource/noto-sans/vietnamese-700.css';
+import '@fontsource/noto-sans/vietnamese-800.css';
+import '@fontsource/noto-sans/vietnamese-900.css';
 import { Providers } from './providers';
 import './globals.css';
 
@@ -10,7 +16,7 @@ const DEFAULT_DESC =
   'Bảo An Sport chuyên cung cấp dụng cụ thể thao, thiết bị thể dục và thể hình. Máy chạy bộ, xe đạp tập, giàn tạ đa năng, dụng cụ võ thuật, bóng bàn, bóng rổ. Sản phẩm đa dạng, giá tốt, giao hàng toàn quốc. Hotline: 0939 987 456.';
 
 export const viewport: Viewport = {
-  themeColor: '#059669',
+  themeColor: '#006c5b',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,

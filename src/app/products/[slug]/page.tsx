@@ -5,20 +5,14 @@ import {
   ChevronRight,
   ShieldCheck,
   Award,
-  Truck,
-  RotateCcw,
-  Sparkles,
-  Star,
-  CheckCircle2,
-  Box,
   Flame,
-  Info,
+  Images,
+  BadgeCheck,
 } from 'lucide-react';
 import type { Metadata } from 'next';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { ProductPurchasePanel } from '@/features/catalog/components/product-purchase-panel';
 import { ProductRelatedSection } from '@/features/catalog/components/product-related-section';
-import { Product3DViewer } from '@/components/3d/product-3d-viewer';
 import { ProductReviewSection } from '@/features/reviews/components/product-review-section';
 import { getCatalogProduct } from '@/generated/api/catalog/catalog';
 import { ApiError } from '@/lib/api/fetcher';
@@ -159,7 +153,7 @@ export default async function ProductDetailPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
-      <div className="bg-slate-50/70 pb-24">
+      <div className="bg-[var(--dc-canvas)] pb-24">
         {/* Breadcrumbs Navigation */}
         <nav
           aria-label="Breadcrumb"
@@ -167,7 +161,7 @@ export default async function ProductDetailPage({
         >
           <ol className="flex flex-wrap items-center gap-2">
             <li>
-              <Link href="/" className="hover:text-emerald-700">
+              <Link href="/" className="transition hover:text-[var(--dc-primary-700)]">
                 Trang chủ
               </Link>
             </li>
@@ -175,7 +169,7 @@ export default async function ProductDetailPage({
               <ChevronRight className="size-3 text-stone-400" />
             </li>
             <li>
-              <Link href="/#products" className="hover:text-emerald-700">
+              <Link href="/#products" className="transition hover:text-[var(--dc-primary-700)]">
                 Sản phẩm
               </Link>
             </li>
@@ -187,40 +181,38 @@ export default async function ProductDetailPage({
         </nav>
 
         {/* Main Product Stage */}
-        <main className="mx-auto grid max-w-7xl gap-10 px-4 py-4 sm:px-6 lg:grid-cols-[1.15fr_0.85fr] lg:px-8">
+        <main className="mx-auto grid max-w-7xl gap-8 px-4 py-3 sm:px-6 lg:grid-cols-[1.12fr_0.88fr] lg:px-8">
           {/* Left Column: Visual Showcase & Technical Detail */}
           <div className="space-y-8">
-            {/* 3D Interactive Viewer Stage */}
-            <div>
-              <div className="mb-3 flex items-center justify-between">
-                <span className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-emerald-700">
-                  <Sparkles className="size-4" />
-                  Mô phỏng 3D tương tác đa chiều
+            {/* Product media is image-first. Heavy 3D rendering is intentionally excluded here. */}
+            <div className="overflow-hidden rounded-[28px] border border-[var(--dc-border)] bg-white shadow-[0_18px_50px_rgba(0,49,41,0.08)]">
+              <div className="flex items-center justify-between border-b border-[var(--dc-border)] px-5 py-3.5">
+                <span className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-[0.12em] text-[var(--dc-primary-700)]">
+                  <Images className="size-4" aria-hidden="true" />
+                  Hình ảnh sản phẩm
                 </span>
-                <span className="text-xs font-semibold text-stone-500">
-                  Xoay 360° · Xem bóc tách linh kiện
+                <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--dc-text-secondary)]">
+                  <BadgeCheck className="size-4 text-[var(--dc-primary-500)]" aria-hidden="true" />
+                  Ảnh thực tế đã kiểm duyệt
                 </span>
               </div>
-              <Product3DViewer productName={product.name} />
-            </div>
-
-            {/* Product Static Gallery Preview Fallback / Secondary Photos */}
-            <div className="relative aspect-[16/9] overflow-hidden rounded-[28px] border border-stone-200/80 bg-white shadow-sm">
-              <Image
-                src={product.imageUrl ?? 'https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?auto=format&fit=crop&w=1200&q=85'}
-                alt={product.name}
-                fill
-                priority
-                sizes="(max-width: 1024px) 100vw, 60vw"
-                className="object-cover"
-              />
-              <div className="absolute bottom-4 left-4 rounded-full bg-black/60 px-4 py-1.5 text-xs font-bold text-white backdrop-blur-md">
-                Ảnh chụp thực tế tại Showroom
+              <div className="relative aspect-[4/3] bg-gradient-to-br from-white to-[var(--dc-primary-50)] sm:aspect-[16/11]">
+                <Image
+                  src={product.imageUrl ?? 'https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?auto=format&fit=crop&w=1200&q=85'}
+                  alt={product.name}
+                  fill
+                  priority
+                  sizes="(max-width: 1024px) 100vw, 58vw"
+                  className="object-contain p-4 transition duration-500 hover:scale-[1.02] sm:p-8"
+                />
+                <div className="absolute bottom-4 left-4 rounded-full bg-[var(--dc-primary-900)]/90 px-4 py-2 text-xs font-bold text-white shadow-lg backdrop-blur-md">
+                  Có hỗ trợ xem sản phẩm tại showroom
+                </div>
               </div>
             </div>
 
             {/* Product Story / Description */}
-            <div className="rounded-[28px] border border-stone-200/80 bg-white p-6 shadow-sm sm:p-8">
+            <div className="rounded-[28px] border border-[var(--dc-border)] bg-white p-6 shadow-sm sm:p-8">
               <h2 className="text-xl font-black text-ink sm:text-2xl">Mô tả sản phẩm</h2>
               <p className="mt-4 text-base leading-relaxed text-stone-600 sm:text-lg">
                 {product.shortDescription ||
@@ -229,17 +221,17 @@ export default async function ProductDetailPage({
 
               <div className="mt-6 grid gap-4 sm:grid-cols-3">
                 <div className="rounded-2xl bg-stone-50 p-4">
-                  <Flame className="size-5 text-emerald-600" />
+                  <Flame className="size-5 text-[var(--dc-primary-600)]" />
                   <strong className="mt-2 block text-sm font-bold text-ink">Thiết kế công thái học</strong>
                   <p className="mt-1 text-xs text-stone-500">Tay cầm tiện dụng, hạn chế mỏi cổ tay khi nâng tạ nặng.</p>
                 </div>
                 <div className="rounded-2xl bg-stone-50 p-4">
-                  <ShieldCheck className="size-5 text-emerald-600" />
+                  <ShieldCheck className="size-5 text-[var(--dc-primary-600)]" />
                   <strong className="mt-2 block text-sm font-bold text-ink">Bọc cao su đúc</strong>
                   <p className="mt-1 text-xs text-stone-500">Bảo vệ bề mặt sàn gỗ, gạch hoa và chống nứt vỡ.</p>
                 </div>
                 <div className="rounded-2xl bg-stone-50 p-4">
-                  <Award className="size-5 text-emerald-600" />
+                  <Award className="size-5 text-[var(--dc-primary-600)]" />
                   <strong className="mt-2 block text-sm font-bold text-ink">Độ bền công nghiệp</strong>
                   <p className="mt-1 text-xs text-stone-500">Chịu được hơn 100.000 chu kỳ tập luyện liên tục.</p>
                 </div>
@@ -247,7 +239,7 @@ export default async function ProductDetailPage({
             </div>
 
             {/* Technical Specifications Table */}
-            <div className="rounded-[28px] border border-stone-200/80 bg-white p-6 shadow-sm sm:p-8">
+            <div className="rounded-[28px] border border-[var(--dc-border)] bg-white p-6 shadow-sm sm:p-8">
               <h2 className="text-xl font-black text-ink sm:text-2xl">Thông số kỹ thuật chi tiết</h2>
               <div className="mt-6 divide-y divide-stone-100 rounded-2xl border border-stone-100 bg-stone-50/50">
                 {TECH_SPECS.map(({ label, value }: { label: string; value: string }) => (

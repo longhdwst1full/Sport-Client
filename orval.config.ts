@@ -3,6 +3,22 @@ import { defineConfig } from 'orval';
 const CONTRACT_BASE = './contracts/storefront';
 const OUTPUT_BASE = './src/generated/api';
 
+function operationOverrides(domain: string): Record<string, { requestOptions: boolean }> {
+  if (domain === 'orders') {
+    return {
+      cancelGuestOrder: { requestOptions: true },
+      cancelAccountOrder: { requestOptions: true },
+    };
+  }
+  if (domain === 'payments') {
+    return {
+      submitGuestPaymentEvidence: { requestOptions: true },
+      submitAccountPaymentEvidence: { requestOptions: true },
+    };
+  }
+  return {};
+}
+
 function createDomainConfig(domain: string) {
   return {
     input: { target: `${CONTRACT_BASE}/${domain}.yaml` },
@@ -16,6 +32,7 @@ function createDomainConfig(domain: string) {
       override: {
         mutator: { path: './src/lib/api/fetcher.ts', name: 'apiFetcher' },
         query: { useQuery: true, useMutation: true, signal: true },
+        operations: operationOverrides(domain),
       },
     },
   };
@@ -31,4 +48,5 @@ export default defineConfig({
   shipping: createDomainConfig('shipping'),
   checkout: createDomainConfig('checkout'),
   orders: createDomainConfig('orders'),
+  payments: createDomainConfig('payments'),
 });

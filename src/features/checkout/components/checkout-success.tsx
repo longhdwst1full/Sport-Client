@@ -26,7 +26,7 @@ export function CheckoutSuccess({ order }: CheckoutSuccessProps) {
         </div>
         <div className="mt-7 flex flex-wrap justify-center gap-3">
           <Link href="/" className="rounded-xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white">Tiếp tục mua sắm</Link>
-          <Link href="/profile" className="rounded-xl border border-slate-200 px-5 py-3 text-sm font-bold text-slate-700">Tài khoản của tôi</Link>
+          <Link href={`/orders/${order.orderNo}`} className="rounded-xl border border-slate-200 px-5 py-3 text-sm font-bold text-slate-700">Xem đơn hàng</Link>
         </div>
       </section>
     </main>

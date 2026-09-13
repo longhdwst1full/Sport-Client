@@ -20,8 +20,8 @@ import type { CheckoutQuoteDto, CreateCheckoutQuoteDto, ReservationDto } from '@
 import { placeAccountOrder, placeGuestOrder } from '@/generated/api/orders/orders';
 import type { OrderDetailDto } from '@/generated/api/orders/models';
 import { ApiError } from '@/lib/api/fetcher';
-
-const GUEST_CART_TOKEN_KEY = 'dctd-storefront-guest-cart-token-v1';
+import { clearGuestCartToken, readGuestCartToken, saveGuestCartToken } from '@/features/cart/guest-cart-token.store';
+import { saveGuestOrderAccessToken } from '@/features/orders/guest-order-access.store';
 
 export type CheckoutLine = { variantId: string; quantity: number };
 export type CheckoutContext = { mode: 'ACCOUNT' } | { mode: 'GUEST'; cartToken: string };
@@ -36,18 +36,18 @@ function guestHeaders(cartToken: string, idempotencyKey?: string) {
 }
 
 async function getOrCreateGuestCart(): Promise<{ cart: CartDto; cartToken: string }> {
-  const savedToken = localStorage.getItem(GUEST_CART_TOKEN_KEY);
+  const savedToken = readGuestCartToken();
   if (savedToken) {
     try {
       return { cart: await getGuestCart(guestHeaders(savedToken)), cartToken: savedToken };
     } catch (error) {
       if (!(error instanceof ApiError) || error.status !== 404) throw error;
-      localStorage.removeItem(GUEST_CART_TOKEN_KEY);
+      clearGuestCartToken();
     }
   }
   const created = await createGuestCart();
   if (!created.cartToken) throw new Error('API did not return a guest cart token');
-  localStorage.setItem(GUEST_CART_TOKEN_KEY, created.cartToken);
+  saveGuestCartToken(created.cartToken);
   return { cart: created, cartToken: created.cartToken };
 }
 
@@ -118,11 +118,15 @@ export async function placeOrder(
   context: CheckoutContext,
   checkoutToken: string,
   idempotencyKey: string,
-): Promise<OrderDetailDto> {
+): Promise<OrderDetailDto & { guestAccessPersisted?: boolean }> {
   if (context.mode === 'ACCOUNT') {
     return placeAccountOrder(checkoutToken, { headers: { 'idempotency-key': idempotencyKey } });
   }
-  return placeGuestOrder(checkoutToken, guestHeaders(context.cartToken, idempotencyKey));
+  const order = await placeGuestOrder(checkoutToken, guestHeaders(context.cartToken, idempotencyKey));
+  return {
+    ...order,
+    guestAccessPersisted: saveGuestOrderAccessToken(order.orderNo, order.guestAccessToken),
+  };
 }
 
 export async function reloadCheckout(
