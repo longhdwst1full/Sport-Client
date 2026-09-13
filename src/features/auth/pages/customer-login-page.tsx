@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import { useLoginCustomer } from '@/generated/api/auth/auth';
 import type { LoginDto } from '@/generated/api/auth/models';
-import { KineticBallCanvas } from '@/foundation/3d/kinetic-ball-canvas';
+import { KineticBallCanvas } from '@/foundation/3d/kinetic-ball-canvas.lazy';
 import { useToast } from '@/shared/components/global-toast';
 import { getCustomerAuthError } from '../model/auth-error';
 import { saveCustomerAuthTokens } from '../model/auth-token.store';

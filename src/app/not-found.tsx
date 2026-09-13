@@ -10,7 +10,7 @@ import {
   Phone,
   Sparkles,
 } from 'lucide-react';
-import { KineticBallCanvas } from '@/foundation/3d/kinetic-ball-canvas';
+import { KineticBallCanvas } from '@/foundation/3d/kinetic-ball-canvas.lazy';
 import { STORE_CONTACT } from '@/shared/constants';
 
 export default function NotFound() {

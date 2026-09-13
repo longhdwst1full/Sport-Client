@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 import { useRegisterCustomer } from '@/generated/api/auth/auth';
 import type { RegisterCustomerDto } from '@/generated/api/auth/models';
-import { KineticBallCanvas } from '@/foundation/3d/kinetic-ball-canvas';
+import { KineticBallCanvas } from '@/foundation/3d/kinetic-ball-canvas.lazy';
 import { getCustomerAuthError } from '../model/auth-error';
 import { saveCustomerAuthTokens } from '../model/auth-token.store';
 
