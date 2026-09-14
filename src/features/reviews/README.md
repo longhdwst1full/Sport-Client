@@ -1,10 +1,10 @@
 # Storefront Reviews — maintenance note
 
-> **Document version:** 1.0.0
+> **Document version:** 2.0.0
 >
 > **Last updated:** 2026-09-13
 >
-> **Change summary:** Tạo note; ghi rõ chỉ đọc được, chưa gửi được đánh giá.
+> **Change summary:** Backend review đã lên Prisma; gỡ mock, đánh giá đọc 100% từ API. Form gửi đánh giá giả đã bị loại bỏ.
 
 ## Phạm vi
 
@@ -27,12 +27,23 @@
 | --- | --- |
 | `useListProductReviews` | `src/generated/api/reviews/reviews.ts` |
 
-## Khoảng trống backend
+## Đã gỡ hết mock
 
-1. **Không gửi được đánh giá.** `api/src/modules/review/review.controller.ts` chỉ có `@Get()` cho `Storefront Reviews`; chưa có `POST`. UI viết đánh giá hiện chỉ là form cục bộ với `MOCK_INITIAL_REVIEWS`.
-2. **Không có model Prisma.** `ReviewService` giữ dữ liệu trong mảng in-memory như CMS.
+| Trước (bịa) | Nay (thật) |
+| --- | --- |
+| `totalReviews = reviews.length + 124` ("social base proof") | `total` từ API |
+| `averageRating = 4.9` cứng | `averageRating` do server tính |
+| Phân bố sao cố định 108/15/3/1/1 | tính từ chính danh sách đã duyệt |
+| `helpfulCount`, ảnh đính kèm, pros/cons | **đã gỡ** — DTO không có các field này |
+| Form gửi đánh giá thêm vào state cục bộ **và tự sinh phản hồi của cửa hàng** | **đã gỡ** |
 
-Cả hai là task backend, không lấp bằng cách tự chế endpoint (`RULE-CTR-02`).
+Form cũ là vấn đề nghiêm trọng nhất: khách bấm gửi thì thấy đánh giá xuất hiện kèm lời cảm ơn "từ cửa hàng", trong khi **không có gì được gửi tới hệ thống**. Nay thay bằng hướng dẫn gọi hotline.
+
+## Khoảng trống backend còn lại
+
+**Chưa gửi được đánh giá từ Storefront** — `review.controller.ts` mới chỉ có `@Get()` cho tag `Storefront Reviews`, chưa có `POST`. Đây là task backend (`RULE-CTR-02`).
+
+`verifiedPurchase` bị ràng buộc database `product_reviews_verified_requires_order_item_check`: chỉ đánh dấu được khi có `orderItemId` thật. Dữ liệu seed hiện để `false` vì không gắn với đơn nào.
 
 ## Hiển thị
 

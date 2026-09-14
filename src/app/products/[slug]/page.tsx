@@ -15,7 +15,6 @@ import { ProductPurchasePanel, ProductRelatedSection } from '@/features/catalog'
 import { ProductReviewSection } from '@/features/reviews';
 import { getCatalogProduct } from '@/generated/api/catalog/catalog';
 import { ApiError } from '@/lib/api/fetcher';
-import { getMockProductDetail } from '@/shared/data/mocks';
 
 export const revalidate = 0;
 
@@ -25,37 +24,31 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const product = getMockProductDetail(slug) || {
-    name: slug.replace(/-/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()),
-    shortDescription:
-      'Thiết bị thể thao chính hãng Bảo An Sport — Đạt tiêu chuẩn an toàn thể thao châu Âu, bảo hành 2-5 năm, hỗ trợ giao lắp tận nhà.',
-    imageUrl: 'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?auto=format&fit=crop&w=1200&q=85',
-  };
+  // CONTRACT: metadata đọc thẳng từ API. API lỗi thì trả metadata tối thiểu,
+  // không dựng tên/mô tả/ảnh của một sản phẩm không tồn tại.
+  let product: Awaited<ReturnType<typeof getCatalogProduct>> | undefined;
+  try {
+    product = await getCatalogProduct(slug);
+  } catch {
+    return { title: 'Sản phẩm — Bảo An Sport' };
+  }
 
   const title = `${product.name} — Chính Hãng, Trả Góp 0%`;
   const description = product.shortDescription;
+  // Sản phẩm chưa có ảnh thì bỏ hẳn thẻ ảnh thay vì chèn ảnh của sản phẩm khác.
+  const images = product.imageUrl
+    ? [{ url: product.imageUrl, width: 1200, height: 630, alt: product.name }]
+    : undefined;
 
   return {
     title,
     description,
-    openGraph: {
-      title,
-      description,
-      type: 'website',
-      images: [
-        {
-          url: product.imageUrl,
-          width: 1200,
-          height: 630,
-          alt: product.name,
-        },
-      ],
-    },
+    openGraph: { title, description, type: 'website', ...(images ? { images } : {}) },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
-      images: [product.imageUrl],
+      ...(product.imageUrl ? { images: [product.imageUrl] } : {}),
     },
   };
 }
@@ -66,28 +59,27 @@ export default async function ProductDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  let product: any;
+  let product: Awaited<ReturnType<typeof getCatalogProduct>>;
   try {
     product = await getCatalogProduct(slug);
   } catch (error) {
-    const mock = getMockProductDetail(slug);
-    if (mock) {
-      product = mock;
-    } else {
-      if (error instanceof ApiError && error.status === 404) notFound();
-      throw error;
-    }
+    // Không còn fallback sang dữ liệu mẫu: hiển thị sản phẩm không tồn tại còn
+    // tệ hơn báo lỗi, vì khách có thể đặt mua thứ cửa hàng không bán.
+    if (error instanceof ApiError && error.status === 404) notFound();
+    throw error;
   }
 
-  const TECH_SPECS = product.techSpecs ?? [
-    { label: 'Thương hiệu', value: product.brand ?? 'Bảo An Pro Series' },
-    { label: 'Phân loại', value: product.primaryCategory ?? 'Thiết bị thể hình & Home Gym chuyên nghiệp' },
-    { label: 'Quy cách khung thép', value: 'Thép hộp cường lực Q235 (độ dày 2.5mm - 3.0mm), sơn tĩnh điện sần' },
-    { label: 'Tải trọng chịu lực', value: 'Tối đa 500 KG (Thử nghiệm quá tải chu kỳ 100.000 lần)' },
-    { label: 'Kích thước lắp đặt', value: '1450 x 1200 x 2150 mm (Diện tích sàn an toàn tối thiểu 6m²)' },
-    { label: 'Vật liệu đệm & tay cầm', value: 'Đệm PU mật độ cao 60mm bọc da Carbon + Tay cầm khía vân Diamond Knurl' },
-    { label: 'Tiêu chuẩn kiểm định', value: 'Đạt chứng nhận an toàn thiết bị thể thao Châu Âu CE & EN957' },
-    { label: 'Chính sách bảo hành', value: '60 tháng khung thép, 24 tháng linh kiện, 1 đổi 1 trong 7 ngày' },
+  // CONTRACT: `ProductDetailDto` chưa có trường thông số kỹ thuật. Bản trước
+  // hiển thị một bảng cố định cho MỌI sản phẩm — gồm cả tải trọng, kích thước và
+  // chứng nhận CE/EN957 — tức là công bố thông số và chứng nhận không có thật.
+  // Chỉ hiển thị những gì API thực sự trả về.
+  const TECH_SPECS: Array<{ label: string; value: string }> = [
+    ...(product.brand ? [{ label: 'Thương hiệu', value: product.brand }] : []),
+    ...(product.primaryCategory ? [{ label: 'Phân loại', value: product.primaryCategory }] : []),
+    { label: 'Mã sản phẩm', value: product.productNo },
+    ...(product.variants.length > 0
+      ? [{ label: 'Số phiên bản', value: `${product.variants.length} phiên bản` }]
+      : []),
   ];
 
   const productJsonLd = {
@@ -238,6 +230,7 @@ export default async function ProductDetailPage({
             </div>
 
             {/* Technical Specifications Table */}
+            {TECH_SPECS.length > 0 && (
             <div className="rounded-[28px] border border-[var(--dc-border)] bg-white p-6 shadow-sm sm:p-8">
               <h2 className="text-xl font-black text-ink sm:text-2xl">Thông số kỹ thuật chi tiết</h2>
               <div className="mt-6 divide-y divide-stone-100 rounded-2xl border border-stone-100 bg-stone-50/50">
@@ -249,6 +242,7 @@ export default async function ProductDetailPage({
                 ))}
               </div>
             </div>
+            )}
 
             {/* Customer Rating & Reviews Summary */}
             <ProductReviewSection productName={product.name} productSlug={slug} />

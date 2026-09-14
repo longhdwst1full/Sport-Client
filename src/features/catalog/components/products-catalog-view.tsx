@@ -270,11 +270,10 @@ export function ProductsCatalogView() {
         ) : (
           <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
             {filteredProducts.map((product) => {
-              const hasDiscount = product.originalPrice && product.originalPrice > product.numericPrice;
-              const discountPercent = hasDiscount
-                ? Math.round(((product.originalPrice! - product.numericPrice) / product.originalPrice!) * 100)
-                : 0;
-
+              // CONTRACT: `StorefrontProductSummaryDto` không có giá gốc, chỉ có
+              // `minPrice`. Badge giảm giá trước đây đọc field không tồn tại qua
+              // ép kiểu `Record<string, unknown>` nên luôn tắt với dữ liệu thật;
+              // giá khuyến mãi thuộc Flash Sale và hiển thị ở feature promotions.
               return (
                 <article
                   key={product.id}
@@ -296,11 +295,6 @@ export function ProductsCatalogView() {
                         <span className="rounded-full border border-slate-100 bg-white/95 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-slate-800 shadow-sm backdrop-blur">
                           {product.productType === 'BUNDLE' ? 'Combo trọn bộ' : product.badge}
                         </span>
-                        {hasDiscount && discountPercent > 0 && (
-                          <span className="rounded-full bg-rose-600 px-2.5 py-0.5 text-[11px] font-black text-white shadow-md">
-                            -{discountPercent}%
-                          </span>
-                        )}
                       </div>
 
                       {/* Hover Overlay */}
@@ -340,11 +334,6 @@ export function ProductsCatalogView() {
                             <strong className="text-base font-black text-emerald-700 sm:text-lg">
                               {product.displayPrice}
                             </strong>
-                            {hasDiscount && product.displayOriginalPrice && (
-                              <span className="text-xs text-slate-400 line-through">
-                                {product.displayOriginalPrice}
-                              </span>
-                            )}
                           </div>
                         </div>
 

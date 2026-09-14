@@ -2,30 +2,37 @@
 
 import { useMemo } from 'react';
 import { useListProductReviews } from '@/generated/api/reviews/reviews';
+import {
+  toRatingBreakdown,
+  toReviewView,
+  type RatingBreakdownRow,
+  type ReviewView,
+} from '../model/review.mapper';
 
-export function useProductReviews(productSlug: string) {
-  const query = useListProductReviews(productSlug);
-  const summary = useMemo(() => {
-    const review = query.data?.items[0];
-    if (!review || !query.data) return undefined;
-    const comment = review.comments[0];
+export function useProductReviews(productSlug: string): {
+  reviews: ReviewView[];
+  total: number;
+  averageRating: number;
+  breakdown: RatingBreakdownRow[];
+  isPending: boolean;
+  isError: boolean;
+} {
+  const query = useListProductReviews(productSlug, {
+    query: { enabled: Boolean(productSlug) },
+  });
 
-    return {
-      averageRating: query.data.averageRating,
-      content: review.content,
-      customerLabel: review.customerDisplayName,
-      purchaseLabel: review.verifiedPurchase ? 'Đã xác minh mua hàng' : 'Khách hàng',
-      comment: comment
-        ? {
-            authorName: comment.authorName,
-            content: comment.content,
-          }
-        : undefined,
-    };
-  }, [query.data]);
+  const reviews = useMemo(
+    () => (query.data?.items ?? []).map(toReviewView),
+    [query.data?.items],
+  );
 
   return {
-    summary,
+    reviews,
+    total: query.data?.total ?? 0,
+    // Điểm trung bình do server tính trên toàn bộ đánh giá đã duyệt,
+    // không tính lại từ trang hiện tại.
+    averageRating: query.data?.averageRating ?? 0,
+    breakdown: useMemo(() => toRatingBreakdown(reviews), [reviews]),
     isPending: query.isPending,
     isError: query.isError,
   };

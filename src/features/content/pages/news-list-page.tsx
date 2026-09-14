@@ -13,36 +13,23 @@ import {
   TrendingUp,
 } from 'lucide-react';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
+import { Skeleton, SkeletonText } from '@/foundation/components/feedback';
 import { useContentStories } from '../hooks/use-content-stories';
+import { CONTENT_POST_TYPE_LABELS } from '../model/content-post.mapper';
 
-import {
-  MOCK_NEWS_CATEGORIES as CATEGORIES,
-  MOCK_FALLBACK_ARTICLES as FALLBACK_ARTICLES,
-} from '@/shared/data/mocks';
+const ALL_CATEGORY = 'ALL';
 
 export function NewsListPage() {
-  const [selectedCat, setSelectedCat] = useState('Tất cả');
-  const { stories } = useContentStories();
+  const [selectedCat, setSelectedCat] = useState(ALL_CATEGORY);
+  const { stories: articles, isPending, isError } = useContentStories();
 
-  const articles =
-    stories && stories.length > 0
-      ? stories.map((s, idx) => ({
-          id: s.id,
-          slug: s.slug,
-          title: s.title,
-          excerpt: s.excerpt,
-          category: s.typeLabel,
-          coverUrl: s.coverUrl || FALLBACK_ARTICLES[idx % FALLBACK_ARTICLES.length].coverUrl,
-          date: '05/09/2026',
-          readTime: '5 phút đọc',
-          author: 'Ban chuyên môn Bảo An Sport',
-        }))
-      : FALLBACK_ARTICLES;
+  // Bộ lọc dựng từ đúng những loại bài đang có, không phải danh sách cố định.
+  const categories = [ALL_CATEGORY, ...new Set(articles.map((article) => article.postType))];
 
   const filtered =
-    selectedCat === 'Tất cả'
+    selectedCat === ALL_CATEGORY
       ? articles
-      : articles.filter((a) => a.category.toLowerCase().includes(selectedCat.toLowerCase()));
+      : articles.filter((article) => article.postType === selectedCat);
 
   const featured = articles[0];
 
@@ -72,7 +59,7 @@ export function NewsListPage() {
 
           {/* Category Filter Pills */}
           <div className="mt-8 flex flex-wrap gap-2">
-            {CATEGORIES.map((cat) => (
+            {categories.map((cat) => (
               <button
                 key={cat}
                 type="button"
@@ -83,13 +70,13 @@ export function NewsListPage() {
                     : 'border border-stone-200 bg-white text-stone-600 hover:border-emerald-400 hover:text-emerald-700'
                 }`}
               >
-                {cat}
+                {cat === ALL_CATEGORY ? 'Tất cả' : (CONTENT_POST_TYPE_LABELS[cat] ?? cat)}
               </button>
             ))}
           </div>
 
           {/* Featured Hero Article */}
-          {featured && selectedCat === 'Tất cả' && (
+          {featured && selectedCat === ALL_CATEGORY && (
             <div className="mt-10 overflow-hidden rounded-[36px] border border-stone-200/80 bg-white shadow-sm transition hover:shadow-lg lg:grid lg:grid-cols-[1.2fr_0.8fr]">
               <div className="relative min-h-[320px] lg:min-h-[420px]">
                 <Image
@@ -105,11 +92,11 @@ export function NewsListPage() {
                 <div>
                   <div className="flex items-center gap-3 text-xs font-bold text-emerald-700">
                     <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 uppercase tracking-wider">
-                      {featured.category}
+                      {featured.categoryLabel}
                     </span>
                     <span>·</span>
                     <span className="flex items-center gap-1 text-stone-400">
-                      <Clock className="size-3.5" /> {featured.readTime}
+                      <Clock className="size-3.5" /> {featured.readTimeLabel}
                     </span>
                   </div>
 
@@ -125,7 +112,7 @@ export function NewsListPage() {
                 </div>
 
                 <div className="mt-8 flex items-center justify-between border-t border-stone-100 pt-6">
-                  <span className="text-xs font-bold text-stone-500">{featured.author}</span>
+                  <span className="text-xs font-bold text-stone-500">{featured.publishedLabel}</span>
                   <Link
                     href={`/news/${featured.slug}`}
                     className="inline-flex items-center gap-2 text-sm font-black text-emerald-700 hover:text-emerald-800"
@@ -139,6 +126,30 @@ export function NewsListPage() {
           )}
 
           {/* Grid of Articles */}
+          {isPending && articles.length === 0 ? (
+            <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              {Array.from({ length: 6 }, (_, index) => (
+                <div key={index} className="overflow-hidden rounded-[28px] border border-stone-200/80 bg-white shadow-sm">
+                  <Skeleton className="aspect-[16/10] rounded-none" />
+                  <div className="p-6">
+                    <Skeleton className="h-3 w-1/3" />
+                    <Skeleton className="mt-3 h-5 w-4/5" />
+                    <SkeletonText lines={2} className="mt-3" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : isError ? (
+            <div className="mt-12 rounded-[28px] border border-dashed border-stone-300 bg-white p-12 text-center">
+              <h2 className="text-lg font-black text-ink">Không tải được bài viết</h2>
+              <p className="mt-2 text-sm text-stone-500">Vui lòng thử lại sau ít phút.</p>
+            </div>
+          ) : filtered.length === 0 ? (
+            <div className="mt-12 rounded-[28px] border border-dashed border-stone-300 bg-white p-12 text-center">
+              <h2 className="text-lg font-black text-ink">Chưa có bài viết trong mục này</h2>
+              <p className="mt-2 text-sm text-stone-500">Nội dung đang được cập nhật.</p>
+            </div>
+          ) : (
           <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {filtered.map((item) => (
               <article
@@ -154,17 +165,17 @@ export function NewsListPage() {
                     className="object-cover transition duration-500 group-hover:scale-105"
                   />
                   <div className="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-xs font-bold shadow-sm backdrop-blur">
-                    {item.category}
+                    {item.categoryLabel}
                   </div>
                 </div>
 
                 <div className="flex flex-1 flex-col p-6">
                   <div className="flex items-center gap-2 text-xs text-stone-400">
                     <Calendar className="size-3.5" />
-                    <span>{item.date}</span>
+                    <span>{item.publishedLabel}</span>
                     <span>·</span>
                     <Clock className="size-3.5" />
-                    <span>{item.readTime}</span>
+                    <span>{item.readTimeLabel}</span>
                   </div>
 
                   <h3 className="mt-3 text-lg font-black leading-snug text-ink transition group-hover:text-emerald-700">
@@ -176,7 +187,7 @@ export function NewsListPage() {
                   </p>
 
                   <div className="mt-auto flex items-center justify-between border-t border-stone-100 pt-4">
-                    <span className="text-xs font-bold text-stone-500">{item.author}</span>
+                    <span className="text-xs font-bold text-stone-500">Bảo An Sport</span>
                     <Link
                       href={`/news/${item.slug}`}
                       className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700"
@@ -188,6 +199,7 @@ export function NewsListPage() {
               </article>
             ))}
           </div>
+          )}
         </main>
       </div>
     </StorefrontLayout>

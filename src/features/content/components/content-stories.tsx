@@ -16,37 +16,24 @@ import {
 } from 'lucide-react';
 import { useContentStories } from '../hooks/use-content-stories';
 import { STORE_CONFIG } from '@/shared/constants';
-import { MOCK_CURATED_STORIES as CURATED_STORIES, StoryArticle } from '@/shared/data/mocks';
+import { Skeleton, SkeletonText } from '@/foundation/components/feedback';
+import { CONTENT_POST_TYPE_LABELS } from '../model/content-post.mapper';
+
+const ALL_CATEGORY = 'ALL';
 
 export function ContentStories() {
-  const { stories } = useContentStories();
-  const [activeCat, setActiveCat] = useState<string>('Tất cả');
+  const { stories: allArticles, isPending } = useContentStories();
+  const [activeCat, setActiveCat] = useState<string>(ALL_CATEGORY);
 
-  // Merge API stories with rich curated fallback
-  const allArticles: StoryArticle[] = useMemo(() => {
-    if (stories && stories.length > 0) {
-      return stories.map((s, idx) => ({
-        id: s.id,
-        slug: s.slug,
-        title: s.title,
-        excerpt: s.excerpt,
-        category: s.typeLabel || 'Kiến thức thể thao',
-        coverUrl: s.coverUrl || CURATED_STORIES[idx % CURATED_STORIES.length].coverUrl,
-        date: '05/09/2026',
-        readTime: '6 phút',
-        author: 'Ban Chuyên Môn Bảo An Sport',
-        authorRole: 'Chuyên gia thiết bị',
-        views: 1200 + idx * 150,
-      }));
-    }
-    return CURATED_STORIES;
-  }, [stories]);
-
-  const categories = ['Tất cả', 'Tư vấn thiết bị', 'Hướng dẫn tập luyện', 'Không gian Home Gym'];
+  // Bộ lọc dựng từ loại bài thật đang có, không phải danh sách cố định.
+  const categories = useMemo(
+    () => [ALL_CATEGORY, ...new Set(allArticles.map((article) => article.postType))],
+    [allArticles],
+  );
 
   const displayedArticles = useMemo(() => {
-    if (activeCat === 'Tất cả') return allArticles;
-    return allArticles.filter((a) => a.category.toLowerCase().includes(activeCat.toLowerCase()));
+    if (activeCat === ALL_CATEGORY) return allArticles;
+    return allArticles.filter((article) => article.postType === activeCat);
   }, [allArticles, activeCat]);
 
   return (
@@ -65,7 +52,7 @@ export function ContentStories() {
                   : 'border border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50'
               }`}
             >
-              {cat}
+              {cat === ALL_CATEGORY ? 'Tất cả' : (CONTENT_POST_TYPE_LABELS[cat] ?? cat)}
             </button>
           ))}
         </div>
@@ -96,7 +83,7 @@ export function ContentStories() {
                 className="object-cover transition duration-500 group-hover:scale-105"
               />
               <div className="absolute left-3 top-3 rounded-full bg-slate-900/85 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-emerald-300 backdrop-blur-md">
-                {post.category}
+                {post.categoryLabel}
               </div>
             </div>
 
@@ -107,17 +94,12 @@ export function ContentStories() {
                 <div className="flex items-center gap-3 text-[11px] font-semibold text-slate-400">
                   <span className="flex items-center gap-1">
                     <Calendar className="size-3" />
-                    {post.date}
+                    {post.publishedLabel}
                   </span>
                   <span>·</span>
                   <span className="flex items-center gap-1">
                     <Clock className="size-3" />
-                    {post.readTime}
-                  </span>
-                  <span>·</span>
-                  <span className="flex items-center gap-1">
-                    <Eye className="size-3" />
-                    {post.views} lượt xem
+                    {post.readTimeLabel}
                   </span>
                 </div>
 
@@ -136,11 +118,11 @@ export function ContentStories() {
               <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-3">
                 <div className="flex items-center gap-2">
                   <div className="grid size-7 place-items-center rounded-full bg-emerald-100 text-xs font-bold text-emerald-800">
-                    {post.author.charAt(0)}
+                    B
                   </div>
                   <div>
-                    <span className="block text-xs font-bold text-slate-800">{post.author}</span>
-                    <span className="block text-[10px] text-slate-400">{post.authorRole}</span>
+                    <span className="block text-xs font-bold text-slate-800">Bảo An Sport</span>
+                    <span className="block text-[10px] text-slate-400">Ban chuyên môn</span>
                   </div>
                 </div>
 

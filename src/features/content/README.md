@@ -1,10 +1,10 @@
 # Storefront Content — maintenance note
 
-> **Document version:** 1.0.0
+> **Document version:** 2.0.0
 >
 > **Last updated:** 2026-09-13
 >
-> **Change summary:** Tạo note; ghi rõ backend CMS hiện lưu in-memory nên fallback mock chưa gỡ được.
+> **Change summary:** Backend CMS đã lên Prisma; gỡ toàn bộ mock, bài viết đọc 100% từ API.
 
 ## Phạm vi
 
@@ -27,13 +27,21 @@
 | --- | --- |
 | `useListPublishedPosts` | `src/generated/api/content/content.ts` |
 
-Chưa dùng: `getPublishedPost` (trang chi tiết còn dựng từ dữ liệu mẫu).
+Chưa dùng: `getPublishedPost` (trang chi tiết `/news/[slug]`).
 
-## Khoảng trống backend — **chặn việc gỡ mock**
+## Đã gỡ hết mock
 
-`api/src/modules/cms/cms.service.ts` giữ bài viết trong **mảng in-memory**, không có model Prisma. Admin POST/DELETE content ghi vào RAM và mất khi restart.
+`MOCK_CURATED_STORIES`, `MOCK_FALLBACK_ARTICLES`, `MOCK_NEWS_CATEGORIES` đã xoá. Backend giờ có model `ContentPost` thật.
 
-Vì vậy `MOCK_CURATED_STORIES`, `MOCK_FALLBACK_ARTICLES`, `MOCK_NEWS_CATEGORIES` vẫn còn làm fallback. Chỉ gỡ sau khi backend có bảng `content_posts` thật (`RULE-CTR-02`: không tự chế DTO thay backend).
+| Trước (bịa) | Nay (thật) |
+| --- | --- |
+| `date: '05/09/2026'` cứng cho mọi bài | `publishedAt` từ API |
+| `readTime: '6 phút'` cứng | ước lượng từ độ dài bài thật |
+| `views: 1200 + idx * 150` | **đã gỡ** — backend không đếm lượt xem, hiển thị là bịa dữ liệu tương tác |
+| Danh sách category cố định | dựng từ `postType` của bài đang có |
+| Ảnh bìa mock khi API thiếu | dùng `coverUrl` thật |
+
+`model/content-post.mapper.ts` là nơi duy nhất đọc field DTO; nhãn tiếng Việt của `postType` map riêng nên đổi chữ không làm hỏng bộ lọc.
 
 ## State owner
 

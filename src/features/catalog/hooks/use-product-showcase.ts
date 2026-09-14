@@ -3,56 +3,69 @@
 import { useMemo } from 'react';
 import { useListCatalogProducts } from '@/generated/api/catalog/catalog';
 import { vndMoney } from '@/shared/format/money';
-import { MOCK_CATALOG_PRODUCTS } from '@/shared/data/mocks';
 
-export const FALLBACK_PRODUCTS = MOCK_CATALOG_PRODUCTS;
+export interface ProductShowcaseItem {
+  id: string;
+  defaultVariantId: string | null;
+  defaultVariantSku: string | null;
+  slug: string;
+  productType: string;
+  name: string;
+  brand: string;
+  category: string;
+  badge: string;
+  imageUrl: string;
+  numericPrice: number;
+  displayPrice: string;
+}
 
-export function useProductShowcase() {
+/**
+ * Nguồn sản phẩm cho các lưới trưng bày.
+ *
+ * Trước đây hook này trả dữ liệu mock khi API rỗng/lỗi và luôn báo `isError: false`,
+ * nên lỗi backend bị che và khách thấy sản phẩm không tồn tại. Giờ trả đúng trạng
+ * thái để phía gọi tự quyết định hiển thị skeleton, empty hay lỗi.
+ */
+export function useProductShowcase(categorySlug?: string): {
+  products: ProductShowcaseItem[];
+  isPending: boolean;
+  isError: boolean;
+  refetch: () => void;
+} {
   const query = useListCatalogProducts({ page: 1, limit: 8 });
-  const products = useMemo(() => {
-    const apiItems = query.data?.items ?? [];
-    if (apiItems.length > 0) {
-      return apiItems.map((product) => {
-        const minPrice = Number(product.minPrice ?? 0);
-        const raw = product as unknown as Record<string, unknown>;
-        const originalPrice = raw.originalPrice
-          ? Number(raw.originalPrice)
-          : undefined;
 
-        return {
-          id: product.id,
-          defaultVariantId: product.defaultVariantId ?? null,
-          defaultVariantSku: product.defaultVariantSku ?? null,
-          slug: product.slug,
-          productType: product.productType,
-          name: product.name,
-          brand: product.brand ?? 'Bảo An Sport',
-          category: product.primaryCategory ?? 'Thiết bị thể thao',
-          badge: product.primaryCategory ?? 'Sản phẩm mới',
-          imageUrl: product.imageUrl ?? '/icon.svg',
-          numericPrice: minPrice,
-          displayPrice:
-            product.minPrice === null || product.minPrice === undefined
-              ? 'Liên hệ tư vấn'
-              : vndMoney.format(minPrice),
-          originalPrice,
-          displayOriginalPrice: originalPrice ? vndMoney.format(originalPrice) : undefined,
-        };
-      });
-    }
-
-    // When API is offline or empty, provide high-quality fallback products
-    return FALLBACK_PRODUCTS.map((product) => ({
-      ...product,
-      defaultVariantId: null,
-      defaultVariantSku: null,
-    }));
-  }, [query.data?.items]);
+  const products = useMemo<ProductShowcaseItem[]>(
+    () =>
+      (query.data?.items ?? [])
+        .filter((product) => !categorySlug || product.primaryCategory === categorySlug)
+        .map((product) => {
+          const minPrice = Number(product.minPrice ?? 0);
+          return {
+            id: product.id,
+            defaultVariantId: product.defaultVariantId ?? null,
+            defaultVariantSku: product.defaultVariantSku ?? null,
+            slug: product.slug,
+            productType: product.productType,
+            name: product.name,
+            brand: product.brand ?? 'Bảo An Sport',
+            category: product.primaryCategory ?? 'Thiết bị thể thao',
+            badge: product.primaryCategory ?? 'Sản phẩm',
+            imageUrl: product.imageUrl ?? '/icon.svg',
+            numericPrice: minPrice,
+            // Giá null nghĩa là chưa có bảng giá hiệu lực, không phải giá 0.
+            displayPrice:
+              product.minPrice === null || product.minPrice === undefined
+                ? 'Liên hệ tư vấn'
+                : vndMoney.format(minPrice),
+          };
+        }),
+    [query.data?.items, categorySlug],
+  );
 
   return {
     products,
-    isPending: query.isPending && !query.isError,
-    isError: false, // Handled gracefully by fallback
-    refetch: query.refetch,
+    isPending: query.isPending,
+    isError: query.isError,
+    refetch: () => void query.refetch(),
   };
 }
