@@ -2,7 +2,11 @@
 
 import { useMemo } from 'react';
 import { useListPublishedPosts } from '@/generated/api/content/content';
-import { toContentPostView, type ContentPostView } from '../model/content-post.mapper';
+import {
+  POLICY_POST_TYPE,
+  toContentPostView,
+  type ContentPostView,
+} from '../model/content-post.mapper';
 
 export function useContentStories(): {
   stories: ContentPostView[];
@@ -11,7 +15,10 @@ export function useContentStories(): {
 } {
   const query = useListPublishedPosts();
   const stories = useMemo(
-    () => (query.data?.items ?? []).map(toContentPostView),
+    () =>
+      (query.data?.items ?? [])
+        .filter((post) => post.postType !== POLICY_POST_TYPE)
+        .map(toContentPostView),
     [query.data?.items],
   );
 

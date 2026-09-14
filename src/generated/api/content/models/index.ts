@@ -12,3 +12,5 @@ export * from './contentPostDtoStatus';
 export * from './contentPostListDto';
 export * from './errorDetailDto';
 export * from './errorResponseDto';
+export * from './listPublishedPostsParams';
+export * from './listPublishedPostsPostType';

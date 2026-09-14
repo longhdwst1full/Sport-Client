@@ -22,7 +22,14 @@ export const CONTENT_POST_TYPE_LABELS: Record<string, string> = {
   TRAINING_GUIDE: 'Hướng dẫn tập luyện',
   PRODUCT_GUIDE: 'Tư vấn sản phẩm',
   ABOUT: 'Về chúng tôi',
+  POLICY: 'Thông tin và chính sách',
 };
+
+/**
+ * Trang chính sách nằm chung bảng với bài viết nhưng không phải nội dung biên tập:
+ * luồng tin tức phải loại nó ra, nếu không danh sách tin lẫn trang bảo hành, đổi trả.
+ */
+export const POLICY_POST_TYPE = 'POLICY';
 
 const dateFormatter = new Intl.DateTimeFormat('vi-VN', {
   day: '2-digit',

@@ -27,6 +27,7 @@ import type {
   PaymentDetailDto,
   SignedMediaUploadDto,
   SubmitPaymentEvidenceDto,
+  VnpayReturnDto,
 } from './models';
 
 import { apiFetcher } from '../../../lib/api/fetcher';
@@ -646,3 +647,117 @@ export const useSubmitAccountPaymentEvidence = <
 
   return useMutation(mutationOptions, queryClient);
 };
+
+/**
+ * @summary Kiểm tra chữ ký khi khách quay về từ VNPay (chỉ để hiển thị)
+ */
+export const verifyVnpayReturn = (
+  options?: SecondParameter<typeof apiFetcher>,
+  signal?: AbortSignal,
+) => {
+  return apiFetcher<VnpayReturnDto>(
+    { url: `/api/v1/payments/vnpay/return`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getVerifyVnpayReturnQueryKey = () => {
+  return [`/api/v1/payments/vnpay/return`] as const;
+};
+
+export const getVerifyVnpayReturnQueryOptions = <
+  TData = Awaited<ReturnType<typeof verifyVnpayReturn>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof verifyVnpayReturn>>, TError, TData>>;
+  request?: SecondParameter<typeof apiFetcher>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getVerifyVnpayReturnQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof verifyVnpayReturn>>> = ({ signal }) =>
+    verifyVnpayReturn(requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof verifyVnpayReturn>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type VerifyVnpayReturnQueryResult = NonNullable<
+  Awaited<ReturnType<typeof verifyVnpayReturn>>
+>;
+export type VerifyVnpayReturnQueryError = ErrorType<unknown>;
+
+export function useVerifyVnpayReturn<
+  TData = Awaited<ReturnType<typeof verifyVnpayReturn>>,
+  TError = ErrorType<unknown>,
+>(
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof verifyVnpayReturn>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof verifyVnpayReturn>>,
+          TError,
+          Awaited<ReturnType<typeof verifyVnpayReturn>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useVerifyVnpayReturn<
+  TData = Awaited<ReturnType<typeof verifyVnpayReturn>>,
+  TError = ErrorType<unknown>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof verifyVnpayReturn>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof verifyVnpayReturn>>,
+          TError,
+          Awaited<ReturnType<typeof verifyVnpayReturn>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useVerifyVnpayReturn<
+  TData = Awaited<ReturnType<typeof verifyVnpayReturn>>,
+  TError = ErrorType<unknown>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof verifyVnpayReturn>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Kiểm tra chữ ký khi khách quay về từ VNPay (chỉ để hiển thị)
+ */
+
+export function useVerifyVnpayReturn<
+  TData = Awaited<ReturnType<typeof verifyVnpayReturn>>,
+  TError = ErrorType<unknown>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof verifyVnpayReturn>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getVerifyVnpayReturnQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}

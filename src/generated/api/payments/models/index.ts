@@ -21,3 +21,5 @@ export * from './paymentInstructionDtoMethod';
 export * from './signedMediaUploadDto';
 export * from './signedMediaUploadDtoProvider';
 export * from './submitPaymentEvidenceDto';
+export * from './vnpayReturnDto';
+export * from './vnpayReturnDtoDisplayStatus';

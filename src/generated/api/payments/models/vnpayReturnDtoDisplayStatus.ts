@@ -6,12 +6,12 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type PaymentInstructionDtoMethod =
-  (typeof PaymentInstructionDtoMethod)[keyof typeof PaymentInstructionDtoMethod];
+export type VnpayReturnDtoDisplayStatus =
+  (typeof VnpayReturnDtoDisplayStatus)[keyof typeof VnpayReturnDtoDisplayStatus];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
-export const PaymentInstructionDtoMethod = {
-  BANK_TRANSFER: 'BANK_TRANSFER',
-  COD: 'COD',
-  VNPAY: 'VNPAY',
+export const VnpayReturnDtoDisplayStatus = {
+  SUCCESS: 'SUCCESS',
+  FAILED: 'FAILED',
+  INVALID: 'INVALID',
 } as const;

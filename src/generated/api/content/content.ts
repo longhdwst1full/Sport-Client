@@ -18,7 +18,12 @@ import type {
   UseQueryResult,
 } from '@tanstack/react-query';
 
-import type { ContentPostDto, ContentPostListDto, ErrorResponseDto } from './models';
+import type {
+  ContentPostDto,
+  ContentPostListDto,
+  ErrorResponseDto,
+  ListPublishedPostsParams,
+} from './models';
 
 import { apiFetcher } from '../../../lib/api/fetcher';
 import type { ErrorType } from '../../../lib/api/fetcher';
@@ -28,32 +33,36 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary List published content posts
  */
 export const listPublishedPosts = (
+  params?: ListPublishedPostsParams,
   options?: SecondParameter<typeof apiFetcher>,
   signal?: AbortSignal,
 ) => {
   return apiFetcher<ContentPostListDto>(
-    { url: `/api/v1/content/posts`, method: 'GET', signal },
+    { url: `/api/v1/content/posts`, method: 'GET', params, signal },
     options,
   );
 };
 
-export const getListPublishedPostsQueryKey = () => {
-  return [`/api/v1/content/posts`] as const;
+export const getListPublishedPostsQueryKey = (params?: ListPublishedPostsParams) => {
+  return [`/api/v1/content/posts`, ...(params ? [params] : [])] as const;
 };
 
 export const getListPublishedPostsQueryOptions = <
   TData = Awaited<ReturnType<typeof listPublishedPosts>>,
   TError = ErrorType<unknown>,
->(options?: {
-  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listPublishedPosts>>, TError, TData>>;
-  request?: SecondParameter<typeof apiFetcher>;
-}) => {
+>(
+  params?: ListPublishedPostsParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listPublishedPosts>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getListPublishedPostsQueryKey();
+  const queryKey = queryOptions?.queryKey ?? getListPublishedPostsQueryKey(params);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof listPublishedPosts>>> = ({ signal }) =>
-    listPublishedPosts(requestOptions, signal);
+    listPublishedPosts(params, requestOptions, signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof listPublishedPosts>>,
@@ -71,6 +80,7 @@ export function useListPublishedPosts<
   TData = Awaited<ReturnType<typeof listPublishedPosts>>,
   TError = ErrorType<unknown>,
 >(
+  params: undefined | ListPublishedPostsParams,
   options: {
     query: Partial<UseQueryOptions<Awaited<ReturnType<typeof listPublishedPosts>>, TError, TData>> &
       Pick<
@@ -89,6 +99,7 @@ export function useListPublishedPosts<
   TData = Awaited<ReturnType<typeof listPublishedPosts>>,
   TError = ErrorType<unknown>,
 >(
+  params?: ListPublishedPostsParams,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof listPublishedPosts>>, TError, TData>
@@ -109,6 +120,7 @@ export function useListPublishedPosts<
   TData = Awaited<ReturnType<typeof listPublishedPosts>>,
   TError = ErrorType<unknown>,
 >(
+  params?: ListPublishedPostsParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listPublishedPosts>>, TError, TData>>;
     request?: SecondParameter<typeof apiFetcher>;
@@ -123,13 +135,14 @@ export function useListPublishedPosts<
   TData = Awaited<ReturnType<typeof listPublishedPosts>>,
   TError = ErrorType<unknown>,
 >(
+  params?: ListPublishedPostsParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listPublishedPosts>>, TError, TData>>;
     request?: SecondParameter<typeof apiFetcher>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getListPublishedPostsQueryOptions(options);
+  const queryOptions = getListPublishedPostsQueryOptions(params, options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;

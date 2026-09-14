@@ -169,23 +169,26 @@ export function StorefrontLayout({ children }: { children: ReactNode }) {
               <Link className="transition hover:text-emerald-400" href="/#about">
                 Giới thiệu Bảo An Sport
               </Link>
-              <Link className="transition hover:text-emerald-400" href="/#benefits">
-                Cam kết khách hàng 100%
+              <Link className="transition hover:text-emerald-400" href="/chinh-sach/cam-ket-khach-hang">
+                Cam kết khách hàng
               </Link>
               <Link className="transition hover:text-emerald-400" href="/news">
                 Cẩm nang & Hướng dẫn tập luyện
               </Link>
-              <Link className="transition hover:text-emerald-400" href="/contact">
-                Vận chuyển & Lắp đặt 2H
+              <Link className="transition hover:text-emerald-400" href="/chinh-sach/van-chuyen-giao-hang">
+                Vận chuyển & giao hàng
               </Link>
-              <Link className="transition hover:text-emerald-400" href="/profile">
-                Tra cứu bảo hành điện tử
+              <Link className="transition hover:text-emerald-400" href="/chinh-sach/chinh-sach-bao-hanh">
+                Chính sách bảo hành
               </Link>
-              <Link className="transition hover:text-emerald-400" href="/contact">
-                Chính sách đổi trả 7 ngày
+              <Link className="transition hover:text-emerald-400" href="/chinh-sach/chinh-sach-doi-tra">
+                Chính sách đổi trả
               </Link>
-              <Link className="transition hover:text-emerald-400" href="/contact">
+              <Link className="transition hover:text-emerald-400" href="/chinh-sach/bao-mat-thong-tin-khach-hang">
                 Bảo mật thông tin khách hàng
+              </Link>
+              <Link className="transition hover:text-emerald-400" href="/chinh-sach">
+                Tất cả thông tin & chính sách
               </Link>
             </div>
           </div>

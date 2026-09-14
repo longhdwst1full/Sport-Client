@@ -6,11 +6,11 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type ContentPostDtoPostType =
-  (typeof ContentPostDtoPostType)[keyof typeof ContentPostDtoPostType];
+export type ListPublishedPostsPostType =
+  (typeof ListPublishedPostsPostType)[keyof typeof ListPublishedPostsPostType];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
-export const ContentPostDtoPostType = {
+export const ListPublishedPostsPostType = {
   NEWS: 'NEWS',
   TRAINING_GUIDE: 'TRAINING_GUIDE',
   PRODUCT_GUIDE: 'PRODUCT_GUIDE',

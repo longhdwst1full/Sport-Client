@@ -13,4 +13,5 @@ export type CreateCheckoutQuoteDtoPaymentMethod =
 export const CreateCheckoutQuoteDtoPaymentMethod = {
   BANK_TRANSFER: 'BANK_TRANSFER',
   COD: 'COD',
+  VNPAY: 'VNPAY',
 } as const;
