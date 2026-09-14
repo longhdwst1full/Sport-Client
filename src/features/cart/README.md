@@ -1,10 +1,10 @@
 # Storefront Cart — maintenance note
 
-> **Document version:** 1.0.0
+> **Document version:** 1.1.0
 >
-> **Last updated:** 2026-09-13
+> **Last updated:** 2026-09-14
 >
-> **Change summary:** Tạo note; ghi rõ cart hiện là state cục bộ, chưa đồng bộ server cart.
+> **Change summary:** Thêm gộp giỏ vãng lai vào tài khoản khi đăng nhập/đăng ký trên cùng máy.
 
 ## Phạm vi
 
@@ -21,11 +21,31 @@
 
 `index.ts` — `CartPage` + `model/guest-cart-token.store`.
 
-## Generated operation — **khoảng trống đã biết**
+## Gộp giỏ khi đăng nhập / đăng ký
 
-Domain `cart` sinh đủ mutation guest/account (`useCreateGuestCart`, `useSetGuestCartItem`, `useUpdateGuestCartItem`, `useRemoveGuestCartItem` và bản Account) nhưng **chỉ `features/checkout/api/checkout.workflow.ts` gọi**. Giỏ hàng hiển thị vẫn thuần Redux.
+`api/merge-guest-cart.ts` gọi `mergeGuestCartIntoAccount` ngay sau khi login hoặc register thành công.
 
-Hệ quả: giỏ không đồng bộ giữa thiết bị. Đây là việc chưa làm, không phải dead code (`RULE-CTR-06`).
+**Kịch bản:** khách duyệt web, bỏ hàng vào giỏ, đến lúc thanh toán mới tạo tài khoản. Không gộp thì giỏ vừa chọn biến mất đúng lúc khách sắp mua.
+
+| Tình huống | Kết quả |
+| --- | --- |
+| Cùng biến thể ở cả hai giỏ | **Cộng dồn số lượng** — khách đã chủ động chọn ở cả hai phiên |
+| Biến thể chỉ có ở giỏ vãng lai | Tạo dòng mới trong giỏ tài khoản |
+| Gọi lại lần hai cùng token | Không cộng thêm — giỏ vãng lai đã chuyển `CONVERTED` |
+| Token sai hoặc hết hạn | Không lỗi, trả giỏ tài khoản hiện tại |
+
+**Phạm vi có chủ đích:** chỉ gộp **trên cùng một trình duyệt**, vì token giỏ vãng lai nằm ở máy khách. **Không đồng bộ giỏ giữa nhiều thiết bị** — Owner đã quyết không làm.
+
+**Lỗi khi gộp không chặn đăng nhập.** Khách đã xác thực xong rồi; hỏng việc gộp giỏ thì cùng lắm mất giỏ tạm, không được làm mất phiên.
+
+## Generated operation
+
+| Dùng | Ở đâu |
+| --- | --- |
+| `mergeGuestCartIntoAccount` | `api/merge-guest-cart.ts` |
+| `createGuestCart`, `setGuestCartItem`, quote/reserve/confirm | `features/checkout/api/checkout.workflow.ts` |
+
+Mutation cập nhật/xoá dòng giỏ (`updateGuestCartItem`, `removeGuestCartItem` và bản Account) **chưa dùng**: giỏ hiển thị vẫn thuần Redux và Owner đã quyết không đồng bộ đa thiết bị. Ghi nhận theo `RULE-CTR-06`.
 
 ## State owner
 

@@ -24,6 +24,7 @@ import type { RegisterCustomerDto } from '@/generated/api/auth/models';
 import { KineticBallCanvas } from '@/foundation/3d/kinetic-ball-canvas.lazy';
 import { getCustomerAuthError } from '../model/auth-error';
 import { saveCustomerAuthTokens } from '../model/auth-token.store';
+import { mergeGuestCartAfterAuth } from '@/features/cart';
 
 const optionalIdentity = () =>
   yup
@@ -58,8 +59,10 @@ export function CustomerRegisterPage() {
 
   const register = useRegisterCustomer({
     mutation: {
-      onSuccess: (tokens) => {
+      onSuccess: async (tokens) => {
         saveCustomerAuthTokens(tokens);
+        // Gộp giỏ đang có trên máy này vào tài khoản trước khi rời trang.
+        await mergeGuestCartAfterAuth();
         router.replace('/');
       },
       onError: (error) =>

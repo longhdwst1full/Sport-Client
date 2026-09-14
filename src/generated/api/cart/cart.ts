@@ -577,6 +577,84 @@ export function useGetAccountCart<
 }
 
 /**
+ * @summary Gộp giỏ khách vãng lai của cùng trình duyệt vào giỏ tài khoản sau khi đăng nhập
+ */
+export const mergeGuestCartIntoAccount = (
+  options?: SecondParameter<typeof apiFetcher>,
+  signal?: AbortSignal,
+) => {
+  return apiFetcher<CartDto>(
+    { url: `/api/v1/account/cart/merge-guest`, method: 'POST', signal },
+    options,
+  );
+};
+
+export const getMergeGuestCartIntoAccountMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof mergeGuestCartIntoAccount>>,
+    TError,
+    void,
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetcher>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof mergeGuestCartIntoAccount>>,
+  TError,
+  void,
+  TContext
+> => {
+  const mutationKey = ['mergeGuestCartIntoAccount'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof mergeGuestCartIntoAccount>>,
+    void
+  > = () => {
+    return mergeGuestCartIntoAccount(requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type MergeGuestCartIntoAccountMutationResult = NonNullable<
+  Awaited<ReturnType<typeof mergeGuestCartIntoAccount>>
+>;
+
+export type MergeGuestCartIntoAccountMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Gộp giỏ khách vãng lai của cùng trình duyệt vào giỏ tài khoản sau khi đăng nhập
+ */
+export const useMergeGuestCartIntoAccount = <TError = ErrorType<unknown>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof mergeGuestCartIntoAccount>>,
+      TError,
+      void,
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof mergeGuestCartIntoAccount>>,
+  TError,
+  void,
+  TContext
+> => {
+  const mutationOptions = getMergeGuestCartIntoAccountMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
  * @summary Set quantity for a variant in the account cart
  */
 export const setAccountCartItem = (
