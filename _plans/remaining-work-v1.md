@@ -1,141 +1,106 @@
 # Phương án cho phần việc còn lại
 
-> **Document version:** 1.0.0
+> **Document version:** 2.0.0
 >
-> **Last updated:** 2026-09-14
+> **Last updated:** 2026-09-15
 >
-> **Change summary:** Chốt thứ tự cho 4 nhóm việc còn tồn sau khi đóng refactor base, Sprint 4/5 và S6.4 Flash Sale.
+> **Change summary:** Viết lại theo trạng thái đã kiểm chứng bằng mã nguồn và database: đóng W1/W3, ghi nhận VNPay, báo cáo, bán tại quầy, vai trò và catalog thật; Sprint 6 vẫn là khối chặn lớn nhất.
 
-## Nguyên tắc xếp thứ tự
+## Cách đọc tài liệu này
 
-1. **Việc đang dở nguy hiểm hơn việc chưa bắt đầu.** Flash Sale đã chạy thật nhưng thiếu worker dọn quota — để lâu thì suất bị giữ vĩnh viễn.
-2. **Việc chặn doanh thu trước việc chặn trải nghiệm.** Return/Refund liên quan tiền; banner trang chủ thì không.
-3. **Không mở wave mới khi wave trước còn operation generated chưa ai gọi** (`RULE-CTR-06`).
+Mọi mục "đã xong" ở đây đều được kiểm bằng mã nguồn hoặc truy vấn database tại thời điểm cập
+nhật, không dựa vào trí nhớ. Mục nào chưa kiểm được thì ghi rõ là **chưa kiểm chứng**.
 
 ---
 
-## W1 — Đóng nốt Flash Sale (0.5 ngày)
+## Đã đóng kể từ bản 1.0.0
 
-Việc nhỏ nhưng là lỗ hổng đang mở.
-
-| Việc | Chi tiết |
+| Hạng mục | Bằng chứng |
 | --- | --- |
-| Worker `expireStaleQuota` | Theo đúng mẫu `reservation-expiry`: controller nhận `CRON_SECRET`, batch size từ env, metric claim/processed tách biệt |
-| Supabase Cron | Thêm configurator như `cron:reservation:set`, chạy mỗi 5 phút |
-| Integration test | Quota quá hạn được trả về pool; chạy hai lần không trừ hai lần |
-
-**Rủi ro nếu bỏ qua:** khách bỏ giỏ giữa chừng thì suất flash bị giữ tới khi có người release thủ công. Chương trình càng chạy lâu càng hụt suất bán.
-
-**Done khi:** quota `ACTIVE` quá hạn tự chuyển `EXPIRED` và `reservedQuantity` giảm tương ứng, có evidence cron HTTP 200.
+| Worker dọn quota Flash Sale | `api/scripts/configure-flash-sale-quota-expiry-cron.cjs` |
+| Catalog thật | 596 sản phẩm, 61 danh mục, 2.980 ảnh trong database |
+| Trang chính sách | 9 bài `POLICY`, route `/chinh-sach` |
+| Menu danh mục | Dựng từ API, đã gỡ 59 dòng hằng số cứng |
+| Quản lý vai trò | CRUD đầy đủ + cây quyền tích chọn |
+| VNPay | Backend + IPN + trang kết quả ở storefront |
+| Báo cáo & Dashboard | 4 endpoint `Admin Reporting`, Dashboard chạy số thật |
+| Đơn tại quầy | Backend xong: `POST /admin/orders/pos` |
+| Tách ô tìm kiếm | Sản phẩm và đơn hàng, cộng dồn bằng AND |
+| Refresh token | Sửa `/me` bị loại nhầm khỏi luồng xoay token |
 
 ---
 
-## W2 — Sprint 6: Return → Inspection → Refund (5–7 ngày)
+## Còn lại, theo thứ tự đề xuất
 
-Bốn wave theo `api/document/33-sprint-6-execution-plan.md`, đi tuần tự.
+### R1 — Nghiệm thu đơn tại quầy (0.5 ngày) — **đang chặn**
 
-### Decision đã chốt
+Backend xong và đã kiểm ba nhánh xác thực, nhưng **chưa chạy được một đơn thành công** vì
+596 sản phẩm mới **chưa có dòng tồn kho nào**.
 
-| # | Quyết định |
+**Chặn bởi quyết định của chủ dự án:** nhập tồn khởi tạo hay để nhập thủ công qua phiếu điều
+chỉnh. Ghi dữ liệu kho là việc của nghiệp vụ, không tự quyết.
+
+Sau khi có tồn: chạy một đơn thật, đối chiếu tồn kho trước/sau, rồi dựng màn bán hàng ở Admin
+(chọn sản phẩm, giỏ, thu tiền, in mã đơn).
+
+### R2 — Sprint 6: Đổi trả → Kiểm tra → Hoàn tiền (5–7 ngày)
+
+**Chưa bắt đầu.** Kiểm chứng: `grep -c "model Return\|model Refund" prisma/schema.prisma` → `0`.
+
+Đây là khối lớn nhất còn lại và chặn cả tính năng "số lượng đơn hoàn" trên Dashboard.
+
+Quyết định đã chốt: cửa sổ 7 ngày từ `DELIVERED`; guest gọi hotline để nhân viên tạo hộ;
+nhân viên tạo thì chờ quản lý duyệt, quản lý tạo thì duyệt luôn; chỉ hoàn phí ship khi lỗi
+thuộc về shop; khách trả tiền mặt thì hoàn tiền mặt. Nhóm hàng loại trừ dùng cờ `returnable`
+ở cấp Category, Admin tự bật/tắt — **không hardcode**.
+
+### R3 — Quản lý khách hàng ở Admin (1–2 ngày)
+
+`admin/src/features/customers/model/customers.fixture.ts` vẫn đang được dùng — màn khách hàng
+chạy **dữ liệu giả**. Backend chưa có module khách hàng cho admin.
+
+Phạm vi giai đoạn 1 đề xuất: danh sách, tìm kiếm, xem chi tiết (thông tin, địa chỉ, lịch sử
+đơn). Tạo và khoá tài khoản để giai đoạn 2.
+
+### R4 — Nội dung bịa đang hiển thị cho khách (0.5 ngày)
+
+`/news/[slug]` và `/category/[slug]` render thân bài hardcode, ảnh Unsplash, số liệu và tác giả
+không có thật. Đây là nội dung sai đang chạy trên trang bán, nên ưu tiên cao hơn vẻ ngoài của nó.
+
+### R5 — Dọn ảnh thu nhỏ (0.5 ngày)
+
+596 trong 1.360 ảnh là bản thu nhỏ 150×150 lọt vào thư viện khi crawl — đúng một ảnh mỗi sản
+phẩm. Cần migration dọn.
+
+### R6 — Ba nhóm mock chờ model backend
+
+| Nhóm | Cần ở backend |
 | --- | --- |
-| 1 | Cửa sổ đổi trả **7 ngày** từ `DELIVERED` |
-| 2 | Guest **không tự tạo**; gọi hotline, nhân viên tạo hộ sau khi xác minh mã đơn |
-| 3 | **STAFF tạo → chờ OWNER/BRANCH_MANAGER duyệt. OWNER/BRANCH_MANAGER tạo → duyệt luôn** |
-| 4 | Chỉ hoàn giá trị item; hoàn cả phí ship khi **lỗi thuộc về shop** |
-| 5 | Khách trả tiền mặt/COD → **hoàn tiền mặt tại cửa hàng**, có thoả thuận hai bên. Không hoàn online |
-
-### ⚠ Còn thiếu 1 ý — chặn migration S6.1
-
-**Có loại trừ nhóm hàng nào khỏi đổi trả không?** Ví dụ găng tay, băng quấn, thảm đã bóc tem, hàng đặt riêng theo yêu cầu.
-
-Nếu chưa quyết, phương án mặc định: thêm cờ `returnable` ở cấp **Category**, Admin tự bật/tắt. Không hardcode danh sách trong code.
-
-### S6.1 — Return policy & request
-
-- Bảng `return_policies`, `return_requests`, `return_items`, `return_status_history`
-- Snapshot `policy_id` vào request: đơn mua theo chính sách nào thì xử theo chính sách đó, đổi chính sách sau không áp ngược
-- Eligibility: `DELIVERED` + 7 ngày, kiểm tra `returnable` của category
-- Trả một phần item/quantity; **combo phải trả nguyên dòng**
-- Quantity cộng dồn qua nhiều lần trả không vượt số đã mua — ràng buộc ở database
-- `RET-01` Account own return, `RET-02` Admin review approve/reject theo quy tắc role ở decision 3
-
-### S6.2 — Receive & inspection
-
-- `RET-03` nhận đúng warehouse đã xuất
-- Phân loại `SELLABLE` / `DAMAGED` / `MISSING`; chỉ `SELLABLE` restock
-- Movement atomic, retry-safe, tái dùng đúng pattern của `fulfillment.receive-return`
-
-### S6.3 — Refund
-
-- Bảng `refunds`, `refund_transactions` (append-only)
-- Trần refund: `Σ item được duyệt (+ phí ship nếu lỗi shop)` ≤ số tiền Payment đã nhận — ràng buộc ở database
-- Trường `fault: SHOP / CUSTOMER` quyết định có hoàn ship hay không
-- `refund_method`: `BANK_TRANSFER` (bắt buộc `external_ref`) và `CASH_AT_STORE` (bắt buộc xác nhận của khách)
-- `SUCCESS` chỉ khi tiền đã thật sự rời đi, không phải khi bấm duyệt
-- Maker-checker theo role: permission `refund.request` / `refund.approve` / `refund.execute`
-
-### S6.4 — Flash Sale
-
-✅ Đã xong. Còn W1 ở trên.
+| Thông báo | Model `Notification` + endpoint đọc/đánh dấu đã đọc |
+| Bảo hành | Model `Warranty` gắn `OrderItem` |
+| Marketing trang chủ | Mở rộng `ContentPost` thêm `postType`, rẻ hơn dựng module CMS mới |
 
 ---
 
-## W3 — Nối nốt operation đã generate (1–2 ngày)
+## Việc lẻ đã kiểm chứng
 
-Hai khoản nợ `RULE-CTR-06`: operation đã sinh nhưng chưa ai gọi.
+- [ ] `quoteShipping`: **0 nơi gọi**. Quyết định nối vào xem trước phí, hoặc ghi lý do không dùng
+      vào README của feature checkout (`RULE-CTR-06`).
+- [ ] Mutation giỏ hàng: mới **1 nơi gọi**. Giỏ vẫn chủ yếu là Redux cục bộ.
+- [ ] `vendor-charts` 391 kB nạp ở mọi route Admin — nên lazy theo route dashboard. **Chưa kiểm
+      chứng lại** sau khi viết lại Dashboard.
+- [ ] Địa giới VN gọi third-party `vietnam-address.service.ts` — giữ hay chuyển về API nội bộ.
+- [ ] Rà soát câu từ toàn storefront; mới sửa các chỗ đi ngang qua.
 
-| Việc | Hiện trạng | Phương án |
-| --- | --- | --- |
-| SDK `cart` | Toàn bộ mutation guest/account chỉ 1 file dùng (`checkout.workflow.ts`); giỏ hiển thị thuần Redux | Nối `useCreateGuestCart` / `useSetGuestCartItem` / `useUpdateGuestCartItem` / `useRemoveGuestCartItem`. Redux giữ vai trò UI state lạc quan, server là nguồn sự thật |
-| `quoteShipping` | **0 file dùng** | Quyết định: nối vào bước xem trước phí ở giỏ hàng, hoặc ghi lý do không dùng vào `features/checkout/README.md` |
+## Việc của chủ dự án
 
-**Giá trị:** giỏ hàng đồng bộ giữa thiết bị — hiện mở máy khác là mất giỏ.
-
----
-
-## W4 — Gỡ 3 nhóm mock còn lại (phụ thuộc BE)
-
-| Nhóm | File | BE cần làm |
-| --- | --- | --- |
-| Thông báo | `widgets/site-header/header-notifications.tsx` | Model `Notification` + `GET /customer/notifications` + `POST .../read` |
-| Bảo hành | `features/profile/pages/profile-page.tsx` | Model `Warranty` gắn `OrderItem` + `GET /account/warranties` |
-| Marketing trang chủ | 7 component trong `features/home` | Mở rộng `ContentPost` thêm `postType` `BANNER`/`PARTNER`/`STAT`, hoặc module CMS riêng |
-
-**Đề xuất:** nhóm marketing làm bằng cách mở rộng `ContentPost` — model đã có, chỉ thêm giá trị `postType` và trường cần thiết. Rẻ hơn nhiều so với module CMS mới.
-
-Hai nhóm còn lại là tính năng thật, nên xếp sau Sprint 6.
-
----
-
-## Việc lẻ
-
-- [ ] `search-page` chưa lọc theo từ khoá (BE-2) — cần `q` trong `listCatalogProducts`
-- [ ] `admin/customers` vẫn chạy `customers.fixture.ts`, chưa có operation `Admin Customers` nào
-- [ ] Địa giới VN gọi third-party `vietnam-address.service.ts` — giữ hay chuyển về API nội bộ
-- [ ] `vendor-charts` 391 kB (recharts) load ở mọi route admin — lazy theo route dashboard
-- [ ] Cân nhắc kế thừa luồng duyệt của `fund-ops-service` cho `system_parameters` khi áp quy tắc role ở decision 3
-
----
-
-## Thứ tự đề xuất
-
-```
-W1 (0.5 ngày)  →  W2 S6.1 → S6.2 → S6.3 (5–7 ngày)  →  W3 (1–2 ngày)  →  W4 (chờ BE)
-```
-
-W1 làm trước vì đang là lỗ hổng mở. W3 có thể chen vào lúc chờ quyết định của W2.
-
-## Rủi ro
-
-| Rủi ro | Giảm thiểu |
-| --- | --- |
-| Bắt đầu S6.1 khi chưa chốt nhóm hàng loại trừ | Làm cờ `returnable` ở Category, không hardcode |
-| Refund tính sai trần khi trả một phần | Ràng buộc tổng ở database, không chỉ ở service |
-| Nối SDK cart làm hỏng giỏ đang có của khách | Đổi khoá lưu trữ phải có đường migrate, không im lặng làm mất giỏ |
-| Mở rộng `ContentPost` cho banner làm loãng model | Nếu quá 3 `postType` mới thì tách module CMS riêng |
+- Redeploy `admin` (bản sửa 404 khi reload) và `api` (bản sửa serverless)
+- Ghi khoá VNPay vào `api/.env.local` khi muốn bật cổng thanh toán
+- Quyết tồn kho khởi tạo cho 596 sản phẩm (chặn R1)
 
 ## Revision history
 
 | Version | Date | Change summary | Source |
 | --- | --- | --- | --- |
+| 2.0.0 | 2026-09-15 | Viết lại theo trạng thái kiểm chứng; đóng W1/W3; thêm VNPay, báo cáo, bán tại quầy; Sprint 6 thành khối chặn chính. | Rà soát mã nguồn + database |
 | 1.0.0 | 2026-09-14 | Chốt phương án cho 4 nhóm việc còn tồn. | Execution review |
