@@ -32,12 +32,18 @@ export function useProductShowcase(categorySlug?: string): {
   isError: boolean;
   refetch: () => void;
 } {
-  const query = useListCatalogProducts({ page: 1, limit: 8 });
+  // Lọc danh mục chạy server-side và gồm cả nhánh con. Trước đây hook lấy 8 sản phẩm
+  // đầu của toàn catalog rồi lọc ở client, nên trang danh mục chỉ xét được 8 trong 596
+  // sản phẩm và gần như luôn ra sai.
+  const query = useListCatalogProducts({
+    page: 1,
+    limit: categorySlug ? 48 : 8,
+    category: categorySlug,
+  });
 
   const products = useMemo<ProductShowcaseItem[]>(
     () =>
       (query.data?.items ?? [])
-        .filter((product) => !categorySlug || product.primaryCategory === categorySlug)
         .map((product) => {
           const minPrice = Number(product.minPrice ?? 0);
           return {
@@ -59,7 +65,7 @@ export function useProductShowcase(categorySlug?: string): {
                 : vndMoney.format(minPrice),
           };
         }),
-    [query.data?.items, categorySlug],
+    [query.data?.items],
   );
 
   return {

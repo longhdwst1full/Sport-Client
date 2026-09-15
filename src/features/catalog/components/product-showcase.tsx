@@ -19,72 +19,17 @@ const SHOWCASE_TABS = [
 ] as const;
 
 export function ProductShowcase({ categorySlug }: { categorySlug?: string } = {}) {
-  const { products, isPending, isError, refetch } = useProductShowcase();
+  const { products, isPending, isError, refetch } = useProductShowcase(categorySlug);
   const [activeTab, setActiveTab] = useState<string>('all');
   const dispatch = useAppDispatch();
   const { toast } = useToast();
 
+  // Danh mục lọc ở Backend (gồm cả nhánh con). Bản trước lọc ở client bằng đoán từ khoá
+  // trên slug/tên, và khi lọc ra rỗng thì trả về TOÀN BỘ sản phẩm — nên trang danh mục
+  // bóng chuyền có thể hiện máy chạy bộ. Ở đây chỉ còn lọc theo tab do người dùng bấm.
   const displayedProducts = useMemo(() => {
-    // If a parent prop categorySlug was provided, prioritize it
-    const activeCategory = categorySlug || (activeTab === 'all' ? undefined : activeTab);
-    if (!activeCategory) return products;
-
-    const cat = activeCategory.toLowerCase();
-    const filtered = products.filter((p) => {
-      const pCat = (p.category || '').toLowerCase();
-      const pSlug = (p.slug || '').toLowerCase();
-      const pName = (p.name || '').toLowerCase();
-
-      if (cat === 'gym' || cat.includes('gym') || cat.includes('fitness')) {
-        return (
-          pCat.includes('gym') ||
-          pCat.includes('sức mạnh') ||
-          pSlug.includes('ta-') ||
-          pSlug.includes('smith') ||
-          pSlug.includes('ghe-') ||
-          pSlug.includes('kettlebell') ||
-          pName.includes('tạ')
-        );
-      }
-      if (cat === 'cardio' || cat.includes('chay-bo') || cat.includes('cardio') || cat.includes('xe-dap')) {
-        return (
-          pCat.includes('chạy bộ') ||
-          pCat.includes('xe đạp') ||
-          pSlug.includes('chay-bo') ||
-          pSlug.includes('bike') ||
-          pName.includes('chạy bộ') ||
-          pName.includes('xe đạp')
-        );
-      }
-      if (cat === 'racket' || cat.includes('bong-ban') || cat.includes('bong-ro')) {
-        return (
-          pCat.includes('bóng bàn') ||
-          pCat.includes('bóng rổ') ||
-          pSlug.includes('stiga') ||
-          pSlug.includes('double-fish') ||
-          pSlug.includes('s206') ||
-          pSlug.includes('bong-')
-        );
-      }
-      if (cat === 'combat-yoga' || cat.includes('vo-thuat') || cat.includes('yoga') || cat.includes('phuc-hoi')) {
-        return (
-          pCat.includes('võ thuật') ||
-          pCat.includes('yoga') ||
-          pCat.includes('phục hồi') ||
-          pSlug.includes('fairtex') ||
-          pSlug.includes('yoga') ||
-          pSlug.includes('massage') ||
-          pSlug.includes('boxing')
-        );
-      }
-      if (cat === 'combo') {
-        return p.productType === 'BUNDLE' || pSlug.includes('combo') || pCat.includes('combo');
-      }
-
-      return pCat.includes(cat) || pSlug.includes(cat) || pName.includes(cat);
-    });
-
-    return filtered.length > 0 ? filtered : products;
+    if (categorySlug || activeTab === 'all') return products;
+    return products.filter((product) => product.category === activeTab);
   }, [products, categorySlug, activeTab]);
 
   const handleQuickAdd = (product: (typeof products)[number], e: React.MouseEvent) => {
