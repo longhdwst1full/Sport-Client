@@ -33,3 +33,9 @@ export function isCustomerAuthenticated(): boolean {
   if (typeof window === 'undefined') return false;
   return Boolean(readCustomerAuthTokens()?.accessToken);
 }
+
+/** Còn refresh token nghĩa là phiên vẫn cứu được, kể cả khi access token đã hết hạn. */
+export function hasCustomerRefreshCredential(): boolean {
+  if (typeof window === 'undefined') return false;
+  return cookieTransport || Boolean(readCustomerAuthTokens()?.refreshToken);
+}

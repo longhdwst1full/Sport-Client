@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useMegaMenuCategories } from '@/features/catalog';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import {
@@ -22,7 +23,6 @@ import {
   STORE_CONTACT,
   STORE_ANNOUNCEMENTS,
   QUICK_LINKS,
-  MEGA_MENU_CATEGORIES,
 } from '@/shared/constants';
 import { AutocompleteSearch } from './autocomplete-search';
 import { HeaderNotifications } from './header-notifications';
@@ -34,6 +34,7 @@ export function SiteHeader() {
   const [expandedMobileCat, setExpandedMobileCat] = useState<string | null>(null);
   const [announcementIndex, setAnnouncementIndex] = useState(0);
   const [searchOpen, setSearchOpen] = useState(false);
+  const { categories: megaMenuCategories } = useMegaMenuCategories();
   const [activeMegaMenu, setActiveMegaMenu] = useState<string | null>(null);
   const megaMenuTimeout = useRef<ReturnType<typeof setTimeout>>(null);
   const [isMounted, setIsMounted] = useState(false);
@@ -212,7 +213,7 @@ export function SiteHeader() {
         <div className="mx-auto flex h-12 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           {/* Main Category Dropdowns */}
           <div className="flex items-center gap-1">
-            {MEGA_MENU_CATEGORIES.map((cat) => {
+            {megaMenuCategories.map((cat) => {
               const isOpen = activeMegaMenu === cat.label;
               return (
                 <div
@@ -270,18 +271,20 @@ export function SiteHeader() {
                             </Link>
                           </div>
 
-                          {/* Image preview banner */}
+                          {/* Ảnh minh hoạ danh mục; danh mục chưa có ảnh thì không dựng khung rỗng. */}
                           <div className="relative min-h-[190px] overflow-hidden rounded-xl bg-slate-100">
-                            <Image
-                              src={cat.image}
-                              alt={cat.label}
-                              fill
-                              sizes="240px"
-                              className="object-cover transition duration-500 hover:scale-105"
-                            />
+                            {cat.imageUrl && (
+                              <Image
+                                src={cat.imageUrl}
+                                alt={cat.label}
+                                fill
+                                sizes="240px"
+                                className="object-cover transition duration-500 hover:scale-105"
+                              />
+                            )}
                             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent flex items-end p-3.5">
                               <span className="text-xs font-bold text-white leading-snug">
-                                Cam kết 100% chính hãng · Bảo hành 2 - 5 năm
+                                {cat.productCount} sản phẩm
                               </span>
                             </div>
                           </div>
@@ -360,7 +363,7 @@ export function SiteHeader() {
                 <div className="px-3 py-1 text-[11px] font-black uppercase tracking-wider text-slate-400">
                   Danh mục thiết bị chính hãng
                 </div>
-                {MEGA_MENU_CATEGORIES.map((cat) => {
+                {megaMenuCategories.map((cat) => {
                   const isExpanded = expandedMobileCat === cat.label;
                   return (
                     <div key={cat.label} className="rounded-xl border border-transparent overflow-hidden">
@@ -370,7 +373,7 @@ export function SiteHeader() {
                           className="flex flex-1 items-center gap-3 px-3 py-2.5 text-sm font-bold text-slate-800 hover:text-emerald-700"
                           onClick={() => setMobileMenuOpen(false)}
                         >
-                          <cat.icon className="size-4.5 text-emerald-600 shrink-0" />
+                          <Dumbbell className="size-4.5 text-emerald-600 shrink-0" />
                           <span>{cat.label}</span>
                         </Link>
                         <button

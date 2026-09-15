@@ -212,65 +212,6 @@ export const STORE_POLICIES = [
 // ==========================================
 // 9. MEGA MENU CATEGORIES (HEADER NAVIGATION)
 // ==========================================
-export interface MegaMenuCategory {
-  label: string;
-  href: string;
-  icon: LucideIcon;
-  image: string;
-  children: { label: string; href: string }[];
-}
-
-export const MEGA_MENU_CATEGORIES: MegaMenuCategory[] = [
-  {
-    label: 'Máy Tập Thể Dục',
-    href: `/category/${CategorySlug.MAY_TAP_THE_DUC}`,
-    icon: Dumbbell,
-    image: 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=400&q=80',
-    children: [
-      { label: 'Máy chạy bộ', href: `/category/${CategorySlug.MAY_CHAY_BO}` },
-      { label: 'Xe đạp tập thể dục', href: `/category/${CategorySlug.XE_DAP_TAP}` },
-      { label: 'Máy tập bụng', href: `/category/${CategorySlug.MAY_TAP_BUNG}` },
-      { label: 'Máy tập chân', href: `/category/${CategorySlug.MAY_TAP_CHAN}` },
-    ],
-  },
-  {
-    label: 'Dụng Cụ Tập Gym',
-    href: `/category/${CategorySlug.DUNG_CU_TAP_GYM}`,
-    icon: Dumbbell,
-    image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=400&q=80',
-    children: [
-      { label: 'Ghế tập tạ', href: `/category/${CategorySlug.GHE_TAP_TA}` },
-      { label: 'Giàn tạ đa năng', href: `/category/${CategorySlug.GIAN_TA_DA_NANG}` },
-      { label: 'Tạ tay - Tạ đơn', href: `/category/${CategorySlug.TA_TAY}` },
-      { label: 'Xà đơn - Xà kép', href: `/category/${CategorySlug.XA_DON_XA_KEP}` },
-      { label: 'Phụ kiện Gym', href: `/category/${CategorySlug.PHU_KIEN_GYM}` },
-    ],
-  },
-  {
-    label: 'Dụng Cụ Võ Thuật',
-    href: `/category/${CategorySlug.DUNG_CU_VO_THUAT}`,
-    icon: Goal,
-    image: 'https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?auto=format&fit=crop&w=400&q=80',
-    children: [
-      { label: 'Bao cát đấm bốc', href: `/category/${CategorySlug.BAO_CAT}` },
-      { label: 'Găng tay Boxing', href: `/category/${CategorySlug.GANG_TAY_BOXING}` },
-      { label: 'Đích đá - Đích đấm', href: `/category/${CategorySlug.DICH_DA_DICH_DAM}` },
-      { label: 'Dụng cụ tập thể lực', href: `/category/${CategorySlug.DUNG_CU_THE_LUC}` },
-    ],
-  },
-  {
-    label: 'Dụng Cụ Bóng Bàn',
-    href: `/category/${CategorySlug.DUNG_CU_BONG_BAN}`,
-    icon: HeartPulse,
-    image: 'https://images.unsplash.com/photo-1609710228159-0fa9bd7c0827?auto=format&fit=crop&w=400&q=80',
-    children: [
-      { label: 'Bàn bóng bàn', href: `/category/${CategorySlug.BAN_BONG_BAN}` },
-      { label: 'Vợt bóng bàn', href: `/category/${CategorySlug.VOT_BONG_BAN}` },
-      { label: 'Quả bóng bàn', href: `/category/${CategorySlug.QUA_BONG_BAN}` },
-      { label: 'Phụ kiện bóng bàn', href: `/category/${CategorySlug.PHU_KIEN_BONG_BAN}` },
-    ],
-  },
-];
 
 // ==========================================
 // 10. STORE CATEGORIES LIST (CARDS & DIRECTORY)

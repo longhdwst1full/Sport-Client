@@ -21,9 +21,13 @@ import { CONTENT_POST_TYPE_LABELS } from '../model/content-post.mapper';
 
 const ALL_CATEGORY = 'ALL';
 
+/** Số bài hiện sẵn ở trang chủ. Hai cột nên 4 bài vừa đúng hai hàng. */
+const FEATURED_COUNT = 4;
+
 export function ContentStories() {
   const { stories: allArticles, isPending } = useContentStories();
   const [activeCat, setActiveCat] = useState<string>(ALL_CATEGORY);
+  const [expanded, setExpanded] = useState(false);
 
   // Bộ lọc dựng từ loại bài thật đang có, không phải danh sách cố định.
   const categories = useMemo(
@@ -35,6 +39,12 @@ export function ContentStories() {
     if (activeCat === ALL_CATEGORY) return allArticles;
     return allArticles.filter((article) => article.postType === activeCat);
   }, [allArticles, activeCat]);
+
+  // Trang chủ chỉ giới thiệu vài bài; đọc hết thì sang trang tin tức.
+  const visibleArticles = expanded
+    ? displayedArticles
+    : displayedArticles.slice(0, FEATURED_COUNT);
+  const hiddenCount = displayedArticles.length - visibleArticles.length;
 
   return (
     <div className="space-y-8">
@@ -68,7 +78,7 @@ export function ContentStories() {
 
       {/* Grid of Articles */}
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-2">
-        {displayedArticles.map((post) => (
+        {visibleArticles.map((post) => (
           <article
             key={post.id}
             className="group grid overflow-hidden rounded-[28px] border border-slate-200/90 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-emerald-500/40 hover:shadow-xl md:grid-cols-[1fr_1.2fr]"
@@ -138,6 +148,31 @@ export function ContentStories() {
           </article>
         ))}
       </div>
+
+      {hiddenCount > 0 && (
+        <div className="mt-8 flex justify-center">
+          <button
+            type="button"
+            onClick={() => setExpanded(true)}
+            className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-bold text-slate-700 transition hover:border-emerald-400 hover:text-emerald-700"
+          >
+            <span>Xem thêm {hiddenCount} bài</span>
+            <ArrowRight className="size-4" />
+          </button>
+        </div>
+      )}
+
+      {expanded && displayedArticles.length > FEATURED_COUNT && (
+        <div className="mt-6 flex justify-center">
+          <Link
+            href="/news"
+            className="inline-flex items-center gap-1.5 text-xs font-extrabold text-emerald-700 hover:underline"
+          >
+            <span>Đọc toàn bộ chuyên mục tin tức</span>
+            <ArrowRight className="size-3.5" />
+          </Link>
+        </div>
+      )}
     </div>
   );
 }

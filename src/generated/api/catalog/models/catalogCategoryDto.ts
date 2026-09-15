@@ -16,4 +16,11 @@ export interface CatalogCategoryDto {
   sortOrder: number;
   /** Số sản phẩm PUBLISHED thuộc danh mục */
   productCount: number;
+  /** Độ sâu trong cây danh mục; 0 là danh mục gốc */
+  depth: number;
+  /**
+   * Slug danh mục cha; null nếu là danh mục gốc. Dùng để dựng menu nhiều cấp.
+   * @nullable
+   */
+  parentSlug?: string | null;
 }

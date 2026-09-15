@@ -45,11 +45,31 @@ paths:
         - name: search
           required: false
           in: query
+          description: Tìm gộp theo tên, mã sản phẩm hoặc SKU. Giữ cho tương thích ngược.
+          schema:
+            type: string
+        - name: name
+          required: false
+          in: query
+          description: Chỉ lọc theo tên sản phẩm
+          schema:
+            type: string
+        - name: productNo
+          required: false
+          in: query
+          description: Chỉ lọc theo mã sản phẩm
+          schema:
+            type: string
+        - name: sku
+          required: false
+          in: query
+          description: Chỉ lọc theo SKU của biến thể
           schema:
             type: string
         - name: category
           required: false
           in: query
+          description: Slug danh mục; gồm cả nhánh con
           schema:
             type: string
         - name: status
@@ -276,12 +296,20 @@ components:
         productCount:
           type: number
           description: Số sản phẩm PUBLISHED thuộc danh mục
+        depth:
+          type: number
+          description: Độ sâu trong cây danh mục; 0 là danh mục gốc
+        parentSlug:
+          type: string
+          nullable: true
+          description: Slug danh mục cha; null nếu là danh mục gốc. Dùng để dựng menu nhiều cấp.
       required:
         - code
         - name
         - slug
         - sortOrder
         - productCount
+        - depth
     ProductSummaryDto:
       type: object
       properties:

@@ -17,11 +17,15 @@ export const AuthService = {
   read(): TokenPairDto | undefined {
     if (memoryTokens) return memoryTokens;
     const accessToken = CookieManager.get(CookieKey.ACCESS_TOKEN);
-    if (!accessToken) return undefined;
+    const refreshToken = CookieManager.get(CookieKey.REFRESH_TOKEN) || undefined;
+    // Cookie access token hết hạn trước refresh token là trạng thái BÌNH THƯỜNG:
+    // access sống theo `expiresIn`, refresh là session cookie. Trả undefined ở đây
+    // sẽ vứt mất refresh token còn dùng được và ép khách đăng nhập lại.
+    if (!accessToken && !refreshToken) return undefined;
     // Phiên trước đã persist: dựng lại đủ dùng cho header + refresh.
     memoryTokens = {
-      accessToken,
-      refreshToken: CookieManager.get(CookieKey.REFRESH_TOKEN) || undefined,
+      accessToken: accessToken ?? '',
+      refreshToken,
       tokenType: 'Bearer',
       expiresIn: 0,
       mustChangePassword: false,
@@ -49,6 +53,7 @@ export const AuthService = {
   },
 
   getAccessToken(): string | undefined {
-    return this.read()?.accessToken;
+    // Chuỗi rỗng nghĩa là access token đã hết hạn nhưng refresh vẫn còn.
+    return this.read()?.accessToken || undefined;
   },
 };

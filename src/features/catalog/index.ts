@@ -13,3 +13,4 @@ export {
   type CategoryRailView,
 } from './model/category.mapper';
 export { ProductsCatalogView } from './components/products-catalog-view';
+export { useMegaMenuCategories, type MegaMenuEntry } from './hooks/use-mega-menu-categories';
