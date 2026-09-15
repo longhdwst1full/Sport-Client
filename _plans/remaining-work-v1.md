@@ -1,10 +1,10 @@
 # Phương án cho phần việc còn lại
 
-> **Document version:** 2.3.0
+> **Document version:** 2.4.0
 >
 > **Last updated:** 2026-09-15
 >
-> **Change summary:** Đóng R4 (nội dung thật thay nội dung bịa) và R5 (dọn ảnh thu nhỏ). Còn R2, R3, R6.
+> **Change summary:** Đóng R3 (quản lý khách hàng chạy dữ liệu thật). Còn R2 và R6.
 
 ## Cách đọc tài liệu này
 
@@ -30,6 +30,7 @@ nhật, không dựa vào trí nhớ. Mục nào chưa kiểm được thì ghi 
 | Refresh token | Sửa `/me` bị loại nhầm khỏi luồng xoay token |
 | Nội dung bịa trên storefront | 10 bài viết thật thay 8 bài dựng sẵn; `/news/[slug]` và `/category/[slug]` đọc API |
 | Ảnh thu nhỏ | Xoá 596 ảnh 150x150; thư viện còn 791 ảnh |
+| Quản lý khách hàng | Module `Admin Customers` + màn hình dùng dữ liệu thật; fixture đã xoá |
 
 ---
 
@@ -45,14 +46,6 @@ Quyết định đã chốt: cửa sổ 7 ngày từ `DELIVERED`; guest gọi ho
 nhân viên tạo thì chờ quản lý duyệt, quản lý tạo thì duyệt luôn; chỉ hoàn phí ship khi lỗi
 thuộc về shop; khách trả tiền mặt thì hoàn tiền mặt. Nhóm hàng loại trừ dùng cờ `returnable`
 ở cấp Category, Admin tự bật/tắt — **không hardcode**.
-
-### R3 — Quản lý khách hàng ở Admin (1–2 ngày)
-
-`admin/src/features/customers/model/customers.fixture.ts` vẫn đang được dùng — màn khách hàng
-chạy **dữ liệu giả**. Backend chưa có module khách hàng cho admin.
-
-Phạm vi giai đoạn 1 đề xuất: danh sách, tìm kiếm, xem chi tiết (thông tin, địa chỉ, lịch sử
-đơn). Tạo và khoá tài khoản để giai đoạn 2.
 
 ### R6 — Ba nhóm mock chờ model backend
 
