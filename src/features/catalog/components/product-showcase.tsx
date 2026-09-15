@@ -18,8 +18,11 @@ const SHOWCASE_TABS = [
   { id: 'combo', label: 'Combo Home Gym' },
 ] as const;
 
-export function ProductShowcase({ categorySlug }: { categorySlug?: string } = {}) {
-  const { products, isPending, isError, refetch } = useProductShowcase(categorySlug);
+export function ProductShowcase({
+  categorySlug,
+  searchQuery,
+}: { categorySlug?: string; searchQuery?: string } = {}) {
+  const { products, isPending, isError, refetch } = useProductShowcase(categorySlug, searchQuery);
   const [activeTab, setActiveTab] = useState<string>('all');
   const dispatch = useAppDispatch();
   const { toast } = useToast();
@@ -28,9 +31,10 @@ export function ProductShowcase({ categorySlug }: { categorySlug?: string } = {}
   // trên slug/tên, và khi lọc ra rỗng thì trả về TOÀN BỘ sản phẩm — nên trang danh mục
   // bóng chuyền có thể hiện máy chạy bộ. Ở đây chỉ còn lọc theo tab do người dùng bấm.
   const displayedProducts = useMemo(() => {
-    if (categorySlug || activeTab === 'all') return products;
+    // Đang tìm theo từ khoá thì Backend đã lọc; lọc thêm theo tab sẽ giấu bớt kết quả.
+    if (categorySlug || searchQuery?.trim() || activeTab === 'all') return products;
     return products.filter((product) => product.category === activeTab);
-  }, [products, categorySlug, activeTab]);
+  }, [products, categorySlug, searchQuery, activeTab]);
 
   const handleQuickAdd = (product: (typeof products)[number], e: React.MouseEvent) => {
     e.preventDefault();

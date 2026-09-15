@@ -4,11 +4,8 @@ import { useState, useRef, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Search, X, ChevronRight, Sparkles } from 'lucide-react';
-import { vndMoney } from '@/shared/format/money';
-import {
-  searchProducts,
-  type SearchableProduct,
-} from '@/shared/data/searchable-catalog';
+import { useProductSearch } from '@/features/catalog/hooks/use-product-search';
+import { useDebounce } from '@/shared/hooks';
 
 interface AutocompleteSearchProps {
   placeholder?: string;
@@ -40,11 +37,9 @@ export function AutocompleteSearch({
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Live search results based on user typing
-  const results: SearchableProduct[] = useMemo(() => {
-    if (!query.trim()) return [];
-    return searchProducts(query, 8);
-  }, [query]);
+  // Gọi Backend theo giá trị đã hoãn: mỗi phím gõ một lượt gọi là quá nhiều cho một lần tìm.
+  const debouncedQuery = useDebounce(query, 300);
+  const { suggestions: results, isPending, isError } = useProductSearch(debouncedQuery);
 
   // Open popover when user types
   useEffect(() => {
@@ -167,7 +162,28 @@ export function AutocompleteSearch({
       {/* Autocomplete Suggestions Popover Dropdown - Curved Rounded-3xl */}
       {isOpen && query.trim() && (
         <div className="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-3xl border border-slate-200/90 bg-white/95 p-2 shadow-2xl shadow-slate-900/15 backdrop-blur-xl animate-in fade-in slide-in-from-top-1 duration-150 ring-1 ring-black/5">
-          {results.length > 0 ? (
+          {isError ? (
+            /* Lỗi HTTP là kết cục cuối cùng, không phải danh sách rỗng: nói rõ để khách
+               biết cần thử lại chứ không tưởng cửa hàng không có hàng. */
+            <div className="p-6 text-center text-xs">
+              <p className="font-bold text-slate-700 sm:text-sm">Không tìm được sản phẩm</p>
+              <p className="mt-1 text-[11px] text-slate-400">
+                Kết nối đang gặp sự cố. Vui lòng thử lại sau giây lát.
+              </p>
+            </div>
+          ) : isPending && results.length === 0 ? (
+            <div className="space-y-1 p-2">
+              {Array.from({ length: 3 }, (_, index) => (
+                <div key={index} className="flex items-center gap-3.5 rounded-2xl px-3.5 py-2.5">
+                  <div className="size-12 shrink-0 animate-pulse rounded-xl bg-slate-100" />
+                  <div className="flex-1 space-y-2">
+                    <div className="h-3 w-3/4 animate-pulse rounded bg-slate-100" />
+                    <div className="h-2.5 w-1/3 animate-pulse rounded bg-slate-100" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : results.length > 0 ? (
             <div>
               {/* Header hint */}
               <div className="flex items-center justify-between rounded-2xl bg-emerald-50/80 px-4 py-2 text-[11px] font-extrabold uppercase tracking-wider text-emerald-800">
@@ -178,8 +194,12 @@ export function AutocompleteSearch({
                 <span className="text-[10px] font-medium text-slate-400">↑↓ di chuyển • Enter chọn</span>
               </div>
 
-              {/* Scrollable list of suggestions */}
-              <div className="mt-1 max-h-[360px] overflow-y-auto pr-0.5 space-y-1 scrollbar-thin">
+              {/* Đang tìm lại thì giữ kết quả cũ và làm mờ, không nháy về khung xám. */}
+              <div
+                className={`mt-1 max-h-[360px] overflow-y-auto pr-0.5 space-y-1 scrollbar-thin transition-opacity ${
+                  isPending ? 'opacity-50' : 'opacity-100'
+                }`}
+              >
                 {results.map((product, index) => {
                   const isSelected = selectedIndex === index;
 
@@ -196,13 +216,19 @@ export function AutocompleteSearch({
                     >
                       {/* Product Thumbnail */}
                       <div className="relative size-12 shrink-0 overflow-hidden rounded-xl border border-slate-200/80 bg-white p-1 shadow-sm">
-                        <Image
-                          src={product.imageUrl}
-                          alt={product.name}
-                          fill
-                          sizes="48px"
-                          className="object-contain"
-                        />
+                        {product.imageUrl ? (
+                          <Image
+                            src={product.imageUrl}
+                            alt={product.name}
+                            fill
+                            sizes="48px"
+                            className="object-contain"
+                          />
+                        ) : (
+                          <div className="grid size-full place-items-center text-slate-300">
+                            <Search className="size-4" />
+                          </div>
+                        )}
                       </div>
 
                       {/* Product Info */}
@@ -215,25 +241,15 @@ export function AutocompleteSearch({
                           {product.name}
                         </h4>
                         <div className="mt-1 flex items-center gap-2 text-[10px] font-semibold text-slate-400">
-                          <span>{product.category}</span>
-                          {product.badge && (
-                            <span className="rounded-full bg-emerald-50 border border-emerald-200/60 px-2 py-0.5 text-[9px] font-bold text-emerald-700">
-                              {product.badge}
-                            </span>
-                          )}
+                          <span>{product.categoryLabel}</span>
                         </div>
                       </div>
 
                       {/* Price on right */}
                       <div className="shrink-0 text-right">
                         <strong className="block text-xs font-black text-emerald-700 sm:text-sm">
-                          {vndMoney.format(product.price)}
+                          {product.priceLabel}
                         </strong>
-                        {product.originalPrice && product.originalPrice > product.price && (
-                          <span className="block text-[10px] text-slate-400 line-through">
-                            {vndMoney.format(product.originalPrice)}
-                          </span>
-                        )}
                       </div>
                     </div>
                   );

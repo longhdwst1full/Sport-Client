@@ -26,7 +26,10 @@ export interface ProductShowcaseItem {
  * nên lỗi backend bị che và khách thấy sản phẩm không tồn tại. Giờ trả đúng trạng
  * thái để phía gọi tự quyết định hiển thị skeleton, empty hay lỗi.
  */
-export function useProductShowcase(categorySlug?: string): {
+export function useProductShowcase(
+  categorySlug?: string,
+  searchQuery?: string,
+): {
   products: ProductShowcaseItem[];
   isPending: boolean;
   isError: boolean;
@@ -35,10 +38,12 @@ export function useProductShowcase(categorySlug?: string): {
   // Lọc danh mục chạy server-side và gồm cả nhánh con. Trước đây hook lấy 8 sản phẩm
   // đầu của toàn catalog rồi lọc ở client, nên trang danh mục chỉ xét được 8 trong 596
   // sản phẩm và gần như luôn ra sai.
+  const search = searchQuery?.trim();
   const query = useListCatalogProducts({
     page: 1,
-    limit: categorySlug ? 48 : 8,
+    limit: categorySlug || search ? 48 : 8,
     category: categorySlug,
+    search: search || undefined,
   });
 
   const products = useMemo<ProductShowcaseItem[]>(

@@ -1,4 +1,4 @@
-import type { ProductDetailDto } from '@/generated/api/catalog/models';
+import type { ProductDetailDto, ProductSummaryDto } from '@/generated/api/catalog/models';
 import { vndMoney } from '@/shared/format/money';
 
 export interface BundleComponentView {
@@ -60,5 +60,27 @@ export function toProductPurchaseView(dto: ProductDetailDto): ProductPurchaseVie
         })),
       };
     }),
+  };
+}
+
+export interface ProductSuggestionView {
+  id: string;
+  slug: string;
+  name: string;
+  categoryLabel: string;
+  imageUrl: string | null;
+  /** Giá đã format; 'Liên hệ tư vấn' khi chưa có bảng giá hiệu lực, không phải 0 đồng. */
+  priceLabel: string;
+}
+
+export function toProductSuggestionView(dto: ProductSummaryDto): ProductSuggestionView {
+  const hasPrice = dto.minPrice !== null && dto.minPrice !== undefined;
+  return {
+    id: dto.id,
+    slug: dto.slug,
+    name: dto.name,
+    categoryLabel: dto.primaryCategory ?? 'Thiết bị thể thao',
+    imageUrl: dto.imageUrl ?? null,
+    priceLabel: hasPrice ? vndMoney.format(Number(dto.minPrice)) : 'Liên hệ tư vấn',
   };
 }

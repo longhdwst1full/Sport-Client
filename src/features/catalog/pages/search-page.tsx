@@ -50,7 +50,7 @@ function SearchContent() {
         </div>
 
         <div className="mt-10">
-          <ProductShowcase />
+          <ProductShowcase searchQuery={query} />
         </div>
       </main>
     </div>
