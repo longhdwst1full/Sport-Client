@@ -31,7 +31,10 @@ export function clearCustomerAuthTokens(): void {
 
 export function isCustomerAuthenticated(): boolean {
   if (typeof window === 'undefined') return false;
-  return Boolean(readCustomerAuthTokens()?.accessToken);
+  // Xét theo việc CÒN token hay không, không xét riêng access token: access hết hạn
+  // trước refresh là đúng luồng, và fetcher tự xoay lại. Bám vào accessToken sẽ làm
+  // khách trông như đã đăng xuất dù phiên vẫn cứu được.
+  return Boolean(readCustomerAuthTokens());
 }
 
 /** Còn refresh token nghĩa là phiên vẫn cứu được, kể cả khi access token đã hết hạn. */
