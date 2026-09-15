@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import {
   Filter,
   SlidersHorizontal,
@@ -8,6 +7,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
+import { Breadcrumb } from '@/foundation/components/navigation';
 import { ProductShowcase } from '@/features/catalog';
 
 export default async function CategoryDetailPage({
@@ -26,14 +26,14 @@ export default async function CategoryDetailPage({
     <StorefrontLayout>
       <div className="bg-stone-50/60 pb-20 pt-8">
         <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          {/* Breadcrumbs */}
-          <nav className="mb-6 text-xs font-semibold text-stone-500">
-            <Link href="/" className="hover:text-emerald-700">Trang chủ</Link>
-            <span className="mx-2">/</span>
-            <Link href="/category" className="hover:text-emerald-700">Danh mục</Link>
-            <span className="mx-2">/</span>
-            <span className="font-bold text-ink">{categoryName}</span>
-          </nav>
+          <Breadcrumb
+            className="mb-6"
+            items={[
+              { label: 'Trang chủ', href: '/' },
+              { label: 'Danh mục', href: '/category' },
+              { label: categoryName },
+            ]}
+          />
 
           {/* Category Banner */}
           <div className="relative overflow-hidden rounded-[36px] bg-gradient-to-br from-[#0c1410] via-[#141f17] to-[#0a100d] p-8 text-white shadow-xl sm:p-12">

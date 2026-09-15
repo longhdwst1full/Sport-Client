@@ -17,8 +17,13 @@ import {
 import type { OrderDetailDto } from '@/generated/api/orders/models';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { ApiError } from '@/lib/api/fetcher';
-import { vndMoney } from '@/shared/format/money';
-import { orderStatusLabels, paymentStatusLabels } from '../model/order.constants';
+import { toOrderDetailView } from '../model/order.mapper';
+import {
+  CANCELLABLE_PAYMENT_STATUSES,
+  FULFILLMENT_STATUS,
+  GUEST_ACCESS_RETIRED_ORDER_STATUSES,
+  statusIn,
+} from '../model/order.constants';
 import { readGuestOrderAccessToken, retireGuestOrderAccessToken } from '../model/guest-order-access.store';
 import { OrderPaymentPanel } from '../components/order-payment-panel';
 
@@ -50,7 +55,7 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
   });
   const order = orderQuery.data;
   useEffect(() => {
-    if (!isAuthenticated && order && ['COMPLETED', 'CANCELLED'].includes(order.status)) {
+    if (!isAuthenticated && order && statusIn(GUEST_ACCESS_RETIRED_ORDER_STATUSES, order.status)) {
       retireGuestOrderAccessToken(order.orderNo);
     }
   }, [isAuthenticated, order]);
@@ -82,9 +87,12 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
     },
   });
 
+  // Hiển thị dùng view model; DTO giữ lại cho lệnh huỷ vì cần id và version thô.
+  const view = useMemo(() => (order ? toOrderDetailView(order) : undefined), [order]);
+
   const canCancel = order?.status === 'PENDING_CONFIRMATION'
-    && ['PENDING', 'FAILED'].includes(order.paymentStatus)
-    && order.fulfillmentStatus === 'PENDING';
+    && statusIn(CANCELLABLE_PAYMENT_STATUSES, order.paymentStatus)
+    && order.fulfillmentStatus === FULFILLMENT_STATUS.PENDING;
 
   const closeCancel = () => {
     if (cancel.isPending) return;
@@ -111,16 +119,16 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
           <>
             <div className="rounded-[30px] bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 p-7 text-white shadow-xl">
               <div className="flex flex-wrap items-start justify-between gap-5">
-                <div><p className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-300">Đơn hàng</p><h1 className="mt-2 font-mono text-2xl font-black">{order.orderNo}</h1><p className="mt-2 text-sm text-slate-300">{new Date(order.placedAt).toLocaleString('vi-VN')} · {order.branchName}</p></div>
-                <span className="rounded-full bg-white/10 px-4 py-2 text-sm font-bold">{orderStatusLabels[order.status] ?? order.status}</span>
+                <div><p className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-300">Đơn hàng</p><h1 className="mt-2 font-mono text-2xl font-black">{order.orderNo}</h1><p className="mt-2 text-sm text-slate-300">{view?.placedLabel} · {view?.branchName}</p></div>
+                <span className="rounded-full bg-white/10 px-4 py-2 text-sm font-bold">{view?.statusLabel}</span>
               </div>
-              <div className="mt-6 grid gap-3 sm:grid-cols-3"><div><span className="text-xs text-slate-400">Người nhận</span><strong className="block">{order.recipient.name}</strong></div><div><span className="text-xs text-slate-400">Thanh toán</span><strong className="block">{paymentStatusLabels[order.paymentStatus] ?? order.paymentStatus}</strong></div><div><span className="text-xs text-slate-400">Tổng tiền</span><strong className="block text-emerald-300">{vndMoney.format(Number(order.grandTotal))}</strong></div></div>
+              <div className="mt-6 grid gap-3 sm:grid-cols-3"><div><span className="text-xs text-slate-400">Người nhận</span><strong className="block">{view?.recipientName}</strong></div><div><span className="text-xs text-slate-400">Thanh toán</span><strong className="block">{view?.paymentStatusLabel}</strong></div><div><span className="text-xs text-slate-400">Tổng tiền</span><strong className="block text-emerald-300">{view?.grandTotalLabel}</strong></div></div>
             </div>
 
             <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
               <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
                 <h2 className="text-lg font-black">Sản phẩm</h2>
-                <div className="mt-4 divide-y divide-slate-100">{order.items.map((item) => <div key={item.id} className="flex justify-between gap-4 py-4"><div><strong>{item.productName}</strong><p className="text-xs text-slate-500">{item.variantName} · {item.sku} · SL {item.quantity}</p></div><strong>{vndMoney.format(Number(item.lineTotal))}</strong></div>)}</div>
+                <div className="mt-4 divide-y divide-slate-100">{(view?.items ?? []).map((item) => <div key={item.id} className="flex justify-between gap-4 py-4"><div><strong>{item.productName}</strong><p className="text-xs text-slate-500">{item.variantName} · {item.sku} · SL {item.quantity}</p></div><strong>{item.lineTotalLabel}</strong></div>)}</div>
               </section>
               <aside className="space-y-5">
                 <OrderPaymentPanel
@@ -134,8 +142,8 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
                     }
                   }}
                 />
-                <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"><h2 className="font-black">Giao đến</h2><p className="mt-3 text-sm font-bold">{order.recipient.name} · {order.recipient.phone}</p><p className="mt-2 text-sm leading-6 text-slate-600">{[order.recipient.addressLine, order.recipient.ward, order.recipient.district, order.recipient.province].filter(Boolean).join(', ')}</p></section>
-                <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"><h2 className="font-black">Tiến trình</h2><div className="mt-4 space-y-4">{order.statusHistory.map((history) => <div key={history.sequenceNo} className="flex gap-3"><PackageCheck className="mt-0.5 size-5 shrink-0 text-emerald-600" /><div><strong className="text-sm">{orderStatusLabels[history.toStatus] ?? history.toStatus}</strong><p className="text-xs text-slate-500">{new Date(history.createdAt).toLocaleString('vi-VN')}</p>{history.reason && <p className="mt-1 text-xs text-slate-600">{history.reason}</p>}</div></div>)}</div></section>
+                <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"><h2 className="font-black">Giao đến</h2><p className="mt-3 text-sm font-bold">{view?.recipientName} · {view?.recipientPhone}</p><p className="mt-2 text-sm leading-6 text-slate-600">{view?.recipientAddress}</p></section>
+                <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"><h2 className="font-black">Tiến trình</h2><div className="mt-4 space-y-4">{(view?.timeline ?? []).map((entry) => <div key={entry.key} className="flex gap-3"><PackageCheck className="mt-0.5 size-5 shrink-0 text-emerald-600" /><div><strong className="text-sm">{entry.statusLabel}</strong><p className="text-xs text-slate-500">{entry.occurredLabel}</p>{entry.note && <p className="mt-1 text-xs text-slate-600">{entry.note}</p>}</div></div>)}</div></section>
               </aside>
             </div>
 

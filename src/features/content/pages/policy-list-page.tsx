@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { FileText, ChevronRight } from 'lucide-react';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
+import { Breadcrumb } from '@/foundation/components/navigation';
 import type { PolicySummaryView } from '../model/policy.mapper';
 
 export function PolicyListPage({ policies }: { policies: PolicySummaryView[] }) {
@@ -8,13 +9,13 @@ export function PolicyListPage({ policies }: { policies: PolicySummaryView[] }) 
     <StorefrontLayout>
       <div className="bg-stone-50/60 pb-20 pt-8">
         <main className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-          <nav className="mb-6 text-xs font-semibold text-stone-500">
-            <Link href="/" className="hover:text-emerald-700">
-              Trang chủ
-            </Link>
-            <span className="mx-2">/</span>
-            <span className="font-bold text-ink">Thông tin và chính sách</span>
-          </nav>
+          <Breadcrumb
+            className="mb-6"
+            items={[
+              { label: 'Trang chủ', href: '/' },
+              { label: 'Thông tin và chính sách' },
+            ]}
+          />
 
           <header className="rounded-3xl border border-stone-200/80 bg-white p-6 shadow-sm sm:p-10">
             <h1 className="text-3xl font-black leading-tight text-ink sm:text-4xl">

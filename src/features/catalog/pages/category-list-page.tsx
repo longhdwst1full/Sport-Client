@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
+import { Breadcrumb } from '@/foundation/components/navigation';
 import { listCatalogCategories } from '@/generated/api/catalog/catalog';
 import type { CatalogCategoryDto } from '@/generated/api/catalog/models';
 import { CategoryGrid } from '../components/category-grid';
@@ -25,11 +26,10 @@ export async function CategoryListPage() {
     <StorefrontLayout>
       <div className="bg-stone-50/60 pb-20 pt-8">
         <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <nav className="mb-6 text-xs font-semibold text-stone-500">
-            <Link href="/" className="hover:text-emerald-700">Trang chủ</Link>
-            <span className="mx-2">/</span>
-            <span className="font-bold text-ink">Danh mục thể thao</span>
-          </nav>
+          <Breadcrumb
+            className="mb-6"
+            items={[{ label: 'Trang chủ', href: '/' }, { label: 'Danh mục thể thao' }]}
+          />
 
           <div className="max-w-2xl">
             <span className="rounded-full bg-emerald-100 px-3.5 py-1 text-xs font-extrabold uppercase tracking-widest text-emerald-800">

@@ -13,6 +13,7 @@ import {
   TrendingUp,
 } from 'lucide-react';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
+import { Breadcrumb } from '@/foundation/components/navigation';
 import { Skeleton, SkeletonText } from '@/foundation/components/feedback';
 import { useContentStories } from '../hooks/use-content-stories';
 import { CONTENT_POST_TYPE_LABELS } from '../model/content-post.mapper';
@@ -37,12 +38,13 @@ export function NewsListPage() {
     <StorefrontLayout>
       <div className="bg-stone-50/60 pb-20 pt-8">
         <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          {/* Breadcrumbs */}
-          <nav className="mb-6 text-xs font-semibold text-stone-500">
-            <Link href="/" className="hover:text-emerald-700">Trang chủ</Link>
-            <span className="mx-2">/</span>
-            <span className="font-bold text-ink">Kiến thức luyện tập & Tin tức</span>
-          </nav>
+          <Breadcrumb
+            className="mb-6"
+            items={[
+              { label: 'Trang chủ', href: '/' },
+              { label: 'Kiến thức luyện tập & Tin tức' },
+            ]}
+          />
 
           {/* Heading */}
           <div className="max-w-2xl">

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { VnpayReturnPage } from '@/features/checkout';
 import { verifyVnpayReturn } from '@/generated/api/payments/payments';
 import type { VnpayReturnDto, VerifyVnpayReturnParams } from '@/generated/api/payments/models';
+import { toVnpayReturnView } from '@/features/checkout/model/checkout.mapper';
 
 export const revalidate = 0;
 
@@ -34,5 +35,5 @@ export default async function Page({
     };
   }
 
-  return <VnpayReturnPage result={result} />;
+  return <VnpayReturnPage result={toVnpayReturnView(result)} />;
 }

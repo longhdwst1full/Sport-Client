@@ -2,9 +2,9 @@
 
 import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import Link from 'next/link';
 import { Search, Sparkles, Filter, ChevronRight } from 'lucide-react';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
+import { Breadcrumb } from '@/foundation/components/navigation';
 import { ProductShowcase } from '../components/product-showcase';
 import { AutocompleteSearch } from '@/widgets/site-header/autocomplete-search';
 
@@ -15,12 +15,10 @@ function SearchContent() {
   return (
     <div className="bg-slate-50/60 pb-20 pt-8">
       <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Breadcrumbs */}
-        <nav className="mb-6 text-xs font-semibold text-slate-500">
-          <Link href="/" className="hover:text-emerald-700">Trang chủ</Link>
-          <span className="mx-2">/</span>
-          <span className="font-bold text-slate-900">Kết quả tìm kiếm</span>
-        </nav>
+        <Breadcrumb
+          className="mb-6"
+          items={[{ label: 'Trang chủ', href: '/' }, { label: 'Kết quả tìm kiếm' }]}
+        />
 
         <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm sm:p-8">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">

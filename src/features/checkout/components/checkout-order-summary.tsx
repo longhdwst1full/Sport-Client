@@ -2,13 +2,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { CheckCircle2, LoaderCircle, ShieldCheck, Truck } from 'lucide-react';
 import type { CartItem } from '@/app/store/cart.slice';
-import type { CheckoutQuoteDto } from '@/generated/api/checkout/models';
+import type { CheckoutQuoteView } from '../model/checkout.mapper';
 import { vndMoney } from '@/shared/format/money';
 
 interface CheckoutOrderSummaryProps {
   items: CartItem[];
   localSubtotal: number;
-  quote?: CheckoutQuoteDto;
+  quote?: CheckoutQuoteView;
   busy: boolean;
   authLoaded: boolean;
 }
@@ -20,7 +20,6 @@ export function CheckoutOrderSummary({
   busy,
   authLoaded,
 }: CheckoutOrderSummaryProps) {
-  const payable = quote?.grandTotal ? Number(quote.grandTotal) : localSubtotal;
   return (
     <aside>
       <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm lg:sticky lg:top-28">
@@ -46,8 +45,14 @@ export function CheckoutOrderSummary({
           <div className="flex justify-between"><span>Tạm tính tham khảo</span><span>{vndMoney.format(localSubtotal)}</span></div>
           {quote && (
             <>
-              <div className="flex justify-between"><span>Phí giao</span><span>{quote.shippingTotal == null ? 'Chờ tư vấn' : vndMoney.format(Number(quote.shippingTotal))}</span></div>
-              <div className="flex justify-between border-t pt-3 text-base font-black"><span>Khách thanh toán</span><span className="text-emerald-700">{quote.grandTotal == null ? 'Chờ tư vấn' : vndMoney.format(payable)}</span></div>
+              <div className="flex justify-between">
+                <span>Phí giao</span>
+                <span>{quote.shippingTotalLabel}</span>
+              </div>
+              <div className="flex justify-between border-t pt-3 text-base font-black">
+                <span>Khách thanh toán</span>
+                <span className="text-emerald-700">{quote.grandTotalLabel}</span>
+              </div>
             </>
           )}
         </div>

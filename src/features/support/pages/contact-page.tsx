@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import {
   MapPin,
   Phone,
@@ -14,6 +13,7 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
+import { Breadcrumb } from '@/foundation/components/navigation';
 import { STORE_CONFIG, STORE_CONTACT, STORE_SHOWROOMS } from '@/shared/constants';
 
 export function ContactPage() {
@@ -37,13 +37,13 @@ export function ContactPage() {
       <div className="bg-stone-50/60 pb-20 pt-8">
         <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {/* Breadcrumbs */}
-          <nav className="mb-6 text-xs font-semibold text-stone-500">
-            <Link href="/" className="hover:text-emerald-700">
-              Trang chủ
-            </Link>
-            <span className="mx-2">/</span>
-            <span className="font-bold text-ink">Hệ thống showroom & Liên hệ</span>
-          </nav>
+          <Breadcrumb
+            className="mb-6"
+            items={[
+              { label: 'Trang chủ', href: '/' },
+              { label: 'Hệ thống showroom & Liên hệ' },
+            ]}
+          />
 
           {/* Header */}
           <div className="mx-auto max-w-3xl text-center">

@@ -1,18 +1,10 @@
 import Link from 'next/link';
 import { CheckCircle2 } from 'lucide-react';
-import type { OrderDetailDto } from '@/generated/api/orders/models';
-import { vndMoney } from '@/shared/format/money';
+import type { OrderDetailView } from '@/features/orders/model/order.mapper';
 
 interface CheckoutSuccessProps {
-  order: OrderDetailDto;
+  order: OrderDetailView;
 }
-
-/** Nhãn tách khỏi mã phương thức: đổi chữ hiển thị không được đổi so sánh nghiệp vụ. */
-const PAYMENT_METHOD_LABELS: Record<string, string> = {
-  COD: 'Thanh toán đủ một lần khi nhận hàng',
-  BANK_TRANSFER: 'Chuyển khoản đủ một lần; cửa hàng xác nhận khi tiền thực nhận',
-  VNPAY: 'Thanh toán qua VNPay; đơn xác nhận khi VNPay báo thành công',
-};
 
 export function CheckoutSuccess({ order }: CheckoutSuccessProps) {
   return (
@@ -27,13 +19,29 @@ export function CheckoutSuccess({ order }: CheckoutSuccessProps) {
           <strong>{order.branchName}</strong>.
         </p>
         <div className="mx-auto mt-5 grid max-w-lg gap-3 rounded-2xl bg-slate-50 p-4 text-left text-sm sm:grid-cols-2">
-          <div><span className="block text-xs text-slate-500">Tổng thanh toán</span><strong>{vndMoney.format(Number(order.grandTotal))}</strong></div>
-          <div><span className="block text-xs text-slate-500">Trạng thái</span><strong>Chờ cửa hàng xác nhận</strong></div>
-          <div className="sm:col-span-2"><span className="block text-xs text-slate-500">Thanh toán</span><strong>{PAYMENT_METHOD_LABELS[order.paymentMethod] ?? order.paymentMethod}</strong></div>
+          <div>
+            <span className="block text-xs text-slate-500">Tổng thanh toán</span>
+            <strong>{order.grandTotalLabel}</strong>
+          </div>
+          <div>
+            <span className="block text-xs text-slate-500">Trạng thái</span>
+            <strong>{order.statusLabel}</strong>
+          </div>
+          <div className="sm:col-span-2">
+            <span className="block text-xs text-slate-500">Thanh toán</span>
+            <strong>{order.paymentMethodLabel}</strong>
+          </div>
         </div>
         <div className="mt-7 flex flex-wrap justify-center gap-3">
-          <Link href="/" className="rounded-xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white">Tiếp tục mua sắm</Link>
-          <Link href={`/orders/${order.orderNo}`} className="rounded-xl border border-slate-200 px-5 py-3 text-sm font-bold text-slate-700">Xem đơn hàng</Link>
+          <Link href="/" className="rounded-xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white">
+            Tiếp tục mua sắm
+          </Link>
+          <Link
+            href={`/orders/${order.orderNo}`}
+            className="rounded-xl border border-slate-200 px-5 py-3 text-sm font-bold text-slate-700"
+          >
+            Xem đơn hàng
+          </Link>
         </div>
       </section>
     </main>

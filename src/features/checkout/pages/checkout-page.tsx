@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState  } from 'react';
 import { CreditCard, LocateFixed, MapPin, Truck } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { clearCart } from '@/app/store/cart.slice';
@@ -14,8 +14,9 @@ import type { OrderDetailDto } from '@/generated/api/orders/models';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { ApiError } from '@/lib/api/fetcher';
 import { useToast } from '@/shared/components/global-toast';
-import { vndMoney } from '@/shared/format/money';
 import { confirmCheckout, placeOrder, prepareCheckout, reloadCheckout, type CheckoutContext } from '../api/checkout.workflow';
+import { toCheckoutQuoteView } from '../model/checkout.mapper';
+import { toOrderDetailView } from '@/features/orders/model/order.mapper';
 import { CheckoutOrderSummary } from '../components/checkout-order-summary';
 import { CheckoutSuccess } from '../components/checkout-success';
 
@@ -55,6 +56,9 @@ export function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState<CreateCheckoutQuoteDtoPaymentMethod>('COD');
   const [requestConsultation, setRequestConsultation] = useState(false);
   const [quote, setQuote] = useState<CheckoutQuoteDto>();
+  // DTO giữ nguyên cho luồng xác nhận; phần hiển thị dùng view model để không
+  // rải định dạng và nhãn khắp JSX (`09-data-transformation.md`).
+  const quoteView = useMemo(() => (quote ? toCheckoutQuoteView(quote) : undefined), [quote]);
   const [context, setContext] = useState<CheckoutContext>();
   const [placedOrder, setPlacedOrder] = useState<OrderDetailDto>();
   // Retry cùng ý định phải dùng lại key; tạo key mới sau timeout mạng có thể biến retry thành lệnh thứ hai.
@@ -184,7 +188,7 @@ export function CheckoutPage() {
   if (placedOrder) {
     return (
       <StorefrontLayout>
-        <CheckoutSuccess order={placedOrder} />
+        <CheckoutSuccess order={toOrderDetailView(placedOrder)} />
       </StorefrontLayout>
     );
   }
@@ -246,10 +250,10 @@ export function CheckoutPage() {
               <section className={`rounded-3xl border p-6 ${quote.requiresShippingConsultation ? 'border-amber-300 bg-amber-50' : 'border-emerald-300 bg-emerald-50'}`}>
                 <h2 className="flex items-center gap-2 font-black text-slate-900"><Truck className="size-5" /> Kết quả kiểm tra từ hệ thống</h2>
                 <div className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
-                  <p>Chi nhánh: <strong>{quote.branchName}</strong></p>
-                  <p>Phương thức: <strong>{quote.shippingMethod === 'BRANCH_FREE' ? 'Miễn phí trong bán kính' : quote.shippingMethod === 'STANDARD_DELIVERY' ? 'Phí giao mặc định' : 'Giao theo thỏa thuận'}</strong></p>
-                  <p>Phí giao: <strong>{quote.shippingTotal === null || quote.shippingTotal === undefined ? 'Chờ tư vấn' : vndMoney.format(Number(quote.shippingTotal))}</strong></p>
-                  <p>ETA: <strong>{quote.etaMinDays === null || quote.etaMinDays === undefined ? 'Chờ tư vấn' : `${quote.etaMinDays}-${quote.etaMaxDays} ngày`}</strong></p>
+                  <p>Chi nhánh: <strong>{quoteView?.branchName}</strong></p>
+                  <p>Phương thức: <strong>{quoteView?.shippingMethodLabel}</strong></p>
+                  <p>Phí giao: <strong>{quoteView?.shippingTotalLabel}</strong></p>
+                  <p>Thời gian giao dự kiến: <strong>{quoteView?.etaLabel}</strong></p>
                 </div>
                 {quote.requiresShippingConsultation && (
                   <div className="mt-4 flex flex-col gap-3 rounded-2xl border border-amber-200 bg-white/70 p-4 sm:flex-row sm:items-center sm:justify-between">
@@ -273,7 +277,7 @@ export function CheckoutPage() {
           <CheckoutOrderSummary
             items={items}
             localSubtotal={localSubtotal}
-            quote={quote}
+            quote={quoteView}
             busy={busy}
             authLoaded={isLoaded}
           />

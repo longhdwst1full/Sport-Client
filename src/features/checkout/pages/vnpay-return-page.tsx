@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { CheckCircle2, CircleAlert, XCircle } from 'lucide-react';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
-import type { VnpayReturnDto } from '@/generated/api/payments/models';
+import type { VnpayReturnView } from '../model/checkout.mapper';
 
 const PRESENTATION = {
   SUCCESS: {
@@ -24,7 +24,7 @@ const PRESENTATION = {
   },
 } as const;
 
-export function VnpayReturnPage({ result }: { result: VnpayReturnDto }) {
+export function VnpayReturnPage({ result }: { result: VnpayReturnView }) {
   const presentation = PRESENTATION[result.displayStatus];
   const Icon = presentation.icon;
 

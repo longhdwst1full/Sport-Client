@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import {
   Sparkles,
   SlidersHorizontal,
@@ -8,6 +7,7 @@ import {
   BadgePercent,
 } from 'lucide-react';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
+import { Breadcrumb } from '@/foundation/components/navigation';
 import { ProductsCatalogView } from '../components/products-catalog-view';
 import { FlashSaleSection } from '@/features/promotions';
 
@@ -17,12 +17,10 @@ export function ProductsPage() {
     <StorefrontLayout>
       <div className="bg-slate-50/60 pb-20 pt-8">
         <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          {/* Breadcrumbs */}
-          <nav className="mb-6 text-xs font-semibold text-slate-500">
-            <Link href="/" className="hover:text-emerald-700">Trang chủ</Link>
-            <span className="mx-2">/</span>
-            <span className="font-bold text-slate-900">Tất cả sản phẩm</span>
-          </nav>
+          <Breadcrumb
+            className="mb-6"
+            items={[{ label: 'Trang chủ', href: '/' }, { label: 'Tất cả sản phẩm' }]}
+          />
 
           {/* Catalog Hero Banner */}
           <div className="relative overflow-hidden rounded-[36px] bg-gradient-to-br from-slate-950 via-slate-900 to-[#032617] p-8 text-white shadow-xl sm:p-12">

@@ -6,6 +6,7 @@ import { ArrowLeft, Minus, Plus, ShoppingBag, Trash2 } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { clearCart, removeCartItem, updateQuantity } from '@/app/store/cart.slice';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
+import { Breadcrumb } from '@/foundation/components/navigation';
 import { vndMoney } from '@/shared/format/money';
 
 const SHIPPING_FEE = 30000;
@@ -19,12 +20,10 @@ export function CartPage() {
   return (
     <StorefrontLayout>
       <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-10">
-        {/* Breadcrumb */}
-        <nav className="mb-6 text-sm text-stone-500">
-          <Link href="/" className="hover:text-brand-600">Trang chủ</Link>
-          <span className="mx-2">/</span>
-          <span className="font-semibold text-ink">Giỏ hàng</span>
-        </nav>
+        <Breadcrumb
+          className="mb-6"
+          items={[{ label: 'Trang chủ', href: '/' }, { label: 'Giỏ hàng' }]}
+        />
 
         <h1 className="text-3xl font-black sm:text-4xl">
           Giỏ hàng <span className="text-stone-400">({items.length})</span>

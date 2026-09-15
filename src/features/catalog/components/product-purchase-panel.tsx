@@ -19,21 +19,21 @@ import {
 } from 'lucide-react';
 import { addCartItem } from '@/app/store/cart.slice';
 import { useAppDispatch } from '@/app/store/hooks';
-import type { ProductDetailDto } from '@/generated/api/catalog/models';
+import type { ProductPurchaseView } from '../model/product.mapper';
 import { vndMoney } from '@/shared/format/money';
 
-export function ProductPurchasePanel({ product }: { product: ProductDetailDto }) {
+export function ProductPurchasePanel({ product }: { product: ProductPurchaseView }) {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
-  const variants = product.variants ?? [];
+  const variants = product.variants;
   const [selectedVariantId, setSelectedVariantId] = useState(variants[0]?.id ?? '');
   const [quantity, setQuantity] = useState(1);
   const [isAddedToast, setIsAddedToast] = useState(false);
 
   const selectedVariant = variants.find(({ id }) => id === selectedVariantId) ?? variants[0];
-  const price = Number(selectedVariant?.effectivePrice ?? 0);
-  const canAdd = Boolean(selectedVariant && price > 0);
+  const price = selectedVariant?.priceAmount ?? 0;
+  const canAdd = Boolean(selectedVariant?.sellable);
 
   const handleAddToCart = () => {
     if (!selectedVariant || !canAdd) return;
@@ -42,7 +42,7 @@ export function ProductPurchasePanel({ product }: { product: ProductDetailDto })
         productId: product.id,
         variantId: selectedVariant.id,
         sku: selectedVariant.sku,
-        productType: product.productType,
+        productType: product.productTypeCode,
         name: `${product.name} — ${selectedVariant.name}`,
         imageUrl: product.imageUrl ?? undefined,
         price,
@@ -60,7 +60,7 @@ export function ProductPurchasePanel({ product }: { product: ProductDetailDto })
         productId: product.id,
         variantId: selectedVariant.id,
         sku: selectedVariant.sku,
-        productType: product.productType,
+        productType: product.productTypeCode,
         name: `${product.name} — ${selectedVariant.name}`,
         imageUrl: product.imageUrl ?? undefined,
         price,
@@ -106,7 +106,7 @@ export function ProductPurchasePanel({ product }: { product: ProductDetailDto })
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
             <span className="relative inline-flex size-2 rounded-full bg-emerald-600"></span>
           </span>
-          <span>Sẵn hàng tại 12 showroom toàn quốc · Giao lắp trong 2H</span>
+          <span>Còn hàng · Liên hệ cửa hàng để biết thời gian giao và lắp đặt</span>
         </div>
       </div>
 
@@ -126,7 +126,7 @@ export function ProductPurchasePanel({ product }: { product: ProductDetailDto })
         <div className="mt-3 grid gap-2.5">
           {variants.map((variant) => {
             const isSelected = variant.id === selectedVariantId;
-            const variantPrice = Number(variant.effectivePrice ?? 0);
+            const variantPrice = variant.priceAmount ?? 0;
 
             return (
               <button
@@ -167,14 +167,14 @@ export function ProductPurchasePanel({ product }: { product: ProductDetailDto })
       </div>
 
       {/* Bundle Breakdown if Variant has Bundle */}
-      {selectedVariant?.bundle && (
+      {(selectedVariant?.bundleComponents.length ?? 0) > 0 && (
         <div className="rounded-2xl border border-emerald-200/60 bg-emerald-50/40 p-4">
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-800">
             <CheckCircle2 className="size-4 text-emerald-600" />
             <span>Combo này bao gồm các linh kiện:</span>
           </div>
           <ul className="mt-2.5 space-y-1.5 text-xs text-stone-700">
-            {selectedVariant.bundle.components.map((component) => (
+            {selectedVariant!.bundleComponents.map((component) => (
               <li key={component.componentVariantId} className="flex items-center justify-between">
                 <span className="font-semibold">{component.componentName}</span>
                 <span className="rounded bg-white px-2 py-0.5 text-[11px] font-bold text-emerald-700 shadow-sm">

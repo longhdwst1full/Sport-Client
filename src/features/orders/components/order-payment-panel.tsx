@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useMemo } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Banknote, CreditCard, CheckCircle2, Clock3, ImageUp, LoaderCircle } from 'lucide-react';
 import {
@@ -13,8 +13,16 @@ import {
 } from '@/generated/api/payments/payments';
 import type { PaymentDetailDto } from '@/generated/api/payments/models';
 import { ApiError } from '@/lib/api/fetcher';
-import { vndMoney } from '@/shared/format/money';
 import { uploadPaymentEvidence, type VerifiedPaymentEvidenceUpload } from '../api/payment-evidence-upload';
+import { paymentRequest } from '../api/payment-request';
+import { toPaymentDetailView } from '../model/payment.mapper';
+import {
+  EVIDENCE_SUBMITTABLE_PAYMENT_STATUSES,
+  PAYMENT_METHOD,
+  PAYMENT_STATUS,
+  VNPAY_RETRYABLE_PAYMENT_STATUSES,
+  statusIn,
+} from '../model/order.constants';
 
 interface PendingUpload {
   signature: string;
@@ -53,10 +61,12 @@ export function OrderPaymentPanel({
     queryKey,
     retry: false,
     queryFn: ({ signal }) => authenticated
-      ? getAccountPayment(orderNo, undefined, signal)
-      : getGuestPayment(orderNo, { headers: { 'x-cart-token': guestToken } }, signal),
+      ? getAccountPayment(orderNo, paymentRequest(), signal)
+      : getGuestPayment(orderNo, paymentRequest({ headers: { 'x-cart-token': guestToken } }), signal),
   });
   const payment = paymentQuery.data;
+  // DTO giữ cho lệnh gửi bằng chứng; hiển thị dùng view model.
+  const view = useMemo(() => (payment ? toPaymentDetailView(payment) : undefined), [payment]);
   const submit = useMutation({
     retry: false,
     mutationFn: async (): Promise<PaymentDetailDto> => {
@@ -77,8 +87,8 @@ export function OrderPaymentPanel({
       };
       const headers = { 'idempotency-key': pendingUpload.current.idempotencyKey };
       return authenticated
-        ? submitAccountPaymentEvidence(orderNo, body, { headers })
-        : submitGuestPaymentEvidence(orderNo, body, { headers: { ...headers, 'x-cart-token': guestToken } });
+        ? submitAccountPaymentEvidence(orderNo, body, paymentRequest({ headers }))
+        : submitGuestPaymentEvidence(orderNo, body, paymentRequest({ headers: { ...headers, 'x-cart-token': guestToken } }));
     },
     onSuccess: async (updated) => {
       queryClient.setQueryData(queryKey, updated);
@@ -96,56 +106,56 @@ export function OrderPaymentPanel({
     return <section className="rounded-3xl border border-rose-200 bg-rose-50 p-5 text-sm text-rose-800">{errorMessage(paymentQuery.error)}</section>;
   }
 
-  const canSubmit = payment.method === 'BANK_TRANSFER'
-    && ['PENDING', 'FAILED', 'NEED_REVIEW'].includes(payment.status);
+  const canSubmit = view!.methodCode === PAYMENT_METHOD.BANK_TRANSFER
+    && statusIn(EVIDENCE_SUBMITTABLE_PAYMENT_STATUSES, view!.statusCode);
   return (
     <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-xs font-black uppercase tracking-[0.16em] text-emerald-700">Thanh toán</p>
-          <h2 className="mt-1 text-lg font-black">{payment.paymentRef}</h2>
+          <h2 className="mt-1 text-lg font-black">{view!.paymentRef}</h2>
         </div>
-        <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">{payment.status}</span>
+        <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">{view!.statusLabel}</span>
       </div>
       <div className="mt-4 rounded-2xl bg-slate-950 p-4 text-white">
-        <div className="flex items-center gap-2 text-emerald-300"><Banknote className="size-4" /><strong>{payment.instruction.provider}</strong></div>
-        <p className="mt-2 text-sm leading-6 text-slate-200">{payment.instruction.customerMessage}</p>
-        <div className="mt-3 flex justify-between border-t border-white/10 pt-3 text-sm"><span>Số tiền</span><strong className="text-emerald-300">{vndMoney.format(Number(payment.expectedAmount))}</strong></div>
+        <div className="flex items-center gap-2 text-emerald-300"><Banknote className="size-4" /><strong>{view!.providerLabel}</strong></div>
+        <p className="mt-2 text-sm leading-6 text-slate-200">{view!.customerMessage}</p>
+        <div className="mt-3 flex justify-between border-t border-white/10 pt-3 text-sm"><span>Số tiền</span><strong className="text-emerald-300">{view!.expectedAmountLabel}</strong></div>
       </div>
-      {payment.expiresAt && payment.status === 'PENDING' && (
-        <p className="mt-3 flex items-center gap-2 text-xs text-amber-700"><Clock3 className="size-4" />Gửi bằng chứng trước {new Date(payment.expiresAt).toLocaleString('vi-VN')}.</p>
+      {view!.expiresLabel && view!.statusCode === PAYMENT_STATUS.PENDING && (
+        <p className="mt-3 flex items-center gap-2 text-xs text-amber-700"><Clock3 className="size-4" />Gửi bằng chứng trước {view!.expiresLabel}.</p>
       )}
-      {payment.status === 'SUCCESS' && <p className="mt-4 flex items-center gap-2 rounded-xl bg-emerald-50 p-3 text-sm font-bold text-emerald-800"><CheckCircle2 className="size-5" />Đã xác nhận thanh toán đủ tiền.</p>}
+      {view!.statusCode === PAYMENT_STATUS.SUCCESS && <p className="mt-4 flex items-center gap-2 rounded-xl bg-emerald-50 p-3 text-sm font-bold text-emerald-800"><CheckCircle2 className="size-5" />Đã xác nhận thanh toán đủ tiền.</p>}
 
       {/*
         Link VNPay được ký lại mỗi lần đọc và có hạn, nên luôn dùng giá trị vừa nhận
         từ API thay vì lưu lại. Dùng thẻ <a> chứ không phải router: đây là điều hướng
         rời khỏi ứng dụng sang cổng thanh toán.
       */}
-      {payment.method === 'VNPAY'
-        && payment.instruction.redirectUrl
-        && ['PENDING', 'FAILED'].includes(payment.status) && (
+      {view!.methodCode === PAYMENT_METHOD.VNPAY
+        && view!.redirectUrl
+        && statusIn(VNPAY_RETRYABLE_PAYMENT_STATUSES, view!.statusCode) && (
         <a
-          href={payment.instruction.redirectUrl}
+          href={view!.redirectUrl}
           className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-black text-white transition hover:bg-emerald-700"
         >
           <CreditCard className="size-5" />
-          {payment.status === 'FAILED' ? 'Thử thanh toán lại qua VNPay' : 'Thanh toán qua VNPay'}
+          {view!.statusCode === PAYMENT_STATUS.FAILED ? 'Thử thanh toán lại qua VNPay' : 'Thanh toán qua VNPay'}
         </a>
       )}
-      {payment.method === 'VNPAY' && !payment.instruction.redirectUrl && (
+      {view!.methodCode === PAYMENT_METHOD.VNPAY && !view!.redirectUrl && (
         <p className="mt-4 rounded-xl bg-amber-50 p-3 text-sm text-amber-800">
           Cổng VNPay hiện chưa sẵn sàng. Vui lòng liên hệ cửa hàng để thanh toán theo cách khác.
         </p>
       )}
-      {payment.failureReason && <p className="mt-3 rounded-xl bg-rose-50 p-3 text-sm text-rose-800">{payment.failureReason}</p>}
+      {view!.failureReason && <p className="mt-3 rounded-xl bg-rose-50 p-3 text-sm text-rose-800">{view!.failureReason}</p>}
 
-      {payment.evidences.length > 0 && (
+      {view!.evidences.length > 0 && (
         <div className="mt-5 space-y-2">
           <h3 className="text-sm font-black">Bằng chứng đã gửi</h3>
-          {payment.evidences.map((evidence) => (
+          {view!.evidences.map((evidence) => (
             <a key={evidence.id} href={evidence.fileUrl} target="_blank" rel="noreferrer" className="flex items-center justify-between rounded-xl border border-slate-200 p-3 text-sm hover:border-emerald-300">
-              <span>Ảnh #{evidence.id}</span><strong>{evidence.status}</strong>
+              <span>Ảnh gửi {evidence.submittedLabel}</span><strong>{evidence.statusCode}</strong>
             </a>
           ))}
         </div>

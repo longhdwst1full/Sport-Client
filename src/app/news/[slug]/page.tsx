@@ -11,6 +11,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
+import { Breadcrumb } from '@/foundation/components/navigation';
 
 export default async function NewsDetailPage({
   params,
@@ -29,14 +30,14 @@ export default async function NewsDetailPage({
     <StorefrontLayout>
       <div className="bg-stone-50/60 pb-20 pt-8">
         <main className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-          {/* Breadcrumbs */}
-          <nav className="mb-6 text-xs font-semibold text-stone-500">
-            <Link href="/" className="hover:text-emerald-700">Trang chủ</Link>
-            <span className="mx-2">/</span>
-            <Link href="/news" className="hover:text-emerald-700">Kiến thức luyện tập</Link>
-            <span className="mx-2">/</span>
-            <span className="font-bold text-ink truncate">{title}</span>
-          </nav>
+          <Breadcrumb
+            className="mb-6"
+            items={[
+              { label: 'Trang chủ', href: '/' },
+              { label: 'Kiến thức luyện tập', href: '/news' },
+              { label: title },
+            ]}
+          />
 
           <article className="rounded-3xl border border-stone-200/80 bg-white p-6 shadow-sm sm:p-12">
             <div className="flex flex-wrap items-center gap-3 text-xs font-bold text-emerald-700">

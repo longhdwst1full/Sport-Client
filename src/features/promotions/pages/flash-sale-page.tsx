@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { ArrowRight, Clock, Flame } from 'lucide-react';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
+import { Breadcrumb } from '@/foundation/components/navigation';
 import { Skeleton } from '@/foundation/components/feedback';
 import { useAppDispatch } from '@/app/store/hooks';
 import { addCartItem } from '@/app/store/cart.slice';
@@ -38,11 +39,11 @@ export function FlashSalePage() {
     <StorefrontLayout>
       <div className="bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 pb-20 pt-10 text-white">
         <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <nav className="mb-6 text-xs font-semibold text-slate-500">
-            <Link href="/" className="hover:text-rose-400">Trang chủ</Link>
-            <span className="mx-2">/</span>
-            <span className="font-bold text-white">Flash Sale</span>
-          </nav>
+          <Breadcrumb
+            className="mb-6"
+            tone="inverted"
+            items={[{ label: 'Trang chủ', href: '/' }, { label: 'Flash Sale' }]}
+          />
 
           <div className="flex flex-col gap-6 border-b border-slate-800/80 pb-8 md:flex-row md:items-end md:justify-between">
             <div>

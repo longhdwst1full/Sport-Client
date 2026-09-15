@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { paymentRequest } from './payment-request';
 import {
   createAccountPaymentEvidenceUpload,
   createGuestPaymentEvidenceUpload,
@@ -39,10 +40,12 @@ export async function uploadPaymentEvidence(
   }
   const request = { fileName: file.name, contentType: file.type, sizeBytes: file.size };
   const signed = authenticated
-    ? await createAccountPaymentEvidenceUpload(orderNo, request)
-    : await createGuestPaymentEvidenceUpload(orderNo, request, {
-        headers: { 'x-cart-token': guestToken },
-      });
+    ? await createAccountPaymentEvidenceUpload(orderNo, request, paymentRequest())
+    : await createGuestPaymentEvidenceUpload(
+        orderNo,
+        request,
+        paymentRequest({ headers: { 'x-cart-token': guestToken } }),
+      );
   if (file.size > signed.maxBytes) {
     throw new Error(`Ảnh vượt quá giới hạn ${Math.floor(signed.maxBytes / 1024 / 1024)} MB.`);
   }

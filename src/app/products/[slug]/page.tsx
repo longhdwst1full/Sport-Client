@@ -1,8 +1,6 @@
 import Image from 'next/image';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import {
-  ChevronRight,
   ShieldCheck,
   Award,
   Flame,
@@ -12,9 +10,11 @@ import {
 import type { Metadata } from 'next';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { ProductPurchasePanel, ProductRelatedSection } from '@/features/catalog';
+import { toProductPurchaseView } from '@/features/catalog/model/product.mapper';
 import { ProductReviewSection } from '@/features/reviews';
 import { getCatalogProduct } from '@/generated/api/catalog/catalog';
 import { ApiError } from '@/lib/api/fetcher';
+import { Breadcrumb } from '@/foundation/components/navigation';
 
 export const revalidate = 0;
 
@@ -145,31 +145,14 @@ export default async function ProductDetailPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <div className="bg-[var(--dc-canvas)] pb-24">
-        {/* Breadcrumbs Navigation */}
-        <nav
-          aria-label="Breadcrumb"
-          className="mx-auto max-w-7xl px-4 py-4 text-xs font-semibold text-stone-500 sm:px-6 lg:px-8"
-        >
-          <ol className="flex flex-wrap items-center gap-2">
-            <li>
-              <Link href="/" className="transition hover:text-[var(--dc-primary-700)]">
-                Trang chủ
-              </Link>
-            </li>
-            <li>
-              <ChevronRight className="size-3 text-stone-400" />
-            </li>
-            <li>
-              <Link href="/#products" className="transition hover:text-[var(--dc-primary-700)]">
-                Sản phẩm
-              </Link>
-            </li>
-            <li>
-              <ChevronRight className="size-3 text-stone-400" />
-            </li>
-            <li className="font-bold text-ink">{product.name}</li>
-          </ol>
-        </nav>
+        <Breadcrumb
+          className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8"
+          items={[
+            { label: 'Trang chủ', href: '/' },
+            { label: 'Sản phẩm', href: '/#products' },
+            { label: product.name },
+          ]}
+        />
 
         {/* Main Product Stage */}
         <main className="mx-auto grid max-w-7xl gap-8 px-4 py-3 sm:px-6 lg:grid-cols-[1.12fr_0.88fr] lg:px-8">
@@ -250,7 +233,7 @@ export default async function ProductDetailPage({
 
           {/* Right Column: Sticky Purchase Panel */}
           <div className="lg:sticky lg:top-24 lg:self-start">
-            <ProductPurchasePanel product={product} />
+            <ProductPurchasePanel product={toProductPurchaseView(product)} />
           </div>
         </main>
 

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ArrowLeft, CalendarDays } from 'lucide-react';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
+import { Breadcrumb } from '@/foundation/components/navigation';
 import type { PolicyDetailView, PolicySummaryView } from '../model/policy.mapper';
 
 export function PolicyDetailPage({
@@ -14,17 +15,14 @@ export function PolicyDetailPage({
     <StorefrontLayout>
       <div className="bg-stone-50/60 pb-20 pt-8">
         <main className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-          <nav className="mb-6 text-xs font-semibold text-stone-500">
-            <Link href="/" className="hover:text-emerald-700">
-              Trang chủ
-            </Link>
-            <span className="mx-2">/</span>
-            <Link href="/chinh-sach" className="hover:text-emerald-700">
-              Thông tin và chính sách
-            </Link>
-            <span className="mx-2">/</span>
-            <span className="font-bold text-ink">{policy.title}</span>
-          </nav>
+          <Breadcrumb
+            className="mb-6"
+            items={[
+              { label: 'Trang chủ', href: '/' },
+              { label: 'Thông tin và chính sách', href: '/chinh-sach' },
+              { label: policy.title },
+            ]}
+          />
 
           <article className="rounded-3xl border border-stone-200/80 bg-white p-6 shadow-sm sm:p-10">
             <h1 className="text-2xl font-black leading-tight text-ink sm:text-3xl">
