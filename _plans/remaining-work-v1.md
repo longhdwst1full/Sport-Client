@@ -1,6 +1,6 @@
 # Phương án cho phần việc còn lại
 
-> **Document version:** 2.0.0
+> **Document version:** 2.1.0
 >
 > **Last updated:** 2026-09-15
 >
@@ -32,16 +32,14 @@ nhật, không dựa vào trí nhớ. Mục nào chưa kiểm được thì ghi 
 
 ## Còn lại, theo thứ tự đề xuất
 
-### R1 — Nghiệm thu đơn tại quầy (0.5 ngày) — **đang chặn**
+### R1 — Nghiệm thu đơn tại quầy (0.5 ngày)
 
-Backend xong và đã kiểm ba nhánh xác thực, nhưng **chưa chạy được một đơn thành công** vì
-596 sản phẩm mới **chưa có dòng tồn kho nào**.
+Backend xong, đã kiểm ba nhánh xác thực. Sổ tồn kho Hà Nội đã mở: 596 SKU, tồn 0, ngưỡng 5.
 
-**Chặn bởi quyết định của chủ dự án:** nhập tồn khởi tạo hay để nhập thủ công qua phiếu điều
-chỉnh. Ghi dữ liệu kho là việc của nghiệp vụ, không tự quyết.
+**Còn lại:** nhập tồn thật cho vài SKU bằng phiếu điều chỉnh tồn, chạy một đơn tại quầy, đối
+chiếu tồn trước/sau, rồi dựng màn bán hàng ở Admin (chọn sản phẩm, giỏ, thu tiền, in mã đơn).
 
-Sau khi có tồn: chạy một đơn thật, đối chiếu tồn kho trước/sau, rồi dựng màn bán hàng ở Admin
-(chọn sản phẩm, giỏ, thu tiền, in mã đơn).
+Chưa nhập tồn thì đơn tại quầy vẫn bị từ chối — đúng hành vi mong muốn, không phải lỗi.
 
 ### R2 — Sprint 6: Đổi trả → Kiểm tra → Hoàn tiền (5–7 ngày)
 
@@ -96,11 +94,12 @@ phẩm. Cần migration dọn.
 
 - Redeploy `admin` (bản sửa 404 khi reload) và `api` (bản sửa serverless)
 - Ghi khoá VNPay vào `api/.env.local` khi muốn bật cổng thanh toán
-- Quyết tồn kho khởi tạo cho 596 sản phẩm (chặn R1)
+- Nhập tồn thật cho các SKU muốn bán tại quầy (sổ đã mở sẵn, tồn đang 0)
 
 ## Revision history
 
 | Version | Date | Change summary | Source |
 | --- | --- | --- | --- |
+| 2.1.0 | 2026-09-15 | Mở sổ tồn kho Hà Nội; R1 hết chặn, chuyển sang chờ nhập tồn thật. | Quyết định của chủ dự án |
 | 2.0.0 | 2026-09-15 | Viết lại theo trạng thái kiểm chứng; đóng W1/W3; thêm VNPay, báo cáo, bán tại quầy; Sprint 6 thành khối chặn chính. | Rà soát mã nguồn + database |
 | 1.0.0 | 2026-09-14 | Chốt phương án cho 4 nhóm việc còn tồn. | Execution review |
