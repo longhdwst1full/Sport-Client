@@ -233,6 +233,7 @@ export function CheckoutPage() {
                 {([
                   ['COD', 'Thanh toán khi nhận hàng', 'Thanh toán đủ một lần cho nhân viên giao hàng.'],
                   ['BANK_TRANSFER', 'Chuyển khoản một lần', 'Chỉ xác nhận đã thanh toán khi tiền thực nhận.'],
+                  ['VNPAY', 'Thẻ / QR qua VNPay', 'Chuyển sang cổng VNPay sau khi đặt hàng. Đơn xác nhận khi VNPay báo thành công.'],
                 ] as const).map(([value, label, description]) => (
                   <button key={value} type="button" onClick={() => { setPaymentMethod(value); invalidateQuote(); }} className={`rounded-2xl border p-4 text-left ${paymentMethod === value ? 'border-emerald-600 bg-emerald-50 ring-1 ring-emerald-600' : 'border-slate-200'}`}>
                     <strong className="text-sm text-slate-900">{label}</strong><span className="mt-1 block text-xs leading-5 text-slate-500">{description}</span>

@@ -27,6 +27,7 @@ import type {
   PaymentDetailDto,
   SignedMediaUploadDto,
   SubmitPaymentEvidenceDto,
+  VerifyVnpayReturnParams,
   VnpayReturnDto,
 } from './models';
 
@@ -652,32 +653,36 @@ export const useSubmitAccountPaymentEvidence = <
  * @summary Kiểm tra chữ ký khi khách quay về từ VNPay (chỉ để hiển thị)
  */
 export const verifyVnpayReturn = (
+  params?: VerifyVnpayReturnParams,
   options?: SecondParameter<typeof apiFetcher>,
   signal?: AbortSignal,
 ) => {
   return apiFetcher<VnpayReturnDto>(
-    { url: `/api/v1/payments/vnpay/return`, method: 'GET', signal },
+    { url: `/api/v1/payments/vnpay/return`, method: 'GET', params, signal },
     options,
   );
 };
 
-export const getVerifyVnpayReturnQueryKey = () => {
-  return [`/api/v1/payments/vnpay/return`] as const;
+export const getVerifyVnpayReturnQueryKey = (params?: VerifyVnpayReturnParams) => {
+  return [`/api/v1/payments/vnpay/return`, ...(params ? [params] : [])] as const;
 };
 
 export const getVerifyVnpayReturnQueryOptions = <
   TData = Awaited<ReturnType<typeof verifyVnpayReturn>>,
   TError = ErrorType<unknown>,
->(options?: {
-  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof verifyVnpayReturn>>, TError, TData>>;
-  request?: SecondParameter<typeof apiFetcher>;
-}) => {
+>(
+  params?: VerifyVnpayReturnParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof verifyVnpayReturn>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getVerifyVnpayReturnQueryKey();
+  const queryKey = queryOptions?.queryKey ?? getVerifyVnpayReturnQueryKey(params);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof verifyVnpayReturn>>> = ({ signal }) =>
-    verifyVnpayReturn(requestOptions, signal);
+    verifyVnpayReturn(params, requestOptions, signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof verifyVnpayReturn>>,
@@ -695,6 +700,7 @@ export function useVerifyVnpayReturn<
   TData = Awaited<ReturnType<typeof verifyVnpayReturn>>,
   TError = ErrorType<unknown>,
 >(
+  params: undefined | VerifyVnpayReturnParams,
   options: {
     query: Partial<UseQueryOptions<Awaited<ReturnType<typeof verifyVnpayReturn>>, TError, TData>> &
       Pick<
@@ -713,6 +719,7 @@ export function useVerifyVnpayReturn<
   TData = Awaited<ReturnType<typeof verifyVnpayReturn>>,
   TError = ErrorType<unknown>,
 >(
+  params?: VerifyVnpayReturnParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof verifyVnpayReturn>>, TError, TData>> &
       Pick<
@@ -731,6 +738,7 @@ export function useVerifyVnpayReturn<
   TData = Awaited<ReturnType<typeof verifyVnpayReturn>>,
   TError = ErrorType<unknown>,
 >(
+  params?: VerifyVnpayReturnParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof verifyVnpayReturn>>, TError, TData>>;
     request?: SecondParameter<typeof apiFetcher>;
@@ -745,13 +753,14 @@ export function useVerifyVnpayReturn<
   TData = Awaited<ReturnType<typeof verifyVnpayReturn>>,
   TError = ErrorType<unknown>,
 >(
+  params?: VerifyVnpayReturnParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof verifyVnpayReturn>>, TError, TData>>;
     request?: SecondParameter<typeof apiFetcher>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getVerifyVnpayReturnQueryOptions(options);
+  const queryOptions = getVerifyVnpayReturnQueryOptions(params, options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;

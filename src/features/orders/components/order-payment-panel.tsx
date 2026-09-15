@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Banknote, CheckCircle2, Clock3, ImageUp, LoaderCircle } from 'lucide-react';
+import { Banknote, CreditCard, CheckCircle2, Clock3, ImageUp, LoaderCircle } from 'lucide-react';
 import {
   getAccountPayment,
   getGetAccountPaymentQueryKey,
@@ -116,6 +116,28 @@ export function OrderPaymentPanel({
         <p className="mt-3 flex items-center gap-2 text-xs text-amber-700"><Clock3 className="size-4" />Gửi bằng chứng trước {new Date(payment.expiresAt).toLocaleString('vi-VN')}.</p>
       )}
       {payment.status === 'SUCCESS' && <p className="mt-4 flex items-center gap-2 rounded-xl bg-emerald-50 p-3 text-sm font-bold text-emerald-800"><CheckCircle2 className="size-5" />Đã xác nhận thanh toán đủ tiền.</p>}
+
+      {/*
+        Link VNPay được ký lại mỗi lần đọc và có hạn, nên luôn dùng giá trị vừa nhận
+        từ API thay vì lưu lại. Dùng thẻ <a> chứ không phải router: đây là điều hướng
+        rời khỏi ứng dụng sang cổng thanh toán.
+      */}
+      {payment.method === 'VNPAY'
+        && payment.instruction.redirectUrl
+        && ['PENDING', 'FAILED'].includes(payment.status) && (
+        <a
+          href={payment.instruction.redirectUrl}
+          className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-black text-white transition hover:bg-emerald-700"
+        >
+          <CreditCard className="size-5" />
+          {payment.status === 'FAILED' ? 'Thử thanh toán lại qua VNPay' : 'Thanh toán qua VNPay'}
+        </a>
+      )}
+      {payment.method === 'VNPAY' && !payment.instruction.redirectUrl && (
+        <p className="mt-4 rounded-xl bg-amber-50 p-3 text-sm text-amber-800">
+          Cổng VNPay hiện chưa sẵn sàng. Vui lòng liên hệ cửa hàng để thanh toán theo cách khác.
+        </p>
+      )}
       {payment.failureReason && <p className="mt-3 rounded-xl bg-rose-50 p-3 text-sm text-rose-800">{payment.failureReason}</p>}
 
       {payment.evidences.length > 0 && (

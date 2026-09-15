@@ -7,6 +7,13 @@ interface CheckoutSuccessProps {
   order: OrderDetailDto;
 }
 
+/** Nhãn tách khỏi mã phương thức: đổi chữ hiển thị không được đổi so sánh nghiệp vụ. */
+const PAYMENT_METHOD_LABELS: Record<string, string> = {
+  COD: 'Thanh toán đủ một lần khi nhận hàng',
+  BANK_TRANSFER: 'Chuyển khoản đủ một lần; cửa hàng xác nhận khi tiền thực nhận',
+  VNPAY: 'Thanh toán qua VNPay; đơn xác nhận khi VNPay báo thành công',
+};
+
 export function CheckoutSuccess({ order }: CheckoutSuccessProps) {
   return (
     <main className="mx-auto max-w-3xl px-4 py-14 sm:px-6">
@@ -22,7 +29,7 @@ export function CheckoutSuccess({ order }: CheckoutSuccessProps) {
         <div className="mx-auto mt-5 grid max-w-lg gap-3 rounded-2xl bg-slate-50 p-4 text-left text-sm sm:grid-cols-2">
           <div><span className="block text-xs text-slate-500">Tổng thanh toán</span><strong>{vndMoney.format(Number(order.grandTotal))}</strong></div>
           <div><span className="block text-xs text-slate-500">Trạng thái</span><strong>Chờ cửa hàng xác nhận</strong></div>
-          <div className="sm:col-span-2"><span className="block text-xs text-slate-500">Thanh toán</span><strong>{order.paymentMethod === 'COD' ? 'Thanh toán đủ một lần khi nhận hàng' : 'Chuyển khoản đủ một lần; cửa hàng xác nhận khi tiền thực nhận'}</strong></div>
+          <div className="sm:col-span-2"><span className="block text-xs text-slate-500">Thanh toán</span><strong>{PAYMENT_METHOD_LABELS[order.paymentMethod] ?? order.paymentMethod}</strong></div>
         </div>
         <div className="mt-7 flex flex-wrap justify-center gap-3">
           <Link href="/" className="rounded-xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white">Tiếp tục mua sắm</Link>
