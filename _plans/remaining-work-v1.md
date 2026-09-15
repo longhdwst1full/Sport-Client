@@ -1,10 +1,10 @@
 # Phương án cho phần việc còn lại
 
-> **Document version:** 2.1.0
+> **Document version:** 2.2.0
 >
 > **Last updated:** 2026-09-15
 >
-> **Change summary:** Viết lại theo trạng thái đã kiểm chứng bằng mã nguồn và database: đóng W1/W3, ghi nhận VNPay, báo cáo, bán tại quầy, vai trò và catalog thật; Sprint 6 vẫn là khối chặn lớn nhất.
+> **Change summary:** Đóng R1: bán tại quầy đã nghiệm thu một đơn thật và có màn Admin kèm combo, tồn khả dụng. Sprint 6 (R2) vẫn là khối chặn lớn nhất.
 
 ## Cách đọc tài liệu này
 
@@ -24,22 +24,14 @@ nhật, không dựa vào trí nhớ. Mục nào chưa kiểm được thì ghi 
 | Quản lý vai trò | CRUD đầy đủ + cây quyền tích chọn |
 | VNPay | Backend + IPN + trang kết quả ở storefront |
 | Báo cáo & Dashboard | 4 endpoint `Admin Reporting`, Dashboard chạy số thật |
-| Đơn tại quầy | Backend xong: `POST /admin/orders/pos` |
+| Đơn tại quầy | Nghiệm thu `ORD-20260915-00000025`: `DELIVERED`, `CASH`/`SUCCESS`, kênh `STORE`, tồn giảm đúng số bán. Màn Admin `/pos` có combo và tồn khả dụng theo chi nhánh |
+| Chi nhánh vận hành | Còn Hồ Chí Minh và Hà Nội; Đà Nẵng chuyển `INACTIVE` |
 | Tách ô tìm kiếm | Sản phẩm và đơn hàng, cộng dồn bằng AND |
 | Refresh token | Sửa `/me` bị loại nhầm khỏi luồng xoay token |
 
 ---
 
 ## Còn lại, theo thứ tự đề xuất
-
-### R1 — Nghiệm thu đơn tại quầy (0.5 ngày)
-
-Backend xong, đã kiểm ba nhánh xác thực. Sổ tồn kho Hà Nội đã mở: 596 SKU, tồn 0, ngưỡng 5.
-
-**Còn lại:** nhập tồn thật cho vài SKU bằng phiếu điều chỉnh tồn, chạy một đơn tại quầy, đối
-chiếu tồn trước/sau, rồi dựng màn bán hàng ở Admin (chọn sản phẩm, giỏ, thu tiền, in mã đơn).
-
-Chưa nhập tồn thì đơn tại quầy vẫn bị từ chối — đúng hành vi mong muốn, không phải lỗi.
 
 ### R2 — Sprint 6: Đổi trả → Kiểm tra → Hoàn tiền (5–7 ngày)
 
@@ -67,8 +59,12 @@ không có thật. Đây là nội dung sai đang chạy trên trang bán, nên 
 
 ### R5 — Dọn ảnh thu nhỏ (0.5 ngày)
 
-596 trong 1.360 ảnh là bản thu nhỏ 150×150 lọt vào thư viện khi crawl — đúng một ảnh mỗi sản
+596 trong 1.387 ảnh là bản thu nhỏ 150×150 lọt vào thư viện khi crawl — đúng một ảnh mỗi sản
 phẩm. Cần migration dọn.
+
+Kiểm lại 2026-09-15: `select count(*) from media_assets where secure_url like '%150x150%'` → `596`.
+Vẫn còn nguyên. Lưu ý khi dọn: `width`/`height` của 1.360 ảnh crawl đều `null`, nên phải lọc theo
+`secure_url` chứ không theo kích thước.
 
 ### R6 — Ba nhóm mock chờ model backend
 
@@ -94,7 +90,10 @@ phẩm. Cần migration dọn.
 
 - Redeploy `admin` (bản sửa 404 khi reload) và `api` (bản sửa serverless)
 - Ghi khoá VNPay vào `api/.env.local` khi muốn bật cổng thanh toán
-- Nhập tồn thật cho các SKU muốn bán tại quầy (sổ đã mở sẵn, tồn đang 0)
+- Nhập tồn thật cho các SKU còn lại muốn bán tại quầy (đã nhập mẫu HQ-909S, T059, JL-065)
+- Xác nhận 7 cam kết marketing đang hiển thị trên storefront (hàng chính hãng 100%, giao & lắp
+  ráp 2H, bảo hành 2–5 năm, đổi mới 7 ngày, trả góp 0% duyệt 5 phút, khảo sát 24H, bảo trì trọn
+  đời) — đang chờ từ trước, chưa có câu trả lời
 
 ## Revision history
 
