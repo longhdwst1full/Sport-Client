@@ -24,6 +24,7 @@ import type {
 import type {
   CreateCustomerAddressDto,
   CustomerAddressDto,
+  CustomerProfileDto,
   ErrorResponseDto,
   UpdateCustomerAddressDto,
 } from './models';
@@ -414,3 +415,119 @@ export const useRemoveCustomerAddress = <
 
   return useMutation(mutationOptions, queryClient);
 };
+
+/**
+ * @summary Hồ sơ của khách đang đăng nhập: tên, email, số điện thoại
+ */
+export const getCustomerProfile = (
+  options?: SecondParameter<typeof apiFetcher>,
+  signal?: AbortSignal,
+) => {
+  return apiFetcher<CustomerProfileDto>(
+    { url: `/api/v1/account/profile`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getGetCustomerProfileQueryKey = () => {
+  return [`/api/v1/account/profile`] as const;
+};
+
+export const getGetCustomerProfileQueryOptions = <
+  TData = Awaited<ReturnType<typeof getCustomerProfile>>,
+  TError = ErrorType<ErrorResponseDto>,
+>(options?: {
+  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getCustomerProfile>>, TError, TData>>;
+  request?: SecondParameter<typeof apiFetcher>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetCustomerProfileQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getCustomerProfile>>> = ({ signal }) =>
+    getCustomerProfile(requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getCustomerProfile>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetCustomerProfileQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getCustomerProfile>>
+>;
+export type GetCustomerProfileQueryError = ErrorType<ErrorResponseDto>;
+
+export function useGetCustomerProfile<
+  TData = Awaited<ReturnType<typeof getCustomerProfile>>,
+  TError = ErrorType<ErrorResponseDto>,
+>(
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getCustomerProfile>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getCustomerProfile>>,
+          TError,
+          Awaited<ReturnType<typeof getCustomerProfile>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetCustomerProfile<
+  TData = Awaited<ReturnType<typeof getCustomerProfile>>,
+  TError = ErrorType<ErrorResponseDto>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getCustomerProfile>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getCustomerProfile>>,
+          TError,
+          Awaited<ReturnType<typeof getCustomerProfile>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetCustomerProfile<
+  TData = Awaited<ReturnType<typeof getCustomerProfile>>,
+  TError = ErrorType<ErrorResponseDto>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getCustomerProfile>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Hồ sơ của khách đang đăng nhập: tên, email, số điện thoại
+ */
+
+export function useGetCustomerProfile<
+  TData = Awaited<ReturnType<typeof getCustomerProfile>>,
+  TError = ErrorType<ErrorResponseDto>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getCustomerProfile>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetCustomerProfileQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}

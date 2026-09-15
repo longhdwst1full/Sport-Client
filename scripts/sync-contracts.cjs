@@ -2,6 +2,10 @@ const { existsSync } = require('node:fs');
 const { mkdir, readFile, writeFile } = require('node:fs/promises');
 const { resolve } = require('node:path');
 
+// Storefront chỉ đồng bộ những domain mình thực sự dùng. Cố ý bỏ qua:
+//   - system.yaml (`listPublicSystemParameters`): tham số hệ thống công khai, storefront
+//     chưa có màn nào cần tới. Sinh SDK cho nó chỉ tạo thêm mã không ai gọi. Khi nào dùng
+//     thì thêm vào danh sách này rồi chạy lại `contracts:sync` và `generate:api`.
 const domains = ['auth', 'catalog', 'content', 'reviews', 'cart', 'customer', 'shipping', 'checkout', 'orders', 'payments', 'promotions'];
 const defaultBaseUrl =
   'https://raw.githubusercontent.com/longhdwst1full/dctd-utc/main/document/api/storefront';

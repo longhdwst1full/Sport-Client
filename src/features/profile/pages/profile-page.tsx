@@ -8,14 +8,12 @@ import {
   Package,
   MapPin,
   ShieldCheck,
-  Award,
   LogOut,
   ChevronRight,
   Clock,
   Phone,
   Mail,
   Edit2,
-  Sparkles,
   Trash2,
   Plus,
   Truck,
@@ -27,6 +25,7 @@ import {
 } from 'lucide-react';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { useCustomerAuth } from '@/features/auth';
+import { useGetCustomerProfile } from '@/generated/api/customer/customer';
 import { STORE_CONFIG, STORE_CONTACT } from '@/shared/constants';
 import {
   VietnamAddressSelector,
@@ -38,7 +37,6 @@ type ProfileTab = 'warranty' | 'address' | 'settings';
 
 import {
   type WarrantyItem,
-  MOCK_WARRANTIES,
 } from '@/shared/data/mocks';
 import { useCustomerAddresses } from '../api/use-customer-addresses';
 import {
@@ -74,14 +72,20 @@ export function ProfilePage() {
   const [addressFormIsDefault, setAddressFormIsDefault] = useState(false);
   const [modalAddressData, setModalAddressData] = useState<SelectedAddressData>(EMPTY_LOCATION);
 
-  // Warranty search
-  const [warrantySearchQuery, setWarrantySearchQuery] = useState('');
-  const [filteredWarranties, setFilteredWarranties] = useState(MOCK_WARRANTIES);
+  // Trang tài khoản là nội dung riêng của từng khách; chưa đăng nhập thì đưa về đăng nhập
+  // thay vì hiện khung rỗng.
+  useEffect(() => {
+    if (authLoaded && !isAuthenticated) router.replace('/login');
+  }, [authLoaded, isAuthenticated, router]);
 
-  // Profile Settings Form
-  const profileName = 'Nguyễn Văn An';
-  const profileEmail = 'an.nguyen@example.com';
-  const profilePhone = '0912 345 678';
+  // Hồ sơ lấy từ API tài khoản. Bản trước hiển thị tên và email viết cứng trong mã nguồn,
+  // nên mọi khách đăng nhập đều thấy cùng một người.
+  const profileQuery = useGetCustomerProfile({
+    query: { enabled: authLoaded && isAuthenticated },
+  });
+  const profileName = profileQuery.data?.name ?? '';
+  const profileEmail = profileQuery.data?.email ?? '';
+  const profilePhone = profileQuery.data?.phone ?? '';
 
   const { success } = useToast();
   const showToast = (msg: string) => {
@@ -169,22 +173,6 @@ export function ProfilePage() {
     }
   };
 
-  // Warranty search
-  const handleSearchWarranty = (query: string) => {
-    setWarrantySearchQuery(query);
-    const q = query.trim().toLowerCase();
-    if (!q) {
-      setFilteredWarranties(MOCK_WARRANTIES);
-      return;
-    }
-    const res = MOCK_WARRANTIES.filter(
-      (w) =>
-        w.serial.toLowerCase().includes(q) ||
-        w.productName.toLowerCase().includes(q),
-    );
-    setFilteredWarranties(res);
-  };
-
   const handleLogout = () => {
     logout();
     router.push('/login');
@@ -218,27 +206,8 @@ export function ProfilePage() {
                     <h1 className="truncate text-base font-black text-slate-900">
                       {profileName}
                     </h1>
-                    <div className="mt-1 flex items-center gap-1.5">
-                      <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-black text-amber-800">
-                        <Award className="size-3" /> Thành viên Gold
-                      </span>
-                    </div>
                     <p className="mt-1 truncate text-xs text-slate-400">{profileEmail}</p>
                   </div>
-                </div>
-
-                {/* Reward points box */}
-                <div className="mt-6 rounded-2xl bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-4 text-white">
-                  <div className="flex items-center justify-between text-xs text-slate-400">
-                    <span>Điểm tích lũy {STORE_CONFIG.shortName}</span>
-                    <Sparkles className="size-4 text-emerald-400" />
-                  </div>
-                  <strong className="mt-1 block text-2xl font-black text-emerald-400">
-                    1,450 <span className="text-xs font-medium text-white/60">điểm</span>
-                  </strong>
-                  <p className="mt-1 text-[11px] text-slate-400">
-                    Tương đương giảm 145.000đ khi đặt mua đơn hàng tiếp theo.
-                  </p>
                 </div>
 
                 {/* Navigation tabs */}
@@ -422,66 +391,21 @@ export function ProfilePage() {
                     </p>
                   </div>
 
-                  {/* Search Bar */}
-                  <div className="mt-6 flex gap-2">
-                    <div className="relative flex-1">
-                      <Search className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
-                      <input
-                        type="text"
-                        value={warrantySearchQuery}
-                        onChange={(e) => handleSearchWarranty(e.target.value)}
-                        placeholder="Nhập số Serial (ví dụ: BA-SPIN-2026-0912) hoặc tên máy..."
-                        className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 py-2.5 pl-10 pr-4 text-xs font-medium text-slate-800 outline-none transition focus:border-emerald-500 focus:bg-white sm:text-sm"
-                      />
+                  {/* Chưa có API bảo hành. Hiển thị đúng trạng thái thay vì tra cứu trên dữ
+                      liệu dựng sẵn — khách tra ra một máy không phải của mình là sai nghiêm
+                      trọng hơn là chưa có chức năng. */}
+                  <div className="mt-6 rounded-2xl border border-dashed border-slate-300 bg-slate-50/60 p-8 text-center">
+                    <div className="mx-auto grid size-12 place-items-center rounded-2xl bg-slate-200 text-slate-500">
+                      <ShieldCheck className="size-6" />
                     </div>
-                  </div>
-
-                  {/* Warranty Cards */}
-                  <div className="mt-6 space-y-4">
-                    {filteredWarranties.map((w) => (
-                      <div
-                        key={w.serial}
-                        className="rounded-2xl border border-slate-200/80 p-5 transition hover:border-emerald-300"
-                      >
-                        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
-                          <strong className="text-sm font-bold text-slate-900 sm:text-base">
-                            {w.productName}
-                          </strong>
-                          <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-black text-emerald-800">
-                            {w.status}
-                          </span>
-                        </div>
-
-                        <div className="mt-4 grid grid-cols-2 gap-3 text-xs text-slate-600 sm:grid-cols-3">
-                          <div>
-                            <span className="text-slate-400">Số serial điện tử:</span>
-                            <p className="font-mono font-bold text-slate-900">{w.serial}</p>
-                          </div>
-                          <div>
-                            <span className="text-slate-400">Ngày kích hoạt:</span>
-                            <p className="font-semibold text-slate-800">{w.activationDate}</p>
-                          </div>
-                          <div>
-                            <span className="text-slate-400">Thời hạn kết thúc:</span>
-                            <p className="font-semibold text-slate-800">{w.expiryDate}</p>
-                          </div>
-                        </div>
-
-                        <p className="mt-3 rounded-xl bg-slate-50 p-3 text-[11px] text-slate-600">
-                          <strong>Chính sách:</strong> {w.policy}
-                        </p>
-
-                        <div className="mt-4 flex items-center justify-end">
-                          <a
-                            href={`tel:${STORE_CONTACT.primaryHotlineRaw}`}
-                            className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 hover:underline"
-                          >
-                            <Wrench className="size-3.5" />
-                            <span>Yêu cầu kỹ thuật viên bảo dưỡng tận nhà</span>
-                          </a>
-                        </div>
-                      </div>
-                    ))}
+                    <p className="mt-4 text-sm font-bold text-slate-700">
+                      Chức năng đang phát triển
+                    </p>
+                    <p className="mx-auto mt-1 max-w-md text-xs leading-relaxed text-slate-500">
+                      Tra cứu bảo hành điện tử sẽ mở khi hệ thống hoàn tất kết nối dữ liệu bảo
+                      hành. Trong lúc chờ, vui lòng liên hệ hotline {STORE_CONTACT.primaryHotline} kèm
+                      số serial trên máy để được hỗ trợ.
+                    </p>
                   </div>
                 </div>
               )}

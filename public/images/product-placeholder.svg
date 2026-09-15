@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Chưa có ảnh sản phẩm">
+  <rect width="160" height="160" fill="#f1f5f9"/>
+  <g fill="none" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="40" y="48" width="80" height="64" rx="8"/>
+    <circle cx="62" cy="70" r="7"/>
+    <path d="M44 100l22-22 18 18 12-12 20 20"/>
+  </g>
+</svg>

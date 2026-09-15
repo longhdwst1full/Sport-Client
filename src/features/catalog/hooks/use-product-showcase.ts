@@ -1,8 +1,9 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useListCatalogProducts } from '@/generated/api/catalog/catalog';
 import { vndMoney } from '@/shared/format/money';
+import { PRODUCT_PLACEHOLDER_IMAGE } from '@/shared/constants';
 
 export interface ProductShowcaseItem {
   id: string;
@@ -17,6 +18,8 @@ export interface ProductShowcaseItem {
   imageUrl: string;
   numericPrice: number;
   displayPrice: string;
+  /** Chưa có bảng giá hiệu lực thì không bán được: giá 0 không phải là giá. */
+  hasPrice: boolean;
 }
 
 /**
@@ -26,12 +29,20 @@ export interface ProductShowcaseItem {
  * nên lỗi backend bị che và khách thấy sản phẩm không tồn tại. Giờ trả đúng trạng
  * thái để phía gọi tự quyết định hiển thị skeleton, empty hay lỗi.
  */
+/** Số sản phẩm mỗi lượt khi có phạm vi lọc; lưới trưng bày ở trang chủ thì ít hơn. */
+const SCOPED_PAGE_SIZE = 24;
+const SHOWCASE_SIZE = 8;
+
 export function useProductShowcase(
   categorySlug?: string,
   searchQuery?: string,
 ): {
   products: ProductShowcaseItem[];
+  total: number;
+  hasMore: boolean;
+  loadMore: () => void;
   isPending: boolean;
+  isLoadingMore: boolean;
   isError: boolean;
   refetch: () => void;
 } {
@@ -39,12 +50,21 @@ export function useProductShowcase(
   // đầu của toàn catalog rồi lọc ở client, nên trang danh mục chỉ xét được 8 trong 596
   // sản phẩm và gần như luôn ra sai.
   const search = searchQuery?.trim();
+  const scoped = Boolean(categorySlug || search);
+  const pageSize = scoped ? SCOPED_PAGE_SIZE : SHOWCASE_SIZE;
+
+  // Tải thêm bằng cách nới dần số lượng lấy về. Trước đây lấy cứng 48 rồi dừng, nên tìm
+  // từ khoá phổ biến là mất phần kết quả dư mà khách không có cách nào xem tiếp.
+  const [limit, setLimit] = useState(pageSize);
+  useEffect(() => setLimit(pageSize), [categorySlug, search, pageSize]);
+
   const query = useListCatalogProducts({
     page: 1,
-    limit: categorySlug || search ? 48 : 8,
+    limit,
     category: categorySlug,
     search: search || undefined,
   });
+  const total = query.data?.meta.total ?? 0;
 
   const products = useMemo<ProductShowcaseItem[]>(
     () =>
@@ -61,8 +81,11 @@ export function useProductShowcase(
             brand: product.brand ?? 'Bảo An Sport',
             category: product.primaryCategory ?? 'Thiết bị thể thao',
             badge: product.primaryCategory ?? 'Sản phẩm',
-            imageUrl: product.imageUrl ?? '/icon.svg',
+            // Ảnh thay thế trung tính của chính dự án. Trước đây dùng '/icon.svg' là logo
+            // ứng dụng, nên lưới sản phẩm thiếu ảnh trông như lỗi hiển thị.
+            imageUrl: product.imageUrl ?? PRODUCT_PLACEHOLDER_IMAGE,
             numericPrice: minPrice,
+            hasPrice: product.minPrice !== null && product.minPrice !== undefined,
             // Giá null nghĩa là chưa có bảng giá hiệu lực, không phải giá 0.
             displayPrice:
               product.minPrice === null || product.minPrice === undefined
@@ -75,7 +98,12 @@ export function useProductShowcase(
 
   return {
     products,
+    total,
+    hasMore: products.length < total,
+    loadMore: () => setLimit((current) => current + pageSize),
     isPending: query.isPending,
+    // Đang lấy thêm thì giữ nguyên danh sách hiện có, chỉ báo bận ở nút.
+    isLoadingMore: query.isFetching && !query.isPending,
     isError: query.isError,
     refetch: () => void query.refetch(),
   };

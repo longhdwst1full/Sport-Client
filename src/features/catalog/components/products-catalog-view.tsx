@@ -277,9 +277,11 @@ export function ProductsCatalogView() {
               return (
                 <article
                   key={product.id}
-                  className="group flex flex-col overflow-hidden rounded-[24px] border border-slate-200/80 bg-white shadow-sm transition duration-300 hover:-translate-y-1.5 hover:border-emerald-500/50 hover:shadow-xl"
+                  className="group relative flex flex-col overflow-hidden rounded-[24px] border border-slate-200/80 bg-white shadow-sm transition duration-300 hover:-translate-y-1.5 hover:border-emerald-500/50 hover:shadow-xl"
                 >
-                  <Link href={`/products/${product.slug}`} className="flex w-full flex-1 flex-col">
+                  {/* Link phủ cả thẻ bằng pseudo-element: nút thêm vào giỏ không được nằm
+                      trong thẻ <a>, vừa sai HTML vừa làm bàn phím kích hoạt nhầm. */}
+                  <div className="flex w-full flex-1 flex-col">
                     {/* Image Box */}
                     <div className="relative aspect-[4/3] overflow-hidden bg-slate-100">
                       <Image
@@ -313,14 +315,15 @@ export function ProductsCatalogView() {
                       </div>
 
                       <h3 className="mt-2 min-h-[44px] text-sm font-bold leading-snug text-slate-900 line-clamp-2 transition group-hover:text-emerald-700">
-                        {product.name}
+                        <Link
+                          href={`/products/${product.slug}`}
+                          className="after:absolute after:inset-0 after:content-['']"
+                        >
+                          {product.name}
+                        </Link>
                       </h3>
 
                       <div className="mt-2 flex items-center gap-2 text-xs">
-                        <span className="flex items-center gap-0.5 font-bold text-amber-500">
-                          <Star className="size-3.5 fill-amber-400 text-amber-400" /> 4.9
-                        </span>
-                        <span className="text-[11px] text-slate-400">(120+ đã mua)</span>
                         <span className="ml-auto rounded bg-emerald-50 px-1.5 py-0.5 text-[10px] font-bold text-emerald-700">
                           Trả góp 0%
                         </span>
@@ -341,7 +344,7 @@ export function ProductsCatalogView() {
                           type="button"
                           onClick={(e) => handleQuickAddToCart(e, product)}
                           disabled={!product.defaultVariantId}
-                          className="grid size-9 shrink-0 place-items-center rounded-full bg-slate-900 text-white shadow-md transition duration-300 hover:scale-105 hover:bg-emerald-600 active:scale-95 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:hover:scale-100"
+                          className="relative z-10 grid size-9 shrink-0 place-items-center rounded-full bg-slate-900 text-white shadow-md transition duration-300 hover:scale-105 hover:bg-emerald-600 active:scale-95 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:hover:scale-100"
                           title={product.defaultVariantId ? 'Thêm nhanh vào giỏ hàng' : 'Mở chi tiết để chọn phiên bản'}
                           aria-label={`Thêm ${product.name} vào giỏ`}
                         >
@@ -349,7 +352,7 @@ export function ProductsCatalogView() {
                         </button>
                       </div>
                     </div>
-                  </Link>
+                  </div>
                 </article>
               );
             })}

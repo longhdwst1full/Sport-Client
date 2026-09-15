@@ -10,6 +10,7 @@ import {
 import type { Metadata } from 'next';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { ProductPurchasePanel, ProductRelatedSection } from '@/features/catalog';
+import { siteUrl, STORE_CONFIG } from '@/shared/constants';
 import { toProductPurchaseView } from '@/features/catalog/model/product.mapper';
 import { ProductReviewSection } from '@/features/reviews';
 import { getCatalogProduct } from '@/generated/api/catalog/catalog';
@@ -82,6 +83,10 @@ export default async function ProductDetailPage({
       : []),
   ];
 
+  // Dữ liệu có cấu trúc gửi cho công cụ tìm kiếm phải đúng sự thật. Bản trước khai cứng
+  // `aggregateRating` 4.9 với 128 đánh giá, luôn báo còn hàng và bịa giá 1.890.000 khi sản
+  // phẩm chưa có bảng giá — không trường nào trong số đó có nguồn dữ liệu.
+  const hasPrice = product.minPrice !== null && product.minPrice !== undefined;
   const productJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -91,22 +96,21 @@ export default async function ProductDetailPage({
     sku: product.productNo || product.slug,
     brand: {
       '@type': 'Brand',
-      name: product.brand || 'Bảo An Sport',
+      name: product.brand || STORE_CONFIG.name,
     },
-    offers: {
-      '@type': 'Offer',
-      url: `https://baoansport.vn/products/${product.slug}`,
-      priceCurrency: 'VND',
-      price: product.minPrice || '1890000',
-      priceValidUntil: '2027-12-31',
-      availability: 'https://schema.org/InStock',
-      itemCondition: 'https://schema.org/NewCondition',
-    },
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: '4.9',
-      reviewCount: '128',
-    },
+    // Chưa có giá thì không khai `offers`: khai giá 0 hoặc giá bịa đều sai lệch kết quả
+    // tìm kiếm. Điểm đánh giá và tồn kho hiện chưa có trong contract nên không khai.
+    ...(hasPrice
+      ? {
+          offers: {
+            '@type': 'Offer',
+            url: siteUrl(`/products/${product.slug}`),
+            priceCurrency: product.currency,
+            price: product.minPrice,
+            itemCondition: 'https://schema.org/NewCondition',
+          },
+        }
+      : {}),
   };
 
   const breadcrumbJsonLd = {
@@ -117,19 +121,19 @@ export default async function ProductDetailPage({
         '@type': 'ListItem',
         position: 1,
         name: 'Trang chủ',
-        item: 'https://baoansport.vn',
+        item: siteUrl(),
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Sản phẩm',
-        item: 'https://baoansport.vn/products',
+        item: siteUrl('/products'),
       },
       {
         '@type': 'ListItem',
         position: 3,
         name: product.name,
-        item: `https://baoansport.vn/products/${product.slug}`,
+        item: siteUrl(`/products/${product.slug}`),
       },
     ],
   };

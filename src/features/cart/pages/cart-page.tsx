@@ -8,6 +8,7 @@ import { clearCart, removeCartItem, updateQuantity } from '@/app/store/cart.slic
 import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { Breadcrumb } from '@/foundation/components/navigation';
 import { vndMoney } from '@/shared/format/money';
+import { PRODUCT_PLACEHOLDER_IMAGE } from '@/shared/constants';
 
 const SHIPPING_FEE = 30000;
 
@@ -55,7 +56,7 @@ export function CartPage() {
                   {/* Image */}
                   <div className="relative size-20 shrink-0 overflow-hidden rounded-xl bg-stone-100 sm:size-28">
                     <Image
-                      src={item.imageUrl ?? '/icon.svg'}
+                      src={item.imageUrl ?? PRODUCT_PLACEHOLDER_IMAGE}
                       alt={item.name}
                       fill
                       sizes="112px"

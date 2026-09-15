@@ -39,7 +39,12 @@ export function AutocompleteSearch({
 
   // Gọi Backend theo giá trị đã hoãn: mỗi phím gõ một lượt gọi là quá nhiều cho một lần tìm.
   const debouncedQuery = useDebounce(query, 300);
-  const { suggestions: results, isPending, isError } = useProductSearch(debouncedQuery);
+  // Từ khoá vừa gõ chưa kịp gửi đi thì kết quả đang hiện là của từ khoá cũ. Giữ lại dễ làm
+  // khách bấm nhầm sang sản phẩm không liên quan, nên coi như chưa có kết quả.
+  const isTypingAhead = query.trim() !== debouncedQuery.trim();
+  const { suggestions, isPending: isSearching, isError } = useProductSearch(debouncedQuery);
+  const results = isTypingAhead ? [] : suggestions;
+  const isPending = isTypingAhead || isSearching;
 
   // Open popover when user types
   useEffect(() => {
@@ -131,6 +136,15 @@ export function AutocompleteSearch({
           }}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
+          role="combobox"
+          aria-expanded={isOpen}
+          aria-controls="product-search-listbox"
+          aria-autocomplete="list"
+          aria-activedescendant={
+            selectedIndex >= 0 && results[selectedIndex]
+              ? `product-search-option-${results[selectedIndex].id}`
+              : undefined
+          }
           className="w-full bg-transparent px-3 py-2 text-xs font-medium text-slate-800 outline-none placeholder:text-slate-400 sm:py-2.5 sm:text-sm"
           aria-label="Tìm kiếm sản phẩm"
           autoComplete="off"
@@ -196,9 +210,10 @@ export function AutocompleteSearch({
 
               {/* Đang tìm lại thì giữ kết quả cũ và làm mờ, không nháy về khung xám. */}
               <div
-                className={`mt-1 max-h-[360px] overflow-y-auto pr-0.5 space-y-1 scrollbar-thin transition-opacity ${
-                  isPending ? 'opacity-50' : 'opacity-100'
-                }`}
+                id="product-search-listbox"
+                role="listbox"
+                aria-label="Gợi ý sản phẩm"
+                className="mt-1 max-h-[360px] space-y-1 overflow-y-auto pr-0.5 scrollbar-thin"
               >
                 {results.map((product, index) => {
                   const isSelected = selectedIndex === index;
@@ -206,6 +221,9 @@ export function AutocompleteSearch({
                   return (
                     <div
                       key={product.id}
+                      id={`product-search-option-${product.id}`}
+                      role="option"
+                      aria-selected={isSelected}
                       onClick={() => handleSelectProduct(product.slug)}
                       onMouseEnter={() => setSelectedIndex(index)}
                       className={`flex cursor-pointer items-center gap-3.5 rounded-2xl px-3.5 py-2.5 transition-all duration-200 ${

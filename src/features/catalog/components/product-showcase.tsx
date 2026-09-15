@@ -4,42 +4,36 @@ import { useMemo, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, BadgeCheck, Eye, RefreshCw, ShoppingBag, Sparkles } from 'lucide-react';
+import { useCategoryTabs } from '../hooks/use-category-tabs';
 import { useProductShowcase } from '../hooks/use-product-showcase';
 import { useAppDispatch } from '@/app/store/hooks';
 import { addCartItem } from '@/app/store/cart.slice';
 import { useToast } from '@/shared/components/global-toast';
 
-const SHOWCASE_TABS = [
-  { id: 'all', label: 'Tất cả' },
-  { id: 'cardio', label: 'Máy chạy bộ & Xe đạp' },
-  { id: 'gym', label: 'Gym & Thể hình' },
-  { id: 'racket', label: 'Bóng bàn & Bóng rổ' },
-  { id: 'combat-yoga', label: 'Võ thuật & Yoga' },
-  { id: 'combo', label: 'Combo Home Gym' },
-] as const;
-
 export function ProductShowcase({
   categorySlug,
   searchQuery,
 }: { categorySlug?: string; searchQuery?: string } = {}) {
-  const { products, isPending, isError, refetch } = useProductShowcase(categorySlug, searchQuery);
-  const [activeTab, setActiveTab] = useState<string>('all');
+  // Tab lấy từ danh mục thật; `null` là "Tất cả".
+  const { tabs } = useCategoryTabs();
+  const [activeTabSlug, setActiveTabSlug] = useState<string | null>(null);
+  // Trang danh mục và trang tìm kiếm đã có phạm vi riêng, tab chỉ dùng ở lưới trưng bày.
+  const effectiveCategory = categorySlug ?? activeTabSlug ?? undefined;
+  const { products, total, hasMore, loadMore, isPending, isLoadingMore, isError, refetch } =
+    useProductShowcase(effectiveCategory, searchQuery);
   const dispatch = useAppDispatch();
   const { toast } = useToast();
 
-  // Danh mục lọc ở Backend (gồm cả nhánh con). Bản trước lọc ở client bằng đoán từ khoá
-  // trên slug/tên, và khi lọc ra rỗng thì trả về TOÀN BỘ sản phẩm — nên trang danh mục
-  // bóng chuyền có thể hiện máy chạy bộ. Ở đây chỉ còn lọc theo tab do người dùng bấm.
-  const displayedProducts = useMemo(() => {
-    // Đang tìm theo từ khoá thì Backend đã lọc; lọc thêm theo tab sẽ giấu bớt kết quả.
-    if (categorySlug || searchQuery?.trim() || activeTab === 'all') return products;
-    return products.filter((product) => product.category === activeTab);
-  }, [products, categorySlug, searchQuery, activeTab]);
+  // Lọc danh mục chạy ở Backend (gồm cả nhánh con), nên ở đây không lọc lại. Bản trước
+  // so `product.category` (tên danh mục thật) với id tab tự đặt như 'gym' — hai vế không
+  // bao giờ bằng nhau nên bấm tab nào cũng ra rỗng.
+  const displayedProducts = products;
 
   const handleQuickAdd = (product: (typeof products)[number], e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!product.defaultVariantId || !product.defaultVariantSku) return;
+    // Thiếu giá thì không thêm được: giỏ sẽ mang giá 0 và khách thấy tổng tiền sai.
+    if (!product.defaultVariantId || !product.defaultVariantSku || !product.hasPrice) return;
 
     dispatch(
       addCartItem({
@@ -101,13 +95,14 @@ export function ProductShowcase({
       {/* Interactive Category Filter Pills (Only show on homepage when not constrained by categorySlug prop) */}
       {!categorySlug && (
         <div className="flex flex-wrap items-center gap-2 pb-2">
-          {SHOWCASE_TABS.map((tab) => {
-            const isActive = activeTab === tab.id;
+          {tabs.map((tab) => {
+            const isActive = activeTabSlug === tab.slug;
             return (
               <button
-                key={tab.id}
+                key={tab.slug ?? 'all'}
                 type="button"
-                onClick={() => setActiveTab(tab.id)}
+                aria-pressed={isActive}
+                onClick={() => setActiveTabSlug(tab.slug)}
                 className={`rounded-full px-4 py-2 text-xs font-bold transition-all duration-200 ${
                   isActive
                     ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20'
@@ -133,9 +128,12 @@ export function ProductShowcase({
           return (
             <article
               key={product.id}
-              className="group flex flex-col overflow-hidden rounded-[24px] border border-slate-200/80 bg-white shadow-sm transition duration-300 hover:-translate-y-1.5 hover:border-emerald-500/40 hover:shadow-xl"
+              className="group relative flex flex-col overflow-hidden rounded-[24px] border border-slate-200/80 bg-white shadow-sm transition duration-300 hover:-translate-y-1.5 hover:border-emerald-500/40 hover:shadow-xl"
             >
-              <Link href={`/products/${product.slug}`} className="flex w-full flex-1 flex-col">
+              {/* Link phủ cả thẻ bằng pseudo-element thay vì bọc quanh nội dung: nút thêm
+                  vào giỏ không được nằm trong thẻ <a>, vừa sai HTML vừa làm bàn phím kích
+                  hoạt nhầm sang trang chi tiết. */}
+              <div className="flex w-full flex-1 flex-col">
                 <div className="relative aspect-[4/3] overflow-hidden bg-slate-100">
                   <Image
                     src={product.imageUrl}
@@ -173,12 +171,15 @@ export function ProductShowcase({
                   </div>
 
                   <h3 className="mt-2 min-h-[44px] text-sm font-bold text-slate-900 leading-snug line-clamp-2 group-hover:text-emerald-700 transition">
-                    {product.name}
+                    <Link
+                      href={`/products/${product.slug}`}
+                      className="after:absolute after:inset-0 after:content-['']"
+                    >
+                      {product.name}
+                    </Link>
                   </h3>
 
                   <div className="mt-2 flex items-center gap-2 text-xs">
-                    <span className="text-amber-500 font-bold">★ 4.9</span>
-                    <span className="text-slate-400 text-[11px]">(120+ đã mua)</span>
                     <span className="ml-auto rounded bg-emerald-50 px-1.5 py-0.5 text-[10px] font-bold text-emerald-700">
                       Trả góp 0%
                     </span>
@@ -201,27 +202,48 @@ export function ProductShowcase({
                     <button
                       type="button"
                       onClick={(e) => handleQuickAdd(product, e)}
-                      disabled={!product.defaultVariantId}
-                      title={product.defaultVariantId ? 'Thêm vào giỏ hàng' : 'Mở chi tiết để chọn phiên bản'}
+                      disabled={!product.defaultVariantId || !product.hasPrice}
+                      title={
+                        !product.hasPrice
+                          ? 'Sản phẩm chưa có giá — liên hệ để được tư vấn'
+                          : product.defaultVariantId
+                            ? 'Thêm vào giỏ hàng'
+                            : 'Mở chi tiết để chọn phiên bản'
+                      }
                       aria-label={`Thêm ${product.name} vào giỏ`}
-                      className="grid size-9 shrink-0 place-items-center rounded-full bg-slate-900 text-white shadow-sm transition duration-300 hover:scale-110 hover:bg-emerald-600 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:hover:scale-100"
+                      className="relative z-10 grid size-9 shrink-0 place-items-center rounded-full bg-slate-900 text-white shadow-sm transition duration-300 hover:scale-110 hover:bg-emerald-600 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:hover:scale-100"
                     >
                       <ShoppingBag className="size-4" />
                     </button>
                   </div>
                 </div>
-              </Link>
+              </div>
             </article>
           );
         })}
       </div>
+
+      {hasMore && (
+        <div className="flex justify-center">
+          <button
+            type="button"
+            onClick={loadMore}
+            disabled={isLoadingMore}
+            className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-bold text-slate-700 transition hover:border-emerald-400 hover:text-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {isLoadingMore ? 'Đang tải…' : `Xem thêm (${total - products.length} sản phẩm)`}
+          </button>
+        </div>
+      )}
 
       {/* Catalog View All Banner */}
       <div className="flex flex-col items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:flex-row sm:px-8">
         <div className="text-center sm:text-left">
           <span className="text-xs font-black uppercase tracking-wider text-emerald-700">Danh mục chính hãng</span>
           <p className="text-sm font-bold text-slate-800">
-            Còn hơn 120+ mẫu thiết bị thể dục thể thao chuyên nghiệp và gia đình sẵn sàng giao ngay
+            {total > 0
+              ? `${total} mẫu thiết bị thể dục thể thao đang bán`
+              : 'Thiết bị thể dục thể thao cho phòng tập và gia đình'}
           </p>
         </div>
         <Link

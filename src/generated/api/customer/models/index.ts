@@ -9,6 +9,7 @@
 export * from './createCustomerAddressDto';
 export * from './customerAddressDto';
 export * from './customerAddressDtoCountryCode';
+export * from './customerProfileDto';
 export * from './errorDetailDto';
 export * from './errorResponseDto';
 export * from './updateCustomerAddressDto';

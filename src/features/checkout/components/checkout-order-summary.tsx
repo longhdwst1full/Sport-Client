@@ -4,6 +4,7 @@ import { CheckCircle2, LoaderCircle, ShieldCheck, Truck } from 'lucide-react';
 import type { CartItem } from '@/app/store/cart.slice';
 import type { CheckoutQuoteView } from '../model/checkout.mapper';
 import { vndMoney } from '@/shared/format/money';
+import { PRODUCT_PLACEHOLDER_IMAGE } from '@/shared/constants';
 
 interface CheckoutOrderSummaryProps {
   items: CartItem[];
@@ -31,7 +32,7 @@ export function CheckoutOrderSummary({
           {items.map((item) => (
             <div key={item.variantId} className="flex items-center gap-3">
               <div className="relative size-12 overflow-hidden rounded-xl border bg-slate-50">
-                <Image src={item.imageUrl || '/icon.svg'} alt={item.name} fill sizes="48px" className="object-contain p-1" />
+                <Image src={item.imageUrl || PRODUCT_PLACEHOLDER_IMAGE} alt={item.name} fill sizes="48px" className="object-contain p-1" />
               </div>
               <div className="min-w-0 flex-1">
                 <p className="truncate text-xs font-bold text-slate-900">{item.name}</p>

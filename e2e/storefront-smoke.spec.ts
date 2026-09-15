@@ -47,18 +47,28 @@ test('nội dung không tồn tại hiện đúng trang không tìm thấy', asy
 });
 
 /**
- * Khiếm khuyết đã biết, CÓ TRƯỚC tính năng chính sách: mọi route động trả HTTP 200
- * cho nội dung không tồn tại thay vì 404 — `/products`, `/news`, `/category` và
- * `/chinh-sach` đều vậy. Đường dẫn hoàn toàn lạ thì Next trả 404 đúng.
+ * Hồi quy: route động từng trả HTTP 200 cho nội dung không tồn tại. Trang vẫn hiện giao
+ * diện 404 nên người dùng không bị lừa, nhưng công cụ tìm kiếm coi đây là soft 404 và vẫn
+ * lập chỉ mục trang rỗng.
  *
- * Nội dung hiển thị vẫn đúng (trang "Không tìm thấy"), nên người dùng không bị đánh
- * lừa; hệ quả nằm ở SEO: công cụ tìm kiếm coi đây là soft 404 và vẫn lập chỉ mục.
- *
- * Bật lại test này sau khi sửa. Nguyên nhân cần xác minh thêm: nhiều khả năng do
- * trang dynamic bắt đầu truyền dữ liệu trước khi `notFound()` được gọi, nên mã
- * trạng thái đã chốt là 200.
+ * Nguyên nhân: `loading.tsx` ở gốc app (và ở `/category`) khiến Next bắt đầu truyền dữ liệu
+ * trước khi trang kịp gọi `notFound()`, nên mã trạng thái đã chốt là 200 và không sửa được
+ * nữa. Đã gỡ hai file đó; đừng thêm lại `loading.tsx` bọc một route động có gọi `notFound()`.
  */
-test.fixme('route động trả 404 cho nội dung không tồn tại', async ({ page }) => {
-  const response = await page.goto('/chinh-sach/khong-ton-tai-abc');
-  expect(response?.status()).toBe(404);
+test.describe('Route động trả đúng mã trạng thái', () => {
+  for (const path of [
+    '/chinh-sach/khong-ton-tai-abc',
+    '/news/khong-ton-tai-abc',
+    '/category/khong-ton-tai-abc',
+  ]) {
+    test(`404 cho ${path}`, async ({ page }) => {
+      const response = await page.goto(path);
+      expect(response?.status()).toBe(404);
+    });
+  }
+
+  test('200 cho nội dung có thật', async ({ page }) => {
+    const response = await page.goto('/chinh-sach/chinh-sach-bao-hanh');
+    expect(response?.status()).toBe(200);
+  });
 });
