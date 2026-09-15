@@ -1,10 +1,10 @@
 # Phương án cho phần việc còn lại
 
-> **Document version:** 2.2.0
+> **Document version:** 2.3.0
 >
 > **Last updated:** 2026-09-15
 >
-> **Change summary:** Đóng R1: bán tại quầy đã nghiệm thu một đơn thật và có màn Admin kèm combo, tồn khả dụng. Sprint 6 (R2) vẫn là khối chặn lớn nhất.
+> **Change summary:** Đóng R4 (nội dung thật thay nội dung bịa) và R5 (dọn ảnh thu nhỏ). Còn R2, R3, R6.
 
 ## Cách đọc tài liệu này
 
@@ -28,6 +28,8 @@ nhật, không dựa vào trí nhớ. Mục nào chưa kiểm được thì ghi 
 | Chi nhánh vận hành | Còn Hồ Chí Minh và Hà Nội; Đà Nẵng chuyển `INACTIVE` |
 | Tách ô tìm kiếm | Sản phẩm và đơn hàng, cộng dồn bằng AND |
 | Refresh token | Sửa `/me` bị loại nhầm khỏi luồng xoay token |
+| Nội dung bịa trên storefront | 10 bài viết thật thay 8 bài dựng sẵn; `/news/[slug]` và `/category/[slug]` đọc API |
+| Ảnh thu nhỏ | Xoá 596 ảnh 150x150; thư viện còn 791 ảnh |
 
 ---
 
@@ -51,20 +53,6 @@ chạy **dữ liệu giả**. Backend chưa có module khách hàng cho admin.
 
 Phạm vi giai đoạn 1 đề xuất: danh sách, tìm kiếm, xem chi tiết (thông tin, địa chỉ, lịch sử
 đơn). Tạo và khoá tài khoản để giai đoạn 2.
-
-### R4 — Nội dung bịa đang hiển thị cho khách (0.5 ngày)
-
-`/news/[slug]` và `/category/[slug]` render thân bài hardcode, ảnh Unsplash, số liệu và tác giả
-không có thật. Đây là nội dung sai đang chạy trên trang bán, nên ưu tiên cao hơn vẻ ngoài của nó.
-
-### R5 — Dọn ảnh thu nhỏ (0.5 ngày)
-
-596 trong 1.387 ảnh là bản thu nhỏ 150×150 lọt vào thư viện khi crawl — đúng một ảnh mỗi sản
-phẩm. Cần migration dọn.
-
-Kiểm lại 2026-09-15: `select count(*) from media_assets where secure_url like '%150x150%'` → `596`.
-Vẫn còn nguyên. Lưu ý khi dọn: `width`/`height` của 1.360 ảnh crawl đều `null`, nên phải lọc theo
-`secure_url` chứ không theo kích thước.
 
 ### R6 — Ba nhóm mock chờ model backend
 
