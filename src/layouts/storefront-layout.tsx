@@ -202,9 +202,9 @@ export function StorefrontLayout({ children }: { children: ReactNode }) {
               {/* Showroom HN */}
               <div className="rounded-xl border border-slate-800/80 bg-slate-900/40 p-3 space-y-1">
                 <div className="flex items-center justify-between">
-                  <strong className="text-xs font-bold text-white flex items-center gap-1.5">
+                  <span className="text-xs font-bold text-white flex items-center gap-1.5">
                     <MapPin className="size-3.5 text-emerald-400" /> SHOWROOM HÀ NỘI
-                  </strong>
+                  </span>
                   <span className="rounded bg-emerald-950 px-1.5 py-0.5 text-[10px] font-bold text-emerald-400">
                     Trụ sở
                   </span>
@@ -226,9 +226,9 @@ export function StorefrontLayout({ children }: { children: ReactNode }) {
               {/* Showroom HCM */}
               <div className="rounded-xl border border-slate-800/80 bg-slate-900/40 p-3 space-y-1">
                 <div className="flex items-center justify-between">
-                  <strong className="text-xs font-bold text-white flex items-center gap-1.5">
+                  <span className="text-xs font-bold text-white flex items-center gap-1.5">
                     <MapPin className="size-3.5 text-emerald-400" /> SHOWROOM TP. HỒ CHÍ MINH
-                  </strong>
+                  </span>
                   <span className="rounded bg-emerald-950 px-1.5 py-0.5 text-[10px] font-bold text-emerald-400">
                     Chi nhánh
                   </span>

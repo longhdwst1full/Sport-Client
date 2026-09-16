@@ -5,35 +5,16 @@ import Image from 'next/image';
 import Link from 'next/link';
 import {
   Search,
-  SlidersHorizontal,
-  ArrowRight,
   Eye,
   ShoppingBag,
-  Check,
-  Star,
   X,
-  Sparkles,
   RotateCcw,
-  BadgePercent,
-  CheckCircle2,
 } from 'lucide-react';
 import { useAppDispatch } from '@/app/store/hooks';
 import { addCartItem } from '@/app/store/cart.slice';
 import { useProductShowcase } from '../hooks/use-product-showcase';
-import { vndMoney } from '@/shared/format/money';
+import { useCategoryTabs } from '../hooks/use-category-tabs';
 import { useToast } from '@/shared/components/global-toast';
-
-const CATEGORY_TABS = [
-  { id: 'all', label: 'Tất cả sản phẩm' },
-  { id: 'gym', label: 'Gym & Sức mạnh' },
-  { id: 'treadmill', label: 'Máy chạy bộ & Cardio' },
-  { id: 'bike', label: 'Xe đạp tập' },
-  { id: 'table-tennis', label: 'Dụng Cụ Bóng Bàn' },
-  { id: 'basketball', label: 'Dụng Cụ Bóng Rổ' },
-  { id: 'martial-arts', label: 'Dụng Cụ Võ Thuật' },
-  { id: 'yoga', label: 'Yoga & Phục hồi' },
-  { id: 'combo', label: 'Combo Home Gym' },
-];
 
 const PRICE_RANGES = [
   { id: 'all', label: 'Tất cả mức giá' },
@@ -45,45 +26,27 @@ const PRICE_RANGES = [
 export function ProductsCatalogView() {
   const dispatch = useAppDispatch();
   const { toast } = useToast();
-  const { products } = useProductShowcase();
 
-  const [activeCategory, setActiveCategory] = useState('all');
+  // Tab lấy từ danh mục thật (slug từ API), không viết cứng.
+  // Bản trước dùng CATEGORY_TABS với id tự đặt ('gym', 'treadmill'...) rồi so sánh
+  // với tên danh mục thật từ API — hai vế không bao giờ khớp nên tab nào cũng ra rỗng.
+  const { tabs, isPending: isTabsPending } = useCategoryTabs();
+  const [activeTabSlug, setActiveTabSlug] = useState<string | null>(null);
+
   const [activePriceRange, setActivePriceRange] = useState('all');
   const [sortBy, setSortBy] = useState<'featured' | 'price-asc' | 'price-desc' | 'name'>('featured');
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Lọc danh mục chạy server-side (gồm cả nhánh con). Search cũng server-side.
+  const { products, isPending, isError, refetch } = useProductShowcase(
+    activeTabSlug ?? undefined,
+    searchQuery,
+  );
+
   const filteredProducts = useMemo(() => {
     let list = [...products];
 
-    // 1. Search Query
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase().trim();
-      list = list.filter(
-        (p) =>
-          p.name.toLowerCase().includes(q) ||
-          p.category.toLowerCase().includes(q) ||
-          p.brand.toLowerCase().includes(q)
-      );
-    }
-
-    // 2. Category Tab
-    if (activeCategory !== 'all') {
-      list = list.filter((p) => {
-        const cat = p.category.toLowerCase();
-        const slug = p.slug.toLowerCase();
-        if (activeCategory === 'gym') return cat.includes('gym') || cat.includes('sức mạnh') || slug.includes('ta-');
-        if (activeCategory === 'treadmill') return cat.includes('chạy bộ') || slug.includes('chay-bo');
-        if (activeCategory === 'bike') return cat.includes('xe đạp') || slug.includes('bike');
-        if (activeCategory === 'table-tennis') return cat.includes('bóng bàn') || slug.includes('bong-ban') || slug.includes('stiga') || slug.includes('double-fish');
-        if (activeCategory === 'basketball') return cat.includes('bóng rổ') || slug.includes('bong-ro') || slug.includes('s206');
-        if (activeCategory === 'martial-arts') return cat.includes('võ thuật') || cat.includes('boxing') || slug.includes('boxing') || slug.includes('fairtex');
-        if (activeCategory === 'yoga') return cat.includes('yoga') || cat.includes('phục hồi') || slug.includes('yoga') || slug.includes('massage');
-        if (activeCategory === 'combo') return cat.includes('combo') || slug.includes('smith');
-        return true;
-      });
-    }
-
-    // 3. Price Range
+    // Price Range (client-side vì API chưa có filter minPrice/maxPrice)
     if (activePriceRange !== 'all') {
       const selected = PRICE_RANGES.find((r) => r.id === activePriceRange);
       if (selected) {
@@ -96,7 +59,7 @@ export function ProductsCatalogView() {
       }
     }
 
-    // 4. Sorting
+    // Sorting
     if (sortBy === 'price-asc') {
       list.sort((a, b) => a.numericPrice - b.numericPrice);
     } else if (sortBy === 'price-desc') {
@@ -106,7 +69,7 @@ export function ProductsCatalogView() {
     }
 
     return list;
-  }, [products, activeCategory, activePriceRange, sortBy, searchQuery]);
+  }, [products, activePriceRange, sortBy]);
 
   const handleQuickAddToCart = (e: React.MouseEvent, product: typeof products[0]) => {
     e.preventDefault();
@@ -133,10 +96,10 @@ export function ProductsCatalogView() {
     });
   };
 
-  const hasActiveFilters = activeCategory !== 'all' || activePriceRange !== 'all' || searchQuery.trim() !== '';
+  const hasActiveFilters = activeTabSlug !== null || activePriceRange !== 'all' || searchQuery.trim() !== '';
 
   const handleResetFilters = () => {
-    setActiveCategory('all');
+    setActiveTabSlug(null);
     setActivePriceRange('all');
     setSearchQuery('');
     setSortBy('featured');
@@ -187,25 +150,29 @@ export function ProductsCatalogView() {
           </div>
         </div>
 
-        {/* Row 2: Category Filters Tabs */}
+        {/* Row 2: Category Tabs từ API thật */}
         <div className="flex items-center gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden sm:flex-wrap">
-          {CATEGORY_TABS.map((tab) => {
-            const isActive = activeCategory === tab.id;
-            return (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => setActiveCategory(tab.id)}
-                className={`shrink-0 rounded-full px-4 py-2 text-xs font-bold transition-all duration-200 ${
-                  isActive
-                    ? 'bg-slate-900 text-white shadow-md shadow-slate-900/10 scale-100'
-                    : 'border border-slate-200 bg-slate-50 text-slate-700 hover:border-emerald-500 hover:bg-emerald-50/50 hover:text-emerald-800'
-                }`}
-              >
-                {tab.label}
-              </button>
-            );
-          })}
+          {isTabsPending
+            ? Array.from({ length: 5 }, (_, i) => (
+                <div key={i} className="h-8 w-24 animate-pulse rounded-full bg-slate-200" />
+              ))
+            : tabs.map((tab) => {
+                const isActive = activeTabSlug === tab.slug;
+                return (
+                  <button
+                    key={tab.slug ?? 'all'}
+                    type="button"
+                    onClick={() => setActiveTabSlug(tab.slug)}
+                    className={`shrink-0 rounded-full px-4 py-2 text-xs font-bold transition-all duration-200 ${
+                      isActive
+                        ? 'bg-slate-900 text-white shadow-md shadow-slate-900/10'
+                        : 'border border-slate-200 bg-slate-50 text-slate-700 hover:border-emerald-500 hover:bg-emerald-50/50 hover:text-emerald-800'
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                );
+              })}
         </div>
 
         {/* Row 3: Price Range Chips & Active Status */}
@@ -233,7 +200,7 @@ export function ProductsCatalogView() {
 
           <div className="flex items-center gap-3 text-xs">
             <span className="font-semibold text-slate-500">
-              Hiển thị <strong className="text-slate-900 font-extrabold">{filteredProducts.length}</strong> sản phẩm
+              Hiển thị <strong className="font-extrabold text-slate-900">{filteredProducts.length}</strong> sản phẩm
             </span>
             {hasActiveFilters && (
               <button
@@ -250,14 +217,38 @@ export function ProductsCatalogView() {
 
       {/* Product Grid */}
       <div className="mt-8">
-        {filteredProducts.length === 0 ? (
+        {isPending ? (
+          <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4" aria-label="Đang tải sản phẩm">
+            {Array.from({ length: 8 }, (_, i) => (
+              <div key={i} className="overflow-hidden rounded-[24px] border border-slate-200/80 bg-white">
+                <div className="aspect-[4/3] animate-pulse bg-slate-200" />
+                <div className="space-y-3 p-5">
+                  <div className="h-3 w-24 animate-pulse rounded bg-slate-200" />
+                  <div className="h-6 animate-pulse rounded bg-slate-200" />
+                  <div className="h-10 animate-pulse rounded bg-slate-100" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : isError ? (
+          <div className="rounded-3xl border border-red-200 bg-red-50 p-10 text-center" role="alert">
+            <p className="font-bold text-red-800">Không thể tải sản phẩm lúc này.</p>
+            <button
+              type="button"
+              onClick={() => void refetch()}
+              className="mt-4 inline-flex items-center gap-2 rounded-full bg-red-800 px-5 py-2.5 text-sm font-bold text-white"
+            >
+              <RotateCcw className="size-4" /> Thử lại
+            </button>
+          </div>
+        ) : filteredProducts.length === 0 ? (
           <div className="rounded-[32px] border border-dashed border-slate-300 bg-white p-12 text-center shadow-sm">
             <div className="mx-auto grid size-16 place-items-center rounded-2xl bg-emerald-50 text-emerald-600">
               <Search className="size-8" />
             </div>
             <h3 className="mt-4 text-lg font-black text-slate-900">Không tìm thấy sản phẩm phù hợp</h3>
             <p className="mt-1 text-sm text-slate-500">
-              Thử tìm kiếm với từ khóa khác hoặc xóa bộ lọc mức giá / môn tập hiện tại.
+              Thử tìm kiếm với từ khóa khác hoặc xóa bộ lọc mức giá / danh mục.
             </p>
             <button
               type="button"
@@ -269,93 +260,87 @@ export function ProductsCatalogView() {
           </div>
         ) : (
           <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-            {filteredProducts.map((product) => {
-              // CONTRACT: `StorefrontProductSummaryDto` không có giá gốc, chỉ có
-              // `minPrice`. Badge giảm giá trước đây đọc field không tồn tại qua
-              // ép kiểu `Record<string, unknown>` nên luôn tắt với dữ liệu thật;
-              // giá khuyến mãi thuộc Flash Sale và hiển thị ở feature promotions.
-              return (
-                <article
-                  key={product.id}
-                  className="group relative flex flex-col overflow-hidden rounded-[24px] border border-slate-200/80 bg-white shadow-sm transition duration-300 hover:-translate-y-1.5 hover:border-emerald-500/50 hover:shadow-xl"
-                >
-                  {/* Link phủ cả thẻ bằng pseudo-element: nút thêm vào giỏ không được nằm
-                      trong thẻ <a>, vừa sai HTML vừa làm bàn phím kích hoạt nhầm. */}
-                  <div className="flex w-full flex-1 flex-col">
-                    {/* Image Box */}
-                    <div className="relative aspect-[4/3] overflow-hidden bg-slate-100">
-                      <Image
-                        src={product.imageUrl}
-                        alt={product.name}
-                        fill
-                        sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 25vw"
-                        className="object-cover transition duration-500 group-hover:scale-105"
-                      />
+            {filteredProducts.map((product) => (
+              <article
+                key={product.id}
+                className="group relative flex flex-col overflow-hidden rounded-[24px] border border-slate-200/80 bg-white shadow-sm transition duration-300 hover:-translate-y-1.5 hover:border-emerald-500/50 hover:shadow-xl"
+              >
+                {/* Link phủ cả thẻ bằng pseudo-element: nút thêm vào giỏ không được nằm
+                    trong thẻ <a>, vừa sai HTML vừa làm bàn phím kích hoạt nhầm. */}
+                <div className="flex w-full flex-1 flex-col">
+                  {/* Image Box */}
+                  <div className="relative aspect-[4/3] overflow-hidden bg-slate-100">
+                    <Image
+                      src={product.imageUrl}
+                      alt={product.name}
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 25vw"
+                      className="object-cover transition duration-500 group-hover:scale-105"
+                    />
 
-                      {/* Top Badges */}
-                      <div className="absolute left-3 right-3 top-3 flex items-start justify-between gap-1.5">
-                        <span className="rounded-full border border-slate-100 bg-white/95 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-slate-800 shadow-sm backdrop-blur">
-                          {product.productType === 'BUNDLE' ? 'Combo trọn bộ' : product.badge}
-                        </span>
-                      </div>
-
-                      {/* Hover Overlay */}
-                      <div className="absolute inset-0 flex items-center justify-center gap-2 bg-slate-950/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                        <span className="flex items-center gap-1.5 rounded-full bg-white/95 px-3.5 py-1.5 text-xs font-bold text-slate-900 shadow-lg backdrop-blur transition hover:bg-emerald-600 hover:text-white">
-                          <Eye className="size-3.5" /> Xem chi tiết
-                        </span>
-                      </div>
+                    {/* Top Badge */}
+                    <div className="absolute left-3 right-3 top-3 flex items-start justify-between gap-1.5">
+                      <span className="rounded-full border border-slate-100 bg-white/95 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-slate-800 shadow-sm backdrop-blur">
+                        {product.productType === 'BUNDLE' ? 'Combo trọn bộ' : product.badge}
+                      </span>
                     </div>
 
-                    {/* Card Content */}
-                    <div className="flex flex-1 flex-col p-4 sm:p-5">
-                      <div className="flex items-center justify-between gap-2 text-[10px] font-extrabold uppercase tracking-[0.16em]">
-                        <span className="text-emerald-700">{product.brand}</span>
-                        <span className="truncate text-slate-400">{product.category}</span>
-                      </div>
-
-                      <h3 className="mt-2 min-h-[44px] text-sm font-bold leading-snug text-slate-900 line-clamp-2 transition group-hover:text-emerald-700">
-                        <Link
-                          href={`/products/${product.slug}`}
-                          className="after:absolute after:inset-0 after:content-['']"
-                        >
-                          {product.name}
-                        </Link>
-                      </h3>
-
-                      <div className="mt-2 flex items-center gap-2 text-xs">
-                        <span className="ml-auto rounded bg-emerald-50 px-1.5 py-0.5 text-[10px] font-bold text-emerald-700">
-                          Trả góp 0%
-                        </span>
-                      </div>
-
-                      {/* Pricing & Add To Cart Button */}
-                      <div className="mt-auto flex items-end justify-between gap-2 border-t border-slate-100 pt-4">
-                        <div>
-                          <span className="block text-[10px] font-semibold text-slate-400">Giá niêm yết</span>
-                          <div className="flex items-baseline gap-1.5">
-                            <strong className="text-base font-black text-emerald-700 sm:text-lg">
-                              {product.displayPrice}
-                            </strong>
-                          </div>
-                        </div>
-
-                        <button
-                          type="button"
-                          onClick={(e) => handleQuickAddToCart(e, product)}
-                          disabled={!product.defaultVariantId}
-                          className="relative z-10 grid size-9 shrink-0 place-items-center rounded-full bg-slate-900 text-white shadow-md transition duration-300 hover:scale-105 hover:bg-emerald-600 active:scale-95 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:hover:scale-100"
-                          title={product.defaultVariantId ? 'Thêm nhanh vào giỏ hàng' : 'Mở chi tiết để chọn phiên bản'}
-                          aria-label={`Thêm ${product.name} vào giỏ`}
-                        >
-                          <ShoppingBag className="size-4" />
-                        </button>
-                      </div>
+                    {/* Hover Overlay */}
+                    <div className="absolute inset-0 flex items-center justify-center gap-2 bg-slate-950/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                      <span className="flex items-center gap-1.5 rounded-full bg-white/95 px-3.5 py-1.5 text-xs font-bold text-slate-900 shadow-lg backdrop-blur transition hover:bg-emerald-600 hover:text-white">
+                        <Eye className="size-3.5" /> Xem chi tiết
+                      </span>
                     </div>
                   </div>
-                </article>
-              );
-            })}
+
+                  {/* Card Content */}
+                  <div className="flex flex-1 flex-col p-4 sm:p-5">
+                    <div className="flex items-center justify-between gap-2 text-[10px] font-extrabold uppercase tracking-[0.16em]">
+                      <span className="text-emerald-700">{product.brand}</span>
+                      <span className="truncate text-slate-400">{product.category}</span>
+                    </div>
+
+                    <h3 className="mt-2 min-h-[44px] text-sm font-bold leading-snug text-slate-900 line-clamp-2 transition group-hover:text-emerald-700">
+                      <Link
+                        href={`/products/${product.slug}`}
+                        className="after:absolute after:inset-0 after:content-['']"
+                      >
+                        {product.name}
+                      </Link>
+                    </h3>
+
+                    <div className="mt-2 flex items-center gap-2 text-xs">
+                      <span className="ml-auto rounded bg-emerald-50 px-1.5 py-0.5 text-[10px] font-bold text-emerald-700">
+                        Trả góp 0%
+                      </span>
+                    </div>
+
+                    {/* Pricing & Add To Cart */}
+                    <div className="mt-auto flex items-end justify-between gap-2 border-t border-slate-100 pt-4">
+                      <div>
+                        <span className="block text-[10px] font-semibold text-slate-400">Giá niêm yết</span>
+                        <div className="flex items-baseline gap-1.5">
+                          <strong className="text-base font-black text-emerald-700 sm:text-lg">
+                            {product.displayPrice}
+                          </strong>
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={(e) => handleQuickAddToCart(e, product)}
+                        disabled={!product.defaultVariantId}
+                        className="relative z-10 grid size-9 shrink-0 place-items-center rounded-full bg-slate-900 text-white shadow-md transition duration-300 hover:scale-105 hover:bg-emerald-600 active:scale-95 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:hover:scale-100"
+                        title={product.defaultVariantId ? 'Thêm nhanh vào giỏ hàng' : 'Mở chi tiết để chọn phiên bản'}
+                        aria-label={`Thêm ${product.name} vào giỏ`}
+                      >
+                        <ShoppingBag className="size-4" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            ))}
           </div>
         )}
       </div>

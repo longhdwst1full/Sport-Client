@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   ShoppingBag,
@@ -30,6 +30,11 @@ export function ProductPurchasePanel({ product }: { product: ProductPurchaseView
   const [selectedVariantId, setSelectedVariantId] = useState(variants[0]?.id ?? '');
   const [quantity, setQuantity] = useState(1);
   const [isAddedToast, setIsAddedToast] = useState(false);
+
+  useEffect(() => {
+    router.prefetch('/checkout');
+    router.prefetch('/cart');
+  }, [router]);
 
   const selectedVariant = variants.find(({ id }) => id === selectedVariantId) ?? variants[0];
   const price = selectedVariant?.priceAmount ?? 0;
@@ -67,7 +72,7 @@ export function ProductPurchasePanel({ product }: { product: ProductPurchaseView
         quantity,
       })
     );
-    router.push('/checkout');
+    window.location.href = '/checkout';
   };
 
   return (
@@ -193,15 +198,18 @@ export function ProductPurchasePanel({ product }: { product: ProductPurchaseView
         <div className="flex items-center rounded-full border border-stone-200 bg-stone-50 p-1">
           <button
             type="button"
+            aria-label="Giảm số lượng"
             onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-            className="grid size-8 place-items-center rounded-full bg-white text-ink shadow-sm transition hover:bg-stone-200"
-            disabled={quantity <= 1}
+            className={`grid size-8 place-items-center rounded-full bg-white text-ink shadow-sm transition hover:bg-stone-200 ${
+              quantity <= 1 ? 'opacity-40 cursor-not-allowed' : ''
+            }`}
           >
             <Minus className="size-3.5" />
           </button>
           <span className="w-12 text-center text-sm font-extrabold text-ink">{quantity}</span>
           <button
             type="button"
+            aria-label="Tăng số lượng"
             onClick={() => setQuantity((q) => q + 1)}
             className="grid size-8 place-items-center rounded-full bg-white text-ink shadow-sm transition hover:bg-stone-200"
           >

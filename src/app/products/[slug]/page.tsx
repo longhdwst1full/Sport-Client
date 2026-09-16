@@ -157,9 +157,30 @@ export default async function ProductDetailPage({
             { label: product.name },
           ]}
         />
+        {/* Main Product Title Header */}
+        <div className="mx-auto max-w-7xl px-4 pt-2 sm:px-6 lg:px-8">
+          <h1 className="text-2xl font-black tracking-tight text-slate-900 sm:text-3xl lg:text-4xl">
+            {product.name}
+          </h1>
+          <div className="mt-2 flex flex-wrap items-center gap-3 text-xs font-semibold text-slate-500">
+            {product.brand && (
+              <span className="rounded-full bg-emerald-50 px-3 py-1 font-bold text-emerald-700">
+                {product.brand}
+              </span>
+            )}
+            {product.primaryCategory && (
+              <span>
+                Danh mục: <strong className="text-slate-700">{product.primaryCategory}</strong>
+              </span>
+            )}
+            <span>
+              Mã SP: <strong className="text-slate-700">{product.productNo}</strong>
+            </span>
+          </div>
+        </div>
 
         {/* Main Product Stage */}
-        <main className="mx-auto grid max-w-7xl gap-8 px-4 py-3 sm:px-6 lg:grid-cols-[1.12fr_0.88fr] lg:px-8">
+        <main className="mx-auto mt-4 grid max-w-7xl gap-8 px-4 py-3 sm:px-6 lg:grid-cols-[1.12fr_0.88fr] lg:px-8">
           {/* Left Column: Visual Showcase & Technical Detail */}
           <div className="space-y-8">
             {/* Product media is image-first. Heavy 3D rendering is intentionally excluded here. */}
