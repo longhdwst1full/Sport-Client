@@ -3,21 +3,36 @@ import { defineConfig, devices } from '@playwright/test';
 /**
  * E2E cho Storefront.
  *
+ * Chạy trên API thật: trang chủ, danh mục và chi tiết sản phẩm render phía server
+ * (App Router), nên `page.route` của Playwright không chặn được các lời gọi đó.
+ * Mọi kịch bản vì thế đọc dữ liệu thật qua `NEXT_PUBLIC_API_URL`.
+ *
  * Dùng cổng 3100 chứ không phải 3000: máy phát triển thường đã có sẵn một dev
  * server ở 3000, chạy đè lên sẽ làm test đo nhầm bản build cũ.
  */
-const PORT = Number(process.env.E2E_PORT ?? 3100);
+const PORT = Number(process.env.E2E_PORT ?? 3199);
 const BASE_URL = process.env.E2E_BASE_URL ?? `http://127.0.0.1:${PORT}`;
 
+/**
+ * API dùng cho E2E. Mặc định là API cục bộ: `.env.local` của dự án trỏ sang môi
+ * trường dùng chung không mở CORS cho `127.0.0.1`, chạy thẳng sẽ ra trang rỗng
+ * chứ không ra lỗi rõ ràng.
+ */
+const API_URL = process.env.E2E_API_URL ?? 'http://localhost:4000';
+
 export default defineConfig({
-  testDir: './e2e',
-  // Trạng thái nằm ở database dùng chung nên chạy tuần tự; song song sẽ giẫm lên nhau.
-  fullyParallel: false,
-  workers: 1,
+  testDir: './e2e/specs',
+  outputDir: './e2e/.artifacts',
+  // Mỗi test chạy trong browser context riêng nên giỏ hàng (localStorage) không
+  // giẫm lên nhau. Spec nào tạo đơn thật tự đặt `mode: 'serial'` cho describe đó.
+  fullyParallel: true,
+  workers: process.env.CI ? 2 : 4,
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 1 : 0,
-  reporter: process.env.CI ? [['github'], ['html', { open: 'never' }]] : [['list']],
-  timeout: 30_000,
+  reporter: process.env.CI
+    ? [['github'], ['html', { outputFolder: 'e2e/.report', open: 'never' }]]
+    : [['list'], ['html', { outputFolder: 'e2e/.report', open: 'never' }]],
+  timeout: 45_000,
   expect: { timeout: 10_000 },
 
   use: {
@@ -28,6 +43,7 @@ export default defineConfig({
     video: 'retain-on-failure',
     locale: 'vi-VN',
     timezoneId: 'Asia/Ho_Chi_Minh',
+    testIdAttribute: 'data-testid',
   },
 
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
@@ -39,6 +55,7 @@ export default defineConfig({
         command: `yarn next dev -p ${PORT}`,
         url: BASE_URL,
         reuseExistingServer: !process.env.CI,
-        timeout: 120_000,
+        timeout: 180_000,
+        env: { NEXT_PUBLIC_API_URL: API_URL },
       },
 });
