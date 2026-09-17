@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useListCatalogCategories } from '@/generated/api/catalog/catalog';
 import type { CatalogCategoryDto } from '@/generated/api/catalog/models';
 
@@ -29,7 +29,14 @@ export function useMegaMenuCategories(): {
   categories: MegaMenuEntry[];
   isPending: boolean;
 } {
-  const query = useListCatalogCategories();
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const query = useListCatalogCategories({
+    query: { enabled: isMounted },
+  });
 
   const categories = useMemo(() => {
     const items: CatalogCategoryDto[] = query.data?.items ?? [];

@@ -42,7 +42,14 @@ export function useFlashSale(): {
   isPending: boolean;
   isError: boolean;
 } {
-  const query = useListPublicFlashSales();
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const query = useListPublicFlashSales({
+    query: { enabled: isMounted },
+  });
   const clockOffsetRef = useRef(0);
   const [countdown, setCountdown] = useState<FlashSaleCountdown>(ZERO);
 

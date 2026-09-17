@@ -1,5 +1,5 @@
 import { select, takeEvery } from 'redux-saga/effects';
-import { addCartItem, clearCart, type CartItem } from './cart.slice';
+import { addCartItem, clearCart, removeCartItem, updateQuantity, type CartItem } from './cart.slice';
 import type { RootState } from './store';
 import { createBrowserStore, LocalStorageKey } from '@/core/storage';
 
@@ -12,7 +12,7 @@ const cartStore = createBrowserStore<CartItem[]>(CART_STORAGE_KEY, {
     Array.isArray(parsed)
       ? parsed
           .filter(isCartItem)
-          .map(({ productId, variantId, sku, productType, name, price, quantity }) => ({
+          .map(({ productId, variantId, sku, productType, name, price, quantity, imageUrl }) => ({
             productId,
             variantId,
             sku,
@@ -20,6 +20,7 @@ const cartStore = createBrowserStore<CartItem[]>(CART_STORAGE_KEY, {
             name,
             price,
             quantity,
+            imageUrl,
           }))
       : [],
 });
@@ -56,5 +57,8 @@ function* persistCart() {
 }
 
 export function* rootSaga() {
-  yield takeEvery([addCartItem.type, clearCart.type], persistCart);
+  yield takeEvery(
+    [addCartItem.type, removeCartItem.type, updateQuantity.type, clearCart.type],
+    persistCart,
+  );
 }

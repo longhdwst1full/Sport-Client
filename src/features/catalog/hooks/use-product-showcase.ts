@@ -58,12 +58,22 @@ export function useProductShowcase(
   const [limit, setLimit] = useState(pageSize);
   useEffect(() => setLimit(pageSize), [categorySlug, search, pageSize]);
 
-  const query = useListCatalogProducts({
-    page: 1,
-    limit,
-    category: categorySlug,
-    search: search || undefined,
-  });
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const query = useListCatalogProducts(
+    {
+      page: 1,
+      limit,
+      category: categorySlug,
+      search: search || undefined,
+    },
+    {
+      query: { enabled: isMounted },
+    },
+  );
   const total = query.data?.meta.total ?? 0;
 
   const products = useMemo<ProductShowcaseItem[]>(

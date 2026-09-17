@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useListCatalogCategories } from '@/generated/api/catalog/catalog';
 
 export interface CategoryTabView {
@@ -12,15 +12,15 @@ export interface CategoryTabView {
 /** Số tab tối đa để hàng tab không tràn trên màn hình hẹp. */
 const MAX_TABS = 5;
 
-/**
- * Tab lọc dựng từ danh mục thật.
- *
- * Bản trước dùng danh sách tab viết cứng với id tự đặt ('gym', 'cardio'...) rồi so sánh
- * với tên danh mục trả về từ API ('Tạ Tay - Tạ Đơn'). Hai vế không bao giờ bằng nhau nên
- * bấm tab nào cũng ra danh sách rỗng.
- */
 export function useCategoryTabs(): { tabs: CategoryTabView[]; isPending: boolean } {
-  const query = useListCatalogCategories();
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const query = useListCatalogCategories({
+    query: { enabled: isMounted },
+  });
 
   const tabs = useMemo<CategoryTabView[]>(() => {
     const roots = (query.data?.items ?? [])

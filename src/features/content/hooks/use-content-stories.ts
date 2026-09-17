@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useListPublishedPosts } from '@/generated/api/content/content';
 import {
   POLICY_POST_TYPE,
@@ -13,7 +13,12 @@ export function useContentStories(): {
   isPending: boolean;
   isError: boolean;
 } {
-  const query = useListPublishedPosts();
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const query = useListPublishedPosts(undefined, { query: { enabled: isMounted } });
   const stories = useMemo(
     () =>
       (query.data?.items ?? [])

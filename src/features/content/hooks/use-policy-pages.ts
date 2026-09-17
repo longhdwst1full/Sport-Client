@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useListPublishedPosts } from '@/generated/api/content/content';
 import { toContentPostView, type ContentPostView } from '../model/content-post.mapper';
 
@@ -10,7 +10,12 @@ export function usePolicyPages(): {
   isPending: boolean;
   isError: boolean;
 } {
-  const query = useListPublishedPosts({ postType: 'POLICY' });
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const query = useListPublishedPosts({ postType: 'POLICY' }, { query: { enabled: isMounted } });
   const policies = useMemo(
     () => (query.data?.items ?? []).map(toContentPostView),
     [query.data?.items],
