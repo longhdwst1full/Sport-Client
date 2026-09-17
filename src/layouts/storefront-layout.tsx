@@ -85,7 +85,7 @@ export function StorefrontLayout({ children }: { children: ReactNode }) {
             <div className="rounded-xl border border-slate-800/90 bg-slate-900/60 p-3.5 text-xs text-slate-400 space-y-1.5">
               <div className="font-bold text-slate-300">Thông tin đăng ký doanh nghiệp:</div>
               <p className="text-[11px] leading-relaxed text-slate-400">
-                Giấy chứng nhận ĐKKD số <strong className="text-emerald-400">01M8027099</strong> do phòng Tài chính - Kế hoạch quận Hoàng Mai, TP. Hà Nội cấp ngày 01/03/2021.
+                Giấy chứng nhận ĐKKD số <span className="font-bold text-emerald-400">01M8027099</span> do phòng Tài chính - Kế hoạch quận Hoàng Mai, TP. Hà Nội cấp ngày 01/03/2021.
               </p>
             </div>
 
@@ -201,11 +201,12 @@ export function StorefrontLayout({ children }: { children: ReactNode }) {
             <div className="mt-4 space-y-3.5 text-xs text-slate-400">
               {/* Showroom HN */}
               <div className="rounded-xl border border-slate-800/80 bg-slate-900/40 p-3 space-y-1">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-white flex items-center gap-1.5">
-                    <MapPin className="size-3.5 text-emerald-400" /> SHOWROOM HÀ NỘI
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-xs font-bold text-white flex items-center gap-1.5 min-w-0">
+                    <MapPin className="size-3.5 text-emerald-400 shrink-0" />
+                    <span className="truncate">SHOWROOM HÀ NỘI</span>
                   </span>
-                  <span className="rounded bg-emerald-950 px-1.5 py-0.5 text-[10px] font-bold text-emerald-400">
+                  <span className="shrink-0 whitespace-nowrap rounded bg-emerald-950 px-2 py-0.5 text-[10px] font-bold text-emerald-400 border border-emerald-800/40">
                     Trụ sở
                   </span>
                 </div>
@@ -225,11 +226,12 @@ export function StorefrontLayout({ children }: { children: ReactNode }) {
 
               {/* Showroom HCM */}
               <div className="rounded-xl border border-slate-800/80 bg-slate-900/40 p-3 space-y-1">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-white flex items-center gap-1.5">
-                    <MapPin className="size-3.5 text-emerald-400" /> SHOWROOM TP. HỒ CHÍ MINH
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-xs font-bold text-white flex items-center gap-1.5 min-w-0">
+                    <MapPin className="size-3.5 text-emerald-400 shrink-0" />
+                    <span className="truncate">SHOWROOM TP. HỒ CHÍ MINH</span>
                   </span>
-                  <span className="rounded bg-emerald-950 px-1.5 py-0.5 text-[10px] font-bold text-emerald-400">
+                  <span className="shrink-0 whitespace-nowrap rounded bg-emerald-950 px-2 py-0.5 text-[10px] font-bold text-emerald-400 border border-emerald-800/40">
                     Chi nhánh
                   </span>
                 </div>

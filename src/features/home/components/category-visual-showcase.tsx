@@ -9,7 +9,26 @@ import {
   Layers,
   Sparkles,
   ArrowRight,
+  Dumbbell,
+  Footprints,
+  Trophy,
+  Activity,
+  HeartPulse,
+  Swords,
+  Bike,
 } from 'lucide-react';
+
+function getCategoryIcon(name: string) {
+  const n = name.toLowerCase();
+  if (n.includes('gym') || n.includes('tạ')) return Dumbbell;
+  if (n.includes('chạy') || n.includes('đi bộ')) return Footprints;
+  if (n.includes('bóng bàn') || n.includes('bóng rổ') || n.includes('bóng chuyền') || n.includes('cầu lông') || n.includes('tennis') || n.includes('pickleball')) return Trophy;
+  if (n.includes('võ') || n.includes('boxing') || n.includes('đấm')) return Swords;
+  if (n.includes('xe đạp')) return Bike;
+  if (n.includes('yoga')) return HeartPulse;
+  if (n.includes('thể dục') || n.includes('bơi')) return Activity;
+  return Dumbbell;
+}
 import type { CategoryRailView } from '@/features/catalog';
 
 export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] }) {
@@ -182,8 +201,11 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
                       className="object-contain p-2 transition-transform duration-500 group-hover:scale-110"
                     />
                   ) : (
-                    <div className="absolute inset-0 grid place-items-center text-xs font-black text-stone-400">
-                      {cat.name.slice(0, 2).toUpperCase()}
+                    <div className="absolute inset-0 grid place-items-center bg-emerald-50/60 text-emerald-600 transition-transform duration-300 group-hover:scale-110">
+                      {(() => {
+                        const Icon = getCategoryIcon(cat.name);
+                        return <Icon className="size-10 stroke-[1.75]" />;
+                      })()}
                     </div>
                   )}
                 </div>
