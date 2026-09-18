@@ -1,6 +1,13 @@
 const CACHE_PREFIX = 'dctd-storefront-';
-const CACHE_NAME = `${CACHE_PREFIX}v2`;
-const APP_SHELL = ['/', '/offline', '/manifest.webmanifest', '/icon.svg'];
+const CACHE_NAME = `${CACHE_PREFIX}v3`;
+const APP_SHELL = [
+  '/',
+  '/offline',
+  '/manifest.webmanifest',
+  '/icon.svg',
+  '/icon-192.png',
+  '/icon-512.png',
+];
 const PUBLIC_NAVIGATIONS = new Set(['/']);
 
 self.addEventListener('install', (event) => {
@@ -58,6 +65,8 @@ self.addEventListener('fetch', (event) => {
   const isPublicStatic =
     requestUrl.pathname.startsWith('/_next/static/') ||
     requestUrl.pathname === '/icon.svg' ||
+    requestUrl.pathname === '/icon-192.png' ||
+    requestUrl.pathname === '/icon-512.png' ||
     requestUrl.pathname === '/manifest.webmanifest';
   if (!isPublicStatic) return;
 
