@@ -7,8 +7,8 @@ import { defineConfig, devices } from '@playwright/test';
  * (App Router), nên `page.route` của Playwright không chặn được các lời gọi đó.
  * Mọi kịch bản vì thế đọc dữ liệu thật qua `NEXT_PUBLIC_API_URL`.
  *
- * Dùng cổng 3100 chứ không phải 3000: máy phát triển thường đã có sẵn một dev
- * server ở 3000, chạy đè lên sẽ làm test đo nhầm bản build cũ.
+ * Dùng cổng riêng thay vì 3000: máy phát triển thường đã có sẵn một server
+ * ở 3000, chạy đè lên sẽ làm test đo nhầm bản build cũ.
  */
 const PORT = Number(process.env.E2E_PORT ?? 3199);
 const BASE_URL = process.env.E2E_BASE_URL ?? `http://127.0.0.1:${PORT}`;
@@ -22,7 +22,8 @@ const API_URL = process.env.E2E_API_URL ?? 'http://localhost:4000';
 
 export default defineConfig({
   testDir: './e2e/specs',
-  outputDir: './e2e/.artifacts',
+  // Test output phải nằm ngoài e2e/ vì repo từng track artifact ở đó.
+  outputDir: './.playwright/artifacts',
   // Mỗi test chạy trong browser context riêng nên giỏ hàng (localStorage) không
   // giẫm lên nhau. Spec nào tạo đơn thật tự đặt `mode: 'serial'` cho describe đó.
   fullyParallel: true,
@@ -30,8 +31,8 @@ export default defineConfig({
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI
-    ? [['github'], ['html', { outputFolder: 'e2e/.report', open: 'never' }]]
-    : [['list'], ['html', { outputFolder: 'e2e/.report', open: 'never' }]],
+    ? [['github'], ['html', { outputFolder: '.playwright/report', open: 'never' }]]
+    : [['list'], ['html', { outputFolder: '.playwright/report', open: 'never' }]],
   timeout: 45_000,
   expect: { timeout: 10_000 },
 
@@ -48,14 +49,18 @@ export default defineConfig({
 
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
 
-  // Tự dựng server khi chạy cục bộ; CI có thể trỏ E2E_BASE_URL sang môi trường khác.
+  // Mặc định chạy production build: next dev tạo rất nhiều file watcher và có thể
+  // chạm ENOSPC trên workstation/CI. E2E_DEV=1 chỉ dùng khi cần debug UI nhanh.
+  // CI có thể trỏ E2E_BASE_URL sang môi trường khác.
   webServer: process.env.E2E_BASE_URL
     ? undefined
     : {
-        command: `yarn next dev -p ${PORT}`,
+        command: process.env.E2E_DEV === '1'
+          ? `yarn next dev -p ${PORT}`
+          : `yarn build && yarn next start -p ${PORT}`,
         url: BASE_URL,
         reuseExistingServer: !process.env.CI,
-        timeout: 180_000,
+        timeout: 240_000,
         env: { NEXT_PUBLIC_API_URL: API_URL },
       },
 });
