@@ -10,7 +10,7 @@ import { NextResponse } from 'next/server';
  * Proxy KHÔNG diễn giải nội dung: mã lỗi và thân phản hồi của backend được trả lại
  * nguyên vẹn, vì backend mới là nơi quyết định nghiệp vụ thanh toán.
  */
-const BACKEND_URL = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
+const BACKEND_URL = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? 'http://127.0.0.1:4000';
 
 /** Chỉ chuyển tiếp header cần thiết; không bê nguyên header của trình duyệt sang. */
 const FORWARDED_HEADERS = [

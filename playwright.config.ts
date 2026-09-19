@@ -18,7 +18,7 @@ const BASE_URL = process.env.E2E_BASE_URL ?? `http://127.0.0.1:${PORT}`;
  * trường dùng chung không mở CORS cho `127.0.0.1`, chạy thẳng sẽ ra trang rỗng
  * chứ không ra lỗi rõ ràng.
  */
-const API_URL = process.env.E2E_API_URL ?? 'http://localhost:4000';
+const API_URL = process.env.E2E_API_URL ?? 'http://127.0.0.1:4000';
 
 export default defineConfig({
   testDir: './e2e/specs',

@@ -8,7 +8,7 @@ import {
   usesCustomerAuthCookieTransport,
 } from '../../features/auth/model/auth-token.store';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://127.0.0.1:4000';
 
 export class ApiError<T = unknown> extends Error {
   constructor(
