@@ -8,7 +8,7 @@ import {
   usesCustomerAuthCookieTransport,
 } from '../../features/auth/model/auth-token.store';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://127.0.0.1:4000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://sport-api-doc.vercel.app';
 
 export class ApiError<T = unknown> extends Error {
   constructor(
@@ -22,6 +22,7 @@ export class ApiError<T = unknown> extends Error {
 
 const apiClient = axios.create({
   baseURL: API_URL,
+  timeout: 10_000,
   withCredentials: true,
   headers: { Accept: 'application/json' },
 });

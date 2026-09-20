@@ -113,6 +113,7 @@ export function SiteHeader() {
             className="group flex min-w-0 shrink-0 items-center transition-transform hover:scale-[1.02]"
             aria-label="Bảo An Sport - Trang chủ"
           >
+            <span className="sr-only">Bảo An Sport</span>
             <div className="relative h-11 w-44 sm:h-12 sm:w-56">
               <Image
                 src="/images/logo.png"
@@ -213,7 +214,21 @@ export function SiteHeader() {
         <div className="mx-auto flex h-12 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           {/* Main Category Dropdowns */}
           <div className="flex items-center gap-1">
-            {megaMenuCategories.map((cat) => {
+            <Link
+              href="/"
+              className="inline-flex items-center whitespace-nowrap rounded-lg px-3 py-2 text-[13px] font-bold text-slate-700 hover:bg-slate-50 hover:text-emerald-700 transition-all"
+            >
+              Trang chủ
+            </Link>
+
+            <Link
+              href="/products"
+              className="inline-flex items-center whitespace-nowrap rounded-lg px-3 py-2 text-[13px] font-bold text-slate-700 hover:bg-slate-50 hover:text-emerald-700 transition-all"
+            >
+              Sản phẩm
+            </Link>
+
+            {megaMenuCategories.slice(0, 4).map((cat) => {
               const isOpen = activeMegaMenu === cat.label;
               return (
                 <div
@@ -224,7 +239,7 @@ export function SiteHeader() {
                 >
                   <Link
                     href={cat.href}
-                    className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3.5 py-2 text-[13px] font-bold transition-all ${
+                    className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-2 text-[13px] font-bold transition-all ${
                       isOpen
                         ? 'bg-slate-100 text-emerald-700'
                         : 'text-slate-700 hover:bg-slate-50 hover:text-emerald-700'
@@ -295,6 +310,54 @@ export function SiteHeader() {
                 </div>
               );
             })}
+
+            {/* Overflow Dropdown for remaining categories */}
+            {megaMenuCategories.length > 4 && (
+              <div
+                className="relative"
+                onMouseEnter={() => handleMegaMenuEnter('__extra_categories')}
+                onMouseLeave={handleMegaMenuLeave}
+              >
+                <button
+                  type="button"
+                  className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-2 text-[13px] font-bold transition-all ${
+                    activeMegaMenu === '__extra_categories'
+                      ? 'bg-slate-100 text-emerald-700'
+                      : 'text-slate-700 hover:bg-slate-50 hover:text-emerald-700'
+                  }`}
+                >
+                  <span>Danh mục khác</span>
+                  <ChevronDown
+                    className={`size-3.5 text-slate-400 transition-transform duration-200 ${
+                      activeMegaMenu === '__extra_categories' ? 'rotate-180 text-emerald-600' : ''
+                    }`}
+                  />
+                </button>
+
+                {activeMegaMenu === '__extra_categories' && (
+                  <div
+                    className="absolute left-0 top-full z-50 w-64 pt-1.5 animate-in fade-in slide-in-from-top-1 duration-150"
+                    onMouseEnter={() => handleMegaMenuEnter('__extra_categories')}
+                    onMouseLeave={handleMegaMenuLeave}
+                  >
+                    <div className="overflow-hidden rounded-xl border border-slate-200/90 bg-white p-2 shadow-2xl ring-1 ring-black/5">
+                      {megaMenuCategories.slice(4).map((cat) => (
+                        <Link
+                          key={cat.label}
+                          href={cat.href}
+                          className="flex items-center justify-between rounded-lg px-3 py-2 text-xs font-bold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 transition"
+                        >
+                          <span>{cat.label}</span>
+                          <span className="text-[10px] text-slate-400 font-normal">
+                            ({cat.productCount})
+                          </span>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Quick Features & Highlights */}
@@ -361,6 +424,24 @@ export function SiteHeader() {
               {/* Main Categories Accordion */}
               <div className="px-4 py-3 space-y-1">
                 <div className="px-3 py-1 text-[11px] font-black uppercase tracking-wider text-slate-400">
+                  Điều hướng
+                </div>
+                <Link
+                  href="/"
+                  className="flex items-center gap-3 px-3 py-2.5 text-sm font-bold text-slate-800 hover:bg-slate-50 hover:text-emerald-700 rounded-xl transition"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Trang chủ
+                </Link>
+                <Link
+                  href="/products"
+                  className="flex items-center gap-3 px-3 py-2.5 text-sm font-bold text-slate-800 hover:bg-slate-50 hover:text-emerald-700 rounded-xl transition"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Tất cả sản phẩm
+                </Link>
+
+                <div className="pt-2 px-3 py-1 text-[11px] font-black uppercase tracking-wider text-slate-400">
                   Danh mục thiết bị chính hãng
                 </div>
                 {megaMenuCategories.map((cat) => {

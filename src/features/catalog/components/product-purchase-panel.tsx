@@ -38,7 +38,7 @@ export function ProductPurchasePanel({ product }: { product: ProductPurchaseView
 
   const selectedVariant = variants.find(({ id }) => id === selectedVariantId) ?? variants[0];
   const price = selectedVariant?.priceAmount ?? 0;
-  const canAdd = Boolean(selectedVariant?.sellable);
+  const canAdd = Boolean(selectedVariant);
 
   const handleAddToCart = () => {
     if (!selectedVariant || !canAdd) return;

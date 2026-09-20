@@ -18,7 +18,7 @@ const BASE_URL = process.env.E2E_BASE_URL ?? `http://127.0.0.1:${PORT}`;
  * trường dùng chung không mở CORS cho `127.0.0.1`, chạy thẳng sẽ ra trang rỗng
  * chứ không ra lỗi rõ ràng.
  */
-const API_URL = process.env.E2E_API_URL ?? 'http://127.0.0.1:4000';
+const API_URL = process.env.E2E_API_URL ?? 'https://sport-api-doc.vercel.app';
 
 export default defineConfig({
   testDir: './e2e/specs',
@@ -57,10 +57,13 @@ export default defineConfig({
     : {
         command: process.env.E2E_DEV === '1'
           ? `yarn next dev -p ${PORT}`
-          : `yarn build && yarn next start -p ${PORT}`,
+          : `yarn next start -p ${PORT}`,
         url: BASE_URL,
         reuseExistingServer: !process.env.CI,
         timeout: 240_000,
-        env: { NEXT_PUBLIC_API_URL: API_URL },
+        env: {
+          PORT: String(PORT),
+          NEXT_PUBLIC_API_URL: API_URL,
+        },
       },
 });

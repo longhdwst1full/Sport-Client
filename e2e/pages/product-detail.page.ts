@@ -14,4 +14,10 @@ export class ProductDetailPage extends StorefrontPage {
   async open(slug: string): Promise<void> {
     await this.goto(`/products/${slug}`);
   }
+
+  async clickAddToCart(): Promise<void> {
+    const btn = this.addToCart();
+    await btn.scrollIntoViewIfNeeded();
+    await btn.click({ force: true });
+  }
 }

@@ -19,7 +19,7 @@ test.describe('CART — Giỏ hàng', () => {
     const product = await firstProduct(request);
     const pdp = new ProductDetailPage(page);
     await pdp.open(product.slug);
-    await pdp.addToCart().click();
+    await pdp.clickAddToCart();
 
     const cart = new CartPage(page);
     await cart.open();
@@ -33,7 +33,7 @@ test.describe('CART — Giỏ hàng', () => {
     const product = await firstProduct(request);
     const pdp = new ProductDetailPage(page);
     await pdp.open(product.slug);
-    await pdp.addToCart().click();
+    await pdp.clickAddToCart();
 
     const cart = new CartPage(page);
     await cart.open();
@@ -48,7 +48,7 @@ test.describe('CART — Giỏ hàng', () => {
     const product = await firstProduct(request);
     const pdp = new ProductDetailPage(page);
     await pdp.open(product.slug);
-    await pdp.addToCart().click();
+    await pdp.clickAddToCart();
 
     const cart = new CartPage(page);
     await cart.open();
@@ -61,7 +61,7 @@ test.describe('CART — Giỏ hàng', () => {
     const product = await firstProduct(request);
     const pdp = new ProductDetailPage(page);
     await pdp.open(product.slug);
-    await pdp.addToCart().click();
+    await pdp.clickAddToCart();
 
     const cart = new CartPage(page);
     await cart.open();
@@ -76,7 +76,7 @@ test.describe('CART — Giỏ hàng', () => {
     const product = await firstProduct(request);
     const pdp = new ProductDetailPage(page);
     await pdp.open(product.slug);
-    await pdp.addToCart().click();
+    await pdp.clickAddToCart();
     await page.reload();
 
     await expect(page.locator('a[href="/cart"]').first()).not.toHaveAccessibleName(

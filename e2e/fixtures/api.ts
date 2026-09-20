@@ -4,7 +4,7 @@ import type { APIRequestContext } from '@playwright/test';
  * Truy dữ liệu thật từ API để test không viết cứng slug/tên sản phẩm — catalog
  * thay đổi theo môi trường, viết cứng là nguồn gốc của test giòn.
  */
-export const API_URL = process.env.E2E_API_URL ?? 'http://127.0.0.1:4000';
+export const API_URL = process.env.E2E_API_URL ?? 'https://sport-api-doc.vercel.app';
 
 export interface CatalogProduct {
   id: string;
