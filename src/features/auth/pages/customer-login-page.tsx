@@ -28,6 +28,7 @@ import { saveCustomerAuthTokens } from '../model/auth-token.store';
 const schema: yup.ObjectSchema<LoginDto> = yup.object({
   identifier: yup.string().trim().required('Nhập email hoặc số điện thoại').max(255),
   password: yup.string().required('Nhập mật khẩu').min(8, 'Mật khẩu tối thiểu 8 ký tự').max(128),
+  rememberMe: yup.boolean().optional(),
 });
 
 export function CustomerLoginPage() {
@@ -38,7 +39,7 @@ export function CustomerLoginPage() {
 
   const form = useForm<LoginDto>({
     resolver: yupResolver(schema),
-    defaultValues: { identifier: '', password: '' },
+    defaultValues: { identifier: '', password: '', rememberMe: false },
   });
 
   const login = useLoginCustomer({

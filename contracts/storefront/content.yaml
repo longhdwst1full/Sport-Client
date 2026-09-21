@@ -89,6 +89,10 @@ components:
             - PRODUCT_GUIDE
             - ABOUT
             - POLICY
+        isPublished:
+          type: boolean
+          example: true
+          description: Có hiển thị trên website hay không; tách khỏi status để ẩn tạm bài viết
         title:
           type: string
         excerpt:
@@ -122,6 +126,7 @@ components:
         - id
         - slug
         - postType
+        - isPublished
         - title
         - excerpt
         - body

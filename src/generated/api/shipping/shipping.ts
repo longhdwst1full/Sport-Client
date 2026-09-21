@@ -5,15 +5,30 @@
  * Contract for storefront and admin applications
  * OpenAPI spec version: 1.0.0
  */
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import type {
+  DataTag,
+  DefinedInitialDataOptions,
+  DefinedUseQueryResult,
   MutationFunction,
   QueryClient,
+  QueryFunction,
+  QueryKey,
+  UndefinedInitialDataOptions,
   UseMutationOptions,
   UseMutationResult,
+  UseQueryOptions,
+  UseQueryResult,
 } from '@tanstack/react-query';
 
-import type { ErrorResponseDto, ShippingQuoteDto, ShippingQuoteRequestDto } from './models';
+import type {
+  ErrorResponseDto,
+  ListShippingDistrictsParams,
+  ListShippingWardsParams,
+  ShippingAreaListDto,
+  ShippingQuoteDto,
+  ShippingQuoteRequestDto,
+} from './models';
 
 import { apiFetcher } from '../../../lib/api/fetcher';
 import type { ErrorType, BodyType } from '../../../lib/api/fetcher';
@@ -106,3 +121,381 @@ export const useQuoteShipping = <
 
   return useMutation(mutationOptions, queryClient);
 };
+
+/**
+ * @summary Danh sách tỉnh/thành theo mã của hãng vận chuyển
+ */
+export const listShippingProvinces = (
+  options?: SecondParameter<typeof apiFetcher>,
+  signal?: AbortSignal,
+) => {
+  return apiFetcher<ShippingAreaListDto>(
+    { url: `/api/v1/shipping/areas/provinces`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getListShippingProvincesQueryKey = () => {
+  return [`/api/v1/shipping/areas/provinces`] as const;
+};
+
+export const getListShippingProvincesQueryOptions = <
+  TData = Awaited<ReturnType<typeof listShippingProvinces>>,
+  TError = ErrorType<ErrorResponseDto>,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof listShippingProvinces>>, TError, TData>
+  >;
+  request?: SecondParameter<typeof apiFetcher>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListShippingProvincesQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listShippingProvinces>>> = ({ signal }) =>
+    listShippingProvinces(requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listShippingProvinces>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListShippingProvincesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listShippingProvinces>>
+>;
+export type ListShippingProvincesQueryError = ErrorType<ErrorResponseDto>;
+
+export function useListShippingProvinces<
+  TData = Awaited<ReturnType<typeof listShippingProvinces>>,
+  TError = ErrorType<ErrorResponseDto>,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listShippingProvinces>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listShippingProvinces>>,
+          TError,
+          Awaited<ReturnType<typeof listShippingProvinces>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListShippingProvinces<
+  TData = Awaited<ReturnType<typeof listShippingProvinces>>,
+  TError = ErrorType<ErrorResponseDto>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listShippingProvinces>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listShippingProvinces>>,
+          TError,
+          Awaited<ReturnType<typeof listShippingProvinces>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListShippingProvinces<
+  TData = Awaited<ReturnType<typeof listShippingProvinces>>,
+  TError = ErrorType<ErrorResponseDto>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listShippingProvinces>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Danh sách tỉnh/thành theo mã của hãng vận chuyển
+ */
+
+export function useListShippingProvinces<
+  TData = Awaited<ReturnType<typeof listShippingProvinces>>,
+  TError = ErrorType<ErrorResponseDto>,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listShippingProvinces>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListShippingProvincesQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * @summary Danh sách quận/huyện của một tỉnh/thành
+ */
+export const listShippingDistricts = (
+  params: ListShippingDistrictsParams,
+  options?: SecondParameter<typeof apiFetcher>,
+  signal?: AbortSignal,
+) => {
+  return apiFetcher<ShippingAreaListDto>(
+    { url: `/api/v1/shipping/areas/districts`, method: 'GET', params, signal },
+    options,
+  );
+};
+
+export const getListShippingDistrictsQueryKey = (params?: ListShippingDistrictsParams) => {
+  return [`/api/v1/shipping/areas/districts`, ...(params ? [params] : [])] as const;
+};
+
+export const getListShippingDistrictsQueryOptions = <
+  TData = Awaited<ReturnType<typeof listShippingDistricts>>,
+  TError = ErrorType<ErrorResponseDto>,
+>(
+  params: ListShippingDistrictsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listShippingDistricts>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListShippingDistrictsQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listShippingDistricts>>> = ({ signal }) =>
+    listShippingDistricts(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listShippingDistricts>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListShippingDistrictsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listShippingDistricts>>
+>;
+export type ListShippingDistrictsQueryError = ErrorType<ErrorResponseDto>;
+
+export function useListShippingDistricts<
+  TData = Awaited<ReturnType<typeof listShippingDistricts>>,
+  TError = ErrorType<ErrorResponseDto>,
+>(
+  params: ListShippingDistrictsParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listShippingDistricts>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listShippingDistricts>>,
+          TError,
+          Awaited<ReturnType<typeof listShippingDistricts>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListShippingDistricts<
+  TData = Awaited<ReturnType<typeof listShippingDistricts>>,
+  TError = ErrorType<ErrorResponseDto>,
+>(
+  params: ListShippingDistrictsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listShippingDistricts>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listShippingDistricts>>,
+          TError,
+          Awaited<ReturnType<typeof listShippingDistricts>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListShippingDistricts<
+  TData = Awaited<ReturnType<typeof listShippingDistricts>>,
+  TError = ErrorType<ErrorResponseDto>,
+>(
+  params: ListShippingDistrictsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listShippingDistricts>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Danh sách quận/huyện của một tỉnh/thành
+ */
+
+export function useListShippingDistricts<
+  TData = Awaited<ReturnType<typeof listShippingDistricts>>,
+  TError = ErrorType<ErrorResponseDto>,
+>(
+  params: ListShippingDistrictsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof listShippingDistricts>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListShippingDistrictsQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * @summary Danh sách phường/xã của một quận/huyện
+ */
+export const listShippingWards = (
+  params: ListShippingWardsParams,
+  options?: SecondParameter<typeof apiFetcher>,
+  signal?: AbortSignal,
+) => {
+  return apiFetcher<ShippingAreaListDto>(
+    { url: `/api/v1/shipping/areas/wards`, method: 'GET', params, signal },
+    options,
+  );
+};
+
+export const getListShippingWardsQueryKey = (params?: ListShippingWardsParams) => {
+  return [`/api/v1/shipping/areas/wards`, ...(params ? [params] : [])] as const;
+};
+
+export const getListShippingWardsQueryOptions = <
+  TData = Awaited<ReturnType<typeof listShippingWards>>,
+  TError = ErrorType<ErrorResponseDto>,
+>(
+  params: ListShippingWardsParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listShippingWards>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListShippingWardsQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listShippingWards>>> = ({ signal }) =>
+    listShippingWards(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listShippingWards>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type ListShippingWardsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listShippingWards>>
+>;
+export type ListShippingWardsQueryError = ErrorType<ErrorResponseDto>;
+
+export function useListShippingWards<
+  TData = Awaited<ReturnType<typeof listShippingWards>>,
+  TError = ErrorType<ErrorResponseDto>,
+>(
+  params: ListShippingWardsParams,
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof listShippingWards>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listShippingWards>>,
+          TError,
+          Awaited<ReturnType<typeof listShippingWards>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListShippingWards<
+  TData = Awaited<ReturnType<typeof listShippingWards>>,
+  TError = ErrorType<ErrorResponseDto>,
+>(
+  params: ListShippingWardsParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listShippingWards>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listShippingWards>>,
+          TError,
+          Awaited<ReturnType<typeof listShippingWards>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useListShippingWards<
+  TData = Awaited<ReturnType<typeof listShippingWards>>,
+  TError = ErrorType<ErrorResponseDto>,
+>(
+  params: ListShippingWardsParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listShippingWards>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Danh sách phường/xã của một quận/huyện
+ */
+
+export function useListShippingWards<
+  TData = Awaited<ReturnType<typeof listShippingWards>>,
+  TError = ErrorType<ErrorResponseDto>,
+>(
+  params: ListShippingWardsParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof listShippingWards>>, TError, TData>>;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getListShippingWardsQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}

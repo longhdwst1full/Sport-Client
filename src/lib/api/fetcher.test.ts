@@ -26,7 +26,7 @@ describe('apiFetcher', () => {
     );
 
     expect(result).toEqual({ items: [] });
-    expect(request?.baseURL).toBe('http://localhost:4000');
+    expect(request?.baseURL).toBe('http://127.0.0.1:4000');
     expect(request?.params).toEqual({ page: 1, search: 'tạ tay' });
     expect(request?.withCredentials).toBe(true);
   });

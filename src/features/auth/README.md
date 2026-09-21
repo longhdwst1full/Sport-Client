@@ -1,10 +1,10 @@
 # Storefront Auth — maintenance note
 
-> **Document version:** 1.0.0
+> **Document version:** 1.1.0
 >
-> **Last updated:** 2026-09-13
+> **Last updated:** 2026-09-21
 >
-> **Change summary:** Tạo note khi token chuyển từ web storage sang cookie qua `core/storage/AuthService`.
+> **Change summary:** Đồng bộ LoginDto remember-me; Storefront V1 mặc định dùng session refresh cookie.
 
 ## Phạm vi
 
@@ -39,6 +39,7 @@ Chưa dùng: `useLogoutCustomer`, `useRefreshCustomerToken`, `getCustomerCurrent
 
 - Token nằm ở cookie `SameSite=Lax`, `Secure` trên https, `Max-Age` = `expiresIn`. Không ghi vào `localStorage`/`sessionStorage`.
 - `NEXT_PUBLIC_AUTH_TOKEN_TRANSPORT=COOKIE` ⇒ server sở hữu HttpOnly cookie, client không giữ bản sao.
+- Storefront hiện gửi `rememberMe=false`; refresh cookie hết khi đóng phiên trình duyệt. Chỉ thêm lựa chọn lưu dài hạn khi UX khách hàng được chốt, không tự đặt mặc định `true`.
 - Route auth là class A (online-only), service worker không cache.
 
 ## Checklist khi sửa
@@ -51,4 +52,5 @@ Chưa dùng: `useLogoutCustomer`, `useRefreshCustomerToken`, `getCustomerCurrent
 
 | Version | Date | Change summary |
 | --- | --- | --- |
+| 1.1.0 | 2026-09-21 | Đồng bộ `LoginDto.rememberMe`; giữ Storefront ở session-cookie mode. |
 | 1.0.0 | 2026-09-13 | Tạo note cùng đợt chuyển token sang cookie. |

@@ -8,6 +8,10 @@
 
 export * from './errorDetailDto';
 export * from './errorResponseDto';
+export * from './listShippingDistrictsParams';
+export * from './listShippingWardsParams';
+export * from './shippingAreaDto';
+export * from './shippingAreaListDto';
 export * from './shippingQuoteDto';
 export * from './shippingQuoteDtoCurrencyCode';
 export * from './shippingQuoteRequestDto';
