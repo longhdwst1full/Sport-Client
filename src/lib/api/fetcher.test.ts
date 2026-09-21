@@ -26,7 +26,8 @@ describe('apiFetcher', () => {
     );
 
     expect(result).toEqual({ items: [] });
-    expect(request?.baseURL).toBe('http://127.0.0.1:4000');
+    // Vitest không nạp .env.local của Next, nên đây là giá trị dự phòng trong `fetcher.ts`.
+    expect(request?.baseURL).toBe(process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000');
     expect(request?.params).toEqual({ page: 1, search: 'tạ tay' });
     expect(request?.withCredentials).toBe(true);
   });

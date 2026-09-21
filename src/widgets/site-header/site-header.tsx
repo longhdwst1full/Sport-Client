@@ -27,6 +27,7 @@ import {
 import { AutocompleteSearch } from './autocomplete-search';
 import { HeaderNotifications } from './header-notifications';
 import { useCustomerAuth } from '@/features/auth';
+import { useFlashSaleAvailability } from '@/features/promotions';
 
 export function SiteHeader() {
   const router = useRouter();
@@ -35,6 +36,7 @@ export function SiteHeader() {
   const [announcementIndex, setAnnouncementIndex] = useState(0);
   const [searchOpen, setSearchOpen] = useState(false);
   const { categories: megaMenuCategories } = useMegaMenuCategories();
+  const flashSale = useFlashSaleAvailability();
   const [activeMegaMenu, setActiveMegaMenu] = useState<string | null>(null);
   const megaMenuTimeout = useRef<ReturnType<typeof setTimeout>>(null);
   const [isMounted, setIsMounted] = useState(false);
@@ -362,15 +364,21 @@ export function SiteHeader() {
 
           {/* Quick Features & Highlights */}
           <div className="flex items-center gap-1 text-[13px] font-bold">
-            <Link
-              href="/flash-sale"
-              className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-2 text-rose-600 transition hover:bg-rose-50 font-black"
-            >
-              <span>⚡ Flash Sale</span>
-              <span className="rounded-full bg-rose-600 px-1.5 py-0.5 text-[9px] font-black uppercase text-white animate-pulse">
-                -45%
-              </span>
-            </Link>
+{/* Chỉ mời khách vào Flash Sale khi thật sự có chương trình đang chạy; mức giảm lấy từ
+                suất bán thật thay vì con số cố định. */}
+            {flashSale.hasCampaign && (
+              <Link
+                href="/flash-sale"
+                className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-2 text-rose-600 transition hover:bg-rose-50 font-black"
+              >
+                <span>⚡ Flash Sale</span>
+                {flashSale.maxDiscountPercent ? (
+                  <span className="rounded-full bg-rose-600 px-1.5 py-0.5 text-[9px] font-black uppercase text-white animate-pulse">
+                    -{flashSale.maxDiscountPercent}%
+                  </span>
+                ) : null}
+              </Link>
+            )}
 
             <Link
               href="/#products"
@@ -503,19 +511,22 @@ export function SiteHeader() {
 
               {/* Special Features Links */}
               <div className="px-4 py-3 space-y-1">
-                <Link
-                  href="/flash-sale"
-                  className="flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-black text-rose-600 hover:bg-rose-50 transition"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <span className="flex items-center gap-2">
-                    <span className="size-2 rounded-full bg-rose-600 animate-ping" />
-                    ⚡ Giờ Vàng Flash Sale Giảm 45%
-                  </span>
-                  <span className="rounded-full bg-rose-600 px-2 py-0.5 text-[10px] font-black uppercase text-white">
-                    SỐC
-                  </span>
-                </Link>
+                {flashSale.hasCampaign && (
+                  <Link
+                    href="/flash-sale"
+                    className="flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-black text-rose-600 hover:bg-rose-50 transition"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <span className="flex items-center gap-2">
+                      <span className="size-2 rounded-full bg-rose-600 animate-ping" />
+                      ⚡ Giờ Vàng Flash Sale
+                      {flashSale.maxDiscountPercent ? ` Giảm ${flashSale.maxDiscountPercent}%` : ''}
+                    </span>
+                    <span className="rounded-full bg-rose-600 px-2 py-0.5 text-[10px] font-black uppercase text-white">
+                      SỐC
+                    </span>
+                  </Link>
+                )}
 
                 <Link
                   href="/#products"

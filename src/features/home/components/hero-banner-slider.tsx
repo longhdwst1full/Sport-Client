@@ -14,8 +14,10 @@ import {
   RotateCw,
 } from 'lucide-react';
 import { MOCK_HERO_SLIDES as HERO_SLIDES, HeroSlideItem as SlideItem } from '@/shared/data/mocks';
+import { useFlashSaleAvailability } from '@/features/promotions';
 
 export function HeroBannerSlider() {
+  const flashSale = useFlashSaleAvailability();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const touchStartX = useRef<number | null>(null);
@@ -120,13 +122,16 @@ export function HeroBannerSlider() {
                           <span>{slide.ctaText}</span>
                           <ArrowRight className="size-4" />
                         </Link>
-                        <Link
-                          href="/#flash-sale"
-                          className="inline-flex items-center gap-1.5 rounded-xl border border-white/20 bg-white/10 px-4 py-2.5 text-xs font-bold text-white backdrop-blur transition hover:bg-white/20 sm:py-3 sm:text-sm"
-                        >
-                          <Flame className="size-4 text-rose-400" />
-                          <span>Flash Sale</span>
-                        </Link>
+                        {/* Không có chiến dịch nào đang chạy thì không dẫn khách tới khu vực trống. */}
+                        {flashSale.hasCampaign && (
+                          <Link
+                            href="/flash-sale"
+                            className="inline-flex items-center gap-1.5 rounded-xl border border-white/20 bg-white/10 px-4 py-2.5 text-xs font-bold text-white backdrop-blur transition hover:bg-white/20 sm:py-3 sm:text-sm"
+                          >
+                            <Flame className="size-4 text-rose-400" />
+                            <span>Flash Sale</span>
+                          </Link>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -229,7 +234,9 @@ export function HeroBannerSlider() {
               <div className="absolute inset-0 flex flex-col justify-end p-5 text-white">
                 <span className="inline-flex items-center gap-1 text-[11px] font-black uppercase tracking-wider text-amber-400">
                   <Flame className="size-3.5 fill-amber-400 text-amber-400" />
-                  FLASH SALE PHỤ KIỆN
+                  {/* Thẻ này dẫn sang danh mục, không phải chương trình flash sale; gọi đúng tên
+                      để không hứa một chương trình có thể đang không chạy. */}
+                  PHỤ KIỆN TẬP GYM
                 </span>
                 <h3 className="mt-1 text-base font-black leading-snug sm:text-lg group-hover:text-amber-300 transition">
                   Tạ Tay & Phụ Kiện Thể Thao

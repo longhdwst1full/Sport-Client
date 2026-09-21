@@ -8,7 +8,14 @@ import {
   usesCustomerAuthCookieTransport,
 } from '../../features/auth/model/auth-token.store';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://sport-api-doc.vercel.app';
+/**
+ * Mặc định trỏ API chạy máy local.
+ *
+ * Trước đây giá trị dự phòng là URL production: quên đặt `NEXT_PUBLIC_API_URL` ở bất kỳ môi trường
+ * nào — máy dev, CI, preview — là âm thầm gọi thẳng vào hệ thống thật. Môi trường triển khai luôn
+ * khai biến này (`.env.production`), nên hạ mặc định xuống local không đổi hành vi khi deploy.
+ */
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
 
 export class ApiError<T = unknown> extends Error {
   constructor(

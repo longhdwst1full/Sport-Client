@@ -20,13 +20,20 @@ import { toOrderDetailView } from '@/features/orders/model/order.mapper';
 import { CheckoutOrderSummary } from '../components/checkout-order-summary';
 import { CheckoutSuccess } from '../components/checkout-success';
 
+/**
+ * Không điền sẵn địa chỉ nào.
+ *
+ * Trước đây mặc định là Quận 7, TP.HCM với mã hành chính nhà nước — vừa sai mã so với danh mục của
+ * hãng vận chuyển, vừa khiến khách ở tỉnh khác dễ đặt nhầm nơi giao vì ô đã có sẵn giá trị trông
+ * như đã chọn.
+ */
 const initialAddress: SelectedAddressData = {
-  provinceCode: 79,
-  provinceName: 'Thành phố Hồ Chí Minh',
-  districtCode: 778,
-  districtName: 'Quận 7',
-  wardCode: 27490,
-  wardName: 'Phường Tân Phong',
+  provinceCode: null,
+  provinceName: '',
+  districtCode: null,
+  districtName: '',
+  wardCode: null,
+  wardName: '',
   streetAddress: '',
   fullAddress: '',
 };

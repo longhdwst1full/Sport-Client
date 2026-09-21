@@ -59,12 +59,15 @@ export function EventAnnouncementModal() {
     setTimeout(() => setCopiedCode(null), 3000);
   };
 
+  /**
+   * Khu vực flash sale chỉ tồn tại khi có chiến dịch đang chạy. Không có thì cuộn tới danh sách
+   * sản phẩm thay vì bấm mà không có gì xảy ra — nút chết khó nhận ra hơn nút dẫn sai chỗ.
+   */
   const handleScrollToDeals = () => {
     handleClose();
-    const flashSaleEl = document.getElementById('flash-sale');
-    if (flashSaleEl) {
-      flashSaleEl.scrollIntoView({ behavior: 'smooth' });
-    }
+    const target =
+      document.getElementById('flash-sale') ?? document.getElementById('products');
+    target?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
