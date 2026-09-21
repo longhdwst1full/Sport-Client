@@ -16,7 +16,11 @@ export interface AddressView {
   phone: string;
   addressLine: string;
   ward: string;
+  /** Mã địa giới của hãng vận chuyển; rỗng với địa chỉ lưu trước khi contract có các cột này. */
+  wardCode: string;
   district: string;
+  districtCode: string;
+  province: string;
   provinceCode: string;
   isDefault: boolean;
   /** Dùng cho `expectedVersion` khi update (optimistic concurrency của BE). */
@@ -32,17 +36,22 @@ export function toAddressView(dto: CustomerAddressDto): AddressView {
   const ward = dto.ward ?? '';
   const district = dto.district ?? '';
 
+  const province = dto.province ?? '';
+
   return {
     id: dto.id,
     recipient: dto.recipient,
     phone: dto.phone,
     addressLine: dto.addressLine,
     ward,
+    wardCode: dto.wardCode ?? '',
     district,
+    districtCode: dto.districtCode ?? '',
+    province,
     provinceCode: dto.provinceCode,
     isDefault: dto.isDefault,
     version: dto.version,
-    fullAddress: joinAddress([dto.addressLine, ward, district]),
+    fullAddress: joinAddress([dto.addressLine, ward, district, province]),
   };
 }
 
@@ -54,9 +63,11 @@ export interface AddressFormValues {
 }
 
 /**
- * `VietnamAddressSelector` trả mã số theo nguồn địa giới bên thứ ba, còn contract
- * lưu `provinceCode` dạng chuỗi và ward/district dạng tên. Chỉ chuyển kiểu ở đây,
- * không suy diễn thêm field nào ngoài contract.
+ * Gửi **cả tên lẫn mã** địa giới.
+ *
+ * Hãng vận chuyển định tuyến bằng mã quận/phường. Bản cũ chỉ gửi tên, nên địa chỉ khách lưu trong
+ * sổ không tạo được vận đơn và mở lại form thì hai ô quận/phường trống vì không có mã để nạp danh
+ * sách. Mã lấy từ danh mục địa giới của backend (`/shipping/areas/*`), tức là mã của chính hãng.
  */
 export function toCreateAddressPayload(values: AddressFormValues): CreateCustomerAddressDto {
   const { location } = values;
@@ -66,7 +77,10 @@ export function toCreateAddressPayload(values: AddressFormValues): CreateCustome
     phone: values.phone.trim(),
     addressLine: location.streetAddress.trim(),
     ward: location.wardName || undefined,
+    wardCode: location.wardCode == null ? undefined : String(location.wardCode),
     district: location.districtName || undefined,
+    districtCode: location.districtCode == null ? undefined : String(location.districtCode),
+    province: location.provinceName || undefined,
     provinceCode: location.provinceCode == null ? '' : String(location.provinceCode),
     isDefault: values.isDefault,
   };
@@ -90,14 +104,31 @@ export const EMPTY_LOCATION: SelectedAddressData = {
   fullAddress: '',
 };
 
+/** Mã lưu dạng chuỗi; selector làm việc bằng số nên quy đổi tại ranh giới này. */
+function toCode(value: string): number | null {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
+}
+
+/**
+ * Khôi phục đủ ba cấp cho selector khi sửa địa chỉ cũ.
+ *
+ * Địa chỉ lưu trước khi contract có `district_code`/`ward_code` sẽ không có mã: hai ô cấp dưới để
+ * trống và người dùng chọn lại. Điền tên mà thiếu mã còn tệ hơn — nhìn như đã chọn xong nhưng lưu
+ * lại vẫn không tạo được vận đơn.
+ */
 export function toSelectorInitialData(address: AddressView): SelectedAddressData {
-  const provinceCode = Number(address.provinceCode);
+  const districtCode = toCode(address.districtCode);
+  const wardCode = toCode(address.wardCode);
 
   return {
     ...EMPTY_LOCATION,
-    provinceCode: Number.isFinite(provinceCode) && provinceCode > 0 ? provinceCode : null,
-    districtName: address.district,
-    wardName: address.ward,
+    provinceCode: toCode(address.provinceCode),
+    provinceName: address.province,
+    districtCode,
+    districtName: districtCode === null ? '' : address.district,
+    wardCode,
+    wardName: wardCode === null ? '' : address.ward,
     streetAddress: address.addressLine,
     fullAddress: address.fullAddress,
   };

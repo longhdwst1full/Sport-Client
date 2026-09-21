@@ -5,6 +5,7 @@
  * Contract for storefront and admin applications
  * OpenAPI spec version: 1.0.0
  */
+import type { CustomerAddressDtoCodeProvider } from './customerAddressDtoCodeProvider';
 import type { CustomerAddressDtoCountryCode } from './customerAddressDtoCountryCode';
 
 export interface CustomerAddressDto {
@@ -16,8 +17,19 @@ export interface CustomerAddressDto {
   /** @nullable */
   ward?: string | null;
   /** @nullable */
+  wardCode?: string | null;
+  /** @nullable */
   district?: string | null;
+  /** @nullable */
+  districtCode?: string | null;
+  /** @nullable */
+  province?: string | null;
   provinceCode: string;
+  /**
+   * Hãng đã cấp bộ mã địa giới của địa chỉ này.
+   * @nullable
+   */
+  codeProvider?: CustomerAddressDtoCodeProvider;
   /** @nullable */
   postalCode?: string | null;
   countryCode: CustomerAddressDtoCountryCode;

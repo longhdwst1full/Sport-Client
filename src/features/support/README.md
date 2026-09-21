@@ -1,10 +1,10 @@
 # Storefront Support — maintenance note
 
-> **Document version:** 1.0.0
+> **Document version:** 2.0.0
 >
-> **Last updated:** 2026-09-13
+> **Last updated:** 2026-09-21
 >
-> **Change summary:** Tạo note; form liên hệ chưa có endpoint backend.
+> **Change summary:** Form liên hệ không còn báo "gửi thành công" khi chưa gửi gì; chuyển sang mở email soạn sẵn và nói đúng việc đã xảy ra.
 
 ## Phạm vi
 
@@ -22,9 +22,17 @@
 
 ## Generated operation
 
-**Không có.** Backend chưa có endpoint nhận liên hệ; form hiện chỉ hiển thị trạng thái đã gửi phía client.
+**Không có.** Backend chưa có endpoint nhận yêu cầu tư vấn.
 
-Đây là khoảng trống đã biết: không được để người dùng tin là đã gửi thành công nếu thực tế không có gì được gửi đi.
+Vì vậy form **không tự gửi gì cả**: nó dựng sẵn một email `mailto:` với đúng nội dung khách vừa
+nhập và mở ứng dụng mail của họ. Việc gửi do chính họ bấm, và màn hình nói đúng điều đó — "Đã mở
+email soạn sẵn", kèm câu nhắc yêu cầu chỉ tới nơi sau khi họ bấm gửi, và số hotline để gọi thẳng.
+
+Bản trước chỉ đặt cờ `submitted` rồi báo "Gửi yêu cầu thành công" trong khi không có gì rời khỏi
+trình duyệt; khách ngồi đợi một cuộc gọi không bao giờ tới.
+
+**Khi backend có endpoint nhận liên hệ**, thay `mailto:` bằng lời gọi thật và đổi lại thông báo
+thành công — nhưng chỉ khi API đã trả về thành công, không phải khi form vừa submit.
 
 ## Dữ liệu cửa hàng
 

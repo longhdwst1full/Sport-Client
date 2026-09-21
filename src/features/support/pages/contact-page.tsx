@@ -27,8 +27,28 @@ export function ContactPage() {
     note: '',
   });
 
+  /**
+   * Backend chưa có endpoint nhận yêu cầu tư vấn.
+   *
+   * Bản trước chỉ `setSubmitted(true)` rồi báo "Gửi yêu cầu thành công" — không có gì rời khỏi
+   * trình duyệt, nên khách ngồi đợi một cuộc gọi không bao giờ tới. Ở đây mở sẵn email soạn thảo
+   * với đúng nội dung họ vừa nhập: việc gửi là thật, do chính ứng dụng mail của họ thực hiện, và
+   * thông báo chỉ nói đúng điều đã xảy ra.
+   */
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const subject = `Yêu cầu tư vấn thiết kế phòng tập — ${form.name}`;
+    const body = [
+      `Họ và tên: ${form.name}`,
+      `Số điện thoại: ${form.phone}`,
+      `Email: ${form.email || '(không cung cấp)'}`,
+      `Diện tích: ${form.spaceSize}`,
+      `Mục đích: ${form.purpose}`,
+      '',
+      'Ghi chú:',
+      form.note || '(không có)',
+    ].join('\n');
+    window.location.href = `mailto:${STORE_CONTACT.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     setSubmitted(true);
   };
 
@@ -140,16 +160,27 @@ export function ContactPage() {
               {submitted ? (
                 <div className="mt-8 rounded-2xl bg-emerald-50 p-6 text-center">
                   <CheckCircle2 className="mx-auto size-12 text-emerald-600" />
-                  <h3 className="mt-3 text-lg font-bold text-ink">Gửi yêu cầu thành công!</h3>
+                  <h3 className="mt-3 text-lg font-bold text-ink">Đã mở email soạn sẵn</h3>
                   <p className="mt-1 text-xs text-stone-600">
-                    Cảm ơn bạn. Chuyên viên {STORE_CONFIG.name} sẽ gọi điện tư vấn trực tiếp qua số {form.phone}.
+                    Nội dung bạn vừa nhập đã được điền sẵn vào email gửi tới {STORE_CONTACT.email}.
+                    <strong className="text-ink"> Yêu cầu chỉ đến với chúng tôi sau khi bạn bấm gửi trong ứng dụng email.</strong>
+                  </p>
+                  <p className="mt-2 text-xs text-stone-600">
+                    Không mở được email? Gọi trực tiếp{' '}
+                    <a
+                      href={`tel:${STORE_CONTACT.primaryHotline.replace(/\s/g, '')}`}
+                      className="font-bold text-emerald-700 underline"
+                    >
+                      {STORE_CONTACT.primaryHotline}
+                    </a>
+                    .
                   </p>
                   <button
                     type="button"
                     onClick={() => setSubmitted(false)}
                     className="mt-5 rounded-full bg-ink px-6 py-2.5 text-xs font-bold text-white"
                   >
-                    Gửi yêu cầu khác
+                    Soạn yêu cầu khác
                   </button>
                 </div>
               ) : (
@@ -235,7 +266,7 @@ export function ContactPage() {
                     className="flex w-full items-center justify-center gap-2 rounded-full bg-emerald-500 px-6 py-4 font-black text-ink shadow-lg shadow-emerald-500/25 transition hover:bg-emerald-400"
                   >
                     <Send className="size-4" />
-                    <span>Gửi yêu cầu tư vấn miễn phí</span>
+                    <span>Soạn email yêu cầu tư vấn</span>
                   </button>
                 </form>
               )}

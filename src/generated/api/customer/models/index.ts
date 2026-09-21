@@ -7,9 +7,12 @@
  */
 
 export * from './createCustomerAddressDto';
+export * from './createCustomerAddressDtoCodeProvider';
 export * from './customerAddressDto';
+export * from './customerAddressDtoCodeProvider';
 export * from './customerAddressDtoCountryCode';
 export * from './customerProfileDto';
 export * from './errorDetailDto';
 export * from './errorResponseDto';
 export * from './updateCustomerAddressDto';
+export * from './updateCustomerAddressDtoCodeProvider';

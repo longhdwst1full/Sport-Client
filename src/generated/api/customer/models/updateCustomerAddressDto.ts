@@ -5,6 +5,7 @@
  * Contract for storefront and admin applications
  * OpenAPI spec version: 1.0.0
  */
+import type { UpdateCustomerAddressDtoCodeProvider } from './updateCustomerAddressDtoCodeProvider';
 
 export interface UpdateCustomerAddressDto {
   /** @maxLength 255 */
@@ -15,10 +16,24 @@ export interface UpdateCustomerAddressDto {
   addressLine?: string;
   /** @maxLength 255 */
   ward?: string;
+  /**
+   * Mã phường/xã của hãng vận chuyển; thiếu thì địa chỉ không tạo được vận đơn.
+   * @maxLength 32
+   */
+  wardCode?: string;
   /** @maxLength 255 */
   district?: string;
+  /**
+   * Mã quận/huyện của hãng vận chuyển; thiếu thì địa chỉ không tạo được vận đơn.
+   * @maxLength 32
+   */
+  districtCode?: string;
+  /** @maxLength 255 */
+  province?: string;
   /** @maxLength 32 */
   provinceCode?: string;
+  /** Hãng đã cấp bộ mã gửi kèm; bỏ trống thì hiểu là hãng mặc định của hệ thống. */
+  codeProvider?: UpdateCustomerAddressDtoCodeProvider;
   /** @maxLength 20 */
   postalCode?: string;
   isDefault?: boolean;
