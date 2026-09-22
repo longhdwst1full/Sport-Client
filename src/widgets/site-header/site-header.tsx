@@ -28,6 +28,7 @@ import { AutocompleteSearch } from './autocomplete-search';
 import { HeaderNotifications } from './header-notifications';
 import { useCustomerAuth } from '@/features/auth';
 import { useFlashSaleAvailability } from '@/features/promotions';
+import { useGetCustomerProfile } from '@/generated/api/customer/customer';
 
 export function SiteHeader() {
   const router = useRouter();
@@ -52,6 +53,10 @@ export function SiteHeader() {
   const cartQuantity = isMounted ? rawCartQuantity : 0;
   const { isAuthenticated } = useCustomerAuth();
   const isLoggedIn = isMounted && isAuthenticated;
+  const profileQuery = useGetCustomerProfile({
+    query: { enabled: isLoggedIn },
+  });
+  const customerName = profileQuery.data?.name || (profileQuery.data?.email ? profileQuery.data.email.split('@')[0] : '');
 
   // Rotate announcements
   useEffect(() => {
@@ -106,9 +111,9 @@ export function SiteHeader() {
       {/* Main Header Row */}
       <div
         style={{ zIndex: 60 }}
-        className="relative border-b border-slate-200/80 bg-white shadow-sm"
+        className="relative border-b border-slate-200/80 bg-white shadow-xs"
       >
-        <div className="mx-auto flex h-[68px] max-w-7xl items-center gap-4 px-4 sm:gap-6 sm:px-6 lg:px-8">
+        <div className="mx-auto flex h-[72px] max-w-7xl items-center gap-4 px-4 sm:gap-6 sm:px-6 lg:px-8">
           {/* Logo */}
           <Link
             href="/"
@@ -136,7 +141,7 @@ export function SiteHeader() {
           {/* Hotline — Desktop */}
           <a
             href={`tel:${STORE_CONTACT.primaryHotlineRaw}`}
-            className="group hidden items-center gap-2.5 rounded-full border border-slate-200/80 bg-slate-50/80 px-4 py-2 transition hover:border-emerald-400/40 hover:bg-emerald-50 lg:flex"
+            className="group hidden items-center gap-2.5 rounded-2xl border border-slate-200/80 bg-slate-50/80 px-4 py-2 transition hover:border-emerald-400/50 hover:bg-emerald-50/60 shadow-xs lg:flex"
             aria-label="Gọi tư vấn"
           >
             <div className="grid size-7 place-items-center rounded-full bg-emerald-600 text-white">
@@ -149,39 +154,59 @@ export function SiteHeader() {
           </a>
 
           {/* Action Icons */}
-          <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+          <div className="flex shrink-0 items-center gap-2 sm:gap-2.5">
             {/* Mobile Search Toggle */}
             <button
               type="button"
               onClick={() => setSearchOpen((v) => !v)}
-              className="grid size-10 place-items-center rounded-full border border-slate-200/80 bg-slate-50 text-slate-700 transition hover:bg-slate-100 lg:hidden"
+              className="grid size-10.5 place-items-center rounded-2xl border border-slate-200/80 bg-slate-50 text-slate-700 transition hover:bg-slate-100 shadow-xs lg:hidden"
               aria-label="Tìm sản phẩm"
             >
-              <Search className="size-4" />
+              <Search className="size-4.5" />
             </button>
 
             {/* Notifications Popover: Chỉ hiển thị khi khách hàng đã đăng nhập */}
             {isLoggedIn && <HeaderNotifications />}
 
             {/* User Account */}
-            <Link
-              href={isLoggedIn ? '/profile' : '/login'}
-              className="hidden size-10 place-items-center rounded-full border border-slate-200/80 bg-slate-50 text-slate-700 transition hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-700 sm:grid"
-              aria-label={isLoggedIn ? 'Tài khoản cá nhân' : 'Đăng nhập tài khoản'}
-              title={isLoggedIn ? 'Tài khoản cá nhân' : 'Đăng nhập'}
-            >
-              <UserRound className="size-4" />
-            </Link>
+            {isLoggedIn ? (
+              <Link
+                href="/profile"
+                className="hidden items-center gap-2 rounded-2xl border border-emerald-300/90 bg-emerald-50/80 px-2.5 py-1.5 text-xs font-bold text-emerald-950 transition hover:bg-emerald-100 hover:border-emerald-400 shadow-2xs sm:flex"
+                aria-label="Tài khoản cá nhân"
+                title="Tài khoản cá nhân"
+              >
+                <div className="grid size-7 shrink-0 place-items-center rounded-xl bg-emerald-600 font-black text-white text-[11px] shadow-xs">
+                  {customerName ? customerName.slice(0, 1).toUpperCase() : <UserRound className="size-4" />}
+                </div>
+                <div className="text-left leading-tight pr-1 max-w-[120px]">
+                  <span className="block text-[9px] font-bold uppercase tracking-wider text-emerald-700">Tài khoản</span>
+                  <span className="block truncate text-xs font-extrabold text-slate-800">
+                    {customerName || 'Hội viên'}
+                  </span>
+                </div>
+              </Link>
+            ) : (
+              <Link
+                href="/login"
+                className="hidden items-center gap-1.5 rounded-2xl border border-slate-200/80 bg-slate-50 px-3 py-2 text-xs font-bold text-slate-700 transition hover:border-emerald-300 hover:bg-emerald-50/70 hover:text-emerald-700 shadow-2xs sm:flex"
+                aria-label="Đăng nhập tài khoản"
+                title="Đăng nhập"
+              >
+                <UserRound className="size-4 text-emerald-600" />
+                <span>Đăng nhập</span>
+              </Link>
+            )}
 
             {/* Cart */}
             <Link
               href="/cart"
-              className="relative grid size-10 place-items-center rounded-full border border-slate-200/80 bg-slate-50 text-slate-700 transition hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-700"
+              className="relative grid size-10.5 place-items-center rounded-2xl border border-slate-200/80 bg-slate-50 text-slate-700 transition hover:border-emerald-300 hover:bg-emerald-50/70 hover:text-emerald-700 shadow-xs"
               aria-label={cartQuantity > 0 ? `Giỏ hàng, ${cartQuantity} sản phẩm` : 'Giỏ hàng, 0 sản phẩm'}
             >
-              <ShoppingBag className="size-4" />
+              <ShoppingBag className="size-4.5" />
               {cartQuantity > 0 && (
-                <span className="absolute -right-1 -top-1 grid min-w-5 place-items-center rounded-full bg-emerald-500 px-1 text-[10px] font-black text-white shadow-sm ring-2 ring-white">
+                <span className="absolute -right-1 -top-1 grid min-w-5 place-items-center rounded-full bg-emerald-600 px-1 text-[10px] font-black text-white shadow-sm ring-2 ring-white">
                   {cartQuantity > 99 ? '99+' : cartQuantity}
                 </span>
               )}
@@ -189,7 +214,7 @@ export function SiteHeader() {
 
             {/* Mobile Menu Toggle */}
             <button
-              className="grid size-10 place-items-center rounded-full border border-slate-200/80 bg-slate-50 text-slate-700 sm:size-10 lg:hidden"
+              className="grid size-10.5 place-items-center rounded-2xl border border-slate-200/80 bg-slate-50 text-slate-700 sm:size-10.5 shadow-xs lg:hidden"
               aria-label={mobileMenuOpen ? 'Đóng menu' : 'Mở menu'}
               aria-expanded={mobileMenuOpen}
               onClick={() => setMobileMenuOpen((open) => !open)}
@@ -210,47 +235,47 @@ export function SiteHeader() {
       {/* Streamlined Desktop Navigation Bar with Integrated Mega Menus */}
       <nav
         style={{ zIndex: 10 }}
-        className="relative hidden border-b border-slate-200/80 bg-white lg:block"
+        className="relative hidden border-b border-slate-200/80 bg-white/95 backdrop-blur-md lg:block shadow-[0_1px_3px_0_rgba(0,0,0,0.03)]"
         aria-label="Điều hướng chính"
       >
-        <div className="mx-auto flex h-12 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto flex h-[52px] max-w-7xl items-center justify-between px-3 sm:px-6 lg:px-8 overflow-x-auto no-scrollbar gap-2">
           {/* Main Category Dropdowns */}
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 xl:gap-1.5 shrink-0">
             <Link
               href="/"
-              className="inline-flex items-center whitespace-nowrap rounded-lg px-3 py-2 text-[13px] font-bold text-slate-700 hover:bg-slate-50 hover:text-emerald-700 transition-all"
+              className="inline-flex items-center whitespace-nowrap rounded-xl px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-emerald-50/80 hover:text-emerald-700 transition-all duration-150 xl:px-3.5 xl:py-2 xl:text-sm"
             >
               Trang chủ
             </Link>
 
             <Link
               href="/products"
-              className="inline-flex items-center whitespace-nowrap rounded-lg px-3 py-2 text-[13px] font-bold text-slate-700 hover:bg-slate-50 hover:text-emerald-700 transition-all"
+              className="inline-flex items-center whitespace-nowrap rounded-xl px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-emerald-50/80 hover:text-emerald-700 transition-all duration-150 xl:px-3.5 xl:py-2 xl:text-sm"
             >
               Sản phẩm
             </Link>
 
-            {megaMenuCategories.slice(0, 4).map((cat) => {
+            {megaMenuCategories.slice(0, 4).map((cat, catIdx) => {
               const isOpen = activeMegaMenu === cat.label;
               return (
                 <div
                   key={cat.label}
-                  className="relative"
+                  className={`relative ${catIdx === 3 ? 'hidden 2xl:block' : ''}`}
                   onMouseEnter={() => handleMegaMenuEnter(cat.label)}
                   onMouseLeave={handleMegaMenuLeave}
                 >
                   <Link
                     href={cat.href}
-                    className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-2 text-[13px] font-bold transition-all ${
+                    className={`inline-flex items-center gap-1 xl:gap-1.5 whitespace-nowrap rounded-xl px-2.5 py-1.5 text-xs font-semibold transition-all duration-150 xl:px-3 xl:py-2 xl:text-sm ${
                       isOpen
-                        ? 'bg-slate-100 text-emerald-700'
-                        : 'text-slate-700 hover:bg-slate-50 hover:text-emerald-700'
+                        ? 'bg-emerald-50 text-emerald-700 font-bold ring-1 ring-emerald-600/15'
+                        : 'text-slate-700 hover:bg-emerald-50/80 hover:text-emerald-700'
                     }`}
                   >
                     <span>{cat.label}</span>
                     <ChevronDown
-                      className={`size-3.5 text-slate-400 transition-transform duration-200 ${
-                        isOpen ? 'rotate-180 text-emerald-600' : ''
+                      className={`size-3.5 xl:size-4 text-slate-400 transition-transform duration-200 ${
+                        isOpen ? 'rotate-180 text-emerald-600' : 'group-hover:text-emerald-600'
                       }`}
                     />
                   </Link>
@@ -258,14 +283,14 @@ export function SiteHeader() {
                   {/* Mega Dropdown */}
                   {isOpen && (
                     <div
-                      className="absolute left-0 top-full z-50 w-[540px] pt-1.5 animate-in fade-in slide-in-from-top-1 duration-150"
+                      className="absolute left-0 top-full z-50 w-[640px] pt-2 animate-in fade-in slide-in-from-top-1 duration-150"
                       onMouseEnter={() => handleMegaMenuEnter(cat.label)}
                       onMouseLeave={handleMegaMenuLeave}
                     >
                       <div className="overflow-hidden rounded-2xl border border-slate-200/90 bg-white p-6 shadow-2xl ring-1 ring-black/5">
-                        <div className="grid grid-cols-[1.2fr_0.8fr] gap-6">
+                        <div className="grid grid-cols-[1.3fr_0.7fr] gap-6">
                           <div>
-                            <span className="text-[11px] font-black uppercase tracking-wider text-emerald-700">
+                            <span className="inline-block rounded-md bg-emerald-50 px-2.5 py-1 text-[11px] font-black uppercase tracking-wider text-emerald-700">
                               {cat.label}
                             </span>
                             <div className="mt-3 divide-y divide-slate-100">
@@ -273,23 +298,23 @@ export function SiteHeader() {
                                 <Link
                                   key={child.label}
                                   href={child.href}
-                                  className="group flex items-center justify-between py-2.5 text-xs font-bold text-slate-700 transition hover:text-emerald-700"
+                                  className="group flex items-center justify-between rounded-lg px-2.5 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 hover:text-emerald-700"
                                 >
                                   <span>{child.label}</span>
-                                  <ChevronRight className="size-3 text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-emerald-600" />
+                                  <ChevronRight className="size-3.5 text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-emerald-600" />
                                 </Link>
                               ))}
                             </div>
                             <Link
                               href={cat.href}
-                              className="mt-4 inline-flex items-center gap-1 text-xs font-extrabold text-emerald-700 hover:underline"
+                              className="mt-4 inline-flex items-center gap-1.5 text-xs font-extrabold text-emerald-700 hover:text-emerald-800 hover:underline"
                             >
                               Xem tất cả {cat.label} →
                             </Link>
                           </div>
 
-                          {/* Ảnh minh hoạ danh mục; danh mục chưa có ảnh thì không dựng khung rỗng. */}
-                          <div className="relative min-h-[190px] overflow-hidden rounded-xl bg-slate-100">
+                          {/* Ảnh minh hoạ danh mục */}
+                          <div className="relative min-h-[210px] overflow-hidden rounded-xl bg-slate-100 shadow-inner group/img">
                             {cat.imageUrl && (
                               <Image
                                 src={cat.imageUrl}
@@ -299,9 +324,9 @@ export function SiteHeader() {
                                 className="object-cover transition duration-500 hover:scale-105"
                               />
                             )}
-                            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent flex items-end p-3.5">
+                            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent flex items-end p-4">
                               <span className="text-xs font-bold text-white leading-snug">
-                                {cat.productCount} sản phẩm
+                                {cat.productCount} sản phẩm chính hãng
                               </span>
                             </div>
                           </div>
@@ -314,7 +339,7 @@ export function SiteHeader() {
             })}
 
             {/* Overflow Dropdown for remaining categories */}
-            {megaMenuCategories.length > 4 && (
+            {megaMenuCategories.length > 3 && (
               <div
                 className="relative"
                 onMouseEnter={() => handleMegaMenuEnter('__extra_categories')}
@@ -322,15 +347,15 @@ export function SiteHeader() {
               >
                 <button
                   type="button"
-                  className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-2 text-[13px] font-bold transition-all ${
+                  className={`inline-flex items-center gap-1 xl:gap-1.5 whitespace-nowrap rounded-xl px-2.5 py-1.5 text-xs font-semibold transition-all duration-150 xl:px-3 xl:py-2 xl:text-sm ${
                     activeMegaMenu === '__extra_categories'
-                      ? 'bg-slate-100 text-emerald-700'
-                      : 'text-slate-700 hover:bg-slate-50 hover:text-emerald-700'
+                      ? 'bg-emerald-50 text-emerald-700 font-bold ring-1 ring-emerald-600/15'
+                      : 'text-slate-700 hover:bg-emerald-50/80 hover:text-emerald-700'
                   }`}
                 >
                   <span>Danh mục khác</span>
                   <ChevronDown
-                    className={`size-3.5 text-slate-400 transition-transform duration-200 ${
+                    className={`size-3.5 xl:size-4 text-slate-400 transition-transform duration-200 ${
                       activeMegaMenu === '__extra_categories' ? 'rotate-180 text-emerald-600' : ''
                     }`}
                   />
@@ -338,20 +363,20 @@ export function SiteHeader() {
 
                 {activeMegaMenu === '__extra_categories' && (
                   <div
-                    className="absolute left-0 top-full z-50 w-64 pt-1.5 animate-in fade-in slide-in-from-top-1 duration-150"
+                    className="absolute left-0 top-full z-50 w-72 pt-2 animate-in fade-in slide-in-from-top-1 duration-150"
                     onMouseEnter={() => handleMegaMenuEnter('__extra_categories')}
                     onMouseLeave={handleMegaMenuLeave}
                   >
-                    <div className="overflow-hidden rounded-xl border border-slate-200/90 bg-white p-2 shadow-2xl ring-1 ring-black/5">
-                      {megaMenuCategories.slice(4).map((cat) => (
+                    <div className="overflow-hidden rounded-2xl border border-slate-200/90 bg-white p-2.5 shadow-2xl ring-1 ring-black/5 space-y-1">
+                      {megaMenuCategories.slice(3).map((cat) => (
                         <Link
                           key={cat.label}
                           href={cat.href}
-                          className="flex items-center justify-between rounded-lg px-3 py-2 text-xs font-bold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 transition"
+                          className="flex items-center justify-between rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 transition"
                         >
                           <span>{cat.label}</span>
-                          <span className="text-[10px] text-slate-400 font-normal">
-                            ({cat.productCount})
+                          <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-500 font-medium">
+                            {cat.productCount}
                           </span>
                         </Link>
                       ))}
@@ -363,17 +388,16 @@ export function SiteHeader() {
           </div>
 
           {/* Quick Features & Highlights */}
-          <div className="flex items-center gap-1 text-[13px] font-bold">
-{/* Chỉ mời khách vào Flash Sale khi thật sự có chương trình đang chạy; mức giảm lấy từ
-                suất bán thật thay vì con số cố định. */}
+          <div className="flex items-center gap-1 xl:gap-1.5 text-sm font-semibold shrink-0">
+            {/* Chỉ mời khách vào Flash Sale khi thật sự có chương trình đang chạy */}
             {flashSale.hasCampaign && (
               <Link
                 href="/flash-sale"
-                className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-2 text-rose-600 transition hover:bg-rose-50 font-black"
+                className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl bg-gradient-to-r from-rose-50 to-orange-50 px-2.5 py-1.5 text-xs font-black text-rose-600 border border-rose-200/70 hover:border-rose-300 hover:shadow-xs transition-all xl:px-3 xl:py-2 xl:text-sm"
               >
                 <span>⚡ Flash Sale</span>
                 {flashSale.maxDiscountPercent ? (
-                  <span className="rounded-full bg-rose-600 px-1.5 py-0.5 text-[9px] font-black uppercase text-white animate-pulse">
+                  <span className="rounded-full bg-rose-600 px-1.5 py-0.5 text-[9.5px] font-black uppercase text-white animate-pulse">
                     -{flashSale.maxDiscountPercent}%
                   </span>
                 ) : null}
@@ -382,26 +406,26 @@ export function SiteHeader() {
 
             <Link
               href="/#products"
-              className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-2 text-slate-700 transition hover:bg-slate-50 hover:text-emerald-700"
+              className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl px-2.5 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-emerald-50/80 hover:text-emerald-700 xl:px-3 xl:py-2 xl:text-sm"
             >
               <span>Combo Home Gym</span>
-              <span className="rounded-full bg-rose-500 px-1.5 py-0.5 text-[9px] font-black uppercase text-white shadow-sm">
+              <span className="rounded-full bg-gradient-to-r from-amber-500 to-rose-500 px-1.5 py-0.5 text-[9px] font-black uppercase text-white shadow-xs">
                 Hot
               </span>
             </Link>
 
             <Link
               href="/news"
-              className="inline-flex items-center whitespace-nowrap rounded-lg px-3 py-2 text-slate-700 transition hover:bg-slate-50 hover:text-emerald-700"
+              className="hidden xl:inline-flex items-center whitespace-nowrap rounded-xl px-2.5 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-emerald-50/80 hover:text-emerald-700 xl:px-3 xl:py-2 xl:text-sm"
             >
               Cẩm nang tập luyện
             </Link>
 
             <Link
               href="/contact"
-              className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-2 text-slate-700 transition hover:bg-slate-50 hover:text-emerald-700"
+              className="hidden 2xl:inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl px-2.5 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-emerald-50/80 hover:text-emerald-700 xl:px-3 xl:py-2 xl:text-sm"
             >
-              <MapPin className="size-3.5 text-emerald-600" />
+              <MapPin className="size-3.5 xl:size-4 text-emerald-600" />
               <span>Hệ thống Showroom</span>
             </Link>
           </div>
@@ -599,11 +623,15 @@ export function SiteHeader() {
                 </Link>
                 <Link
                   href={isLoggedIn ? '/profile' : '/login'}
-                  className="flex items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 shadow-sm"
+                  className={`flex items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-xs font-bold shadow-sm transition ${
+                    isLoggedIn
+                      ? 'border border-emerald-300 bg-emerald-50 text-emerald-800 font-extrabold'
+                      : 'border border-slate-200 bg-white text-slate-700'
+                  }`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <UserRound className="size-3.5 text-emerald-600" />
-                  <span>{isLoggedIn ? 'Tài khoản' : 'Đăng nhập'}</span>
+                  <span className="truncate">{isLoggedIn ? (customerName ? `Chào, ${customerName}` : 'Tài khoản') : 'Đăng nhập'}</span>
                 </Link>
               </div>
             </div>

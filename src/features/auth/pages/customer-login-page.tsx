@@ -46,6 +46,11 @@ export function CustomerLoginPage() {
     mutation: {
       onSuccess: async (tokens) => {
         saveCustomerAuthTokens(tokens);
+        toast({
+          type: 'success',
+          title: 'Đăng nhập thành công',
+          message: 'Chào mừng bạn quay trở lại Bảo An Sport!',
+        });
         // Gộp giỏ đang có trên máy này vào tài khoản trước khi rời trang.
         await mergeGuestCartAfterAuth();
         router.replace('/');

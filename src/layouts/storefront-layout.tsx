@@ -77,14 +77,14 @@ export function StorefrontLayout({ children }: { children: ReactNode }) {
               </div>
             </div>
 
-            <p className="max-w-md text-xs leading-relaxed text-slate-400 sm:text-sm">
+            <p className="max-w-md text-sm leading-relaxed text-slate-300">
               Bảo An Sport chuyên cung cấp dụng cụ thể thao, thiết bị Gym, máy tập thể hình và phụ kiện chính hãng. Mẫu mã đa dạng, giao hàng toàn quốc, tư vấn tận tâm.
             </p>
 
             {/* Giay chung nhan DKKD */}
-            <div className="rounded-xl border border-slate-800/90 bg-slate-900/60 p-3.5 text-xs text-slate-400 space-y-1.5">
-              <div className="font-bold text-slate-300">Thông tin đăng ký doanh nghiệp:</div>
-              <p className="text-[11px] leading-relaxed text-slate-400">
+            <div className="rounded-xl border border-slate-800/90 bg-slate-900/60 p-4 text-xs text-slate-300 space-y-1.5">
+              <div className="font-bold text-slate-200 text-xs sm:text-[13px]">Thông tin đăng ký doanh nghiệp:</div>
+              <p className="text-xs sm:text-[12.5px] leading-relaxed text-slate-400">
                 Giấy chứng nhận ĐKKD số <span className="font-bold text-emerald-400">01M8027099</span> do phòng Tài chính - Kế hoạch quận Hoàng Mai, TP. Hà Nội cấp ngày 01/03/2021.
               </p>
             </div>
@@ -106,11 +106,11 @@ export function StorefrontLayout({ children }: { children: ReactNode }) {
                     className="object-contain p-1"
                   />
                 </div>
-                <div className="text-[11px] text-slate-400 leading-tight">
-                  <span className="block font-bold text-slate-300 group-hover:text-emerald-400">
+                <div className="text-xs text-slate-300 leading-tight">
+                  <span className="block font-bold text-slate-200 group-hover:text-emerald-400">
                     Bộ Công Thương
                   </span>
-                  <span>Đã thông báo website TMĐT</span>
+                  <span className="text-slate-400">Đã thông báo website TMĐT</span>
                 </div>
               </a>
             </div>
@@ -132,29 +132,29 @@ export function StorefrontLayout({ children }: { children: ReactNode }) {
 
           {/* Column 2: Sản phẩm nổi bật */}
           <div>
-            <h2 className="text-sm font-black uppercase tracking-wider text-white">
+            <h2 className="text-base font-bold uppercase tracking-wider text-white">
               Sản phẩm nổi bật
             </h2>
-            <div className="mt-4 grid gap-2 text-xs sm:text-sm text-slate-400">
-              <Link className="transition hover:text-emerald-400" href="/category/ta-tay">
+            <div className="mt-4 grid gap-2.5 text-sm text-slate-300">
+              <Link className="transition hover:text-emerald-400 hover:translate-x-0.5 inline-block" href="/category/ta-tay">
                 Tạ tay - Tạ đơn
               </Link>
-              <Link className="transition hover:text-emerald-400" href="/category/xa-don-xa-kep">
+              <Link className="transition hover:text-emerald-400 hover:translate-x-0.5 inline-block" href="/category/xa-don-xa-kep">
                 Xà đơn - Xà kép
               </Link>
-              <Link className="transition hover:text-emerald-400" href="/category/ghe-tap-ta">
+              <Link className="transition hover:text-emerald-400 hover:translate-x-0.5 inline-block" href="/category/ghe-tap-ta">
                 Ghế tập tạ đa năng
               </Link>
-              <Link className="transition hover:text-emerald-400" href="/category/gian-ta-da-nang">
+              <Link className="transition hover:text-emerald-400 hover:translate-x-0.5 inline-block" href="/category/gian-ta-da-nang">
                 Giàn tạ đa năng
               </Link>
-              <Link className="transition hover:text-emerald-400" href="/category/dung-cu-bong-ban">
+              <Link className="transition hover:text-emerald-400 hover:translate-x-0.5 inline-block" href="/category/dung-cu-bong-ban">
                 Bàn bóng bàn thi đấu
               </Link>
-              <Link className="transition hover:text-emerald-400" href="/category/may-chay-bo">
+              <Link className="transition hover:text-emerald-400 hover:translate-x-0.5 inline-block" href="/category/may-chay-bo">
                 Máy chạy bộ điện
               </Link>
-              <Link className="transition hover:text-emerald-400" href="/category/xe-dap-tap">
+              <Link className="transition hover:text-emerald-400 hover:translate-x-0.5 inline-block" href="/category/xe-dap-tap">
                 Xe đạp tập thể dục
               </Link>
             </div>
@@ -162,32 +162,32 @@ export function StorefrontLayout({ children }: { children: ReactNode }) {
 
           {/* Column 3: Thông tin & Chính sách */}
           <div>
-            <h2 className="text-sm font-black uppercase tracking-wider text-white">
+            <h2 className="text-base font-bold uppercase tracking-wider text-white">
               Thông tin & Chính sách
             </h2>
-            <div className="mt-4 grid gap-2 text-xs sm:text-sm text-slate-400">
-              <Link className="transition hover:text-emerald-400" href="/#about">
+            <div className="mt-4 grid gap-2.5 text-sm text-slate-300">
+              <Link className="transition hover:text-emerald-400 hover:translate-x-0.5 inline-block" href="/#about">
                 Giới thiệu Bảo An Sport
               </Link>
-              <Link className="transition hover:text-emerald-400" href="/chinh-sach/cam-ket-khach-hang">
+              <Link className="transition hover:text-emerald-400 hover:translate-x-0.5 inline-block" href="/chinh-sach/cam-ket-khach-hang">
                 Cam kết khách hàng
               </Link>
-              <Link className="transition hover:text-emerald-400" href="/news">
+              <Link className="transition hover:text-emerald-400 hover:translate-x-0.5 inline-block" href="/news">
                 Cẩm nang & Hướng dẫn tập luyện
               </Link>
-              <Link className="transition hover:text-emerald-400" href="/chinh-sach/van-chuyen-giao-hang">
+              <Link className="transition hover:text-emerald-400 hover:translate-x-0.5 inline-block" href="/chinh-sach/van-chuyen-giao-hang">
                 Vận chuyển & giao hàng
               </Link>
-              <Link className="transition hover:text-emerald-400" href="/chinh-sach/chinh-sach-bao-hanh">
+              <Link className="transition hover:text-emerald-400 hover:translate-x-0.5 inline-block" href="/chinh-sach/chinh-sach-bao-hanh">
                 Chính sách bảo hành
               </Link>
-              <Link className="transition hover:text-emerald-400" href="/chinh-sach/chinh-sach-doi-tra">
+              <Link className="transition hover:text-emerald-400 hover:translate-x-0.5 inline-block" href="/chinh-sach/chinh-sach-doi-tra">
                 Chính sách đổi trả
               </Link>
-              <Link className="transition hover:text-emerald-400" href="/chinh-sach/bao-mat-thong-tin-khach-hang">
+              <Link className="transition hover:text-emerald-400 hover:translate-x-0.5 inline-block" href="/chinh-sach/bao-mat-thong-tin-khach-hang">
                 Bảo mật thông tin khách hàng
               </Link>
-              <Link className="transition hover:text-emerald-400" href="/chinh-sach">
+              <Link className="transition hover:text-emerald-400 hover:translate-x-0.5 inline-block" href="/chinh-sach">
                 Tất cả thông tin & chính sách
               </Link>
             </div>
@@ -195,70 +195,70 @@ export function StorefrontLayout({ children }: { children: ReactNode }) {
 
           {/* Column 4: Showrooms & Liên hệ */}
           <div>
-            <h2 className="text-sm font-black uppercase tracking-wider text-white">
+            <h2 className="text-base font-bold uppercase tracking-wider text-white">
               Hệ thống Showroom
             </h2>
-            <div className="mt-4 space-y-3.5 text-xs text-slate-400">
+            <div className="mt-4 space-y-3.5 text-sm text-slate-300">
               {/* Showroom HN */}
-              <div className="rounded-xl border border-slate-800/80 bg-slate-900/40 p-3 space-y-1">
+              <div className="rounded-xl border border-slate-800/80 bg-slate-900/50 p-4 space-y-1.5">
                 <div className="flex items-center justify-between gap-2">
-                  <span className="text-xs font-bold text-white flex items-center gap-1.5 min-w-0">
-                    <MapPin className="size-3.5 text-emerald-400 shrink-0" />
+                  <span className="text-sm font-bold text-white flex items-center gap-1.5 min-w-0">
+                    <MapPin className="size-4 text-emerald-400 shrink-0" />
                     <span className="truncate">SHOWROOM HÀ NỘI</span>
                   </span>
-                  <span className="shrink-0 whitespace-nowrap rounded bg-emerald-950 px-2 py-0.5 text-[10px] font-bold text-emerald-400 border border-emerald-800/40">
+                  <span className="shrink-0 whitespace-nowrap rounded bg-emerald-950 px-2.5 py-0.5 text-xs font-bold text-emerald-400 border border-emerald-800/40">
                     Trụ sở
                   </span>
                 </div>
-                <p className="text-slate-300">
+                <p className="text-xs sm:text-[13px] leading-relaxed text-slate-300">
                   Số 234 Định Công, Phường Định Công, Quận Hoàng Mai, Hà Nội
                 </p>
                 <div className="pt-1">
                   <a
                     href={`tel:${STORE_CONTACT.hotlineHnRaw}`}
-                    className="inline-flex items-center gap-1.5 font-bold text-emerald-400 hover:underline"
+                    className="inline-flex items-center gap-1.5 text-xs sm:text-[13px] font-bold text-emerald-400 hover:underline"
                   >
-                    <Phone className="size-3" />
+                    <Phone className="size-3.5" />
                     Hotline: {STORE_CONTACT.hotlineHn}
                   </a>
                 </div>
               </div>
 
               {/* Showroom HCM */}
-              <div className="rounded-xl border border-slate-800/80 bg-slate-900/40 p-3 space-y-1">
+              <div className="rounded-xl border border-slate-800/80 bg-slate-900/50 p-4 space-y-1.5">
                 <div className="flex items-center justify-between gap-2">
-                  <span className="text-xs font-bold text-white flex items-center gap-1.5 min-w-0">
-                    <MapPin className="size-3.5 text-emerald-400 shrink-0" />
+                  <span className="text-sm font-bold text-white flex items-center gap-1.5 min-w-0">
+                    <MapPin className="size-4 text-emerald-400 shrink-0" />
                     <span className="truncate">SHOWROOM TP. HỒ CHÍ MINH</span>
                   </span>
-                  <span className="shrink-0 whitespace-nowrap rounded bg-emerald-950 px-2 py-0.5 text-[10px] font-bold text-emerald-400 border border-emerald-800/40">
+                  <span className="shrink-0 whitespace-nowrap rounded bg-emerald-950 px-2.5 py-0.5 text-xs font-bold text-emerald-400 border border-emerald-800/40">
                     Chi nhánh
                   </span>
                 </div>
-                <p className="text-slate-300">
+                <p className="text-xs sm:text-[13px] leading-relaxed text-slate-300">
                   Số 34 Đường số 2, Phường 11, Cư xá Đài Ra Đa, Quận 6, TP. Hồ Chí Minh
                 </p>
                 <div className="pt-1">
                   <a
                     href={`tel:${STORE_CONTACT.hotlineHcmRaw}`}
-                    className="inline-flex items-center gap-1.5 font-bold text-emerald-400 hover:underline"
+                    className="inline-flex items-center gap-1.5 text-xs sm:text-[13px] font-bold text-emerald-400 hover:underline"
                   >
-                    <Phone className="size-3" />
+                    <Phone className="size-3.5" />
                     Hotline: {STORE_CONTACT.hotlineHcm}
                   </a>
                 </div>
               </div>
 
               {/* Email & Hours */}
-              <div className="pt-1 space-y-1">
+              <div className="pt-1 space-y-1.5 text-sm text-slate-300">
                 <a
-                  className="inline-flex items-center gap-1.5 transition hover:text-emerald-400"
+                  className="inline-flex items-center gap-2 transition hover:text-emerald-400"
                   href={`mailto:${STORE_CONTACT.email}`}
                 >
-                  <Mail className="size-3.5 text-emerald-400" />
+                  <Mail className="size-4 text-emerald-400" />
                   Email: {STORE_CONTACT.email}
                 </a>
-                <p className="text-[11px] text-slate-500">
+                <p className="text-xs text-slate-400">
                   Mở cửa: 08:30 - 21:30 tất cả các ngày trong tuần (kể cả T7 & CN)
                 </p>
               </div>
@@ -269,33 +269,33 @@ export function StorefrontLayout({ children }: { children: ReactNode }) {
         {/* Trust badges + Payment */}
         <div className="mx-auto mt-12 max-w-7xl border-t border-slate-800/80 pt-8">
           <div className="flex flex-wrap items-center justify-between gap-6">
-            <div className="flex flex-wrap items-center gap-5 text-xs font-semibold text-slate-400">
-              <span className="inline-flex items-center gap-1.5">
-                <ShieldCheck className="size-4 text-emerald-400" />
+            <div className="flex flex-wrap items-center gap-6 text-sm font-medium text-slate-300">
+              <span className="inline-flex items-center gap-2">
+                <ShieldCheck className="size-4.5 text-emerald-400" />
                 Hàng chính hãng 100%
               </span>
-              <span className="inline-flex items-center gap-1.5">
-                <Truck className="size-4 text-emerald-400" />
+              <span className="inline-flex items-center gap-2">
+                <Truck className="size-4.5 text-emerald-400" />
                 Giao hàng & Lắp ráp 2H
               </span>
-              <span className="inline-flex items-center gap-1.5">
-                <CreditCard className="size-4 text-emerald-400" />
+              <span className="inline-flex items-center gap-2">
+                <CreditCard className="size-4.5 text-emerald-400" />
                 Thanh toán an toàn 100%
               </span>
             </div>
             <div className="flex items-center gap-2.5 text-xs text-slate-400">
-              <span className="rounded border border-slate-800 bg-slate-900 px-2 py-0.5 font-bold">VISA</span>
-              <span className="rounded border border-slate-800 bg-slate-900 px-2 py-0.5 font-bold">MASTER</span>
-              <span className="rounded border border-slate-800 bg-slate-900 px-2 py-0.5 font-bold">VietQR</span>
-              <span className="rounded border border-slate-800 bg-slate-900 px-2 py-0.5 font-bold">MOMO</span>
-              <span className="rounded border border-slate-800 bg-slate-900 px-2 py-0.5 font-bold">COD</span>
-              <span className="rounded border border-slate-800 bg-slate-900 px-2 py-0.5 font-bold text-emerald-400">TRẢ GÓP 0%</span>
+              <span className="rounded border border-slate-800 bg-slate-900 px-2.5 py-1 text-xs font-bold text-slate-300">VISA</span>
+              <span className="rounded border border-slate-800 bg-slate-900 px-2.5 py-1 text-xs font-bold text-slate-300">MASTER</span>
+              <span className="rounded border border-slate-800 bg-slate-900 px-2.5 py-1 text-xs font-bold text-slate-300">VietQR</span>
+              <span className="rounded border border-slate-800 bg-slate-900 px-2.5 py-1 text-xs font-bold text-slate-300">MOMO</span>
+              <span className="rounded border border-slate-800 bg-slate-900 px-2.5 py-1 text-xs font-bold text-slate-300">COD</span>
+              <span className="rounded border border-slate-800 bg-slate-900 px-2.5 py-1 text-xs font-bold text-emerald-400">TRẢ GÓP 0%</span>
             </div>
           </div>
         </div>
 
         {/* Copyright */}
-        <div className="mx-auto mt-8 flex flex-col justify-between gap-2 max-w-7xl border-t border-slate-800/80 pt-6 text-xs text-slate-500 sm:flex-row sm:items-center">
+        <div className="mx-auto mt-8 flex flex-col justify-between gap-3 max-w-7xl border-t border-slate-800/80 pt-6 text-xs sm:text-sm text-slate-400 sm:flex-row sm:items-center">
           <div>
             © 2026 {STORE_CONFIG.name}. Chuyên cung cấp dụng cụ thể thao, thiết bị thể dục và thể hình chính hãng uy tín toàn quốc.
           </div>

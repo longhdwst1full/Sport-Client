@@ -22,6 +22,7 @@ import {
 import { useRegisterCustomer } from '@/generated/api/auth/auth';
 import type { RegisterCustomerDto } from '@/generated/api/auth/models';
 import { KineticBallCanvas } from '@/foundation/3d/kinetic-ball-canvas.lazy';
+import { useToast } from '@/shared/components/global-toast';
 import { getCustomerAuthError } from '../model/auth-error';
 import { saveCustomerAuthTokens } from '../model/auth-token.store';
 import { mergeGuestCartAfterAuth } from '@/features/cart';
@@ -49,6 +50,7 @@ const schema: yup.ObjectSchema<RegisterCustomerDto> = yup
 
 export function CustomerRegisterPage() {
   const router = useRouter();
+  const { toast } = useToast();
   const [submitError, setSubmitError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
@@ -61,6 +63,11 @@ export function CustomerRegisterPage() {
     mutation: {
       onSuccess: async (tokens) => {
         saveCustomerAuthTokens(tokens);
+        toast({
+          type: 'success',
+          title: 'Đăng ký thành công',
+          message: 'Tài khoản của bạn đã được khởi tạo thành công!',
+        });
         // Gộp giỏ đang có trên máy này vào tài khoản trước khi rời trang.
         await mergeGuestCartAfterAuth();
         router.replace('/');

@@ -78,7 +78,7 @@ export default async function ProductDetailPage({
     ...(product.brand ? [{ label: 'Thương hiệu', value: product.brand }] : []),
     ...(product.primaryCategory ? [{ label: 'Phân loại', value: product.primaryCategory }] : []),
     { label: 'Mã sản phẩm', value: product.productNo },
-    ...(product.variants.length > 0
+    ...(product.variants.length > 1
       ? [{ label: 'Số phiên bản', value: `${product.variants.length} phiên bản` }]
       : []),
   ];

@@ -3,7 +3,8 @@
 import { useMemo, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, BadgeCheck, Eye, RefreshCw, ShoppingBag, Sparkles } from 'lucide-react';
+import { ArrowRight, BadgeCheck, Eye, RefreshCw, ShoppingBag, Sparkles, Zap } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useCategoryTabs } from '../hooks/use-category-tabs';
 import { useProductShowcase } from '../hooks/use-product-showcase';
 import { useAppDispatch } from '@/app/store/hooks';
@@ -14,6 +15,7 @@ export function ProductShowcase({
   categorySlug,
   searchQuery,
 }: { categorySlug?: string; searchQuery?: string } = {}) {
+  const router = useRouter();
   // Tab lấy từ danh mục thật; `null` là "Tất cả".
   const { tabs } = useCategoryTabs();
   const [activeTabSlug, setActiveTabSlug] = useState<string | null>(null);
@@ -29,11 +31,13 @@ export function ProductShowcase({
   // bao giờ bằng nhau nên bấm tab nào cũng ra rỗng.
   const displayedProducts = products;
 
-  const handleQuickAdd = (product: (typeof products)[number], e: React.MouseEvent) => {
+  const handleBuyNow = (product: (typeof products)[number], e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    // Thiếu giá thì không thêm được: giỏ sẽ mang giá 0 và khách thấy tổng tiền sai.
-    if (!product.defaultVariantId || !product.defaultVariantSku || !product.hasPrice) return;
+    if (!product.defaultVariantId || !product.defaultVariantSku || !product.hasPrice) {
+      router.push(`/products/${product.slug}`);
+      return;
+    }
 
     dispatch(
       addCartItem({
@@ -48,11 +52,7 @@ export function ProductShowcase({
       })
     );
 
-    toast({
-      type: 'success',
-      title: 'Đã thêm vào giỏ hàng!',
-      message: `${product.name} đã được thêm vào giỏ thành công.`,
-    });
+    router.push('/checkout');
   };
 
   if (isPending)
@@ -201,19 +201,20 @@ export function ProductShowcase({
                     </div>
                     <button
                       type="button"
-                      onClick={(e) => handleQuickAdd(product, e)}
-                      disabled={!product.defaultVariantId || !product.hasPrice}
+                      onClick={(e) => handleBuyNow(product, e)}
+                      disabled={!product.hasPrice}
                       title={
                         !product.hasPrice
                           ? 'Sản phẩm chưa có giá — liên hệ để được tư vấn'
                           : product.defaultVariantId
-                            ? 'Thêm vào giỏ hàng'
+                            ? 'Mua ngay'
                             : 'Mở chi tiết để chọn phiên bản'
                       }
-                      aria-label={`Thêm ${product.name} vào giỏ`}
-                      className="relative z-10 grid size-9 shrink-0 place-items-center rounded-full bg-slate-900 text-white shadow-sm transition duration-300 hover:scale-110 hover:bg-emerald-600 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:hover:scale-100"
+                      aria-label={`Mua ngay ${product.name}`}
+                      className="relative z-10 inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white shadow-sm transition hover:bg-emerald-700 active:scale-95 disabled:cursor-not-allowed disabled:bg-slate-300"
                     >
-                      <ShoppingBag className="size-4" />
+                      <Zap className="size-3.5 fill-white" />
+                      <span>Mua ngay</span>
                     </button>
                   </div>
                 </div>

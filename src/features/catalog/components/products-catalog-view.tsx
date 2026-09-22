@@ -9,7 +9,9 @@ import {
   ShoppingBag,
   X,
   RotateCcw,
+  Zap,
 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useAppDispatch } from '@/app/store/hooks';
 import { addCartItem } from '@/app/store/cart.slice';
 import { useProductShowcase } from '../hooks/use-product-showcase';
@@ -24,6 +26,7 @@ const PRICE_RANGES = [
 ];
 
 export function ProductsCatalogView() {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const { toast } = useToast();
 
@@ -71,10 +74,13 @@ export function ProductsCatalogView() {
     return list;
   }, [products, activePriceRange, sortBy]);
 
-  const handleQuickAddToCart = (e: React.MouseEvent, product: typeof products[0]) => {
+  const handleBuyNow = (e: React.MouseEvent, product: typeof products[0]) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!product.defaultVariantId || !product.defaultVariantSku) return;
+    if (!product.defaultVariantId || !product.defaultVariantSku) {
+      router.push(`/products/${product.slug}`);
+      return;
+    }
 
     dispatch(
       addCartItem({
@@ -89,11 +95,7 @@ export function ProductsCatalogView() {
       })
     );
 
-    toast({
-      type: 'success',
-      title: 'Đã thêm vào giỏ hàng!',
-      message: product.name,
-    });
+    router.push('/checkout');
   };
 
   const hasActiveFilters = activeTabSlug !== null || activePriceRange !== 'all' || searchQuery.trim() !== '';
@@ -315,8 +317,8 @@ export function ProductsCatalogView() {
                       </span>
                     </div>
 
-                    {/* Pricing & Add To Cart */}
-                    <div className="mt-auto flex items-end justify-between gap-2 border-t border-slate-100 pt-4">
+                    {/* Pricing & Buy Now Action */}
+                    <div className="mt-auto flex items-end justify-between gap-2 border-t border-slate-100 pt-3">
                       <div>
                         <span className="block text-[10px] font-semibold text-slate-400">Giá niêm yết</span>
                         <div className="flex items-baseline gap-1.5">
@@ -328,13 +330,13 @@ export function ProductsCatalogView() {
 
                       <button
                         type="button"
-                        onClick={(e) => handleQuickAddToCart(e, product)}
-                        disabled={!product.defaultVariantId}
-                        className="relative z-10 grid size-9 shrink-0 place-items-center rounded-full bg-slate-900 text-white shadow-md transition duration-300 hover:scale-105 hover:bg-emerald-600 active:scale-95 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:hover:scale-100"
-                        title={product.defaultVariantId ? 'Thêm nhanh vào giỏ hàng' : 'Mở chi tiết để chọn phiên bản'}
-                        aria-label={`Thêm ${product.name} vào giỏ`}
+                        onClick={(e) => handleBuyNow(e, product)}
+                        className="relative z-10 inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white shadow-sm transition hover:bg-emerald-700 active:scale-95"
+                        title={product.defaultVariantId ? 'Mua ngay' : 'Mở chi tiết để chọn phiên bản'}
+                        aria-label={`Mua ngay ${product.name}`}
                       >
-                        <ShoppingBag className="size-4" />
+                        <Zap className="size-3.5 fill-white" />
+                        <span>Mua ngay</span>
                       </button>
                     </div>
                   </div>
