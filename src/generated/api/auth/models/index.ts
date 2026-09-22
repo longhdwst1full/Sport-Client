@@ -8,6 +8,7 @@
 
 export * from './authScopeDto';
 export * from './authScopeDtoType';
+export * from './changePasswordDto';
 export * from './currentUserDto';
 export * from './errorDetailDto';
 export * from './errorResponseDto';

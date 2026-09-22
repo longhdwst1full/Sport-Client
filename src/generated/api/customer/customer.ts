@@ -27,6 +27,7 @@ import type {
   CustomerProfileDto,
   ErrorResponseDto,
   UpdateCustomerAddressDto,
+  UpdateCustomerProfileDto,
 } from './models';
 
 import { apiFetcher } from '../../../lib/api/fetcher';
@@ -531,3 +532,93 @@ export function useGetCustomerProfile<
 
   return query;
 }
+
+/**
+ * @summary Khách tự cập nhật tên, email, số điện thoại và tuỳ chọn nhận tin
+ */
+export const updateCustomerProfile = (
+  updateCustomerProfileDto: BodyType<UpdateCustomerProfileDto>,
+  options?: SecondParameter<typeof apiFetcher>,
+) => {
+  return apiFetcher<CustomerProfileDto>(
+    {
+      url: `/api/v1/account/profile`,
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      data: updateCustomerProfileDto,
+    },
+    options,
+  );
+};
+
+export const getUpdateCustomerProfileMutationOptions = <
+  TError = ErrorType<ErrorResponseDto | ErrorResponseDto | ErrorResponseDto>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateCustomerProfile>>,
+    TError,
+    { data: BodyType<UpdateCustomerProfileDto> },
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetcher>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateCustomerProfile>>,
+  TError,
+  { data: BodyType<UpdateCustomerProfileDto> },
+  TContext
+> => {
+  const mutationKey = ['updateCustomerProfile'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateCustomerProfile>>,
+    { data: BodyType<UpdateCustomerProfileDto> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return updateCustomerProfile(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateCustomerProfileMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateCustomerProfile>>
+>;
+export type UpdateCustomerProfileMutationBody = BodyType<UpdateCustomerProfileDto>;
+export type UpdateCustomerProfileMutationError = ErrorType<
+  ErrorResponseDto | ErrorResponseDto | ErrorResponseDto
+>;
+
+/**
+ * @summary Khách tự cập nhật tên, email, số điện thoại và tuỳ chọn nhận tin
+ */
+export const useUpdateCustomerProfile = <
+  TError = ErrorType<ErrorResponseDto | ErrorResponseDto | ErrorResponseDto>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof updateCustomerProfile>>,
+      TError,
+      { data: BodyType<UpdateCustomerProfileDto> },
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof updateCustomerProfile>>,
+  TError,
+  { data: BodyType<UpdateCustomerProfileDto> },
+  TContext
+> => {
+  const mutationOptions = getUpdateCustomerProfileMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};

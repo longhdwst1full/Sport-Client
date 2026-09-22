@@ -22,6 +22,7 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  ChangePasswordDto,
   CurrentUserDto,
   ErrorResponseDto,
   LoginDto,
@@ -377,6 +378,96 @@ export const useLogoutCustomer = <TError = ErrorType<unknown>, TContext = unknow
   TContext
 > => {
   const mutationOptions = getLogoutCustomerMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * @summary Khách đang đăng nhập tự đổi mật khẩu
+ */
+export const changeCustomerPassword = (
+  changePasswordDto: BodyType<ChangePasswordDto>,
+  options?: SecondParameter<typeof apiFetcher>,
+  signal?: AbortSignal,
+) => {
+  return apiFetcher<void>(
+    {
+      url: `/api/v1/auth/change-password`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: changePasswordDto,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getChangeCustomerPasswordMutationOptions = <
+  TError = ErrorType<ErrorResponseDto | ErrorResponseDto>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof changeCustomerPassword>>,
+    TError,
+    { data: BodyType<ChangePasswordDto> },
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetcher>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof changeCustomerPassword>>,
+  TError,
+  { data: BodyType<ChangePasswordDto> },
+  TContext
+> => {
+  const mutationKey = ['changeCustomerPassword'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof changeCustomerPassword>>,
+    { data: BodyType<ChangePasswordDto> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return changeCustomerPassword(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ChangeCustomerPasswordMutationResult = NonNullable<
+  Awaited<ReturnType<typeof changeCustomerPassword>>
+>;
+export type ChangeCustomerPasswordMutationBody = BodyType<ChangePasswordDto>;
+export type ChangeCustomerPasswordMutationError = ErrorType<ErrorResponseDto | ErrorResponseDto>;
+
+/**
+ * @summary Khách đang đăng nhập tự đổi mật khẩu
+ */
+export const useChangeCustomerPassword = <
+  TError = ErrorType<ErrorResponseDto | ErrorResponseDto>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof changeCustomerPassword>>,
+      TError,
+      { data: BodyType<ChangePasswordDto> },
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof changeCustomerPassword>>,
+  TError,
+  { data: BodyType<ChangePasswordDto> },
+  TContext
+> => {
+  const mutationOptions = getChangeCustomerPasswordMutationOptions(options);
 
   return useMutation(mutationOptions, queryClient);
 };
