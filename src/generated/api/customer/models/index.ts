@@ -16,3 +16,4 @@ export * from './errorDetailDto';
 export * from './errorResponseDto';
 export * from './updateCustomerAddressDto';
 export * from './updateCustomerAddressDtoCodeProvider';
+export * from './updateCustomerProfileDto';

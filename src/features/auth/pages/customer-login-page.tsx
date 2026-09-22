@@ -197,13 +197,13 @@ export function CustomerLoginPage() {
                   <label className="block text-xs font-bold uppercase tracking-wider text-stone-300">
                     Mật khẩu
                   </label>
-                  <button
-                    type="button"
-                    onClick={() => toast({ title: 'Cấp lại mật khẩu', message: 'Vui lòng liên hệ Hotline Bảo An Sport: 0939 987 456 hoặc gửi email tới cskh@baoansport.vn để được hỗ trợ nhanh nhất.' })}
+                  {/* Đã có luồng tự đặt lại qua email; không còn bắt khách gọi hotline. */}
+                  <Link
+                    href="/forgot-password"
                     className="text-xs font-medium text-emerald-400 hover:underline"
                   >
                     Quên mật khẩu?
-                  </button>
+                  </Link>
                 </div>
                 <div className="relative mt-2">
                   <input

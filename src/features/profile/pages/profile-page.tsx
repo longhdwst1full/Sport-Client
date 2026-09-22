@@ -26,6 +26,7 @@ import {
 import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { useCustomerAuth } from '@/features/auth';
 import { useGetCustomerProfile } from '@/generated/api/customer/customer';
+import { AccountSettingsForm } from '../components/account-settings-form';
 import { STORE_CONFIG, STORE_CONTACT } from '@/shared/constants';
 import {
   VietnamAddressSelector,
@@ -420,35 +421,12 @@ export function ProfilePage() {
                     </p>
                   </div>
 
-                  {/* Storefront Auth chỉ có register/login/refresh/logout/me: chưa có
-                      operation đổi hồ sơ hay đổi mật khẩu cho khách. Hiển thị read-only
-                      thay vì form ghi khống, tránh báo "đã lưu" cho thao tác không tồn tại. */}
-                  <dl className="mt-6 max-w-lg divide-y divide-slate-100 rounded-2xl border border-slate-200 bg-slate-50/60">
-                    <div className="flex flex-col gap-1 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-                      <dt className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                        Họ và tên
-                      </dt>
-                      <dd className="text-xs font-semibold text-slate-800 sm:text-sm">{profileName}</dd>
-                    </div>
-                    <div className="flex flex-col gap-1 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-                      <dt className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                        Email đăng nhập
-                      </dt>
-                      <dd className="break-all text-xs font-semibold text-slate-800 sm:text-sm">{profileEmail}</dd>
-                    </div>
-                    <div className="flex flex-col gap-1 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-                      <dt className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                        Số điện thoại
-                      </dt>
-                      <dd className="text-xs font-semibold text-slate-800 sm:text-sm">{profilePhone}</dd>
-                    </div>
-                  </dl>
+                  {profileQuery.data ? (
+                    <AccountSettingsForm profile={profileQuery.data} />
+                  ) : (
+                    <p className="mt-6 text-xs text-slate-500">Đang tải thông tin tài khoản…</p>
+                  )}
 
-                  <p className="mt-4 max-w-lg rounded-2xl bg-amber-50 px-4 py-3 text-xs font-medium leading-relaxed text-amber-900">
-                    Để thay đổi họ tên, email, số điện thoại hoặc mật khẩu, vui lòng liên hệ
-                    bộ phận chăm sóc khách hàng. Chúng tôi sẽ mở chức năng tự thay đổi trên
-                    website sau khi hoàn tất bước xác minh danh tính.
-                  </p>
                 </div>
               )}
             </div>

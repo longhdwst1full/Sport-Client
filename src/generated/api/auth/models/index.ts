@@ -8,10 +8,13 @@
 
 export * from './authScopeDto';
 export * from './authScopeDtoType';
+export * from './changePasswordDto';
 export * from './currentUserDto';
 export * from './errorDetailDto';
 export * from './errorResponseDto';
+export * from './forgotPasswordDto';
 export * from './loginDto';
 export * from './refreshTokenDto';
 export * from './registerCustomerDto';
+export * from './resetPasswordDto';
 export * from './tokenPairDto';

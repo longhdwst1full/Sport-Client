@@ -1,7 +1,23 @@
 # Profile feature
 
-> **Version:** 1.1.0 · **Last updated:** 2026-09-13
-> **Change summary:** Gỡ form sửa hồ sơ ghi khống ở tab `settings`; chuyển sang hiển thị read-only.
+> **Version:** 2.0.0 · **Last updated:** 2026-09-22
+> **Change summary:** Tab Cài đặt chuyển từ chỉ đọc sang sửa được: cập nhật hồ sơ có version và đổi mật khẩu; đổi mật khẩu thu hồi mọi phiên khác.
+
+## Cài đặt tài khoản
+
+`components/account-settings-form.tsx` — hai form tách riêng vì hai kết cục khác nhau:
+
+| Form | Operation | Hệ quả |
+| --- | --- | --- |
+| Sửa hồ sơ | `updateCustomerProfile` | Trả về hồ sơ mới. Gửi kèm `expectedVersion` đọc từ hồ sơ đang xem: hai tab mở cùng lúc thì tab cũ nhận lỗi thay vì ghi đè im lặng |
+| Đổi mật khẩu | `changeCustomerPassword` | **Đăng xuất mọi thiết bị khác**, giữ lại thiết bị đang thao tác. Màn hình nói rõ điều này trước và sau khi bấm |
+
+**Email và số điện thoại ở đây cũng là định danh đăng nhập.** Backend ghi đồng thời sang `users` và
+`customers` trong một transaction. V1 chưa có xác thực email/OTP nên đổi là có hiệu lực ngay — giới
+hạn đã biết, khi có xác thực thì tách thành luồng riêng có bước xác nhận.
+
+Bản trước hiển thị thông tin chỉ đọc kèm câu "liên hệ chăm sóc khách hàng để thay đổi", vì Storefront
+Auth khi đó chưa có operation nào cho việc này.
 
 ## Phạm vi
 

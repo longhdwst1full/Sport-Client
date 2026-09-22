@@ -20,4 +20,6 @@ export interface CustomerProfileDto {
   marketingConsent: boolean;
   /** Thời điểm tạo tài khoản */
   createdAt: string;
+  /** Gửi lại làm expectedVersion khi cập nhật hồ sơ */
+  version: number;
 }
