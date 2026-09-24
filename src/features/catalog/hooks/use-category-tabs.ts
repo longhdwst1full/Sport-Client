@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useListCatalogCategories } from '@/generated/api/catalog/catalog';
+import { CACHE_POLICY } from '@/app/config/query-cache-policy';
 
 export interface CategoryTabView {
   /** Slug thật của danh mục, dùng để lọc ở Backend. `null` nghĩa là "Tất cả". */
@@ -19,7 +20,7 @@ export function useCategoryTabs(): { tabs: CategoryTabView[]; isPending: boolean
   }, []);
 
   const query = useListCatalogCategories({
-    query: { enabled: isMounted },
+    query: { enabled: isMounted, ...CACHE_POLICY.LOOKUP },
   });
 
   const tabs = useMemo<CategoryTabView[]>(() => {

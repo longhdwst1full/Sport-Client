@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useListPublishedPosts } from '@/generated/api/content/content';
+import { CACHE_POLICY } from '@/app/config/query-cache-policy';
 import {
   POLICY_POST_TYPE,
   toContentPostView,
@@ -18,7 +19,10 @@ export function useContentStories(): {
     setIsMounted(true);
   }, []);
 
-  const query = useListPublishedPosts(undefined, { query: { enabled: isMounted } });
+  const query = useListPublishedPosts(undefined, {
+    // Bài viết nội dung đổi trong ngày là cùng; khách đi qua lại trang chủ không cần gọi lại mỗi lần.
+    query: { enabled: isMounted, ...CACHE_POLICY.LOOKUP },
+  });
   const stories = useMemo(
     () =>
       (query.data?.items ?? [])

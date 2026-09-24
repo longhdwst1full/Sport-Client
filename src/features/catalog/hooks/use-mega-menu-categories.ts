@@ -3,6 +3,7 @@
 import { useMemo, useState, useEffect } from 'react';
 import { useListCatalogCategories } from '@/generated/api/catalog/catalog';
 import type { CatalogCategoryDto } from '@/generated/api/catalog/models';
+import { CACHE_POLICY } from '@/app/config/query-cache-policy';
 
 export interface MegaMenuEntry {
   slug: string;
@@ -35,7 +36,8 @@ export function useMegaMenuCategories(): {
   }, []);
 
   const query = useListCatalogCategories({
-    query: { enabled: isMounted },
+    // Menu danh mục hiện trên mọi trang; đây là truy vấn lặp lại nhiều nhất của Storefront.
+    query: { enabled: isMounted, ...CACHE_POLICY.LOOKUP },
   });
 
   const categories = useMemo(() => {

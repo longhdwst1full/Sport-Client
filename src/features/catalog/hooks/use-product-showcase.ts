@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useListCatalogProducts } from '@/generated/api/catalog/catalog';
 import { vndMoney } from '@/shared/format/money';
 import { PRODUCT_PLACEHOLDER_IMAGE } from '@/shared/constants';
+import { CACHE_POLICY } from '@/app/config/query-cache-policy';
 
 export interface ProductShowcaseItem {
   id: string;
@@ -71,7 +72,9 @@ export function useProductShowcase(
       search: search || undefined,
     },
     {
-      query: { enabled: isMounted },
+      // Khối sản phẩm trên trang chủ/danh mục: khách đi qua lại liên tục giữa danh sách và chi tiết.
+      // Giá hiển thị ở đây không phải giá chốt — bước báo giá checkout luôn tính lại.
+      query: { enabled: isMounted, ...CACHE_POLICY.CATALOG },
     },
   );
   const total = query.data?.meta.total ?? 0;
