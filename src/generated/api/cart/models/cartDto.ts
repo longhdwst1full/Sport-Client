@@ -5,16 +5,16 @@
  * Contract for storefront and admin applications
  * OpenAPI spec version: 1.0.0
  */
-import type { CartDtoStatus } from './cartDtoStatus';
-import type { CartDtoCurrencyCode } from './cartDtoCurrencyCode';
+import type { ActiveCartStatus } from './activeCartStatus';
+import type { CurrencyCode } from './currencyCode';
 import type { CartItemDto } from './cartItemDto';
 import type { CartDtoExpiresAt } from './cartDtoExpiresAt';
 
 export interface CartDto {
   /** @pattern ^[1-9][0-9]*$ */
   id: string;
-  status: CartDtoStatus;
-  currencyCode: CartDtoCurrencyCode;
+  status: ActiveCartStatus;
+  currencyCode: CurrencyCode;
   /** @minimum 0 */
   version: number;
   items: CartItemDto[];

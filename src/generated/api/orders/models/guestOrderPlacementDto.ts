@@ -5,9 +5,9 @@
  * Contract for storefront and admin applications
  * OpenAPI spec version: 1.0.0
  */
-import type { GuestOrderPlacementDtoStatus } from './guestOrderPlacementDtoStatus';
-import type { GuestOrderPlacementDtoPaymentStatus } from './guestOrderPlacementDtoPaymentStatus';
-import type { GuestOrderPlacementDtoFulfillmentStatus } from './guestOrderPlacementDtoFulfillmentStatus';
+import type { OrderStatus } from './orderStatus';
+import type { PaymentStatus } from './paymentStatus';
+import type { OrderFulfillmentStatus } from './orderFulfillmentStatus';
 import type { OrderRecipientDto } from './orderRecipientDto';
 import type { OrderItemDto } from './orderItemDto';
 import type { OrderStatusHistoryDto } from './orderStatusHistoryDto';
@@ -16,9 +16,9 @@ export interface GuestOrderPlacementDto {
   /** @pattern ^[1-9][0-9]*$ */
   id: string;
   orderNo: string;
-  status: GuestOrderPlacementDtoStatus;
-  paymentStatus: GuestOrderPlacementDtoPaymentStatus;
-  fulfillmentStatus: GuestOrderPlacementDtoFulfillmentStatus;
+  status: OrderStatus;
+  paymentStatus: PaymentStatus;
+  fulfillmentStatus: OrderFulfillmentStatus;
   paymentMethod: string;
   shippingMethod: string;
   /** @pattern ^[1-9][0-9]*$ */

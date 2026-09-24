@@ -7,6 +7,6 @@
  */
 
 export * from './flashSaleItemDto';
-export * from './flashSaleItemDtoStatus';
+export * from './flashSaleItemStatus';
 export * from './publicFlashSaleCampaignDto';
 export * from './publicFlashSaleListDto';

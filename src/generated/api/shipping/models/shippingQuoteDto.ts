@@ -5,7 +5,7 @@
  * Contract for storefront and admin applications
  * OpenAPI spec version: 1.0.0
  */
-import type { ShippingQuoteDtoCurrencyCode } from './shippingQuoteDtoCurrencyCode';
+import type { CurrencyCode } from './currencyCode';
 
 export interface ShippingQuoteDto {
   /** @pattern ^[1-9][0-9]*$ */
@@ -13,7 +13,7 @@ export interface ShippingQuoteDto {
   /** @pattern ^[1-9][0-9]*$ */
   branchId: string;
   zoneCode: string;
-  currencyCode: ShippingQuoteDtoCurrencyCode;
+  currencyCode: CurrencyCode;
   fee: string;
   /** @minimum 0 */
   etaMinDays: number;

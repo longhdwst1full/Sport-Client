@@ -6,17 +6,17 @@
  * OpenAPI spec version: 1.0.0
  */
 
+export * from './checkoutPaymentMethod';
 export * from './checkoutQuoteDto';
-export * from './checkoutQuoteDtoPaymentMethod';
-export * from './checkoutQuoteDtoShippingMethod';
-export * from './checkoutQuoteDtoStatus';
 export * from './checkoutQuoteItemDto';
+export * from './checkoutQuotePaymentMethod';
+export * from './checkoutQuoteStatus';
 export * from './checkoutRecipientDto';
 export * from './createCheckoutQuoteDto';
-export * from './createCheckoutQuoteDtoPaymentMethod';
 export * from './errorDetailDto';
 export * from './errorResponseDto';
 export * from './releaseReservationDto';
 export * from './reservationDto';
 export * from './reservationDtoStatus';
 export * from './reservationItemDto';
+export * from './shippingMethod';

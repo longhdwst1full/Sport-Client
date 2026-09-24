@@ -5,7 +5,7 @@
  * Contract for storefront and admin applications
  * OpenAPI spec version: 1.0.0
  */
-import type { UpdateCustomerAddressDtoCodeProvider } from './updateCustomerAddressDtoCodeProvider';
+import type { AddressCodeProvider } from './addressCodeProvider';
 
 export interface UpdateCustomerAddressDto {
   /** @maxLength 255 */
@@ -33,7 +33,7 @@ export interface UpdateCustomerAddressDto {
   /** @maxLength 32 */
   provinceCode?: string;
   /** Hãng đã cấp bộ mã gửi kèm; bỏ trống thì hiểu là hãng mặc định của hệ thống. */
-  codeProvider?: UpdateCustomerAddressDtoCodeProvider;
+  codeProvider?: AddressCodeProvider;
   /** @maxLength 20 */
   postalCode?: string;
   isDefault?: boolean;

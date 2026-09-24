@@ -4,9 +4,9 @@ import {
   createAccountPaymentEvidenceUpload,
   createGuestPaymentEvidenceUpload,
 } from '@/generated/api/payments/payments';
-import type { CreateMediaUploadDtoContentType } from '@/generated/api/payments/models';
+import type { ImageMimeType } from '@/generated/api/payments/models';
 
-const allowedTypes = new Set<CreateMediaUploadDtoContentType>([
+const allowedTypes = new Set<ImageMimeType>([
   'image/jpeg',
   'image/png',
   'image/webp',
@@ -25,8 +25,8 @@ interface CloudinaryUploadResponse {
   signature: string;
 }
 
-function isAllowedContentType(value: string): value is CreateMediaUploadDtoContentType {
-  return allowedTypes.has(value as CreateMediaUploadDtoContentType);
+function isAllowedContentType(value: string): value is ImageMimeType {
+  return allowedTypes.has(value as ImageMimeType);
 }
 
 export async function uploadPaymentEvidence(
