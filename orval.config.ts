@@ -16,6 +16,13 @@ function operationOverrides(domain: string): Record<string, { requestOptions: bo
       submitAccountPaymentEvidence: { requestOptions: true },
     };
   }
+  if (domain === 'returns') {
+    // Hai lệnh ghi cần gửi Idempotency-Key theo từng request.
+    return {
+      createAccountReturn: { requestOptions: true },
+      cancelAccountReturn: { requestOptions: true },
+    };
+  }
   return {};
 }
 
@@ -50,4 +57,5 @@ export default defineConfig({
   checkout: createDomainConfig('checkout'),
   orders: createDomainConfig('orders'),
   payments: createDomainConfig('payments'),
+  returns: createDomainConfig('returns'),
 });

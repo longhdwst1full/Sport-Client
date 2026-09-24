@@ -25,6 +25,7 @@ import {
   statusIn,
 } from '../model/order.constants';
 import { readGuestOrderAccessToken, retireGuestOrderAccessToken } from '../model/guest-order-access.store';
+import { OrderReturnCta } from '@/features/returns';
 import { OrderPaymentPanel } from '../components/order-payment-panel';
 
 function errorMessage(error: unknown): string {
@@ -142,6 +143,7 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
                     }
                   }}
                 />
+                <OrderReturnCta orderNo={orderNo} authenticated={isAuthenticated} />
                 <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"><h2 className="font-black">Giao đến</h2><p className="mt-3 text-sm font-bold">{view?.recipientName} · {view?.recipientPhone}</p><p className="mt-2 text-sm leading-6 text-slate-600">{view?.recipientAddress}</p></section>
                 <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"><h2 className="font-black">Tiến trình</h2><div className="mt-4 space-y-4">{(view?.timeline ?? []).map((entry) => <div key={entry.key} className="flex gap-3"><PackageCheck className="mt-0.5 size-5 shrink-0 text-emerald-600" /><div><strong className="text-sm">{entry.statusLabel}</strong><p className="text-xs text-slate-500">{entry.occurredLabel}</p>{entry.note && <p className="mt-1 text-xs text-slate-600">{entry.note}</p>}</div></div>)}</div></section>
               </aside>

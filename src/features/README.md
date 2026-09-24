@@ -1,10 +1,10 @@
 # Storefront features — maintenance guide
 
-> **Document version:** 1.0.0
+> **Document version:** 1.1.0
 >
-> **Last updated:** 2026-09-09
+> **Last updated:** 2026-09-24
 >
-> **Change summary:** Bổ sung bản đồ feature, state ownership và checklist bảo trì cho Sport Client.
+> **Change summary:** Thêm feature `returns` (yêu cầu đổi trả của khách) vào bản đồ.
 
 ## Luồng phụ thuộc chuẩn
 
@@ -32,6 +32,7 @@ Next.js app route (server-first)
 | `checkout` | Quote, branch/shipping/payment choice và reservation | Local page state + generated API; xem README trong feature. |
 | `auth` | Register/login/session customer | Token qua shared transport; không import Admin auth operation. |
 | `profile` | Hồ sơ/địa chỉ customer | Dữ liệu private không cache offline công khai. |
+| `returns` | Khách tạo/theo dõi/huỷ yêu cầu trả hàng | Luật lấy từ API eligibility; route `/returns` network-only trong SW. Xem README trong feature. |
 | `content` / `reviews` | Bài viết và social proof | Public read; nội dung rich text phải sanitize theo boundary hiện tại. |
 
 ## State ownership
@@ -68,4 +69,5 @@ Không sao chép cùng một API payload vào Redux và TanStack Query. Nếu st
 
 | Version | Date | Change summary | Source |
 | --- | --- | --- | --- |
+| 1.1.0 | 2026-09-24 | Thêm feature `returns`. | API-20260924-RETURN-EVIDENCE-IMAGES |
 | 1.0.0 | 2026-09-09 | Tạo bản đồ và quy tắc maintenance cho Storefront features. | DOC-20260909-FEATURE-MAINTENANCE-NOTES |

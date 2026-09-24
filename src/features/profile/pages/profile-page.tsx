@@ -22,6 +22,7 @@ import {
   Wrench,
   AlertCircle,
   X,
+  RotateCcw,
 } from 'lucide-react';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { useCustomerAuth } from '@/features/auth';
@@ -215,6 +216,7 @@ export function ProfilePage() {
                 <nav className="mt-6 space-y-1">
                   {[
                     { id: 'orders' as const, label: 'Lịch sử đơn hàng', icon: Package },
+                    { id: 'returns' as const, label: 'Yêu cầu đổi trả', icon: RotateCcw },
                     { id: 'address' as const, label: 'Sổ địa chỉ nhận hàng', icon: MapPin },
                     { id: 'warranty' as const, label: 'Tra cứu bảo hành', icon: ShieldCheck },
                     { id: 'settings' as const, label: 'Cài đặt tài khoản', icon: User },
@@ -225,6 +227,10 @@ export function ProfilePage() {
                       onClick={() => {
                         if (id === 'orders') {
                           router.push('/orders');
+                          return;
+                        }
+                        if (id === 'returns') {
+                          router.push('/returns');
                           return;
                         }
                         setActiveTab(id);

@@ -37,6 +37,7 @@ self.addEventListener('fetch', (event) => {
   const isOnlineOnlyNavigation = event.request.mode === 'navigate' && [
     '/account',
     '/orders',
+    '/returns',
     '/profile',
     '/checkout',
   ].some((prefix) => requestUrl.pathname.startsWith(prefix));

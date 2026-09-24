@@ -6,7 +6,7 @@ const { resolve } = require('node:path');
 //   - system.yaml (`listPublicSystemParameters`): tham số hệ thống công khai, storefront
 //     chưa có màn nào cần tới. Sinh SDK cho nó chỉ tạo thêm mã không ai gọi. Khi nào dùng
 //     thì thêm vào danh sách này rồi chạy lại `contracts:sync` và `generate:api`.
-const domains = ['auth', 'catalog', 'content', 'reviews', 'cart', 'customer', 'shipping', 'checkout', 'orders', 'payments', 'promotions'];
+const domains = ['auth', 'catalog', 'content', 'reviews', 'cart', 'customer', 'shipping', 'checkout', 'orders', 'payments', 'promotions', 'returns'];
 const defaultBaseUrl =
   'https://raw.githubusercontent.com/longhdwst1full/dctd-utc/main/document/api/storefront';
 const baseUrl = (process.env.SPORT_API_CONTRACT_BASE_URL || defaultBaseUrl).replace(/\/$/, '');
