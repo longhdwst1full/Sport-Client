@@ -49,12 +49,31 @@ describe('auth store — transport COOKIE', () => {
     expect(store.isCustomerAuthenticated()).toBe(true);
   });
 
-  /** Token nằm trong cookie HttpOnly: JavaScript không được giữ bản sao. */
-  it('không giữ bản sao token trong JavaScript', async () => {
+  /**
+   * Server chỉ đưa REFRESH token vào cookie HttpOnly; access token vẫn nằm trong response body và
+   * mọi request được bảo vệ phải tự gắn nó vào header.
+   *
+   * Hồi quy: bản trước bỏ luôn cả cặp token khi chạy COOKIE, nên mỗi lời gọi đều đi không kèm
+   * Bearer → 401 → xoay token → thử lại → access token mới lại bị bỏ. Hai vòng mạng và một lần
+   * xoay refresh token cho MỌI request.
+   */
+  it('giữ access token để gắn vào header, nhưng không giữ refresh token', async () => {
     const store = await loadStore('COOKIE');
     store.saveCustomerAuthTokens(TOKENS);
 
-    expect(store.readCustomerAuthTokens()).toBeUndefined();
+    expect(store.readCustomerAuthTokens()?.accessToken).toBe('access');
+    // SECURITY: refresh token thuộc về cookie HttpOnly của server.
+    expect(store.readCustomerAuthTokens()?.refreshToken).toBeUndefined();
+  });
+
+  /** Không được nhầm access token đọc được thành "còn refresh credential". */
+  it('có access token vẫn không coi là đọc được refresh token', async () => {
+    const store = await loadStore('COOKIE');
+    store.saveCustomerAuthTokens(TOKENS);
+    window.localStorage.clear();
+
+    expect(store.readCustomerAuthTokens()?.accessToken).toBe('access');
+    expect(store.hasCustomerRefreshCredential()).toBe(false);
   });
 
   it('đăng xuất thì trở lại chưa đăng nhập', async () => {

@@ -42,16 +42,32 @@ function hasSessionHint(): boolean {
   }
 }
 
+/**
+ * Ở transport COOKIE, server chỉ đưa **refresh token** vào cookie HttpOnly — **access token vẫn
+ * nằm trong response body** và mọi request được bảo vệ phải tự gắn nó vào header `Authorization`.
+ *
+ * Bản trước bỏ luôn cả cặp token khi chạy COOKIE, nên chuỗi sau lặp lại ở MỌI lời gọi: request đi
+ * không kèm Bearer → 401 → fetcher xoay token → thử lại thành công → access token mới lại bị bỏ →
+ * lời gọi kế tiếp lại 401. Mỗi request tốn hai vòng mạng và một lần xoay refresh token.
+ */
 export function saveCustomerAuthTokens(tokens: TokenPairDto): void {
-  // COOKIE transport: server đã set HttpOnly cookie, client không được giữ bản sao.
-  if (!cookieTransport) AuthService.save(tokens);
+  AuthService.save(
+    // SECURITY: refresh token ở chế độ COOKIE thuộc về cookie HttpOnly của server. Không bao giờ
+    // ghi nó xuống chỗ JavaScript đọc được — đó chính là thứ HttpOnly dựng lên để tránh.
+    cookieTransport ? { ...tokens, refreshToken: undefined } : tokens,
+  );
   // Cờ phiên đặt ở CẢ HAI transport: đây là thứ duy nhất giao diện đọc được ở chế độ COOKIE.
   writeSessionHint(true);
   notifyAuthChange();
 }
 
+/**
+ * Token mà JavaScript được phép đọc.
+ *
+ * Ở chế độ COOKIE chỉ có access token; `refreshToken` luôn `undefined` vì nó nằm trong cookie
+ * HttpOnly. Nhờ vậy `hasCustomerRefreshCredential` không thể nhầm tưởng là đọc được refresh token.
+ */
 export function readCustomerAuthTokens(): TokenPairDto | undefined {
-  if (cookieTransport) return undefined;
   return AuthService.read();
 }
 
@@ -75,6 +91,8 @@ export function clearCustomerAuthTokens(): void {
  */
 export function isCustomerAuthenticated(): boolean {
   if (typeof window === 'undefined') return false;
+  // Ở chế độ COOKIE, access token hết hạn là chuyện bình thường (refresh token trong cookie vẫn
+  // cứu được phiên), nên không xét theo token đọc được mà xét theo cờ phiên.
   if (cookieTransport) return hasSessionHint();
   // Xét theo việc CÒN token hay không, không xét riêng access token: access hết hạn
   // trước refresh là đúng luồng, và fetcher tự xoay lại. Bám vào accessToken sẽ làm
