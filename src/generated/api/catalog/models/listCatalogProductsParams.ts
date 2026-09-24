@@ -5,7 +5,7 @@
  * Contract for storefront and admin applications
  * OpenAPI spec version: 1.0.0
  */
-import type { ListCatalogProductsStatus } from './listCatalogProductsStatus';
+import type { ProductStatus } from './productStatus';
 
 export type ListCatalogProductsParams = {
   /**
@@ -37,5 +37,5 @@ export type ListCatalogProductsParams = {
    * Slug danh mục; gồm cả nhánh con
    */
   category?: string;
-  status?: ListCatalogProductsStatus;
+  status?: ProductStatus;
 };

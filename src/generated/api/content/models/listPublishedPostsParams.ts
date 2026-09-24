@@ -5,11 +5,11 @@
  * Contract for storefront and admin applications
  * OpenAPI spec version: 1.0.0
  */
-import type { ListPublishedPostsPostType } from './listPublishedPostsPostType';
+import type { ContentPostType } from './contentPostType';
 
 export type ListPublishedPostsParams = {
   /**
    * Lọc theo loại bài viết. Bỏ trống để lấy tất cả.
    */
-  postType?: ListPublishedPostsPostType;
+  postType?: ContentPostType;
 };

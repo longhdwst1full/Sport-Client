@@ -7,7 +7,7 @@
  */
 
 export * from './productReviewDto';
-export * from './productReviewDtoStatus';
 export * from './productReviewListDto';
 export * from './reviewCommentDto';
 export * from './reviewCommentDtoAuthorType';
+export * from './reviewModerationStatus';

@@ -1,6 +1,6 @@
 import type {
   CreateAccountReturnDto,
-  CreateAccountReturnDtoReasonCode,
+  ReturnReasonCode,
   ReturnDetailDto,
   ReturnEligibilityLineDto,
 } from '@/generated/api/returns/models';
@@ -50,7 +50,7 @@ export function canCustomerCancel(status: ReturnDetailDto['status']): boolean {
 }
 
 export interface CreateReturnFormState {
-  reasonCode: CreateAccountReturnDtoReasonCode | '';
+  reasonCode: ReturnReasonCode | '';
   description: string;
   /** Số lượng muốn trả theo `orderItemId`; 0 là không trả dòng đó. */
   quantities: Record<string, number>;
@@ -74,7 +74,7 @@ export function toCreateReturnPayload(
   });
   return {
     orderNo,
-    reasonCode: form.reasonCode as CreateAccountReturnDtoReasonCode,
+    reasonCode: form.reasonCode as ReturnReasonCode,
     items,
     ...(form.description.trim() ? { description: form.description.trim() } : {}),
     ...(images.length

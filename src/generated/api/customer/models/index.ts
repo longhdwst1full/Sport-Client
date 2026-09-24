@@ -6,8 +6,8 @@
  * OpenAPI spec version: 1.0.0
  */
 
+export * from './addressCodeProvider';
 export * from './createCustomerAddressDto';
-export * from './createCustomerAddressDtoCodeProvider';
 export * from './customerAddressDto';
 export * from './customerAddressDtoCodeProvider';
 export * from './customerAddressDtoCountryCode';
@@ -15,5 +15,4 @@ export * from './customerProfileDto';
 export * from './errorDetailDto';
 export * from './errorResponseDto';
 export * from './updateCustomerAddressDto';
-export * from './updateCustomerAddressDtoCodeProvider';
 export * from './updateCustomerProfileDto';

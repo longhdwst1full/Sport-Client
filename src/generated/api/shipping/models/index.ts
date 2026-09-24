@@ -6,6 +6,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
+export * from './currencyCode';
 export * from './errorDetailDto';
 export * from './errorResponseDto';
 export * from './listShippingDistrictsParams';
@@ -13,5 +14,4 @@ export * from './listShippingWardsParams';
 export * from './shippingAreaDto';
 export * from './shippingAreaListDto';
 export * from './shippingQuoteDto';
-export * from './shippingQuoteDtoCurrencyCode';
 export * from './shippingQuoteRequestDto';

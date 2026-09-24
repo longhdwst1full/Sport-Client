@@ -6,11 +6,11 @@
  * OpenAPI spec version: 1.0.0
  */
 import type { CheckoutRecipientDto } from './checkoutRecipientDto';
-import type { CreateCheckoutQuoteDtoPaymentMethod } from './createCheckoutQuoteDtoPaymentMethod';
+import type { CheckoutPaymentMethod } from './checkoutPaymentMethod';
 
 export interface CreateCheckoutQuoteDto {
   recipient: CheckoutRecipientDto;
-  paymentMethod: CreateCheckoutQuoteDtoPaymentMethod;
+  paymentMethod: CheckoutPaymentMethod;
   /** Request a staff-agreed fee/ETA for coach bus or special delivery */
   requestShippingConsultation?: boolean;
   /** @maxLength 1000 */

@@ -1,9 +1,9 @@
 import type {
-  CreateAccountReturnDtoReasonCode,
-  RefundDtoMethod,
-  ReturnDetailDtoStatus,
-  ReturnEligibilityDtoReason,
-  ReturnItemDtoCondition,
+  ReturnReasonCode,
+  RefundMethod,
+  ReturnStatus,
+  ReturnIneligibleReason,
+  ReturnCondition,
 } from '@/generated/api/returns/models';
 
 export const RETURN_PAGE_SIZE = 10;
@@ -13,7 +13,7 @@ export const MAX_EVIDENCE_IMAGES = 5;
  * Nhãn cho khách: không lộ trạng thái nội bộ; "RECEIVED" với khách là "đã nhận và kiểm hàng".
  * Kiểu `Record<Enum, …>` bắt lỗi compile khi contract thêm trạng thái mà quên nhãn.
  */
-export const returnStatusLabels: Record<ReturnDetailDtoStatus, string> = {
+export const returnStatusLabels: Record<ReturnStatus, string> = {
   REQUESTED: 'Đã gửi yêu cầu',
   APPROVED: 'Đã duyệt – vui lòng gửi hàng về',
   REJECTED: 'Yêu cầu không được duyệt',
@@ -23,7 +23,7 @@ export const returnStatusLabels: Record<ReturnDetailDtoStatus, string> = {
   CANCELLED: 'Đã huỷ',
 };
 
-export const returnStatusTone: Record<ReturnDetailDtoStatus, string> = {
+export const returnStatusTone: Record<ReturnStatus, string> = {
   REQUESTED: 'bg-amber-50 text-amber-800',
   APPROVED: 'bg-sky-50 text-sky-800',
   REJECTED: 'bg-rose-50 text-rose-800',
@@ -42,7 +42,7 @@ export const RETURN_PROGRESS_STEPS = [
   { key: 'CLOSED', label: 'Hoàn tất' },
 ] as const;
 
-export const returnReasonLabels: Record<CreateAccountReturnDtoReasonCode, string> = {
+export const returnReasonLabels: Record<ReturnReasonCode, string> = {
   DEFECTIVE: 'Hàng lỗi',
   WRONG_ITEM: 'Giao sai hàng',
   NOT_AS_DESCRIBED: 'Không đúng mô tả',
@@ -51,18 +51,18 @@ export const returnReasonLabels: Record<CreateAccountReturnDtoReasonCode, string
   OTHER: 'Khác',
 };
 
-export const returnConditionLabels: Record<NonNullable<ReturnItemDtoCondition>, string> = {
+export const returnConditionLabels: Record<NonNullable<ReturnCondition>, string> = {
   SELLABLE: 'Đạt yêu cầu',
   DAMAGED: 'Hàng bị hư hỏng',
   MISSING: 'Cửa hàng không nhận được',
 };
 
-export const refundMethodLabels: Record<RefundDtoMethod, string> = {
+export const refundMethodLabels: Record<RefundMethod, string> = {
   CASH: 'Tiền mặt tại cửa hàng',
   BANK_TRANSFER: 'Chuyển khoản',
 };
 
-export const returnEligibilityReasonLabels: Record<NonNullable<ReturnEligibilityDtoReason>, string> = {
+export const returnEligibilityReasonLabels: Record<NonNullable<ReturnIneligibleReason>, string> = {
   ORDER_NOT_RETURNABLE: 'Đơn chưa giao thành công nên chưa thể yêu cầu trả hàng.',
   OPEN_RETURN_EXISTS: 'Đơn đang có một yêu cầu trả hàng chưa xử lý xong.',
   WINDOW_EXPIRED: 'Đơn đã quá thời hạn đổi trả.',

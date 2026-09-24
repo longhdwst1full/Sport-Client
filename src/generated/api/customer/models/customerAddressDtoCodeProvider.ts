@@ -5,16 +5,10 @@
  * Contract for storefront and admin applications
  * OpenAPI spec version: 1.0.0
  */
+import type { AddressCodeProvider } from './addressCodeProvider';
 
 /**
  * Hãng đã cấp bộ mã địa giới của địa chỉ này.
  * @nullable
  */
-export type CustomerAddressDtoCodeProvider =
-  | (typeof CustomerAddressDtoCodeProvider)[keyof typeof CustomerAddressDtoCodeProvider]
-  | null;
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const CustomerAddressDtoCodeProvider = {
-  GHN: 'GHN',
-} as const;
+export type CustomerAddressDtoCodeProvider = AddressCodeProvider | null;

@@ -5,12 +5,12 @@
  * Contract for storefront and admin applications
  * OpenAPI spec version: 1.0.0
  */
-import type { CreateAccountReturnDtoReasonCode } from './createAccountReturnDtoReasonCode';
+import type { ReturnReasonCode } from './returnReasonCode';
 import type { ReturnEvidenceInputDto } from './returnEvidenceInputDto';
 import type { ReturnLineInputDto } from './returnLineInputDto';
 
 export interface CreateAccountReturnDto {
-  reasonCode: CreateAccountReturnDtoReasonCode;
+  reasonCode: ReturnReasonCode;
   /** @maxLength 2000 */
   description?: string;
   /**

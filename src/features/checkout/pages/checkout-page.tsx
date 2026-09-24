@@ -9,7 +9,7 @@ import { clearCart } from '@/app/store/cart.slice';
 import { useCartHydrated } from '@/app/providers';
 import { VietnamAddressSelector, type SelectedAddressData } from '@/shared/components/address/vietnam-address-selector';
 import { useCustomerAuth } from '@/features/auth';
-import type { CheckoutQuoteDto, CreateCheckoutQuoteDtoPaymentMethod } from '@/generated/api/checkout/models';
+import type { CheckoutQuoteDto, CheckoutPaymentMethod } from '@/generated/api/checkout/models';
 import type { OrderDetailDto } from '@/generated/api/orders/models';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { ApiError } from '@/lib/api/fetcher';
@@ -60,7 +60,7 @@ export function CheckoutPage() {
   const [note, setNote] = useState('');
   const [address, setAddress] = useState<SelectedAddressData>(initialAddress);
   const [coordinates, setCoordinates] = useState<{ latitude: number; longitude: number }>();
-  const [paymentMethod, setPaymentMethod] = useState<CreateCheckoutQuoteDtoPaymentMethod>('COD');
+  const [paymentMethod, setPaymentMethod] = useState<CheckoutPaymentMethod>('COD');
   const [requestConsultation, setRequestConsultation] = useState(false);
   const [quote, setQuote] = useState<CheckoutQuoteDto>();
   // DTO giữ nguyên cho luồng xác nhận; phần hiển thị dùng view model để không

@@ -7,10 +7,9 @@
  */
 
 export * from './contentPostDto';
-export * from './contentPostDtoPostType';
-export * from './contentPostDtoStatus';
 export * from './contentPostListDto';
+export * from './contentPostStatus';
+export * from './contentPostType';
 export * from './errorDetailDto';
 export * from './errorResponseDto';
 export * from './listPublishedPostsParams';
-export * from './listPublishedPostsPostType';
