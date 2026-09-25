@@ -1,10 +1,10 @@
 # Storefront Home — maintenance note
 
-> **Document version:** 1.1.0
+> **Document version:** 2.0.0
 >
 > **Last updated:** 2026-09-25
 >
-> **Change summary:** Gỡ số liệu/đối tác giả, SSR trang 1 lưới sản phẩm qua `initialData`, link trang chủ trỏ về route thật.
+> **Change summary:** Bỏ toàn bộ mock trang chủ: hero dựng từ bài viết + flash sale thật, thẻ bộ môn/lối tắt từ cây danh mục; gỡ popup voucher, planner, training guide, stats, brand partners.
 
 ## Phạm vi
 
@@ -14,7 +14,7 @@
 
 ## Server/client boundary
 
-`pages/home-page.tsx` là **server component async** — tự lấy rail danh mục rồi truyền xuống. Chỉ 4 component cần tương tác mới là client: `hero-banner-slider`, `category-visual-showcase`, `gym-project-planner`, `event-announcement-modal`.
+`pages/home-page.tsx` là **server component async** — tự lấy danh mục, bài viết và trang 1 sản phẩm rồi truyền xuống. Chỉ 2 component cần tương tác mới là client: `hero-banner-slider` (slide + flash sale theo giờ server) và `category-visual-showcase`.
 
 Không được biến `home-page.tsx` thành `'use client'` để tiện quản lý loading (`RULE-SKEL-06`).
 
@@ -26,7 +26,9 @@ Không được biến `home-page.tsx` thành `'use client'` để tiện quản
 
 | Dùng | Nguồn |
 | --- | --- |
-| `listCatalogCategories` (server) | `src/generated/api/catalog/catalog.ts` |
+| `listCatalogCategories` (server) — rail, thẻ "theo bộ môn" (danh mục gốc, `productCount` cao nhất), lối tắt nhóm sản phẩm (danh mục con) | `src/generated/api/catalog/catalog.ts` |
+| `listPublishedPosts` (server, bỏ `POLICY`) — slide hero từ bài có ảnh bìa | `src/generated/api/content/content.ts` |
+| `listPublicFlashSales` (client qua `useFlashSale`) — slide chiến dịch đang chạy | `src/generated/api/promotions/promotions.ts` |
 | `listCatalogProducts` trang 1, `limit = CATALOG_PAGE_SIZE.SHOWCASE` (server) | `src/generated/api/catalog/catalog.ts` |
 
 Trang 1 truyền xuống `ProductShowcase` làm `initialData` của `useInfiniteQuery` (cùng `limit` và chỉ cho lưới "Tất cả"), nên HTML SSR có sản phẩm; `initialPageFetchedAt` giúp client làm mới khi bản ISR đã cũ hơn `staleTime`. Đổi `limit` ở một phía mà không đổi phía kia thì hook bỏ qua `initialData` và quay về skeleton.
@@ -39,13 +41,17 @@ Route `/` đặt `revalidate = 300` (ISR 5 phút). Thiếu dòng này thì dữ 
 
 API lỗi ⇒ rail ẩn hẳn, không chặn trang chủ và không hiện dữ liệu bịa.
 
-## Mock còn lại — chờ backend
+## Không còn mock
 
-`MOCK_HERO_SLIDES`, `MOCK_HOME_VOUCHERS`, `MOCK_TRAINING_SPACES`, `MOCK_GYM_PACKAGES`, `MOCK_HOME_SPORT_CATEGORIES`, `MOCK_POPULAR_SEARCH_KEYWORDS`.
+`src/shared/data/mocks` đã xoá. Section nào chưa có API thì gỡ hẳn thay vì dựng dữ liệu:
 
-`MOCK_HOME_STATS` (bộ đếm showroom/khách hàng) và `MOCK_BRAND_PARTNERS` đã bị gỡ cùng section: số liệu và đối tác viết cứng không có nguồn xác nhận. Slide hero không khai % giảm giá/quà tặng; thẻ "theo bộ môn" chỉ dẫn vào `/category/<slug>` khi slug có trong cây danh mục API, ngược lại về `/products`.
+| Đã gỡ | Lý do |
+| --- | --- |
+| Popup voucher (`event-announcement-modal`) | Chưa có API voucher |
+| `training-space-guide`, `gym-project-planner` | Gói thiết bị/diện tích/ngân sách viết cứng, chưa có API |
+| `stats-counter`, `brand-partners` | Số liệu và đối tác viết cứng, không có nguồn xác nhận |
 
-Đây là nội dung marketing chưa có module CMS tương ứng phía backend. Không tự tạo endpoint để lấp (`RULE-CTR-02`).
+Hero không có bài viết lẫn flash sale thì hiển thị một slide thương hiệu tĩnh từ `STORE_CONFIG`, không có giá hay phần trăm. Danh mục chưa có ảnh trong DB nên thẻ "theo bộ môn" dùng icon, không dùng ảnh stock.
 
 ## Checklist khi sửa
 
@@ -57,5 +63,6 @@ API lỗi ⇒ rail ẩn hẳn, không chặn trang chủ và không hiện dữ 
 
 | Version | Date | Change summary |
 | --- | --- | --- |
+| 2.0.0 | 2026-09-25 | Xoá mock: hero/bộ môn/lối tắt từ API; gỡ voucher popup, planner, training guide. |
 | 1.1.0 | 2026-09-25 | Gỡ stats/brand partners giả, SSR trang 1 lưới sản phẩm, sửa link `/catalog?…`/`/#products`. |
 | 1.0.0 | 2026-09-13 | Tạo note; rail danh mục sang API thật, `/` bật ISR 5 phút. |

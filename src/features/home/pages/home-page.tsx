@@ -1,40 +1,44 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import {
-  ArrowRight,
-  BadgeCheck,
-  ChevronRight,
-  Goal,
-  MoveUpRight,
-  Play,
-  Sparkles,
-  Trophy,
-} from 'lucide-react';
-import { MOCK_HOME_SPORT_CATEGORIES, MOCK_POPULAR_SEARCH_KEYWORDS } from '@/shared/data/mocks';
+import { ArrowRight, MoveUpRight, Sparkles, Trophy } from 'lucide-react';
 import { BenefitsStrip } from '@/widgets/benefits-strip/benefits-strip';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { SectionHeading } from '@/foundation/components/section-heading';
-import { ProductShowcase } from '@/features/catalog';
-import { toCategoryRailView } from '@/features/catalog';
+import { ProductShowcase, toCategoryCardView, toCategoryRailView } from '@/features/catalog';
 import { CATALOG_PAGE_SIZE } from '@/features/catalog/model/product.mapper';
 import { listCatalogCategories, listCatalogProducts } from '@/generated/api/catalog/catalog';
+import type { CatalogCategoryDto } from '@/generated/api/catalog/models';
+import { listPublishedPosts } from '@/generated/api/content/content';
 import { ContentStories } from '@/features/content';
+import {
+  POLICY_POST_TYPE,
+  toContentPostView,
+} from '@/features/content/model/content-post.mapper';
 import { ProductReviews } from '@/features/reviews';
-import { EventAnnouncementModal } from '../components/event-announcement-modal';
 import { HeroBannerSlider } from '../components/hero-banner-slider';
 import { CategoryVisualShowcase } from '../components/category-visual-showcase';
-import { TrainingSpaceGuide } from '../components/training-space-guide';
 import { FlashSaleSection } from '@/features/promotions';
-import { GymProjectPlanner } from '../components/gym-project-planner';
 
+/** Số thẻ "theo bộ môn" và số lối tắt nhóm sản phẩm; chọn theo `productCount` thật. */
+const SPORT_CARD_COUNT = 4;
+const QUICK_LINK_COUNT = 8;
 
-
-async function loadCategoryRail() {
+async function loadCategories(): Promise<CatalogCategoryDto[]> {
   try {
     const { items } = await listCatalogCategories();
-    return items.map(toCategoryRailView);
+    return items;
   } catch {
-    // Rail danh mục là nội dung phụ trợ: API lỗi thì ẩn hẳn, không chặn trang chủ.
+    // Danh mục là nội dung phụ trợ: API lỗi thì các khối dựa trên nó ẩn hẳn, không chặn trang chủ.
+    return [];
+  }
+}
+
+/** Bài viết đã đăng (trừ trang chính sách) cho slider; API lỗi thì slider dùng slide thương hiệu. */
+async function loadHeroPosts() {
+  try {
+    const { items } = await listPublishedPosts();
+    return items.filter((post) => post.postType !== POLICY_POST_TYPE).map(toContentPostView);
+  } catch {
     return [];
   }
 }
@@ -55,20 +59,33 @@ async function loadShowcaseFirstPage() {
 }
 
 export async function HomePage() {
-  const [categoryRail, showcase] = await Promise.all([loadCategoryRail(), loadShowcaseFirstPage()]);
+  const [categories, heroPosts, showcase] = await Promise.all([
+    loadCategories(),
+    loadHeroPosts(),
+    loadShowcaseFirstPage(),
+  ]);
+  const categoryRail = categories.map(toCategoryRailView);
   const featuredProductSlug = showcase?.page.items[0]?.slug;
-  // Thẻ "theo bộ môn" chỉ dẫn vào danh mục khi slug có thật trong cây danh mục API.
-  const categoryHrefs = new Set(categoryRail.map(({ href }) => href));
-  const sportHref = (slug: string) =>
-    categoryHrefs.has(`/category/${slug}`) ? `/category/${slug}` : '/products';
+  const byProductCount = (left: CatalogCategoryDto, right: CatalogCategoryDto) =>
+    right.productCount - left.productCount;
+  // Thẻ "theo bộ môn": danh mục gốc có sản phẩm, nhiều sản phẩm nhất. Chưa có ảnh danh mục trong
+  // DB nên dùng icon trung tính thay cho ảnh stock (ảnh stock trông như ảnh sản phẩm thật).
+  const sportCards = categories
+    .filter((category) => !category.parentSlug && category.productCount > 0)
+    .sort(byProductCount)
+    .slice(0, SPORT_CARD_COUNT)
+    .map(toCategoryCardView);
+  // Lối tắt thay cho "Từ khóa tìm nhiều" viết cứng: API không có thống kê tìm kiếm, nên chỉ
+  // liệt kê nhóm sản phẩm con có nhiều sản phẩm nhất và gọi đúng tên như vậy.
+  const quickLinks = categories
+    .filter((category) => category.parentSlug && category.productCount > 0)
+    .sort(byProductCount)
+    .slice(0, QUICK_LINK_COUNT);
 
   return (
     <StorefrontLayout>
-      {/* 1. Event Promotion Announcement Modal */}
-      <EventAnnouncementModal />
-
-      {/* 2. Modern E-commerce Hero Banner Slider & Promo Cards */}
-      <HeroBannerSlider />
+      {/* 1. Hero: bài viết thật + flash sale đang chạy. Popup voucher đã gỡ vì chưa có API voucher. */}
+      <HeroBannerSlider posts={heroPosts} />
 
       {/* 3. Core Service Commitments Strip */}
       <BenefitsStrip />
@@ -110,60 +127,54 @@ export async function HomePage() {
         />
       </section>
 
-      {/* 7. Popular Search Tags */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-12" aria-label="Tìm kiếm phổ biến">
-        <div className="flex flex-wrap items-center justify-center gap-2 text-sm bg-slate-50/80 rounded-2xl p-4 border border-slate-200/70">
-          <span className="mr-2 font-bold text-slate-500 text-xs">Từ khóa tìm nhiều:</span>
-          {MOCK_POPULAR_SEARCH_KEYWORDS.map((keyword) => (
-            <Link
-              key={keyword}
-              href={`/search?q=${encodeURIComponent(keyword)}`}
-              className="rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-slate-700 shadow-sm transition hover:border-emerald-500 hover:bg-emerald-50/50 hover:text-emerald-700"
-            >
-              {keyword}
-            </Link>
-          ))}
-        </div>
-      </section>
+      {/* 7. Lối tắt nhóm sản phẩm (từ cây danh mục thật) */}
+      {quickLinks.length > 0 && (
+        <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-12" aria-label="Nhóm sản phẩm">
+          <div className="flex flex-wrap items-center justify-center gap-2 text-sm bg-slate-50/80 rounded-2xl p-4 border border-slate-200/70">
+            <span className="mr-2 font-bold text-slate-500 text-xs">Nhóm sản phẩm nhiều lựa chọn:</span>
+            {quickLinks.map((category) => (
+              <Link
+                key={category.slug}
+                href={`/category/${category.slug}`}
+                className="rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-slate-700 shadow-sm transition hover:border-emerald-500 hover:bg-emerald-50/50 hover:text-emerald-700"
+              >
+                {category.name}
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
-      {/* 8. Shop by Sport */}
-      <section id="shop-by-sport" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-20 border-t border-slate-100">
-        <SectionHeading eyebrow="Tìm nhanh theo bộ môn" title="Bạn muốn tập luyện bộ môn nào?" />
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {MOCK_HOME_SPORT_CATEGORIES.map(({ title, description, image, icon: Icon, categorySlug }, index) => (
-            <Link
-              key={title}
-              href={sportHref(categorySlug)}
-              className={`group relative overflow-hidden rounded-[28px] bg-slate-900 ${index === 0 ? 'sm:col-span-2 lg:col-span-1' : ''}`}
-            >
-              <div className="relative aspect-[4/5]">
-                <Image
-                  src={image}
-                  alt={`Khám phá sản phẩm ${title}`}
-                  fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                  className="object-cover opacity-75 transition duration-700 group-hover:scale-105 group-hover:opacity-60"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent" />
-                <div className="absolute inset-x-0 bottom-0 p-6 text-white">
-                  <Icon className="mb-4 size-8 text-emerald-400" />
-                  <h3 className="text-xl sm:text-2xl font-black">{title}</h3>
-                  <p className="mt-1 text-sm text-slate-300">{description}</p>
-                  <span className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-emerald-400">
-                    Khám phá ngay <MoveUpRight className="size-4 transition group-hover:translate-x-1 group-hover:-translate-y-1" />
-                  </span>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </section>
+      {/* 8. Shop by Sport — danh mục gốc thật, thay cho 4 thẻ viết cứng kèm ảnh stock */}
+      {sportCards.length > 0 && (
+        <section id="shop-by-sport" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-20 border-t border-slate-100">
+          <SectionHeading eyebrow="Tìm nhanh theo bộ môn" title="Bạn muốn tập luyện bộ môn nào?" />
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {sportCards.map(({ slug, title, description, itemCountLabel, icon: Icon }) => (
+              <Link
+                key={slug}
+                href={`/category/${slug}`}
+                className="group flex min-h-[220px] flex-col justify-end rounded-[28px] bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 p-6 text-white transition hover:-translate-y-1 hover:shadow-xl"
+              >
+                <Icon className="mb-4 size-8 text-emerald-400" aria-hidden="true" />
+                <h3 className="text-xl sm:text-2xl font-black">{title}</h3>
+                {description && (
+                  <p className="mt-1 line-clamp-2 text-sm text-slate-300">{description}</p>
+                )}
+                <p className="mt-2 text-xs font-bold uppercase tracking-wider text-slate-400">
+                  {itemCountLabel}
+                </p>
+                <span className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-emerald-400">
+                  Khám phá ngay <MoveUpRight className="size-4 transition group-hover:translate-x-1 group-hover:-translate-y-1" />
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
-      {/* 9. Training Space Guide */}
-      <TrainingSpaceGuide />
-
-      {/* 10. Gym Project Turnkey Solutions Planner */}
-      <GymProjectPlanner />
+      {/* 9–10. Đã gỡ "Training Space Guide" và "Gym Project Planner": gói thiết bị, diện tích và
+          ngân sách viết cứng, chưa có API nào đứng sau. */}
 
       {/* 11. Product Reviews */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
