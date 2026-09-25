@@ -1,10 +1,18 @@
 # Storefront checkout — maintenance note
 
-> **Document version:** 1.2.0
+> **Document version:** 1.3.0
 >
-> **Last updated:** 2026-09-13
+> **Last updated:** 2026-09-25
 >
-> **Change summary:** Chặn redirect sớm và hydration mismatch khi khôi phục persisted cart.
+> **Change summary:** Tự báo giá khi đủ địa chỉ, nút "Nhờ shop gửi", chỉ còn COD và VNPay.
+
+## Quy tắc hiển thị (2026-09-25)
+
+- Tự gọi báo giá (`quote*Checkout`) sau 700 ms khi đủ tên, SĐT, số nhà và chọn tới phường/xã; lượt cũ bị bỏ qua theo `quoteSeq`. Sửa bất kỳ trường nào thì báo giá cũ bị huỷ.
+- Freeship dưới 10 km là luật `BRANCH_FREE` của Backend, chỉ áp khi khách bấm "Dùng vị trí hiện tại" (có toạ độ). Chưa có luật theo quận nội thành.
+- "Nhờ shop gửi" dùng `requestShippingConsultation`: tóm tắt chỉ hiện tiền hàng kèm ghi chú phí vận chuyển báo và tính riêng; chưa đặt được đơn cho tới khi nhân viên cập nhật phí.
+- Thanh toán storefront chỉ còn `COD` và `VNPAY`; `BANK_TRANSFER` vẫn tồn tại ở Backend cho POS.
+- Sản phẩm `inStock = false` bị chặn từ catalog nên không vào được checkout; Backend vẫn là chốt chặn cuối.
 
 ## Phạm vi
 
@@ -58,6 +66,7 @@ Order mới ở `PENDING_CONFIRMATION`, chưa ghi nhận doanh thu và chưa đ�
 
 | Version | Date | Change summary | Source |
 | --- | --- | --- | --- |
+| 1.3.0 | 2026-09-25 | Tự báo giá theo địa chỉ, "Nhờ shop gửi", COD + VNPay. | Checkout FE-only request |
 | 1.2.0 | 2026-09-13 | Đồng bộ SSR/browser trước khi đọc và redirect theo persisted cart. | Browser E2E Sprint 4 |
 | 1.1.0 | 2026-09-11 | Thêm bước tạo Order idempotent sau reservation và success state theo Order. | API-20260911-ORDER-FOUNDATION |
 | 1.0.0 | 2026-09-09 | Tạo maintenance note cho Storefront Checkout. | DOC-20260909-FEATURE-MAINTENANCE-NOTES |

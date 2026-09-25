@@ -205,9 +205,11 @@ export function ProductShowcase({
                     <button
                       type="button"
                       onClick={(e) => handleBuyNow(product, e)}
-                      disabled={!product.hasPrice}
+                      disabled={!product.hasPrice || product.inStock === false}
                       title={
-                        !product.hasPrice
+                        product.inStock === false
+                          ? 'Sản phẩm tạm hết hàng'
+                          : !product.hasPrice
                           ? 'Sản phẩm chưa có giá — liên hệ để được tư vấn'
                           : product.isSellable
                             ? 'Mua ngay'

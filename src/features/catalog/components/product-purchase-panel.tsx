@@ -63,6 +63,8 @@ export function ProductPurchasePanel({ product }: { product: ProductPurchaseView
   // Không có giá thì không có "giá 0": giỏ và checkout sẽ báo giá lệch hẳn với màn này.
   const price = selectedVariant?.sellable ? selectedVariant.priceAmount : null;
   const canAdd = Boolean(selectedVariant?.sellable && price !== null);
+  // Hết hàng vẫn hiện giá (có giá thật) nhưng khoá mua: không đưa hàng không có sẵn vào checkout.
+  const outOfStock = selectedVariant?.inStock === false && selectedVariant.priceAmount !== null;
 
   const handleAddToCart = () => {
     if (!selectedVariant || !canAdd || price === null) return;
@@ -112,15 +114,14 @@ export function ProductPurchasePanel({ product }: { product: ProductPurchaseView
         <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
           <div className="min-w-0">
             <span className="text-xs font-bold uppercase tracking-wider text-stone-400">
-              {canAdd ? 'Giá bán niêm yết (Đã gồm VAT)' : 'Giá bán'}
+              {canAdd || outOfStock ? 'Giá bán niêm yết (Đã gồm VAT)' : 'Giá bán'}
             </span>
             <strong className="mt-1 block break-words text-2xl font-black text-emerald-700 min-[400px]:text-3xl sm:text-4xl">
-              {canAdd && selectedVariant ? selectedVariant.priceLabel : 'Liên hệ báo giá'}
+              {(canAdd || outOfStock) && selectedVariant ? selectedVariant.priceLabel : 'Liên hệ báo giá'}
             </strong>
-            {selectedVariant?.inStock === false && (
-              // Không khoá nút mua: checkout chuyển đơn thiếu hàng sang chờ tư vấn/điều chuyển kho.
+            {outOfStock && (
               <span className="mt-2 inline-block rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700">
-                Tạm hết hàng — cửa hàng sẽ liên hệ xác nhận thời gian giao
+                Tạm hết hàng
               </span>
             )}
           </div>
@@ -179,10 +180,12 @@ export function ProductPurchasePanel({ product }: { product: ProductPurchaseView
                 </div>
                 <div className="shrink-0 text-right">
                   <strong className="block text-sm font-black text-ink">
-                    {variant.sellable ? variant.priceLabel : 'Liên hệ'}
+                    {variant.priceAmount !== null ? variant.priceLabel : 'Liên hệ'}
                   </strong>
                   {!variant.sellable && (
-                    <span className="text-[11px] text-stone-500">Chưa mở bán online</span>
+                    <span className="text-[11px] text-stone-500">
+                      {variant.inStock === false && variant.priceAmount !== null ? 'Tạm hết hàng' : 'Chưa mở bán online'}
+                    </span>
                   )}
                 </div>
               </button>
@@ -244,7 +247,9 @@ export function ProductPurchasePanel({ product }: { product: ProductPurchaseView
           hay gói trả góp theo sản phẩm, bản trước viết cứng quà và trị giá cho mọi sản phẩm. */}
       {!canAdd && (
         <div className="rounded-2xl border border-amber-200 bg-amber-50/60 p-4 text-xs text-amber-900" role="status">
-          <p className="font-bold">Phiên bản này chưa có giá bán online.</p>
+          <p className="font-bold">
+            {outOfStock ? 'Phiên bản này đang tạm hết hàng.' : 'Phiên bản này chưa có giá bán online.'}
+          </p>
           <p className="mt-1">
             Gọi{' '}
             <a
@@ -254,7 +259,7 @@ export function ProductPurchasePanel({ product }: { product: ProductPurchaseView
               <Phone className="size-3" aria-hidden="true" />
               {STORE_CONTACT.primaryHotline}
             </a>{' '}
-            để được báo giá.
+            {outOfStock ? 'để hỏi thời gian có hàng.' : 'để được báo giá.'}
           </p>
         </div>
       )}
@@ -276,7 +281,7 @@ export function ProductPurchasePanel({ product }: { product: ProductPurchaseView
           className="flex items-center justify-center gap-2 rounded-full border-2 border-slate-900 bg-white px-5 py-3.5 font-bold text-slate-900 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
         >
           <ShoppingBag className="size-4" />
-          <span>{canAdd ? 'Thêm vào giỏ' : 'Liên hệ báo giá'}</span>
+          <span>{canAdd ? 'Thêm vào giỏ' : outOfStock ? 'Tạm hết hàng' : 'Liên hệ báo giá'}</span>
         </button>
 
         <button

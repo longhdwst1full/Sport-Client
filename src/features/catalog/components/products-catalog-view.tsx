@@ -363,10 +363,12 @@ export function ProductsCatalogView() {
                       <button
                         type="button"
                         onClick={(e) => handleBuyNow(e, product)}
-                        disabled={!product.hasPrice}
+                        disabled={!product.hasPrice || product.inStock === false}
                         className="relative z-10 inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white shadow-sm transition hover:bg-emerald-700 active:scale-95 disabled:cursor-not-allowed disabled:bg-slate-300"
                         title={
-                          !product.hasPrice
+                          product.inStock === false
+                            ? 'Sản phẩm tạm hết hàng'
+                            : !product.hasPrice
                             ? 'Sản phẩm chưa có giá — liên hệ để được tư vấn'
                             : product.isSellable
                               ? 'Mua ngay'
