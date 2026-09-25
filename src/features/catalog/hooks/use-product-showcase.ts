@@ -1,26 +1,31 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { useListCatalogProducts } from '@/generated/api/catalog/catalog';
-import { vndMoney } from '@/shared/format/money';
-import { PRODUCT_PLACEHOLDER_IMAGE } from '@/shared/constants';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import {
+  getListCatalogProductsQueryKey,
+  listCatalogProducts,
+} from '@/generated/api/catalog/catalog';
+import type { ProductListResponseDto } from '@/generated/api/catalog/models';
 import { CACHE_POLICY } from '@/app/config/query-cache-policy';
+import {
+  CATALOG_PAGE_SIZE,
+  toProductShowcaseItems,
+  type ProductShowcaseItem,
+} from '../model/product.mapper';
 
-export interface ProductShowcaseItem {
-  id: string;
-  defaultVariantId: string | null;
-  defaultVariantSku: string | null;
-  slug: string;
-  productType: string;
-  name: string;
-  brand: string;
-  category: string;
-  badge: string;
-  imageUrl: string;
-  numericPrice: number;
-  displayPrice: string;
-  /** Chưa có bảng giá hiệu lực thì không bán được: giá 0 không phải là giá. */
-  hasPrice: boolean;
+export type { ProductShowcaseItem } from '../model/product.mapper';
+
+export interface ProductShowcaseOptions {
+  /** Ghi đè cỡ trang; luôn bị chặn ở `CATALOG_PAGE_SIZE.MAX` vì API trả 400 khi vượt. */
+  pageSize?: number;
+  /**
+   * Trang 1 server đã lấy sẵn (chỉ áp dụng khi không có danh mục/từ khoá), để HTML SSR có
+   * sản phẩm thay vì chỉ có skeleton. Phải cùng `pageSize` với lượt gọi của server.
+   */
+  initialPage?: ProductListResponseDto;
+  /** Thời điểm server lấy `initialPage` (ms); cache cũ hơn `staleTime` sẽ được làm mới sau mount. */
+  initialPageFetchedAt?: number;
 }
 
 /**
@@ -30,13 +35,10 @@ export interface ProductShowcaseItem {
  * nên lỗi backend bị che và khách thấy sản phẩm không tồn tại. Giờ trả đúng trạng
  * thái để phía gọi tự quyết định hiển thị skeleton, empty hay lỗi.
  */
-/** Số sản phẩm mỗi lượt khi có phạm vi lọc; lưới trưng bày ở trang chủ thì ít hơn. */
-const SCOPED_PAGE_SIZE = 24;
-const SHOWCASE_SIZE = 8;
-
 export function useProductShowcase(
   categorySlug?: string,
   searchQuery?: string,
+  options: ProductShowcaseOptions = {},
 ): {
   products: ProductShowcaseItem[];
   total: number;
@@ -44,80 +46,68 @@ export function useProductShowcase(
   loadMore: () => void;
   isPending: boolean;
   isLoadingMore: boolean;
+  /** Lượt tải thêm lỗi; danh sách đã có vẫn giữ nguyên, nút tải thêm cho thử lại. */
+  isLoadMoreError: boolean;
   isError: boolean;
   refetch: () => void;
 } {
   // Lọc danh mục chạy server-side và gồm cả nhánh con. Trước đây hook lấy 8 sản phẩm
   // đầu của toàn catalog rồi lọc ở client, nên trang danh mục chỉ xét được 8 trong 596
   // sản phẩm và gần như luôn ra sai.
-  const search = searchQuery?.trim();
+  const search = searchQuery?.trim() || undefined;
   const scoped = Boolean(categorySlug || search);
-  const pageSize = scoped ? SCOPED_PAGE_SIZE : SHOWCASE_SIZE;
-
-  // Tải thêm bằng cách nới dần số lượng lấy về. Trước đây lấy cứng 48 rồi dừng, nên tìm
-  // từ khoá phổ biến là mất phần kết quả dư mà khách không có cách nào xem tiếp.
-  const [limit, setLimit] = useState(pageSize);
-  useEffect(() => setLimit(pageSize), [categorySlug, search, pageSize]);
+  const pageSize = Math.min(
+    options.pageSize ?? (scoped ? CATALOG_PAGE_SIZE.SCOPED : CATALOG_PAGE_SIZE.SHOWCASE),
+    CATALOG_PAGE_SIZE.MAX,
+  );
 
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  const query = useListCatalogProducts(
-    {
-      page: 1,
-      limit,
-      category: categorySlug,
-      search: search || undefined,
-    },
-    {
-      // Khối sản phẩm trên trang chủ/danh mục: khách đi qua lại liên tục giữa danh sách và chi tiết.
-      // Giá hiển thị ở đây không phải giá chốt — bước báo giá checkout luôn tính lại.
-      query: { enabled: isMounted, ...CACHE_POLICY.CATALOG },
-    },
-  );
-  const total = query.data?.meta.total ?? 0;
+  // CONTRACT: tải thêm theo `page`, giữ `limit` cố định. Bản trước nới `limit` thêm một
+  // trang mỗi lần bấm, nên tới lượt thứ 5 ở trang danh mục (limit 120) API trả 400 và
+  // khách không bao giờ xem được phần còn lại.
+  const params = { limit: pageSize, category: categorySlug, search };
+  const initialData =
+    !scoped && options.initialPage && options.initialPage.meta.limit === pageSize
+      ? { pages: [options.initialPage], pageParams: [1] }
+      : undefined;
 
-  const products = useMemo<ProductShowcaseItem[]>(
-    () =>
-      (query.data?.items ?? [])
-        .map((product) => {
-          const minPrice = Number(product.minPrice ?? 0);
-          return {
-            id: product.id,
-            defaultVariantId: product.defaultVariantId ?? null,
-            defaultVariantSku: product.defaultVariantSku ?? null,
-            slug: product.slug,
-            productType: product.productType,
-            name: product.name,
-            brand: product.brand ?? 'Bảo An Sport',
-            category: product.primaryCategory ?? 'Thiết bị thể thao',
-            badge: product.primaryCategory ?? 'Sản phẩm',
-            // Ảnh thay thế trung tính của chính dự án. Trước đây dùng '/icon.svg' là logo
-            // ứng dụng, nên lưới sản phẩm thiếu ảnh trông như lỗi hiển thị.
-            imageUrl: product.imageUrl ?? PRODUCT_PLACEHOLDER_IMAGE,
-            numericPrice: minPrice,
-            hasPrice: product.minPrice !== null && product.minPrice !== undefined,
-            // Giá null nghĩa là chưa có bảng giá hiệu lực, không phải giá 0.
-            displayPrice:
-              product.minPrice === null || product.minPrice === undefined
-                ? 'Liên hệ tư vấn'
-                : vndMoney.format(minPrice),
-          };
-        }),
-    [query.data?.items],
-  );
+  const query = useInfiniteQuery({
+    // Hậu tố 'infinite' tách cache dạng `{ pages }` khỏi cache một trang của
+    // `useListCatalogProducts` cùng tham số; dùng chung key là hai hình dạng dữ liệu đè nhau.
+    queryKey: [...getListCatalogProductsQueryKey(params), 'infinite'],
+    queryFn: ({ pageParam, signal }) =>
+      listCatalogProducts({ ...params, page: pageParam }, undefined, signal),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) =>
+      lastPage.meta.page < lastPage.meta.totalPages ? lastPage.meta.page + 1 : undefined,
+    initialData,
+    initialDataUpdatedAt: initialData ? options.initialPageFetchedAt : undefined,
+    // Khối sản phẩm trên trang chủ/danh mục: khách đi qua lại liên tục giữa danh sách và chi tiết.
+    // Giá hiển thị ở đây không phải giá chốt — bước báo giá checkout luôn tính lại.
+    enabled: isMounted,
+    ...CACHE_POLICY.CATALOG,
+  });
+
+  const pages = query.data?.pages;
+  const products = useMemo(() => toProductShowcaseItems(pages ?? []), [pages]);
+  const total = pages?.[pages.length - 1]?.meta.total ?? 0;
 
   return {
     products,
     total,
-    hasMore: products.length < total,
-    loadMore: () => setLimit((current) => current + pageSize),
+    hasMore: query.hasNextPage,
+    loadMore: () => {
+      if (query.hasNextPage && !query.isFetchingNextPage) void query.fetchNextPage();
+    },
     isPending: query.isPending,
     // Đang lấy thêm thì giữ nguyên danh sách hiện có, chỉ báo bận ở nút.
-    isLoadingMore: query.isFetching && !query.isPending,
-    isError: query.isError,
+    isLoadingMore: query.isFetchingNextPage,
+    isLoadMoreError: query.isFetchNextPageError,
+    isError: query.isError && products.length === 0,
     refetch: () => void query.refetch(),
   };
 }
