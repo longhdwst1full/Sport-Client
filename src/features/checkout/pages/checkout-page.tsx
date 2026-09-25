@@ -71,6 +71,9 @@ export function CheckoutPage() {
   // Retry cùng ý định phải dùng lại key; tạo key mới sau timeout mạng có thể biến retry thành lệnh thứ hai.
   const confirmIdempotencyKey = useRef<string | undefined>(undefined);
   const orderIdempotencyKey = useRef<string | undefined>(undefined);
+  // Mỗi lượt báo giá tự động mang một số thứ tự; phản hồi của lượt cũ (khách đã sửa địa chỉ) bị bỏ.
+  const quoteSeq = useRef(0);
+  const [autoQuoting, setAutoQuoting] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
 
@@ -81,6 +84,8 @@ export function CheckoutPage() {
   }, [cartHydrated, items.length, placedOrder, router]);
 
   const invalidateQuote = () => {
+    quoteSeq.current += 1;
+    setAutoQuoting(false);
     setQuote(undefined);
     setContext(undefined);
     confirmIdempotencyKey.current = undefined;
@@ -119,6 +124,40 @@ export function CheckoutPage() {
     requestShippingConsultation: requestConsultation,
     ...(note.trim() ? { note: note.trim() } : {}),
   });
+
+  // Đủ người nhận + địa chỉ tới phường/xã thì tự báo giá: khách thấy phí giao (miễn phí shop tự giao
+  // trong 10 km khi đã chia sẻ vị trí, hoặc phí GHN) mà không phải bấm "Kiểm tra". Dùng đúng API
+  // báo giá hiện có nên số hiển thị là số Backend sẽ chốt.
+  const readyToQuote = Boolean(
+    name.trim() && phone.trim() && address.streetAddress.trim()
+    && address.provinceCode && address.districtCode && address.wardCode,
+  );
+  useEffect(() => {
+    if (!isLoaded || !readyToQuote || quote || placedOrder || !items.length) return;
+    const seq = ++quoteSeq.current;
+    const timer = setTimeout(async () => {
+      setAutoQuoting(true);
+      setError('');
+      try {
+        const prepared = await prepareCheckout(
+          items.map(({ variantId, quantity }) => ({ variantId, quantity })),
+          buildInput(),
+          isAuthenticated,
+          crypto.randomUUID(),
+        );
+        if (seq !== quoteSeq.current) return;
+        setQuote(prepared.quote);
+        setContext(prepared.context);
+      } catch (caught) {
+        if (seq === quoteSeq.current) setError(messageOf(caught));
+      } finally {
+        if (seq === quoteSeq.current) setAutoQuoting(false);
+      }
+    }, 700);
+    return () => clearTimeout(timer);
+    // buildInput đọc đúng các state liệt kê dưới đây; thêm hàm vào deps sẽ báo giá lại mỗi lần render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoaded, readyToQuote, quote, placedOrder, items, isAuthenticated, name, phone, email, note, address, coordinates, paymentMethod, requestConsultation]);
 
   const refreshConsultedQuote = async () => {
     if (!quote || !context || busy) return;
@@ -219,32 +258,36 @@ export function CheckoutPage() {
                 <label className="text-xs font-bold text-slate-700 sm:col-span-2">Email<input type="email" value={email} onChange={(e) => { setEmail(e.target.value); invalidateQuote(); }} className="mt-1.5 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm" /></label>
               </div>
               <div className="mt-5"><VietnamAddressSelector initialData={address} onChange={(value) => { setAddress(value); invalidateQuote(); }} required /></div>
-              <button type="button" onClick={useCurrentLocation} className="mt-4 inline-flex items-center gap-2 rounded-xl border border-emerald-200 px-3 py-2 text-xs font-bold text-emerald-700"><LocateFixed className="size-4" /> Dùng vị trí hiện tại để tìm chi nhánh gần nhất</button>
+              <button type="button" onClick={useCurrentLocation} className="mt-4 inline-flex items-center gap-2 rounded-xl border border-emerald-200 px-3 py-2 text-xs font-bold text-emerald-700"><LocateFixed className="size-4" /> Dùng vị trí hiện tại — miễn phí giao nếu cách chi nhánh dưới 10 km</button>
               <label className="mt-4 block text-xs font-bold text-slate-700">Ghi chú giao hàng<textarea rows={3} value={note} onChange={(e) => { setNote(e.target.value); invalidateQuote(); }} className="mt-1.5 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm" placeholder="Gọi trước khi giao, thời gian nhận, yêu cầu xe khách..." /></label>
-              <label className="mt-4 flex cursor-pointer items-start gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-950">
-                <input
-                  type="checkbox"
-                  checked={requestConsultation}
-                  onChange={(event) => {
-                    setRequestConsultation(event.target.checked);
-                    invalidateQuote();
-                  }}
-                  className="mt-0.5 size-4 accent-emerald-600"
-                />
-                <span>
-                  <strong className="block">Nhờ nhân viên tư vấn phương án giao riêng</strong>
-                  Dùng cho hàng cồng kềnh, gửi xe khách hoặc trường hợp cần thống nhất phí và thời gian qua điện thoại.
-                </span>
-              </label>
+              <div className="mt-4 grid gap-3 sm:grid-cols-2" role="radiogroup" aria-label="Cách giao hàng">
+                {([
+                  [false, 'Giao hàng tiêu chuẩn', 'Phí tự tính theo địa chỉ: shop tự giao miễn phí trong 10 km, xa hơn giao qua GHN.'],
+                  [true, 'Nhờ shop gửi', 'Shop gọi báo phí vận chuyển và tính riêng; đơn hiện chỉ tính tiền hàng. Hợp với hàng cồng kềnh, gửi xe khách.'],
+                ] as const).map(([value, label, description]) => (
+                  <button
+                    key={label}
+                    type="button"
+                    role="radio"
+                    aria-checked={requestConsultation === value}
+                    onClick={() => { setRequestConsultation(value); invalidateQuote(); }}
+                    className={`rounded-2xl border p-4 text-left ${requestConsultation === value ? 'border-emerald-600 bg-emerald-50 ring-1 ring-emerald-600' : 'border-slate-200'}`}
+                  >
+                    <strong className="text-sm text-slate-900">{label}</strong>
+                    <span className="mt-1 block text-xs leading-5 text-slate-500">{description}</span>
+                  </button>
+                ))}
+              </div>
             </section>
 
             <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
               <h2 className="flex items-center gap-2 font-black text-slate-900"><CreditCard className="size-5 text-emerald-600" /> Phương thức thanh toán</h2>
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                {/* Storefront chỉ còn 2 cách: COD và chuyển khoản qua QR VNPay. Chuyển khoản tay
+                    (BANK_TRANSFER) cần nhân viên đối soát nên chỉ còn dùng ở quầy. */}
                 {([
-                  ['COD', 'Thanh toán khi nhận hàng', 'Thanh toán đủ một lần cho nhân viên giao hàng.'],
-                  ['BANK_TRANSFER', 'Chuyển khoản một lần', 'Chỉ xác nhận đã thanh toán khi tiền thực nhận.'],
-                  ['VNPAY', 'Thẻ / QR qua VNPay', 'Chuyển sang cổng VNPay sau khi đặt hàng. Đơn xác nhận khi VNPay báo thành công.'],
+                  ['COD', 'Nhận hàng trả tiền', 'Thanh toán đủ một lần cho nhân viên giao hàng.'],
+                  ['VNPAY', 'Chuyển khoản (QR qua VNPay)', 'Đặt hàng xong, quét QR hoặc thanh toán qua cổng VNPay ở trang đơn hàng. Đơn xác nhận khi VNPay báo thành công.'],
                 ] as const).map(([value, label, description]) => (
                   <button key={value} type="button" onClick={() => { setPaymentMethod(value); invalidateQuote(); }} className={`rounded-2xl border p-4 text-left ${paymentMethod === value ? 'border-emerald-600 bg-emerald-50 ring-1 ring-emerald-600' : 'border-slate-200'}`}>
                     <strong className="text-sm text-slate-900">{label}</strong><span className="mt-1 block text-xs leading-5 text-slate-500">{description}</span>
@@ -264,7 +307,7 @@ export function CheckoutPage() {
                 </div>
                 {quote.requiresShippingConsultation && (
                   <div className="mt-4 flex flex-col gap-3 rounded-2xl border border-amber-200 bg-white/70 p-4 sm:flex-row sm:items-center sm:justify-between">
-                    <p className="text-sm font-semibold text-amber-900">Nhân viên sẽ gọi để thống nhất phí, thời gian và hình thức giao. Hàng chỉ được giữ sau khi phí đã cập nhật và bạn xác nhận.</p>
+                    <p className="text-sm font-semibold text-amber-900">Lưu ý: đơn hiện chỉ tính tiền hàng. Shop sẽ gọi báo phí vận chuyển (tính riêng) và thời gian gửi; hàng được giữ sau khi phí đã cập nhật và bạn xác nhận.</p>
                     <button
                       type="button"
                       onClick={refreshConsultedQuote}
@@ -285,7 +328,8 @@ export function CheckoutPage() {
             items={items}
             localSubtotal={localSubtotal}
             quote={quoteView}
-            busy={busy}
+            busy={busy || autoQuoting}
+            shopArranged={requestConsultation}
             authLoaded={isLoaded}
           />
         </form>

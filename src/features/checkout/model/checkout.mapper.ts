@@ -8,10 +8,10 @@ import { formatDateTime } from '@/shared/format/date-time';
  * không được làm đổi so sánh nghiệp vụ.
  */
 export const shippingMethodLabels: Record<string, string> = {
-  BRANCH_FREE: 'Miễn phí trong bán kính',
+  BRANCH_FREE: 'Shop tự giao miễn phí (dưới 10 km)',
   STANDARD_DELIVERY: 'Phí giao mặc định',
   THIRD_PARTY: 'Đối tác vận chuyển',
-  MANUAL_EXTERNAL: 'Giao theo thỏa thuận',
+  MANUAL_EXTERNAL: 'Shop gửi, phí báo riêng',
 };
 
 export interface CheckoutLineView {
@@ -31,6 +31,8 @@ export interface CheckoutQuoteView {
   shippingMethodLabel: string;
   itemSubtotalLabel: string;
   shippingTotalLabel: string;
+  /** Null khi Backend ẩn phí (chờ tư vấn); 0 nghĩa là miễn phí thật. */
+  shippingTotalAmount: number | null;
   grandTotalLabel: string;
   /** Null khi chờ tư vấn phí: chưa có số thì không dựng ra số 0 gây hiểu nhầm. */
   grandTotalAmount: number | null;
@@ -61,6 +63,9 @@ export function toCheckoutQuoteView(dto: CheckoutQuoteDto): CheckoutQuoteView {
     shippingMethodLabel: shippingMethodLabels[dto.shippingMethod] ?? dto.shippingMethod,
     itemSubtotalLabel: money(dto.itemSubtotal),
     shippingTotalLabel: money(dto.shippingTotal),
+    shippingTotalAmount: dto.shippingTotal === null || dto.shippingTotal === undefined
+      ? null
+      : Number(dto.shippingTotal),
     grandTotalLabel: money(dto.grandTotal),
     grandTotalAmount: dto.grandTotal === null || dto.grandTotal === undefined
       ? null

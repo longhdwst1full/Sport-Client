@@ -12,6 +12,8 @@ interface CheckoutOrderSummaryProps {
   quote?: CheckoutQuoteView;
   busy: boolean;
   authLoaded: boolean;
+  /** "Nhờ shop gửi": phí vận chuyển do shop báo và tính riêng, tổng chỉ gồm tiền hàng. */
+  shopArranged?: boolean;
 }
 
 export function CheckoutOrderSummary({
@@ -20,7 +22,10 @@ export function CheckoutOrderSummary({
   quote,
   busy,
   authLoaded,
+  shopArranged = false,
 }: CheckoutOrderSummaryProps) {
+  // CONTRACT: báo giá chờ tư vấn không trả phí giao/tổng (Backend ẩn); hiển thị tiền hàng và ghi chú.
+  const shippingPending = shopArranged || Boolean(quote?.requiresShippingConsultation);
   return (
     <aside>
       <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm lg:sticky lg:top-28">
@@ -44,11 +49,25 @@ export function CheckoutOrderSummary({
         </div>
         <div className="mt-5 space-y-2 border-t pt-4 text-sm">
           <div className="flex justify-between"><span>Tạm tính tham khảo</span><span>{vndMoney.format(localSubtotal)}</span></div>
-          {quote && (
+          {shippingPending ? (
             <>
               <div className="flex justify-between">
                 <span>Phí giao</span>
-                <span>{quote.shippingTotalLabel}</span>
+                <span className="font-semibold text-amber-700">Shop báo sau</span>
+              </div>
+              <div className="flex justify-between border-t pt-3 text-base font-black">
+                <span>Tiền hàng</span>
+                <span className="text-emerald-700">{vndMoney.format(localSubtotal)}</span>
+              </div>
+              <p className="rounded-xl bg-amber-50 p-3 text-xs leading-5 text-amber-900">
+                Chú ý: phí vận chuyển sẽ được shop gọi báo và tính riêng khi gửi hàng, chưa gồm trong số tiền trên.
+              </p>
+            </>
+          ) : quote && (
+            <>
+              <div className="flex justify-between">
+                <span>Phí giao</span>
+                <span>{quote.shippingTotalAmount === 0 ? 'Miễn phí' : quote.shippingTotalLabel}</span>
               </div>
               <div className="flex justify-between border-t pt-3 text-base font-black">
                 <span>Khách thanh toán</span>
@@ -59,7 +78,15 @@ export function CheckoutOrderSummary({
         </div>
         <button type="submit" disabled={busy || !authLoaded || quote?.requiresShippingConsultation} className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-600 py-3.5 text-sm font-black text-white disabled:cursor-not-allowed disabled:bg-slate-300">
           {busy ? <LoaderCircle className="size-5 animate-spin" /> : quote ? <CheckCircle2 className="size-5" /> : <Truck className="size-5" />}
-          {busy ? 'Đang xử lý...' : quote ? 'Xác nhận và giữ hàng 30 phút' : 'Kiểm tra tồn và tính phí'}
+          {busy
+            ? 'Đang xử lý...'
+            : quote?.requiresShippingConsultation
+              ? 'Chờ shop báo phí vận chuyển'
+              : quote
+                ? 'Xác nhận và giữ hàng 30 phút'
+                : shopArranged
+                  ? 'Gửi yêu cầu cho shop'
+                  : 'Kiểm tra tồn và tính phí'}
         </button>
         <div className="mt-4 flex gap-2 text-xs leading-5 text-slate-500">
           <ShieldCheck className="mt-0.5 size-4 shrink-0 text-emerald-600" />
