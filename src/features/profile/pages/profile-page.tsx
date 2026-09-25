@@ -28,7 +28,7 @@ import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { useCustomerAuth } from '@/features/auth';
 import { useGetCustomerProfile } from '@/generated/api/customer/customer';
 import { AccountSettingsForm } from '../components/account-settings-form';
-import { STORE_CONFIG, STORE_CONTACT } from '@/shared/constants';
+import { FEATURE_FLAGS, STORE_CONFIG, STORE_CONTACT } from '@/shared/constants';
 import {
   VietnamAddressSelector,
   type SelectedAddressData,
@@ -220,7 +220,7 @@ export function ProfilePage() {
                     { id: 'address' as const, label: 'Sổ địa chỉ nhận hàng', icon: MapPin },
                     { id: 'warranty' as const, label: 'Tra cứu bảo hành', icon: ShieldCheck },
                     { id: 'settings' as const, label: 'Cài đặt tài khoản', icon: User },
-                  ].map(({ id, label, icon: Icon }) => (
+                  ].filter(({ id }) => id !== 'warranty' || FEATURE_FLAGS.WARRANTY_LOOKUP).map(({ id, label, icon: Icon }) => (
                     <button
                       key={id}
                       type="button"
@@ -387,7 +387,7 @@ export function ProfilePage() {
               )}
 
               {/* TAB 3: WARRANTY LOOKUP (TRA CỨU BẢO HÀNH CHÍNH HÃNG) */}
-              {activeTab === 'warranty' && (
+              {activeTab === 'warranty' && FEATURE_FLAGS.WARRANTY_LOOKUP && (
                 <div>
                   <div className="border-b border-slate-100 pb-5">
                     <h2 className="text-xl font-black text-slate-900">
