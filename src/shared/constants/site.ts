@@ -15,3 +15,13 @@ export function siteUrl(path = ''): string {
 
 /** Ảnh thay thế khi sản phẩm chưa có ảnh; dùng chung cho lưới, giỏ và trang thanh toán. */
 export const PRODUCT_PLACEHOLDER_IMAGE = '/images/product-placeholder.svg';
+
+/**
+ * Cờ bật tính năng chưa có backend thật.
+ *
+ * Tra cứu bảo hành hiện chỉ đọc dữ liệu mẫu (`shared/data/mocks`), nên tắt mặc định để khách không
+ * tưởng là chức năng thật. Chỉ bật bằng `NEXT_PUBLIC_FEATURE_WARRANTY=true` khi đã có API bảo hành.
+ */
+export const FEATURE_FLAGS = {
+  WARRANTY_LOOKUP: process.env.NEXT_PUBLIC_FEATURE_WARRANTY === 'true',
+} as const;

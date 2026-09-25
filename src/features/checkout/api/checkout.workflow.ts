@@ -1,13 +1,4 @@
 import {
-  createGuestCart,
-  getAccountCart,
-  getGuestCart,
-  removeAccountCartItem,
-  removeGuestCartItem,
-  setAccountCartItem,
-  setGuestCartItem,
-} from '@/generated/api/cart/cart';
-import {
   confirmAccountCheckout,
   confirmGuestCheckout,
   getAccountCheckoutQuote,
@@ -15,12 +6,10 @@ import {
   quoteAccountCheckout,
   quoteGuestCheckout,
 } from '@/generated/api/checkout/checkout';
-import type { CartDto } from '@/generated/api/cart/models';
 import type { CheckoutQuoteDto, CreateCheckoutQuoteDto, ReservationDto } from '@/generated/api/checkout/models';
 import { placeAccountOrder, placeGuestOrder } from '@/generated/api/orders/orders';
 import type { OrderDetailDto } from '@/generated/api/orders/models';
-import { ApiError } from '@/lib/api/fetcher';
-import { clearGuestCartToken, readGuestCartToken, saveGuestCartToken } from '@/features/cart';
+import { syncAccountCart, syncGuestCart } from '@/features/cart';
 import { saveGuestOrderAccessToken } from '@/features/orders';
 
 export type CheckoutLine = { variantId: string; quantity: number };
@@ -33,54 +22,6 @@ function guestHeaders(cartToken: string, idempotencyKey?: string) {
       ...(idempotencyKey ? { 'idempotency-key': idempotencyKey } : {}),
     },
   };
-}
-
-async function getOrCreateGuestCart(): Promise<{ cart: CartDto; cartToken: string }> {
-  const savedToken = readGuestCartToken();
-  if (savedToken) {
-    try {
-      return { cart: await getGuestCart(guestHeaders(savedToken)), cartToken: savedToken };
-    } catch (error) {
-      if (!(error instanceof ApiError) || error.status !== 404) throw error;
-      clearGuestCartToken();
-    }
-  }
-  const created = await createGuestCart();
-  if (!created.cartToken) throw new Error('API did not return a guest cart token');
-  saveGuestCartToken(created.cartToken);
-  return { cart: created, cartToken: created.cartToken };
-}
-
-async function syncGuestCart(lines: CheckoutLine[]) {
-  const state = await getOrCreateGuestCart();
-  let cart: CartDto = state.cart;
-  const desiredIds = new Set(lines.map(({ variantId }) => variantId));
-  for (const item of cart.items.filter(({ productVariantId }) => !desiredIds.has(productVariantId))) {
-    cart = await removeGuestCartItem(item.id, { expectedCartVersion: cart.version }, guestHeaders(state.cartToken));
-  }
-  for (const line of lines) {
-    cart = await setGuestCartItem({
-      productVariantId: line.variantId,
-      quantity: line.quantity,
-      expectedCartVersion: cart.version,
-    }, guestHeaders(state.cartToken));
-  }
-  return { cartToken: state.cartToken };
-}
-
-async function syncAccountCart(lines: CheckoutLine[]) {
-  let cart = await getAccountCart();
-  const desiredIds = new Set(lines.map(({ variantId }) => variantId));
-  for (const item of cart.items.filter(({ productVariantId }) => !desiredIds.has(productVariantId))) {
-    cart = await removeAccountCartItem(item.id, { expectedCartVersion: cart.version });
-  }
-  for (const line of lines) {
-    cart = await setAccountCartItem({
-      productVariantId: line.variantId,
-      quantity: line.quantity,
-      expectedCartVersion: cart.version,
-    });
-  }
 }
 
 export async function prepareCheckout(

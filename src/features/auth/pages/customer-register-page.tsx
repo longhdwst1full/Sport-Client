@@ -25,7 +25,9 @@ import { KineticBallCanvas } from '@/foundation/3d/kinetic-ball-canvas.lazy';
 import { useToast } from '@/shared/components/global-toast';
 import { getCustomerAuthError } from '../model/auth-error';
 import { saveCustomerAuthTokens } from '../model/auth-token.store';
-import { mergeGuestCartAfterAuth } from '@/features/cart';
+import { syncCartAfterAuth } from '@/features/cart';
+import { hydrateCart } from '@/app/store/cart.slice';
+import { storefrontStore } from '@/app/store/store';
 
 const optionalIdentity = () =>
   yup
@@ -68,8 +70,9 @@ export function CustomerRegisterPage() {
           title: 'Đăng ký thành công',
           message: 'Tài khoản của bạn đã được khởi tạo thành công!',
         });
-        // Gộp giỏ đang có trên máy này vào tài khoản trước khi rời trang.
-        await mergeGuestCartAfterAuth();
+        // Đẩy giỏ trên máy lên tài khoản (server gộp, cùng SKU lấy số lớn hơn) rồi thay bằng giỏ tài khoản.
+        const accountItems = await syncCartAfterAuth(storefrontStore.getState().cart.items);
+        if (accountItems) storefrontStore.dispatch(hydrateCart(accountItems));
         router.replace('/');
       },
       onError: (error) =>

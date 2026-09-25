@@ -5,12 +5,16 @@
  * Contract for storefront and admin applications
  * OpenAPI spec version: 1.0.0
  */
+import type { ProductType } from './productType';
 
 export interface CartItemDto {
   /** @pattern ^[1-9][0-9]*$ */
   id: string;
   /** @pattern ^[1-9][0-9]*$ */
   productVariantId: string;
+  /** @pattern ^[1-9][0-9]*$ */
+  productId: string;
+  productType: ProductType;
   sku: string;
   name: string;
   productName: string;

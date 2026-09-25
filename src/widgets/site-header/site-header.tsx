@@ -19,6 +19,7 @@ import {
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useAppSelector } from '@/app/store/hooks';
 import {
+  FEATURE_FLAGS,
   STORE_CONFIG,
   STORE_CONTACT,
   STORE_ANNOUNCEMENTS,
@@ -102,8 +103,12 @@ export function SiteHeader() {
 
           <div className="hidden items-center gap-4 text-xs font-semibold text-slate-400 xl:flex">
             <Link href="/contact" className="hover:text-white transition">Hệ thống Showroom</Link>
-            <span className="text-slate-700">|</span>
-            <Link href="/profile" className="hover:text-white transition">Tra cứu bảo hành</Link>
+            {FEATURE_FLAGS.WARRANTY_LOOKUP && (
+              <>
+                <span className="text-slate-700">|</span>
+                <Link href="/profile" className="hover:text-white transition">Tra cứu bảo hành</Link>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -587,14 +592,16 @@ export function SiteHeader() {
                   <ChevronRight className="size-3.5 text-slate-400" />
                 </Link>
 
-                <Link
-                  href="/profile"
-                  className="flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-bold text-slate-800 hover:bg-emerald-50 hover:text-emerald-700 transition"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <span>Tra cứu kích hoạt bảo hành</span>
-                  <ChevronRight className="size-3.5 text-slate-400" />
-                </Link>
+                {FEATURE_FLAGS.WARRANTY_LOOKUP && (
+                  <Link
+                    href="/profile"
+                    className="flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-bold text-slate-800 hover:bg-emerald-50 hover:text-emerald-700 transition"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <span>Tra cứu kích hoạt bảo hành</span>
+                    <ChevronRight className="size-3.5 text-slate-400" />
+                  </Link>
+                )}
               </div>
 
               {/* Showrooms & Hotlines info */}

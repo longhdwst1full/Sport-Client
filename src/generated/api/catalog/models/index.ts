@@ -6,6 +6,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
+export * from './attributeDataType';
 export * from './bundleComponentDto';
 export * from './catalogCategoryDto';
 export * from './catalogCategoryListDto';
@@ -22,6 +23,9 @@ export * from './productListMetaDto';
 export * from './productListResponseDto';
 export * from './productMediaDto';
 export * from './productMediaStatus';
+export * from './productSpecificationDto';
+export * from './productSpecificationValueDto';
+export * from './productSpecificationValueDtoValue';
 export * from './productStatus';
 export * from './productSummaryDto';
 export * from './productType';

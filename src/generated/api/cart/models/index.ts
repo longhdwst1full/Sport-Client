@@ -16,5 +16,6 @@ export * from './errorResponseDto';
 export * from './guestCartDto';
 export * from './guestCartDtoExpiresAt';
 export * from './mutateCartDto';
+export * from './productType';
 export * from './setCartItemDto';
 export * from './updateCartItemDto';

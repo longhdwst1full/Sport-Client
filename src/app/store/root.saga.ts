@@ -1,5 +1,15 @@
-import { select, takeEvery } from 'redux-saga/effects';
-import { addCartItem, clearCart, removeCartItem, updateQuantity, type CartItem } from './cart.slice';
+import { call, debounce, select, takeEvery } from 'redux-saga/effects';
+import { isCustomerAuthenticated } from '@/features/auth/model/auth-token.store';
+import { syncAccountCart, toCartLines } from '@/features/cart/api/cart-sync';
+import {
+  addCartItem,
+  clearCart,
+  hydrateCart,
+  removeCartItem,
+  resetCartForSignOut,
+  updateQuantity,
+  type CartItem,
+} from './cart.slice';
 import type { RootState } from './store';
 import { createBrowserStore, LocalStorageKey } from '@/core/storage';
 
@@ -56,9 +66,30 @@ function* persistCart() {
   cartStore.write(items);
 }
 
+/**
+ * Đang đăng nhập thì giỏ tài khoản là nguồn chung giữa các máy: mỗi thay đổi do người dùng thực hiện
+ * được ghi lên server (gom các thao tác liên tiếp trong 400ms). `hydrateCart` (tải từ server/local) và
+ * `resetCartForSignOut` không ghi ngược lên, nếu không sẽ tự xoá giỏ tài khoản khi đăng xuất.
+ * Lỗi mạng chỉ bỏ qua: giỏ trên máy vẫn đúng và checkout luôn đồng bộ lại trước khi báo giá.
+ */
+function* writeThroughAccountCart() {
+  if (!isCustomerAuthenticated()) return;
+  const items: CartItem[] = yield select((state: RootState) => state.cart.items);
+  try {
+    yield call(syncAccountCart, toCartLines(items), 'lenient');
+  } catch {
+    // Có chủ đích: xem chú thích ở trên.
+  }
+}
+
 export function* rootSaga() {
   yield takeEvery(
-    [addCartItem.type, removeCartItem.type, updateQuantity.type, clearCart.type],
+    [addCartItem.type, removeCartItem.type, updateQuantity.type, clearCart.type, hydrateCart.type, resetCartForSignOut.type],
     persistCart,
+  );
+  yield debounce(
+    400,
+    [addCartItem.type, removeCartItem.type, updateQuantity.type, clearCart.type],
+    writeThroughAccountCart,
   );
 }
