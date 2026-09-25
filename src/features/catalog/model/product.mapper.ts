@@ -52,8 +52,8 @@ export interface ProductVariantOptionView {
   priceLabel: string;
   sellable: boolean;
   /**
-   * Còn hàng ở một kho chi nhánh (API `inStock`); null khi API không trả. Không chặn mua:
-   * checkout tự chuyển đơn thiếu hàng sang chờ tư vấn, nên ở đây chỉ để báo trước cho khách.
+   * Còn hàng ở một kho chi nhánh (API `inStock`); null khi API không trả (khi đó không chặn).
+   * `false` thì không được vào giỏ/checkout — quyết định của chủ shop 2026-09-25.
    */
   inStock: boolean | null;
   /** Rỗng với hàng thường; combo mới có danh sách linh kiện. */
@@ -89,7 +89,8 @@ export function toProductPurchaseView(dto: ProductDetailDto): ProductPurchaseVie
         priceAmount: amount,
         priceLabel: amount === null ? 'Liên hệ' : vndMoney.format(amount),
         // INVARIANT: chỉ biến thể ACTIVE có giá hiệu lực mới được thêm vào giỏ.
-        sellable: amount !== null && variant.status === ProductVariantStatus.ACTIVE,
+        // INVARIANT: chỉ biến thể ACTIVE, có giá hiệu lực và không báo hết hàng mới được vào giỏ.
+        sellable: amount !== null && variant.status === ProductVariantStatus.ACTIVE && variant.inStock !== false,
         inStock: variant.inStock ?? null,
         bundleComponents: (variant.bundle?.components ?? []).map((component) => ({
           componentVariantId: component.componentVariantId,
@@ -143,7 +144,7 @@ export interface ProductShowcaseItem {
   hasPrice: boolean;
   /** Mua nhanh được từ lưới: có giá và có SKU mặc định do API chỉ định. */
   isSellable: boolean;
-  /** Xem `ProductVariantOptionView.inStock`: chỉ để gắn nhãn, không chặn mua. */
+  /** Xem `ProductVariantOptionView.inStock`: `false` thì `isSellable` cũng false. */
   inStock: boolean | null;
   shortDescription: string | null;
 }
@@ -171,7 +172,7 @@ export function toProductShowcaseItem(product: ProductSummaryDto): ProductShowca
     // Giá null nghĩa là chưa có bảng giá hiệu lực, không phải giá 0.
     displayPrice: hasPrice ? vndMoney.format(numericPrice) : 'Liên hệ tư vấn',
     // INVARIANT: nguồn duy nhất quyết định lưới được mua nhanh hay phải mở chi tiết.
-    isSellable: hasPrice && Boolean(defaultVariantId && defaultVariantSku),
+    isSellable: hasPrice && product.inStock !== false && Boolean(defaultVariantId && defaultVariantSku),
     inStock: product.inStock ?? null,
     shortDescription: product.shortDescription?.trim() || null,
   };
