@@ -1,47 +1,71 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
   ShoppingBag,
   Zap,
   ShieldCheck,
   Truck,
-  Wrench,
   RotateCcw,
   CheckCircle2,
-  MapPin,
   Minus,
   Plus,
   CreditCard,
   Check,
-  Gift,
+  Phone,
 } from 'lucide-react';
 import { addCartItem } from '@/app/store/cart.slice';
 import { useAppDispatch } from '@/app/store/hooks';
 import type { ProductPurchaseView } from '../model/product.mapper';
-import { vndMoney } from '@/shared/format/money';
+import { STORE_CONTACT, STORE_POLICY_PAGES } from '@/shared/constants';
+
+/**
+ * Chính sách áp dụng toàn cửa hàng, dẫn sang trang CMS thật.
+ * Bản trước khai "Giao nhanh 2 Giờ", "Bảo hành 24 Tháng", "Đổi mới 7 Ngày" cho MỌI sản phẩm
+ * trong khi contract không có dữ liệu bảo hành/giao hàng theo sản phẩm; mức cụ thể do trang
+ * chính sách công bố, không lặp lại số ở đây.
+ */
+const STORE_POLICY_LINKS = [
+  { icon: Truck, ...STORE_POLICY_PAGES.SHIPPING },
+  { icon: ShieldCheck, ...STORE_POLICY_PAGES.WARRANTY },
+  { icon: RotateCcw, ...STORE_POLICY_PAGES.RETURNS },
+  { icon: CreditCard, ...STORE_POLICY_PAGES.PAYMENT },
+];
+
+const ADDED_TOAST_MS = 2500;
 
 export function ProductPurchasePanel({ product }: { product: ProductPurchaseView }) {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
   const variants = product.variants;
-  const [selectedVariantId, setSelectedVariantId] = useState(variants[0]?.id ?? '');
+  // Mặc định chọn biến thể bán được đầu tiên; chọn biến thể chưa có giá làm mặc định là
+  // khoá nút mua dù sản phẩm vẫn có phiên bản khác đang bán.
+  const [selectedVariantId, setSelectedVariantId] = useState(
+    () => (variants.find(({ sellable }) => sellable) ?? variants[0])?.id ?? '',
+  );
   const [quantity, setQuantity] = useState(1);
   const [isAddedToast, setIsAddedToast] = useState(false);
+  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => {
     router.prefetch('/checkout');
     router.prefetch('/cart');
   }, [router]);
 
+  // Hẹn giờ ẩn toast phải huỷ khi rời trang, nếu không sẽ setState trên component đã gỡ.
+  useEffect(() => () => clearTimeout(toastTimerRef.current), []);
+
   const selectedVariant = variants.find(({ id }) => id === selectedVariantId) ?? variants[0];
-  const price = selectedVariant?.priceAmount ?? 0;
-  const canAdd = Boolean(selectedVariant);
+  // INVARIANT: chỉ đưa vào giỏ biến thể ACTIVE có giá hiệu lực (`sellable` do mapper tính).
+  // Không có giá thì không có "giá 0": giỏ và checkout sẽ báo giá lệch hẳn với màn này.
+  const price = selectedVariant?.sellable ? selectedVariant.priceAmount : null;
+  const canAdd = Boolean(selectedVariant?.sellable && price !== null);
 
   const handleAddToCart = () => {
-    if (!selectedVariant || !canAdd) return;
+    if (!selectedVariant || !canAdd || price === null) return;
     dispatch(
       addCartItem({
         productId: product.id,
@@ -55,11 +79,12 @@ export function ProductPurchasePanel({ product }: { product: ProductPurchaseView
       })
     );
     setIsAddedToast(true);
-    setTimeout(() => setIsAddedToast(false), 2500);
+    clearTimeout(toastTimerRef.current);
+    toastTimerRef.current = setTimeout(() => setIsAddedToast(false), ADDED_TOAST_MS);
   };
 
   const handleBuyNow = () => {
-    if (!selectedVariant || !canAdd) return;
+    if (!selectedVariant || !canAdd || price === null) return;
     dispatch(
       addCartItem({
         productId: product.id,
@@ -82,27 +107,17 @@ export function ProductPurchasePanel({ product }: { product: ProductPurchaseView
     >
       {/* Price & Rating Header */}
       <div>
-        <div className="flex items-baseline justify-between">
-          <div>
+        {/* Không hiển thị giá gạch hay "Tiết kiệm x%": contract chưa có giá gốc/khuyến mãi theo
+            biến thể, bản trước tự nhân giá bán ×1,25 để dựng ra mức giảm không có thật. */}
+        <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+          <div className="min-w-0">
             <span className="text-xs font-bold uppercase tracking-wider text-stone-400">
-              Giá bán niêm yết (Đã gồm VAT)
+              {canAdd ? 'Giá bán niêm yết (Đã gồm VAT)' : 'Giá bán'}
             </span>
-            <div className="mt-1 flex items-baseline gap-3">
-              <strong className="text-3xl font-black text-emerald-700 sm:text-4xl">
-                {price > 0 ? vndMoney.format(price) : 'Liên hệ báo giá'}
-              </strong>
-              {price > 0 && (
-                <span className="text-sm font-semibold text-stone-400 line-through">
-                  {vndMoney.format(Math.round(price * 1.25))}
-                </span>
-              )}
-            </div>
+            <strong className="mt-1 block break-words text-2xl font-black text-emerald-700 min-[400px]:text-3xl sm:text-4xl">
+              {canAdd && selectedVariant ? selectedVariant.priceLabel : 'Liên hệ báo giá'}
+            </strong>
           </div>
-          {price > 0 && (
-            <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-extrabold text-emerald-800">
-              Tiết kiệm 20%
-            </span>
-          )}
         </div>
 
         {/* Live Stock & Showroom Indicator */}
@@ -117,35 +132,33 @@ export function ProductPurchasePanel({ product }: { product: ProductPurchaseView
 
       {/* Variant Selector */}
       <div>
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
           <h2 id="purchase-heading" className="text-sm font-black uppercase tracking-wider text-ink">
             Phiên bản / Quy cách
           </h2>
-          <span className="text-xs text-stone-500">
-            {variants.length} lựa chọn có sẵn
-          </span>
+          {/* "có sẵn" từng ngụ ý còn hàng; contract chưa có tồn kho nên chỉ đếm số phiên bản. */}
+          <span className="text-xs text-stone-500">{variants.length} phiên bản</span>
         </div>
 
         <div className="mt-3 grid gap-2.5">
           {variants.map((variant) => {
-            const isSelected = variant.id === selectedVariantId;
-            const variantPrice = variant.priceAmount ?? 0;
+            const isSelected = variant.id === selectedVariant?.id;
 
             return (
               <button
                 key={variant.id}
                 type="button"
                 aria-pressed={isSelected}
-                className={`relative flex items-center justify-between rounded-2xl border p-4 text-left transition ${
+                className={`relative flex items-center justify-between gap-3 rounded-2xl border p-4 text-left transition ${
                   isSelected
                     ? 'border-emerald-500 bg-emerald-50/50 shadow-sm ring-2 ring-emerald-500/20'
                     : 'border-stone-200/80 bg-white hover:border-emerald-300 hover:bg-stone-50/50'
                 }`}
                 onClick={() => setSelectedVariantId(variant.id)}
               >
-                <div className="flex items-center gap-3">
+                <div className="flex min-w-0 items-center gap-3">
                   <div
-                    className={`grid size-5 place-items-center rounded-full border transition ${
+                    className={`grid size-5 shrink-0 place-items-center rounded-full border transition ${
                       isSelected
                         ? 'border-emerald-600 bg-emerald-600 text-white'
                         : 'border-stone-300 bg-white'
@@ -153,15 +166,18 @@ export function ProductPurchasePanel({ product }: { product: ProductPurchaseView
                   >
                     {isSelected && <Check className="size-3 stroke-[3]" />}
                   </div>
-                  <div>
-                    <span className="block font-bold text-ink">{variant.name}</span>
-                    <span className="text-xs text-stone-500">Mã SKU: {variant.sku}</span>
+                  <div className="min-w-0">
+                    <span className="block break-words font-bold text-ink">{variant.name}</span>
+                    <span className="break-all text-xs text-stone-500">Mã SKU: {variant.sku}</span>
                   </div>
                 </div>
-                <div className="text-right">
+                <div className="shrink-0 text-right">
                   <strong className="block text-sm font-black text-ink">
-                    {variantPrice > 0 ? vndMoney.format(variantPrice) : 'Chưa có giá'}
+                    {variant.sellable ? variant.priceLabel : 'Liên hệ'}
                   </strong>
+                  {!variant.sellable && (
+                    <span className="text-[11px] text-stone-500">Chưa mở bán online</span>
+                  )}
                 </div>
               </button>
             );
@@ -218,39 +234,24 @@ export function ProductPurchasePanel({ product }: { product: ProductPurchaseView
         </div>
       </div>
 
-      {/* Exclusive Gifts Bundling (Inspired by Elipsport & Kingsport) */}
-      <div className="rounded-2xl border border-amber-200 bg-amber-50/60 p-4">
-        <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-amber-900">
-          <Gift className="size-4 text-amber-600" />
-          <span>Quà tặng độc quyền theo đơn hàng:</span>
+      {/* Không hiển thị quà tặng hay "trả góp từ ~x đ/tháng": contract chưa có khuyến mãi quà tặng
+          hay gói trả góp theo sản phẩm, bản trước viết cứng quà và trị giá cho mọi sản phẩm. */}
+      {!canAdd && (
+        <div className="rounded-2xl border border-amber-200 bg-amber-50/60 p-4 text-xs text-amber-900" role="status">
+          <p className="font-bold">Phiên bản này chưa có giá bán online.</p>
+          <p className="mt-1">
+            Gọi{' '}
+            <a
+              href={`tel:${STORE_CONTACT.primaryHotlineRaw}`}
+              className="inline-flex items-center gap-1 font-extrabold text-emerald-700 underline-offset-2 hover:underline"
+            >
+              <Phone className="size-3" aria-hidden="true" />
+              {STORE_CONTACT.primaryHotline}
+            </a>{' '}
+            để được báo giá.
+          </p>
         </div>
-        <div className="mt-2.5 space-y-1.5 text-xs">
-          <div className="flex items-center justify-between rounded-xl bg-white p-2.5 shadow-sm border border-amber-100">
-            <span className="font-semibold text-slate-800">🎁 Găng tay thể hình Bảo An Pro Grip</span>
-            <span className="text-[11px] font-bold text-amber-700">Trị giá 350.000đ (0đ)</span>
-          </div>
-          <div className="flex items-center justify-between rounded-xl bg-white p-2.5 shadow-sm border border-amber-100">
-            <span className="font-semibold text-slate-800">🎁 Thảm cao su giảm chấn sàn EPDM 15mm</span>
-            <span className="text-[11px] font-bold text-amber-700">Trị giá 450.000đ (0đ)</span>
-          </div>
-          <div className="flex items-center justify-between rounded-xl bg-white p-2.5 shadow-sm border border-amber-100">
-            <span className="font-semibold text-slate-800">🎁 Bình nước thể thao Inox Bảo An giữ nhiệt 24h</span>
-            <span className="text-[11px] font-bold text-amber-700">Trị giá 250.000đ (0đ)</span>
-          </div>
-        </div>
-        <p className="mt-2 text-[11px] text-amber-800/80">
-          * Quà tặng tự động đóng gói cùng kiện hàng chính khi xuất kho.
-        </p>
-      </div>
-
-      {/* Installment Support Note */}
-      <div className="flex items-center justify-between rounded-2xl border border-slate-200/80 bg-slate-50 px-4 py-2.5 text-xs">
-        <div className="flex items-center gap-2">
-          <CreditCard className="size-4 text-emerald-600" />
-          <span className="font-semibold text-slate-700">Hỗ trợ trả góp 0% lãi suất</span>
-        </div>
-        <span className="font-bold text-emerald-700">Chỉ từ ~490.000đ/tháng</span>
-      </div>
+      )}
 
       {/* Toast Feedback */}
       {isAddedToast && (
@@ -269,7 +270,7 @@ export function ProductPurchasePanel({ product }: { product: ProductPurchaseView
           className="flex items-center justify-center gap-2 rounded-full border-2 border-slate-900 bg-white px-5 py-3.5 font-bold text-slate-900 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
         >
           <ShoppingBag className="size-4" />
-          <span>Thêm vào giỏ</span>
+          <span>{canAdd ? 'Thêm vào giỏ' : 'Liên hệ báo giá'}</span>
         </button>
 
         <button
@@ -283,40 +284,19 @@ export function ProductPurchasePanel({ product }: { product: ProductPurchaseView
         </button>
       </div>
 
-      {/* Service Perks & Warranty */}
-      <div className="grid grid-cols-2 gap-3 border-t border-stone-100 pt-5 text-xs">
-        <div className="flex items-start gap-2.5 text-stone-600">
-          <Truck className="mt-0.5 size-4 shrink-0 text-emerald-600" />
-          <div>
-            <strong className="block font-bold text-ink">Giao nhanh 2 Giờ</strong>
-            <span>Nội thành Hà Nội & TP.HCM</span>
-          </div>
-        </div>
-
-        <div className="flex items-start gap-2.5 text-stone-600">
-          <Wrench className="mt-0.5 size-4 shrink-0 text-emerald-600" />
-          <div>
-            <strong className="block font-bold text-ink">Lắp đặt tại nhà</strong>
-            <span>Kỹ thuật viên chuyên nghiệp</span>
-          </div>
-        </div>
-
-        <div className="flex items-start gap-2.5 text-stone-600">
-          <ShieldCheck className="mt-0.5 size-4 shrink-0 text-emerald-600" />
-          <div>
-            <strong className="block font-bold text-ink">Bảo hành 24 Tháng</strong>
-            <span>Chính hãng tại nhà khách</span>
-          </div>
-        </div>
-
-        <div className="flex items-start gap-2.5 text-stone-600">
-          <RotateCcw className="mt-0.5 size-4 shrink-0 text-emerald-600" />
-          <div>
-            <strong className="block font-bold text-ink">Đổi mới 7 Ngày</strong>
-            <span>Lỗi 1 đổi 1 tận nơi</span>
-          </div>
-        </div>
-      </div>
+      {/* Chính sách chung của cửa hàng: dẫn sang trang chính sách, không khai mức cam kết riêng cho sản phẩm. */}
+      <nav aria-label="Chính sách mua hàng" className="grid grid-cols-1 gap-2 border-t border-stone-100 pt-5 text-xs min-[400px]:grid-cols-2">
+        {STORE_POLICY_LINKS.map(({ icon: Icon, title, href }) => (
+          <Link
+            key={href}
+            href={href}
+            className="flex items-center gap-2.5 rounded-xl px-2 py-1.5 font-bold text-ink transition hover:bg-stone-50 hover:text-emerald-700"
+          >
+            <Icon className="size-4 shrink-0 text-emerald-600" aria-hidden="true" />
+            <span>{title}</span>
+          </Link>
+        ))}
+      </nav>
     </section>
   );
 }

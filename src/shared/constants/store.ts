@@ -209,6 +209,17 @@ export const STORE_POLICIES = [
   },
 ] as const;
 
+/**
+ * Trang chính sách CMS thật (`/chinh-sach/<slug>`, bài `POLICY`). Màn sản phẩm dẫn sang đây
+ * thay vì tự khai mức cam kết (số giờ giao, số tháng bảo hành...) cho từng sản phẩm.
+ */
+export const STORE_POLICY_PAGES = {
+  SHIPPING: { title: 'Vận chuyển & lắp đặt', href: '/chinh-sach/van-chuyen-giao-hang' },
+  WARRANTY: { title: 'Chính sách bảo hành', href: '/chinh-sach/chinh-sach-bao-hanh' },
+  RETURNS: { title: 'Chính sách đổi trả', href: '/chinh-sach/chinh-sach-doi-tra' },
+  PAYMENT: { title: 'Phương thức thanh toán', href: '/chinh-sach/phuong-thuc-thanh-toan' },
+} as const;
+
 // ==========================================
 // 9. MEGA MENU CATEGORIES (HEADER NAVIGATION)
 // ==========================================
