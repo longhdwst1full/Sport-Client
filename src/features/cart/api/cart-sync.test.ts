@@ -23,7 +23,8 @@ const tokenStore = vi.hoisted(() => {
 });
 vi.mock('../model/guest-cart-token.store', () => tokenStore);
 
-import { syncAccountCart, syncCartAfterAuth, toLocalCartItems } from './cart-sync';
+import { ApiError } from '@/lib/api/fetcher';
+import { syncAccountCart, syncCartAfterAuth, toLocalCartItems, UnavailableCartLinesError } from './cart-sync';
 
 const item = (variantId: string, quantity: number, extra: Partial<CartItemDto> = {}): CartItemDto => ({
   id: `item-${variantId}`,
@@ -73,6 +74,21 @@ describe('cart sync across devices', () => {
     expect(api.removeAccountCartItem).toHaveBeenCalledWith('item-8', { expectedCartVersion: 1 });
     expect(api.setAccountCartItem).toHaveBeenCalledTimes(1);
     expect(api.setAccountCartItem).toHaveBeenCalledWith({ productVariantId: '9', quantity: 3, expectedCartVersion: 2 });
+  });
+
+  it('reports SKUs the server no longer sells instead of failing the whole cart', async () => {
+    // Sau khi catalog seed lại, localStorage còn ID biến thể cũ: API trả 422 cho dòng đó.
+    api.getAccountCart.mockResolvedValue(cart([]));
+    api.setAccountCartItem
+      .mockRejectedValueOnce(new ApiError(422, { message: 'Biến thể sản phẩm hiện không thể bán.' }))
+      .mockResolvedValueOnce(cart([item('9', 1)], 2));
+
+    await expect(
+      syncAccountCart([{ variantId: 'old-1751', quantity: 1 }, { variantId: '9', quantity: 1 }]),
+    ).rejects.toEqual(expect.objectContaining({ variantIds: ['old-1751'] }));
+    // Dòng còn bán vẫn được ghi.
+    expect(api.setAccountCartItem).toHaveBeenCalledTimes(2);
+    expect(UnavailableCartLinesError).toBeDefined();
   });
 
   it('on login pushes the device cart, merges on the server, then returns the account cart', async () => {

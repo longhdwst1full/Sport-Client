@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState  } from 'react';
 import { CreditCard, LocateFixed, MapPin, Truck } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
-import { clearCart } from '@/app/store/cart.slice';
+import { clearCart, removeCartItem } from '@/app/store/cart.slice';
 import { useCartHydrated } from '@/app/providers';
 import { VietnamAddressSelector, type SelectedAddressData } from '@/shared/components/address/vietnam-address-selector';
 import { useCustomerAuth } from '@/features/auth';
@@ -16,6 +16,7 @@ import { ApiError } from '@/lib/api/fetcher';
 import { useToast } from '@/shared/components/global-toast';
 import { confirmCheckout, placeOrder, prepareCheckout, reloadCheckout, type CheckoutContext } from '../api/checkout.workflow';
 import { toCheckoutQuoteView } from '../model/checkout.mapper';
+import { UnavailableCartLinesError } from '@/features/cart';
 import { toOrderDetailView } from '@/features/orders/model/order.mapper';
 import { CheckoutOrderSummary } from '../components/checkout-order-summary';
 import { CheckoutSuccess } from '../components/checkout-success';
@@ -93,6 +94,14 @@ export function CheckoutPage() {
     setError('');
   };
 
+  /** SKU trong giỏ trên máy không còn bán: bỏ khỏi giỏ để báo giá lại với các dòng còn lại. */
+  const handleCheckoutError = (caught: unknown) => {
+    if (caught instanceof UnavailableCartLinesError) {
+      caught.variantIds.forEach((variantId) => dispatch(removeCartItem(variantId)));
+    }
+    setError(messageOf(caught));
+  };
+
   const useCurrentLocation = () => {
     if (!navigator.geolocation) return setError('Trình duyệt không hỗ trợ xác định vị trí.');
     navigator.geolocation.getCurrentPosition(
@@ -149,7 +158,7 @@ export function CheckoutPage() {
         setQuote(prepared.quote);
         setContext(prepared.context);
       } catch (caught) {
-        if (seq === quoteSeq.current) setError(messageOf(caught));
+        if (seq === quoteSeq.current) handleCheckoutError(caught);
       } finally {
         if (seq === quoteSeq.current) setAutoQuoting(false);
       }
@@ -223,7 +232,7 @@ export function CheckoutPage() {
           : `Mã đơn ${order.orderNo} đã được tiếp nhận.`,
       });
     } catch (caught) {
-      setError(messageOf(caught));
+      handleCheckoutError(caught);
     } finally {
       setBusy(false);
     }

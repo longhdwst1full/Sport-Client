@@ -63,6 +63,21 @@ async function getOrCreateGuestCart(): Promise<{ cart: CartDto; cartToken: strin
 type LineWriteMode = 'strict' | 'lenient';
 
 /**
+ * Dòng giỏ trên máy trỏ tới SKU server không còn bán (404/422) — ví dụ sau khi catalog được seed
+ * lại, localStorage vẫn giữ ID biến thể cũ. Nơi gọi bỏ các dòng này khỏi giỏ local và báo khách,
+ * thay vì để một dòng hỏng chặn cả checkout.
+ */
+export class UnavailableCartLinesError extends Error {
+  constructor(readonly variantIds: string[]) {
+    super('Một số sản phẩm trong giỏ không còn bán và đã được bỏ khỏi giỏ.');
+    this.name = 'UnavailableCartLinesError';
+  }
+}
+
+const isUnavailableLine = (error: unknown) =>
+  error instanceof ApiError && (error.status === 404 || error.status === 422);
+
+/**
  * Đưa giỏ server về đúng các dòng local: xoá dòng thừa, ghi dòng thiếu/khác số lượng (bỏ qua dòng
  * đã khớp để đỡ request). `lenient` bỏ qua dòng không còn bán được thay vì ném lỗi — dùng khi đăng
  * nhập/đồng bộ nền, để một món ngừng bán không làm hỏng cả giỏ.
@@ -77,6 +92,7 @@ async function reconcile(
   mode: LineWriteMode,
 ): Promise<CartDto> {
   let current = cart;
+  const unavailable: string[] = [];
   const desired = new Map(lines.map((line) => [line.variantId, line.quantity]));
   for (const item of current.items.filter(({ productVariantId }) => !desired.has(productVariantId))) {
     current = await write.remove(item.id, current.version);
@@ -87,9 +103,11 @@ async function reconcile(
     try {
       current = await write.set(line, current.version);
     } catch (error) {
-      if (mode === 'strict') throw error;
+      if (isUnavailableLine(error)) unavailable.push(line.variantId);
+      else if (mode === 'strict') throw error;
     }
   }
+  if (mode === 'strict' && unavailable.length > 0) throw new UnavailableCartLinesError(unavailable);
   return current;
 }
 

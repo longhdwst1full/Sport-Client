@@ -8,5 +8,6 @@ export {
   syncGuestCart,
   toCartLines,
   toLocalCartItems,
+  UnavailableCartLinesError,
   type CartLine,
 } from './api/cart-sync';
