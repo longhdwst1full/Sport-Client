@@ -12,6 +12,7 @@ import {
   toProductPurchaseView,
   toProductShowcaseItem,
   toProductShowcaseItems,
+  toDisplayBrand,
 } from './product.mapper';
 
 const summary = (overrides: Partial<ProductSummaryDto> = {}): ProductSummaryDto => ({
@@ -59,6 +60,17 @@ describe('hasOfferPrice', () => {
     expect(hasOfferPrice('')).toBe(false);
     expect(hasOfferPrice('0.00')).toBe(false);
     expect(hasOfferPrice('1500000.00')).toBe(true);
+  });
+});
+
+describe('toDisplayBrand', () => {
+  it('hides the OEM placeholder and empty brands instead of substituting the store name', () => {
+    expect(toDisplayBrand('OEM')).toBeNull();
+    expect(toDisplayBrand(' oem ')).toBeNull();
+    expect(toDisplayBrand('')).toBeNull();
+    expect(toDisplayBrand(undefined)).toBeNull();
+    expect(toDisplayBrand('Double Fish')).toBe('Double Fish');
+    expect(toProductShowcaseItem(summary({ brand: 'OEM' })).brand).toBeNull();
   });
 });
 

@@ -33,6 +33,16 @@ export interface BundleComponentView {
   quantity: number;
 }
 
+/**
+ * Thương hiệu hiển thị được hay không. 'OEM' là giá trị lấp chỗ khi DB chưa có hãng thật,
+ * nên coi như không có thương hiệu; không thay bằng tên cửa hàng vì đó là khai sai hãng.
+ */
+export function toDisplayBrand(brand: string | null | undefined): string | null {
+  const value = brand?.trim();
+  if (!value || value.toUpperCase() === 'OEM') return null;
+  return value;
+}
+
 export interface ProductVariantOptionView {
   id: string;
   sku: string;
@@ -116,7 +126,8 @@ export interface ProductShowcaseItem {
   slug: string;
   productType: string;
   name: string;
-  brand: string;
+  /** Null khi chưa có hãng thật (kể cả 'OEM'); component bỏ trống thay vì điền tên cửa hàng. */
+  brand: string | null;
   category: string;
   badge: string;
   imageUrl: string;
@@ -141,7 +152,7 @@ export function toProductShowcaseItem(product: ProductSummaryDto): ProductShowca
     slug: product.slug,
     productType: product.productType,
     name: product.name,
-    brand: product.brand ?? 'Bảo An Sport',
+    brand: toDisplayBrand(product.brand),
     category: product.primaryCategory ?? 'Thiết bị thể thao',
     badge: product.primaryCategory ?? 'Sản phẩm',
     // Ảnh thay thế trung tính của chính dự án. Trước đây dùng '/icon.svg' là logo

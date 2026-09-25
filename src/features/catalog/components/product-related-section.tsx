@@ -127,8 +127,8 @@ export function ProductRelatedSection({
 
                 <div className="flex flex-1 flex-col justify-between p-5">
                   <div>
-                    <p className="text-[11px] font-bold uppercase tracking-wider text-emerald-700">
-                      {product.brand || 'BẢO AN SPORT'}
+                    <p className="min-h-[16px] text-[11px] font-bold uppercase tracking-wider text-emerald-700">
+                      {product.brand}
                     </p>
                     <h3 className="mt-1 line-clamp-2 min-h-[44px] text-sm font-bold text-slate-800 transition-colors group-hover:text-emerald-700">
                       <Link href={`/products/${product.slug}`}>{product.name}</Link>

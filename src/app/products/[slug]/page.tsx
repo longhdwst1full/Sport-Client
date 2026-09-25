@@ -5,9 +5,10 @@ import { Images } from 'lucide-react';
 import type { Metadata } from 'next';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { ProductPurchasePanel, ProductRelatedSection } from '@/features/catalog';
-import { siteUrl, STORE_CONFIG } from '@/shared/constants';
+import { siteUrl } from '@/shared/constants';
 import {
   hasOfferPrice,
+  toDisplayBrand,
   toProductGalleryView,
   toProductPurchaseView,
 } from '@/features/catalog/model/product.mapper';
@@ -99,8 +100,9 @@ export default async function ProductDetailPage({
   // hiển thị một bảng cố định cho MỌI sản phẩm — gồm cả tải trọng, kích thước và
   // chứng nhận CE/EN957 — tức là công bố thông số và chứng nhận không có thật.
   // Chỉ hiển thị những gì API thực sự trả về.
+  const brand = toDisplayBrand(product.brand);
   const TECH_SPECS: Array<{ label: string; value: string }> = [
-    ...(product.brand ? [{ label: 'Thương hiệu', value: product.brand }] : []),
+    ...(brand ? [{ label: 'Thương hiệu', value: brand }] : []),
     ...(product.primaryCategory ? [{ label: 'Phân loại', value: product.primaryCategory }] : []),
     // Thông số từ từ điển thuộc tính của API (nhãn/đơn vị đã ghép sẵn), theo thứ tự Admin sắp.
     ...product.specifications.map((spec) => ({
@@ -135,10 +137,8 @@ export default async function ProductDetailPage({
     image: product.imageUrl,
     description: product.shortDescription,
     sku: product.productNo || product.slug,
-    brand: {
-      '@type': 'Brand',
-      name: product.brand || STORE_CONFIG.name,
-    },
+    // Chưa có hãng thật thì không khai `brand`: gán tên cửa hàng làm hãng là sai dữ liệu có cấu trúc.
+    ...(brand ? { brand: { '@type': 'Brand', name: brand } } : {}),
     // Chưa có giá thì không khai `offers`: khai giá 0 hoặc giá bịa đều sai lệch kết quả
     // tìm kiếm. Điểm đánh giá và tồn kho hiện chưa có trong contract nên không khai.
     ...(hasPrice
@@ -204,9 +204,9 @@ export default async function ProductDetailPage({
             {product.name}
           </h1>
           <div className="mt-2 flex flex-wrap items-center gap-3 text-xs font-semibold text-slate-500">
-            {product.brand && (
+            {brand && (
               <span className="rounded-full bg-emerald-50 px-3 py-1 font-bold text-emerald-700">
-                {product.brand}
+                {brand}
               </span>
             )}
             {product.primaryCategory && (
