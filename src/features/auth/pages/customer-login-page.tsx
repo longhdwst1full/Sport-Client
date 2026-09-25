@@ -21,7 +21,9 @@ import { useLoginCustomer } from '@/generated/api/auth/auth';
 import type { LoginDto } from '@/generated/api/auth/models';
 import { KineticBallCanvas } from '@/foundation/3d/kinetic-ball-canvas.lazy';
 import { useToast } from '@/shared/components/global-toast';
-import { mergeGuestCartAfterAuth } from '@/features/cart';
+import { syncCartAfterAuth } from '@/features/cart';
+import { hydrateCart } from '@/app/store/cart.slice';
+import { storefrontStore } from '@/app/store/store';
 import { getCustomerAuthError } from '../model/auth-error';
 import { saveCustomerAuthTokens } from '../model/auth-token.store';
 
@@ -51,8 +53,9 @@ export function CustomerLoginPage() {
           title: 'Đăng nhập thành công',
           message: 'Chào mừng bạn quay trở lại Bảo An Sport!',
         });
-        // Gộp giỏ đang có trên máy này vào tài khoản trước khi rời trang.
-        await mergeGuestCartAfterAuth();
+        // Đẩy giỏ trên máy lên tài khoản (server gộp, cùng SKU lấy số lớn hơn) rồi thay bằng giỏ tài khoản.
+        const accountItems = await syncCartAfterAuth(storefrontStore.getState().cart.items);
+        if (accountItems) storefrontStore.dispatch(hydrateCart(accountItems));
         router.replace('/');
       },
       onError: (error) =>

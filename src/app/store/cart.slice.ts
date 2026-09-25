@@ -41,7 +41,15 @@ export const cartSlice = createSlice({
     clearCart: (state) => {
       state.items = [];
     },
+    /**
+     * Đăng xuất / đổi tài khoản: xoá giỏ trên máy để người dùng sau không thấy, nhưng KHÔNG ghi lên
+     * server — giỏ vẫn nằm trong tài khoản (khác `clearCart`, vốn được đồng bộ lên giỏ tài khoản).
+     */
+    resetCartForSignOut: (state) => {
+      state.items = [];
+    },
   },
 });
 
-export const { addCartItem, updateQuantity, removeCartItem, clearCart, hydrateCart } = cartSlice.actions;
+export const { addCartItem, updateQuantity, removeCartItem, clearCart, hydrateCart, resetCartForSignOut } =
+  cartSlice.actions;
