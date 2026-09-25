@@ -38,4 +38,11 @@ export interface ProductSummaryDto {
   currency: CurrencyCode;
   /** @nullable */
   imageUrl?: string | null;
+  /**
+   * Mô tả ngắn cho thẻ sản phẩm
+   * @nullable
+   */
+  shortDescription?: string | null;
+  /** Có ít nhất một SKU đang bán còn hàng ở một kho chi nhánh đang hoạt động. Có trong mọi response danh sách và chi tiết; response của lệnh ghi không tính. Không lộ số lượng tồn. */
+  inStock?: boolean;
 }

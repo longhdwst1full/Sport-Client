@@ -1,10 +1,9 @@
 import { cache } from 'react';
-import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { Images } from 'lucide-react';
 import type { Metadata } from 'next';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
-import { ProductPurchasePanel, ProductRelatedSection } from '@/features/catalog';
+import { ProductImageGallery, ProductPurchasePanel, ProductRelatedSection } from '@/features/catalog';
 import { siteUrl } from '@/shared/constants';
 import {
   hasOfferPrice,
@@ -61,7 +60,7 @@ export async function generateMetadata({
 
   // Không gắn "Trả Góp 0%" vào tiêu đề: contract không có gói trả góp theo sản phẩm.
   const title = `${product.name} — Bảo An Sport`;
-  const description = product.shortDescription;
+  const description = product.shortDescription ?? undefined;
   // Sản phẩm chưa có ảnh thì bỏ hẳn thẻ ảnh thay vì chèn ảnh của sản phẩm khác.
   const images = product.imageUrl
     ? [{ url: product.imageUrl, width: 1200, height: 630, alt: product.name }]
@@ -120,7 +119,6 @@ export default async function ProductDetailPage({
   // phẩm chưa có bảng giá — không trường nào trong số đó có nguồn dữ liệu.
   const purchaseView = toProductPurchaseView(product);
   const gallery = toProductGalleryView(product);
-  const [mainImage, ...extraImages] = gallery;
   const relatedCategorySlug = await loadCategorySlugByName(product.primaryCategory);
   // Mô tả lưu dạng văn bản thuần; React tự escape. Chưa có sanitizer trong repo nên không
   // dùng dangerouslySetInnerHTML. Bỏ phần mô tả dài nếu trùng nguyên văn mô tả ngắn.
@@ -237,40 +235,7 @@ export default async function ProductDetailPage({
                   </span>
                 )}
               </div>
-              <div className="relative aspect-[4/3] bg-gradient-to-br from-white to-[var(--dc-primary-50)] sm:aspect-[16/11]">
-                <Image
-                  src={mainImage.url}
-                  alt={mainImage.alt}
-                  fill
-                  priority
-                  sizes="(max-width: 1024px) 100vw, 58vw"
-                  className="object-contain p-4 transition duration-500 hover:scale-[1.02] sm:p-8"
-                />
-              </div>
-              {/* Ảnh phụ từ `media[]`: render ở server, bấm để mở ảnh gốc; không cần JS cho gallery. */}
-              {extraImages.length > 0 && (
-                <ul className="grid grid-cols-4 gap-2 border-t border-[var(--dc-border)] p-3 sm:grid-cols-6 sm:gap-3 sm:p-4">
-                  {extraImages.map((image, index) => (
-                    <li key={image.id}>
-                      <a
-                        href={image.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="relative block aspect-square overflow-hidden rounded-xl border border-[var(--dc-border)] bg-white transition hover:border-[var(--dc-primary-500)]"
-                        aria-label={`Xem ảnh ${index + 2} của ${product.name}`}
-                      >
-                        <Image
-                          src={image.url}
-                          alt={image.alt}
-                          fill
-                          sizes="(max-width: 640px) 25vw, (max-width: 1024px) 16vw, 110px"
-                          className="object-contain p-1.5"
-                        />
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              )}
+              <ProductImageGallery images={gallery} productName={product.name} />
             </div>
 
             {/* Product Story / Description — chỉ hiện nội dung API trả về, không có văn mẫu dự phòng. */}

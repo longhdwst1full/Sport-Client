@@ -42,6 +42,13 @@ export interface ProductDetailDto {
   currency: CurrencyCode;
   /** @nullable */
   imageUrl?: string | null;
+  /**
+   * Mô tả ngắn cho thẻ sản phẩm
+   * @nullable
+   */
+  shortDescription?: string | null;
+  /** Có ít nhất một SKU đang bán còn hàng ở một kho chi nhánh đang hoạt động. Có trong mọi response danh sách và chi tiết; response của lệnh ghi không tính. Không lộ số lượng tồn. */
+  inStock?: boolean;
   /** Thông số kỹ thuật đã ghép nhãn/đơn vị từ từ điển thuộc tính; rỗng nếu chưa nhập */
   specifications: ProductSpecificationDto[];
   /**
@@ -54,7 +61,6 @@ export interface ProductDetailDto {
    * @pattern ^[1-9][0-9]*$
    */
   primaryCategoryId?: string | null;
-  shortDescription?: string;
   description?: string;
   variants: ProductVariantDto[];
   media: ProductMediaDto[];

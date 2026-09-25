@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import Link from 'next/link';
 import { Sparkles, ShieldCheck, Truck, RotateCcw, CreditCard } from 'lucide-react';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
@@ -68,7 +69,10 @@ export function ProductsPage() {
 
           {/* Interactive Products Catalog View */}
           <div className="mt-10">
-            <ProductsCatalogView />
+            {/* useSearchParams trong view cần ranh giới Suspense để trang vẫn prerender được. */}
+            <Suspense fallback={<div className="h-40 animate-pulse rounded-[28px] bg-slate-100" />}>
+              <ProductsCatalogView />
+            </Suspense>
           </div>
 
           {/* Flash Deals Banner for Catalog */}

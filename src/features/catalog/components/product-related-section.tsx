@@ -141,6 +141,11 @@ export function ProductRelatedSection({
                       <strong className="text-base font-black text-emerald-700 sm:text-lg">
                         {product.displayPrice}
                       </strong>
+                      {product.inStock === false && (
+                          <span className="mt-1 inline-block rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-bold text-amber-700">
+                            Tạm hết hàng
+                          </span>
+                        )}
                     </div>
 
                     <button

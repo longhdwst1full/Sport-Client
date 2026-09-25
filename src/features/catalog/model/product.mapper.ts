@@ -51,6 +51,11 @@ export interface ProductVariantOptionView {
   priceAmount: number | null;
   priceLabel: string;
   sellable: boolean;
+  /**
+   * Còn hàng ở một kho chi nhánh (API `inStock`); null khi API không trả. Không chặn mua:
+   * checkout tự chuyển đơn thiếu hàng sang chờ tư vấn, nên ở đây chỉ để báo trước cho khách.
+   */
+  inStock: boolean | null;
   /** Rỗng với hàng thường; combo mới có danh sách linh kiện. */
   bundleComponents: BundleComponentView[];
 }
@@ -83,9 +88,9 @@ export function toProductPurchaseView(dto: ProductDetailDto): ProductPurchaseVie
         name: variant.name,
         priceAmount: amount,
         priceLabel: amount === null ? 'Liên hệ' : vndMoney.format(amount),
-        // INVARIANT: chỉ biến thể ACTIVE có giá hiệu lực mới được thêm vào giỏ. Tồn kho chưa có
-        // trong contract; khi API bổ sung thì ghép thêm điều kiện ở đây, không rải ra component.
+        // INVARIANT: chỉ biến thể ACTIVE có giá hiệu lực mới được thêm vào giỏ.
         sellable: amount !== null && variant.status === ProductVariantStatus.ACTIVE,
+        inStock: variant.inStock ?? null,
         bundleComponents: (variant.bundle?.components ?? []).map((component) => ({
           componentVariantId: component.componentVariantId,
           componentSku: component.componentSku,
@@ -138,6 +143,9 @@ export interface ProductShowcaseItem {
   hasPrice: boolean;
   /** Mua nhanh được từ lưới: có giá và có SKU mặc định do API chỉ định. */
   isSellable: boolean;
+  /** Xem `ProductVariantOptionView.inStock`: chỉ để gắn nhãn, không chặn mua. */
+  inStock: boolean | null;
+  shortDescription: string | null;
 }
 
 export function toProductShowcaseItem(product: ProductSummaryDto): ProductShowcaseItem {
@@ -163,8 +171,9 @@ export function toProductShowcaseItem(product: ProductSummaryDto): ProductShowca
     // Giá null nghĩa là chưa có bảng giá hiệu lực, không phải giá 0.
     displayPrice: hasPrice ? vndMoney.format(numericPrice) : 'Liên hệ tư vấn',
     // INVARIANT: nguồn duy nhất quyết định lưới được mua nhanh hay phải mở chi tiết.
-    // Tồn kho chưa có trong `ProductSummaryDto`; khi API bổ sung thì thêm điều kiện ở đây.
     isSellable: hasPrice && Boolean(defaultVariantId && defaultVariantSku),
+    inStock: product.inStock ?? null,
+    shortDescription: product.shortDescription?.trim() || null,
   };
 }
 

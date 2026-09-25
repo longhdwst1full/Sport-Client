@@ -21,6 +21,7 @@ export * from './productCategoryDto';
 export * from './productDetailDto';
 export * from './productListMetaDto';
 export * from './productListResponseDto';
+export * from './productListSort';
 export * from './productMediaDto';
 export * from './productMediaStatus';
 export * from './productSpecificationDto';

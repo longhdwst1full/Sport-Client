@@ -1,38 +1,78 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Search, Eye, X, RotateCcw, Zap } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useAppDispatch } from '@/app/store/hooks';
 import { addCartItem } from '@/app/store/cart.slice';
 import { useProductShowcase } from '../hooks/use-product-showcase';
 import { useCategoryTabs } from '../hooks/use-category-tabs';
 import { useDebounce } from '@/shared/hooks';
 import { CATALOG_PAGE_SIZE } from '../model/product.mapper';
+import { ProductListSort } from '@/generated/api/catalog/models';
 
-const PRICE_RANGES = [
+// Khoảng giá gửi thẳng lên API (`minPrice`/`maxPrice`, VND) nên lọc trên toàn bộ catalog.
+const PRICE_RANGES: Array<{ id: string; label: string; min?: string; max?: string }> = [
   { id: 'all', label: 'Tất cả mức giá' },
-  { id: 'under-2m', label: 'Dưới 2 triệu', max: 2000000 },
-  { id: '2m-10m', label: '2 - 10 triệu', min: 2000000, max: 10000000 },
-  { id: 'over-10m', label: 'Trên 10 triệu', min: 10000000 },
+  { id: 'under-2m', label: 'Dưới 2 triệu', max: '1999999' },
+  { id: '2m-10m', label: '2 - 10 triệu', min: '2000000', max: '10000000' },
+  { id: 'over-10m', label: 'Trên 10 triệu', min: '10000001' },
 ];
+
+const SORT_OPTIONS: Array<{ value: ProductListSort; label: string }> = [
+  { value: ProductListSort.NEWEST, label: 'Mới nhất' },
+  { value: ProductListSort.PRICE_ASC, label: 'Giá: thấp đến cao' },
+  { value: ProductListSort.PRICE_DESC, label: 'Giá: cao đến thấp' },
+  { value: ProductListSort.NAME_ASC, label: 'Tên: A → Z' },
+];
+
+const isSort = (value: string | null): value is ProductListSort =>
+  SORT_OPTIONS.some((option) => option.value === value);
 
 export function ProductsCatalogView() {
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
 
   // Tab lấy từ danh mục thật (slug từ API), không viết cứng.
   // Bản trước dùng CATEGORY_TABS với id tự đặt ('gym', 'treadmill'...) rồi so sánh
   // với tên danh mục thật từ API — hai vế không bao giờ khớp nên tab nào cũng ra rỗng.
   const { tabs, isPending: isTabsPending } = useCategoryTabs();
-  const [activeTabSlug, setActiveTabSlug] = useState<string | null>(null);
+  // RULE-LIST-02: bộ lọc nằm trong URL để reload/chia sẻ link giữ nguyên kết quả.
+  const activeTabSlug = searchParams.get('category') || null;
+  const priceParam = searchParams.get('price');
+  const activePriceRange = PRICE_RANGES.some((range) => range.id === priceParam) ? priceParam! : 'all';
+  const sortParam = searchParams.get('sort');
+  const activeSort: ProductListSort = isSort(sortParam) ? sortParam : ProductListSort.NEWEST;
+  const urlSearch = searchParams.get('q') ?? '';
 
-  const [activePriceRange, setActivePriceRange] = useState('all');
-  const [searchQuery, setSearchQuery] = useState('');
-  // Mỗi phím gõ là một query key mới; hoãn 300ms để không bắn một request cho từng ký tự.
+  const updateQuery = (changes: Record<string, string | null>) => {
+    const next = new URLSearchParams(searchParams.toString());
+    for (const [key, value] of Object.entries(changes)) {
+      if (value) next.set(key, value);
+      else next.delete(key);
+    }
+    const query = next.toString();
+    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+  };
+  const setActiveTabSlug = (slug: string | null) => updateQuery({ category: slug });
+  const setActivePriceRange = (id: string) => updateQuery({ price: id === 'all' ? null : id });
+  const setActiveSort = (sort: ProductListSort) =>
+    updateQuery({ sort: sort === ProductListSort.NEWEST ? null : sort });
+
+  // Ô tìm kiếm giữ state cục bộ để gõ mượt; chỉ đẩy lên URL sau khi ngừng gõ 300ms.
+  const [searchQuery, setSearchQuery] = useState(urlSearch);
   const debouncedSearch = useDebounce(searchQuery, 300);
+  useEffect(() => {
+    if (debouncedSearch.trim() === urlSearch) return;
+    updateQuery({ q: debouncedSearch.trim() || null });
+    // updateQuery đọc searchParams hiện tại; chỉ chạy khi từ khoá đã hoãn thay đổi.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedSearch]);
+  const selectedPriceRange = PRICE_RANGES.find((range) => range.id === activePriceRange);
 
   // Lọc danh mục chạy server-side (gồm cả nhánh con). Search cũng server-side.
   const {
@@ -45,28 +85,15 @@ export function ProductsCatalogView() {
     isLoadMoreError,
     isError,
     refetch,
-  } = useProductShowcase(activeTabSlug ?? undefined, debouncedSearch, {
+  } = useProductShowcase(activeTabSlug ?? undefined, urlSearch, {
     pageSize: CATALOG_PAGE_SIZE.SCOPED,
+    sort: activeSort === ProductListSort.NEWEST ? undefined : activeSort,
+    minPrice: selectedPriceRange?.min,
+    maxPrice: selectedPriceRange?.max,
   });
 
-  // CONTRACT: `GET /catalog/products` hiện chưa có tham số sort hay minPrice/maxPrice. Sắp
-  // xếp theo giá trên phần đã tải chỉ đúng cho vài chục sản phẩm đầu trong hàng trăm, nên đã
-  // gỡ ô sắp xếp (kể cả nhãn "Bán chạy nhất" không có dữ liệu bán hàng nào đứng sau). Lọc
-  // mức giá vẫn giữ nhưng chỉ xét sản phẩm đã có giá trong phần đã tải và ghi rõ điều đó
-  // trên màn hình. Khi API có sort/price param thì chuyển cả hai sang server-side.
-  const selectedPriceRange = PRICE_RANGES.find((range) => range.id === activePriceRange);
-  const isPriceFiltered = Boolean(selectedPriceRange && activePriceRange !== 'all');
-  const filteredProducts = useMemo(() => {
-    if (!selectedPriceRange || activePriceRange === 'all') return products;
-    const { min, max } = selectedPriceRange;
-    // Sản phẩm chưa có giá không thuộc khoảng giá nào; giá 0 dự phòng không được xếp vào "Dưới 2 triệu".
-    return products.filter(
-      (p) =>
-        p.hasPrice &&
-        (min === undefined || p.numericPrice >= min) &&
-        (max === undefined || p.numericPrice <= max),
-    );
-  }, [products, activePriceRange, selectedPriceRange]);
+  // CONTRACT: sắp xếp và khoảng giá chạy ở API trên toàn bộ catalog; `total` là tổng sau lọc.
+  const isPriceFiltered = activePriceRange !== 'all';
 
   const handleBuyNow = (e: React.MouseEvent, product: (typeof products)[number]) => {
     e.preventDefault();
@@ -92,12 +119,15 @@ export function ProductsCatalogView() {
     router.push('/checkout');
   };
 
-  const hasActiveFilters = activeTabSlug !== null || activePriceRange !== 'all' || searchQuery.trim() !== '';
+  const hasActiveFilters =
+    activeTabSlug !== null ||
+    activePriceRange !== 'all' ||
+    activeSort !== ProductListSort.NEWEST ||
+    urlSearch !== '';
 
   const handleResetFilters = () => {
-    setActiveTabSlug(null);
-    setActivePriceRange('all');
     setSearchQuery('');
+    router.replace(pathname, { scroll: false });
   };
 
   return (
@@ -180,11 +210,25 @@ export function ProductsCatalogView() {
           </div>
 
           <div className="flex flex-wrap items-center gap-3 text-xs">
+            <label className="flex items-center gap-1.5 font-semibold text-slate-500">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Sắp xếp:</span>
+              <select
+                value={activeSort}
+                onChange={(e) => setActiveSort(e.target.value as ProductListSort)}
+                className="rounded-lg border border-slate-200 bg-white px-2 py-1 text-[11px] font-bold text-slate-700 focus:border-emerald-500 focus:outline-none"
+              >
+                {SORT_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </label>
             <span className="font-semibold text-slate-500" aria-live="polite">
               {isPriceFiltered ? (
                 <>
-                  <strong className="font-extrabold text-slate-900">{filteredProducts.length}</strong> sản phẩm
-                  hợp mức giá trong {products.length}/{total} đã tải
+                  <strong className="font-extrabold text-slate-900">{total}</strong> sản phẩm hợp mức giá
+                  (đang hiển thị {products.length})
                 </>
               ) : (
                 <>
@@ -232,7 +276,7 @@ export function ProductsCatalogView() {
               <RotateCcw className="size-4" /> Thử lại
             </button>
           </div>
-        ) : filteredProducts.length === 0 ? (
+        ) : products.length === 0 ? (
           <div className="rounded-[32px] border border-dashed border-slate-300 bg-white p-12 text-center shadow-sm">
             <div className="mx-auto grid size-16 place-items-center rounded-2xl bg-emerald-50 text-emerald-600">
               <Search className="size-8" />
@@ -251,7 +295,7 @@ export function ProductsCatalogView() {
           </div>
         ) : (
           <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-            {filteredProducts.map((product) => (
+            {products.map((product) => (
               <article
                 key={product.id}
                 className="group relative flex flex-col overflow-hidden rounded-[24px] border border-slate-200/80 bg-white shadow-sm transition duration-300 hover:-translate-y-1.5 hover:border-emerald-500/50 hover:shadow-xl"
@@ -309,6 +353,11 @@ export function ProductsCatalogView() {
                             {product.displayPrice}
                           </strong>
                         </div>
+                        {product.inStock === false && (
+                          <span className="mt-1 inline-block rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-bold text-amber-700">
+                            Tạm hết hàng
+                          </span>
+                        )}
                       </div>
 
                       <button
