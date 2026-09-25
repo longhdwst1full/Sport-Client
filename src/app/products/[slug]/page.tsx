@@ -77,6 +77,11 @@ export default async function ProductDetailPage({
   const TECH_SPECS: Array<{ label: string; value: string }> = [
     ...(product.brand ? [{ label: 'Thương hiệu', value: product.brand }] : []),
     ...(product.primaryCategory ? [{ label: 'Phân loại', value: product.primaryCategory }] : []),
+    // Thông số từ từ điển thuộc tính của API (nhãn/đơn vị đã ghép sẵn), theo thứ tự Admin sắp.
+    ...product.specifications.map((spec) => ({
+      label: spec.name,
+      value: spec.values.map(({ label }) => label).join(' / '),
+    })),
     { label: 'Mã sản phẩm', value: product.productNo },
     ...(product.variants.length > 1
       ? [{ label: 'Số phiên bản', value: `${product.variants.length} phiên bản` }]
