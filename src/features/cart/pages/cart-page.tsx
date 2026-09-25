@@ -38,7 +38,7 @@ export function CartPage() {
             <h2 className="mt-6 text-xl font-bold">Giỏ hàng trống</h2>
             <p className="mt-2 text-stone-500">Thêm sản phẩm yêu thích và quay lại đây.</p>
             <Link
-              href="/#products"
+              href="/products"
               className="mt-8 inline-flex items-center gap-2 rounded-full bg-ink px-7 py-3.5 font-bold text-white transition hover:bg-brand-600"
             >
               <ArrowLeft className="size-4" /> Tiếp tục mua sắm
@@ -141,7 +141,7 @@ export function CartPage() {
                 Tiến hành thanh toán
               </Link>
               <Link
-                href="/#products"
+                href="/products"
                 className="mt-3 block text-center text-xs font-semibold text-slate-500 transition hover:text-emerald-700"
               >
                 ← Tiếp tục mua sắm

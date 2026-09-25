@@ -15,10 +15,10 @@ import { STORE_CONTACT } from '@/shared/constants';
 
 export default function NotFound() {
   const QUICK_CATEGORIES = [
-    { title: 'Gym & Thể hình', href: '/#products', icon: Dumbbell },
-    { title: 'Chạy bộ & Cardio', href: '/#products', icon: Footprints },
-    { title: 'Bóng đá & Thể thao', href: '/#products', icon: Goal },
-    { title: 'Yoga & Hồi phục', href: '/#products', icon: HeartPulse },
+    { title: 'Gym & Thể hình', href: '/category/dung-cu-tap-gym', icon: Dumbbell },
+    { title: 'Chạy bộ & Cardio', href: '/category/may-tap-the-duc', icon: Footprints },
+    { title: 'Bóng đá & Thể thao', href: '/category/dung-cu-bong-da', icon: Goal },
+    { title: 'Yoga & Hồi phục', href: '/category/dung-cu-tap-yoga', icon: HeartPulse },
   ];
 
   return (
