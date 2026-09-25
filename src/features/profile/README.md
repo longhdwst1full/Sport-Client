@@ -1,7 +1,7 @@
 # Profile feature
 
-> **Version:** 2.0.0 · **Last updated:** 2026-09-22
-> **Change summary:** Tab Cài đặt chuyển từ chỉ đọc sang sửa được: cập nhật hồ sơ có version và đổi mật khẩu; đổi mật khẩu thu hồi mọi phiên khác.
+> **Version:** 2.1.0 · **Last updated:** 2026-09-25
+> **Change summary:** Gỡ tab tra cứu bảo hành cùng fixture `MOCK_WARRANTIES` và cờ `FEATURE_FLAGS.WARRANTY_LOOKUP`; chưa có API bảo hành.
 
 ## Cài đặt tài khoản
 
@@ -23,7 +23,7 @@ Auth khi đó chưa có operation nào cho việc này.
 
 - Tab `settings`: thông tin liên hệ **chỉ hiển thị, read-only** — chưa có operation cập nhật hồ sơ hay đổi mật khẩu cho khách.
 - Tab `address`: sổ địa chỉ nhận hàng — **đã nối API**.
-- Tab `warranty`: tra cứu bảo hành, vẫn dùng fixture `MOCK_WARRANTIES`.
+- Tab `warranty` đã gỡ (2026-09-25): chưa có API bảo hành; không hiển thị tra cứu trên dữ liệu mẫu. Mở lại chỉ khi contract có operation thật.
 
 Ngoài phạm vi: lịch sử đơn hàng (thuộc `features/orders`), đăng nhập/đăng ký (`features/auth`).
 

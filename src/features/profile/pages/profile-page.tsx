@@ -7,7 +7,6 @@ import {
   User,
   Package,
   MapPin,
-  ShieldCheck,
   LogOut,
   ChevronRight,
   Clock,
@@ -28,18 +27,16 @@ import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { useCustomerAuth } from '@/features/auth';
 import { useGetCustomerProfile } from '@/generated/api/customer/customer';
 import { AccountSettingsForm } from '../components/account-settings-form';
-import { FEATURE_FLAGS, STORE_CONFIG, STORE_CONTACT } from '@/shared/constants';
+import { STORE_CONTACT } from '@/shared/constants';
 import {
   VietnamAddressSelector,
   type SelectedAddressData,
 } from '@/shared/components/address/vietnam-address-selector';
 import { useToast } from '@/shared/components/global-toast';
 
-type ProfileTab = 'warranty' | 'address' | 'settings';
+// Tab tra cứu bảo hành đã gỡ cùng dữ liệu mẫu: chưa có API bảo hành để tra cứu thật.
+type ProfileTab = 'address' | 'settings';
 
-import {
-  type WarrantyItem,
-} from '@/shared/data/mocks';
 import { useCustomerAddresses } from '../api/use-customer-addresses';
 import {
   EMPTY_LOCATION,
@@ -218,9 +215,8 @@ export function ProfilePage() {
                     { id: 'orders' as const, label: 'Lịch sử đơn hàng', icon: Package },
                     { id: 'returns' as const, label: 'Yêu cầu đổi trả', icon: RotateCcw },
                     { id: 'address' as const, label: 'Sổ địa chỉ nhận hàng', icon: MapPin },
-                    { id: 'warranty' as const, label: 'Tra cứu bảo hành', icon: ShieldCheck },
                     { id: 'settings' as const, label: 'Cài đặt tài khoản', icon: User },
-                  ].filter(({ id }) => id !== 'warranty' || FEATURE_FLAGS.WARRANTY_LOOKUP).map(({ id, label, icon: Icon }) => (
+                  ].map(({ id, label, icon: Icon }) => (
                     <button
                       key={id}
                       type="button"
@@ -383,37 +379,6 @@ export function ProfilePage() {
                     ))}
                   </div>
                   )}
-                </div>
-              )}
-
-              {/* TAB 3: WARRANTY LOOKUP (TRA CỨU BẢO HÀNH CHÍNH HÃNG) */}
-              {activeTab === 'warranty' && FEATURE_FLAGS.WARRANTY_LOOKUP && (
-                <div>
-                  <div className="border-b border-slate-100 pb-5">
-                    <h2 className="text-xl font-black text-slate-900">
-                      Tra cứu bảo hành điện tử chính hãng
-                    </h2>
-                    <p className="mt-1 text-xs text-slate-500">
-                      Thiết bị tại {STORE_CONFIG.name} được kích hoạt bảo hành điện tử tự động từ ngày bàn giao
-                    </p>
-                  </div>
-
-                  {/* Chưa có API bảo hành. Hiển thị đúng trạng thái thay vì tra cứu trên dữ
-                      liệu dựng sẵn — khách tra ra một máy không phải của mình là sai nghiêm
-                      trọng hơn là chưa có chức năng. */}
-                  <div className="mt-6 rounded-2xl border border-dashed border-slate-300 bg-slate-50/60 p-8 text-center">
-                    <div className="mx-auto grid size-12 place-items-center rounded-2xl bg-slate-200 text-slate-500">
-                      <ShieldCheck className="size-6" />
-                    </div>
-                    <p className="mt-4 text-sm font-bold text-slate-700">
-                      Chức năng đang phát triển
-                    </p>
-                    <p className="mx-auto mt-1 max-w-md text-xs leading-relaxed text-slate-500">
-                      Tra cứu bảo hành điện tử sẽ mở khi hệ thống hoàn tất kết nối dữ liệu bảo
-                      hành. Trong lúc chờ, vui lòng liên hệ hotline {STORE_CONTACT.primaryHotline} kèm
-                      số serial trên máy để được hỗ trợ.
-                    </p>
-                  </div>
                 </div>
               )}
 
