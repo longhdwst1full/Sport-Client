@@ -16,6 +16,7 @@ import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { SectionHeading } from '@/foundation/components/section-heading';
 import { ProductShowcase } from '@/features/catalog';
 import { toCategoryRailView } from '@/features/catalog';
+import { CATALOG_PAGE_SIZE } from '@/features/catalog/model/product.mapper';
 import { listCatalogCategories, listCatalogProducts } from '@/generated/api/catalog/catalog';
 import { ContentStories } from '@/features/content';
 import { ProductReviews } from '@/features/reviews';
@@ -23,8 +24,6 @@ import { EventAnnouncementModal } from '../components/event-announcement-modal';
 import { HeroBannerSlider } from '../components/hero-banner-slider';
 import { CategoryVisualShowcase } from '../components/category-visual-showcase';
 import { TrainingSpaceGuide } from '../components/training-space-guide';
-import { BrandPartners } from '../components/brand-partners';
-import { StatsCounter } from '../components/stats-counter';
 import { FlashSaleSection } from '@/features/promotions';
 import { GymProjectPlanner } from '../components/gym-project-planner';
 
@@ -40,21 +39,28 @@ async function loadCategoryRail() {
   }
 }
 
-/** Khối đánh giá trang chủ cần một slug sản phẩm thật; API chưa có endpoint tổng hợp. */
-async function loadFeaturedProductSlug(): Promise<string | undefined> {
+/**
+ * Trang 1 của lưới "Tất cả" lấy ở server để HTML SSR có sản phẩm thay vì chỉ có skeleton;
+ * cùng `limit` với hook client nên client dùng lại làm `initialData`. Khối đánh giá trang chủ
+ * cũng lấy slug sản phẩm thật từ đây (API chưa có endpoint tổng hợp đánh giá).
+ * API lỗi thì trả undefined: lưới tự tải lại ở client, khối đánh giá ẩn.
+ */
+async function loadShowcaseFirstPage() {
   try {
-    const { items } = await listCatalogProducts({ page: 1, limit: 1 });
-    return items[0]?.slug;
+    const page = await listCatalogProducts({ page: 1, limit: CATALOG_PAGE_SIZE.SHOWCASE });
+    return { page, fetchedAt: Date.now() };
   } catch {
     return undefined;
   }
 }
 
 export async function HomePage() {
-  const [categoryRail, featuredProductSlug] = await Promise.all([
-    loadCategoryRail(),
-    loadFeaturedProductSlug(),
-  ]);
+  const [categoryRail, showcase] = await Promise.all([loadCategoryRail(), loadShowcaseFirstPage()]);
+  const featuredProductSlug = showcase?.page.items[0]?.slug;
+  // Thẻ "theo bộ môn" chỉ dẫn vào danh mục khi slug có thật trong cây danh mục API.
+  const categoryHrefs = new Set(categoryRail.map(({ href }) => href));
+  const sportHref = (slug: string) =>
+    categoryHrefs.has(`/category/${slug}`) ? `/category/${slug}` : '/products';
 
   return (
     <StorefrontLayout>
@@ -90,15 +96,18 @@ export async function HomePage() {
           </div>
 
           <Link
-            href="/catalog"
+            href="/category"
             className="inline-flex items-center gap-2 rounded-full border border-emerald-600/30 bg-emerald-50 px-5 py-2.5 text-xs font-black uppercase tracking-wider text-emerald-700 transition hover:bg-emerald-600 hover:text-white"
           >
-            <span>Xem tất cả danh mục (120+)</span>
+            <span>Xem tất cả danh mục</span>
             <ArrowRight className="size-4" />
           </Link>
         </div>
 
-        <ProductShowcase />
+        <ProductShowcase
+          initialPage={showcase?.page}
+          initialPageFetchedAt={showcase?.fetchedAt}
+        />
       </section>
 
       {/* 7. Popular Search Tags */}
@@ -108,7 +117,7 @@ export async function HomePage() {
           {MOCK_POPULAR_SEARCH_KEYWORDS.map((keyword) => (
             <Link
               key={keyword}
-              href={`/catalog?search=${encodeURIComponent(keyword)}`}
+              href={`/search?q=${encodeURIComponent(keyword)}`}
               className="rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-slate-700 shadow-sm transition hover:border-emerald-500 hover:bg-emerald-50/50 hover:text-emerald-700"
             >
               {keyword}
@@ -121,10 +130,10 @@ export async function HomePage() {
       <section id="shop-by-sport" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-20 border-t border-slate-100">
         <SectionHeading eyebrow="Tìm nhanh theo bộ môn" title="Bạn muốn tập luyện bộ môn nào?" />
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {MOCK_HOME_SPORT_CATEGORIES.map(({ title, description, image, icon: Icon }, index) => (
+          {MOCK_HOME_SPORT_CATEGORIES.map(({ title, description, image, icon: Icon, categorySlug }, index) => (
             <Link
               key={title}
-              href="/catalog"
+              href={sportHref(categorySlug)}
               className={`group relative overflow-hidden rounded-[28px] bg-slate-900 ${index === 0 ? 'sm:col-span-2 lg:col-span-1' : ''}`}
             >
               <div className="relative aspect-[4/5]">
@@ -161,9 +170,8 @@ export async function HomePage() {
         {featuredProductSlug ? <ProductReviews productSlug={featuredProductSlug} /> : null}
       </section>
 
-      {/* 12. Brand Partners & Stats Counter */}
-      <BrandPartners />
-      <StatsCounter />
+      {/* 12. Đã gỡ dải "thương hiệu đồng hành" và bộ đếm số liệu (showroom, khách hàng, sản phẩm):
+          cả hai là số liệu/đối tác viết cứng, không có nguồn dữ liệu nào xác nhận. */}
 
       {/* 13. Training Lab CTA */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-20">

@@ -1,5 +1,4 @@
 import {
-  Award,
   Building2,
   Dumbbell,
   Footprints,
@@ -7,10 +6,7 @@ import {
   Home,
   Layers,
   LucideIcon,
-  MapPin,
-  Package,
   Trophy,
-  Users,
   Warehouse,
 } from 'lucide-react';
 
@@ -31,10 +27,12 @@ export const MOCK_HERO_SLIDES: HeroSlideItem[] = [
     id: 'slide-1',
     title: 'Máy Chạy Bộ Điện Chính Hãng',
     highlight: 'Động Cơ Siêu Bền AC/DC',
-    subtitle: 'Nâng dốc tự động 15%, giảm chấn 8 lớp bảo vệ khớp gối. Tặng kèm đai massage 1.500.000đ.',
-    badge: 'GIẢM TỚI 40% · BẢO HÀNH 5 NĂM',
-    ctaText: 'Xem Ưu Đãi Máy Chạy',
-    ctaLink: '/catalog?category=may-chay-bo',
+    // Không khai % giảm giá hay quà tặng kèm trị giá cụ thể: chưa có chương trình khuyến mãi
+    // nào trong API đứng sau các con số đó.
+    subtitle: 'Nâng dốc tự động, giảm chấn bảo vệ khớp gối. Tư vấn chọn máy theo diện tích và mục tiêu tập.',
+    badge: 'MÁY CHẠY BỘ ĐIỆN',
+    ctaText: 'Xem Máy Chạy Bộ',
+    ctaLink: '/category/may-chay-bo',
     imageUrl: '/images/banners/slide-may-chay-bo.jpg',
     theme: 'emerald',
   },
@@ -42,10 +40,11 @@ export const MOCK_HERO_SLIDES: HeroSlideItem[] = [
     id: 'slide-2',
     title: 'Xe Đạp Tập Kháng Lực Từ',
     highlight: 'Êm Ái Tuyệt Đối Tại Gia',
-    subtitle: 'Bánh đà thép 18kg, đồng hồ đo nhịp tim & calo tiêu chuẩn quốc tế. Giao lắp hỏa tốc 2h.',
-    badge: 'HOT SALE MÙA THU 2026',
-    ctaText: 'Khám Phá Xe Đạp Tập',
-    ctaLink: '/catalog?category=xe-dap-tap',
+    subtitle: 'Kháng lực từ vận hành êm, đồng hồ theo dõi nhịp tim & calo cho tập luyện tại nhà.',
+    badge: 'MÁY TẬP THỂ DỤC',
+    ctaText: 'Khám Phá Máy Tập',
+    // Cây danh mục hiện không có nhánh xe đạp tập riêng; dẫn về danh mục cha có thật.
+    ctaLink: '/category/may-tap-the-duc',
     imageUrl: '/images/banners/slide-xe-dap-tap.jpg',
     theme: 'amber',
   },
@@ -55,8 +54,8 @@ export const MOCK_HERO_SLIDES: HeroSlideItem[] = [
     highlight: 'Giàn Tạ Smith 3 Vị Trí',
     subtitle: 'Tích hợp xô đôi, gánh đùi, đẩy ngực. Giải pháp phòng tập thể hình toàn diện ngay tại nhà.',
     badge: 'MIỄN PHÍ KHẢO SÁT & LẮP ĐẶT',
-    ctaText: 'Xem Combo Home Gym',
-    ctaLink: '/#products',
+    ctaText: 'Xem Dụng Cụ Tập Gym',
+    ctaLink: '/category/dung-cu-tap-gym',
     imageUrl: 'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?auto=format&fit=crop&w=1200&q=80',
     theme: 'cyan',
   },
@@ -65,9 +64,9 @@ export const MOCK_HERO_SLIDES: HeroSlideItem[] = [
     title: 'Dụng Cụ Bóng Bàn & Bóng Rổ',
     highlight: 'Tiêu Chuẩn Thi Đấu ITTF',
     subtitle: 'Bàn bóng bàn Song Ngư Double Fish, vợt Stiga chính hãng, trụ bóng rổ học đường & gia đình.',
-    badge: 'CHÍNH HÃNG 100% · GIÁ TỐT NHẤT',
-    ctaText: 'Mua Ngay Giá Tốt',
-    ctaLink: '/catalog?category=dung-cu-bong-ban',
+    badge: 'DỤNG CỤ BÓNG BÀN',
+    ctaText: 'Xem Dụng Cụ Bóng Bàn',
+    ctaLink: '/category/dung-cu-bong-ban',
     imageUrl: 'https://images.unsplash.com/photo-1534158914592-062992fbe900?auto=format&fit=crop&w=1200&q=80',
     theme: 'rose',
   },
@@ -98,42 +97,13 @@ export const MOCK_HOME_VOUCHERS: HomeVoucherItem[] = [
   },
 ];
 
-export const MOCK_BRAND_PARTNERS = [
-  'Nike',
-  'Adidas',
-  'Stiga',
-  'Double Fish',
-  'Under Armour',
-  'Life Fitness',
-  'Technogym',
-  'Matrix',
-  'Impulse',
-  'BH Fitness',
-  'Bảo An Sport',
-  'Fairtex',
-  'Manduka',
-  'TRX',
-];
-
-export interface HomeStatItem {
-  icon: LucideIcon;
-  value: number;
-  suffix: string;
-  label: string;
-}
-
-export const MOCK_HOME_STATS: HomeStatItem[] = [
-  { icon: MapPin, value: 5, suffix: '+', label: 'Showroom & Chi nhánh' },
-  { icon: Award, value: 3, suffix: '+', label: 'Năm kinh nghiệm' },
-  { icon: Package, value: 500, suffix: '+', label: 'Sản phẩm chính hãng' },
-  { icon: Users, value: 10000, suffix: '+', label: 'Khách hàng tin tưởng' },
-];
-
 export interface HomeSportCategory {
   title: string;
   description: string;
   image: string;
   icon: LucideIcon;
+  /** Slug danh mục ứng viên; trang chủ chỉ dẫn tới đó khi slug có trong cây danh mục API. */
+  categorySlug: string;
 }
 
 export const MOCK_HOME_SPORT_CATEGORIES: HomeSportCategory[] = [
@@ -142,24 +112,28 @@ export const MOCK_HOME_SPORT_CATEGORIES: HomeSportCategory[] = [
     description: 'Tạ tay, giàn tạ và ghế tập đa năng',
     image: 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=900&q=85',
     icon: Dumbbell,
+    categorySlug: 'dung-cu-tap-gym',
   },
   {
     title: 'Chạy bộ & Cardio',
     description: 'Máy chạy bộ, xe đạp tập tại nhà',
     image: 'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&w=900&q=85',
     icon: Footprints,
+    categorySlug: 'may-tap-the-duc',
   },
   {
     title: 'Bóng bàn & Đối kháng',
     description: 'Bàn bóng bàn thi đấu, trụ bóng rổ, bao cát',
     image: 'https://images.unsplash.com/photo-1534158914592-062992fbe900?auto=format&fit=crop&w=900&q=85',
     icon: Trophy,
+    categorySlug: 'dung-cu-bong-ban',
   },
   {
     title: 'Yoga & Phục hồi',
     description: 'Thảm định tuyến, súng massage cơ',
     image: 'https://images.unsplash.com/photo-1599447421416-3414500d18a5?auto=format&fit=crop&w=900&q=85',
     icon: HeartPulse,
+    categorySlug: 'dung-cu-tap-yoga',
   },
 ];
 

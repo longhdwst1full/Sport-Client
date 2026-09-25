@@ -141,7 +141,7 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
           {/* Navigation Controls: Circular Slide Buttons & View All */}
           <div className="flex items-center gap-3 self-end sm:self-auto">
             <Link
-              href="/catalog"
+              href="/category"
               className="hidden md:inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-emerald-700 hover:text-emerald-800 transition mr-2"
             >
               <span>Xem tất cả danh mục</span>
@@ -244,7 +244,7 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
         {/* Mobile View All Link */}
         <div className="mt-6 text-center md:hidden">
           <Link
-            href="/catalog"
+            href="/category"
             className="inline-flex items-center gap-1.5 rounded-full border border-emerald-600/30 bg-emerald-50 px-5 py-2 text-xs font-black uppercase tracking-wider text-emerald-700 transition hover:bg-emerald-600 hover:text-white"
           >
             <span>Xem tất cả danh mục</span>

@@ -23,7 +23,7 @@ export function TrainingSpaceGuide() {
               {SPACES.map(({ icon: Icon, title, meta, description }) => (
                 <Link
                   key={title}
-                  href="/#products"
+                  href="/products"
                   className="group grid grid-cols-[auto_1fr_auto] items-center gap-4 rounded-2xl border border-slate-200/80 p-4 transition hover:border-emerald-500/40 hover:bg-emerald-50/50"
                 >
                   <span className="grid size-11 place-items-center rounded-xl bg-slate-900 text-white transition group-hover:bg-emerald-600">
