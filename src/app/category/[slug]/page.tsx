@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Breadcrumb } from '@/foundation/components/navigation';
@@ -6,11 +7,16 @@ import { ProductShowcase } from '@/features/catalog';
 import { listCatalogCategories } from '@/generated/api/catalog/catalog';
 import type { CatalogCategoryDto } from '@/generated/api/catalog/models';
 
-export const revalidate = 0;
+// ISR 2 phút: cây danh mục và số sản phẩm đổi trong ngày, không cần gọi API mỗi lượt xem.
+export const revalidate = 120;
+
+// Metadata, danh mục và danh mục cha từng gọi `listCatalogCategories` ba lần mỗi request;
+// `cache` gộp lại thành một lượt trong cùng request.
+const loadCategories = cache(() => listCatalogCategories());
 
 async function loadCategory(slug: string): Promise<CatalogCategoryDto | undefined> {
   try {
-    const list = await listCatalogCategories();
+    const list = await loadCategories();
     return list.items.find((item) => item.slug === slug);
   } catch {
     return undefined;
