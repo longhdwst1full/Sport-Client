@@ -10,6 +10,12 @@ import type { CatalogCategoryDto } from '@/generated/api/catalog/models';
 // ISR 2 phút: cây danh mục và số sản phẩm đổi trong ngày, không cần gọi API mỗi lượt xem.
 export const revalidate = 120;
 
+// Không build trước slug nào; trả mảng rỗng để Next render lần đầu theo yêu cầu rồi cache theo
+// `revalidate` (ISR). Thiếu hàm này route `[slug]` bị coi là dynamic và bỏ qua `revalidate`.
+export function generateStaticParams() {
+  return [];
+}
+
 // Metadata, danh mục và danh mục cha từng gọi `listCatalogCategories` ba lần mỗi request;
 // `cache` gộp lại thành một lượt trong cùng request.
 const loadCategories = cache(() => listCatalogCategories());

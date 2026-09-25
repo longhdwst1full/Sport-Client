@@ -20,6 +20,12 @@ import { Breadcrumb } from '@/foundation/components/navigation';
 // luôn tính lại. `revalidate = 0` trước đây bắt mọi lượt xem gọi API tới hai lần.
 export const revalidate = 120;
 
+// Không build trước slug nào; trả mảng rỗng để Next render lần đầu theo yêu cầu rồi cache theo
+// `revalidate` (ISR). Thiếu hàm này route `[slug]` bị coi là dynamic và bỏ qua `revalidate`.
+export function generateStaticParams() {
+  return [];
+}
+
 // `generateMetadata` và page chạy trong cùng một request; `cache` gộp hai lượt gọi làm một.
 const loadProduct = cache((slug: string) => getCatalogProduct(slug));
 
