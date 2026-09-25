@@ -6,6 +6,7 @@
  * OpenAPI spec version: 1.0.0
  */
 import type { ProductStatus } from './productStatus';
+import type { ProductListSort } from './productListSort';
 
 export type ListCatalogProductsParams = {
   /**
@@ -38,4 +39,18 @@ export type ListCatalogProductsParams = {
    */
   category?: string;
   status?: ProductStatus;
+  /**
+   * Giá so theo minPrice; sản phẩm chưa có giá luôn xếp cuối
+   */
+  sort?: ProductListSort;
+  /**
+   * minPrice ≥ giá trị này (VND)
+   * @pattern ^\d+(\.\d{1,2})?$
+   */
+  minPrice?: string;
+  /**
+   * minPrice ≤ giá trị này (VND)
+   * @pattern ^\d+(\.\d{1,2})?$
+   */
+  maxPrice?: string;
 };

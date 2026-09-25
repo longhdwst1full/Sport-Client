@@ -117,6 +117,12 @@ export function ProductPurchasePanel({ product }: { product: ProductPurchaseView
             <strong className="mt-1 block break-words text-2xl font-black text-emerald-700 min-[400px]:text-3xl sm:text-4xl">
               {canAdd && selectedVariant ? selectedVariant.priceLabel : 'Liên hệ báo giá'}
             </strong>
+            {selectedVariant?.inStock === false && (
+              // Không khoá nút mua: checkout chuyển đơn thiếu hàng sang chờ tư vấn/điều chuyển kho.
+              <span className="mt-2 inline-block rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700">
+                Tạm hết hàng — cửa hàng sẽ liên hệ xác nhận thời gian giao
+              </span>
+            )}
           </div>
         </div>
 

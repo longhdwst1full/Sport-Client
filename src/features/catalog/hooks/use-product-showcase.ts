@@ -6,7 +6,7 @@ import {
   getListCatalogProductsQueryKey,
   listCatalogProducts,
 } from '@/generated/api/catalog/catalog';
-import type { ProductListResponseDto } from '@/generated/api/catalog/models';
+import type { ProductListResponseDto, ProductListSort } from '@/generated/api/catalog/models';
 import { CACHE_POLICY } from '@/app/config/query-cache-policy';
 import {
   CATALOG_PAGE_SIZE,
@@ -26,6 +26,11 @@ export interface ProductShowcaseOptions {
   initialPage?: ProductListResponseDto;
   /** Thời điểm server lấy `initialPage` (ms); cache cũ hơn `staleTime` sẽ được làm mới sau mount. */
   initialPageFetchedAt?: number;
+  /** Thứ tự do API sắp trên toàn bộ kết quả; bỏ trống là mới nhất. */
+  sort?: ProductListSort;
+  /** Khoảng giá (VND, dạng chuỗi số) áp trên `minPrice` ở server; sản phẩm chưa có giá bị loại. */
+  minPrice?: string;
+  maxPrice?: string;
 }
 
 /**
@@ -55,7 +60,8 @@ export function useProductShowcase(
   // đầu của toàn catalog rồi lọc ở client, nên trang danh mục chỉ xét được 8 trong 596
   // sản phẩm và gần như luôn ra sai.
   const search = searchQuery?.trim() || undefined;
-  const scoped = Boolean(categorySlug || search);
+  const { sort, minPrice, maxPrice } = options;
+  const scoped = Boolean(categorySlug || search || sort || minPrice || maxPrice);
   const pageSize = Math.min(
     options.pageSize ?? (scoped ? CATALOG_PAGE_SIZE.SCOPED : CATALOG_PAGE_SIZE.SHOWCASE),
     CATALOG_PAGE_SIZE.MAX,
@@ -69,7 +75,8 @@ export function useProductShowcase(
   // CONTRACT: tải thêm theo `page`, giữ `limit` cố định. Bản trước nới `limit` thêm một
   // trang mỗi lần bấm, nên tới lượt thứ 5 ở trang danh mục (limit 120) API trả 400 và
   // khách không bao giờ xem được phần còn lại.
-  const params = { limit: pageSize, category: categorySlug, search };
+  // RULE-LIST-03: mọi tham số ảnh hưởng kết quả đều nằm trong `params`, tức trong query key.
+  const params = { limit: pageSize, category: categorySlug, search, sort, minPrice, maxPrice };
   const initialData =
     !scoped && options.initialPage && options.initialPage.meta.limit === pageSize
       ? { pages: [options.initialPage], pageParams: [1] }

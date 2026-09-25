@@ -4,6 +4,7 @@ export { SearchPage } from './pages/search-page';
 export { ProductShowcase } from './components/product-showcase';
 export { ProductPurchasePanel } from './components/product-purchase-panel';
 export { ProductRelatedSection } from './components/product-related-section';
+export { ProductImageGallery } from './components/product-image-gallery';
 export { CategoryGrid } from './components/category-grid';
 export { CategoryGridSkeleton } from './components/category-grid-skeleton';
 export {

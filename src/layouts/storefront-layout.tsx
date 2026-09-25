@@ -61,9 +61,9 @@ export function StorefrontLayout({ children }: { children: ReactNode }) {
       {/* Footer */}
       <footer
         id="about"
-        className="border-t border-slate-800/80 bg-slate-950 px-6 py-14 text-white lg:px-10"
+        className="border-t border-slate-800/80 bg-slate-950 px-4 py-14 text-white sm:px-6 lg:px-10"
       >
-        <div className="mx-auto grid max-w-7xl gap-10 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1.1fr]">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1.1fr] [&>*]:min-w-0">
           {/* Column 1: Brand + DKBD + Bo Cong Thuong + Social */}
           <div className="space-y-4">
             <div className="inline-flex rounded-xl bg-white px-3 py-2 shadow-md">
@@ -276,20 +276,24 @@ export function StorefrontLayout({ children }: { children: ReactNode }) {
               </span>
               <span className="inline-flex items-center gap-2">
                 <Truck className="size-4.5 text-emerald-400" />
-                Giao hàng & Lắp ráp 2H
+                Giao hàng & lắp đặt toàn quốc
               </span>
               <span className="inline-flex items-center gap-2">
                 <CreditCard className="size-4.5 text-emerald-400" />
                 Thanh toán an toàn 100%
               </span>
             </div>
-            <div className="flex items-center gap-2.5 text-xs text-slate-400">
-              <span className="rounded border border-slate-800 bg-slate-900 px-2.5 py-1 text-xs font-bold text-slate-300">VISA</span>
-              <span className="rounded border border-slate-800 bg-slate-900 px-2.5 py-1 text-xs font-bold text-slate-300">MASTER</span>
-              <span className="rounded border border-slate-800 bg-slate-900 px-2.5 py-1 text-xs font-bold text-slate-300">VietQR</span>
-              <span className="rounded border border-slate-800 bg-slate-900 px-2.5 py-1 text-xs font-bold text-slate-300">MOMO</span>
-              <span className="rounded border border-slate-800 bg-slate-900 px-2.5 py-1 text-xs font-bold text-slate-300">COD</span>
-              <span className="rounded border border-slate-800 bg-slate-900 px-2.5 py-1 text-xs font-bold text-emerald-400">TRẢ GÓP 0%</span>
+            {/* CONTRACT: chỉ liệt kê phương thức checkout thật sự nhận (BANK_TRANSFER/VietQR, COD, VNPAY).
+                Bản trước ghi VISA/MASTER/MOMO/"Trả góp 0%" dù không có luồng nào xử lý. */}
+            <div className="flex flex-wrap items-center gap-2.5 text-xs text-slate-400">
+              {['Chuyển khoản VietQR', 'COD', 'VNPay'].map((method) => (
+                <span
+                  key={method}
+                  className="rounded border border-slate-800 bg-slate-900 px-2.5 py-1 text-xs font-bold text-slate-300"
+                >
+                  {method}
+                </span>
+              ))}
             </div>
           </div>
         </div>

@@ -44,4 +44,6 @@ export interface ProductVariantDto {
   effectivePriceVersion?: number | null;
   /** @nullable */
   bundle?: ProductVariantDtoBundle;
+  /** Còn hàng ở ít nhất một kho chi nhánh đang hoạt động (tồn thực − đang giữ ≥ 1; combo tính theo thành phần thiếu nhất). Chỉ có ở getCatalogProduct/getAdminProduct; response của lệnh ghi không tính. */
+  inStock?: boolean;
 }
