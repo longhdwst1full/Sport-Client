@@ -3,10 +3,11 @@
 import { useMemo, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, BadgeCheck, Eye, RefreshCw, ShoppingBag, Sparkles, Zap } from 'lucide-react';
+import { ArrowRight, Eye, RefreshCw, Zap } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useCategoryTabs } from '../hooks/use-category-tabs';
 import { useProductShowcase } from '../hooks/use-product-showcase';
+import type { ProductListResponseDto } from '@/generated/api/catalog/models';
 import { useAppDispatch } from '@/app/store/hooks';
 import { addCartItem } from '@/app/store/cart.slice';
 import { useToast } from '@/shared/components/global-toast';
@@ -14,15 +15,32 @@ import { useToast } from '@/shared/components/global-toast';
 export function ProductShowcase({
   categorySlug,
   searchQuery,
-}: { categorySlug?: string; searchQuery?: string } = {}) {
+  initialPage,
+  initialPageFetchedAt,
+}: {
+  categorySlug?: string;
+  searchQuery?: string;
+  /** Trang 1 server đã lấy (chỉ dùng cho lưới "Tất cả" ở trang chủ) để SSR có sẵn sản phẩm. */
+  initialPage?: ProductListResponseDto;
+  initialPageFetchedAt?: number;
+} = {}) {
   const router = useRouter();
   // Tab lấy từ danh mục thật; `null` là "Tất cả".
   const { tabs } = useCategoryTabs();
   const [activeTabSlug, setActiveTabSlug] = useState<string | null>(null);
   // Trang danh mục và trang tìm kiếm đã có phạm vi riêng, tab chỉ dùng ở lưới trưng bày.
   const effectiveCategory = categorySlug ?? activeTabSlug ?? undefined;
-  const { products, total, hasMore, loadMore, isPending, isLoadingMore, isError, refetch } =
-    useProductShowcase(effectiveCategory, searchQuery);
+  const {
+    products,
+    total,
+    hasMore,
+    loadMore,
+    isPending,
+    isLoadingMore,
+    isLoadMoreError,
+    isError,
+    refetch,
+  } = useProductShowcase(effectiveCategory, searchQuery, { initialPage, initialPageFetchedAt });
   const dispatch = useAppDispatch();
   const { toast } = useToast();
 
@@ -34,7 +52,7 @@ export function ProductShowcase({
   const handleBuyNow = (product: (typeof products)[number], e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!product.defaultVariantId || !product.defaultVariantSku || !product.hasPrice) {
+    if (!product.isSellable || !product.defaultVariantId || !product.defaultVariantSku) {
       router.push(`/products/${product.slug}`);
       return;
     }
@@ -118,13 +136,9 @@ export function ProductShowcase({
 
       {/* Products Grid */}
       <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-        {displayedProducts.map((product: any) => {
-          // Calculate discount percentage if original price exists
-          const hasDiscount = product.originalPrice && product.originalPrice > product.numericPrice;
-          const discountPercent = hasDiscount
-            ? Math.round(((product.originalPrice! - product.numericPrice) / product.originalPrice!) * 100)
-            : 0;
-
+        {/* Không hiển thị giá gạch/phần trăm giảm: contract chưa có giá gốc hay khuyến mãi theo
+            sản phẩm, dựng ra từ `minPrice` là bịa mức giảm giá. */}
+        {displayedProducts.map((product) => {
           return (
             <article
               key={product.id}
@@ -148,11 +162,6 @@ export function ProductShowcase({
                     <span className="rounded-full border border-slate-100 bg-white/95 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-slate-800 shadow-sm backdrop-blur">
                       {product.productType === 'BUNDLE' ? 'Combo trọn bộ' : product.badge}
                     </span>
-                    {hasDiscount && discountPercent > 0 && (
-                      <span className="rounded-full bg-rose-600 px-2 py-0.5 text-[11px] font-black text-white shadow-sm">
-                        -{discountPercent}%
-                      </span>
-                    )}
                   </div>
 
                   {/* Quick View Overlay */}
@@ -179,12 +188,6 @@ export function ProductShowcase({
                     </Link>
                   </h3>
 
-                  <div className="mt-2 flex items-center gap-2 text-xs">
-                    <span className="ml-auto rounded bg-emerald-50 px-1.5 py-0.5 text-[10px] font-bold text-emerald-700">
-                      Trả góp 0%
-                    </span>
-                  </div>
-
                   <div className="mt-auto flex items-end justify-between gap-2 pt-4 border-t border-slate-100">
                     <div>
                       <span className="block text-[10px] font-semibold text-slate-400">Giá niêm yết</span>
@@ -192,11 +195,6 @@ export function ProductShowcase({
                         <strong className="text-base sm:text-lg font-black text-emerald-700">
                           {product.displayPrice}
                         </strong>
-                        {hasDiscount && product.displayOriginalPrice && (
-                          <span className="text-xs text-slate-400 line-through">
-                            {product.displayOriginalPrice}
-                          </span>
-                        )}
                       </div>
                     </div>
                     <button
@@ -206,7 +204,7 @@ export function ProductShowcase({
                       title={
                         !product.hasPrice
                           ? 'Sản phẩm chưa có giá — liên hệ để được tư vấn'
-                          : product.defaultVariantId
+                          : product.isSellable
                             ? 'Mua ngay'
                             : 'Mở chi tiết để chọn phiên bản'
                       }
@@ -232,7 +230,11 @@ export function ProductShowcase({
             disabled={isLoadingMore}
             className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-bold text-slate-700 transition hover:border-emerald-400 hover:text-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {isLoadingMore ? 'Đang tải…' : `Xem thêm (${total - products.length} sản phẩm)`}
+            {isLoadingMore
+              ? 'Đang tải…'
+              : isLoadMoreError
+                ? 'Tải thêm chưa được — thử lại'
+                : `Xem thêm (${Math.max(total - products.length, 0)} sản phẩm)`}
           </button>
         </div>
       )}
@@ -248,7 +250,7 @@ export function ProductShowcase({
           </p>
         </div>
         <Link
-          href="/catalog"
+          href="/products"
           className="inline-flex shrink-0 items-center gap-2 rounded-full bg-emerald-600 px-6 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-emerald-700"
         >
           <span>Khám phá toàn bộ danh mục</span>

@@ -3,12 +3,11 @@
 import { useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, ShoppingBag, Sparkles, Zap } from 'lucide-react';
+import { ArrowRight, Sparkles, Zap } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useAppDispatch } from '@/app/store/hooks';
 import { addCartItem } from '@/app/store/cart.slice';
 import { Skeleton, SkeletonText } from '@/foundation/components/feedback';
-import { useToast } from '@/shared/components/global-toast';
 import { useProductShowcase, type ProductShowcaseItem } from '../hooks/use-product-showcase';
 
 /**
@@ -18,29 +17,33 @@ import { useProductShowcase, type ProductShowcaseItem } from '../hooks/use-produ
  * reset. Flash sale thật nằm ở `features/promotions` với quota và giờ server,
  * nên khối đó được gỡ thay vì duy trì hai nguồn mâu thuẫn nhau.
  */
+const RELATED_LIMIT = 4;
+
 export function ProductRelatedSection({
   currentSlug,
-  currentCategory,
+  categorySlug,
 }: {
   currentSlug: string;
-  currentCategory?: string;
-  productName?: string;
+  /**
+   * Slug danh mục chính của sản phẩm. `ProductDetailDto` chỉ có tên danh mục, nên trang chi
+   * tiết tra slug từ cây danh mục; không tra được thì để trống và lấy sản phẩm chung.
+   */
+  categorySlug?: string;
 }) {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { toast } = useToast();
-  const { products, isPending, isError } = useProductShowcase();
+  // Lấy dư một sản phẩm vì sản phẩm đang xem có thể nằm trong trang đầu của chính danh mục đó.
+  const { products, isPending, isError } = useProductShowcase(categorySlug, undefined, {
+    pageSize: RELATED_LIMIT + 1,
+  });
 
-  const related = useMemo(() => {
-    const others = products.filter((product) => product.slug !== currentSlug);
-    // Ưu tiên cùng danh mục, thiếu thì bù bằng sản phẩm khác.
-    const sameCategory = others.filter((product) => product.category === currentCategory);
-    const rest = others.filter((product) => product.category !== currentCategory);
-    return [...sameCategory, ...rest].slice(0, 4);
-  }, [products, currentSlug, currentCategory]);
+  const related = useMemo(
+    () => products.filter((product) => product.slug !== currentSlug).slice(0, RELATED_LIMIT),
+    [products, currentSlug],
+  );
 
   const handleBuyNow = (product: ProductShowcaseItem) => {
-    if (!product.defaultVariantId || !product.defaultVariantSku) {
+    if (!product.isSellable || !product.defaultVariantId || !product.defaultVariantSku) {
       router.push(`/products/${product.slug}`);
       return;
     }
@@ -73,11 +76,13 @@ export function ProductRelatedSection({
             Sản phẩm liên quan
           </h2>
           <p className="mt-1 text-sm text-slate-500">
-            Thiết bị cùng nhóm phân loại được khách hàng quan tâm và lựa chọn nhiều nhất.
+            {categorySlug
+              ? 'Thiết bị khác trong cùng danh mục.'
+              : 'Một số thiết bị khác đang bán tại Bảo An Sport.'}
           </p>
         </div>
         <Link
-          href="/#products"
+          href={categorySlug ? `/category/${categorySlug}` : '/products'}
           className="inline-flex shrink-0 items-center gap-1.5 self-start sm:self-auto rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-700 shadow-2xs transition hover:border-emerald-500 hover:bg-emerald-50 hover:text-emerald-700"
         >
           Xem tất cả <ArrowRight className="size-3.5" />
@@ -141,8 +146,15 @@ export function ProductRelatedSection({
                     <button
                       type="button"
                       onClick={() => handleBuyNow(product)}
-                      className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white shadow-2xs transition-all duration-200 hover:bg-emerald-700 active:scale-95"
-                      title={product.defaultVariantId ? 'Mua ngay' : 'Mở chi tiết để chọn phiên bản'}
+                      disabled={!product.hasPrice}
+                      className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white shadow-2xs transition-all duration-200 hover:bg-emerald-700 active:scale-95 disabled:cursor-not-allowed disabled:bg-slate-300"
+                      title={
+                        !product.hasPrice
+                          ? 'Sản phẩm chưa có giá — liên hệ để được tư vấn'
+                          : product.isSellable
+                            ? 'Mua ngay'
+                            : 'Mở chi tiết để chọn phiên bản'
+                      }
                       aria-label={`Mua ngay ${product.name}`}
                     >
                       <Zap className="size-3.5 fill-white" />

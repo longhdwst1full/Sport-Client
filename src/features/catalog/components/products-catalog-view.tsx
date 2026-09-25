@@ -3,20 +3,14 @@
 import { useState, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import {
-  Search,
-  Eye,
-  ShoppingBag,
-  X,
-  RotateCcw,
-  Zap,
-} from 'lucide-react';
+import { Search, Eye, X, RotateCcw, Zap } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useAppDispatch } from '@/app/store/hooks';
 import { addCartItem } from '@/app/store/cart.slice';
 import { useProductShowcase } from '../hooks/use-product-showcase';
 import { useCategoryTabs } from '../hooks/use-category-tabs';
-import { useToast } from '@/shared/components/global-toast';
+import { useDebounce } from '@/shared/hooks';
+import { CATALOG_PAGE_SIZE } from '../model/product.mapper';
 
 const PRICE_RANGES = [
   { id: 'all', label: 'Tất cả mức giá' },
@@ -28,7 +22,6 @@ const PRICE_RANGES = [
 export function ProductsCatalogView() {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { toast } = useToast();
 
   // Tab lấy từ danh mục thật (slug từ API), không viết cứng.
   // Bản trước dùng CATEGORY_TABS với id tự đặt ('gym', 'treadmill'...) rồi so sánh
@@ -37,47 +30,48 @@ export function ProductsCatalogView() {
   const [activeTabSlug, setActiveTabSlug] = useState<string | null>(null);
 
   const [activePriceRange, setActivePriceRange] = useState('all');
-  const [sortBy, setSortBy] = useState<'featured' | 'price-asc' | 'price-desc' | 'name'>('featured');
   const [searchQuery, setSearchQuery] = useState('');
+  // Mỗi phím gõ là một query key mới; hoãn 300ms để không bắn một request cho từng ký tự.
+  const debouncedSearch = useDebounce(searchQuery, 300);
 
   // Lọc danh mục chạy server-side (gồm cả nhánh con). Search cũng server-side.
-  const { products, isPending, isError, refetch } = useProductShowcase(
-    activeTabSlug ?? undefined,
-    searchQuery,
-  );
+  const {
+    products,
+    total,
+    hasMore,
+    loadMore,
+    isPending,
+    isLoadingMore,
+    isLoadMoreError,
+    isError,
+    refetch,
+  } = useProductShowcase(activeTabSlug ?? undefined, debouncedSearch, {
+    pageSize: CATALOG_PAGE_SIZE.SCOPED,
+  });
 
+  // CONTRACT: `GET /catalog/products` hiện chưa có tham số sort hay minPrice/maxPrice. Sắp
+  // xếp theo giá trên phần đã tải chỉ đúng cho vài chục sản phẩm đầu trong hàng trăm, nên đã
+  // gỡ ô sắp xếp (kể cả nhãn "Bán chạy nhất" không có dữ liệu bán hàng nào đứng sau). Lọc
+  // mức giá vẫn giữ nhưng chỉ xét sản phẩm đã có giá trong phần đã tải và ghi rõ điều đó
+  // trên màn hình. Khi API có sort/price param thì chuyển cả hai sang server-side.
+  const selectedPriceRange = PRICE_RANGES.find((range) => range.id === activePriceRange);
+  const isPriceFiltered = Boolean(selectedPriceRange && activePriceRange !== 'all');
   const filteredProducts = useMemo(() => {
-    let list = [...products];
+    if (!selectedPriceRange || activePriceRange === 'all') return products;
+    const { min, max } = selectedPriceRange;
+    // Sản phẩm chưa có giá không thuộc khoảng giá nào; giá 0 dự phòng không được xếp vào "Dưới 2 triệu".
+    return products.filter(
+      (p) =>
+        p.hasPrice &&
+        (min === undefined || p.numericPrice >= min) &&
+        (max === undefined || p.numericPrice <= max),
+    );
+  }, [products, activePriceRange, selectedPriceRange]);
 
-    // Price Range (client-side vì API chưa có filter minPrice/maxPrice)
-    if (activePriceRange !== 'all') {
-      const selected = PRICE_RANGES.find((r) => r.id === activePriceRange);
-      if (selected) {
-        list = list.filter((p) => {
-          if (selected.min && selected.max) return p.numericPrice >= selected.min && p.numericPrice <= selected.max;
-          if (selected.min) return p.numericPrice >= selected.min;
-          if (selected.max) return p.numericPrice <= selected.max;
-          return true;
-        });
-      }
-    }
-
-    // Sorting
-    if (sortBy === 'price-asc') {
-      list.sort((a, b) => a.numericPrice - b.numericPrice);
-    } else if (sortBy === 'price-desc') {
-      list.sort((a, b) => b.numericPrice - a.numericPrice);
-    } else if (sortBy === 'name') {
-      list.sort((a, b) => a.name.localeCompare(b.name));
-    }
-
-    return list;
-  }, [products, activePriceRange, sortBy]);
-
-  const handleBuyNow = (e: React.MouseEvent, product: typeof products[0]) => {
+  const handleBuyNow = (e: React.MouseEvent, product: (typeof products)[number]) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!product.defaultVariantId || !product.defaultVariantSku) {
+    if (!product.isSellable || !product.defaultVariantId || !product.defaultVariantSku) {
       router.push(`/products/${product.slug}`);
       return;
     }
@@ -104,7 +98,6 @@ export function ProductsCatalogView() {
     setActiveTabSlug(null);
     setActivePriceRange('all');
     setSearchQuery('');
-    setSortBy('featured');
   };
 
   return (
@@ -112,13 +105,14 @@ export function ProductsCatalogView() {
 
       {/* Interactive Controls Bar */}
       <div className="space-y-4 rounded-[28px] border border-slate-200/80 bg-white p-5 shadow-sm sm:p-6">
-        {/* Row 1: Search & Sort */}
+        {/* Row 1: Search */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           {/* Real-time search box */}
           <div className="relative flex-1">
             <Search className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
+              aria-label="Tìm sản phẩm"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Tìm theo tên thiết bị, giàn tạ, máy chạy bộ, thảm yoga..."
@@ -134,21 +128,6 @@ export function ProductsCatalogView() {
                 <X className="size-3.5" />
               </button>
             )}
-          </div>
-
-          {/* Sort Selector */}
-          <div className="flex items-center gap-2 self-end sm:self-auto">
-            <span className="text-xs font-bold text-slate-400">Sắp xếp:</span>
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as any)}
-              className="rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-bold text-slate-800 shadow-sm outline-none transition hover:border-slate-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15"
-            >
-              <option value="featured">Bán chạy nhất</option>
-              <option value="price-asc">Giá: Thấp đến Cao</option>
-              <option value="price-desc">Giá: Cao đến Thấp</option>
-              <option value="name">Tên sản phẩm: A - Z</option>
-            </select>
           </div>
         </div>
 
@@ -200,9 +179,19 @@ export function ProductsCatalogView() {
             })}
           </div>
 
-          <div className="flex items-center gap-3 text-xs">
-            <span className="font-semibold text-slate-500">
-              Hiển thị <strong className="font-extrabold text-slate-900">{filteredProducts.length}</strong> sản phẩm
+          <div className="flex flex-wrap items-center gap-3 text-xs">
+            <span className="font-semibold text-slate-500" aria-live="polite">
+              {isPriceFiltered ? (
+                <>
+                  <strong className="font-extrabold text-slate-900">{filteredProducts.length}</strong> sản phẩm
+                  hợp mức giá trong {products.length}/{total} đã tải
+                </>
+              ) : (
+                <>
+                  Hiển thị <strong className="font-extrabold text-slate-900">{products.length}</strong>/
+                  {total} sản phẩm
+                </>
+              )}
             </span>
             {hasActiveFilters && (
               <button
@@ -311,12 +300,6 @@ export function ProductsCatalogView() {
                       </Link>
                     </h3>
 
-                    <div className="mt-2 flex items-center gap-2 text-xs">
-                      <span className="ml-auto rounded bg-emerald-50 px-1.5 py-0.5 text-[10px] font-bold text-emerald-700">
-                        Trả góp 0%
-                      </span>
-                    </div>
-
                     {/* Pricing & Buy Now Action */}
                     <div className="mt-auto flex items-end justify-between gap-2 border-t border-slate-100 pt-3">
                       <div>
@@ -331,8 +314,15 @@ export function ProductsCatalogView() {
                       <button
                         type="button"
                         onClick={(e) => handleBuyNow(e, product)}
-                        className="relative z-10 inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white shadow-sm transition hover:bg-emerald-700 active:scale-95"
-                        title={product.defaultVariantId ? 'Mua ngay' : 'Mở chi tiết để chọn phiên bản'}
+                        disabled={!product.hasPrice}
+                        className="relative z-10 inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white shadow-sm transition hover:bg-emerald-700 active:scale-95 disabled:cursor-not-allowed disabled:bg-slate-300"
+                        title={
+                          !product.hasPrice
+                            ? 'Sản phẩm chưa có giá — liên hệ để được tư vấn'
+                            : product.isSellable
+                              ? 'Mua ngay'
+                              : 'Mở chi tiết để chọn phiên bản'
+                        }
                         aria-label={`Mua ngay ${product.name}`}
                       >
                         <Zap className="size-3.5 fill-white" />
@@ -343,6 +333,31 @@ export function ProductsCatalogView() {
                 </div>
               </article>
             ))}
+          </div>
+        )}
+
+        {/* Tải thêm theo trang: không có nút này thì chỉ 24 sản phẩm đầu là xem được. */}
+        {!isPending && !isError && hasMore && (
+          <div className="mt-8 flex flex-col items-center gap-2">
+            {isLoadingMore && (
+              <div className="grid w-full gap-5 sm:grid-cols-2 xl:grid-cols-4" aria-hidden="true">
+                {Array.from({ length: 4 }, (_, i) => (
+                  <div key={i} className="aspect-[4/5] animate-pulse rounded-[24px] bg-slate-200/70" />
+                ))}
+              </div>
+            )}
+            <button
+              type="button"
+              onClick={loadMore}
+              disabled={isLoadingMore}
+              className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-bold text-slate-700 transition hover:border-emerald-400 hover:text-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isLoadingMore
+                ? 'Đang tải…'
+                : isLoadMoreError
+                  ? 'Tải thêm chưa được — thử lại'
+                  : `Xem thêm (${Math.max(total - products.length, 0)} sản phẩm)`}
+            </button>
           </div>
         )}
       </div>

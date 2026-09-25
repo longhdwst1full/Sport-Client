@@ -1,12 +1,7 @@
-import {
-  Sparkles,
-  SlidersHorizontal,
-  ShieldCheck,
-  Truck,
-  RotateCcw,
-  BadgePercent,
-} from 'lucide-react';
+import Link from 'next/link';
+import { Sparkles, ShieldCheck, Truck, RotateCcw, CreditCard } from 'lucide-react';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
+import { STORE_POLICY_PAGES } from '@/shared/constants';
 import { Breadcrumb } from '@/foundation/components/navigation';
 import { ProductsCatalogView } from '../components/products-catalog-view';
 import { FlashSaleSection } from '@/features/promotions';
@@ -32,7 +27,7 @@ export function ProductsPage() {
                 Thiết Bị Thể Thao Chuẩn Thi Đấu
               </h1>
               <p className="mt-3 text-sm leading-relaxed text-slate-300 sm:text-base">
-                Tuyển chọn hơn 400+ thiết bị rèn luyện sức mạnh, cardio tốc độ cao và phụ kiện phục hồi cơ bắp. Đạt chứng chỉ kiểm định an toàn tải trọng khắt khe.
+                Thiết bị rèn luyện sức mạnh, cardio, bóng bàn, võ thuật và phụ kiện thể thao cho phòng tập và gia đình.
               </p>
             </div>
 
@@ -41,19 +36,21 @@ export function ProductsPage() {
             <div className="pointer-events-none absolute -bottom-10 right-1/4 size-60 rounded-full bg-emerald-400/10 blur-[80px]" />
           </div>
 
-          {/* Quick Value Props Strip */}
+          {/* Quick Value Props Strip — dẫn sang trang chính sách thật. Bản trước khai "Miễn phí tại
+              nhà", "Trả góp 0% duyệt 5 phút" mà không có nguồn dữ liệu nào đứng sau. */}
           <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
             {[
-              { icon: Truck, title: 'Giao & Lắp đặt', desc: 'Miễn phí tại nhà' },
-              { icon: ShieldCheck, title: 'Bảo hành 2-5 năm', desc: 'Chính hãng tại chỗ' },
-              { icon: RotateCcw, title: 'Đổi mới 7 ngày', desc: 'Nếu lỗi sản xuất' },
-              { icon: BadgePercent, title: 'Trả góp 0%', desc: 'Thủ tục duyệt 5 phút' },
-            ].map((prop, i) => {
+              { icon: Truck, ...STORE_POLICY_PAGES.SHIPPING },
+              { icon: ShieldCheck, ...STORE_POLICY_PAGES.WARRANTY },
+              { icon: RotateCcw, ...STORE_POLICY_PAGES.RETURNS },
+              { icon: CreditCard, ...STORE_POLICY_PAGES.PAYMENT },
+            ].map((prop) => {
               const Icon = prop.icon;
               return (
-                <div
-                  key={i}
-                  className="flex items-center gap-3 rounded-2xl border border-slate-200/80 bg-white p-3.5 shadow-sm"
+                <Link
+                  key={prop.href}
+                  href={prop.href}
+                  className="flex items-center gap-3 rounded-2xl border border-slate-200/80 bg-white p-3.5 shadow-sm transition hover:border-emerald-400"
                 >
                   <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-emerald-50 text-emerald-600">
                     <Icon className="size-4.5" />
@@ -62,9 +59,9 @@ export function ProductsPage() {
                     <strong className="block truncate text-xs font-bold text-slate-900">
                       {prop.title}
                     </strong>
-                    <span className="block truncate text-[11px] text-slate-500">{prop.desc}</span>
+                    <span className="block truncate text-[11px] text-slate-500">Xem chi tiết</span>
                   </div>
-                </div>
+                </Link>
               );
             })}
           </div>
