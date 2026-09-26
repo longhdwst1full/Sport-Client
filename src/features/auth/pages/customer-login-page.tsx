@@ -19,7 +19,6 @@ import {
 } from 'lucide-react';
 import { useLoginCustomer } from '@/generated/api/auth/auth';
 import type { LoginDto } from '@/generated/api/auth/auth.schemas';
-import { KineticBallCanvas } from '@/foundation/3d/kinetic-ball-canvas.lazy';
 import { useToast } from '@/shared/components/global-toast';
 import { syncCartAfterAuth } from '@/features/cart';
 import { hydrateCart } from '@/app/store/cart.slice';
@@ -66,7 +65,7 @@ export function CustomerLoginPage() {
   return (
     <main className="min-h-screen bg-[#0d1410] text-white">
       <div className="mx-auto grid min-h-screen max-w-7xl lg:grid-cols-[1.1fr_0.9fr]">
-        {/* Left Side: Bảo An Sport Branding & 3D Interactive Canvas */}
+        {/* Left Side: Bảo An Sport Branding & Athletic Showcase */}
         <div className="relative hidden flex-col justify-between overflow-hidden border-r border-white/10 bg-gradient-to-br from-[#0c130f] via-[#121c16] to-[#0a100d] p-12 lg:flex">
           {/* Ambient light glow */}
           <div className="pointer-events-none absolute -left-20 -top-20 size-96 rounded-full bg-emerald-500/15 blur-[100px]" />
@@ -82,21 +81,32 @@ export function CustomerLoginPage() {
             </Link>
           </div>
 
-          {/* Center 3D Sports Ball Canvas & Headlines */}
+          {/* Center Athletic Showcase & Headlines */}
           <div className="relative z-10 my-auto py-8">
-            <div className="mx-auto max-w-sm">
-              <KineticBallCanvas theme="emerald" height="320px" />
+            <div className="mb-8 grid grid-cols-3 gap-3">
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-center backdrop-blur-md">
+                <div className="text-2xl font-black text-emerald-400">50K+</div>
+                <div className="mt-1 text-[11px] font-bold text-stone-300">Khách hàng tin chọn</div>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-center backdrop-blur-md">
+                <div className="text-2xl font-black text-emerald-400">100%</div>
+                <div className="mt-1 text-[11px] font-bold text-stone-300">Chính hãng Bảo An</div>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-center backdrop-blur-md">
+                <div className="text-2xl font-black text-emerald-400">24/7</div>
+                <div className="mt-1 text-[11px] font-bold text-stone-300">Tư vấn chuyên môn</div>
+              </div>
             </div>
 
-            <div className="mt-4 text-center">
-              <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-950/50 px-3.5 py-1 text-xs font-bold text-emerald-300 backdrop-blur-md">
+            <div className="rounded-3xl border border-emerald-400/20 bg-gradient-to-b from-emerald-950/40 to-black/40 p-8 backdrop-blur-md">
+              <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-950/50 px-3.5 py-1 text-xs font-bold text-emerald-300">
                 <Sparkles className="size-3.5" /> Đặc quyền hội viên Bảo An Sport
               </span>
-              <h2 className="mt-4 text-3xl font-black text-white">
+              <h2 className="mt-4 text-3xl font-black leading-tight text-white">
                 Bứt phá giới hạn thể lực cùng trang bị chuyên nghiệp
               </h2>
-              <p className="mt-3 text-sm text-stone-300">
-                Đăng nhập để theo dõi trạng thái đơn hàng, kích hoạt bảo hành điện tử và nhận ưu đãi riêng theo môn tập.
+              <p className="mt-3 text-sm leading-relaxed text-stone-300">
+                Đăng nhập để theo dõi trạng thái đơn hàng, kích hoạt bảo hành điện tử và nhận ưu đãi riêng theo môn tập luyện của bạn.
               </p>
             </div>
           </div>
@@ -137,7 +147,7 @@ export function CustomerLoginPage() {
 
             {/* Form Header */}
             <div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
                 <Link
                   href="/login"
                   className="border-b-2 border-emerald-400 pb-2 text-xl font-black text-white"
@@ -152,7 +162,10 @@ export function CustomerLoginPage() {
                   Đăng ký
                 </Link>
               </div>
-              <p className="mt-3 text-sm text-stone-400">
+              <h1 className="mt-4 text-2xl font-black tracking-tight text-white sm:text-3xl">
+                Đăng nhập tài khoản
+              </h1>
+              <p className="mt-2 text-sm text-stone-400">
                 Chào mừng bạn trở lại! Vui lòng nhập email hoặc số điện thoại.
               </p>
             </div>

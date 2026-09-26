@@ -21,7 +21,6 @@ import {
 } from 'lucide-react';
 import { useRegisterCustomer } from '@/generated/api/auth/auth';
 import type { RegisterCustomerDto } from '@/generated/api/auth/auth.schemas';
-import { KineticBallCanvas } from '@/foundation/3d/kinetic-ball-canvas.lazy';
 import { useToast } from '@/shared/components/global-toast';
 import { getCustomerAuthError } from '../model/auth-error';
 import { saveCustomerAuthTokens } from '../model/auth-token.store';
@@ -83,7 +82,7 @@ export function CustomerRegisterPage() {
   return (
     <main className="min-h-screen bg-[#0d1410] text-white">
       <div className="mx-auto grid min-h-screen max-w-7xl lg:grid-cols-[1.1fr_0.9fr]">
-        {/* Left Side: Bảo An Sport Branding & 3D Interactive Canvas */}
+        {/* Left Side: Bảo An Sport Branding & Member Perks Showcase */}
         <div className="relative hidden flex-col justify-between overflow-hidden border-r border-white/10 bg-gradient-to-br from-[#0c130f] via-[#121c16] to-[#0a100d] p-12 lg:flex">
           <div className="pointer-events-none absolute -left-20 -top-20 size-96 rounded-full bg-emerald-500/15 blur-[100px]" />
           <div className="pointer-events-none absolute -bottom-20 right-0 size-96 rounded-full bg-emerald-400/10 blur-[120px]" />
@@ -98,21 +97,32 @@ export function CustomerRegisterPage() {
             </Link>
           </div>
 
-          {/* Center 3D Sports Ball Canvas & Headlines */}
-          <div className="relative z-10 my-auto py-6">
-            <div className="mx-auto max-w-sm">
-              <KineticBallCanvas theme="emerald" height="300px" />
+          {/* Center Showcase & Headlines */}
+          <div className="relative z-10 my-auto py-8">
+            <div className="mb-8 grid grid-cols-3 gap-3">
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-center backdrop-blur-md">
+                <div className="text-2xl font-black text-emerald-400">200K</div>
+                <div className="mt-1 text-[11px] font-bold text-stone-300">Voucher thành viên mới</div>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-center backdrop-blur-md">
+                <div className="text-2xl font-black text-emerald-400">0đ</div>
+                <div className="mt-1 text-[11px] font-bold text-stone-300">Miễn phí giao hàng</div>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-center backdrop-blur-md">
+                <div className="text-2xl font-black text-emerald-400">24T</div>
+                <div className="mt-1 text-[11px] font-bold text-stone-300">Bảo hành chính hãng</div>
+              </div>
             </div>
 
-            <div className="mt-4 text-center">
-              <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-950/50 px-3.5 py-1 text-xs font-bold text-emerald-300 backdrop-blur-md">
+            <div className="rounded-3xl border border-emerald-400/20 bg-gradient-to-b from-emerald-950/40 to-black/40 p-8 backdrop-blur-md">
+              <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-950/50 px-3.5 py-1 text-xs font-bold text-emerald-300">
                 <Sparkles className="size-3.5" /> Quà tặng thành viên mới
               </span>
-              <h2 className="mt-4 text-3xl font-black text-white">
+              <h2 className="mt-4 text-3xl font-black leading-tight text-white">
                 Gia nhập cộng đồng người yêu thể thao Việt Nam
               </h2>
-              <p className="mt-3 text-sm text-stone-300">
-                Nhận ngay voucher chào mừng 200.000đ cho đơn hàng thiết bị đầu tiên và tích lũy điểm hạng thành viên.
+              <p className="mt-3 text-sm leading-relaxed text-stone-300">
+                Nhận ngay voucher chào mừng 200.000đ cho đơn hàng thiết bị đầu tiên và tích lũy điểm hạng thành viên cùng Bảo An Sport.
               </p>
             </div>
           </div>
@@ -153,7 +163,7 @@ export function CustomerRegisterPage() {
 
             {/* Form Header Tabs */}
             <div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
                 <Link
                   href="/login"
                   className="pb-2 text-xl font-black text-stone-500 transition hover:text-stone-300"
@@ -168,7 +178,10 @@ export function CustomerRegisterPage() {
                   Đăng ký
                 </Link>
               </div>
-              <p className="mt-3 text-sm text-stone-400">
+              <h1 className="mt-4 text-2xl font-black tracking-tight text-white sm:text-3xl">
+                Đăng ký tài khoản
+              </h1>
+              <p className="mt-2 text-sm text-stone-400">
                 Tạo tài khoản hội viên nhanh chóng chỉ với 1 bước đơn giản.
               </p>
             </div>
