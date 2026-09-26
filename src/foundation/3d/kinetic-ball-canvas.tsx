@@ -149,11 +149,15 @@ export function KineticBallCanvas({
       return () => {
         cancelAnimationFrame(animId);
         window.removeEventListener('mousemove', onMouseMove);
-        if (renderer && container.contains(renderer.domElement)) {
-          container.removeChild(renderer.domElement);
-        }
+        window.removeEventListener('resize', onResize);
         if (renderer) {
-          renderer.dispose();
+          try {
+            renderer.forceContextLoss();
+            renderer.dispose();
+          } catch {}
+          if (container && renderer.domElement && container.contains(renderer.domElement)) {
+            container.removeChild(renderer.domElement);
+          }
         }
       };
     } catch (err) {
@@ -161,6 +165,7 @@ export function KineticBallCanvas({
       setWebGLFailed(true);
       if (renderer) {
         try {
+          renderer.forceContextLoss();
           renderer.dispose();
         } catch {}
       }

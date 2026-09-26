@@ -38,7 +38,7 @@ export function FlashSalePage() {
   return (
     <StorefrontLayout>
       <div className="bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 pb-20 pt-10 text-white">
-        <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Breadcrumb
             className="mb-6"
             tone="inverted"
@@ -126,7 +126,7 @@ export function FlashSalePage() {
               </section>
             ))
           )}
-        </main>
+        </div>
       </div>
     </StorefrontLayout>
   );

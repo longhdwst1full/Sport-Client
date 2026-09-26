@@ -12,7 +12,7 @@ export function ProductsPage() {
   return (
     <StorefrontLayout>
       <div className="bg-slate-50/60 pb-20 pt-8">
-        <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Breadcrumb
             className="mb-6"
             items={[{ label: 'Trang chủ', href: '/' }, { label: 'Tất cả sản phẩm' }]}
@@ -79,7 +79,7 @@ export function ProductsPage() {
           <div className="mt-16 overflow-hidden rounded-[32px]">
             <FlashSaleSection />
           </div>
-        </main>
+        </div>
       </div>
     </StorefrontLayout>
   );

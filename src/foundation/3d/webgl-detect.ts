@@ -4,6 +4,10 @@
  */
 export function isWebGLAvailable(): boolean {
   if (typeof window === 'undefined') return false;
+  // Automation / E2E test environments (Playwright, Puppeteer) stall on headless WebGL ReadPixels
+  if (typeof window.navigator !== 'undefined' && window.navigator.webdriver) {
+    return false;
+  }
   try {
     const canvas = document.createElement('canvas');
     const gl =

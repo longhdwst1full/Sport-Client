@@ -10,7 +10,6 @@ import {
   HelpCircle,
   ShieldAlert,
 } from 'lucide-react';
-import { KineticBallCanvas } from '@/foundation/3d/kinetic-ball-canvas.lazy';
 import { STORE_CONFIG, STORE_CONTACT } from '@/shared/constants';
 
 export default function ErrorPage({
@@ -29,18 +28,20 @@ export default function ErrorPage({
   };
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-gradient-to-b from-[#140d0d] via-[#1a1212] to-[#0d0909] px-6 py-16 text-white sm:px-10 lg:px-16">
+    <main className="relative min-h-screen overflow-hidden bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 px-6 py-16 text-white sm:px-10 lg:px-16 flex items-center justify-center">
       {/* Background glow effects */}
-      <div className="pointer-events-none absolute left-1/2 top-1/4 size-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-red-500/10 blur-[140px]" />
+      <div className="pointer-events-none absolute left-1/2 top-1/3 size-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-red-500/10 blur-[140px]" />
 
       <div className="relative z-10 mx-auto max-w-3xl text-center">
-        {/* Interactive 3D Sports Canvas with Crimson Theme */}
-        <div className="mx-auto max-w-xs">
-          <KineticBallCanvas theme="crimson" height="260px" />
+        {/* Modern Error Visual */}
+        <div className="mx-auto mb-6 flex justify-center">
+          <div className="relative grid size-24 place-items-center rounded-3xl bg-red-500/15 border border-red-500/30 text-red-400 shadow-2xl shadow-red-500/20">
+            <AlertTriangle className="size-12 animate-pulse text-red-400" />
+          </div>
         </div>
 
         {/* Status Badge */}
-        <div className="mt-4 flex items-center justify-center">
+        <div className="flex items-center justify-center">
           <span className="inline-flex items-center gap-2 rounded-full border border-red-400/30 bg-red-950/60 px-4 py-1.5 text-xs font-black uppercase tracking-widest text-red-400 backdrop-blur-md">
             <ShieldAlert className="size-3.5" /> Sự cố hệ thống · Gián đoạn kết nối
           </span>

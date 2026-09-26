@@ -9,7 +9,7 @@ export class StorefrontPage {
   readonly searchBox = (): Locator => this.page.getByLabel('Tìm kiếm sản phẩm').first();
   readonly cartLink = (): Locator => this.page.locator('a[href="/cart"]').first();
   readonly addToCartCards = (): Locator =>
-    this.page.getByRole('button', { name: /Thêm .* vào giỏ/ });
+    this.page.getByRole('button', { name: /Thêm .* vào giỏ|Mua ngay/i });
 
   async goto(path: string): Promise<void> {
     await this.page.goto(path);

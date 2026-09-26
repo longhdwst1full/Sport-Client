@@ -14,7 +14,11 @@ export function PwaRegistration() {
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
 
-    if (process.env.NODE_ENV !== 'production' || !('serviceWorker' in navigator)) {
+    if (
+      process.env.NODE_ENV !== 'production' ||
+      !('serviceWorker' in navigator) ||
+      Boolean(navigator.webdriver)
+    ) {
       return () => {
         window.removeEventListener('online', handleOnline);
         window.removeEventListener('offline', handleOffline);
@@ -22,6 +26,7 @@ export function PwaRegistration() {
     }
 
     let updateTimer: ReturnType<typeof setInterval> | undefined;
+    let checkForUpdateHandler: (() => void) | undefined;
     const hadController = Boolean(navigator.serviceWorker.controller);
     const handleControllerChange = () => {
       if (hadController) window.location.reload();
@@ -42,13 +47,13 @@ export function PwaRegistration() {
           });
         });
 
-        const checkForUpdate = () => {
+        checkForUpdateHandler = () => {
           if (navigator.onLine && document.visibilityState === 'visible') {
             void registration.update();
           }
         };
-        updateTimer = setInterval(checkForUpdate, 15 * 60 * 1000);
-        document.addEventListener('visibilitychange', checkForUpdate);
+        updateTimer = setInterval(checkForUpdateHandler, 15 * 60 * 1000);
+        document.addEventListener('visibilitychange', checkForUpdateHandler);
       })
       .catch((error: unknown) => console.error('[PWA] Service worker registration failed', error));
 
@@ -57,6 +62,9 @@ export function PwaRegistration() {
       window.removeEventListener('offline', handleOffline);
       navigator.serviceWorker.removeEventListener('controllerchange', handleControllerChange);
       if (updateTimer) clearInterval(updateTimer);
+      if (checkForUpdateHandler) {
+        document.removeEventListener('visibilitychange', checkForUpdateHandler);
+      }
     };
   }, []);
 

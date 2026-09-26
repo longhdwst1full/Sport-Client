@@ -34,6 +34,19 @@ const apiClient = axios.create({
   headers: { Accept: 'application/json' },
 });
 
+// Khi chạy trên trình duyệt tại localhost / 127.0.0.1 (như Playwright E2E hoặc local dev),
+// chuyển baseURL về rỗng để request đi qua Next.js server proxy (rewrites `/api/v1/:path*`),
+// tránh bị chặn bởi CORS của Staging API.
+apiClient.interceptors.request.use((config) => {
+  if (
+    typeof window !== 'undefined' &&
+    (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  ) {
+    config.baseURL = '';
+  }
+  return config;
+});
+
 let refreshPromise: Promise<TokenPairDto> | undefined;
 
 async function rotateTokens(): Promise<TokenPairDto> {

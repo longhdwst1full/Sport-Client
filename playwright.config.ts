@@ -27,7 +27,7 @@ export default defineConfig({
   // Mỗi test chạy trong browser context riêng nên giỏ hàng (localStorage) không
   // giẫm lên nhau. Spec nào tạo đơn thật tự đặt `mode: 'serial'` cho describe đó.
   fullyParallel: true,
-  workers: process.env.CI ? 2 : 4,
+  workers: process.env.CI ? 2 : 2,
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI
@@ -47,7 +47,21 @@ export default defineConfig({
     testIdAttribute: 'data-testid',
   },
 
-  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
+  projects: [
+    {
+      name: 'chromium',
+      use: {
+        ...devices['Desktop Chrome'],
+        launchOptions: {
+          args: [
+            '--disable-gpu',
+            '--disable-dev-shm-usage',
+            '--no-sandbox',
+          ],
+        },
+      },
+    },
+  ],
 
   // Mặc định chạy production build: next dev tạo rất nhiều file watcher và có thể
   // chạm ENOSPC trên workstation/CI. E2E_DEV=1 chỉ dùng khi cần debug UI nhanh.

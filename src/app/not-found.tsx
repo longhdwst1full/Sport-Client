@@ -10,7 +10,6 @@ import {
   Phone,
   Sparkles,
 } from 'lucide-react';
-import { KineticBallCanvas } from '@/foundation/3d/kinetic-ball-canvas.lazy';
 import { STORE_CONTACT } from '@/shared/constants';
 
 export default function NotFound() {
@@ -22,18 +21,27 @@ export default function NotFound() {
   ];
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-gradient-to-b from-[#0c1410] via-[#121c16] to-[#0a100d] px-6 py-16 text-white sm:px-10 lg:px-16">
+    <main className="relative min-h-screen overflow-hidden bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 px-6 py-16 text-white sm:px-10 lg:px-16 flex items-center justify-center">
       {/* Background glow effects */}
-      <div className="pointer-events-none absolute left-1/2 top-1/4 size-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-500/10 blur-[140px]" />
+      <div className="pointer-events-none absolute left-1/2 top-1/3 size-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-500/10 blur-[140px]" />
 
       <div className="relative z-10 mx-auto max-w-4xl text-center">
-        {/* Interactive 3D Sports Ball */}
-        <div className="mx-auto max-w-sm">
-          <KineticBallCanvas theme="emerald" height="280px" />
+        {/* Modern 404 Badge Graphic */}
+        <div className="mx-auto mb-6 flex justify-center">
+          <div className="relative inline-flex items-center justify-center">
+            <span className="text-8xl sm:text-9xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-500 opacity-90 select-none">
+              404
+            </span>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className="grid size-14 place-items-center rounded-2xl bg-emerald-500/20 backdrop-blur-md border border-emerald-400/40 text-emerald-400 shadow-xl shadow-emerald-500/30">
+                <Dumbbell className="size-7" />
+              </span>
+            </div>
+          </div>
         </div>
 
         {/* Status Badge */}
-        <div className="mt-4 flex items-center justify-center">
+        <div className="flex items-center justify-center">
           <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-950/60 px-4 py-1.5 text-xs font-black uppercase tracking-widest text-emerald-400 backdrop-blur-md">
             <Sparkles className="size-3.5" /> Lỗi 404 · Không tìm thấy trang
           </span>

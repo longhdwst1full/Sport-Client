@@ -55,7 +55,7 @@ export function ContactPage() {
   return (
     <StorefrontLayout>
       <div className="bg-stone-50/60 pb-20 pt-8">
-        <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {/* Breadcrumbs */}
           <Breadcrumb
             className="mb-6"
@@ -272,7 +272,7 @@ export function ContactPage() {
               )}
             </div>
           </div>
-        </main>
+        </div>
       </div>
     </StorefrontLayout>
   );

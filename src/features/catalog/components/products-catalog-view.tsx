@@ -23,8 +23,8 @@ const PRICE_RANGES: Array<{ id: string; label: string; min?: string; max?: strin
 
 const SORT_OPTIONS: Array<{ value: ProductListSort; label: string }> = [
   { value: ProductListSort.NEWEST, label: 'Mới nhất' },
-  { value: ProductListSort.PRICE_ASC, label: 'Giá: thấp đến cao' },
-  { value: ProductListSort.PRICE_DESC, label: 'Giá: cao đến thấp' },
+  { value: ProductListSort.PRICE_ASC, label: 'Giá: Thấp đến Cao' },
+  { value: ProductListSort.PRICE_DESC, label: 'Giá: Cao đến Thấp' },
   { value: ProductListSort.NAME_ASC, label: 'Tên: A → Z' },
 ];
 
