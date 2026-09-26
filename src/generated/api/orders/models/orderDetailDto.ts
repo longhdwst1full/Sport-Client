@@ -11,6 +11,7 @@ import type { OrderFulfillmentStatus } from './orderFulfillmentStatus';
 import type { OrderRecipientDto } from './orderRecipientDto';
 import type { OrderItemDto } from './orderItemDto';
 import type { OrderStatusHistoryDto } from './orderStatusHistoryDto';
+import type { OrderDetailDtoShipment } from './orderDetailDtoShipment';
 
 export interface OrderDetailDto {
   /** @pattern ^[1-9][0-9]*$ */
@@ -40,4 +41,14 @@ export interface OrderDetailDto {
   customerNote?: string | null;
   items: OrderItemDto[];
   statusHistory: OrderStatusHistoryDto[];
+  /**
+   * Lúc thanh toán được xác nhận thành công
+   * @nullable
+   */
+  paidAt?: string | null;
+  /**
+   * Null khi đơn chưa có fulfillment
+   * @nullable
+   */
+  shipment?: OrderDetailDtoShipment;
 }
