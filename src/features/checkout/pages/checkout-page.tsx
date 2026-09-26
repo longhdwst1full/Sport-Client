@@ -54,11 +54,8 @@ const STEPS = [
 ] as const;
 type Step = (typeof STEPS)[number]['id'];
 
-/** Mã hành chính của sổ địa chỉ là chuỗi; bộ chọn địa chỉ dùng số. Mã không phải số thì bắt chọn lại. */
-const toCode = (value?: string | null) => {
-  const code = Number(value);
-  return value && Number.isInteger(code) ? code : null;
-};
+/** Mã của hãng vận chuyển giữ nguyên chuỗi (mã phường GHN có thể chứa chữ); rỗng thì bắt chọn lại. */
+const toCode = (value?: string | null) => value?.trim() || null;
 
 function toSelectedAddress(saved: CustomerAddressDto): SelectedAddressData {
   const parts = [saved.addressLine, saved.ward, saved.district, saved.province].filter(Boolean);
@@ -185,9 +182,9 @@ export function CheckoutPage() {
       ward: address.wardName,
       district: address.districtName,
       province: address.provinceName,
-      provinceCode: String(address.provinceCode),
-      districtCode: address.districtCode ? String(address.districtCode) : undefined,
-      wardCode: address.wardCode ? String(address.wardCode) : undefined,
+      provinceCode: address.provinceCode ?? '',
+      districtCode: address.districtCode ?? undefined,
+      wardCode: address.wardCode ?? undefined,
       ...coordinates,
     },
     paymentMethod,
