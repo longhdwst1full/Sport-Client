@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { LoaderCircle, PackageCheck, XCircle } from 'lucide-react';
+import { Check, LoaderCircle, PackageCheck, Truck, X, XCircle } from 'lucide-react';
 import { useCustomerAuth } from '@/features/auth';
 import {
   cancelAccountOrder,
@@ -145,7 +145,48 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
                 />
                 <OrderReturnCta orderNo={orderNo} authenticated={isAuthenticated} />
                 <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"><h2 className="font-black">Giao đến</h2><p className="mt-3 text-sm font-bold">{view?.recipientName} · {view?.recipientPhone}</p><p className="mt-2 text-sm leading-6 text-slate-600">{view?.recipientAddress}</p></section>
-                <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"><h2 className="font-black">Tiến trình</h2><div className="mt-4 space-y-4">{(view?.timeline ?? []).map((entry) => <div key={entry.key} className="flex gap-3"><PackageCheck className="mt-0.5 size-5 shrink-0 text-emerald-600" /><div><strong className="text-sm">{entry.statusLabel}</strong><p className="text-xs text-slate-500">{entry.occurredLabel}</p>{entry.note && <p className="mt-1 text-xs text-slate-600">{entry.note}</p>}</div></div>)}</div></section>
+                <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+                  <h2 className="font-black">Tiến trình</h2>
+                  {/* Mốc chính cho khách; lịch sử chi tiết từng lần đổi trạng thái nằm trong phần mở rộng. */}
+                  <ol className="mt-4 space-y-0">
+                    {(view?.milestones ?? []).map((milestone, index, list) => (
+                      <li key={milestone.key} className="relative flex gap-3 pb-5 last:pb-0">
+                        {index < list.length - 1 && <span aria-hidden className={`absolute left-[11px] top-6 h-[calc(100%-1rem)] w-0.5 ${milestone.state === 'done' ? 'bg-emerald-500' : 'bg-slate-200'}`} />}
+                        <span className={`relative grid size-6 shrink-0 place-items-center rounded-full ${milestone.state === 'done' ? 'bg-emerald-600 text-white' : milestone.state === 'current' ? 'border-2 border-emerald-600 bg-white text-emerald-600' : milestone.state === 'failed' ? 'bg-rose-600 text-white' : 'border-2 border-slate-200 bg-white text-slate-300'}`}>
+                          {milestone.state === 'done' ? <Check className="size-3.5" /> : milestone.state === 'failed' ? <X className="size-3.5" /> : <span className={`size-2 rounded-full ${milestone.state === 'current' ? 'bg-emerald-600' : 'bg-slate-200'}`} />}
+                        </span>
+                        <div className="min-w-0">
+                          <strong className={`text-sm ${milestone.state === 'todo' ? 'text-slate-400' : milestone.state === 'failed' ? 'text-rose-700' : 'text-slate-900'}`}>{milestone.label}</strong>
+                          {milestone.occurredLabel && <p className="text-xs text-slate-500">{milestone.occurredLabel}</p>}
+                        </div>
+                      </li>
+                    ))}
+                  </ol>
+                  {view?.shipment && (
+                    <div className="mt-5 rounded-2xl bg-slate-50 p-4 text-sm">
+                      <p className="text-xs font-bold uppercase tracking-wide text-slate-400">{view.shipment.carrierLabel}</p>
+                      {view.shipment.trackingNo && <p className="mt-1 font-mono font-bold text-slate-900">{view.shipment.trackingNo}</p>}
+                      {view.shipment.trackingUrl && (
+                        <a href={view.shipment.trackingUrl} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-4 py-2 text-xs font-bold text-white">
+                          <Truck className="size-3.5" /> Theo dõi vận đơn
+                        </a>
+                      )}
+                    </div>
+                  )}
+                  {(view?.timeline ?? []).length > 0 && (
+                    <details className="mt-5 text-sm">
+                      <summary className="cursor-pointer text-xs font-bold text-emerald-700">Lịch sử chi tiết</summary>
+                      <div className="mt-3 space-y-3">
+                        {(view?.timeline ?? []).map((entry) => (
+                          <div key={entry.key} className="flex gap-3">
+                            <PackageCheck className="mt-0.5 size-4 shrink-0 text-emerald-600" />
+                            <div><strong className="text-xs">{entry.statusLabel}</strong><p className="text-xs text-slate-500">{entry.occurredLabel}</p>{entry.note && <p className="mt-1 text-xs text-slate-600">{entry.note}</p>}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </details>
+                  )}
+                </section>
               </aside>
             </div>
 

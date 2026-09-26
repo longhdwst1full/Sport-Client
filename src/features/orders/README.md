@@ -1,10 +1,10 @@
 # Storefront Orders — maintenance note
 
-> **Document version:** 1.2.0
+> **Document version:** 1.3.0
 >
-> **Last updated:** 2026-09-12
+> **Last updated:** 2026-09-26
 >
-> **Change summary:** Thêm TTL env/terminal cleanup cho Guest token và đồng bộ Order list cache sau Payment mutation.
+> **Change summary:** Trang chi tiết đơn có tiến trình theo mốc và mã vận đơn/link theo dõi từ `shipment`.
 
 ## Phạm vi và ranh giới
 
@@ -27,10 +27,17 @@
 - [ ] Retry cùng payload phải giữ cùng idempotency key; payload đổi phải tạo key mới.
 - [ ] Thay đổi contract phải sửa API/OpenAPI trước rồi regenerate.
 
+## Tiến trình đơn (2026-09-26)
+
+- `toOrderMilestones` dựng 5 mốc: đặt hàng → thanh toán → tạo vận đơn/xuất kho → đang giao → đã giao; mốc đầu tiên chưa xong là "current", đơn huỷ thêm mốc "Đã huỷ".
+- COD thu tiền khi giao nên mốc thanh toán không chặn các mốc giao; chuyển khoản/VNPay chờ ở mốc thanh toán tới khi `paymentStatus = SUCCESS`.
+- Mã vận đơn và nút "Theo dõi vận đơn" lấy từ `shipment` (API `OrderDetailDto`); chỉ có link khi API trả `trackingUrl` (hiện GHN). Lịch sử chi tiết `statusHistory` nằm trong phần "Lịch sử chi tiết".
+
 ## Revision history
 
 | Version | Date | Change summary | Source |
 | --- | --- | --- | --- |
+| 1.3.0 | 2026-09-26 | Tiến trình theo mốc, mã vận đơn và link theo dõi. | API-20260926-ORDER-TRACKING-VNPAY-RULES |
 | 1.2.0 | 2026-09-12 | Thêm Guest token TTL/terminal cleanup và Payment→Order list invalidation. | API-20260912-ORDER-GUEST-HARDENING |
 | 1.1.0 | 2026-09-11 | Hardening cache isolation, pagination, cancel invalidation và Guest storage fallback. | CLIENT-20260911-ORDER-S41-HARDENING |
 | 1.0.1 | 2026-09-11 | Tách guest Order token theo orderNo khỏi vòng đời cart kế tiếp. | CLIENT-20260911-GUEST-ORDER-TOKEN-STORE |

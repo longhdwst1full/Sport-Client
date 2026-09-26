@@ -11,6 +11,7 @@ import type { OrderFulfillmentStatus } from './orderFulfillmentStatus';
 import type { OrderRecipientDto } from './orderRecipientDto';
 import type { OrderItemDto } from './orderItemDto';
 import type { OrderStatusHistoryDto } from './orderStatusHistoryDto';
+import type { GuestOrderPlacementDtoShipment } from './guestOrderPlacementDtoShipment';
 
 export interface GuestOrderPlacementDto {
   /** @pattern ^[1-9][0-9]*$ */
@@ -40,6 +41,16 @@ export interface GuestOrderPlacementDto {
   customerNote?: string | null;
   items: OrderItemDto[];
   statusHistory: OrderStatusHistoryDto[];
+  /**
+   * Lúc thanh toán được xác nhận thành công
+   * @nullable
+   */
+  paidAt?: string | null;
+  /**
+   * Null khi đơn chưa có fulfillment
+   * @nullable
+   */
+  shipment?: GuestOrderPlacementDtoShipment;
   /** Token bí mật dùng cùng mã đơn để Guest xem/hủy đơn; hiện dùng cùng token của guest cart */
   guestAccessToken: string;
 }
