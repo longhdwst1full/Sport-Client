@@ -18,53 +18,57 @@ export function ProductsPage() {
             items={[{ label: 'Trang chủ', href: '/' }, { label: 'Tất cả sản phẩm' }]}
           />
 
-          {/* Catalog Hero Banner */}
-          <div className="relative overflow-hidden rounded-[36px] bg-gradient-to-br from-slate-950 via-slate-900 to-[#032617] p-8 text-white shadow-xl sm:p-12">
+          {/* Compact Catalog Hero Banner */}
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-950 via-slate-900 to-emerald-950 px-6 py-6 sm:px-8 sm:py-8 text-white shadow-md">
             <div className="relative z-10 max-w-2xl">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/30 bg-emerald-950/60 px-3.5 py-1 text-xs font-extrabold uppercase tracking-widest text-emerald-300 backdrop-blur-md">
-                <Sparkles className="size-3.5" /> Kho thiết bị chính hãng Bảo An Sport
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/30 bg-emerald-950/60 px-3 py-0.5 text-[11px] font-extrabold uppercase tracking-widest text-emerald-300 backdrop-blur-md">
+                <Sparkles className="size-3" /> Bảo An Sport — Tổng Kho Thể Thao Chính Hãng
               </span>
-              <h1 className="mt-4 text-3xl font-black text-white sm:text-5xl">
+              <h1 className="mt-2 text-2xl font-black text-white sm:text-3xl lg:text-4xl tracking-tight">
                 Thiết Bị Thể Thao Chuẩn Thi Đấu
               </h1>
-              <p className="mt-3 text-sm leading-relaxed text-slate-300 sm:text-base">
-                Thiết bị rèn luyện sức mạnh, cardio, bóng bàn, võ thuật và phụ kiện thể thao cho phòng tập và gia đình.
+              <p className="mt-1.5 text-xs text-slate-300 sm:text-sm">
+                Rèn luyện sức mạnh, cardio, bóng bàn, cầu lông, võ thuật và phụ kiện thể thao chính hãng.
               </p>
             </div>
 
-            {/* Ambient blur lighting */}
-            <div className="pointer-events-none absolute -right-20 -top-20 size-80 rounded-full bg-emerald-500/15 blur-[100px]" />
-            <div className="pointer-events-none absolute -bottom-10 right-1/4 size-60 rounded-full bg-emerald-400/10 blur-[80px]" />
+            {/* Ambient lighting */}
+            <div className="pointer-events-none absolute -right-16 -top-16 size-56 rounded-full bg-emerald-500/20 blur-[80px]" />
           </div>
 
-          {/* Quick Value Props Strip — dẫn sang trang chính sách thật. Bản trước khai "Miễn phí tại
-              nhà", "Trả góp 0% duyệt 5 phút" mà không có nguồn dữ liệu nào đứng sau. */}
-          <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
-            {[
-              { icon: Truck, ...STORE_POLICY_PAGES.SHIPPING },
-              { icon: ShieldCheck, ...STORE_POLICY_PAGES.WARRANTY },
-              { icon: RotateCcw, ...STORE_POLICY_PAGES.RETURNS },
-              { icon: CreditCard, ...STORE_POLICY_PAGES.PAYMENT },
-            ].map((prop) => {
-              const Icon = prop.icon;
-              return (
-                <Link
-                  key={prop.href}
-                  href={prop.href}
-                  className="flex items-center gap-3 rounded-2xl border border-slate-200/80 bg-white p-3.5 shadow-sm transition hover:border-emerald-400"
-                >
-                  <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-emerald-50 text-emerald-600">
-                    <Icon className="size-4.5" />
-                  </span>
-                  <div className="min-w-0">
-                    <strong className="block truncate text-xs font-bold text-slate-900">
-                      {prop.title}
-                    </strong>
-                    <span className="block truncate text-[11px] text-slate-500">Xem chi tiết</span>
-                  </div>
-                </Link>
-              );
-            })}
+          {/* Thin Trust Benefits Bar (Single sleek strip) */}
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200/80 bg-white px-5 py-3 text-xs font-semibold text-slate-600 shadow-xs">
+            <Link
+              href={STORE_POLICY_PAGES.SHIPPING.href}
+              className="inline-flex items-center gap-2 hover:text-emerald-700 transition"
+            >
+              <Truck className="size-4 text-emerald-600" />
+              <span>Giao & Lắp Đặt Toàn Quốc</span>
+            </Link>
+            <span className="hidden sm:inline text-slate-300">•</span>
+            <Link
+              href={STORE_POLICY_PAGES.WARRANTY.href}
+              className="inline-flex items-center gap-2 hover:text-emerald-700 transition"
+            >
+              <ShieldCheck className="size-4 text-emerald-600" />
+              <span>Bảo Hành Chính Hãng 100%</span>
+            </Link>
+            <span className="hidden sm:inline text-slate-300">•</span>
+            <Link
+              href={STORE_POLICY_PAGES.RETURNS.href}
+              className="inline-flex items-center gap-2 hover:text-emerald-700 transition"
+            >
+              <RotateCcw className="size-4 text-emerald-600" />
+              <span>Đổi Trả Minh Bạch</span>
+            </Link>
+            <span className="hidden sm:inline text-slate-300">•</span>
+            <Link
+              href={STORE_POLICY_PAGES.PAYMENT.href}
+              className="inline-flex items-center gap-2 hover:text-emerald-700 transition"
+            >
+              <CreditCard className="size-4 text-emerald-600" />
+              <span>Thanh Toán An Toàn</span>
+            </Link>
           </div>
 
           {/* Interactive Products Catalog View */}

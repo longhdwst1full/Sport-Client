@@ -225,7 +225,7 @@ export default async function ProductDetailPage({
 
         {/* Main Product Stage */}
         <main className="mx-auto mt-4 grid max-w-7xl gap-8 px-4 py-3 sm:px-6 lg:grid-cols-[1.12fr_0.88fr] lg:px-8">
-          {/* Left Column: Visual Showcase & Technical Detail */}
+          {/* Left Column: Visual Showcase & Detailed Story */}
           <div className="space-y-8">
             {/* Product media is image-first. Heavy 3D rendering is intentionally excluded here. */}
             <div className="overflow-hidden rounded-[28px] border border-[var(--dc-border)] bg-white shadow-[0_18px_50px_rgba(0,49,41,0.08)]">
@@ -260,16 +260,16 @@ export default async function ProductDetailPage({
               </div>
             )}
 
-            {/* Technical Specifications Table */}
-            <ProductSpecifications specs={TECH_SPECS} initialLimit={5} />
-
             {/* Customer Rating & Reviews Summary */}
             <ProductReviewSection productName={product.name} productSlug={slug} />
           </div>
 
-          {/* Right Column: Sticky Purchase Panel */}
-          <div className="lg:sticky lg:top-24 lg:self-start">
+          {/* Right Column: Sticky Purchase Panel + Technical Specs */}
+          <div className="space-y-6 lg:sticky lg:top-24 lg:self-start">
             <ProductPurchasePanel product={purchaseView} />
+
+            {/* Technical Specifications Table directly under price/purchase box */}
+            <ProductSpecifications specs={TECH_SPECS} initialLimit={5} />
           </div>
         </main>
 
