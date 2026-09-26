@@ -1,4 +1,4 @@
-import type { ProductReviewDto } from '@/generated/api/reviews/models';
+import type { ProductReviewDto } from '@/generated/api/reviews/reviews.schemas';
 
 export interface ReviewReplyView {
   authorName: string;

@@ -1,7 +1,7 @@
 import type {
   FlashSaleItemDto,
   PublicFlashSaleCampaignDto,
-} from '@/generated/api/promotions/models';
+} from '@/generated/api/promotions/promotions.schemas';
 
 export interface FlashSaleDealView {
   id: string;

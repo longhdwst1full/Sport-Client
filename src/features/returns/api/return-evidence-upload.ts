@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { createAccountReturnEvidenceUpload } from '@/generated/api/returns/returns';
-import type { ImageMimeType } from '@/generated/api/returns/models';
+import type { ImageMimeType } from '@/generated/api/returns/returns.schemas';
 import type { UploadedEvidence } from '../model/return.mapper';
 
 const allowedTypes = new Set<string>(['image/jpeg', 'image/png', 'image/webp', 'image/avif']);

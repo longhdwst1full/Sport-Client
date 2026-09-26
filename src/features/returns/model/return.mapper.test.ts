@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { ReturnEligibilityLineDto } from '@/generated/api/returns/models';
+import type { ReturnEligibilityLineDto } from '@/generated/api/returns/returns.schemas';
 import { canCustomerCancel, estimateSelection, toCreateReturnPayload, toReturnProgress } from './return.mapper';
 
 const line = (overrides: Partial<ReturnEligibilityLineDto>): ReturnEligibilityLineDto => ({

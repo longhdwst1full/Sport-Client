@@ -4,7 +4,7 @@ import {
   createAccountPaymentEvidenceUpload,
   createGuestPaymentEvidenceUpload,
 } from '@/generated/api/payments/payments';
-import type { ImageMimeType } from '@/generated/api/payments/models';
+import type { ImageMimeType } from '@/generated/api/payments/payments.schemas';
 
 const allowedTypes = new Set<ImageMimeType>([
   'image/jpeg',

@@ -14,7 +14,7 @@ import {
   getListAccountOrdersQueryKey,
   getGuestOrder,
 } from '@/generated/api/orders/orders';
-import type { OrderDetailDto } from '@/generated/api/orders/models';
+import type { OrderDetailDto } from '@/generated/api/orders/orders.schemas';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { ApiError } from '@/lib/api/fetcher';
 import { toOrderDetailView } from '../model/order.mapper';

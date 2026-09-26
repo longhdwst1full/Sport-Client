@@ -11,7 +11,7 @@ import {
   submitAccountPaymentEvidence,
   submitGuestPaymentEvidence,
 } from '@/generated/api/payments/payments';
-import type { PaymentDetailDto } from '@/generated/api/payments/models';
+import type { PaymentDetailDto } from '@/generated/api/payments/payments.schemas';
 import { ApiError } from '@/lib/api/fetcher';
 import { uploadPaymentEvidence, type VerifiedPaymentEvidenceUpload } from '../api/payment-evidence-upload';
 import { paymentRequest } from '../api/payment-request';

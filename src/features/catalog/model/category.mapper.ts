@@ -7,7 +7,7 @@ import {
   Swords,
   type LucideIcon,
 } from 'lucide-react';
-import type { CatalogCategoryDto } from '@/generated/api/catalog/models';
+import type { CatalogCategoryDto } from '@/generated/api/catalog/catalog.schemas';
 
 export interface CategoryCardView {
   slug: string;

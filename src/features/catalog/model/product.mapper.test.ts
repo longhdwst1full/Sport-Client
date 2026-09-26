@@ -4,7 +4,7 @@ import type {
   ProductListResponseDto,
   ProductSummaryDto,
   ProductVariantDto,
-} from '@/generated/api/catalog/models';
+} from '@/generated/api/catalog/catalog.schemas';
 import { PRODUCT_PLACEHOLDER_IMAGE } from '@/shared/constants';
 import {
   hasOfferPrice,

@@ -12,7 +12,7 @@ import {
   getListAccountReturnsQueryKey,
   useGetAccountReturnEligibility,
 } from '@/generated/api/returns/returns';
-import type { ReturnDetailDto } from '@/generated/api/returns/models';
+import type { ReturnDetailDto } from '@/generated/api/returns/returns.schemas';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { vndMoney } from '@/shared/format/money';
 import { formatDate } from '@/shared/format/date-time';

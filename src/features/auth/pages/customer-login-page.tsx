@@ -18,7 +18,7 @@ import {
   Mail,
 } from 'lucide-react';
 import { useLoginCustomer } from '@/generated/api/auth/auth';
-import type { LoginDto } from '@/generated/api/auth/models';
+import type { LoginDto } from '@/generated/api/auth/auth.schemas';
 import { KineticBallCanvas } from '@/foundation/3d/kinetic-ball-canvas.lazy';
 import { useToast } from '@/shared/components/global-toast';
 import { syncCartAfterAuth } from '@/features/cart';

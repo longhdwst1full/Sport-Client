@@ -1,4 +1,4 @@
-import type { ContentPostDto } from '@/generated/api/content/models';
+import type { ContentPostDto } from '@/generated/api/content/content.schemas';
 
 export interface ContentPostView {
   id: string;

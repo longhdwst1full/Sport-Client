@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { OrderDetailDto } from '@/generated/api/orders/models';
+import type { OrderDetailDto } from '@/generated/api/orders/orders.schemas';
 import { toOrderDetailView, toOrderMilestones } from './order.mapper';
 
 const base = {

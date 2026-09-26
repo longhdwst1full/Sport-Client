@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { CartDto, CartItemDto } from '@/generated/api/cart/models';
+import type { CartDto, CartItemDto } from '@/generated/api/cart/cart.schemas';
 
 const api = vi.hoisted(() => ({
   createGuestCart: vi.fn(),

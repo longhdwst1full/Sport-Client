@@ -31,10 +31,11 @@ import type {
   ReturnListDto,
   ReturnReasonCommandDto,
   SignedMediaUploadDto,
-} from './models';
+} from './returns.schemas';
 
 import { apiFetcher } from '../../../lib/api/fetcher';
 import type { ErrorType, BodyType } from '../../../lib/api/fetcher';
+
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 /**

@@ -1,4 +1,4 @@
-import type { ContentPostDto } from '@/generated/api/content/models';
+import type { ContentPostDto } from '@/generated/api/content/content.schemas';
 import { POLICY_POST_TYPE } from './content-post.mapper';
 
 export interface PolicySummaryView {

@@ -3,7 +3,7 @@ import type {
   ReturnReasonCode,
   ReturnDetailDto,
   ReturnEligibilityLineDto,
-} from '@/generated/api/returns/models';
+} from '@/generated/api/returns/returns.schemas';
 import { RETURN_PROGRESS_STEPS } from './return.constants';
 
 export interface UploadedEvidence {

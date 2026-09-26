@@ -8,7 +8,7 @@ import {
   useUpdateCustomerProfile,
 } from '@/generated/api/customer/customer';
 import { useChangeCustomerPassword } from '@/generated/api/auth/auth';
-import type { CustomerProfileDto } from '@/generated/api/customer/models';
+import type { CustomerProfileDto } from '@/generated/api/customer/customer.schemas';
 import { ApiError } from '@/lib/api/fetcher';
 
 function messageOf(error: unknown, fallback: string): string {

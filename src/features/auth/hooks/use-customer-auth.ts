@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useGetCustomerProfile } from '@/generated/api/customer/customer';
-import type { CustomerProfileDto } from '@/generated/api/customer/models';
+import type { CustomerProfileDto } from '@/generated/api/customer/customer.schemas';
 import {
   isCustomerAuthenticated,
   readCustomerAuthTokens,

@@ -2,8 +2,8 @@ import type {
   ProductDetailDto,
   ProductListResponseDto,
   ProductSummaryDto,
-} from '@/generated/api/catalog/models';
-import { ProductMediaStatus, ProductVariantStatus } from '@/generated/api/catalog/models';
+} from '@/generated/api/catalog/catalog.schemas';
+import { ProductMediaStatus, ProductVariantStatus } from '@/generated/api/catalog/catalog.schemas';
 import { vndMoney } from '@/shared/format/money';
 import { PRODUCT_PLACEHOLDER_IMAGE } from '@/shared/constants';
 

@@ -7,7 +7,7 @@ import { ArrowRight, Eye, RefreshCw, Zap } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useCategoryTabs } from '../hooks/use-category-tabs';
 import { useProductShowcase } from '../hooks/use-product-showcase';
-import type { ProductListResponseDto } from '@/generated/api/catalog/models';
+import type { ProductListResponseDto } from '@/generated/api/catalog/catalog.schemas';
 import { useAppDispatch } from '@/app/store/hooks';
 import { addCartItem } from '@/app/store/cart.slice';
 import { useToast } from '@/shared/components/global-toast';

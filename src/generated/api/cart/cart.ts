@@ -28,10 +28,11 @@ import type {
   MutateCartDto,
   SetCartItemDto,
   UpdateCartItemDto,
-} from './models';
+} from './cart.schemas';
 
 import { apiFetcher } from '../../../lib/api/fetcher';
 import type { ErrorType, BodyType } from '../../../lib/api/fetcher';
+
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 /**

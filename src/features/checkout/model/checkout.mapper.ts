@@ -1,5 +1,5 @@
-import type { CheckoutQuoteDto } from '@/generated/api/checkout/models';
-import type { VnpayReturnDto } from '@/generated/api/payments/models';
+import type { CheckoutQuoteDto } from '@/generated/api/checkout/checkout.schemas';
+import type { VnpayReturnDto } from '@/generated/api/payments/payments.schemas';
 import { vndMoney } from '@/shared/format/money';
 import { formatDateTime } from '@/shared/format/date-time';
 

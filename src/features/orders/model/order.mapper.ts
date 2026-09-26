@@ -1,4 +1,4 @@
-import type { OrderDetailDto } from '@/generated/api/orders/models';
+import type { OrderDetailDto } from '@/generated/api/orders/orders.schemas';
 import { vndMoney } from '@/shared/format/money';
 import { formatDateTime } from '@/shared/format/date-time';
 import { orderStatusLabels, paymentStatusLabels } from './order.constants';

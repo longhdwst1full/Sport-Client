@@ -1,4 +1,4 @@
-import type { TokenPairDto } from '@/generated/api/auth/models';
+import type { TokenPairDto } from '@/generated/api/auth/auth.schemas';
 import { AuthService } from '@/core/storage';
 
 const cookieTransport = process.env.NEXT_PUBLIC_AUTH_TOKEN_TRANSPORT === 'COOKIE';

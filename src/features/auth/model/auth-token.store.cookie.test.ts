@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { TokenPairDto } from '@/generated/api/auth/models';
+import type { TokenPairDto } from '@/generated/api/auth/auth.schemas';
 
 /**
  * Hành vi ở transport COOKIE.

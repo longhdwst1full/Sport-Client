@@ -7,7 +7,7 @@ import { SectionHeading } from '@/foundation/components/section-heading';
 import { ProductShowcase, toCategoryCardView, toCategoryRailView } from '@/features/catalog';
 import { CATALOG_PAGE_SIZE } from '@/features/catalog/model/product.mapper';
 import { listCatalogCategories, listCatalogProducts } from '@/generated/api/catalog/catalog';
-import type { CatalogCategoryDto } from '@/generated/api/catalog/models';
+import type { CatalogCategoryDto } from '@/generated/api/catalog/catalog.schemas';
 import { listPublishedPosts } from '@/generated/api/content/content';
 import { ContentStories } from '@/features/content';
 import {

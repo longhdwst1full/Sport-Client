@@ -18,10 +18,11 @@ import type {
   UseQueryResult,
 } from '@tanstack/react-query';
 
-import type { ProductReviewListDto } from './models';
+import type { ProductReviewListDto } from './reviews.schemas';
 
 import { apiFetcher } from '../../../lib/api/fetcher';
 import type { ErrorType } from '../../../lib/api/fetcher';
+
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 /**

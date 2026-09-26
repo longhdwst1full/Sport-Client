@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { VnpayReturnPage } from '@/features/checkout';
 import { verifyVnpayReturn } from '@/generated/api/payments/payments';
-import type { VnpayReturnDto, VerifyVnpayReturnParams } from '@/generated/api/payments/models';
+import type { VnpayReturnDto, VerifyVnpayReturnParams } from '@/generated/api/payments/payments.schemas';
 import { toVnpayReturnView } from '@/features/checkout/model/checkout.mapper';
 
 export const revalidate = 0;

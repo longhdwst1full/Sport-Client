@@ -4,7 +4,7 @@ import type {
   ReturnStatus,
   ReturnIneligibleReason,
   ReturnCondition,
-} from '@/generated/api/returns/models';
+} from '@/generated/api/returns/returns.schemas';
 
 export const RETURN_PAGE_SIZE = 10;
 export const MAX_EVIDENCE_IMAGES = 5;

@@ -6,7 +6,7 @@ import {
   getListCatalogProductsQueryKey,
   listCatalogProducts,
 } from '@/generated/api/catalog/catalog';
-import type { ProductListResponseDto, ProductListSort } from '@/generated/api/catalog/models';
+import type { ProductListResponseDto, ProductListSort } from '@/generated/api/catalog/catalog.schemas';
 import { CACHE_POLICY } from '@/app/config/query-cache-policy';
 import {
   CATALOG_PAGE_SIZE,

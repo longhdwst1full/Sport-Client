@@ -7,7 +7,7 @@ import {
   setAccountCartItem,
   setGuestCartItem,
 } from '@/generated/api/cart/cart';
-import type { CartDto } from '@/generated/api/cart/models';
+import type { CartDto } from '@/generated/api/cart/cart.schemas';
 import type { CartItem } from '@/app/store/cart.slice';
 import { ApiError } from '@/lib/api/fetcher';
 import { clearGuestCartToken, readGuestCartToken, saveGuestCartToken } from '../model/guest-cart-token.store';

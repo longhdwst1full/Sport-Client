@@ -6,9 +6,9 @@ import {
   quoteAccountCheckout,
   quoteGuestCheckout,
 } from '@/generated/api/checkout/checkout';
-import type { CheckoutQuoteDto, CreateCheckoutQuoteDto, ReservationDto } from '@/generated/api/checkout/models';
+import type { CheckoutQuoteDto, CreateCheckoutQuoteDto, ReservationDto } from '@/generated/api/checkout/checkout.schemas';
 import { placeAccountOrder, placeGuestOrder } from '@/generated/api/orders/orders';
-import type { OrderDetailDto } from '@/generated/api/orders/models';
+import type { OrderDetailDto } from '@/generated/api/orders/orders.schemas';
 import { syncAccountCart, syncGuestCart } from '@/features/cart';
 import { saveGuestOrderAccessToken } from '@/features/orders';
 

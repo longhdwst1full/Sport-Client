@@ -29,10 +29,11 @@ import type {
   SubmitPaymentEvidenceDto,
   VerifyVnpayReturnParams,
   VnpayReturnDto,
-} from './models';
+} from './payments.schemas';
 
 import { apiFetcher } from '../../../lib/api/fetcher';
 import type { ErrorType, BodyType } from '../../../lib/api/fetcher';
+
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 /**

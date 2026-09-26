@@ -3,7 +3,7 @@ import { ArrowRight } from 'lucide-react';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { Breadcrumb } from '@/foundation/components/navigation';
 import { listCatalogCategories } from '@/generated/api/catalog/catalog';
-import type { CatalogCategoryDto } from '@/generated/api/catalog/models';
+import type { CatalogCategoryDto } from '@/generated/api/catalog/catalog.schemas';
 import { CategoryGrid } from '../components/category-grid';
 import { toCategoryCardView } from '../model/category.mapper';
 

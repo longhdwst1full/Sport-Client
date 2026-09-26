@@ -2,7 +2,7 @@
 
 import { useMemo, useState, useEffect } from 'react';
 import { useListCatalogCategories } from '@/generated/api/catalog/catalog';
-import type { CatalogCategoryDto } from '@/generated/api/catalog/models';
+import type { CatalogCategoryDto } from '@/generated/api/catalog/catalog.schemas';
 import { CACHE_POLICY } from '@/app/config/query-cache-policy';
 
 export interface MegaMenuEntry {

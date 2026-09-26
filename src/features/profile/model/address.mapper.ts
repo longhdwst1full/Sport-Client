@@ -2,7 +2,7 @@ import type {
   CreateCustomerAddressDto,
   CustomerAddressDto,
   UpdateCustomerAddressDto,
-} from '@/generated/api/customer/models';
+} from '@/generated/api/customer/customer.schemas';
 import type { SelectedAddressData } from '@/shared/components/address/vietnam-address-selector';
 
 /**

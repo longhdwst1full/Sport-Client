@@ -11,7 +11,7 @@ import { useProductShowcase } from '../hooks/use-product-showcase';
 import { useCategoryTabs } from '../hooks/use-category-tabs';
 import { useDebounce } from '@/shared/hooks';
 import { CATALOG_PAGE_SIZE } from '../model/product.mapper';
-import { ProductListSort } from '@/generated/api/catalog/models';
+import { ProductListSort } from '@/generated/api/catalog/catalog.schemas';
 
 // Khoảng giá gửi thẳng lên API (`minPrice`/`maxPrice`, VND) nên lọc trên toàn bộ catalog.
 const PRICE_RANGES: Array<{ id: string; label: string; min?: string; max?: string }> = [

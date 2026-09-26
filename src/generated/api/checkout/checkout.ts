@@ -27,10 +27,11 @@ import type {
   ErrorResponseDto,
   ReleaseReservationDto,
   ReservationDto,
-} from './models';
+} from './checkout.schemas';
 
 import { apiFetcher } from '../../../lib/api/fetcher';
 import type { ErrorType, BodyType } from '../../../lib/api/fetcher';
+
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 /**
