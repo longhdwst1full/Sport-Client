@@ -1,10 +1,25 @@
 # Storefront checkout — maintenance note
 
-> **Document version:** 1.3.0
+> **Document version:** 1.4.0
 >
-> **Last updated:** 2026-09-25
+> **Last updated:** 2026-09-26
 >
-> **Change summary:** Tự báo giá khi đủ địa chỉ, nút "Nhờ shop gửi", chỉ còn COD và VNPay.
+> **Change summary:** Checkout 3 bước (địa chỉ → vận chuyển & thanh toán → xác nhận), sổ địa chỉ, tự chuyển VNPay, timeout 30 giây cho lệnh checkout.
+
+## Luồng 3 bước (2026-09-26)
+
+| Bước | Nội dung | Điều kiện sang bước sau |
+| --- | --- | --- |
+| 1. Địa chỉ nhận hàng | Khách đăng nhập chọn từ sổ địa chỉ (`listCustomerAddresses`, điền sẵn địa chỉ mặc định) hoặc "Giao tới địa chỉ khác"; khách vãng lai nhập tay | Đủ người nhận, SĐT, số nhà và chọn tới phường/xã |
+| 2. Vận chuyển & thanh toán | "Giao hàng tiêu chuẩn" hiện phí từ báo giá tự động ("Đang tính phí…" khi chờ, "Thử lại" khi lỗi, không bao giờ hiện 0 ₫ tạm) hoặc "Nhờ shop gửi"; chọn COD hay VNPay | Đã có báo giá |
+| 3. Xác nhận đơn | Xem lại địa chỉ, chi nhánh, vận chuyển, thanh toán (nút Sửa quay về bước tương ứng); đồng ý điều khoản | Tích điều khoản; báo giá không ở trạng thái chờ tư vấn |
+
+- Nút đặt hàng chỉ nằm ở tóm tắt đơn của bước 3. Bấm thì `confirm` (giữ hàng 30 phút) rồi `place` với idempotency key giữ nguyên khi thử lại.
+- VNPay: đặt đơn xong đọc `instruction.redirectUrl` của thanh toán (`getAccountPayment` / `getGuestPayment` với token truy cập đơn đã lưu) và chuyển thẳng sang cổng. Không lấy được URL thì hiện trang đặt hàng thành công; khách thanh toán lại ở trang đơn.
+- Lệnh checkout (báo giá, xác nhận, đặt đơn, tải lại báo giá) dùng timeout 30 giây: báo giá đo được ~10,4 giây trên production, đúng bằng timeout 10 giây mặc định của fetcher.
+- Trang không tự có thẻ `<main>` vì `StorefrontLayout` đã có.
+
+Chưa làm (cần Backend): gọi lại GHN khi đặt đơn và báo `SHIPPING_FEE_CHANGED`, nhận tại cửa hàng, timeline và mã vận đơn ở trang đơn, tự tạo vận đơn sau khi thanh toán.
 
 ## Quy tắc hiển thị (2026-09-25)
 
@@ -66,6 +81,7 @@ Order mới ở `PENDING_CONFIRMATION`, chưa ghi nhận doanh thu và chưa đ�
 
 | Version | Date | Change summary | Source |
 | --- | --- | --- | --- |
+| 1.4.0 | 2026-09-26 | Checkout 3 bước, sổ địa chỉ, tự chuyển VNPay, timeout 30 giây. | Đối chiếu đặc tả checkout/GHN/VNPay |
 | 1.3.0 | 2026-09-25 | Tự báo giá theo địa chỉ, "Nhờ shop gửi", COD + VNPay. | Checkout FE-only request |
 | 1.2.0 | 2026-09-13 | Đồng bộ SSR/browser trước khi đọc và redirect theo persisted cart. | Browser E2E Sprint 4 |
 | 1.1.0 | 2026-09-11 | Thêm bước tạo Order idempotent sau reservation và success state theo Order. | API-20260911-ORDER-FOUNDATION |

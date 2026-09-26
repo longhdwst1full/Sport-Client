@@ -159,6 +159,7 @@ export const STORE_POLICY_PAGES = {
   WARRANTY: { title: 'Chính sách bảo hành', href: '/chinh-sach/chinh-sach-bao-hanh' },
   RETURNS: { title: 'Chính sách đổi trả', href: '/chinh-sach/chinh-sach-doi-tra' },
   PAYMENT: { title: 'Phương thức thanh toán', href: '/chinh-sach/phuong-thuc-thanh-toan' },
+  TERMS: { title: 'Điều khoản & quy định', href: '/chinh-sach/dieu-khoan-quy-dinh' },
 } as const;
 
 // ==========================================
