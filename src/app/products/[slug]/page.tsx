@@ -3,7 +3,12 @@ import { notFound } from 'next/navigation';
 import { Images } from 'lucide-react';
 import type { Metadata } from 'next';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
-import { ProductImageGallery, ProductPurchasePanel, ProductRelatedSection } from '@/features/catalog';
+import {
+  ProductImageGallery,
+  ProductPurchasePanel,
+  ProductRelatedSection,
+  ProductSpecifications,
+} from '@/features/catalog';
 import { siteUrl } from '@/shared/constants';
 import {
   hasOfferPrice,
@@ -256,19 +261,7 @@ export default async function ProductDetailPage({
             )}
 
             {/* Technical Specifications Table */}
-            {TECH_SPECS.length > 0 && (
-            <div className="rounded-[28px] border border-[var(--dc-border)] bg-white p-6 shadow-sm sm:p-8">
-              <h2 className="text-xl font-black text-ink sm:text-2xl">Thông số kỹ thuật chi tiết</h2>
-              <div className="mt-6 divide-y divide-stone-100 rounded-2xl border border-stone-100 bg-stone-50/50">
-                {TECH_SPECS.map(({ label, value }: { label: string; value: string }) => (
-                  <div key={label} className="grid grid-cols-1 gap-1 sm:grid-cols-[1fr_1.3fr] sm:gap-4 px-4 py-3.5 text-xs sm:px-6 sm:text-sm">
-                    <span className="font-bold text-stone-500">{label}</span>
-                    <span className="font-semibold text-ink">{value}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-            )}
+            <ProductSpecifications specs={TECH_SPECS} initialLimit={5} />
 
             {/* Customer Rating & Reviews Summary */}
             <ProductReviewSection productName={product.name} productSlug={slug} />
