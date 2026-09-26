@@ -7,6 +7,12 @@ import {
   saveCustomerAuthTokens,
   usesCustomerAuthCookieTransport,
 } from '../../features/auth/model/auth-token.store';
+import {
+  AUTH_REFRESH_CONFLICT_RETRY_DELAY_MS,
+  AUTH_REFRESH_LOCK_NAME,
+  AUTH_REFRESH_PATH,
+  AuthRefreshErrorCode,
+} from './constants';
 
 /**
  * Mặc định trỏ API chạy máy local.
@@ -27,50 +33,137 @@ export class ApiError<T = unknown> extends Error {
   }
 }
 
-const apiClient = axios.create({
+/**
+ * Chạy trên trình duyệt tại localhost / 127.0.0.1 (local dev, Playwright E2E) thì đi same-origin
+ * qua Next rewrite `/api/v1/:path*`, tránh CORS/trusted-origin của API deploy. Mọi môi trường khác
+ * giữ nguyên `NEXT_PUBLIC_API_URL` — không đổi topology production.
+ */
+export function resolveApiBaseURL(): string {
+  if (
+    typeof window !== 'undefined' &&
+    (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  ) {
+    return '';
+  }
+  return API_URL;
+}
+
+/** @internal Chỉ export cho test transport. Feature phải đi qua `apiFetcher`/generated SDK. */
+export const apiClient = axios.create({
   baseURL: API_URL,
   timeout: 10_000,
   withCredentials: true,
   headers: { Accept: 'application/json' },
 });
 
-// Khi chạy trên trình duyệt tại localhost / 127.0.0.1 (như Playwright E2E hoặc local dev),
-// chuyển baseURL về rỗng để request đi qua Next.js server proxy (rewrites `/api/v1/:path*`),
-// tránh bị chặn bởi CORS của Staging API.
 apiClient.interceptors.request.use((config) => {
-  if (
-    typeof window !== 'undefined' &&
-    (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-  ) {
-    config.baseURL = '';
-  }
+  config.baseURL = resolveApiBaseURL();
   return config;
 });
 
-let refreshPromise: Promise<TokenPairDto> | undefined;
+function toApiError(error: unknown): unknown {
+  if (error instanceof ApiError) return error;
+  if (axios.isAxiosError(error)) return new ApiError(error.response?.status ?? 0, error.response?.data);
+  return error;
+}
 
-async function rotateTokens(): Promise<TokenPairDto> {
-  const refreshToken = readCustomerAuthTokens()?.refreshToken;
-  if (!refreshToken && !usesCustomerAuthCookieTransport()) {
-    throw new Error('No refresh token is available');
-  }
-  refreshPromise ??= axios
-    .post<TokenPairDto>(
-      '/api/v1/auth/refresh',
-      refreshToken ? { refreshToken } : {},
-      { baseURL: API_URL, withCredentials: true, headers: { Accept: 'application/json' } },
-    )
-    .then(({ data }) => {
-      saveCustomerAuthTokens(data);
-      return data;
-    })
-    .catch((error: unknown) => {
+function errorCode(error: ApiError): string | undefined {
+  const payload = error.payload as { code?: unknown } | undefined;
+  return typeof payload?.code === 'string' ? payload.code : undefined;
+}
+
+function isRefreshConflict(error: ApiError): boolean {
+  return error.status === 409 || errorCode(error) === AuthRefreshErrorCode.CONFLICT;
+}
+
+/**
+ * Chỉ 401 từ `/auth/refresh` là phiên chết thật (`AUTH_REFRESH_INVALID|REUSED|MISSING`, hoặc
+ * `UNAUTHORIZED` của backend cũ). Mạng lỗi, 429, 5xx, timeout là sự cố tạm thời: xoá token lúc đó
+ * sẽ đăng xuất khách ở MỌI tab (cờ phiên nằm ở localStorage) vì một lần API chập chờn.
+ */
+function isTerminalRefreshFailure(error: ApiError): boolean {
+  return error.status === 401;
+}
+
+function currentAccessToken(): string | undefined {
+  return readCustomerAuthTokens()?.accessToken || undefined;
+}
+
+function wait(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/**
+ * IDEMPOTENCY: refresh token là dùng-một-lần (rotation + reuse detection phía API). Hai tab cùng
+ * gửi một refresh token thì tab thua nhận `AUTH_REFRESH_REUSED` và API có thể thu hồi cả họ token.
+ * Web Locks tuần tự hoá refresh giữa các tab cùng origin; trình duyệt không có Web Locks thì chỉ
+ * còn single-flight trong tab (`refreshPromise`) và nhánh "tab khác đã xoay" trong `refreshUnderLock`.
+ */
+function withRefreshLock<T>(task: () => Promise<T>): Promise<T> {
+  const locks = typeof navigator !== 'undefined' ? navigator.locks : undefined;
+  if (!locks || typeof locks.request !== 'function') return task();
+  // lib.dom khai kết quả là Promise<ReturnType<callback>> = Promise<Promise<T>>; runtime tự flatten.
+  return locks.request(AUTH_REFRESH_LOCK_NAME, { mode: 'exclusive' }, task) as unknown as Promise<T>;
+}
+
+async function refreshUnderLock(staleAccessToken: string | undefined): Promise<string> {
+  for (let attempt = 0; ; attempt += 1) {
+    // Đọc lại storage SAU khi có lock: tab giữ lock trước có thể đã xoay xong và ghi cookie mới.
+    const before = readCustomerAuthTokens();
+    const beforeAccess = before?.accessToken || undefined;
+    if (beforeAccess && beforeAccess !== staleAccessToken) return beforeAccess;
+
+    const refreshToken = before?.refreshToken;
+    if (!refreshToken && !usesCustomerAuthCookieTransport()) {
       clearCustomerAuthTokens();
-      throw error;
-    })
-    .finally(() => {
-      refreshPromise = undefined;
-    });
+      throw new ApiError(401, { code: AuthRefreshErrorCode.MISSING });
+    }
+    try {
+      // Dùng chính `apiClient` để cùng baseURL same-origin trên localhost. Không đệ quy 401:
+      // nhánh xoay token nằm trong `apiFetcher`, còn lời gọi này không đi qua `apiFetcher`.
+      const { data } = await apiClient.post<TokenPairDto>(
+        AUTH_REFRESH_PATH,
+        refreshToken ? { refreshToken } : {},
+      );
+      saveCustomerAuthTokens(data);
+      return data.accessToken;
+    } catch (error) {
+      const failure = toApiError(error);
+      if (!(failure instanceof ApiError)) throw failure;
+      // IDEMPOTENCY: 409 = một lần xoay khác của cùng token đang chạy; chờ rồi thử lại đúng MỘT lần.
+      // Vòng sau đọc lại storage nên nếu bên kia đã ghi token mới thì dùng luôn, không gọi lại API.
+      if (isRefreshConflict(failure) && attempt === 0) {
+        await wait(AUTH_REFRESH_CONFLICT_RETRY_DELAY_MS);
+        continue;
+      }
+      if (isTerminalRefreshFailure(failure)) {
+        // Không có Web Locks: tab khác có thể vừa xoay xong và làm token của tab này thành "reused".
+        // Token trong storage đã đổi nghĩa là phiên vẫn sống — dùng token đó thay vì đăng xuất.
+        const after = currentAccessToken();
+        if (after && after !== staleAccessToken && after !== beforeAccess) return after;
+        // SECURITY: chỉ ở đây mới xoá token + cờ phiên (đăng xuất mọi tab).
+        clearCustomerAuthTokens();
+      }
+      throw failure;
+    }
+  }
+}
+
+let refreshPromise: Promise<string> | undefined;
+
+/**
+ * Trả access token dùng được cho lần thử lại sau 401.
+ *
+ * - Token hiện tại khác token request đã dùng ⇒ ai đó (request khác/tab khác) đã xoay rồi: dùng
+ *   luôn, không refresh.
+ * - Ngược lại N request 401 song song chia chung MỘT `refreshPromise` ⇒ đúng một lần refresh.
+ */
+function recoverAccessToken(staleAccessToken: string | undefined): Promise<string> {
+  const current = currentAccessToken();
+  if (current && current !== staleAccessToken) return Promise.resolve(current);
+  refreshPromise ??= withRefreshLock(() => refreshUnderLock(staleAccessToken)).finally(() => {
+    refreshPromise = undefined;
+  });
   return refreshPromise;
 }
 
@@ -98,7 +191,7 @@ export async function apiFetcher<T>(
   config: AxiosRequestConfig,
   options: AxiosRequestConfig = {},
 ): Promise<T> {
-  const accessToken = readCustomerAuthTokens()?.accessToken;
+  const accessToken = currentAccessToken();
   const requestConfig: AxiosRequestConfig = {
     ...config,
     ...options,
@@ -112,26 +205,37 @@ export async function apiFetcher<T>(
     const response = await apiClient.request<T>(requestConfig);
     return response.data;
   } catch (error) {
-    const isAuthEndpoint = isCredentialEndpoint(config.url);
+    const originalError = toApiError(error);
     if (
-      axios.isAxiosError(error) &&
-      error.response?.status === 401 &&
+      !(originalError instanceof ApiError) ||
+      originalError.status !== 401 ||
+      isCredentialEndpoint(config.url) ||
       // Điều kiện là CÒN refresh token, không phải còn access token: access hết hạn
       // trước là đúng luồng, chặn ở đây thì không bao giờ xoay được token.
-      hasCustomerRefreshCredential() &&
-      !isAuthEndpoint
+      !hasCustomerRefreshCredential()
     ) {
-      const tokens = await rotateTokens();
+      throw originalError;
+    }
+
+    let nextAccessToken: string;
+    try {
+      nextAccessToken = await recoverAccessToken(accessToken);
+    } catch (refreshError) {
+      // Phiên chết thật ⇒ trả đúng 401 của request gốc. Lỗi tạm thời (0/429/5xx/409) ⇒ trả lỗi
+      // refresh, KHÔNG trả 401 gốc: nơi gọi (vd. `useCustomerAuth`) coi 401 là đăng xuất.
+      if (refreshError instanceof ApiError && isTerminalRefreshFailure(refreshError)) throw originalError;
+      throw refreshError;
+    }
+
+    try {
       const response = await apiClient.request<T>({
         ...requestConfig,
-        headers: { ...requestConfig.headers, Authorization: `Bearer ${tokens.accessToken}` },
+        headers: { ...requestConfig.headers, Authorization: `Bearer ${nextAccessToken}` },
       });
       return response.data;
+    } catch (retryError) {
+      throw toApiError(retryError);
     }
-    if (axios.isAxiosError(error)) {
-      throw new ApiError(error.response?.status ?? 0, error.response?.data);
-    }
-    throw error;
   }
 }
 
