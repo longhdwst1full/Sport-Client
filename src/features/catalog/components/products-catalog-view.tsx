@@ -321,7 +321,7 @@ export function ProductsCatalogView() {
                     </div>
 
                     {/* Hover Overlay */}
-                    <div className="absolute inset-0 flex items-center justify-center gap-2 bg-slate-950/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                    <div className="pointer-events-none absolute inset-0 flex items-center justify-center gap-2 bg-slate-950/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                       <span className="flex items-center gap-1.5 rounded-full bg-white/95 px-3.5 py-1.5 text-xs font-bold text-slate-900 shadow-lg backdrop-blur transition hover:bg-emerald-600 hover:text-white">
                         <Eye className="size-3.5" /> Xem chi tiết
                       </span>

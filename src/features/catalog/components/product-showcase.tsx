@@ -165,7 +165,7 @@ export function ProductShowcase({
                   </div>
 
                   {/* Quick View Overlay */}
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors duration-300 group-hover:bg-black/15">
+                  <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/0 transition-colors duration-300 group-hover:bg-black/15">
                     <span className="flex items-center gap-1.5 rounded-full bg-white/95 px-3.5 py-1.5 text-xs font-bold text-slate-900 opacity-0 shadow-lg backdrop-blur transition-all duration-300 group-hover:-translate-y-1 group-hover:opacity-100">
                       <Eye className="size-3.5" />
                       Xem nhanh
