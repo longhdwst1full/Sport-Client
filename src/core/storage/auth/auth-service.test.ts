@@ -55,4 +55,25 @@ describe('AuthService', () => {
     expect(AuthService.read()).toBeUndefined();
     expect(CookieManager.get(CookieKey.REFRESH_TOKEN)).toBe('');
   });
+
+  /**
+   * Hồi quy: `read()` từng trả bản memory mãi mãi. Tab A xoay refresh token (dùng-một-lần) và ghi
+   * cookie mới, nhưng tab B vẫn gửi refresh token cũ ⇒ API báo reuse và đăng xuất khách.
+   */
+  it('đọc lại cookie khi tab khác đã ghi token mới', () => {
+    AuthService.save(tokens);
+    CookieManager.set(CookieKey.ACCESS_TOKEN, 'access-2');
+    CookieManager.set(CookieKey.REFRESH_TOKEN, 'refresh-2');
+
+    expect(AuthService.read()?.accessToken).toBe('access-2');
+    expect(AuthService.read()?.refreshToken).toBe('refresh-2');
+  });
+
+  it('coi là đăng xuất khi tab khác đã xoá cookie', () => {
+    AuthService.save(tokens);
+    CookieManager.remove(CookieKey.ACCESS_TOKEN);
+    CookieManager.remove(CookieKey.REFRESH_TOKEN);
+
+    expect(AuthService.read()).toBeUndefined();
+  });
 });

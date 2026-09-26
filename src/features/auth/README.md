@@ -1,10 +1,10 @@
 # Storefront Auth — maintenance note
 
-> **Document version:** 1.1.0
+> **Document version:** 1.2.0
 >
-> **Last updated:** 2026-09-21
+> **Last updated:** 2026-09-26
 >
-> **Change summary:** Đồng bộ LoginDto remember-me; Storefront V1 mặc định dùng session refresh cookie.
+> **Change summary:** Ổn định refresh token: same-origin trên localhost, khoá chéo tab, chỉ đăng xuất khi refresh trả 401, AuthService đọc lại cookie mỗi lần.
 
 ## Phạm vi
 
@@ -35,6 +35,14 @@ Chưa dùng: `useLogoutCustomer`, `useRefreshCustomerToken`, `getCustomerCurrent
 
 `AuthService` (`src/core/storage/auth`) sở hữu token. Feature **không** đọc cookie/localStorage trực tiếp (`15-core-infrastructure.md` RULE-CORE-04).
 
+## Refresh token (thuộc `lib/api/fetcher.ts`)
+
+- Refresh đi qua cùng `apiClient` với mọi request ⇒ trên `localhost`/`127.0.0.1` dùng baseURL rỗng (Next rewrite), môi trường khác giữ `NEXT_PUBLIC_API_URL`.
+- 401 ở request thường: nếu access token hiện tại khác token request đã dùng ⇒ thử lại bằng token hiện tại, không refresh. Ngược lại N request 401 song song chung một refresh (single-flight trong tab) và refresh chạy trong Web Lock `dctd-client-auth-refresh` (chéo tab, khi trình duyệt hỗ trợ). Sau khi lấy lock, đọc lại cookie: tab khác đã xoay thì dùng luôn.
+- Kết quả refresh: `401` (`AUTH_REFRESH_INVALID|REUSED|MISSING`, `UNAUTHORIZED` cũ) ⇒ xoá token + cờ phiên, trả 401 gốc. `409 AUTH_REFRESH_CONFLICT` ⇒ chờ 300ms thử lại đúng một lần. Mạng/429/5xx/timeout ⇒ giữ phiên, trả lỗi refresh (`ApiError`, mạng là status 0).
+- Mã lỗi/tên lock nằm ở `src/lib/api/constants.ts`. Test: `src/lib/api/fetcher.refresh.test.ts`.
+- Không dùng BroadcastChannel: cookie dùng chung mọi tab và `AuthService.read()` đọc lại cookie mỗi lần, nên tab khác thấy token mới mà không cần tin nhắn; đổi trạng thái đăng nhập giữa tab vẫn qua sự kiện `storage` của cờ phiên.
+
 ## Cache / bảo mật
 
 - Token nằm ở cookie `SameSite=Lax`, `Secure` trên https, `Max-Age` = `expiresIn`. Không ghi vào `localStorage`/`sessionStorage`.
@@ -52,5 +60,6 @@ Chưa dùng: `useLogoutCustomer`, `useRefreshCustomerToken`, `getCustomerCurrent
 
 | Version | Date | Change summary |
 | --- | --- | --- |
+| 1.2.0 | 2026-09-26 | Ghi hành vi refresh mới: same-origin localhost, Web Lock chéo tab, chỉ xoá phiên khi refresh 401, 409 thử lại một lần, cookie là nguồn sự thật. |
 | 1.1.0 | 2026-09-21 | Đồng bộ `LoginDto.rememberMe`; giữ Storefront ở session-cookie mode. |
 | 1.0.0 | 2026-09-13 | Tạo note cùng đợt chuyển token sang cookie. |

@@ -4,7 +4,8 @@ import { CookieManager } from '../manager/cookie.manager';
 
 /**
  * Nguồn token duy nhất của Storefront — kế thừa `AuthService` của
- * `admin-client`/`dragon-web-v2`: memory trước, cookie làm lớp bền.
+ * `admin-client`/`dragon-web-v2`. Trên trình duyệt cookie là nguồn sự thật (đọc lại mỗi lần để
+ * đồng bộ giữa các tab); memory chỉ là cache khớp cookie và là nguồn duy nhất ngoài trình duyệt.
  *
  * Không dùng localStorage: cookie hết hạn theo `expiresIn` server trả về,
  * `SameSite=Lax` + `Secure` do `CookieManager` đặt sẵn.
@@ -15,16 +16,27 @@ const COOKIE_OPTS = { sameSite: 'Lax' as const };
 
 export const AuthService = {
   read(): TokenPairDto | undefined {
-    if (memoryTokens) return memoryTokens;
+    // Ngoài trình duyệt (SSR/test node) không có cookie: memory là nguồn duy nhất.
+    if (typeof document === 'undefined') return memoryTokens;
+    // SECURITY: trên trình duyệt cookie là nguồn sự thật và được đọc lại MỖI lần. Cookie dùng chung
+    // mọi tab; cache memory vĩnh viễn làm tab B giữ refresh token mà tab A đã xoay (dùng-một-lần)
+    // ⇒ lần refresh kế của tab B bị API coi là reuse và đăng xuất khách.
     const accessToken = CookieManager.get(CookieKey.ACCESS_TOKEN);
     const refreshToken = CookieManager.get(CookieKey.REFRESH_TOKEN) || undefined;
     // Cookie access token hết hạn trước refresh token là trạng thái BÌNH THƯỜNG:
     // access sống theo `expiresIn`, refresh là session cookie. Trả undefined ở đây
     // sẽ vứt mất refresh token còn dùng được và ép khách đăng nhập lại.
-    if (!accessToken && !refreshToken) return undefined;
-    // Phiên trước đã persist: dựng lại đủ dùng cho header + refresh.
+    if (!accessToken && !refreshToken) {
+      memoryTokens = undefined;
+      return undefined;
+    }
+    // Memory chỉ còn giá trị khi khớp cookie (giữ `expiresIn`… của lần save gần nhất ở tab này).
+    if (memoryTokens?.accessToken === accessToken && memoryTokens.refreshToken === refreshToken) {
+      return memoryTokens;
+    }
+    // Phiên trước đã persist hoặc tab khác vừa ghi token mới: dựng lại đủ dùng cho header + refresh.
     memoryTokens = {
-      accessToken: accessToken ?? '',
+      accessToken,
       refreshToken,
       tokenType: 'Bearer',
       expiresIn: 0,
