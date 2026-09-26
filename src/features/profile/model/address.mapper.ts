@@ -77,11 +77,11 @@ export function toCreateAddressPayload(values: AddressFormValues): CreateCustome
     phone: values.phone.trim(),
     addressLine: location.streetAddress.trim(),
     ward: location.wardName || undefined,
-    wardCode: location.wardCode == null ? undefined : String(location.wardCode),
+    wardCode: location.wardCode ?? undefined,
     district: location.districtName || undefined,
-    districtCode: location.districtCode == null ? undefined : String(location.districtCode),
+    districtCode: location.districtCode ?? undefined,
     province: location.provinceName || undefined,
-    provinceCode: location.provinceCode == null ? '' : String(location.provinceCode),
+    provinceCode: location.provinceCode ?? '',
     isDefault: values.isDefault,
   };
 }
@@ -104,10 +104,9 @@ export const EMPTY_LOCATION: SelectedAddressData = {
   fullAddress: '',
 };
 
-/** Mã lưu dạng chuỗi; selector làm việc bằng số nên quy đổi tại ranh giới này. */
-function toCode(value: string): number | null {
-  const parsed = Number(value);
-  return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
+/** Mã của hãng vận chuyển giữ nguyên chuỗi (mã phường GHN có thể chứa chữ, vd. `1B2729`). */
+function toCode(value: string): string | null {
+  return value.trim() || null;
 }
 
 /**

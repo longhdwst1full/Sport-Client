@@ -5,18 +5,22 @@ import {
 } from '@/generated/api/shipping/shipping';
 
 export interface AddressDivision {
-  code: number;
+  /**
+   * CONTRACT: mã của hãng vận chuyển, giữ nguyên dạng chuỗi. Mã phường GHN có thể chứa chữ
+   * (vd. `1B2729` ở Hà Nội); ép sang số sẽ thành NaN và mọi phường đó trùng nhau/không chọn được.
+   */
+  code: string;
   name: string;
 }
 
 export type Province = AddressDivision;
 
 export interface District extends AddressDivision {
-  province_code?: number;
+  province_code?: string;
 }
 
 export interface Ward extends AddressDivision {
-  district_code?: number;
+  district_code?: string;
 }
 
 /**
@@ -31,13 +35,12 @@ export interface Ward extends AddressDivision {
  */
 const cache = {
   provinces: null as Province[] | null,
-  districts: new Map<number, District[]>(),
-  wards: new Map<number, Ward[]>(),
+  districts: new Map<string, District[]>(),
+  wards: new Map<string, Ward[]>(),
 };
 
-/** Mã của hãng là chuỗi số; component đang dùng number nên quy đổi tại ranh giới này. */
 const toDivision = (item: { code: string; name: string }): AddressDivision => ({
-  code: Number(item.code),
+  code: item.code,
   name: item.name,
 });
 
@@ -49,19 +52,19 @@ export async function fetchVietnamProvinces(): Promise<Province[]> {
   return provinces;
 }
 
-export async function fetchVietnamDistricts(provinceCode: number): Promise<District[]> {
+export async function fetchVietnamDistricts(provinceCode: string): Promise<District[]> {
   const cached = cache.districts.get(provinceCode);
   if (cached) return cached;
-  const { items } = await listShippingDistricts({ provinceCode: String(provinceCode) });
+  const { items } = await listShippingDistricts({ provinceCode });
   const districts = items.map((item) => ({ ...toDivision(item), province_code: provinceCode }));
   cache.districts.set(provinceCode, districts);
   return districts;
 }
 
-export async function fetchVietnamWards(districtCode: number): Promise<Ward[]> {
+export async function fetchVietnamWards(districtCode: string): Promise<Ward[]> {
   const cached = cache.wards.get(districtCode);
   if (cached) return cached;
-  const { items } = await listShippingWards({ districtCode: String(districtCode) });
+  const { items } = await listShippingWards({ districtCode });
   const wards = items.map((item) => ({ ...toDivision(item), district_code: districtCode }));
   cache.wards.set(districtCode, wards);
   return wards;

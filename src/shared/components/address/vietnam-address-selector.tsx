@@ -12,11 +12,11 @@ import {
 } from '@/shared/services/vietnam-address.service';
 
 export interface SelectedAddressData {
-  provinceCode: number | null;
+  provinceCode: string | null;
   provinceName: string;
-  districtCode: number | null;
+  districtCode: string | null;
   districtName: string;
-  wardCode: number | null;
+  wardCode: string | null;
   wardName: string;
   streetAddress: string;
   fullAddress: string;
@@ -40,21 +40,21 @@ export function VietnamAddressSelector({
   const [districts, setDistricts] = useState<District[]>([]);
   const [wards, setWards] = useState<Ward[]>([]);
 
-  const [selectedProvinceCode, setSelectedProvinceCode] = useState<number | null>(
+  const [selectedProvinceCode, setSelectedProvinceCode] = useState<string | null>(
     initialData?.provinceCode ?? null,
   );
   const [selectedProvinceName, setSelectedProvinceName] = useState<string>(
     initialData?.provinceName ?? '',
   );
 
-  const [selectedDistrictCode, setSelectedDistrictCode] = useState<number | null>(
+  const [selectedDistrictCode, setSelectedDistrictCode] = useState<string | null>(
     initialData?.districtCode ?? null,
   );
   const [selectedDistrictName, setSelectedDistrictName] = useState<string>(
     initialData?.districtName ?? '',
   );
 
-  const [selectedWardCode, setSelectedWardCode] = useState<number | null>(
+  const [selectedWardCode, setSelectedWardCode] = useState<string | null>(
     initialData?.wardCode ?? null,
   );
   const [selectedWardName, setSelectedWardName] = useState<string>(
@@ -182,7 +182,7 @@ export function VietnamAddressSelector({
   ]);
 
   const handleProvinceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const code = e.target.value ? Number(e.target.value) : null;
+    const code = e.target.value || null;
     const found = provinces.find((p) => p.code === code);
     setSelectedProvinceCode(code);
     setSelectedProvinceName(found?.name ?? '');
@@ -193,7 +193,7 @@ export function VietnamAddressSelector({
   };
 
   const handleDistrictChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const code = e.target.value ? Number(e.target.value) : null;
+    const code = e.target.value || null;
     const found = districts.find((d) => d.code === code);
     setSelectedDistrictCode(code);
     setSelectedDistrictName(found?.name ?? '');
@@ -202,7 +202,7 @@ export function VietnamAddressSelector({
   };
 
   const handleWardChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const code = e.target.value ? Number(e.target.value) : null;
+    const code = e.target.value || null;
     const found = wards.find((w) => w.code === code);
     setSelectedWardCode(code);
     setSelectedWardName(found?.name ?? '');
