@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, Eye, RefreshCw, Zap } from 'lucide-react';
+import { ArrowRight, RefreshCw, Zap } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useCategoryTabs } from '../hooks/use-category-tabs';
 import { useProductShowcase } from '../hooks/use-product-showcase';
@@ -148,7 +148,12 @@ export function ProductShowcase({
                   vào giỏ không được nằm trong thẻ <a>, vừa sai HTML vừa làm bàn phím kích
                   hoạt nhầm sang trang chi tiết. */}
               <div className="flex w-full flex-1 flex-col">
-                <div className="relative aspect-[4/3] overflow-hidden bg-slate-100">
+                {/* Image Link */}
+                <Link
+                  href={`/products/${product.slug}`}
+                  className="relative block aspect-[4/3] overflow-hidden bg-slate-100"
+                  aria-label={`Xem chi tiết ${product.name}`}
+                >
                   <Image
                     src={product.imageUrl}
                     alt={product.name}
@@ -163,15 +168,7 @@ export function ProductShowcase({
                       {product.productType === 'BUNDLE' ? 'Combo trọn bộ' : product.badge}
                     </span>
                   </div>
-
-                  {/* Quick View Overlay */}
-                  <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/0 transition-colors duration-300 group-hover:bg-black/15">
-                    <span className="flex items-center gap-1.5 rounded-full bg-white/95 px-3.5 py-1.5 text-xs font-bold text-slate-900 opacity-0 shadow-lg backdrop-blur transition-all duration-300 group-hover:-translate-y-1 group-hover:opacity-100">
-                      <Eye className="size-3.5" />
-                      Xem nhanh
-                    </span>
-                  </div>
-                </div>
+                </Link>
 
                 <div className="flex flex-1 flex-col p-4 sm:p-5">
                   <div className="flex items-center justify-between gap-2 text-[10px] font-extrabold uppercase tracking-[0.16em]">
@@ -182,7 +179,7 @@ export function ProductShowcase({
                   <h3 className="mt-2 min-h-[44px] text-sm font-bold text-slate-900 leading-snug line-clamp-2 group-hover:text-emerald-700 transition">
                     <Link
                       href={`/products/${product.slug}`}
-                      className="after:absolute after:inset-0 after:content-['']"
+                      className="hover:underline"
                     >
                       {product.name}
                     </Link>

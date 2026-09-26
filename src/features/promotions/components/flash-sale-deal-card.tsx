@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { Eye, ShoppingBag } from 'lucide-react';
+import { ShoppingBag } from 'lucide-react';
 import { vndMoney } from '@/shared/format/money';
 import type { FlashSaleDealView } from '../model/flash-sale.mapper';
 
@@ -17,7 +17,7 @@ export function FlashSaleDealCard({
 
   return (
     <div className="group flex flex-col overflow-hidden rounded-[26px] border border-slate-800 bg-slate-900/90 shadow-xl transition-all duration-300 hover:-translate-y-1.5 hover:border-rose-500/50 hover:shadow-2xl hover:shadow-rose-500/10">
-      <Link href={`/products/${deal.slug}`} className="relative aspect-[4/3] overflow-hidden bg-slate-800">
+      <Link href={`/products/${deal.slug}`} className="relative aspect-[4/3] overflow-hidden bg-slate-800" aria-label={`Xem chi tiết ${deal.name}`}>
         {deal.imageUrl ? (
           <Image
             src={deal.imageUrl}
@@ -40,11 +40,6 @@ export function FlashSaleDealCard({
               -{deal.discountPercent}%
             </span>
           ) : null}
-        </div>
-        <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition duration-300 group-hover:bg-black/20">
-          <span className="flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1.5 text-xs font-bold text-slate-900 opacity-0 shadow-lg backdrop-blur transition-all duration-300 group-hover:opacity-100">
-            <Eye className="size-3.5" /> Xem chi tiết
-          </span>
         </div>
       </Link>
 

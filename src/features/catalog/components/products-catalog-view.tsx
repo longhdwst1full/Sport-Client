@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Search, Eye, X, RotateCcw, Zap } from 'lucide-react';
+import { Search, X, RotateCcw, Zap } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useAppDispatch } from '@/app/store/hooks';
 import { addCartItem } from '@/app/store/cart.slice';
@@ -303,8 +303,12 @@ export function ProductsCatalogView() {
                 {/* Link phủ cả thẻ bằng pseudo-element: nút thêm vào giỏ không được nằm
                     trong thẻ <a>, vừa sai HTML vừa làm bàn phím kích hoạt nhầm. */}
                 <div className="flex w-full flex-1 flex-col">
-                  {/* Image Box */}
-                  <div className="relative aspect-[4/3] overflow-hidden bg-slate-100">
+                  {/* Image Link */}
+                  <Link
+                    href={`/products/${product.slug}`}
+                    className="relative block aspect-[4/3] overflow-hidden bg-slate-100"
+                    aria-label={`Xem chi tiết ${product.name}`}
+                  >
                     <Image
                       src={product.imageUrl}
                       alt={product.name}
@@ -319,14 +323,7 @@ export function ProductsCatalogView() {
                         {product.productType === 'BUNDLE' ? 'Combo trọn bộ' : product.badge}
                       </span>
                     </div>
-
-                    {/* Hover Overlay */}
-                    <div className="pointer-events-none absolute inset-0 flex items-center justify-center gap-2 bg-slate-950/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                      <span className="flex items-center gap-1.5 rounded-full bg-white/95 px-3.5 py-1.5 text-xs font-bold text-slate-900 shadow-lg backdrop-blur transition hover:bg-emerald-600 hover:text-white">
-                        <Eye className="size-3.5" /> Xem chi tiết
-                      </span>
-                    </div>
-                  </div>
+                  </Link>
 
                   {/* Card Content */}
                   <div className="flex flex-1 flex-col p-4 sm:p-5">
@@ -338,7 +335,7 @@ export function ProductsCatalogView() {
                     <h3 className="mt-2 min-h-[44px] text-sm font-bold leading-snug text-slate-900 line-clamp-2 transition group-hover:text-emerald-700">
                       <Link
                         href={`/products/${product.slug}`}
-                        className="after:absolute after:inset-0 after:content-['']"
+                        className="hover:underline"
                       >
                         {product.name}
                       </Link>
