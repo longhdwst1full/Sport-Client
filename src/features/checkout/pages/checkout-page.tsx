@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState  } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { AlertTriangle, CheckCircle2, CreditCard, LoaderCircle, LocateFixed, MapPin, Pencil, RotateCcw, Truck } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, CreditCard, LoaderCircle, LocateFixed, MapPin, Pencil, RotateCcw, ShieldCheck, Truck } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { clearCart, removeCartItem } from '@/app/store/cart.slice';
 import { useCartHydrated } from '@/app/providers';
@@ -45,14 +45,6 @@ const initialAddress: SelectedAddressData = {
   streetAddress: '',
   fullAddress: '',
 };
-
-/** Ba bước của checkout; bước sau chỉ mở khi bước trước hợp lệ. */
-const STEPS = [
-  { id: 1, label: 'Địa chỉ nhận hàng', short: 'Địa chỉ' },
-  { id: 2, label: 'Vận chuyển & thanh toán', short: 'Vận chuyển' },
-  { id: 3, label: 'Xác nhận đơn', short: 'Xác nhận' },
-] as const;
-type Step = (typeof STEPS)[number]['id'];
 
 /** Mã của hãng vận chuyển giữ nguyên chuỗi (mã phường GHN có thể chứa chữ); rỗng thì bắt chọn lại. */
 const toCode = (value?: string | null) => value?.trim() || null;
@@ -109,7 +101,6 @@ export function CheckoutPage() {
   const [autoQuoting, setAutoQuoting] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
-  const [step, setStep] = useState<Step>(1);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   // Đổi `key` để bộ chọn địa chỉ nạp lại dữ liệu khi khách chọn một địa chỉ đã lưu.
   const [addressFormKey, setAddressFormKey] = useState(0);
@@ -280,11 +271,31 @@ export function CheckoutPage() {
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!isLoaded || busy || step !== 3 || !quote || !context) return;
+    if (!isLoaded || busy) return;
     setError('');
-    if (quote.requiresShippingConsultation) return;
+
+    if (!addressValid) {
+      setError('Vui lòng điền họ tên, số điện thoại và chọn đầy đủ địa chỉ giao hàng (Tỉnh, Huyện, Phường/Xã).');
+      return;
+    }
+
+    if (autoQuoting) {
+      setError('Hệ thống đang tính toán phí vận chuyển, vui lòng chờ trong giây lát...');
+      return;
+    }
+
+    if (!quote || !context) {
+      setError('Chưa thể tính phí vận chuyển hoặc địa chỉ không hợp lệ. Vui lòng kiểm tra lại địa chỉ nhận hàng.');
+      return;
+    }
+
+    if (quote.requiresShippingConsultation) {
+      setError('Đơn hàng cần nhân viên tư vấn cước gửi xe riêng. Vui lòng bấm kiểm tra lại phí sau khi đã thống nhất.');
+      return;
+    }
+
     if (!acceptedTerms) {
-      setError('Vui lòng đồng ý điều khoản trước khi đặt hàng.');
+      setError('Vui lòng đánh dấu đồng ý với Điều khoản dịch vụ và Chính sách đổi trả trước khi đặt hàng.');
       return;
     }
     setBusy(true);
@@ -404,213 +415,369 @@ export function CheckoutPage() {
   const inputClass = 'mt-1.5 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/15';
   const optionClass = (selected: boolean) =>
     `rounded-2xl border p-4 text-left transition ${selected ? 'border-emerald-600 bg-emerald-50 ring-1 ring-emerald-600' : 'border-slate-200 hover:border-emerald-300'}`;
-  const addressLine = [address.streetAddress, address.wardName, address.districtName, address.provinceName].filter(Boolean).join(', ');
-  const paymentLabel = paymentMethod === 'VNPAY' ? 'Chuyển khoản (QR qua VNPay)' : 'Nhận hàng trả tiền (COD)';
 
   return (
     <StorefrontLayout>
       {/* StorefrontLayout đã có <main>; lồng thêm <main> là sai landmark cho trình đọc màn hình. */}
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mb-6">
-          <Link href="/cart" className="text-sm font-bold text-emerald-700">← Quay lại giỏ hàng</Link>
-          <h1 className="mt-2 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">Thanh toán</h1>
+        <div className="mb-8">
+          <Link href="/cart" className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 hover:underline">
+            ← Quay lại giỏ hàng
+          </Link>
+          <div className="mt-2 flex flex-wrap items-baseline justify-between gap-4">
+            <div>
+              <h1 className="mt-2 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
+                Thanh toán đơn hàng
+              </h1>
+              <p className="mt-1 text-sm text-slate-500">
+                Vui lòng điền thông tin nhận hàng và chọn phương thức thanh toán phù hợp.
+              </p>
+            </div>
+            <div className="hidden sm:flex items-center gap-2 rounded-full border border-emerald-200/80 bg-emerald-50/70 px-3.5 py-1.5 text-xs font-bold text-emerald-800">
+              <ShieldCheck className="size-4 text-emerald-600" />
+              <span>Bảo mật chuẩn SSL 256-bit</span>
+            </div>
+          </div>
         </div>
 
-        {/* Thanh bước: bước đã qua bấm được để quay lại sửa; bước chưa tới bị khoá. */}
-        <ol className="mb-7 grid grid-cols-3 gap-2" aria-label="Các bước thanh toán">
-          {STEPS.map(({ id, label, short }) => {
-            const done = step > id;
-            const current = step === id;
-            return (
-              <li key={id}>
-                <button
-                  type="button"
-                  disabled={!done}
-                  onClick={() => setStep(id)}
-                  aria-current={current ? 'step' : undefined}
-                  className={`flex w-full items-center gap-2 rounded-2xl border px-3 py-2.5 text-left text-xs font-bold sm:text-sm ${
-                    current ? 'border-emerald-600 bg-emerald-50 text-emerald-800' : done ? 'border-emerald-200 bg-white text-emerald-700' : 'border-slate-200 bg-white text-slate-400'
-                  }`}
-                >
-                  <span className={`grid size-6 shrink-0 place-items-center rounded-full text-[11px] ${current || done ? 'bg-emerald-600 text-white' : 'bg-slate-200 text-slate-500'}`}>
-                    {done ? <CheckCircle2 className="size-4" /> : id}
-                  </span>
-                  <span className="min-w-0 truncate"><span className="sm:hidden">{short}</span><span className="hidden sm:inline">{label}</span></span>
-                </button>
-              </li>
-            );
-          })}
-        </ol>
-
-        <form onSubmit={submit} className="grid grid-cols-1 gap-7 lg:grid-cols-[minmax(0,1fr)_380px] [&>*]:min-w-0">
+        <form onSubmit={submit} className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_400px] [&>*]:min-w-0">
           <div className="min-w-0 space-y-6">
-            {step === 1 && (
-              <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-                <h2 className="flex items-center gap-2 font-black text-slate-900"><MapPin className="size-5 text-emerald-600" /> Địa chỉ nhận hàng</h2>
+            {/* Section 1: Thông tin giao hàng */}
+            <section className="rounded-3xl border border-slate-200/90 bg-white p-6 shadow-sm transition hover:border-slate-300">
+              <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
+                <span className="grid size-8 place-items-center rounded-xl bg-emerald-600 text-sm font-black text-white shadow-sm shadow-emerald-600/30">
+                  1
+                </span>
+                <div>
+                  <h2 className="flex items-center gap-2 text-base font-black text-slate-900 sm:text-lg">
+                    <MapPin className="size-5 text-emerald-600" /> Thông tin giao hàng
+                  </h2>
+                  <p className="text-xs text-slate-500">Người nhận và địa chỉ nhận hàng tận nơi</p>
+                </div>
+              </div>
 
-                {savedAddresses.data && savedAddresses.data.length > 0 && (
-                  <div className="mt-4 space-y-2" role="radiogroup" aria-label="Địa chỉ đã lưu">
-                    {savedAddresses.data.map((saved) => (
-                      <button key={saved.id} type="button" role="radio" aria-checked={selectedAddressId === saved.id} onClick={() => applySavedAddress(saved)} className={`w-full ${optionClass(selectedAddressId === saved.id)}`}>
-                        <span className="flex flex-wrap items-center justify-between gap-2">
-                          <strong className="text-sm text-slate-900">{saved.recipient}</strong>
-                          <span className="text-xs font-semibold text-slate-500">{saved.phone}</span>
-                        </span>
-                        <span className="mt-1 block text-xs leading-5 text-slate-600">
-                          {[saved.addressLine, saved.ward, saved.district, saved.province].filter(Boolean).join(', ')}
-                        </span>
-                        {saved.isDefault && <span className="mt-1 inline-block rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-700">Mặc định</span>}
-                      </button>
-                    ))}
+              {savedAddresses.data && savedAddresses.data.length > 0 && (
+                <div className="mt-5 space-y-2.5" role="radiogroup" aria-label="Địa chỉ đã lưu">
+                  <span className="block text-xs font-bold uppercase tracking-wider text-slate-400">
+                    Sổ địa chỉ của bạn:
+                  </span>
+                  {savedAddresses.data.map((saved) => (
                     <button
+                      key={saved.id}
                       type="button"
-                      onClick={() => { setSelectedAddressId(''); setName(''); setPhone(''); setAddress(initialAddress); setAddressFormKey((key) => key + 1); invalidateQuote(); }}
-                      className="w-full rounded-2xl border border-dashed border-slate-300 p-3 text-sm font-bold text-emerald-700 hover:border-emerald-400"
+                      role="radio"
+                      aria-checked={selectedAddressId === saved.id}
+                      onClick={() => applySavedAddress(saved)}
+                      className={`w-full ${optionClass(selectedAddressId === saved.id)}`}
                     >
-                      + Giao tới địa chỉ khác
-                    </button>
-                  </div>
-                )}
-
-                <div className="mt-5 grid gap-4 sm:grid-cols-2">
-                  <label className="text-xs font-bold text-slate-700">Người nhận <span className="text-rose-600">*</span><input value={name} onChange={(e) => { setName(e.target.value); invalidateQuote(); }} autoComplete="name" className={inputClass} /></label>
-                  <label className="text-xs font-bold text-slate-700">Số điện thoại <span className="text-rose-600">*</span><input value={phone} inputMode="tel" autoComplete="tel" onChange={(e) => { setPhone(e.target.value); invalidateQuote(); }} className={inputClass} /></label>
-                  <label className="text-xs font-bold text-slate-700 sm:col-span-2">Email (nhận thông báo đơn hàng)<input type="email" value={email} autoComplete="email" onChange={(e) => { setEmail(e.target.value); invalidateQuote(); }} className={inputClass} /></label>
-                </div>
-                <div className="mt-5"><VietnamAddressSelector key={addressFormKey} initialData={address} onChange={(value) => { setAddress(value); invalidateQuote(); }} required /></div>
-                <label className="mt-4 block text-xs font-bold text-slate-700">Ghi chú giao hàng<textarea rows={2} value={note} onChange={(e) => { setNote(e.target.value); invalidateQuote(); }} className={inputClass} placeholder="Gọi trước khi giao, giờ nhận hàng..." /></label>
-
-                <div className="mt-6 flex justify-end">
-                  <button type="button" disabled={!addressValid} onClick={() => setStep(2)} className="rounded-2xl bg-emerald-600 px-6 py-3 text-sm font-black text-white disabled:cursor-not-allowed disabled:bg-slate-300">
-                    Tiếp tục
-                  </button>
-                </div>
-                {!addressValid && <p className="mt-2 text-right text-xs text-slate-500">Điền người nhận, số điện thoại và chọn đủ tỉnh, quận, phường.</p>}
-              </section>
-            )}
-
-            {step === 2 && (
-              <>
-                <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-                  <h2 className="flex items-center gap-2 font-black text-slate-900"><Truck className="size-5 text-emerald-600" /> Phương thức vận chuyển</h2>
-                  <div className="mt-4 grid gap-3 sm:grid-cols-2" role="radiogroup" aria-label="Cách giao hàng">
-                    <button type="button" role="radio" aria-checked={!requestConsultation} onClick={() => { setRequestConsultation(false); invalidateQuote(); }} className={optionClass(!requestConsultation)}>
-                      <strong className="text-sm text-slate-900">Giao hàng tiêu chuẩn</strong>
-                      <span className="mt-1 block text-xs leading-5 text-slate-500">Shop tự giao miễn phí trong 10 km, xa hơn giao qua GHN.</span>
-                      {!requestConsultation && (
-                        <span className="mt-3 block text-sm font-bold" aria-live="polite">
-                          {autoQuoting || (!quote && !error) ? (
-                            <span className="inline-flex items-center gap-1.5 text-slate-500"><LoaderCircle className="size-4 animate-spin" /> Đang tính phí vận chuyển...</span>
-                          ) : quoteView ? (
-                            <span className="text-emerald-700">
-                              {quoteView.shippingTotalAmount === 0 ? 'Miễn phí' : quoteView.shippingTotalLabel} · {quoteView.shippingMethodLabel}
-                              <span className="block text-xs font-semibold text-slate-500">Dự kiến {quoteView.etaLabel}</span>
-                            </span>
-                          ) : (
-                            <span className="text-rose-600">Chưa tính được phí</span>
-                          )}
+                      <span className="flex flex-wrap items-center justify-between gap-2">
+                        <strong className="text-sm font-bold text-slate-900">{saved.recipient}</strong>
+                        <span className="text-xs font-bold text-slate-500">{saved.phone}</span>
+                      </span>
+                      <span className="mt-1 block text-xs leading-5 text-slate-600">
+                        {[saved.addressLine, saved.ward, saved.district, saved.province].filter(Boolean).join(', ')}
+                      </span>
+                      {saved.isDefault && (
+                        <span className="mt-1.5 inline-block rounded-full bg-emerald-100 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-emerald-700">
+                          Mặc định
                         </span>
                       )}
                     </button>
-                    <button type="button" role="radio" aria-checked={requestConsultation} onClick={() => { setRequestConsultation(true); invalidateQuote(); }} className={optionClass(requestConsultation)}>
-                      <strong className="text-sm text-slate-900">Nhờ shop gửi</strong>
-                      <span className="mt-1 block text-xs leading-5 text-slate-500">Shop gọi báo phí vận chuyển và tính riêng; đơn hiện chỉ tính tiền hàng. Hợp với hàng cồng kềnh, gửi xe khách.</span>
-                    </button>
-                  </div>
-                  {!requestConsultation && (
-                    <button type="button" onClick={useCurrentLocation} className="mt-4 inline-flex items-center gap-2 rounded-xl border border-emerald-200 px-3 py-2 text-xs font-bold text-emerald-700">
-                      <LocateFixed className="size-4" /> {coordinates ? 'Đã dùng vị trí hiện tại' : 'Dùng vị trí hiện tại — miễn phí giao nếu cách chi nhánh dưới 10 km'}
-                    </button>
-                  )}
-                  {error && !autoQuoting && !quote && (
-                    <div role="alert" className="mt-4 flex flex-col gap-3 rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700 sm:flex-row sm:items-center sm:justify-between">
-                      <span className="flex items-start gap-2 font-semibold"><AlertTriangle className="mt-0.5 size-4 shrink-0" /> {error}</span>
-                      <button type="button" onClick={retryQuote} className="inline-flex shrink-0 items-center gap-1.5 rounded-xl bg-rose-600 px-4 py-2 text-xs font-black text-white">
-                        <RotateCcw className="size-3.5" /> Thử lại
-                      </button>
-                    </div>
-                  )}
-                </section>
-
-                <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-                  <h2 className="flex items-center gap-2 font-black text-slate-900"><CreditCard className="size-5 text-emerald-600" /> Phương thức thanh toán</h2>
-                  {/* Storefront chỉ còn 2 cách: COD và chuyển khoản qua QR VNPay. Chuyển khoản tay
-                      (BANK_TRANSFER) cần nhân viên đối soát nên chỉ còn dùng ở quầy. */}
-                  <div className="mt-4 grid gap-3 sm:grid-cols-2" role="radiogroup" aria-label="Phương thức thanh toán">
-                    {([
-                      ['COD', 'Nhận hàng trả tiền', 'Thanh toán đủ một lần cho nhân viên giao hàng.'],
-                      ['VNPAY', 'Chuyển khoản (QR qua VNPay)', 'Đặt hàng xong chuyển sang VNPay để quét QR. Đơn xác nhận khi VNPay báo thành công.'],
-                    ] as const).map(([value, label, description]) => (
-                      <button key={value} type="button" role="radio" aria-checked={paymentMethod === value} onClick={() => { setPaymentMethod(value); invalidateQuote(); }} className={optionClass(paymentMethod === value)}>
-                        <strong className="text-sm text-slate-900">{label}</strong><span className="mt-1 block text-xs leading-5 text-slate-500">{description}</span>
-                      </button>
-                    ))}
-                  </div>
-                </section>
-
-                <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
-                  <button type="button" onClick={() => setStep(1)} className="rounded-2xl border border-slate-200 px-5 py-3 text-sm font-bold text-slate-700">Quay lại</button>
-                  <button type="button" disabled={!quote || autoQuoting} onClick={() => { setAcceptedTerms(false); setStep(3); }} className="rounded-2xl bg-emerald-600 px-6 py-3 text-sm font-black text-white disabled:cursor-not-allowed disabled:bg-slate-300">
-                    {autoQuoting ? 'Đang tính phí...' : 'Tiếp tục'}
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedAddressId('');
+                      setName('');
+                      setPhone('');
+                      setAddress(initialAddress);
+                      setAddressFormKey((key) => key + 1);
+                      invalidateQuote();
+                    }}
+                    className="w-full rounded-2xl border border-dashed border-slate-300 p-3 text-xs font-bold text-emerald-700 hover:border-emerald-400 hover:bg-emerald-50/50 transition"
+                  >
+                    + Giao tới địa chỉ khác
                   </button>
                 </div>
-              </>
-            )}
+              )}
 
-            {step === 3 && quote && (
-              <section className="space-y-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-                <h2 className="font-black text-slate-900">Xác nhận đơn hàng</h2>
-                {[
-                  { title: 'Địa chỉ nhận', body: <>{name} · {phone}<br />{addressLine}</>, edit: 1 as Step },
-                  { title: 'Chi nhánh phục vụ', body: <>{quoteView?.branchName}</>, edit: null },
-                  {
-                    title: 'Vận chuyển',
-                    body: quote.requiresShippingConsultation
-                      ? <>Nhờ shop gửi — phí vận chuyển shop báo và tính riêng</>
-                      : <>{quoteView?.shippingMethodLabel} · {quoteView?.shippingTotalAmount === 0 ? 'Miễn phí' : quoteView?.shippingTotalLabel}<br />Dự kiến {quoteView?.etaLabel}</>,
-                    edit: 2 as Step,
-                  },
-                  { title: 'Thanh toán', body: <>{paymentLabel}</>, edit: 2 as Step },
-                ].map(({ title, body, edit }) => (
-                  <div key={title} className="flex items-start justify-between gap-3 border-b border-slate-100 pb-4 last:border-0">
-                    <div className="min-w-0 text-sm">
-                      <p className="text-xs font-bold uppercase tracking-wide text-slate-400">{title}</p>
-                      <p className="mt-1 break-words font-semibold leading-6 text-slate-800">{body}</p>
-                    </div>
-                    {edit && (
-                      <button type="button" onClick={() => setStep(edit)} className="inline-flex shrink-0 items-center gap-1 text-xs font-bold text-emerald-700">
-                        <Pencil className="size-3.5" /> Sửa
-                      </button>
-                    )}
-                  </div>
-                ))}
+              <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                <label className="text-xs font-bold text-slate-700">
+                  Người nhận <span className="text-rose-600">*</span>
+                  <input
+                    value={name}
+                    placeholder="Họ và tên người nhận"
+                    onChange={(e) => { setName(e.target.value); invalidateQuote(); }}
+                    autoComplete="name"
+                    className={inputClass}
+                  />
+                </label>
+                <label className="text-xs font-bold text-slate-700">
+                  Số điện thoại <span className="text-rose-600">*</span>
+                  <input
+                    value={phone}
+                    placeholder="Ví dụ: 0912345678"
+                    inputMode="tel"
+                    autoComplete="tel"
+                    onChange={(e) => { setPhone(e.target.value); invalidateQuote(); }}
+                    className={inputClass}
+                  />
+                </label>
+                <label className="text-xs font-bold text-slate-700 sm:col-span-2">
+                  Email (nhận mã đơn và thông báo trạng thái giao hàng)
+                  <input
+                    type="email"
+                    placeholder="email@example.com"
+                    value={email}
+                    autoComplete="email"
+                    onChange={(e) => { setEmail(e.target.value); invalidateQuote(); }}
+                    className={inputClass}
+                  />
+                </label>
+              </div>
 
-                {quote.requiresShippingConsultation ? (
-                  <div className="flex flex-col gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 sm:flex-row sm:items-center sm:justify-between">
-                    <p className="text-sm font-semibold text-amber-900">Đơn hiện chỉ tính tiền hàng. Shop sẽ gọi báo phí vận chuyển và thời gian gửi; bấm kiểm tra lại sau khi shop đã báo để đặt hàng.</p>
-                    <button type="button" onClick={refreshConsultedQuote} disabled={busy} className="shrink-0 rounded-xl bg-amber-600 px-4 py-2.5 text-xs font-black text-white disabled:bg-slate-300">
-                      {busy ? 'Đang kiểm tra...' : 'Kiểm tra lại phí'}
-                    </button>
-                  </div>
-                ) : (
-                  <label className="flex cursor-pointer items-start gap-3 rounded-2xl bg-slate-50 p-4 text-sm text-slate-700">
-                    <input type="checkbox" checked={acceptedTerms} onChange={(e) => setAcceptedTerms(e.target.checked)} className="mt-0.5 size-4 accent-emerald-600" />
-                    <span>
-                      Tôi đã đọc và đồng ý{' '}
-                      <Link href={STORE_POLICY_PAGES.TERMS.href} target="_blank" className="font-bold text-emerald-700 underline-offset-2 hover:underline">{STORE_POLICY_PAGES.TERMS.title.toLowerCase()}</Link>{' '}
-                      và{' '}
-                      <Link href={STORE_POLICY_PAGES.RETURNS.href} target="_blank" className="font-bold text-emerald-700 underline-offset-2 hover:underline">chính sách đổi trả</Link>.
+              <div className="mt-5">
+                <VietnamAddressSelector
+                  key={addressFormKey}
+                  initialData={address}
+                  onChange={(value) => { setAddress(value); invalidateQuote(); }}
+                  required
+                />
+              </div>
+
+              <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+                <button
+                  type="button"
+                  onClick={useCurrentLocation}
+                  className="inline-flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50/50 px-3.5 py-2 text-xs font-bold text-emerald-800 transition hover:bg-emerald-100"
+                >
+                  <LocateFixed className="size-4 text-emerald-600" />
+                  <span>{coordinates ? 'Đã lấy vị trí của bạn' : 'Định vị vị trí hiện tại (Miễn phí nếu dưới 10 km)'}</span>
+                </button>
+              </div>
+
+              <label className="mt-4 block text-xs font-bold text-slate-700">
+                Ghi chú giao hàng (tùy chọn)
+                <textarea
+                  rows={2}
+                  value={note}
+                  onChange={(e) => { setNote(e.target.value); invalidateQuote(); }}
+                  className={inputClass}
+                  placeholder="Gọi trước khi giao, giao giờ hành chính..."
+                />
+              </label>
+            </section>
+
+            {/* Section 2: Phương thức vận chuyển */}
+            <section className="rounded-3xl border border-slate-200/90 bg-white p-6 shadow-sm transition hover:border-slate-300">
+              <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
+                <span className="grid size-8 place-items-center rounded-xl bg-emerald-600 text-sm font-black text-white shadow-sm shadow-emerald-600/30">
+                  2
+                </span>
+                <div>
+                  <h2 className="flex items-center gap-2 text-base font-black text-slate-900 sm:text-lg">
+                    <Truck className="size-5 text-emerald-600" /> Phương thức vận chuyển
+                  </h2>
+                  <p className="text-xs text-slate-500">Cước phí tính toán tự động và minh bạch</p>
+                </div>
+              </div>
+
+              <div className="mt-5 grid gap-3.5 sm:grid-cols-2" role="radiogroup" aria-label="Cách giao hàng">
+                <button
+                  type="button"
+                  role="radio"
+                  aria-checked={!requestConsultation}
+                  onClick={() => { setRequestConsultation(false); invalidateQuote(); }}
+                  className={optionClass(!requestConsultation)}
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <strong className="text-sm font-bold text-slate-900">Giao hàng tiêu chuẩn</strong>
+                    <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-emerald-800">
+                      Khuyên dùng
                     </span>
-                  </label>
-                )}
+                  </div>
+                  <span className="mt-1.5 block text-xs leading-5 text-slate-500">
+                    Đội xe Bảo An giao miễn phí trong 10 km, giao toàn quốc qua GHN Express.
+                  </span>
 
-                <p className="text-xs text-slate-500">Giá, tồn kho và phí giao được hệ thống kiểm tra lại khi đặt hàng; hàng được giữ 30 phút sau khi bạn bấm đặt hàng.</p>
-              </section>
-            )}
+                  {!requestConsultation && (
+                    <div className="mt-3.5 border-t border-slate-100 pt-3 text-xs" aria-live="polite">
+                      {autoQuoting ? (
+                        <span className="inline-flex items-center gap-1.5 font-bold text-slate-500">
+                          <LoaderCircle className="size-3.5 animate-spin text-emerald-600" /> Đang tính phí vận chuyển...
+                        </span>
+                      ) : quoteView ? (
+                        <div className="space-y-1">
+                          <div className="flex items-baseline gap-2">
+                            <span className="text-sm font-black text-emerald-700">
+                              {quoteView.shippingTotalAmount === 0 ? 'Miễn phí giao hàng' : quoteView.shippingTotalLabel}
+                            </span>
+                            <span className="text-slate-400">·</span>
+                            <span className="font-semibold text-slate-600">{quoteView.shippingMethodLabel}</span>
+                          </div>
+                          <p className="text-[11px] font-medium text-slate-500">
+                            Dự kiến nhận hàng: <strong className="font-bold text-slate-700">{quoteView.etaLabel}</strong>
+                          </p>
+                          {quoteView.branchName && (
+                            <p className="text-[11px] text-slate-400">Phục vụ từ: {quoteView.branchName}</p>
+                          )}
+                        </div>
+                      ) : !readyToQuote ? (
+                        <span className="font-semibold text-slate-400">
+                          Điền thông tin địa chỉ ở bước 1 để hệ thống báo giá giao hàng.
+                        </span>
+                      ) : (
+                        <span className="font-semibold text-rose-600">Chưa tính được phí vận chuyển</span>
+                      )}
+                    </div>
+                  )}
+                </button>
 
-            {error && (step === 3 || (step === 1 && !autoQuoting)) && (
-              <div role="alert" className="rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm font-semibold text-rose-700">{error}</div>
-            )}
+                <button
+                  type="button"
+                  role="radio"
+                  aria-checked={requestConsultation}
+                  onClick={() => { setRequestConsultation(true); invalidateQuote(); }}
+                  className={optionClass(requestConsultation)}
+                >
+                  <strong className="text-sm font-bold text-slate-900">Nhờ shop tư vấn & gửi chành</strong>
+                  <span className="mt-1.5 block text-xs leading-5 text-slate-500">
+                    Dành cho giàn tạ, máy khối lớn gửi xe khách / xe tải liên tỉnh. Nhân viên sẽ gọi báo cước riêng.
+                  </span>
+                  {requestConsultation && (
+                    <div className="mt-3.5 border-t border-slate-100 pt-3">
+                      <span className="inline-block rounded-lg bg-amber-50 px-2.5 py-1 text-[11px] font-bold text-amber-800">
+                        Cước vận chuyển thanh toán riêng với nhà xe
+                      </span>
+                    </div>
+                  )}
+                </button>
+              </div>
+
+              {error && !autoQuoting && !quote && (
+                <div role="alert" className="mt-4 flex flex-col gap-3 rounded-2xl border border-rose-200 bg-rose-50 p-4 text-xs font-semibold text-rose-700 sm:flex-row sm:items-center sm:justify-between">
+                  <span className="flex items-start gap-2"><AlertTriangle className="mt-0.5 size-4 shrink-0" /> {error}</span>
+                  <button type="button" onClick={retryQuote} className="inline-flex shrink-0 items-center gap-1.5 rounded-xl bg-rose-600 px-3.5 py-1.5 text-xs font-bold text-white shadow-sm hover:bg-rose-700">
+                    <RotateCcw className="size-3.5" /> Thử lại
+                  </button>
+                </div>
+              )}
+            </section>
+
+            {/* Section 3: Phương thức thanh toán */}
+            <section className="rounded-3xl border border-slate-200/90 bg-white p-6 shadow-sm transition hover:border-slate-300">
+              <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
+                <span className="grid size-8 place-items-center rounded-xl bg-emerald-600 text-sm font-black text-white shadow-sm shadow-emerald-600/30">
+                  3
+                </span>
+                <div>
+                  <h2 className="flex items-center gap-2 text-base font-black text-slate-900 sm:text-lg">
+                    <CreditCard className="size-5 text-emerald-600" /> Phương thức thanh toán
+                  </h2>
+                  <p className="text-xs text-slate-500">Lựa chọn hình thức thanh toán thuận tiện nhất</p>
+                </div>
+              </div>
+
+              <div className="mt-5 grid gap-3.5 sm:grid-cols-2" role="radiogroup" aria-label="Phương thức thanh toán">
+                {([
+                  [
+                    'COD',
+                    'Thanh toán khi nhận hàng (COD)',
+                    'Kiểm tra hàng trước khi nhận, thanh toán tiền mặt cho nhân viên giao hàng.',
+                    'COD',
+                  ],
+                  [
+                    'VNPAY',
+                    'Chuyển khoản VietQR / VNPay',
+                    'Quét mã QR bằng ứng dụng ngân hàng hoặc ví điện tử VNPay, hoàn tất tức thì.',
+                    'QR',
+                  ],
+                ] as const).map(([value, label, description, badge]) => (
+                  <button
+                    key={value}
+                    type="button"
+                    role="radio"
+                    aria-checked={paymentMethod === value}
+                    onClick={() => { setPaymentMethod(value); invalidateQuote(); }}
+                    className={optionClass(paymentMethod === value)}
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <strong className="text-sm font-bold text-slate-900">{label}</strong>
+                      <span className="grid size-7 place-items-center rounded-lg bg-emerald-100 font-extrabold text-[11px] text-emerald-800">
+                        {badge}
+                      </span>
+                    </div>
+                    <span className="mt-2 block text-xs leading-5 text-slate-500">{description}</span>
+                  </button>
+                ))}
+              </div>
+            </section>
+
+            {/* Section 4: Cam kết & Xác nhận */}
+            <section className="rounded-3xl border border-slate-200/90 bg-white p-6 shadow-sm">
+              <label className="flex cursor-pointer items-start gap-3 rounded-2xl bg-slate-50 p-4 text-xs sm:text-sm text-slate-700 border border-slate-200/60">
+                <input
+                  type="checkbox"
+                  checked={acceptedTerms}
+                  onChange={(e) => setAcceptedTerms(e.target.checked)}
+                  className="mt-0.5 size-4 accent-emerald-600 cursor-pointer rounded"
+                />
+                <span className="leading-relaxed">
+                  Tôi đã đọc và đồng ý với{' '}
+                  <Link href={STORE_POLICY_PAGES.TERMS.href} target="_blank" className="font-bold text-emerald-700 underline-offset-2 hover:underline">
+                    {STORE_POLICY_PAGES.TERMS.title.toLowerCase()}
+                  </Link>{' '}
+                  và{' '}
+                  <Link href={STORE_POLICY_PAGES.RETURNS.href} target="_blank" className="font-bold text-emerald-700 underline-offset-2 hover:underline">
+                    chính sách đổi trả & bảo hành
+                  </Link>{' '}
+                  của Bảo An Sport.
+                </span>
+              </label>
+
+              {quote?.requiresShippingConsultation && (
+                <div className="mt-4 flex flex-col gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 sm:flex-row sm:items-center sm:justify-between">
+                  <p className="text-xs sm:text-sm font-semibold text-amber-900">
+                    Đơn hàng hiện chỉ tính tiền sản phẩm. Nhân viên sẽ liên hệ thông báo cước gửi xe; bấm kiểm tra lại phí sau khi đã thống nhất để đặt hàng.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={refreshConsultedQuote}
+                    disabled={busy}
+                    className="shrink-0 rounded-xl bg-amber-600 px-4 py-2 text-xs font-black text-white hover:bg-amber-700 disabled:bg-slate-300"
+                  >
+                    {busy ? 'Đang kiểm tra...' : 'Kiểm tra lại phí'}
+                  </button>
+                </div>
+              )}
+
+              {error && (
+                <div role="alert" className="mt-4 flex items-center gap-2 rounded-2xl border border-rose-200 bg-rose-50 p-4 text-xs font-bold text-rose-700">
+                  <AlertTriangle className="size-4 shrink-0 text-rose-600" />
+                  <span>{error}</span>
+                </div>
+              )}
+
+              {/* Mobile Submit Button */}
+              <div className="mt-5 lg:hidden">
+                <button
+                  type="submit"
+                  disabled={busy || redirectingToVnpay}
+                  className="flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-600 py-4 text-sm font-black text-white shadow-md shadow-emerald-600/20 transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-slate-300"
+                >
+                  {busy ? <LoaderCircle className="size-5 animate-spin" /> : <CheckCircle2 className="size-5" />}
+                  <span>
+                    {redirectingToVnpay
+                      ? 'Đang chuyển sang VNPay...'
+                      : busy
+                      ? 'Đang xử lý...'
+                      : paymentMethod === 'VNPAY'
+                      ? 'Đặt hàng & Thanh toán VNPay'
+                      : 'Hoàn tất đặt hàng'}
+                  </span>
+                </button>
+              </div>
+            </section>
           </div>
 
           <CheckoutOrderSummary
@@ -621,9 +788,17 @@ export function CheckoutPage() {
             quoting={autoQuoting}
             authLoaded={isLoaded}
             shopArranged={requestConsultation}
-            showSubmit={step === 3}
-            submitDisabled={!canConfirm || !acceptedTerms}
-            submitLabel={redirectingToVnpay ? 'Đang chuyển sang VNPay...' : paymentMethod === 'VNPAY' ? 'Đặt hàng & thanh toán VNPay' : 'Đặt hàng'}
+            showSubmit={true}
+            submitDisabled={busy || redirectingToVnpay}
+            submitLabel={
+              redirectingToVnpay
+                ? 'Đang chuyển sang VNPay...'
+                : busy
+                ? 'Đang xử lý...'
+                : paymentMethod === 'VNPAY'
+                ? 'Đặt hàng & Thanh toán VNPay'
+                : 'Hoàn tất đặt hàng'
+            }
           />
         </form>
       </div>
