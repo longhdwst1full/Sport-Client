@@ -4,14 +4,13 @@ import Link from 'next/link';
 import { ArrowRight, Clock, Flame } from 'lucide-react';
 import { useAppDispatch } from '@/app/store/hooks';
 import { addCartItem } from '@/app/store/cart.slice';
-import { Skeleton } from '@/foundation/components/feedback';
 import { FlashSaleDealCard } from './flash-sale-deal-card';
 import { useFlashSale } from '../hooks/use-flash-sale';
 import type { FlashSaleDealView } from '../model/flash-sale.mapper';
 
 export function FlashSaleSection() {
   const dispatch = useAppDispatch();
-  const { campaign, countdown, isPending } = useFlashSale();
+  const { campaign, countdown } = useFlashSale();
 
   const handleQuickAdd = (item: FlashSaleDealView, e: React.MouseEvent) => {
     e.preventDefault();
@@ -33,8 +32,9 @@ export function FlashSaleSection() {
 
   const format2Digits = (num: number) => String(num).padStart(2, '0');
 
-  // Không có chiến dịch đang chạy thì ẩn hẳn section, không dựng đếm ngược giả.
-  if (!isPending && !campaign) return null;
+  // Không có chiến dịch đang chạy (hoặc đang tải lần đầu) thì ẩn hẳn section,
+  // không dựng đếm ngược giả hay nháy skeleton rồi biến mất gây giật layout trên trang chủ.
+  if (!campaign || campaign.deals.length === 0) return null;
 
   return (
     <section className="bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 py-16 text-white sm:py-20">
@@ -78,13 +78,9 @@ export function FlashSaleSection() {
 
         {/* Product Cards Grid */}
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {isPending
-            ? Array.from({ length: 4 }, (_, index) => (
-                <Skeleton key={index} className="h-[420px] rounded-[26px] bg-slate-800/70" />
-              ))
-            : campaign?.deals.map((deal) => (
-                <FlashSaleDealCard key={deal.id} deal={deal} onQuickAdd={handleQuickAdd} />
-              ))}
+          {campaign.deals.map((deal) => (
+            <FlashSaleDealCard key={deal.id} deal={deal} onQuickAdd={handleQuickAdd} />
+          ))}
         </div>
 
         {/* Bottom Banner with All Deals CTA */}

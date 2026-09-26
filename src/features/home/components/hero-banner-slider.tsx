@@ -55,19 +55,20 @@ export function HeroBannerSlider({ posts = [] }: { posts?: ContentPostView[] }) 
         ctaLink: '/flash-sale',
         imageUrl: campaign.deals.find((deal) => deal.imageUrl)?.imageUrl ?? null,
       }));
-    const all = [...postSlides, ...campaignSlides];
-    if (all.length > 0) return all;
-    return [
-      {
-        id: 'brand',
-        badge: STORE_CONFIG.name,
-        title: STORE_CONFIG.tagline,
-        subtitle: STORE_CONFIG.slogan,
-        ctaText: 'Xem sản phẩm',
-        ctaLink: '/products',
-        imageUrl: null,
-      },
-    ];
+    const homeGymHeroSlide: HeroSlide = {
+      id: 'home-gym-solution',
+      badge: 'GIẢI PHÁP HOME GYM CHUYÊN NGHIỆP',
+      title: 'Biến Góc Nhỏ Thành Phòng Tập Chuẩn Huấn Luyện',
+      subtitle:
+        'Thiết bị thể lực & cardio chính hãng từ 500K • Tư vấn theo diện tích 5m² – 20m² • Miễn phí vận chuyển & hỗ trợ lắp đặt tận nơi.',
+      ctaText: 'Tìm thiết bị phù hợp',
+      ctaLink: '#products',
+      imageUrl:
+        'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?auto=format&fit=crop&w=1600&q=85',
+    };
+
+    const all = [homeGymHeroSlide, ...campaignSlides, ...postSlides];
+    return all;
   }, [posts, campaigns]);
   const hasCampaign = campaigns.some((campaign) => campaign.deals.length > 0);
 

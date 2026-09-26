@@ -17,15 +17,16 @@ import {
 import { useContentStories } from '../hooks/use-content-stories';
 import { STORE_CONFIG } from '@/shared/constants';
 import { Skeleton, SkeletonText } from '@/foundation/components/feedback';
-import { CONTENT_POST_TYPE_LABELS } from '../model/content-post.mapper';
+import { CONTENT_POST_TYPE_LABELS, type ContentPostView } from '../model/content-post.mapper';
 
 const ALL_CATEGORY = 'ALL';
 
 /** Số bài hiện sẵn ở trang chủ. Hai cột nên 4 bài vừa đúng hai hàng. */
 const FEATURED_COUNT = 4;
 
-export function ContentStories() {
-  const { stories: allArticles, isPending } = useContentStories();
+export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPostView[] }) {
+  const { stories: fetchedArticles, isPending } = useContentStories();
+  const allArticles = fetchedArticles.length > 0 ? fetchedArticles : initialPosts;
   const [activeCat, setActiveCat] = useState<string>(ALL_CATEGORY);
   const [expanded, setExpanded] = useState(false);
 
@@ -45,6 +46,26 @@ export function ContentStories() {
     ? displayedArticles
     : displayedArticles.slice(0, FEATURED_COUNT);
   const hiddenCount = displayedArticles.length - visibleArticles.length;
+
+  if (isPending && allArticles.length === 0) {
+    return (
+      <div className="grid gap-6 sm:grid-cols-2">
+        {Array.from({ length: 2 }, (_, index) => (
+          <div key={index} className="grid overflow-hidden rounded-[28px] border border-slate-200/90 bg-white md:grid-cols-[1fr_1.2fr]">
+            <Skeleton className="min-h-[220px] bg-slate-100" />
+            <div className="space-y-3 p-6">
+              <Skeleton className="h-4 w-24 bg-slate-100" />
+              <Skeleton className="h-6 w-3/4 bg-slate-100" />
+              <Skeleton className="h-12 w-full bg-slate-100" />
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  // Không có bài viết thì ẩn hẳn khối, không hiển thị thanh lọc rỗng hay nhãn (0)
+  if (allArticles.length === 0) return null;
 
   return (
     <div className="space-y-8">
@@ -71,7 +92,7 @@ export function ContentStories() {
           href="/news"
           className="inline-flex items-center gap-1.5 text-xs font-extrabold text-emerald-700 hover:underline"
         >
-          <span>Xem tất cả bài viết ({allArticles.length})</span>
+          <span>Xem tất cả bài viết</span>
           <ArrowRight className="size-3.5" />
         </Link>
       </div>

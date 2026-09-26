@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useMemo } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Search, X, ChevronRight, Sparkles } from 'lucide-react';
 import { useProductSearch } from '@/features/catalog/hooks/use-product-search';
@@ -46,13 +47,11 @@ export function AutocompleteSearch({
   const results = isTypingAhead ? [] : suggestions;
   const isPending = isTypingAhead || isSearching;
 
-  // Open popover when user types
+  // Open popover when user types or on focus
   useEffect(() => {
     if (query.trim().length > 0) {
       setIsOpen(true);
       setSelectedIndex(-1);
-    } else {
-      setIsOpen(false);
     }
   }, [query]);
 
@@ -131,9 +130,7 @@ export function AutocompleteSearch({
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          onFocus={() => {
-            if (query.trim()) setIsOpen(true);
-          }}
+          onFocus={() => setIsOpen(true)}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
           role="combobox"
@@ -174,9 +171,63 @@ export function AutocompleteSearch({
       </form>
 
       {/* Autocomplete Suggestions Popover Dropdown - Curved Rounded-3xl */}
-      {isOpen && query.trim() && (
-        <div className="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-3xl border border-slate-200/90 bg-white/95 p-2 shadow-2xl shadow-slate-900/15 backdrop-blur-xl animate-in fade-in slide-in-from-top-1 duration-150 ring-1 ring-black/5">
-          {isError ? (
+      {isOpen && (
+        <div className="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-3xl border border-slate-200/90 bg-white/95 p-3 shadow-2xl shadow-slate-900/15 backdrop-blur-xl animate-in fade-in slide-in-from-top-1 duration-150 ring-1 ring-black/5">
+          {!query.trim() ? (
+            <div>
+              <div className="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider text-slate-400 mb-2.5">
+                <Sparkles className="size-3.5 text-emerald-600" />
+                <span>Từ khóa tìm kiếm phổ biến</span>
+              </div>
+              <div className="flex flex-wrap gap-1.5 mb-4">
+                {POPULAR_SUGGESTIONS.map((term) => (
+                  <button
+                    key={term}
+                    type="button"
+                    onClick={() => {
+                      setQuery(term);
+                      router.push(`/search?q=${encodeURIComponent(term)}`);
+                      setIsOpen(false);
+                      if (onCloseMobile) onCloseMobile();
+                    }}
+                    className="rounded-full border border-slate-200 bg-slate-50/90 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:border-emerald-500 hover:bg-emerald-50 hover:text-emerald-700"
+                  >
+                    {term}
+                  </button>
+                ))}
+              </div>
+
+              <div className="border-t border-slate-100 pt-3">
+                <span className="block text-[11px] font-black uppercase tracking-wider text-slate-400 mb-2">
+                  Bộ môn & Thiết bị nổi bật
+                </span>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <Link
+                    href="/category"
+                    onClick={() => {
+                      setIsOpen(false);
+                      if (onCloseMobile) onCloseMobile();
+                    }}
+                    className="flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50/60 p-2.5 font-bold text-slate-700 hover:border-emerald-300 hover:bg-emerald-50/50 hover:text-emerald-700 transition"
+                  >
+                    <span>🏋️ Dụng cụ Gym</span>
+                    <ChevronRight className="size-3.5 text-slate-400" />
+                  </Link>
+                  <Link
+                    href="/category"
+                    onClick={() => {
+                      setIsOpen(false);
+                      if (onCloseMobile) onCloseMobile();
+                    }}
+                    className="flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50/60 p-2.5 font-bold text-slate-700 hover:border-emerald-300 hover:bg-emerald-50/50 hover:text-emerald-700 transition"
+                  >
+                    <span>🏃 Máy chạy & Cardio</span>
+                    <ChevronRight className="size-3.5 text-slate-400" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          ) : isError ? (
             /* Lỗi HTTP là kết cục cuối cùng, không phải danh sách rỗng: nói rõ để khách
                biết cần thử lại chứ không tưởng cửa hàng không có hàng. */
             <div className="p-6 text-center text-xs">

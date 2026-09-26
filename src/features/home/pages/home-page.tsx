@@ -1,6 +1,5 @@
-import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, MoveUpRight, Sparkles, Trophy } from 'lucide-react';
+import { ArrowRight, MoveUpRight, Sparkles } from 'lucide-react';
 import { BenefitsStrip } from '@/widgets/benefits-strip/benefits-strip';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { SectionHeading } from '@/foundation/components/section-heading';
@@ -16,6 +15,10 @@ import {
 } from '@/features/content/model/content-post.mapper';
 import { ProductReviews } from '@/features/reviews';
 import { HeroBannerSlider } from '../components/hero-banner-slider';
+import { QuickGoalNavigation } from '../components/quick-goal-navigation';
+import { BudgetNavigation } from '../components/budget-navigation';
+import { TrustSocialProof } from '../components/trust-social-proof';
+import { SmartFitAdvisor } from '../components/smart-fit-advisor';
 import { CategoryVisualShowcase } from '../components/category-visual-showcase';
 import { FlashSaleSection } from '@/features/promotions';
 
@@ -84,8 +87,11 @@ export async function HomePage() {
 
   return (
     <StorefrontLayout>
-      {/* 1. Hero: bài viết thật + flash sale đang chạy. Popup voucher đã gỡ vì chưa có API voucher. */}
+      {/* 1. Hero: bài viết thật + flash sale đang chạy. */}
       <HeroBannerSlider posts={heroPosts} />
+
+      {/* 2. Quick Goal Navigation: Bạn đang tìm thiết bị cho mục tiêu nào? */}
+      <QuickGoalNavigation />
 
       {/* 3. Core Service Commitments Strip */}
       <BenefitsStrip />
@@ -93,7 +99,7 @@ export async function HomePage() {
       {/* 4. Visual Sports Category Showcase with Real Product Images */}
       {categoryRail.length > 0 ? <CategoryVisualShowcase items={categoryRail} /> : null}
 
-      {/* 5. Live Flash Sale Section */}
+      {/* 5. Live Flash Sale Section (Tự động ẩn nếu không có chiến dịch đang mở) */}
       <FlashSaleSection />
 
       {/* 6. [CORE REQUIREMENT] Product Selling Lists - NGAY DƯỚI FLASH SALE */}
@@ -127,7 +133,10 @@ export async function HomePage() {
         />
       </section>
 
-      {/* 7. Lối tắt nhóm sản phẩm (từ cây danh mục thật) */}
+      {/* 7. Lối tắt chọn thiết bị theo mức ngân sách */}
+      <BudgetNavigation />
+
+      {/* 8. Lối tắt nhóm sản phẩm (từ cây danh mục thật) */}
       {quickLinks.length > 0 && (
         <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-12" aria-label="Nhóm sản phẩm">
           <div className="flex flex-wrap items-center justify-center gap-2 text-sm bg-slate-50/80 rounded-2xl p-4 border border-slate-200/70">
@@ -145,36 +154,42 @@ export async function HomePage() {
         </section>
       )}
 
-      {/* 8. Shop by Sport — danh mục gốc thật, thay cho 4 thẻ viết cứng kèm ảnh stock */}
+      {/* 9. Shop by Sport — danh mục gốc thật */}
       {sportCards.length > 0 && (
         <section id="shop-by-sport" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-20 border-t border-slate-100">
           <SectionHeading eyebrow="Tìm nhanh theo bộ môn" title="Bạn muốn tập luyện bộ môn nào?" />
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {sportCards.map(({ slug, title, description, itemCountLabel, icon: Icon }) => (
+            {sportCards.map(({ slug, title, itemCountLabel, icon: Icon }) => (
               <Link
                 key={slug}
                 href={`/category/${slug}`}
-                className="group flex min-h-[220px] flex-col justify-end rounded-[28px] bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 p-6 text-white transition hover:-translate-y-1 hover:shadow-xl"
+                className="group flex min-h-[190px] flex-col justify-between rounded-[24px] bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 p-6 text-white transition hover:-translate-y-1 hover:shadow-xl"
               >
-                <Icon className="mb-4 size-8 text-emerald-400" aria-hidden="true" />
-                <h3 className="text-xl sm:text-2xl font-black">{title}</h3>
-                {description && (
-                  <p className="mt-1 line-clamp-2 text-sm text-slate-300">{description}</p>
-                )}
-                <p className="mt-2 text-xs font-bold uppercase tracking-wider text-slate-400">
-                  {itemCountLabel}
-                </p>
-                <span className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-emerald-400">
-                  Khám phá ngay <MoveUpRight className="size-4 transition group-hover:translate-x-1 group-hover:-translate-y-1" />
-                </span>
+                <div className="flex items-center justify-between">
+                  <div className="grid size-12 place-items-center rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+                    <Icon className="size-6" aria-hidden="true" />
+                  </div>
+                  <span className="rounded-full bg-slate-800/80 px-2.5 py-0.5 text-[11px] font-bold text-slate-300">
+                    {itemCountLabel}
+                  </span>
+                </div>
+
+                <div>
+                  <h3 className="text-xl sm:text-2xl font-black text-white group-hover:text-emerald-300 transition">
+                    {title}
+                  </h3>
+                  <span className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-emerald-400">
+                    Khám phá ngay <MoveUpRight className="size-3.5 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  </span>
+                </div>
               </Link>
             ))}
           </div>
         </section>
       )}
 
-      {/* 9–10. Đã gỡ "Training Space Guide" và "Gym Project Planner": gói thiết bị, diện tích và
-          ngân sách viết cứng, chưa có API nào đứng sau. */}
+      {/* 10. Bằng chứng tin cậy & Hệ thống Showroom Bảo An Sport */}
+      <TrustSocialProof />
 
       {/* 11. Product Reviews */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
@@ -184,35 +199,16 @@ export async function HomePage() {
       {/* 12. Đã gỡ dải "thương hiệu đồng hành" và bộ đếm số liệu (showroom, khách hàng, sản phẩm):
           cả hai là số liệu/đối tác viết cứng, không có nguồn dữ liệu nào xác nhận. */}
 
-      {/* 13. Training Lab CTA */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
-        <div className="grid overflow-hidden rounded-[32px] bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 text-white border border-slate-800 shadow-xl lg:grid-cols-[1.1fr_.9fr]">
-          <div className="flex flex-col justify-center p-8 sm:p-12 lg:p-16">
-            <div className="flex size-14 items-center justify-center rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
-              <Trophy className="size-7" />
-            </div>
-            <p className="mt-6 text-xs font-extrabold uppercase tracking-[.22em] text-emerald-400">Bảo An Training Lab</p>
-            <h2 className="mt-2 max-w-xl text-3xl font-black leading-tight sm:text-4xl text-white">Không chỉ bán thiết bị. Chúng tôi giúp bạn chọn đúng.</h2>
-            <p className="mt-4 max-w-xl text-sm leading-relaxed text-slate-300 sm:text-base">Diện tích, mục tiêu, tần suất tập và ngân sách đều ảnh hưởng đến lựa chọn. Bắt đầu từ hướng dẫn thực tế trước khi đặt mua.</p>
-            <Link href="#stories" className="mt-7 inline-flex w-fit items-center gap-2 rounded-full bg-emerald-500 px-6 py-3 text-sm font-bold text-slate-950 transition hover:bg-emerald-400">Xem kiến thức luyện tập <ArrowRight className="size-4" /></Link>
-          </div>
-          <div className="relative min-h-[360px] lg:min-h-[480px]">
-            <Image
-              src="https://images.unsplash.com/photo-1590487988256-9ed24133863e?auto=format&fit=crop&w=1200&q=85"
-              alt="Huấn luyện viên tư vấn bài tập với thiết bị"
-              fill
-              sizes="(max-width: 1024px) 100vw, 45vw"
-              className="object-cover opacity-85"
-            />
-          </div>
-        </div>
-      </section>
+      {/* 13. Smart Fit Advisor — Trợ lý tư vấn cấu hình phòng tập thông minh */}
+      <SmartFitAdvisor />
 
-      {/* 14. Content Stories */}
-      <section id="stories" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-24">
-        <SectionHeading eyebrow="Kiến thức luyện tập" title="Bài viết mới" />
-        <ContentStories />
-      </section>
+      {/* 14. Content Stories — Chỉ hiển thị khi có bài viết thật */}
+      {heroPosts.length > 0 && (
+        <section id="stories" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-24">
+          <SectionHeading eyebrow="Kiến thức luyện tập" title="Bài viết mới" />
+          <ContentStories initialPosts={heroPosts} />
+        </section>
+      )}
     </StorefrontLayout>
   );
 }

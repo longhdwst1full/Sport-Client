@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, RefreshCw, Zap } from 'lucide-react';
+import { ArrowRight, Plus, RefreshCw, ShoppingBag, Zap } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useCategoryTabs } from '../hooks/use-category-tabs';
 import { useProductShowcase } from '../hooks/use-product-showcase';
@@ -71,6 +71,34 @@ export function ProductShowcase({
     );
 
     router.push('/checkout');
+  };
+
+  const handleQuickAdd = (product: (typeof products)[number], e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!product.isSellable || !product.defaultVariantId || !product.defaultVariantSku) {
+      router.push(`/products/${product.slug}`);
+      return;
+    }
+
+    dispatch(
+      addCartItem({
+        productId: product.id,
+        variantId: product.defaultVariantId,
+        sku: product.defaultVariantSku,
+        productType: product.productType === 'BUNDLE' ? 'BUNDLE' : 'STANDARD',
+        name: product.name,
+        imageUrl: product.imageUrl,
+        price: product.numericPrice,
+        quantity: 1,
+      })
+    );
+
+    toast({
+      type: 'success',
+      title: 'Đã thêm vào giỏ hàng',
+      message: `${product.name} đã được thêm vào giỏ hàng.`,
+    });
   };
 
   if (isPending)
@@ -168,6 +196,19 @@ export function ProductShowcase({
                       {product.productType === 'BUNDLE' ? 'Combo trọn bộ' : product.badge}
                     </span>
                   </div>
+
+                  {/* Quick Add floating action button on image hover */}
+                  {product.isSellable && product.inStock !== false && product.hasPrice && (
+                    <button
+                      type="button"
+                      onClick={(e) => handleQuickAdd(product, e)}
+                      title="Thêm nhanh vào giỏ hàng"
+                      aria-label={`Thêm ${product.name} vào giỏ`}
+                      className="absolute bottom-3 right-3 z-10 hidden size-9 place-items-center rounded-full bg-white/95 text-emerald-700 shadow-md backdrop-blur transition hover:scale-110 hover:bg-emerald-600 hover:text-white group-hover:grid"
+                    >
+                      <Plus className="size-4.5 stroke-[2.5]" />
+                    </button>
+                  )}
                 </Link>
 
                 <div className="flex flex-1 flex-col p-4 sm:p-5">
@@ -185,39 +226,62 @@ export function ProductShowcase({
                     </Link>
                   </h3>
 
-                  <div className="mt-auto flex items-end justify-between gap-2 pt-4 border-t border-slate-100">
-                    <div>
-                      <span className="block text-[10px] font-semibold text-slate-400">Giá niêm yết</span>
-                      <div className="flex items-baseline gap-1.5">
-                        <strong className="text-base sm:text-lg font-black text-emerald-700">
-                          {product.displayPrice}
-                        </strong>
+                  <div className="mt-auto flex flex-col gap-2.5 pt-4 border-t border-slate-100">
+                    <div className="flex items-baseline justify-between gap-1">
+                      <div>
+                        <span className="block text-[10px] font-semibold text-slate-400">Giá niêm yết</span>
+                        <div className="flex items-baseline gap-1.5">
+                          <strong className="text-base sm:text-lg font-black text-emerald-700">
+                            {product.displayPrice}
+                          </strong>
+                        </div>
                       </div>
                       {product.inStock === false && (
-                          <span className="mt-1 inline-block rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-bold text-amber-700">
-                            Tạm hết hàng
-                          </span>
-                        )}
+                        <span className="inline-block rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-bold text-amber-700">
+                          Tạm hết hàng
+                        </span>
+                      )}
                     </div>
-                    <button
-                      type="button"
-                      onClick={(e) => handleBuyNow(product, e)}
-                      disabled={!product.hasPrice || product.inStock === false}
-                      title={
-                        product.inStock === false
-                          ? 'Sản phẩm tạm hết hàng'
-                          : !product.hasPrice
-                          ? 'Sản phẩm chưa có giá — liên hệ để được tư vấn'
-                          : product.isSellable
-                            ? 'Mua ngay'
-                            : 'Mở chi tiết để chọn phiên bản'
-                      }
-                      aria-label={`Mua ngay ${product.name}`}
-                      className="relative z-10 inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white shadow-sm transition hover:bg-emerald-700 active:scale-95 disabled:cursor-not-allowed disabled:bg-slate-300"
-                    >
-                      <Zap className="size-3.5 fill-white" />
-                      <span>Mua ngay</span>
-                    </button>
+
+                    <div className="grid grid-cols-2 gap-1.5 pt-1">
+                      <button
+                        type="button"
+                        onClick={(e) => handleQuickAdd(product, e)}
+                        disabled={!product.hasPrice || product.inStock === false}
+                        title={
+                          product.inStock === false
+                            ? 'Sản phẩm tạm hết hàng'
+                            : !product.hasPrice
+                            ? 'Sản phẩm chưa có giá'
+                            : 'Thêm vào giỏ'
+                        }
+                        aria-label={`Thêm vào giỏ ${product.name}`}
+                        className="relative z-10 inline-flex items-center justify-center gap-1 rounded-xl border border-emerald-600/30 bg-emerald-50/80 px-2 py-2 text-xs font-extrabold text-emerald-700 shadow-2xs transition hover:bg-emerald-600 hover:text-white active:scale-95 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-100 disabled:text-slate-400"
+                      >
+                        <ShoppingBag className="size-3.5" />
+                        <span>+ Giỏ</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={(e) => handleBuyNow(product, e)}
+                        disabled={!product.hasPrice || product.inStock === false}
+                        title={
+                          product.inStock === false
+                            ? 'Sản phẩm tạm hết hàng'
+                            : !product.hasPrice
+                            ? 'Sản phẩm chưa có giá — liên hệ để được tư vấn'
+                            : product.isSellable
+                              ? 'Mua ngay'
+                              : 'Mở chi tiết để chọn phiên bản'
+                        }
+                        aria-label={`Mua ngay ${product.name}`}
+                        className="relative z-10 inline-flex items-center justify-center gap-1 rounded-xl bg-emerald-600 px-2 py-2 text-xs font-bold text-white shadow-2xs transition hover:bg-emerald-700 active:scale-95 disabled:cursor-not-allowed disabled:bg-slate-300"
+                      >
+                        <Zap className="size-3.5 fill-white" />
+                        <span>Mua ngay</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
