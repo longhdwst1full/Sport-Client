@@ -11,7 +11,7 @@ export const shippingMethodLabels: Record<string, string> = {
   BRANCH_FREE: 'Shop tự giao miễn phí (dưới 10 km)',
   STANDARD_DELIVERY: 'Phí giao mặc định',
   THIRD_PARTY: 'Đối tác vận chuyển',
-  MANUAL_EXTERNAL: 'Shop gửi, phí báo riêng',
+  MANUAL_EXTERNAL: 'Shop gửi, cước báo riêng',
 };
 
 export interface CheckoutLineView {
@@ -38,6 +38,8 @@ export interface CheckoutQuoteView {
   grandTotalAmount: number | null;
   etaLabel: string;
   requiresShippingConsultation: boolean;
+  /** SHOP_ARRANGED: shop tự gửi và báo/thu cước riêng — đặt được đơn ngay, không phải miễn phí. */
+  shippingFeePending: boolean;
   expiresLabel: string;
   items: CheckoutLineView[];
 }
@@ -72,6 +74,7 @@ export function toCheckoutQuoteView(dto: CheckoutQuoteDto): CheckoutQuoteView {
       : Number(dto.grandTotal),
     etaLabel: etaLabel(dto.etaMinDays, dto.etaMaxDays),
     requiresShippingConsultation: dto.requiresShippingConsultation,
+    shippingFeePending: dto.shippingFeePending,
     expiresLabel: formatDateTime(dto.expiresAt),
     items: dto.items.map((item) => ({
       productVariantId: item.productVariantId,

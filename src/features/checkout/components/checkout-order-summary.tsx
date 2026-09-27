@@ -12,7 +12,7 @@ interface CheckoutOrderSummaryProps {
   quote?: CheckoutQuoteView;
   busy: boolean;
   authLoaded: boolean;
-  /** "Nhờ shop gửi": phí vận chuyển do shop báo và tính riêng, tổng chỉ gồm tiền hàng. */
+  /** "Nhờ shop gửi" đang chọn: phí vận chuyển do shop báo và thu riêng, tổng chỉ gồm tiền hàng. */
   shopArranged?: boolean;
   /** Đang gọi báo giá: hiện "Đang tính phí", không bao giờ hiện 0 ₫ tạm. */
   quoting?: boolean;
@@ -34,8 +34,12 @@ export function CheckoutOrderSummary({
   submitDisabled = false,
   submitLabel = 'Đặt hàng',
 }: CheckoutOrderSummaryProps) {
-  // CONTRACT: báo giá chờ tư vấn không trả phí giao/tổng (Backend ẩn); hiển thị tiền hàng và ghi chú.
-  const shippingPending = shopArranged || Boolean(quote?.requiresShippingConsultation);
+  // CONTRACT: hai trạng thái khác nhau cùng "chưa có số phí".
+  // - SHOP_ARRANGED (`shippingFeePending`): báo giá QUOTED, shippingTotal = 0 nhưng KHÔNG miễn phí —
+  //   hiện "Shop báo riêng" chứ không phải 0 ₫, và khách vẫn đặt được đơn.
+  // - `requiresShippingConsultation`: Backend ẩn phí/tổng vì còn chờ nhân viên chốt cước.
+  const consultationPending = Boolean(quote?.requiresShippingConsultation);
+  const shippingPending = shopArranged || consultationPending || Boolean(quote?.shippingFeePending);
   return (
     <aside>
       <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm lg:sticky lg:top-28">
@@ -63,14 +67,16 @@ export function CheckoutOrderSummary({
             <>
               <div className="flex justify-between">
                 <span>Phí giao</span>
-                <span className="font-semibold text-amber-700">Shop báo sau</span>
+                <span className="font-semibold text-amber-700">Shop báo riêng</span>
               </div>
               <div className="flex justify-between border-t pt-3 text-base font-black">
                 <span>Tiền hàng</span>
                 <span className="text-emerald-700">{vndMoney.format(localSubtotal)}</span>
               </div>
               <p className="rounded-xl bg-amber-50 p-3 text-xs leading-5 text-amber-900">
-                Chú ý: phí vận chuyển sẽ được shop gọi báo và tính riêng khi gửi hàng, chưa gồm trong số tiền trên.
+                {consultationPending
+                  ? 'Đơn cần nhân viên tư vấn cước gửi xe. Shop sẽ liên hệ chốt phí rồi bạn bấm kiểm tra lại phí để đặt hàng.'
+                  : 'Bạn đặt hàng được ngay. Phí vận chuyển sẽ được shop gọi báo và thu riêng khi gửi hàng, chưa gồm trong số tiền trên.'}
               </p>
             </>
           ) : quoting || !quote ? (

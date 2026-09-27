@@ -5,14 +5,108 @@
  * Contract for storefront and admin applications
  * OpenAPI spec version: 1.0.0
  */
+export interface CheckoutShippingEstimateRequestDto {
+  /**
+   * @minItems 1
+   * @maxItems 100
+   */
+  lines: ShippingEstimateLineDto[];
+  recipient: ShippingEstimateRecipientDto;
+  paymentMethod?: CheckoutPaymentMethod;
+  shippingArrangement?: CheckoutShippingArrangement;
+}
+
+/**
+ * @nullable
+ */
+export type CheckoutShippingEstimateDtoFreeReason =
+  | (typeof CheckoutShippingEstimateDtoFreeReason)[keyof typeof CheckoutShippingEstimateDtoFreeReason]
+  | null;
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const CheckoutShippingEstimateDtoFreeReason = {
+  BRANCH_DISTRICT: 'BRANCH_DISTRICT',
+  WITHIN_RADIUS: 'WITHIN_RADIUS',
+} as const;
+
+export type CheckoutShippingEstimateDtoCurrency =
+  (typeof CheckoutShippingEstimateDtoCurrency)[keyof typeof CheckoutShippingEstimateDtoCurrency];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const CheckoutShippingEstimateDtoCurrency = {
+  VND: 'VND',
+} as const;
+
+export interface CheckoutShippingEstimateDto {
+  /** SHOP_DELIVERY: shop tự giao (BRANCH_FREE hoặc SHOP_ARRANGED); CARRIER: hãng vận chuyển/nhà xe. */
+  deliveryMode: CheckoutDeliveryMode;
+  shippingMethod: ShippingMethod;
+  /**
+   * null khi phải chờ nhân viên tư vấn phí (requiresShippingConsultation).
+   * @nullable
+   */
+  shippingFee?: string | null;
+  /** @nullable */
+  freeReason: CheckoutShippingEstimateDtoFreeReason;
+  /** true khi SHOP_ARRANGED: phí do shop báo và thu riêng. */
+  shippingFeePending: boolean;
+  /** true khi phí phải chờ nhân viên tư vấn (ví dụ hàng nằm ở nhiều chi nhánh). */
+  requiresShippingConsultation: boolean;
+  /**
+   * Chi nhánh dự kiến xuất hàng; báo giá thật có thể chọn lại nếu tồn kho thay đổi.
+   * @pattern ^[1-9][0-9]*$
+   */
+  branchId: string;
+  /** @nullable */
+  etaMinDays?: number | null;
+  /** @nullable */
+  etaMaxDays?: number | null;
+  currency: CheckoutShippingEstimateDtoCurrency;
+  /** Nguồn sinh ra phí. CARRIER_GHN là đường đi mong đợi; WEIGHT_TIER_FALLBACK nghĩa là hãng không trả lời được và hệ thống đang dùng biểu phí cứng theo bậc cân nặng. */
+  feeSource: ShippingFeeSource;
+  /**
+   * Vì sao phải rơi về nguồn dự phòng; null khi phí đến từ hãng hoặc miễn phí nội khu.
+   * @nullable
+   */
+  fallbackReason: string | null;
+}
+
+export interface ErrorResponseDto {
+  statusCode: number;
+  code: string;
+  message: string;
+  details?: ErrorDetailDto[];
+  path: string;
+  method: string;
+  timestamp: string;
+  requestId?: string;
+}
+
 export interface CreateCheckoutQuoteDto {
   recipient: CheckoutRecipientDto;
+  /** Storefront chỉ nhận COD hoặc VNPAY. BANK_TRANSFER bị từ chối (400 VALIDATION_ERROR); chuyển khoản thủ công chỉ dùng ở POS. */
   paymentMethod: CheckoutPaymentMethod;
-  /** Request a staff-agreed fee/ETA for coach bus or special delivery */
+  /** Request a staff-agreed fee/ETA for coach bus or special delivery. Takes precedence over shippingArrangement. */
   requestShippingConsultation?: boolean;
+  /** SHOP_ARRANGED ("Nhờ shop gửi"): shop tự sắp xếp vận chuyển và báo/thu phí riêng ngoài hệ thống; báo giá ghi phí vận chuyển 0 và vẫn đặt được đơn (QUOTED). */
+  shippingArrangement?: CheckoutShippingArrangement;
   /** @maxLength 1000 */
   note?: string;
 }
+
+/**
+ * Chỉ có khi shippingMethod = BRANCH_FREE.
+ * @nullable
+ */
+export type CheckoutQuoteDtoFreeDeliveryReason =
+  | (typeof CheckoutQuoteDtoFreeDeliveryReason)[keyof typeof CheckoutQuoteDtoFreeDeliveryReason]
+  | null;
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const CheckoutQuoteDtoFreeDeliveryReason = {
+  BRANCH_DISTRICT: 'BRANCH_DISTRICT',
+  WITHIN_RADIUS: 'WITHIN_RADIUS',
+} as const;
 
 export interface CheckoutQuoteDto {
   /** Opaque token used to confirm this exact quote */
@@ -23,8 +117,17 @@ export interface CheckoutQuoteDto {
   /** @pattern ^[1-9][0-9]*$ */
   warehouseId: string;
   branchName: string;
+  /** Checkout mới từ Storefront chỉ có COD/VNPAY; BANK_TRANSFER chỉ xuất hiện ở báo giá cũ. */
   paymentMethod: CheckoutQuotePaymentMethod;
   shippingMethod: ShippingMethod;
+  shippingArrangement: CheckoutShippingArrangement;
+  /** true khi phí vận chuyển do shop báo và thu riêng ngoài hệ thống (SHOP_ARRANGED); shippingTotal khi đó là 0.00 và grandTotal chỉ gồm tiền hàng. */
+  shippingFeePending: boolean;
+  /**
+   * Chỉ có khi shippingMethod = BRANCH_FREE.
+   * @nullable
+   */
+  freeDeliveryReason: CheckoutQuoteDtoFreeDeliveryReason;
   /** @nullable */
   shippingProvider?: string | null;
   /** @nullable */
@@ -41,17 +144,6 @@ export interface CheckoutQuoteDto {
   requiresShippingConsultation: boolean;
   items: CheckoutQuoteItemDto[];
   expiresAt: string;
-}
-
-export interface ErrorResponseDto {
-  statusCode: number;
-  code: string;
-  message: string;
-  details?: ErrorDetailDto[];
-  path: string;
-  method: string;
-  timestamp: string;
-  requestId?: string;
 }
 
 export type ReservationDtoStatus = (typeof ReservationDtoStatus)[keyof typeof ReservationDtoStatus];
@@ -78,6 +170,96 @@ export interface ReleaseReservationDto {
   reason: string;
 }
 
+export interface ShippingEstimateLineDto {
+  /** @pattern ^[1-9][0-9]*$ */
+  productVariantId: string;
+  /**
+   * @minimum 1
+   * @maximum 999
+   */
+  quantity: number;
+}
+
+export interface ShippingEstimateRecipientDto {
+  /** Mã tỉnh/thành (bộ mã GHN). */
+  provinceCode: string;
+  /** GHN DistrictID; cần để xét miễn phí theo quận/huyện của chi nhánh và để gọi GHN. */
+  districtCode?: string;
+  /** GHN WardCode; cần để gọi GHN. */
+  wardCode?: string;
+  /**
+   * @minimum -90
+   * @maximum 90
+   */
+  latitude?: number;
+  /**
+   * @minimum -180
+   * @maximum 180
+   */
+  longitude?: number;
+}
+
+export type CheckoutPaymentMethod =
+  (typeof CheckoutPaymentMethod)[keyof typeof CheckoutPaymentMethod];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const CheckoutPaymentMethod = {
+  COD: 'COD',
+  VNPAY: 'VNPAY',
+} as const;
+
+export type CheckoutShippingArrangement =
+  (typeof CheckoutShippingArrangement)[keyof typeof CheckoutShippingArrangement];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const CheckoutShippingArrangement = {
+  STANDARD: 'STANDARD',
+  SHOP_ARRANGED: 'SHOP_ARRANGED',
+} as const;
+
+/**
+ * SHOP_DELIVERY: shop tự giao (BRANCH_FREE hoặc SHOP_ARRANGED); CARRIER: hãng vận chuyển/nhà xe.
+ */
+export type CheckoutDeliveryMode = (typeof CheckoutDeliveryMode)[keyof typeof CheckoutDeliveryMode];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const CheckoutDeliveryMode = {
+  SHOP_DELIVERY: 'SHOP_DELIVERY',
+  CARRIER: 'CARRIER',
+} as const;
+
+export type ShippingMethod = (typeof ShippingMethod)[keyof typeof ShippingMethod];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ShippingMethod = {
+  BRANCH_FREE: 'BRANCH_FREE',
+  STANDARD_DELIVERY: 'STANDARD_DELIVERY',
+  THIRD_PARTY: 'THIRD_PARTY',
+  MANUAL_EXTERNAL: 'MANUAL_EXTERNAL',
+  SHOP_ARRANGED: 'SHOP_ARRANGED',
+} as const;
+
+/**
+ * Nguồn sinh ra phí. CARRIER_GHN là đường đi mong đợi; WEIGHT_TIER_FALLBACK nghĩa là hãng không trả lời được và hệ thống đang dùng biểu phí cứng theo bậc cân nặng.
+ */
+export type ShippingFeeSource = (typeof ShippingFeeSource)[keyof typeof ShippingFeeSource];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ShippingFeeSource = {
+  BRANCH_FREE: 'BRANCH_FREE',
+  CARRIER_GHN: 'CARRIER_GHN',
+  RATE_TABLE: 'RATE_TABLE',
+  WEIGHT_TIER_FALLBACK: 'WEIGHT_TIER_FALLBACK',
+  SHOP_ARRANGED: 'SHOP_ARRANGED',
+  PENDING_CONSULTATION: 'PENDING_CONSULTATION',
+} as const;
+
+export interface ErrorDetailDto {
+  field?: string;
+  code: string;
+  message: string;
+}
+
 export interface CheckoutRecipientDto {
   recipient: string;
   phone: string;
@@ -101,16 +283,6 @@ export interface CheckoutRecipientDto {
   longitude?: number;
 }
 
-export type CheckoutPaymentMethod =
-  (typeof CheckoutPaymentMethod)[keyof typeof CheckoutPaymentMethod];
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const CheckoutPaymentMethod = {
-  BANK_TRANSFER: 'BANK_TRANSFER',
-  COD: 'COD',
-  VNPAY: 'VNPAY',
-} as const;
-
 export type CheckoutQuoteStatus = (typeof CheckoutQuoteStatus)[keyof typeof CheckoutQuoteStatus];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
@@ -119,6 +291,9 @@ export const CheckoutQuoteStatus = {
   AWAITING_SHIPPING_CONSULTATION: 'AWAITING_SHIPPING_CONSULTATION',
 } as const;
 
+/**
+ * Checkout mới từ Storefront chỉ có COD/VNPAY; BANK_TRANSFER chỉ xuất hiện ở báo giá cũ.
+ */
 export type CheckoutQuotePaymentMethod =
   (typeof CheckoutQuotePaymentMethod)[keyof typeof CheckoutQuotePaymentMethod];
 
@@ -126,16 +301,7 @@ export type CheckoutQuotePaymentMethod =
 export const CheckoutQuotePaymentMethod = {
   BANK_TRANSFER: 'BANK_TRANSFER',
   COD: 'COD',
-} as const;
-
-export type ShippingMethod = (typeof ShippingMethod)[keyof typeof ShippingMethod];
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const ShippingMethod = {
-  BRANCH_FREE: 'BRANCH_FREE',
-  STANDARD_DELIVERY: 'STANDARD_DELIVERY',
-  THIRD_PARTY: 'THIRD_PARTY',
-  MANUAL_EXTERNAL: 'MANUAL_EXTERNAL',
+  VNPAY: 'VNPAY',
 } as const;
 
 export interface CheckoutQuoteItemDto {
@@ -146,12 +312,6 @@ export interface CheckoutQuoteItemDto {
   quantity: number;
   unitPrice: string;
   lineTotal: string;
-}
-
-export interface ErrorDetailDto {
-  field?: string;
-  code: string;
-  message: string;
 }
 
 export interface ReservationItemDto {

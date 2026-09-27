@@ -23,6 +23,8 @@ import type {
 
 import type {
   CheckoutQuoteDto,
+  CheckoutShippingEstimateDto,
+  CheckoutShippingEstimateRequestDto,
   CreateCheckoutQuoteDto,
   ErrorResponseDto,
   ReleaseReservationDto,
@@ -33,6 +35,96 @@ import { apiFetcher } from '../../../lib/api/fetcher';
 import type { ErrorType, BodyType } from '../../../lib/api/fetcher';
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
+
+/**
+ * @summary Estimate the shipping fee for cart lines and a recipient area (no side effects)
+ */
+export const estimateCheckoutShipping = (
+  checkoutShippingEstimateRequestDto: BodyType<CheckoutShippingEstimateRequestDto>,
+  options?: SecondParameter<typeof apiFetcher>,
+  signal?: AbortSignal,
+) => {
+  return apiFetcher<CheckoutShippingEstimateDto>(
+    {
+      url: `/api/v1/checkouts/shipping-estimate`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: checkoutShippingEstimateRequestDto,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getEstimateCheckoutShippingMutationOptions = <
+  TError = ErrorType<ErrorResponseDto | ErrorResponseDto>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof estimateCheckoutShipping>>,
+    TError,
+    { data: BodyType<CheckoutShippingEstimateRequestDto> },
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetcher>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof estimateCheckoutShipping>>,
+  TError,
+  { data: BodyType<CheckoutShippingEstimateRequestDto> },
+  TContext
+> => {
+  const mutationKey = ['estimateCheckoutShipping'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof estimateCheckoutShipping>>,
+    { data: BodyType<CheckoutShippingEstimateRequestDto> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return estimateCheckoutShipping(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type EstimateCheckoutShippingMutationResult = NonNullable<
+  Awaited<ReturnType<typeof estimateCheckoutShipping>>
+>;
+export type EstimateCheckoutShippingMutationBody = BodyType<CheckoutShippingEstimateRequestDto>;
+export type EstimateCheckoutShippingMutationError = ErrorType<ErrorResponseDto | ErrorResponseDto>;
+
+/**
+ * @summary Estimate the shipping fee for cart lines and a recipient area (no side effects)
+ */
+export const useEstimateCheckoutShipping = <
+  TError = ErrorType<ErrorResponseDto | ErrorResponseDto>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof estimateCheckoutShipping>>,
+      TError,
+      { data: BodyType<CheckoutShippingEstimateRequestDto> },
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof estimateCheckoutShipping>>,
+  TError,
+  { data: BodyType<CheckoutShippingEstimateRequestDto> },
+  TContext
+> => {
+  const mutationOptions = getEstimateCheckoutShippingMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
 
 /**
  * @summary Revalidate a guest cart and choose an eligible fulfillment branch

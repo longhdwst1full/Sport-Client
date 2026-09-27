@@ -5,11 +5,17 @@
  * giao, ghi chú…). Trong khoảng debounce đó chưa có quote nhưng cũng chưa có lượt gọi nào đang chạy;
  * trước đây trang coi khoảng này là "không tính được phí" và báo "Chưa có phí vận chuyển" dù API vẫn
  * báo giá bình thường. Lượt báo giá lỗi thật cũng bị câu chung đó che mất lý do từ API.
+ *
+ * CONTRACT: chỉ `requiresShippingConsultation` (báo giá `AWAITING_SHIPPING_CONSULTATION`) mới chặn đặt
+ * hàng — đó là lúc Backend chưa có phí và chờ nhân viên chốt. "Nhờ shop gửi" (`SHOP_ARRANGED`) trả báo
+ * giá `QUOTED` với `shippingFeePending = true`: shop đã nhận gửi và thu cước riêng ngoài hệ thống nên
+ * khách đặt được ngay, tuyệt đối không dùng `shippingFeePending` làm điều kiện chặn.
  */
 export type CheckoutQuoteGate =
   | { kind: 'ADDRESS_INCOMPLETE' }
   | { kind: 'QUOTING' }
   | { kind: 'QUOTE_FAILED'; reason: string }
+  | { kind: 'CONSULTATION_PENDING' }
   | { kind: 'READY' };
 
 export function resolveCheckoutQuoteGate(input: {
@@ -18,9 +24,13 @@ export function resolveCheckoutQuoteGate(input: {
   hasQuote: boolean;
   /** Lỗi của lượt báo giá gần nhất; rỗng khi chưa có lỗi hoặc form vừa đổi. */
   quoteError: string;
+  /** `quote.requiresShippingConsultation`: Backend còn chờ nhân viên chốt cước. */
+  requiresShippingConsultation?: boolean;
 }): CheckoutQuoteGate {
   if (!input.readyToQuote) return { kind: 'ADDRESS_INCOMPLETE' };
-  if (input.hasQuote) return { kind: 'READY' };
+  if (input.hasQuote) {
+    return input.requiresShippingConsultation ? { kind: 'CONSULTATION_PENDING' } : { kind: 'READY' };
+  }
   if (input.autoQuoting) return { kind: 'QUOTING' };
   if (input.quoteError) return { kind: 'QUOTE_FAILED', reason: input.quoteError };
   // Đủ địa chỉ, chưa có quote, chưa lỗi: effect báo giá đang chờ hết debounce.

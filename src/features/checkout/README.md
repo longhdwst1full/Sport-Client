@@ -1,10 +1,10 @@
 # Storefront checkout — maintenance note
 
-> **Document version:** 1.4.0
+> **Document version:** 1.5.0
 >
-> **Last updated:** 2026-09-26
+> **Last updated:** 2026-09-27
 >
-> **Change summary:** Checkout 3 bước (địa chỉ → vận chuyển & thanh toán → xác nhận), sổ địa chỉ, tự chuyển VNPay, timeout 30 giây cho lệnh checkout.
+> **Change summary:** "Nhờ shop gửi" chuyển sang `shippingArrangement: SHOP_ARRANGED` nên đặt được đơn ngay; `resolveCheckoutQuoteGate` nhận thêm trạng thái chờ tư vấn cước.
 
 ## Luồng 3 bước (2026-09-26)
 
@@ -25,7 +25,9 @@ Chưa làm (cần Backend): gọi lại GHN khi đặt đơn và báo `SHIPPING_
 
 - Tự gọi báo giá (`quote*Checkout`) sau 700 ms khi đủ tên, SĐT, số nhà và chọn tới phường/xã; lượt cũ bị bỏ qua theo `quoteSeq`. Sửa bất kỳ trường nào thì báo giá cũ bị huỷ.
 - Freeship dưới 10 km là luật `BRANCH_FREE` của Backend, chỉ áp khi khách bấm "Dùng vị trí hiện tại" (có toạ độ). Chưa có luật theo quận nội thành.
-- "Nhờ shop gửi" dùng `requestShippingConsultation`: tóm tắt chỉ hiện tiền hàng kèm ghi chú phí vận chuyển báo và tính riêng; chưa đặt được đơn cho tới khi nhân viên cập nhật phí.
+- "Nhờ shop gửi" dùng `shippingArrangement: 'SHOP_ARRANGED'` (2026-09-27). Báo giá trả về `QUOTED` với `shippingTotal = 0.00`, `shippingFeePending = true` và `grandTotal` chỉ gồm tiền hàng, nên khách **đặt được đơn ngay**; shop gọi thống nhất và thu cước gửi xe riêng ngoài hệ thống. Chỗ nào hiện phí phải ghi "Shop báo riêng", không bao giờ hiện 0 ₫/"Miễn phí".
+- `requestShippingConsultation: true` vẫn còn trong hợp đồng và vẫn nghĩa là "chờ nhân viên chốt cước mới đặt được"; Storefront hiện không có nút nào chọn đường đó, nhưng vẫn phải xử lý báo giá `requiresShippingConsultation` do Backend trả về.
+- `resolveCheckoutQuoteGate` là nơi duy nhất quyết định có cho đặt hàng: `CONSULTATION_PENDING` (chờ tư vấn cước) chặn, `shippingFeePending` không bao giờ chặn.
 - Thanh toán storefront chỉ còn `COD` và `VNPAY`; `BANK_TRANSFER` vẫn tồn tại ở Backend cho POS.
 - Sản phẩm `inStock = false` bị chặn từ catalog nên không vào được checkout; Backend vẫn là chốt chặn cuối.
 
@@ -71,7 +73,7 @@ Order mới ở `PENDING_CONFIRMATION`, chưa ghi nhận doanh thu và chưa đ�
 
 - [ ] Guest và Account đều chạy được cùng một UI journey.
 - [ ] Quote bị hủy khi input ảnh hưởng giá/branch/shipping thay đổi.
-- [ ] Không confirm quote đang chờ consultation hoặc đã hết hạn.
+- [ ] Không confirm quote đang chờ consultation hoặc đã hết hạn; quote `SHOP_ARRANGED` thì vẫn phải đặt được.
 - [ ] Không song song hóa cart mutation có optimistic version.
 - [ ] Không cache offline response cart/checkout/reservation.
 - [ ] Loading/error/disabled/success và quay lại cart vẫn đúng trên mobile.
@@ -81,6 +83,7 @@ Order mới ở `PENDING_CONFIRMATION`, chưa ghi nhận doanh thu và chưa đ�
 
 | Version | Date | Change summary | Source |
 | --- | --- | --- | --- |
+| 1.5.0 | 2026-09-27 | "Nhờ shop gửi" dùng `shippingArrangement: SHOP_ARRANGED` và đặt được đơn ngay; gate thêm `CONSULTATION_PENDING`. | D62 checkout shipping arrangement |
 | 1.4.0 | 2026-09-26 | Checkout 3 bước, sổ địa chỉ, tự chuyển VNPay, timeout 30 giây. | Đối chiếu đặc tả checkout/GHN/VNPay |
 | 1.3.0 | 2026-09-25 | Tự báo giá theo địa chỉ, "Nhờ shop gửi", COD + VNPay. | Checkout FE-only request |
 | 1.2.0 | 2026-09-13 | Đồng bộ SSR/browser trước khi đọc và redirect theo persisted cart. | Browser E2E Sprint 4 |

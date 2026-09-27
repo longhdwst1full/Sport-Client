@@ -112,7 +112,15 @@ export function CheckoutPage() {
   const [address, setAddress] = useState<SelectedAddressData>(initialAddress);
   const [coordinates, setCoordinates] = useState<{ latitude: number; longitude: number }>();
   const [paymentMethod, setPaymentMethod] = useState<CheckoutPaymentMethod>('COD');
-  const [requestConsultation, setRequestConsultation] = useState(false);
+  /**
+   * "Nhờ shop tư vấn & gửi chành": shop tự sắp xếp nhà xe và báo/thu cước riêng ngoài hệ thống.
+   *
+   * CONTRACT: gửi `shippingArrangement: 'SHOP_ARRANGED'`, KHÔNG phải `requestShippingConsultation`.
+   * `SHOP_ARRANGED` trả báo giá `QUOTED` (`shippingTotal` 0, `shippingFeePending` true) nên khách đặt
+   * được đơn ngay; `requestShippingConsultation` vẫn còn trong hợp đồng và vẫn nghĩa là "chờ nhân viên
+   * chốt cước mới đặt được" — Storefront hiện không có nút nào chọn đường đó.
+   */
+  const [shopArranged, setShopArranged] = useState(false);
   const [quote, setQuote] = useState<CheckoutQuoteDto>();
   // DTO giữ nguyên cho luồng xác nhận; phần hiển thị dùng view model để không
   // rải định dạng và nhãn khắp JSX (`09-data-transformation.md`).
@@ -211,7 +219,7 @@ export function CheckoutPage() {
       ...coordinates,
     },
     paymentMethod,
-    requestShippingConsultation: requestConsultation,
+    shippingArrangement: shopArranged ? ('SHOP_ARRANGED' as const) : ('STANDARD' as const),
     ...(note.trim() ? { note: note.trim() } : {}),
   });
 
@@ -247,7 +255,7 @@ export function CheckoutPage() {
     return () => clearTimeout(timer);
     // buildInput đọc đúng các state liệt kê dưới đây; thêm hàm vào deps sẽ báo giá lại mỗi lần render.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoaded, readyToQuote, quote, placedOrder, effectiveItems, isAuthenticated, name, phone, email, note, address, coordinates, paymentMethod, requestConsultation]);
+  }, [isLoaded, readyToQuote, quote, placedOrder, effectiveItems, isAuthenticated, name, phone, email, note, address, coordinates, paymentMethod, shopArranged]);
 
   /** Lượt báo giá tự động lỗi (GHN timeout, mạng): khách bấm thử lại mà không phải sửa form. */
   const retryQuote = () => {
@@ -317,7 +325,13 @@ export function CheckoutPage() {
       return;
     }
 
-    const gate = resolveCheckoutQuoteGate({ readyToQuote, autoQuoting, hasQuote: Boolean(quote && context), quoteError });
+    const gate = resolveCheckoutQuoteGate({
+      readyToQuote,
+      autoQuoting,
+      hasQuote: Boolean(quote && context),
+      quoteError,
+      requiresShippingConsultation: quote?.requiresShippingConsultation,
+    });
     if (gate.kind === 'QUOTING') {
       // Không setError: lỗi sẽ chặn effect báo giá đang chờ debounce và hiện khung "Thử lại" giả.
       toast({ type: 'info', title: 'Đang tính phí vận chuyển', message: 'Hệ thống đang tính phí vận chuyển, vui lòng chờ trong giây lát rồi bấm đặt hàng.' });
@@ -332,7 +346,8 @@ export function CheckoutPage() {
       return;
     }
 
-    if (quote.requiresShippingConsultation) {
+    // Chỉ báo giá chờ nhân viên chốt cước mới chặn; "Nhờ shop gửi" (shippingFeePending) đặt được ngay.
+    if (gate.kind === 'CONSULTATION_PENDING') {
       const msg = 'Đơn hàng cần nhân viên tư vấn cước gửi xe riêng. Vui lòng bấm kiểm tra lại phí sau khi đã thống nhất.';
       setError(msg);
       toast({ type: 'warning', title: 'Cần tư vấn cước vận chuyển', message: msg });
@@ -641,9 +656,9 @@ export function CheckoutPage() {
                 <button
                   type="button"
                   role="radio"
-                  aria-checked={!requestConsultation}
-                  onClick={() => { if (!requestConsultation) return; setRequestConsultation(false); invalidateQuote(); }}
-                  className={optionClass(!requestConsultation)}
+                  aria-checked={!shopArranged}
+                  onClick={() => { if (!shopArranged) return; setShopArranged(false); invalidateQuote(); }}
+                  className={optionClass(!shopArranged)}
                 >
                   <div className="flex items-center justify-between gap-2">
                     <strong className="text-sm font-bold text-slate-900">Giao hàng tiêu chuẩn</strong>
@@ -655,7 +670,7 @@ export function CheckoutPage() {
                     Đội xe Bảo An giao miễn phí trong {freeRadiusKm} km, giao toàn quốc qua GHN Express.
                   </span>
 
-                  {!requestConsultation && (
+                  {!shopArranged && (
                     <div className="mt-3.5 border-t border-slate-100 pt-3 text-xs" aria-live="polite">
                       {quotePending ? (
                         <span className="inline-flex items-center gap-1.5 font-bold text-slate-500">
@@ -665,7 +680,11 @@ export function CheckoutPage() {
                         <div className="space-y-1">
                           <div className="flex items-baseline gap-2">
                             <span className="text-sm font-black text-emerald-700">
-                              {quoteView.shippingTotalAmount === 0 ? 'Miễn phí giao hàng' : quoteView.shippingTotalLabel}
+                              {quoteView.shippingFeePending
+                                ? 'Shop báo riêng'
+                                : quoteView.shippingTotalAmount === 0
+                                  ? 'Miễn phí giao hàng'
+                                  : quoteView.shippingTotalLabel}
                             </span>
                             <span className="text-slate-400">·</span>
                             <span className="font-semibold text-slate-600">{quoteView.shippingMethodLabel}</span>
@@ -691,18 +710,18 @@ export function CheckoutPage() {
                 <button
                   type="button"
                   role="radio"
-                  aria-checked={requestConsultation}
-                  onClick={() => { if (requestConsultation) return; setRequestConsultation(true); invalidateQuote(); }}
-                  className={optionClass(requestConsultation)}
+                  aria-checked={shopArranged}
+                  onClick={() => { if (shopArranged) return; setShopArranged(true); invalidateQuote(); }}
+                  className={optionClass(shopArranged)}
                 >
                   <strong className="text-sm font-bold text-slate-900">Nhờ shop tư vấn & gửi chành</strong>
                   <span className="mt-1.5 block text-xs leading-5 text-slate-500">
-                    Dành cho giàn tạ, máy khối lớn gửi xe khách / xe tải liên tỉnh. Nhân viên sẽ gọi báo cước riêng.
+                    Dành cho giàn tạ, máy khối lớn gửi xe khách / xe tải liên tỉnh. Bạn đặt hàng được ngay, shop sẽ gọi thống nhất cước gửi xe và thu riêng.
                   </span>
-                  {requestConsultation && (
+                  {shopArranged && (
                     <div className="mt-3.5 border-t border-slate-100 pt-3">
                       <span className="inline-block rounded-lg bg-amber-50 px-2.5 py-1 text-[11px] font-bold text-amber-800">
-                        Cước vận chuyển thanh toán riêng với nhà xe
+                        Đặt hàng được ngay · phí vận chuyển shop báo và thu riêng
                       </span>
                     </div>
                   )}
@@ -842,7 +861,7 @@ export function CheckoutPage() {
             busy={busy || redirectingToVnpay}
             quoting={quotePending}
             authLoaded={isLoaded}
-            shopArranged={requestConsultation}
+            shopArranged={shopArranged}
             showSubmit={true}
             submitDisabled={busy || redirectingToVnpay}
             submitLabel={

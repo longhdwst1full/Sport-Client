@@ -24,4 +24,14 @@ describe('resolveCheckoutQuoteGate', () => {
   it('đã có quote thì cho đi tiếp', () => {
     expect(resolveCheckoutQuoteGate({ ...base, hasQuote: true, quoteError: 'cũ' })).toEqual({ kind: 'READY' });
   });
+
+  it('báo giá "Nhờ shop gửi" (QUOTED, phí shop báo riêng) vẫn đặt được đơn', () => {
+    expect(resolveCheckoutQuoteGate({ ...base, hasQuote: true, requiresShippingConsultation: false }))
+      .toEqual({ kind: 'READY' });
+  });
+
+  it('báo giá chờ nhân viên chốt cước thì chặn đặt hàng', () => {
+    expect(resolveCheckoutQuoteGate({ ...base, hasQuote: true, requiresShippingConsultation: true }))
+      .toEqual({ kind: 'CONSULTATION_PENDING' });
+  });
 });
