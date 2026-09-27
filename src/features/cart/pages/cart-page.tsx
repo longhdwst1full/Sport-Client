@@ -1,8 +1,9 @@
 'use client';
 
+import { useMemo, useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowLeft, Minus, Plus, ShoppingBag, Trash2, ShieldCheck, RotateCcw, Truck, Lock, Sparkles } from 'lucide-react';
+import { ArrowLeft, Minus, Plus, ShoppingBag, Trash2, ShieldCheck, RotateCcw, Truck, Sparkles } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { clearCart, removeCartItem, updateQuantity } from '@/app/store/cart.slice';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
@@ -15,10 +16,46 @@ const SHIPPING_FEE = 30000;
 
 export function CartPage() {
   const dispatch = useAppDispatch();
-  const { toast, success } = useToast();
+  const { toast } = useToast();
   const items = useAppSelector((s) => s.cart.items);
-  const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
-  const total = items.length > 0 ? subtotal + SHIPPING_FEE : 0;
+
+  // Lựa chọn sản phẩm thanh toán trong giỏ hàng
+  const [selectedVariantIds, setSelectedVariantIds] = useState<string[]>(() => items.map((i) => i.variantId));
+
+  useEffect(() => {
+    setSelectedVariantIds((prev) => {
+      const validIds = new Set(items.map((i) => i.variantId));
+      const next = prev.filter((id) => validIds.has(id));
+      if (next.length === 0 && items.length > 0) {
+        return items.map((i) => i.variantId);
+      }
+      return next;
+    });
+  }, [items]);
+
+  const selectedSet = useMemo(() => new Set(selectedVariantIds), [selectedVariantIds]);
+  const selectedItems = useMemo(() => items.filter((i) => selectedSet.has(i.variantId)), [items, selectedSet]);
+  const isAllSelected = items.length > 0 && selectedItems.length === items.length;
+
+  const toggleSelectAll = () => {
+    if (isAllSelected) {
+      setSelectedVariantIds([]);
+    } else {
+      setSelectedVariantIds(items.map((i) => i.variantId));
+    }
+  };
+
+  const toggleSelectItem = (variantId: string) => {
+    setSelectedVariantIds((prev) =>
+      prev.includes(variantId) ? prev.filter((id) => id !== variantId) : [...prev, variantId]
+    );
+  };
+
+  const subtotal = useMemo(
+    () => selectedItems.reduce((sum, i) => sum + i.price * i.quantity, 0),
+    [selectedItems]
+  );
+  const total = selectedItems.length > 0 ? subtotal + SHIPPING_FEE : 0;
 
   const handleRemoveItem = (variantId: string, name: string) => {
     dispatch(removeCartItem(variantId));
@@ -107,13 +144,41 @@ export function CartPage() {
           </div>
         ) : (
           <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_380px]">
-            {/* Cart Items */}
+            {/* Cart Items List */}
             <div className="space-y-4">
+              {/* Select All Checkbox Bar */}
+              <div className="flex items-center justify-between rounded-2xl border border-slate-200/90 bg-white px-4 py-3.5 shadow-xs">
+                <label className="flex items-center gap-3 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={isAllSelected}
+                    onChange={toggleSelectAll}
+                    className="size-4.5 rounded accent-emerald-600 cursor-pointer"
+                    aria-label="Chọn tất cả sản phẩm"
+                  />
+                  <span className="text-sm font-bold text-slate-800">
+                    Chọn tất cả ({items.length} sản phẩm)
+                  </span>
+                </label>
+                <span className="text-xs font-semibold text-slate-500">
+                  Đã chọn: <strong className="font-bold text-emerald-700">{selectedItems.length}</strong>/{items.length}
+                </span>
+              </div>
+
               {items.map((item) => (
                 <div
                   key={item.variantId}
-                  className="flex gap-4 rounded-2xl border border-ink/5 bg-white p-4 shadow-sm sm:gap-6 sm:p-5"
+                  className="flex items-center gap-3 rounded-2xl border border-ink/5 bg-white p-4 shadow-sm sm:gap-5 sm:p-5"
                 >
+                  {/* Selectbox */}
+                  <input
+                    type="checkbox"
+                    checked={selectedSet.has(item.variantId)}
+                    onChange={() => toggleSelectItem(item.variantId)}
+                    className="size-4.5 rounded accent-emerald-600 cursor-pointer shrink-0"
+                    aria-label={`Chọn sản phẩm ${item.name}`}
+                  />
+
                   {/* Image */}
                   <Link
                     href={`/products/${item.slug ?? item.productId}`}
@@ -128,6 +193,7 @@ export function CartPage() {
                       className="object-cover transition-transform duration-300 group-hover/img:scale-105"
                     />
                   </Link>
+
                   {/* Details */}
                   <div className="flex min-w-0 flex-1 flex-col">
                     <div className="flex items-start justify-between gap-2">
@@ -181,17 +247,17 @@ export function CartPage() {
               ))}
             </div>
 
-            {/* Order Summary & Conversion Guarantees */}
+            {/* Order Summary */}
             <aside className="h-fit rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm lg:sticky lg:top-40">
               <h2 className="text-lg font-black text-slate-900">Tóm tắt đơn hàng</h2>
               <div className="mt-5 space-y-3 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Tạm tính ({items.length} sản phẩm)</span>
+                  <span className="text-slate-500">Tạm tính ({selectedItems.length} sản phẩm)</span>
                   <span className="font-semibold text-slate-900">{vndMoney.format(subtotal)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-500">Phí vận chuyển</span>
-                  <span className="font-semibold text-slate-900">{vndMoney.format(SHIPPING_FEE)}</span>
+                  <span className="font-semibold text-slate-900">{selectedItems.length > 0 ? vndMoney.format(SHIPPING_FEE) : '0 ₫'}</span>
                 </div>
                 <hr className="border-slate-100" />
                 <div className="flex justify-between text-base">
@@ -199,11 +265,31 @@ export function CartPage() {
                   <strong className="text-xl font-black text-emerald-700">{vndMoney.format(total)}</strong>
                 </div>
               </div>
+
+              {/* Checkout Button: "Đặt hàng" */}
               <Link
-                href="/checkout"
-                className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-emerald-600 px-5 py-3.5 font-bold text-white shadow-lg shadow-emerald-600/20 transition hover:bg-emerald-500"
+                href={
+                  selectedItems.length > 0
+                    ? `/checkout?items=${selectedItems.map((i) => i.variantId).join(',')}`
+                    : '#'
+                }
+                onClick={(e) => {
+                  if (selectedItems.length === 0) {
+                    e.preventDefault();
+                    toast({
+                      type: 'warning',
+                      title: 'Chưa chọn sản phẩm',
+                      message: 'Vui lòng chọn ít nhất 1 sản phẩm để tiếp tục đặt hàng.',
+                    });
+                  }
+                }}
+                className={`mt-6 flex w-full items-center justify-center gap-2 rounded-full py-3.5 font-bold text-white shadow-lg transition ${
+                  selectedItems.length > 0
+                    ? 'bg-emerald-600 shadow-emerald-600/20 hover:bg-emerald-500 cursor-pointer'
+                    : 'bg-slate-300 shadow-none cursor-not-allowed'
+                }`}
               >
-                Tiến hành thanh toán
+                Đặt hàng {selectedItems.length > 0 ? `(${selectedItems.length})` : ''}
               </Link>
               <Link
                 href="/products"
@@ -226,10 +312,6 @@ export function CartPage() {
                   <Truck className="size-4 text-emerald-600 shrink-0" />
                   <span>Kiểm tra hàng trước khi thanh toán COD</span>
                 </div>
-                <div className="flex items-center gap-2.5">
-                  <Lock className="size-4 text-emerald-600 shrink-0" />
-                  <span>Thanh toán an toàn bảo mật chuẩn SSL 256-bit</span>
-                </div>
               </div>
             </aside>
           </div>
@@ -238,3 +320,4 @@ export function CartPage() {
     </StorefrontLayout>
   );
 }
+

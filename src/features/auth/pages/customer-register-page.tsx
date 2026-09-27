@@ -8,7 +8,6 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import {
-  Dumbbell,
   Eye,
   EyeOff,
   ShieldCheck,
@@ -20,9 +19,7 @@ import {
   Mail,
   Phone,
   User,
-  Gift,
   Award,
-  BadgePercent,
   Check,
 } from 'lucide-react';
 import { useRegisterCustomer } from '@/generated/api/auth/auth';
@@ -78,7 +75,7 @@ export function CustomerRegisterPage() {
         toast({
           type: 'success',
           title: 'Đăng ký thành công',
-          message: 'Chào mừng bạn gia nhập cộng đồng Bảo An Sport! Nhận voucher 200.000đ.',
+          message: 'Chào mừng bạn gia nhập cộng đồng Bảo An Sport!',
         });
         const accountItems = await syncCartAfterAuth(storefrontStore.getState().cart.items);
         if (accountItems) storefrontStore.dispatch(hydrateCart(accountItems));
@@ -120,14 +117,14 @@ export function CustomerRegisterPage() {
           {/* Top Bar: Brand Logo & Return Link */}
           <div className="relative z-10 flex items-center justify-between">
             <Link href="/" className="group inline-flex items-center gap-3">
-              <span className="grid size-11 place-items-center rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 text-slate-950 shadow-lg shadow-emerald-500/30 transition-transform group-hover:scale-105">
-                <Dumbbell className="size-6 text-slate-950" />
-              </span>
-              <div>
-                <span className="text-xl font-black tracking-wider text-white">BẢO AN SPORT</span>
-                <span className="block text-[10px] font-bold uppercase tracking-widest text-emerald-400">
-                  Dụng Cụ Thể Thao Chính Hãng
-                </span>
+              <div className="relative h-11 w-48 transition-transform group-hover:scale-105">
+                <Image
+                  src="/images/logo.png"
+                  alt="Bảo An Sport — Dụng Cụ Thể Thao Chính Hãng"
+                  fill
+                  priority
+                  className="object-contain object-left"
+                />
               </div>
             </Link>
 
@@ -143,14 +140,14 @@ export function CustomerRegisterPage() {
           {/* Center: Editorial Welcome Perks Showcase */}
           <div className="relative z-10 my-auto py-8">
             <div className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-950/60 px-4 py-1.5 text-xs font-extrabold text-emerald-300 backdrop-blur-md">
-              <Gift className="size-4 text-emerald-400" />
-              <span>Gói Quà Tặng Thành Viên Mới 2026</span>
+              <Sparkles className="size-4 text-emerald-400" />
+              <span>Đặc Quyền Thành Viên Mới 2026</span>
             </div>
 
             <h2 className="mt-5 text-3xl font-black leading-tight text-white xl:text-4xl">
               Gia nhập Bảo An Sport, <br className="hidden xl:inline" />
               <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-200 bg-clip-text text-transparent">
-                nhận ngay voucher 200.000đ
+                đồng hành cùng thể lực đỉnh cao
               </span>
             </h2>
 
@@ -161,8 +158,8 @@ export function CustomerRegisterPage() {
             {/* Welcome Perks Cards Grid */}
             <div className="mt-8 grid grid-cols-3 gap-3.5">
               <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-center backdrop-blur-md transition hover:bg-white/10">
-                <div className="text-2xl font-black text-emerald-400 xl:text-3xl">200K</div>
-                <div className="mt-1 text-xs font-bold text-slate-300">Voucher mở tài khoản</div>
+                <div className="text-2xl font-black text-emerald-400 xl:text-3xl">100%</div>
+                <div className="mt-1 text-xs font-bold text-slate-300">Chính hãng phân phối</div>
               </div>
               <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-center backdrop-blur-md transition hover:bg-white/10">
                 <div className="text-2xl font-black text-emerald-400 xl:text-3xl">0đ</div>
@@ -174,14 +171,14 @@ export function CustomerRegisterPage() {
               </div>
             </div>
 
-            {/* Extra Member Incentive Box */}
+            {/* Service Commitment Box */}
             <div className="mt-6 rounded-2xl border border-emerald-500/20 bg-slate-900/60 p-4 backdrop-blur-md">
               <div className="flex items-center gap-2 text-emerald-400 font-bold text-xs mb-1.5">
-                <BadgePercent className="size-4" />
-                <span>Quyền lợi hội viên dài lâu</span>
+                <ShieldCheck className="size-4" />
+                <span>Cam kết chất lượng dịch vụ</span>
               </div>
               <p className="text-xs text-slate-300 leading-relaxed">
-                Tích lũy 5% giá trị cho mỗi đơn hàng để đổi quà và nâng hạng thành viên Diamond với nhiều quà tặng sinh nhật bất ngờ từ Bảo An Sport.
+                Trang bị thể thao chuẩn thi đấu, hỗ trợ giao lắp tận nơi và bảo dưỡng định kỳ trọn đời cho mọi hội viên Bảo An Sport.
               </p>
             </div>
           </div>
@@ -212,11 +209,16 @@ export function CustomerRegisterPage() {
           <div className="mx-auto w-full max-w-md">
             {/* Mobile Header Brand & Back */}
             <div className="mb-6 flex items-center justify-between lg:hidden">
-              <Link href="/" className="inline-flex items-center gap-2.5">
-                <span className="grid size-9 place-items-center rounded-xl bg-emerald-600 text-white shadow-md shadow-emerald-600/30">
-                  <Dumbbell className="size-5" />
-                </span>
-                <span className="text-lg font-black tracking-wide text-slate-900">BẢO AN SPORT</span>
+              <Link href="/" className="inline-flex items-center">
+                <div className="relative h-9 w-40">
+                  <Image
+                    src="/images/logo.png"
+                    alt="Bảo An Sport"
+                    fill
+                    priority
+                    className="object-contain object-left"
+                  />
+                </div>
               </Link>
 
               <Link
@@ -515,10 +517,9 @@ export function CustomerRegisterPage() {
                 </button>
               </div>
 
-              {/* SSL Security Footnote */}
-              <div className="mt-6 flex items-center justify-center gap-2 text-[11px] text-slate-400">
+              <div className="mt-6 flex items-center justify-center gap-2 text-xs text-slate-400">
                 <ShieldCheck className="size-4 text-emerald-600" />
-                <span>Bảo mật thông tin thành viên tuyệt đối theo chuẩn SSL 256-bit</span>
+                <span>Hệ thống bảo vệ tài khoản và thông tin cá nhân an toàn</span>
               </div>
             </div>
           </div>

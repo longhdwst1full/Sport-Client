@@ -180,7 +180,7 @@ export function ProductsCatalogView() {
       })
     );
 
-    router.push('/checkout');
+    router.push(`/checkout?buyNow=${product.defaultVariantId}`);
   };
 
   // Remaining count for load more button
@@ -437,7 +437,7 @@ export function ProductsCatalogView() {
                   ? 'Đang tải…'
                   : isLoadMoreError
                     ? 'Tải thêm chưa được — thử lại'
-                    : `Xem thêm (${remainingCount} sản phẩm)`}
+                    : 'Xem thêm'}
               </button>
             </div>
           )}

@@ -70,7 +70,7 @@ export function ProductShowcase({
       })
     );
 
-    router.push('/checkout');
+    router.push(`/checkout?buyNow=${product.defaultVariantId}`);
   };
 
   if (isPending)
@@ -158,7 +158,7 @@ export function ProductShowcase({
               ? 'Đang tải…'
               : isLoadMoreError
                 ? 'Tải thêm chưa được — thử lại'
-                : `Xem thêm (${Math.max(total - products.length, 0)} sản phẩm)`}
+                : 'Xem thêm'}
           </button>
         </div>
       )}

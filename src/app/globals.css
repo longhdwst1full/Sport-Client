@@ -28,7 +28,7 @@ body {
   margin: 0;
   background: var(--dc-canvas);
   color: var(--dc-text-primary);
-  font-family: 'Noto Sans', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'SF Pro', -apple-system, BlinkMacSystemFont, 'Roboto', 'Noto Sans', sans-serif;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

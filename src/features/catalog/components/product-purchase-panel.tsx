@@ -104,7 +104,7 @@ export function ProductPurchasePanel({ product }: { product: ProductPurchaseView
         quantity,
       })
     );
-    window.location.href = '/checkout';
+    router.push(`/checkout?buyNow=${selectedVariant.id}`);
   };
 
   return (

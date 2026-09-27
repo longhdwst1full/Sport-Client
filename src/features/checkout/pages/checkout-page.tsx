@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState  } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { AlertTriangle, CheckCircle2, CreditCard, LoaderCircle, LocateFixed, MapPin, Pencil, RotateCcw, ShieldCheck, Truck } from 'lucide-react';
@@ -73,12 +73,34 @@ function messageOf(error: unknown): string {
 
 export function CheckoutPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
   const { toast } = useToast();
   const { isAuthenticated, isLoaded } = useCustomerAuth();
   const items = useAppSelector((state) => state.cart.items);
   const cartHydrated = useCartHydrated();
-  const localSubtotal = useMemo(() => items.reduce((sum, item) => sum + item.price * item.quantity, 0), [items]);
+
+  const buyNowParam = searchParams.get('buyNow');
+  const itemsParam = searchParams.get('items');
+
+  // Mua ngay hoặc chọn sản phẩm trong giỏ: chỉ thanh toán đúng các sản phẩm này
+  const effectiveItems = useMemo(() => {
+    if (buyNowParam) {
+      const match = items.find((i) => i.variantId === buyNowParam);
+      return match ? [match] : [];
+    }
+    if (itemsParam) {
+      const allowed = new Set(itemsParam.split(',').filter(Boolean));
+      const filtered = items.filter((i) => allowed.has(i.variantId));
+      return filtered.length > 0 ? filtered : [];
+    }
+    return items;
+  }, [items, buyNowParam, itemsParam]);
+
+  const localSubtotal = useMemo(
+    () => effectiveItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
+    [effectiveItems]
+  );
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
@@ -197,14 +219,14 @@ export function CheckoutPage() {
     && address.provinceCode && address.districtCode && address.wardCode,
   );
   useEffect(() => {
-    if (!isLoaded || !readyToQuote || quote || placedOrder || !items.length) return;
+    if (!isLoaded || !readyToQuote || quote || placedOrder || !effectiveItems.length) return;
     const seq = ++quoteSeq.current;
     const timer = setTimeout(async () => {
       setAutoQuoting(true);
       setError('');
       try {
         const prepared = await prepareCheckout(
-          items.map(({ variantId, quantity }) => ({ variantId, quantity })),
+          effectiveItems.map(({ variantId, quantity }) => ({ variantId, quantity })),
           buildInput(),
           isAuthenticated,
           crypto.randomUUID(),
@@ -221,7 +243,7 @@ export function CheckoutPage() {
     return () => clearTimeout(timer);
     // buildInput đọc đúng các state liệt kê dưới đây; thêm hàm vào deps sẽ báo giá lại mỗi lần render.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoaded, readyToQuote, quote, placedOrder, items, isAuthenticated, name, phone, email, note, address, coordinates, paymentMethod, requestConsultation]);
+  }, [isLoaded, readyToQuote, quote, placedOrder, effectiveItems, isAuthenticated, name, phone, email, note, address, coordinates, paymentMethod, requestConsultation]);
 
   /** Lượt báo giá tự động lỗi (GHN timeout, mạng): khách bấm thử lại mà không phải sửa form. */
   const retryQuote = () => {
@@ -320,7 +342,8 @@ export function CheckoutPage() {
       orderIdempotencyKey.current ??= crypto.randomUUID();
       await confirmCheckout(context, quote.checkoutToken, confirmIdempotencyKey.current);
       const order = await placeOrder(context, quote.checkoutToken, orderIdempotencyKey.current);
-      dispatch(clearCart());
+      // Xoá đúng các sản phẩm đã thanh toán khỏi giỏ hàng
+      effectiveItems.forEach((item) => dispatch(removeCartItem(item.variantId)));
       if (paymentMethod === 'VNPAY' && (await redirectToVnpay(order))) return;
       setPlacedOrder(order);
       toast({
@@ -360,7 +383,7 @@ export function CheckoutPage() {
     );
   }
 
-  if (!items.length) {
+  if (!effectiveItems.length) {
     return (
       <StorefrontLayout>
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
@@ -454,15 +477,11 @@ export function CheckoutPage() {
           <div className="mt-2 flex flex-wrap items-baseline justify-between gap-4">
             <div>
               <h1 className="mt-2 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
-                Thanh toán đơn hàng
+                Đặt hàng & Thanh toán
               </h1>
               <p className="mt-1 text-sm text-slate-500">
                 Vui lòng điền thông tin nhận hàng và chọn phương thức thanh toán phù hợp.
               </p>
-            </div>
-            <div className="hidden sm:flex items-center gap-2 rounded-full border border-emerald-200/80 bg-emerald-50/70 px-3.5 py-1.5 text-xs font-bold text-emerald-800">
-              <ShieldCheck className="size-4 text-emerald-600" />
-              <span>Bảo mật chuẩn SSL 256-bit</span>
             </div>
           </div>
         </div>
@@ -800,7 +819,7 @@ export function CheckoutPage() {
                       ? 'Đang xử lý...'
                       : paymentMethod === 'VNPAY'
                       ? 'Đặt hàng & Thanh toán VNPay'
-                      : 'Hoàn tất đặt hàng'}
+                      : 'Đặt hàng'}
                   </span>
                 </button>
               </div>
@@ -808,7 +827,7 @@ export function CheckoutPage() {
           </div>
 
           <CheckoutOrderSummary
-            items={items}
+            items={effectiveItems}
             localSubtotal={localSubtotal}
             quote={quoteView}
             busy={busy || redirectingToVnpay}
@@ -824,7 +843,7 @@ export function CheckoutPage() {
                 ? 'Đang xử lý...'
                 : paymentMethod === 'VNPAY'
                 ? 'Đặt hàng & Thanh toán VNPay'
-                : 'Hoàn tất đặt hàng'
+                : 'Đặt hàng'
             }
           />
         </form>

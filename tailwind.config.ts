@@ -4,6 +4,9 @@ export default {
   content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['"SF Pro"', '-apple-system', 'BlinkMacSystemFont', 'Roboto', '"Noto Sans"', 'sans-serif'],
+      },
       colors: {
         ink: '#0f172a', // Modern slate-900 instead of muddy dark green
         cream: '#f8fafc', // Modern crisp slate-50 instead of yellowish cream

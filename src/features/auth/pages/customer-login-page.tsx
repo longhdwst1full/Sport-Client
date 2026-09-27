@@ -8,7 +8,6 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import {
-  Dumbbell,
   Eye,
   EyeOff,
   ShieldCheck,
@@ -23,7 +22,6 @@ import {
   Star,
   Award,
   PhoneCall,
-  Flame,
 } from 'lucide-react';
 import { useLoginCustomer } from '@/generated/api/auth/auth';
 import type { LoginDto } from '@/generated/api/auth/auth.schemas';
@@ -76,15 +74,7 @@ export function CustomerLoginPage() {
     },
   });
 
-  const handleFillDemo = () => {
-    form.setValue('identifier', 'demo@baoan.vn', { shouldValidate: true });
-    form.setValue('password', 'Matkhau123@', { shouldValidate: true });
-    toast({
-      type: 'info',
-      title: 'Đã điền tài khoản thử nghiệm',
-      message: 'Email: demo@baoan.vn | Mật khẩu: Matkhau123@',
-    });
-  };
+
 
   return (
     <main className="min-h-screen bg-slate-50 text-slate-900 selection:bg-emerald-500 selection:text-white">
@@ -110,14 +100,14 @@ export function CustomerLoginPage() {
           {/* Top Bar: Brand Logo & Return Link */}
           <div className="relative z-10 flex items-center justify-between">
             <Link href="/" className="group inline-flex items-center gap-3">
-              <span className="grid size-11 place-items-center rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 text-slate-950 shadow-lg shadow-emerald-500/30 transition-transform group-hover:scale-105">
-                <Dumbbell className="size-6 text-slate-950" />
-              </span>
-              <div>
-                <span className="text-xl font-black tracking-wider text-white">BẢO AN SPORT</span>
-                <span className="block text-[10px] font-bold uppercase tracking-widest text-emerald-400">
-                  Dụng Cụ Thể Thao Chính Hãng
-                </span>
+              <div className="relative h-11 w-48 transition-transform group-hover:scale-105">
+                <Image
+                  src="/images/logo.png"
+                  alt="Bảo An Sport — Dụng Cụ Thể Thao Chính Hãng"
+                  fill
+                  priority
+                  className="object-contain object-left"
+                />
               </div>
             </Link>
 
@@ -145,7 +135,7 @@ export function CustomerLoginPage() {
             </h2>
 
             <p className="mt-4 max-w-xl text-sm leading-relaxed text-slate-300">
-              Đăng nhập để theo dõi lộ trình đơn hàng, kích hoạt bảo hành điện tử chính hãng 24 tháng và nhận voucher độc quyền từ Bảo An Sport.
+              Đăng nhập để theo dõi lộ trình đơn hàng, kích hoạt bảo hành điện tử chính hãng 24 tháng và tận hưởng dịch vụ giao lắp chuyên nghiệp từ Bảo An Sport.
             </p>
 
             {/* Quick Metrics Bento Grid */}
@@ -209,11 +199,16 @@ export function CustomerLoginPage() {
           <div className="mx-auto w-full max-w-md">
             {/* Mobile Header Brand & Back */}
             <div className="mb-6 flex items-center justify-between lg:hidden">
-              <Link href="/" className="inline-flex items-center gap-2.5">
-                <span className="grid size-9 place-items-center rounded-xl bg-emerald-600 text-white shadow-md shadow-emerald-600/30">
-                  <Dumbbell className="size-5" />
-                </span>
-                <span className="text-lg font-black tracking-wide text-slate-900">BẢO AN SPORT</span>
+              <Link href="/" className="inline-flex items-center">
+                <div className="relative h-9 w-40">
+                  <Image
+                    src="/images/logo.png"
+                    alt="Bảo An Sport"
+                    fill
+                    priority
+                    className="object-contain object-left"
+                  />
+                </div>
               </Link>
 
               <Link
@@ -445,34 +440,9 @@ export function CustomerLoginPage() {
                 </button>
               </div>
 
-              {/* Demo Account Quick-Fill Card */}
-              <div className="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50/60 p-3.5 text-xs">
-                <div className="flex items-center justify-between">
-                  <span className="font-bold text-emerald-950 flex items-center gap-1.5">
-                    <Flame className="size-4 text-emerald-600" />
-                    <span>Tài khoản thử nghiệm nhanh:</span>
-                  </span>
-                  <button
-                    type="button"
-                    onClick={handleFillDemo}
-                    className="rounded-lg bg-emerald-600 px-2.5 py-1 text-[11px] font-black text-white transition hover:bg-emerald-500 shadow-sm"
-                  >
-                    Điền nhanh
-                  </button>
-                </div>
-                <p className="mt-1 text-slate-600 leading-relaxed">
-                  demo@baoan.vn / Matkhau123@ hoặc{' '}
-                  <Link href="/register" className="font-bold text-emerald-700 underline">
-                    Đăng ký mới trong 10 giây
-                  </Link>
-                  .
-                </p>
-              </div>
-
-              {/* SSL Security Footnote */}
-              <div className="mt-6 flex items-center justify-center gap-2 text-[11px] text-slate-400">
+              <div className="mt-6 flex items-center justify-center gap-2 text-xs text-slate-400">
                 <ShieldCheck className="size-4 text-emerald-600" />
-                <span>Bảo mật kết nối SSL 256-bit chuẩn an toàn e-commerce</span>
+                <span>Hệ thống bảo vệ tài khoản và thông tin cá nhân an toàn</span>
               </div>
             </div>
           </div>

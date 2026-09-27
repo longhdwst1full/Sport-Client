@@ -61,7 +61,7 @@ export function ProductRelatedSection({
         slug: product.slug,
       }),
     );
-    router.push('/checkout');
+    router.push(`/checkout?buyNow=${product.defaultVariantId}`);
   };
 
   if (isError || (!isPending && related.length === 0)) return null;

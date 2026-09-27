@@ -8,7 +8,7 @@ export class CartPage extends StorefrontPage {
   readonly decrease = (): Locator => this.page.getByLabel('Giảm số lượng');
   readonly remove = (): Locator => this.page.getByLabel('Xóa sản phẩm');
   readonly checkoutLink = (): Locator =>
-    this.page.getByRole('link', { name: 'Tiến hành thanh toán' });
+    this.page.getByRole('link', { name: /Đặt hàng|Tiến hành thanh toán/ });
   readonly summaryTotal = (): Locator => this.page.getByText('Tổng thanh toán');
 
   async open(): Promise<void> {

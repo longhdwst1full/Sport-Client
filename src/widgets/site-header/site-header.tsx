@@ -234,7 +234,7 @@ export function SiteHeader() {
         className="relative hidden border-b border-slate-200/80 bg-white/95 backdrop-blur-md lg:block shadow-[0_1px_3px_0_rgba(0,0,0,0.03)]"
         aria-label="Điều hướng chính"
       >
-        <div className="mx-auto flex h-[52px] max-w-7xl items-center justify-between px-3 sm:px-6 lg:px-8 overflow-x-auto no-scrollbar gap-2">
+        <div className="mx-auto flex h-[52px] max-w-7xl items-center justify-between px-3 sm:px-6 lg:px-8 gap-2">
           {/* Main Category Dropdowns */}
           <div className="flex items-center gap-1 xl:gap-1.5 shrink-0">
             <Link
@@ -254,10 +254,16 @@ export function SiteHeader() {
             {megaMenuCategories.slice(0, 4).map((cat, catIdx) => {
               const hasSubmenu = Boolean(cat.children && cat.children.length > 0);
               const isOpen = hasSubmenu && activeMegaMenu === cat.label;
+              const visibilityClass =
+                catIdx === 2
+                  ? 'hidden xl:block'
+                  : catIdx === 3
+                    ? 'hidden 2xl:block'
+                    : '';
               return (
                 <div
                   key={cat.label}
-                  className={`relative ${catIdx === 3 ? 'hidden 2xl:block' : ''}`}
+                  className={`relative ${visibilityClass}`}
                   onMouseEnter={() => hasSubmenu && handleMegaMenuEnter(cat.label)}
                   onMouseLeave={hasSubmenu ? handleMegaMenuLeave : undefined}
                 >
@@ -295,7 +301,7 @@ export function SiteHeader() {
                             <div className="mt-3 divide-y divide-slate-100">
                               {cat.children.map((child) => (
                                 <Link
-                                  key={child.label}
+                                   key={child.label}
                                   href={child.href}
                                   className="group flex items-center justify-between rounded-lg px-2.5 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 hover:text-emerald-700"
                                 >
@@ -338,9 +344,15 @@ export function SiteHeader() {
             })}
 
             {/* Overflow Dropdown for remaining categories */}
-            {megaMenuCategories.length > 4 && (
+            {megaMenuCategories.length > 2 && (
               <div
-                className="relative"
+                className={`relative ${
+                  megaMenuCategories.length === 3
+                    ? 'xl:hidden'
+                    : megaMenuCategories.length === 4
+                      ? '2xl:hidden'
+                      : ''
+                }`}
                 onMouseEnter={() => handleMegaMenuEnter('__extra_categories')}
                 onMouseLeave={handleMegaMenuLeave}
               >
@@ -367,18 +379,26 @@ export function SiteHeader() {
                     onMouseLeave={handleMegaMenuLeave}
                   >
                     <div className="overflow-hidden rounded-2xl border border-slate-200/90 bg-white p-2.5 shadow-2xl ring-1 ring-black/5 space-y-1">
-                      {megaMenuCategories.slice(4).map((cat) => (
-                        <Link
-                          key={cat.label}
-                          href={cat.href}
-                          className="flex items-center justify-between rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 transition"
-                        >
-                          <span>{cat.label}</span>
-                          <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-500 font-medium">
-                            {cat.productCount}
-                          </span>
-                        </Link>
-                      ))}
+                      {megaMenuCategories.slice(2).map((cat, idx) => {
+                        const itemClass =
+                          idx === 0
+                            ? 'xl:hidden'
+                            : idx === 1
+                              ? '2xl:hidden'
+                              : '';
+                        return (
+                          <Link
+                            key={cat.label}
+                            href={cat.href}
+                            className={`flex items-center justify-between rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 transition ${itemClass}`}
+                          >
+                            <span>{cat.label}</span>
+                            <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-500 font-medium">
+                              {cat.productCount}
+                            </span>
+                          </Link>
+                        );
+                      })}
                     </div>
                   </div>
                 )}
@@ -417,15 +437,8 @@ export function SiteHeader() {
               href="/news"
               className="hidden xl:inline-flex items-center whitespace-nowrap rounded-xl px-2.5 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-emerald-50/80 hover:text-emerald-700 xl:px-3 xl:py-2 xl:text-sm"
             >
-              Cẩm nang tập luyện
-            </Link>
-
-            <Link
-              href="/contact"
-              className="hidden 2xl:inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl px-2.5 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-emerald-50/80 hover:text-emerald-700 xl:px-3 xl:py-2 xl:text-sm"
-            >
-              <MapPin className="size-3.5 xl:size-4 text-emerald-600" />
-              <span>Hệ thống Showroom</span>
+              <span className="hidden 2xl:inline">Cẩm nang tập luyện</span>
+              <span className="2xl:hidden">Cẩm nang</span>
             </Link>
           </div>
         </div>
