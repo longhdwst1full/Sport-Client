@@ -62,6 +62,8 @@ export interface OrderDetailView {
   grandTotalLabel: string;
   subtotalLabel: string;
   shippingTotalLabel: string;
+  discountTotalLabel: string;
+  hasDiscount: boolean;
   itemCount: number;
   customerNote: string | null;
   recipientName: string;
@@ -156,6 +158,8 @@ export function toOrderDetailView(dto: OrderDetailDto): OrderDetailView {
     grandTotalLabel: money(dto.grandTotal),
     subtotalLabel: money(dto.subtotal),
     shippingTotalLabel: money(dto.shippingTotal),
+    discountTotalLabel: money(dto.discountTotal),
+    hasDiscount: Number(dto.discountTotal ?? 0) > 0,
     itemCount: dto.itemCount,
     customerNote: dto.customerNote ?? null,
     recipientName: recipient.name,
