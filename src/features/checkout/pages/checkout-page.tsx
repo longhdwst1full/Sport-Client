@@ -148,7 +148,13 @@ export function CheckoutPage() {
     if (caught instanceof UnavailableCartLinesError) {
       caught.variantIds.forEach((variantId) => dispatch(removeCartItem(variantId)));
     }
-    setError(messageOf(caught));
+    const msg = messageOf(caught);
+    setError(msg);
+    toast({
+      type: 'error',
+      title: 'Không thể xử lý đơn hàng',
+      message: msg,
+    });
   };
 
   const useCurrentLocation = () => {
@@ -275,27 +281,37 @@ export function CheckoutPage() {
     setError('');
 
     if (!addressValid) {
-      setError('Vui lòng điền họ tên, số điện thoại và chọn đầy đủ địa chỉ giao hàng (Tỉnh, Huyện, Phường/Xã).');
+      const msg = 'Vui lòng điền họ tên, số điện thoại và chọn đầy đủ địa chỉ giao hàng (Tỉnh, Huyện, Phường/Xã).';
+      setError(msg);
+      toast({ type: 'warning', title: 'Thiếu thông tin nhận hàng', message: msg });
       return;
     }
 
     if (autoQuoting) {
-      setError('Hệ thống đang tính toán phí vận chuyển, vui lòng chờ trong giây lát...');
+      const msg = 'Hệ thống đang tính toán phí vận chuyển, vui lòng chờ trong giây lát...';
+      setError(msg);
+      toast({ type: 'info', title: 'Đang tính phí vận chuyển', message: msg });
       return;
     }
 
     if (!quote || !context) {
-      setError('Chưa thể tính phí vận chuyển hoặc địa chỉ không hợp lệ. Vui lòng kiểm tra lại địa chỉ nhận hàng.');
+      const msg = 'Chưa thể tính phí vận chuyển hoặc địa chỉ không hợp lệ. Vui lòng kiểm tra lại địa chỉ nhận hàng.';
+      setError(msg);
+      toast({ type: 'error', title: 'Chưa có phí vận chuyển', message: msg });
       return;
     }
 
     if (quote.requiresShippingConsultation) {
-      setError('Đơn hàng cần nhân viên tư vấn cước gửi xe riêng. Vui lòng bấm kiểm tra lại phí sau khi đã thống nhất.');
+      const msg = 'Đơn hàng cần nhân viên tư vấn cước gửi xe riêng. Vui lòng bấm kiểm tra lại phí sau khi đã thống nhất.';
+      setError(msg);
+      toast({ type: 'warning', title: 'Cần tư vấn cước vận chuyển', message: msg });
       return;
     }
 
     if (!acceptedTerms) {
-      setError('Vui lòng đánh dấu đồng ý với Điều khoản dịch vụ và Chính sách đổi trả trước khi đặt hàng.');
+      const msg = 'Vui lòng đánh dấu đồng ý với Điều khoản dịch vụ và Chính sách đổi trả trước khi đặt hàng.';
+      setError(msg);
+      toast({ type: 'warning', title: 'Chưa đồng ý điều khoản', message: msg });
       return;
     }
     setBusy(true);
@@ -323,7 +339,18 @@ export function CheckoutPage() {
     }
   };
 
-  if (!cartHydrated) return null;
+  if (!cartHydrated) {
+    return (
+      <StorefrontLayout>
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-2.5 text-sm font-semibold text-slate-600">
+            <LoaderCircle className="size-5 animate-spin text-emerald-600" />
+            <span>Đang tải thông tin thanh toán đơn hàng…</span>
+          </div>
+        </div>
+      </StorefrontLayout>
+    );
+  }
 
   if (placedOrder) {
     return (

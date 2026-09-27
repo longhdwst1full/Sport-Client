@@ -14,5 +14,9 @@ export {
   type CategoryRailView,
 } from './model/category.mapper';
 export { ProductsCatalogView } from './components/products-catalog-view';
+export { ProductCard, type ProductCardProps } from './components/product-card';
+export { CatalogSidebarFilters, type CatalogSidebarFiltersProps, type PriceRangeOption } from './components/catalog-sidebar-filters';
+export { CatalogActiveChips, type CatalogActiveChipsProps } from './components/catalog-active-chips';
+export { CatalogMobileFilterDrawer, type CatalogMobileFilterDrawerProps } from './components/catalog-mobile-filter-drawer';
 export { ProductSpecifications, type ProductSpecItem } from './components/product-specifications';
 export { useMegaMenuCategories, type MegaMenuEntry } from './hooks/use-mega-menu-categories';

@@ -20,6 +20,7 @@ import { addCartItem } from '@/app/store/cart.slice';
 import { useAppDispatch } from '@/app/store/hooks';
 import type { ProductPurchaseView } from '../model/product.mapper';
 import { STORE_CONTACT, STORE_POLICY_PAGES } from '@/shared/constants';
+import { useToast } from '@/shared/components/global-toast';
 
 /**
  * Chính sách áp dụng toàn cửa hàng, dẫn sang trang CMS thật.
@@ -39,6 +40,7 @@ const ADDED_TOAST_MS = 2500;
 export function ProductPurchasePanel({ product }: { product: ProductPurchaseView }) {
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const { cart: toastCart } = useToast();
 
   const variants = product.variants;
   // Mặc định chọn biến thể bán được đầu tiên; chọn biến thể chưa có giá làm mặc định là
@@ -75,12 +77,14 @@ export function ProductPurchasePanel({ product }: { product: ProductPurchaseView
         sku: selectedVariant.sku,
         productType: product.productTypeCode,
         name: `${product.name} — ${selectedVariant.name}`,
+        slug: product.slug,
         imageUrl: product.imageUrl ?? undefined,
         price,
         quantity,
       })
     );
     setIsAddedToast(true);
+    toastCart('Đã thêm vào giỏ hàng', `${product.name} (${selectedVariant.name}) x${quantity}`);
     clearTimeout(toastTimerRef.current);
     toastTimerRef.current = setTimeout(() => setIsAddedToast(false), ADDED_TOAST_MS);
   };
@@ -94,6 +98,7 @@ export function ProductPurchasePanel({ product }: { product: ProductPurchaseView
         sku: selectedVariant.sku,
         productType: product.productTypeCode,
         name: `${product.name} — ${selectedVariant.name}`,
+        slug: product.slug,
         imageUrl: product.imageUrl ?? undefined,
         price,
         quantity,

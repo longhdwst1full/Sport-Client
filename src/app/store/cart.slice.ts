@@ -6,6 +6,7 @@ export type CartItem = {
   sku: string;
   productType: 'STANDARD' | 'BUNDLE';
   name: string;
+  slug?: string;
   imageUrl?: string;
   price: number;
   quantity: number;

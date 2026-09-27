@@ -63,6 +63,7 @@ export interface ProductVariantOptionView {
 export interface ProductPurchaseView {
   id: string;
   name: string;
+  slug: string;
   imageUrl: string | null;
   productTypeCode: 'STANDARD' | 'BUNDLE';
   isBundle: boolean;
@@ -77,6 +78,7 @@ export function toProductPurchaseView(dto: ProductDetailDto): ProductPurchaseVie
   return {
     id: dto.id,
     name: dto.name,
+    slug: dto.slug,
     imageUrl: dto.imageUrl ?? null,
     productTypeCode: dto.productType === 'BUNDLE' ? 'BUNDLE' : 'STANDARD',
     isBundle: dto.productType === 'BUNDLE',

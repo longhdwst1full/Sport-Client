@@ -133,26 +133,8 @@ export async function HomePage() {
         />
       </section>
 
-      {/* 7. Lối tắt chọn thiết bị theo mức ngân sách */}
-      <BudgetNavigation />
-
-      {/* 8. Lối tắt nhóm sản phẩm (từ cây danh mục thật) */}
-      {quickLinks.length > 0 && (
-        <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-12" aria-label="Nhóm sản phẩm">
-          <div className="flex flex-wrap items-center justify-center gap-2 text-sm bg-slate-50/80 rounded-2xl p-4 border border-slate-200/70">
-            <span className="mr-2 font-bold text-slate-500 text-xs">Nhóm sản phẩm nhiều lựa chọn:</span>
-            {quickLinks.map((category) => (
-              <Link
-                key={category.slug}
-                href={`/category/${category.slug}`}
-                className="rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-slate-700 shadow-sm transition hover:border-emerald-500 hover:bg-emerald-50/50 hover:text-emerald-700"
-              >
-                {category.name}
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
+      {/* 7. Lối tắt chọn thiết bị theo mức ngân sách & nhóm sản phẩm tìm nhiều */}
+      <BudgetNavigation quickLinks={quickLinks} />
 
       {/* 9. Shop by Sport — danh mục gốc thật */}
       {sportCards.length > 0 && (

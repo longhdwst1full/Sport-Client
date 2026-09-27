@@ -252,13 +252,14 @@ export function SiteHeader() {
             </Link>
 
             {megaMenuCategories.slice(0, 4).map((cat, catIdx) => {
-              const isOpen = activeMegaMenu === cat.label;
+              const hasSubmenu = Boolean(cat.children && cat.children.length > 0);
+              const isOpen = hasSubmenu && activeMegaMenu === cat.label;
               return (
                 <div
                   key={cat.label}
                   className={`relative ${catIdx === 3 ? 'hidden 2xl:block' : ''}`}
-                  onMouseEnter={() => handleMegaMenuEnter(cat.label)}
-                  onMouseLeave={handleMegaMenuLeave}
+                  onMouseEnter={() => hasSubmenu && handleMegaMenuEnter(cat.label)}
+                  onMouseLeave={hasSubmenu ? handleMegaMenuLeave : undefined}
                 >
                   <Link
                     href={cat.href}
@@ -269,15 +270,17 @@ export function SiteHeader() {
                     }`}
                   >
                     <span>{cat.label}</span>
-                    <ChevronDown
-                      className={`size-3.5 xl:size-4 text-slate-400 transition-transform duration-200 ${
-                        isOpen ? 'rotate-180 text-emerald-600' : 'group-hover:text-emerald-600'
-                      }`}
-                    />
+                    {hasSubmenu && (
+                      <ChevronDown
+                        className={`size-3.5 xl:size-4 text-slate-400 transition-transform duration-200 ${
+                          isOpen ? 'rotate-180 text-emerald-600' : 'group-hover:text-emerald-600'
+                        }`}
+                      />
+                    )}
                   </Link>
 
                   {/* Mega Dropdown */}
-                  {isOpen && (
+                  {isOpen && hasSubmenu && (
                     <div
                       className="absolute left-0 top-full z-50 w-[640px] pt-2 animate-in fade-in slide-in-from-top-1 duration-150"
                       onMouseEnter={() => handleMegaMenuEnter(cat.label)}
@@ -335,7 +338,7 @@ export function SiteHeader() {
             })}
 
             {/* Overflow Dropdown for remaining categories */}
-            {megaMenuCategories.length > 3 && (
+            {megaMenuCategories.length > 4 && (
               <div
                 className="relative"
                 onMouseEnter={() => handleMegaMenuEnter('__extra_categories')}
@@ -364,7 +367,7 @@ export function SiteHeader() {
                     onMouseLeave={handleMegaMenuLeave}
                   >
                     <div className="overflow-hidden rounded-2xl border border-slate-200/90 bg-white p-2.5 shadow-2xl ring-1 ring-black/5 space-y-1">
-                      {megaMenuCategories.slice(3).map((cat) => (
+                      {megaMenuCategories.slice(4).map((cat) => (
                         <Link
                           key={cat.label}
                           href={cat.href}
@@ -485,20 +488,22 @@ export function SiteHeader() {
                           <Dumbbell className="size-4.5 text-emerald-600 shrink-0" />
                           <span>{cat.label}</span>
                         </Link>
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setExpandedMobileCat(isExpanded ? null : cat.label)
-                          }
-                          className="p-2.5 text-slate-400 hover:text-slate-700"
-                          aria-label={`Mở rộng ${cat.label}`}
-                        >
-                          <ChevronDown
-                            className={`size-4 transition-transform duration-200 ${
-                              isExpanded ? 'rotate-180 text-emerald-600' : ''
-                            }`}
-                          />
-                        </button>
+                        {cat.children && cat.children.length > 0 && (
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setExpandedMobileCat(isExpanded ? null : cat.label)
+                            }
+                            className="p-2.5 text-slate-400 hover:text-slate-700"
+                            aria-label={`Mở rộng ${cat.label}`}
+                          >
+                            <ChevronDown
+                              className={`size-4 transition-transform duration-200 ${
+                                isExpanded ? 'rotate-180 text-emerald-600' : ''
+                              }`}
+                            />
+                          </button>
+                        )}
                       </div>
 
                       {/* Subcategories dropdown in drawer */}

@@ -8,10 +8,11 @@ export interface CategoryTabView {
   /** Slug thật của danh mục, dùng để lọc ở Backend. `null` nghĩa là "Tất cả". */
   slug: string | null;
   label: string;
+  productCount?: number;
 }
 
 /** Số tab tối đa để hàng tab không tràn trên màn hình hẹp. */
-const MAX_TABS = 5;
+const MAX_TABS = 8;
 
 export function useCategoryTabs(): { tabs: CategoryTabView[]; isPending: boolean } {
   const [isMounted, setIsMounted] = useState(false);
@@ -28,7 +29,11 @@ export function useCategoryTabs(): { tabs: CategoryTabView[]; isPending: boolean
       .filter((item) => !item.parentSlug && item.productCount > 0)
       .sort((left, right) => right.productCount - left.productCount)
       .slice(0, MAX_TABS)
-      .map((item) => ({ slug: item.slug, label: item.name }));
+      .map((item) => ({
+        slug: item.slug,
+        label: item.name,
+        productCount: item.productCount,
+      }));
 
     return [{ slug: null, label: 'Tất cả' }, ...roots];
   }, [query.data?.items]);

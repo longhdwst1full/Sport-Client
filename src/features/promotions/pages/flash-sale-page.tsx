@@ -31,6 +31,7 @@ export function FlashSalePage() {
         price: deal.price,
         quantity: 1,
         imageUrl: deal.imageUrl ?? undefined,
+        slug: deal.slug,
       }),
     );
   };

@@ -1,6 +1,7 @@
 'use client';
 
 import { yupResolver } from '@hookform/resolvers/yup';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -13,11 +14,16 @@ import {
   ShieldCheck,
   CheckCircle2,
   ArrowRight,
+  ArrowLeft,
   Sparkles,
   Lock,
   Mail,
   Phone,
   User,
+  Gift,
+  Award,
+  BadgePercent,
+  Check,
 } from 'lucide-react';
 import { useRegisterCustomer } from '@/generated/api/auth/auth';
 import type { RegisterCustomerDto } from '@/generated/api/auth/auth.schemas';
@@ -37,7 +43,7 @@ const optionalIdentity = () =>
 
 const schema: yup.ObjectSchema<RegisterCustomerDto> = yup
   .object({
-    displayName: yup.string().trim().required('Vui lòng nhập họ và tên').max(255),
+    displayName: yup.string().trim().required('Vui lòng nhập họ và tên của bạn').max(255),
     email: optionalIdentity().email('Email không đúng định dạng').max(255),
     phone: optionalIdentity().max(32),
     password: yup.string().required('Vui lòng nhập mật khẩu').min(8, 'Mật khẩu tối thiểu 8 ký tự').max(128),
@@ -54,11 +60,16 @@ export function CustomerRegisterPage() {
   const { toast } = useToast();
   const [submitError, setSubmitError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(true);
 
   const form = useForm<RegisterCustomerDto>({
     resolver: yupResolver(schema),
     defaultValues: { displayName: '', email: '', phone: '', password: '' },
   });
+
+  const passwordValue = form.watch('password') || '';
+  const hasMinLen = passwordValue.length >= 8;
+  const hasNumberOrSpecial = /[\d!@#$%^&*(),.?":{}|<>]/.test(passwordValue);
 
   const register = useRegisterCustomer({
     mutation: {
@@ -67,286 +78,448 @@ export function CustomerRegisterPage() {
         toast({
           type: 'success',
           title: 'Đăng ký thành công',
-          message: 'Tài khoản của bạn đã được khởi tạo thành công!',
+          message: 'Chào mừng bạn gia nhập cộng đồng Bảo An Sport! Nhận voucher 200.000đ.',
         });
-        // Đẩy giỏ trên máy lên tài khoản (server gộp, cùng SKU lấy số lớn hơn) rồi thay bằng giỏ tài khoản.
         const accountItems = await syncCartAfterAuth(storefrontStore.getState().cart.items);
         if (accountItems) storefrontStore.dispatch(hydrateCart(accountItems));
         router.replace('/');
       },
-      onError: (error) =>
-        setSubmitError(getCustomerAuthError(error, 'Đăng ký tài khoản không thành công.')),
+      onError: (error) => {
+        const msg = getCustomerAuthError(error, 'Đăng ký tài khoản không thành công. Vui lòng thử lại.');
+        setSubmitError(msg);
+        toast({
+          type: 'error',
+          title: 'Đăng ký thất bại',
+          message: msg,
+        });
+      },
     },
   });
 
   return (
-    <main className="min-h-screen bg-[#0d1410] text-white">
-      <div className="mx-auto grid min-h-screen max-w-7xl lg:grid-cols-[1.1fr_0.9fr]">
-        {/* Left Side: Bảo An Sport Branding & Member Perks Showcase */}
-        <div className="relative hidden flex-col justify-between overflow-hidden border-r border-white/10 bg-gradient-to-br from-[#0c130f] via-[#121c16] to-[#0a100d] p-12 lg:flex">
-          <div className="pointer-events-none absolute -left-20 -top-20 size-96 rounded-full bg-emerald-500/15 blur-[100px]" />
-          <div className="pointer-events-none absolute -bottom-20 right-0 size-96 rounded-full bg-emerald-400/10 blur-[120px]" />
+    <main className="min-h-screen bg-slate-50 text-slate-900 selection:bg-emerald-500 selection:text-white">
+      <div className="grid min-h-screen lg:grid-cols-12">
+        {/* Left Side: Athletic Editorial & Welcome Package (Desktop only) */}
+        <div className="relative hidden lg:col-span-6 xl:col-span-7 lg:flex flex-col justify-between overflow-hidden bg-slate-950 p-10 xl:p-14 text-white">
+          {/* Background Photography with Gym / Bike Atmosphere */}
+          <div className="absolute inset-0 z-0">
+            <Image
+              src="/images/banners/slide-xe-dap-tap.jpg"
+              alt="Bảo An Sport Member Experience"
+              fill
+              priority
+              className="object-cover object-center brightness-[0.38] contrast-125 saturate-75 transition-transform duration-1000 scale-105"
+            />
+            {/* Rich gradient layers */}
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/75 to-slate-900/40" />
+            <div className="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-transparent to-transparent" />
+            <div className="pointer-events-none absolute -left-20 -top-20 size-96 rounded-full bg-emerald-500/20 blur-[130px]" />
+            <div className="pointer-events-none absolute -bottom-20 right-10 size-96 rounded-full bg-teal-500/15 blur-[140px]" />
+          </div>
 
-          {/* Top Logo */}
-          <div className="relative z-10">
-            <Link href="/" className="inline-flex items-center gap-3 text-xl font-black">
-              <span className="grid size-10 place-items-center rounded-xl bg-emerald-400 text-ink shadow-md shadow-emerald-400/30">
-                <Dumbbell className="size-5" />
+          {/* Top Bar: Brand Logo & Return Link */}
+          <div className="relative z-10 flex items-center justify-between">
+            <Link href="/" className="group inline-flex items-center gap-3">
+              <span className="grid size-11 place-items-center rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 text-slate-950 shadow-lg shadow-emerald-500/30 transition-transform group-hover:scale-105">
+                <Dumbbell className="size-6 text-slate-950" />
               </span>
-              <span>BẢO AN SPORT</span>
+              <div>
+                <span className="text-xl font-black tracking-wider text-white">BẢO AN SPORT</span>
+                <span className="block text-[10px] font-bold uppercase tracking-widest text-emerald-400">
+                  Dụng Cụ Thể Thao Chính Hãng
+                </span>
+              </div>
+            </Link>
+
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-bold text-slate-300 backdrop-blur-md transition hover:bg-white/15 hover:text-white"
+            >
+              <ArrowLeft className="size-3.5" />
+              <span>Trang chủ</span>
             </Link>
           </div>
 
-          {/* Center Showcase & Headlines */}
+          {/* Center: Editorial Welcome Perks Showcase */}
           <div className="relative z-10 my-auto py-8">
-            <div className="mb-8 grid grid-cols-3 gap-3">
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-center backdrop-blur-md">
-                <div className="text-2xl font-black text-emerald-400">200K</div>
-                <div className="mt-1 text-[11px] font-bold text-stone-300">Voucher thành viên mới</div>
+            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-950/60 px-4 py-1.5 text-xs font-extrabold text-emerald-300 backdrop-blur-md">
+              <Gift className="size-4 text-emerald-400" />
+              <span>Gói Quà Tặng Thành Viên Mới 2026</span>
+            </div>
+
+            <h2 className="mt-5 text-3xl font-black leading-tight text-white xl:text-4xl">
+              Gia nhập Bảo An Sport, <br className="hidden xl:inline" />
+              <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-200 bg-clip-text text-transparent">
+                nhận ngay voucher 200.000đ
+              </span>
+            </h2>
+
+            <p className="mt-4 max-w-xl text-sm leading-relaxed text-slate-300">
+              Khởi động hành trình rèn luyện thể chất với trang thiết bị chuẩn thi đấu. Nhận ngay đặc quyền giao lắp tận nơi và chế độ bảo hành chính hãng toàn diện.
+            </p>
+
+            {/* Welcome Perks Cards Grid */}
+            <div className="mt-8 grid grid-cols-3 gap-3.5">
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-center backdrop-blur-md transition hover:bg-white/10">
+                <div className="text-2xl font-black text-emerald-400 xl:text-3xl">200K</div>
+                <div className="mt-1 text-xs font-bold text-slate-300">Voucher mở tài khoản</div>
               </div>
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-center backdrop-blur-md">
-                <div className="text-2xl font-black text-emerald-400">0đ</div>
-                <div className="mt-1 text-[11px] font-bold text-stone-300">Miễn phí giao hàng</div>
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-center backdrop-blur-md transition hover:bg-white/10">
+                <div className="text-2xl font-black text-emerald-400 xl:text-3xl">0đ</div>
+                <div className="mt-1 text-xs font-bold text-slate-300">Tư vấn lộ trình 1:1</div>
               </div>
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-center backdrop-blur-md">
-                <div className="text-2xl font-black text-emerald-400">24T</div>
-                <div className="mt-1 text-[11px] font-bold text-stone-300">Bảo hành chính hãng</div>
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-center backdrop-blur-md transition hover:bg-white/10">
+                <div className="text-2xl font-black text-emerald-400 xl:text-3xl">24T</div>
+                <div className="mt-1 text-xs font-bold text-slate-300">Bảo hành điện tử</div>
               </div>
             </div>
 
-            <div className="rounded-3xl border border-emerald-400/20 bg-gradient-to-b from-emerald-950/40 to-black/40 p-8 backdrop-blur-md">
-              <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-950/50 px-3.5 py-1 text-xs font-bold text-emerald-300">
-                <Sparkles className="size-3.5" /> Quà tặng thành viên mới
-              </span>
-              <h2 className="mt-4 text-3xl font-black leading-tight text-white">
-                Gia nhập cộng đồng người yêu thể thao Việt Nam
-              </h2>
-              <p className="mt-3 text-sm leading-relaxed text-stone-300">
-                Nhận ngay voucher chào mừng 200.000đ cho đơn hàng thiết bị đầu tiên và tích lũy điểm hạng thành viên cùng Bảo An Sport.
+            {/* Extra Member Incentive Box */}
+            <div className="mt-6 rounded-2xl border border-emerald-500/20 bg-slate-900/60 p-4 backdrop-blur-md">
+              <div className="flex items-center gap-2 text-emerald-400 font-bold text-xs mb-1.5">
+                <BadgePercent className="size-4" />
+                <span>Quyền lợi hội viên dài lâu</span>
+              </div>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Tích lũy 5% giá trị cho mỗi đơn hàng để đổi quà và nâng hạng thành viên Diamond với nhiều quà tặng sinh nhật bất ngờ từ Bảo An Sport.
               </p>
             </div>
           </div>
 
-          {/* Bottom Perks */}
-          <div className="relative z-10 grid grid-cols-2 gap-4 border-t border-white/10 pt-6 text-xs text-stone-300">
+          {/* Bottom Trust Commitments */}
+          <div className="relative z-10 grid grid-cols-2 gap-3.5 border-t border-white/10 pt-6 text-xs text-slate-300">
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="size-4 text-emerald-400" />
-              <span>Miễn phí giao lắp đặt toàn quốc</span>
+              <CheckCircle2 className="size-4 shrink-0 text-emerald-400" />
+              <span>Giao lắp hỏa tốc toàn quốc</span>
             </div>
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="size-4 text-emerald-400" />
-              <span>Bảo hành chính hãng 24 tháng</span>
+              <ShieldCheck className="size-4 shrink-0 text-emerald-400" />
+              <span>Cam kết 100% chính hãng</span>
             </div>
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="size-4 text-emerald-400" />
-              <span>1 đổi 1 trong 7 ngày đầu</span>
+              <CheckCircle2 className="size-4 shrink-0 text-emerald-400" />
+              <span>Đổi mới trong 7 ngày nếu lỗi</span>
             </div>
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="size-4 text-emerald-400" />
+              <Award className="size-4 shrink-0 text-emerald-400" />
               <span>Hỗ trợ kỹ thuật 24/7 trọn đời</span>
             </div>
           </div>
         </div>
 
-        {/* Right Side: Registration Form */}
-        <div className="flex flex-col justify-center px-6 py-12 sm:px-12 lg:px-16">
+        {/* Right Side: Registration Form Experience */}
+        <div className="flex flex-col justify-center px-4 py-10 sm:px-8 md:px-12 lg:col-span-6 xl:col-span-5 bg-white lg:bg-slate-50/70">
           <div className="mx-auto w-full max-w-md">
-            {/* Mobile Logo Link */}
-            <div className="mb-8 lg:hidden">
-              <Link href="/" className="inline-flex items-center gap-2.5 text-lg font-black text-white">
-                <span className="grid size-9 place-items-center rounded-xl bg-emerald-400 text-ink">
-                  <Dumbbell className="size-4.5" />
+            {/* Mobile Header Brand & Back */}
+            <div className="mb-6 flex items-center justify-between lg:hidden">
+              <Link href="/" className="inline-flex items-center gap-2.5">
+                <span className="grid size-9 place-items-center rounded-xl bg-emerald-600 text-white shadow-md shadow-emerald-600/30">
+                  <Dumbbell className="size-5" />
                 </span>
-                <span>BẢO AN SPORT</span>
+                <span className="text-lg font-black tracking-wide text-slate-900">BẢO AN SPORT</span>
+              </Link>
+
+              <Link
+                href="/"
+                className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-600 shadow-sm transition hover:bg-slate-50"
+              >
+                <ArrowLeft className="size-3.5" />
+                <span>Trang chủ</span>
               </Link>
             </div>
 
-            {/* Form Header Tabs */}
-            <div>
-              <div className="flex items-center gap-3">
+            {/* Desktop Back Link */}
+            <div className="hidden lg:block mb-5">
+              <Link
+                href="/"
+                className="group inline-flex items-center gap-2 text-xs font-bold text-slate-500 transition hover:text-emerald-600"
+              >
+                <ArrowLeft className="size-3.5 transition-transform group-hover:-translate-x-1" />
+                <span>Quay lại trang chủ mua sắm</span>
+              </Link>
+            </div>
+
+            {/* Form Card Container */}
+            <div className="rounded-3xl bg-white sm:border sm:border-slate-200/80 sm:p-8 sm:shadow-xl sm:shadow-slate-200/50">
+              {/* Segmented Pill Switcher: Login / Register */}
+              <div className="flex rounded-2xl bg-slate-100 p-1.5">
                 <Link
                   href="/login"
-                  className="pb-2 text-xl font-black text-stone-500 transition hover:text-stone-300"
+                  className="flex-1 rounded-xl py-2.5 text-center text-xs font-bold text-slate-500 transition hover:text-slate-900"
                 >
                   Đăng nhập
                 </Link>
-                <span className="pb-2 text-stone-500">·</span>
                 <Link
                   href="/register"
-                  className="border-b-2 border-emerald-400 pb-2 text-xl font-black text-white"
+                  className="flex-1 rounded-xl bg-white py-2.5 text-center text-xs font-black text-slate-900 shadow-sm transition"
                 >
-                  Đăng ký
+                  Đăng ký tài khoản
                 </Link>
               </div>
-              <h1 className="mt-4 text-2xl font-black tracking-tight text-white sm:text-3xl">
-                Đăng ký tài khoản
-              </h1>
-              <p className="mt-2 text-sm text-stone-400">
-                Tạo tài khoản hội viên nhanh chóng chỉ với 1 bước đơn giản.
-              </p>
-            </div>
 
-            {/* Error Message */}
-            {submitError && (
-              <div
-                role="alert"
-                className="mt-6 rounded-2xl border border-red-500/30 bg-red-950/40 p-4 text-xs font-semibold text-red-300"
-              >
-                {submitError}
+              {/* Title & Subtitle */}
+              <div className="mt-6">
+                <h1 className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
+                  Đăng ký tài khoản
+                </h1>
+                <p className="mt-1.5 text-xs text-slate-500 leading-relaxed">
+                  Tạo tài khoản hội viên nhanh chóng trong 10 giây để nhận trọn bộ ưu đãi và quản lý bảo hành.
+                </p>
               </div>
-            )}
 
-            {/* Registration Form */}
-            <form
-              className="mt-6 space-y-4"
-              onSubmit={form.handleSubmit((data) => {
-                setSubmitError('');
-                register.mutate({ data });
-              })}
-            >
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-stone-300">
-                  Họ và tên của bạn
-                </label>
-                <div className="relative mt-2">
-                  <input
-                    {...form.register('displayName')}
-                    autoComplete="name"
-                    className="w-full rounded-2xl border border-white/15 bg-white/5 px-4 py-3.5 pl-11 text-sm text-white placeholder-stone-500 outline-none transition focus:border-emerald-400 focus:bg-white/10 focus:ring-4 focus:ring-emerald-500/20"
-                    placeholder="Nguyễn Văn A"
-                  />
-                  <User className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-stone-400" />
+              {/* Error Alert */}
+              {submitError && (
+                <div
+                  role="alert"
+                  className="mt-5 rounded-2xl border border-rose-200 bg-rose-50/80 p-3.5 text-xs font-semibold text-rose-700 animate-in fade-in"
+                >
+                  {submitError}
                 </div>
-                {form.formState.errors.displayName && (
-                  <span className="mt-1.5 block text-xs font-medium text-red-400">
-                    {form.formState.errors.displayName.message}
-                  </span>
-                )}
-              </div>
+              )}
 
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-stone-300">
-                  Email
-                </label>
-                <div className="relative mt-2">
-                  <input
-                    {...form.register('email')}
-                    type="email"
-                    autoComplete="email"
-                    className="w-full rounded-2xl border border-white/15 bg-white/5 px-4 py-3.5 pl-11 text-sm text-white placeholder-stone-500 outline-none transition focus:border-emerald-400 focus:bg-white/10 focus:ring-4 focus:ring-emerald-500/20"
-                    placeholder="email@example.com"
-                  />
-                  <Mail className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-stone-400" />
+              {/* Form Fields */}
+              <form
+                className="mt-6 space-y-4"
+                onSubmit={form.handleSubmit((data) => {
+                  if (!acceptedTerms) {
+                    toast({
+                      type: 'warning',
+                      title: 'Chưa đồng ý điều khoản',
+                      message: 'Vui lòng xác nhận đồng ý với Điều khoản dịch vụ và Chính sách của Bảo An Sport.',
+                    });
+                    return;
+                  }
+                  setSubmitError('');
+                  register.mutate({ data });
+                })}
+              >
+                {/* Full Name */}
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                    Họ và tên của bạn <span className="text-rose-500">*</span>
+                  </label>
+                  <div className="relative mt-2">
+                    <input
+                      {...form.register('displayName')}
+                      autoComplete="name"
+                      className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-3.5 pl-11 text-sm text-slate-900 placeholder-slate-400 outline-none transition focus:border-emerald-600 focus:bg-white focus:ring-4 focus:ring-emerald-500/15"
+                      placeholder="Nguyễn Văn A"
+                    />
+                    <User className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
+                  </div>
+                  {form.formState.errors.displayName && (
+                    <span className="mt-1.5 block text-xs font-medium text-rose-600">
+                      {form.formState.errors.displayName.message}
+                    </span>
+                  )}
                 </div>
-                {form.formState.errors.email && (
-                  <span className="mt-1.5 block text-xs font-medium text-red-400">
-                    {form.formState.errors.email.message}
-                  </span>
-                )}
-              </div>
 
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-stone-300">
-                  Số điện thoại Việt Nam
-                </label>
-                <div className="relative mt-2">
-                  <input
-                    {...form.register('phone')}
-                    type="tel"
-                    autoComplete="tel"
-                    className="w-full rounded-2xl border border-white/15 bg-white/5 px-4 py-3.5 pl-11 text-sm text-white placeholder-stone-500 outline-none transition focus:border-emerald-400 focus:bg-white/10 focus:ring-4 focus:ring-emerald-500/20"
-                    placeholder="0912 345 678"
-                  />
-                  <Phone className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-stone-400" />
+                {/* Email */}
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                    Địa chỉ Email
+                  </label>
+                  <div className="relative mt-2">
+                    <input
+                      {...form.register('email')}
+                      type="email"
+                      autoComplete="email"
+                      className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-3.5 pl-11 text-sm text-slate-900 placeholder-slate-400 outline-none transition focus:border-emerald-600 focus:bg-white focus:ring-4 focus:ring-emerald-500/15"
+                      placeholder="email@example.com"
+                    />
+                    <Mail className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
+                  </div>
+                  {form.formState.errors.email && (
+                    <span className="mt-1.5 block text-xs font-medium text-rose-600">
+                      {form.formState.errors.email.message}
+                    </span>
+                  )}
                 </div>
-                {form.formState.errors.phone && (
-                  <span className="mt-1.5 block text-xs font-medium text-red-400">
-                    {form.formState.errors.phone.message}
-                  </span>
-                )}
-              </div>
 
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-stone-300">
-                  Mật khẩu
-                </label>
-                <div className="relative mt-2">
-                  <input
-                    {...form.register('password')}
-                    type={showPassword ? 'text' : 'password'}
-                    autoComplete="new-password"
-                    className="w-full rounded-2xl border border-white/15 bg-white/5 px-4 py-3.5 pl-11 pr-11 text-sm text-white placeholder-stone-500 outline-none transition focus:border-emerald-400 focus:bg-white/10 focus:ring-4 focus:ring-emerald-500/20"
-                    placeholder="Tối thiểu 8 ký tự"
-                  />
-                  <Lock className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-stone-400" />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-stone-400 transition hover:text-white"
-                  >
-                    {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-                  </button>
+                {/* Phone */}
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                    Số điện thoại
+                  </label>
+                  <div className="relative mt-2">
+                    <input
+                      {...form.register('phone')}
+                      type="tel"
+                      autoComplete="tel"
+                      className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-3.5 pl-11 text-sm text-slate-900 placeholder-slate-400 outline-none transition focus:border-emerald-600 focus:bg-white focus:ring-4 focus:ring-emerald-500/15"
+                      placeholder="0912 345 678"
+                    />
+                    <Phone className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
+                  </div>
+                  {form.formState.errors.phone && (
+                    <span className="mt-1.5 block text-xs font-medium text-rose-600">
+                      {form.formState.errors.phone.message}
+                    </span>
+                  )}
                 </div>
-                {form.formState.errors.password && (
-                  <span className="mt-1.5 block text-xs font-medium text-red-400">
-                    {form.formState.errors.password.message}
-                  </span>
-                )}
+
+                {/* Password */}
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                    Mật khẩu <span className="text-rose-500">*</span>
+                  </label>
+                  <div className="relative mt-2">
+                    <input
+                      {...form.register('password')}
+                      type={showPassword ? 'text' : 'password'}
+                      autoComplete="new-password"
+                      className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-3.5 pl-11 pr-11 text-sm text-slate-900 placeholder-slate-400 outline-none transition focus:border-emerald-600 focus:bg-white focus:ring-4 focus:ring-emerald-500/15"
+                      placeholder="Tối thiểu 8 ký tự"
+                    />
+                    <Lock className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 rounded-lg p-1 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+                      aria-label={showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
+                    >
+                      {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                    </button>
+                  </div>
+                  {form.formState.errors.password && (
+                    <span className="mt-1.5 block text-xs font-medium text-rose-600">
+                      {form.formState.errors.password.message}
+                    </span>
+                  )}
+
+                  {/* Password helper hints */}
+                  <div className="mt-2 flex items-center gap-3 text-[11px] text-slate-500">
+                    <span className={`inline-flex items-center gap-1 ${hasMinLen ? 'text-emerald-600 font-bold' : ''}`}>
+                      <Check className={`size-3 ${hasMinLen ? 'text-emerald-600' : 'text-slate-300'}`} />
+                      8+ ký tự
+                    </span>
+                    <span className={`inline-flex items-center gap-1 ${hasNumberOrSpecial ? 'text-emerald-600 font-bold' : ''}`}>
+                      <Check className={`size-3 ${hasNumberOrSpecial ? 'text-emerald-600' : 'text-slate-300'}`} />
+                      Số hoặc ký tự đặc biệt
+                    </span>
+                  </div>
+                </div>
+
+                {/* Terms Agreement */}
+                <div className="pt-2">
+                  <label className="flex cursor-pointer items-start gap-2.5 text-xs font-medium text-slate-600">
+                    <input
+                      type="checkbox"
+                      checked={acceptedTerms}
+                      onChange={(e) => setAcceptedTerms(e.target.checked)}
+                      className="mt-0.5 size-4 rounded-md border-slate-300 text-emerald-600 focus:ring-emerald-500"
+                    />
+                    <span>
+                      Tôi đồng ý với{' '}
+                      <Link href="/terms" className="font-bold text-emerald-700 hover:underline">
+                        Điều khoản dịch vụ
+                      </Link>{' '}
+                      và{' '}
+                      <Link href="/privacy" className="font-bold text-emerald-700 hover:underline">
+                        Chính sách bảo mật
+                      </Link>{' '}
+                      của Bảo An Sport.
+                    </span>
+                  </label>
+                </div>
+
+                {/* Submit Button */}
+                <button
+                  type="submit"
+                  disabled={register.isPending}
+                  className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 px-6 py-4 font-black text-white shadow-lg shadow-emerald-600/25 transition hover:from-emerald-500 hover:to-teal-500 hover:shadow-emerald-600/40 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {register.isPending ? (
+                    <span>Đang khởi tạo tài khoản…</span>
+                  ) : (
+                    <>
+                      <span>Đăng ký & Nhận voucher 200.000đ</span>
+                      <ArrowRight className="size-4" />
+                    </>
+                  )}
+                </button>
+              </form>
+
+              {/* Social Logins Divider */}
+              <div className="my-6 flex items-center gap-3">
+                <div className="h-px flex-1 bg-slate-200" />
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  Hoặc đăng ký nhanh với
+                </span>
+                <div className="h-px flex-1 bg-slate-200" />
               </div>
 
-              <button
-                type="submit"
-                disabled={register.isPending}
-                className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-emerald-400 px-6 py-4 font-black text-ink shadow-lg shadow-emerald-400/25 transition hover:bg-emerald-300 hover:shadow-emerald-400/40 disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {register.isPending ? (
-                  <span>Đang khởi tạo tài khoản…</span>
-                ) : (
-                  <>
-                    <span>Đăng ký & Tham gia ngay</span>
-                    <ArrowRight className="size-4" />
-                  </>
-                )}
-              </button>
-            </form>
+              {/* Social Buttons */}
+              <div className="grid grid-cols-3 gap-2.5">
+                <button
+                  type="button"
+                  onClick={() =>
+                    toast({
+                      title: 'Đăng ký Google',
+                      message: 'Hệ thống đang tích hợp cổng Google One-Tap.',
+                    })
+                  }
+                  className="flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white py-2.5 text-xs font-bold text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50"
+                >
+                  <svg className="size-4" viewBox="0 0 24 24">
+                    <path
+                      fill="#4285F4"
+                      d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.65v3.03h3.88c2.27-2.09 3.66-5.17 3.66-9.12z"
+                    />
+                    <path
+                      fill="#34A853"
+                      d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.03c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.13C3.26 21.36 7.33 24 12 24z"
+                    />
+                    <path
+                      fill="#FBBC05"
+                      d="M5.28 14.29c-.25-.72-.38-1.49-.38-2.29s.13-1.57.38-2.29V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.13z"
+                    />
+                    <path
+                      fill="#EA4335"
+                      d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.13c.95-2.83 3.6-4.93 6.72-4.93z"
+                    />
+                  </svg>
+                  <span>Google</span>
+                </button>
 
-            {/* Social Logins Divider */}
-            <div className="my-6 flex items-center gap-3">
-              <div className="h-px flex-1 bg-white/10" />
-              <span className="text-[11px] font-bold uppercase tracking-wider text-stone-500">Hoặc đăng ký nhanh với</span>
-              <div className="h-px flex-1 bg-white/10" />
-            </div>
+                <button
+                  type="button"
+                  onClick={() =>
+                    toast({
+                      title: 'Đăng ký Zalo',
+                      message: 'Hệ thống đang mở liên kết xác thực qua Zalo OA.',
+                    })
+                  }
+                  className="flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white py-2.5 text-xs font-bold text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50"
+                >
+                  <span className="grid size-4 place-items-center rounded-full bg-[#0068FF] text-[10px] font-black text-white">
+                    Z
+                  </span>
+                  <span>Zalo</span>
+                </button>
 
-            {/* Social Buttons */}
-            <div className="grid grid-cols-3 gap-3">
-              <button
-                type="button"
-                className="flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 py-2.5 text-xs font-bold text-stone-200 transition hover:bg-white/10 hover:border-white/20"
-              >
-                <span className="font-extrabold text-red-400">G</span> Google
-              </button>
-              <button
-                type="button"
-                className="flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 py-2.5 text-xs font-bold text-stone-200 transition hover:bg-white/10 hover:border-white/20"
-              >
-                <span className="font-extrabold text-blue-400">Z</span> Zalo
-              </button>
-              <button
-                type="button"
-                className="flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 py-2.5 text-xs font-bold text-stone-200 transition hover:bg-white/10 hover:border-white/20"
-              >
-                <span className="font-extrabold text-blue-500">f</span> Facebook
-              </button>
-            </div>
+                <button
+                  type="button"
+                  onClick={() =>
+                    toast({
+                      title: 'Đăng ký Facebook',
+                      message: 'Cổng đăng ký qua Facebook đã sẵn sàng kết nối.',
+                    })
+                  }
+                  className="flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white py-2.5 text-xs font-bold text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50"
+                >
+                  <span className="grid size-4 place-items-center rounded-full bg-[#1877F2] text-[10px] font-black text-white">
+                    f
+                  </span>
+                  <span>Facebook</span>
+                </button>
+              </div>
 
-            <p className="mt-6 text-center text-xs text-stone-400">
-              Bằng việc đăng ký, bạn đồng ý với Điều khoản dịch vụ và Chính sách bảo mật của Bảo An Sport.
-            </p>
-
-            <div className="mt-8 text-center">
-              <Link href="/" className="text-xs font-bold text-stone-400 transition hover:text-white">
-                ← Quay lại trang chủ mua sắm
-              </Link>
+              {/* SSL Security Footnote */}
+              <div className="mt-6 flex items-center justify-center gap-2 text-[11px] text-slate-400">
+                <ShieldCheck className="size-4 text-emerald-600" />
+                <span>Bảo mật thông tin thành viên tuyệt đối theo chuẩn SSL 256-bit</span>
+              </div>
             </div>
           </div>
         </div>

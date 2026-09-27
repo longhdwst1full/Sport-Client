@@ -1,0 +1,110 @@
+'use client';
+
+import React, { memo } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { Zap } from 'lucide-react';
+import type { ProductShowcaseItem } from '../model/product.mapper';
+
+export interface ProductCardProps {
+  product: ProductShowcaseItem;
+  onBuyNow?: (product: ProductShowcaseItem, e: React.MouseEvent) => void;
+  priority?: boolean;
+}
+
+/**
+ * Standard e-commerce product card adhering to UX audit & Decathlon/Kingsport benchmarks:
+ * - High scannability: Aspect [4/3] image with subtle hover zoom
+ * - Social proof & clarity: Brand, category, and prominent VND price
+ * - Frictionless purchase: Direct 'Mua ngay' CTA without confusing extra hover buttons
+ * - Semantic accessibility: Clean anchor hierarchy without nested interactive elements
+ */
+export const ProductCard = memo(function ProductCard({
+  product,
+  onBuyNow,
+  priority = false,
+}: ProductCardProps) {
+  return (
+    <article className="group relative flex flex-col overflow-hidden rounded-[24px] border border-slate-200/80 bg-white shadow-2xs transition-all duration-300 hover:-translate-y-1.5 hover:border-emerald-500/40 hover:shadow-xl">
+      <div className="flex w-full flex-1 flex-col">
+        {/* Thumbnail Link */}
+        <Link
+          href={`/products/${product.slug}`}
+          className="relative block aspect-[4/3] overflow-hidden bg-slate-100"
+          aria-label={`Xem chi tiết sản phẩm ${product.name}`}
+        >
+          <Image
+            src={product.imageUrl}
+            alt={product.name}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
+            priority={priority}
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+
+          {/* Badge overlay */}
+          <div className="absolute left-3 right-3 top-3 flex items-start justify-between gap-1.5 pointer-events-none">
+            <span className="rounded-full border border-slate-100 bg-white/95 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-slate-800 shadow-2xs backdrop-blur-xs">
+              {product.productType === 'BUNDLE' ? 'Combo trọn bộ' : product.badge}
+            </span>
+          </div>
+        </Link>
+
+        {/* Content details */}
+        <div className="flex flex-1 flex-col p-4 sm:p-5">
+          {/* Brand & Category line */}
+          <div className="flex items-center justify-between gap-2 text-[10px] font-extrabold uppercase tracking-[0.16em]">
+            <span className="text-emerald-700 truncate">{product.brand ?? 'Chính hãng'}</span>
+            <span className="truncate text-slate-400">{product.category}</span>
+          </div>
+
+          {/* Product Title */}
+          <h3 className="mt-2 min-h-[44px] text-sm font-bold text-slate-900 leading-snug line-clamp-2 group-hover:text-emerald-700 transition">
+            <Link href={`/products/${product.slug}`} className="hover:underline">
+              {product.name}
+            </Link>
+          </h3>
+
+          {/* Bottom Bar: Price & CTA */}
+          <div className="mt-auto flex items-end justify-between gap-2 border-t border-slate-100 pt-3">
+            <div>
+              <span className="block text-[10px] font-semibold text-slate-400">Giá niêm yết</span>
+              <div className="flex items-baseline gap-1.5">
+                <strong className="text-base sm:text-lg font-black text-emerald-700">
+                  {product.displayPrice}
+                </strong>
+              </div>
+              {product.inStock === false && (
+                <span className="mt-1 inline-block rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-bold text-amber-700">
+                  Tạm hết hàng
+                </span>
+              )}
+            </div>
+
+            {onBuyNow && (
+              <button
+                type="button"
+                onClick={(e) => onBuyNow(product, e)}
+                disabled={!product.hasPrice || product.inStock === false}
+                className="relative z-10 inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white shadow-2xs transition hover:bg-emerald-700 active:scale-95 disabled:cursor-not-allowed disabled:bg-slate-300"
+                title={
+                  product.inStock === false
+                    ? 'Sản phẩm tạm hết hàng'
+                    : !product.hasPrice
+                      ? 'Sản phẩm chưa có giá'
+                      : product.isSellable
+                        ? 'Mua ngay'
+                        : 'Mở chi tiết để chọn phiên bản'
+                }
+                aria-label={`Mua ngay ${product.name}`}
+              >
+                <Zap className="size-3.5 fill-white" />
+                <span>Mua ngay</span>
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    </article>
+  );
+});

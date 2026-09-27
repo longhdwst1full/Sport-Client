@@ -26,6 +26,7 @@ export function FlashSaleSection() {
         price: item.price,
         quantity: 1,
         imageUrl: item.imageUrl ?? undefined,
+        slug: item.slug,
       })
     );
   };

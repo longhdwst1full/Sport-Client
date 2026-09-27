@@ -1,9 +1,13 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowLeft, ArrowRight, CalendarDays, Clock } from 'lucide-react';
+import { ArrowLeft, CalendarDays, Clock, Share2 } from 'lucide-react';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { Breadcrumb } from '@/foundation/components/navigation';
 import type { ArticleDetailView, ContentPostView } from '../model/content-post.mapper';
+import { ArticleReadingProgress } from '../components/article-reading-progress';
+import { ArticleTableOfContents, extractTocHeadings } from '../components/article-table-of-contents';
+import { ArticleConsultationCta } from '../components/article-consultation-cta';
+import { ArticleRelatedPosts } from '../components/article-related-posts';
 
 export function ArticleDetailPage({
   article,
@@ -12,117 +16,136 @@ export function ArticleDetailPage({
   article: ArticleDetailView;
   related: ContentPostView[];
 }) {
+  const tocHeadings = extractTocHeadings(article.blocks);
+
   return (
     <StorefrontLayout>
-      <div className="bg-stone-50/60 pb-20 pt-8">
+      {/* Scroll Reading Progress Bar */}
+      <ArticleReadingProgress />
+
+      <div className="bg-slate-50/70 pb-20 pt-8">
         <main className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <Breadcrumb
             className="mb-6"
             items={[
               { label: 'Trang chủ', href: '/' },
-              { label: 'Tin tức', href: '/news' },
+              { label: 'Cẩm nang & Tin tức', href: '/news' },
               { label: article.title },
             ]}
           />
 
-          <article className="rounded-3xl border border-stone-200/80 bg-white p-6 shadow-sm sm:p-10">
-            <div className="flex flex-wrap items-center gap-3 text-xs font-bold">
-              <span className="rounded-full bg-emerald-100 px-3 py-1 uppercase tracking-wider text-emerald-800">
-                {article.categoryLabel}
-              </span>
-              <span className="flex items-center gap-1 text-stone-400">
-                <CalendarDays className="size-3.5" /> {article.publishedLabel}
-              </span>
-              <span className="flex items-center gap-1 text-stone-400">
-                <Clock className="size-3.5" /> {article.readTimeLabel}
-              </span>
+          <article className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white p-6 shadow-xs sm:p-10 lg:p-12">
+            {/* Meta Tags & Category Header */}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-5">
+              <div className="flex flex-wrap items-center gap-2.5 text-xs font-bold">
+                <span className="rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-black uppercase tracking-wider text-emerald-800 ring-1 ring-emerald-600/20">
+                  {article.categoryLabel}
+                </span>
+                <span className="flex items-center gap-1.5 text-slate-500">
+                  <CalendarDays className="size-3.5 text-slate-400" />
+                  {article.publishedLabel}
+                </span>
+                <span className="text-slate-300">•</span>
+                <span className="flex items-center gap-1.5 text-slate-500">
+                  <Clock className="size-3.5 text-slate-400" />
+                  {article.readTimeLabel}
+                </span>
+              </div>
             </div>
 
-            <h1 className="mt-5 text-3xl font-black leading-tight text-ink sm:text-4xl">
+            {/* Main Editorial Title */}
+            <h1 className="mt-6 text-2xl sm:text-3xl lg:text-4xl font-black leading-tight tracking-tight text-slate-900">
               {article.title}
             </h1>
 
-            <p className="mt-5 border-l-4 border-emerald-500 pl-4 text-lg leading-relaxed text-stone-600">
-              {article.excerpt}
-            </p>
+            {/* Lead Excerpt Callout */}
+            {article.excerpt && (
+              <div className="mt-6 rounded-2xl border-l-4 border-emerald-500 bg-emerald-50/50 p-4 sm:p-5 text-base sm:text-lg leading-relaxed font-medium text-slate-700">
+                {article.excerpt}
+              </div>
+            )}
 
+            {/* Cover Image */}
             {article.hasCover && (
-              <div className="relative my-9 aspect-[16/9] overflow-hidden rounded-2xl bg-stone-100">
+              <div className="relative my-8 aspect-[16/9] overflow-hidden rounded-2xl bg-slate-100 shadow-xs">
                 <Image
                   src={article.coverUrl}
                   alt={article.title}
                   fill
                   priority
-                  sizes="(max-width: 1024px) 100vw, 800px"
+                  sizes="(max-width: 1024px) 100vw, 860px"
                   className="object-cover"
                 />
               </div>
             )}
 
-            <div className="mt-8 text-base leading-8 text-stone-700">
+            {/* Table of Contents */}
+            <ArticleTableOfContents headings={tocHeadings} />
+
+            {/* Article Body Blocks */}
+            <div className="mt-8 text-base leading-8 text-slate-700">
               {article.blocks.map((block, index) => {
                 if (block.kind === 'heading') {
+                  const headingId = `heading-${index}-${encodeURIComponent(
+                    block.text.slice(0, 24).replace(/\s+/g, '-').toLowerCase(),
+                  )}`;
+
                   return block.level === 2 ? (
-                    <h2 key={index} className="mt-8 text-2xl font-bold text-ink">
+                    <h2
+                      key={index}
+                      id={headingId}
+                      className="mt-10 scroll-mt-28 text-xl sm:text-2xl font-black text-slate-900 border-b border-slate-100 pb-2"
+                    >
                       {block.text}
                     </h2>
                   ) : (
-                    <h3 key={index} className="mt-6 text-xl font-bold text-ink">
+                    <h3
+                      key={index}
+                      id={headingId}
+                      className="mt-8 scroll-mt-28 text-lg sm:text-xl font-bold text-slate-900"
+                    >
                       {block.text}
                     </h3>
                   );
                 }
+
                 if (block.kind === 'bullet') {
                   return (
-                    <p key={index} className="mt-2 flex gap-2 pl-1">
-                      <span aria-hidden className="mt-3 size-1.5 shrink-0 rounded-full bg-emerald-600" />
+                    <p key={index} className="mt-2.5 flex items-start gap-2.5 pl-1 leading-relaxed">
+                      <span
+                        aria-hidden
+                        className="mt-2.5 size-1.5 shrink-0 rounded-full bg-emerald-600"
+                      />
                       <span>{block.text}</span>
                     </p>
                   );
                 }
+
                 return (
-                  <p key={index} className="mt-4">
+                  <p key={index} className="mt-4 leading-relaxed text-slate-700">
                     {block.text}
                   </p>
                 );
               })}
             </div>
 
-            <div className="mt-12 border-t border-stone-100 pt-6">
+            {/* Consultation CTA Banner */}
+            <ArticleConsultationCta />
+
+            {/* Bottom Actions */}
+            <div className="mt-10 flex items-center justify-between border-t border-slate-100 pt-6">
               <Link
                 href="/news"
-                className="inline-flex items-center gap-2 rounded-full bg-stone-100 px-5 py-2.5 text-xs font-bold text-ink transition hover:bg-emerald-50 hover:text-emerald-700"
+                className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-2.5 text-xs font-bold text-slate-700 shadow-2xs transition hover:border-emerald-500 hover:bg-emerald-50 hover:text-emerald-700"
               >
-                <ArrowLeft className="size-4" /> Xem bài viết khác
+                <ArrowLeft className="size-4" />
+                <span>Xem tất cả bài viết</span>
               </Link>
             </div>
           </article>
 
-          {related.length > 0 && (
-            <section className="mt-8">
-              <h2 className="text-sm font-bold uppercase tracking-wider text-stone-500">
-                Bài viết liên quan
-              </h2>
-              <ul className="mt-4 grid gap-3 sm:grid-cols-2">
-                {related.map((item) => (
-                  <li key={item.slug}>
-                    <Link
-                      href={`/news/${item.slug}`}
-                      className="flex h-full flex-col gap-1 rounded-xl border border-stone-200/80 bg-white px-4 py-3 transition hover:border-emerald-300"
-                    >
-                      <span className="text-xs font-bold text-emerald-700">
-                        {item.categoryLabel}
-                      </span>
-                      <span className="text-sm font-semibold text-ink">{item.title}</span>
-                      <span className="mt-auto flex items-center gap-1 pt-2 text-xs text-stone-400">
-                        {item.publishedLabel} <ArrowRight className="size-3" />
-                      </span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          )}
+          {/* Related Articles Carousel / Grid */}
+          <ArticleRelatedPosts related={related} />
         </main>
       </div>
     </StorefrontLayout>

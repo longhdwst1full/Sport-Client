@@ -10,6 +10,7 @@ import { useProductShowcase } from '../hooks/use-product-showcase';
 import type { ProductListResponseDto } from '@/generated/api/catalog/catalog.schemas';
 import { useAppDispatch } from '@/app/store/hooks';
 import { addCartItem } from '@/app/store/cart.slice';
+import { ProductCard } from './product-card';
 
 export function ProductShowcase({
   categorySlug,
@@ -62,6 +63,7 @@ export function ProductShowcase({
         sku: product.defaultVariantSku,
         productType: product.productType === 'BUNDLE' ? 'BUNDLE' : 'STANDARD',
         name: product.name,
+        slug: product.slug,
         imageUrl: product.imageUrl,
         price: product.numericPrice,
         quantity: 1,
@@ -134,95 +136,14 @@ export function ProductShowcase({
 
       {/* Products Grid */}
       <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-        {/* Không hiển thị giá gạch/phần trăm giảm: contract chưa có giá gốc hay khuyến mãi theo
-            sản phẩm, dựng ra từ `minPrice` là bịa mức giảm giá. */}
-        {displayedProducts.map((product) => {
-          return (
-            <article
-              key={product.id}
-              className="group relative flex flex-col overflow-hidden rounded-[24px] border border-slate-200/80 bg-white shadow-sm transition duration-300 hover:-translate-y-1.5 hover:border-emerald-500/40 hover:shadow-xl"
-            >
-              {/* Link phủ cả thẻ bằng pseudo-element thay vì bọc quanh nội dung: nút thêm
-                  vào giỏ không được nằm trong thẻ <a>, vừa sai HTML vừa làm bàn phím kích
-                  hoạt nhầm sang trang chi tiết. */}
-              <div className="flex w-full flex-1 flex-col">
-                {/* Image Link */}
-                <Link
-                  href={`/products/${product.slug}`}
-                  className="relative block aspect-[4/3] overflow-hidden bg-slate-100"
-                  aria-label={`Xem chi tiết ${product.name}`}
-                >
-                  <Image
-                    src={product.imageUrl}
-                    alt={product.name}
-                    fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 25vw"
-                    className="object-cover transition duration-500 group-hover:scale-105"
-                  />
-
-                  {/* Badge row */}
-                  <div className="absolute left-3 right-3 top-3 flex items-start justify-between gap-1.5">
-                    <span className="rounded-full border border-slate-100 bg-white/95 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-slate-800 shadow-sm backdrop-blur">
-                      {product.productType === 'BUNDLE' ? 'Combo trọn bộ' : product.badge}
-                    </span>
-                  </div>
-                </Link>
-
-                <div className="flex flex-1 flex-col p-4 sm:p-5">
-                  <div className="flex items-center justify-between gap-2 text-[10px] font-extrabold uppercase tracking-[0.16em]">
-                    <span className="text-emerald-700">{product.brand}</span>
-                    <span className="truncate text-slate-400">{product.category}</span>
-                  </div>
-
-                  <h3 className="mt-2 min-h-[44px] text-sm font-bold text-slate-900 leading-snug line-clamp-2 group-hover:text-emerald-700 transition">
-                    <Link
-                      href={`/products/${product.slug}`}
-                      className="hover:underline"
-                    >
-                      {product.name}
-                    </Link>
-                  </h3>
-
-                  <div className="mt-auto flex items-end justify-between gap-2 border-t border-slate-100 pt-3">
-                    <div>
-                      <span className="block text-[10px] font-semibold text-slate-400">Giá niêm yết</span>
-                      <div className="flex items-baseline gap-1.5">
-                        <strong className="text-base sm:text-lg font-black text-emerald-700">
-                          {product.displayPrice}
-                        </strong>
-                      </div>
-                      {product.inStock === false && (
-                        <span className="mt-1 inline-block rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-bold text-amber-700">
-                          Tạm hết hàng
-                        </span>
-                      )}
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={(e) => handleBuyNow(product, e)}
-                      disabled={!product.hasPrice || product.inStock === false}
-                      title={
-                        product.inStock === false
-                          ? 'Sản phẩm tạm hết hàng'
-                          : !product.hasPrice
-                          ? 'Sản phẩm chưa có giá — liên hệ để được tư vấn'
-                          : product.isSellable
-                            ? 'Mua ngay'
-                            : 'Mở chi tiết để chọn phiên bản'
-                      }
-                      aria-label={`Mua ngay ${product.name}`}
-                      className="relative z-10 inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white shadow-sm transition hover:bg-emerald-700 active:scale-95 disabled:cursor-not-allowed disabled:bg-slate-300"
-                    >
-                      <Zap className="size-3.5 fill-white" />
-                      <span>Mua ngay</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </article>
-          );
-        })}
+        {displayedProducts.map((product, idx) => (
+          <ProductCard
+            key={product.id}
+            product={product}
+            onBuyNow={handleBuyNow}
+            priority={idx < 4}
+          />
+        ))}
       </div>
 
       {hasMore && (
