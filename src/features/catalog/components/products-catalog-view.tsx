@@ -51,8 +51,6 @@ export function ProductsCatalogView() {
   const activePriceRange = PRICE_RANGES.some((range) => range.id === priceParam)
     ? priceParam!
     : 'all';
-  const activeBrand = searchParams.get('brand') || 'all';
-  const inStockOnly = searchParams.get('instock') === '1';
   const sortParam = searchParams.get('sort');
   const activeSort: ProductListSort = isSort(sortParam) ? sortParam : ProductListSort.NEWEST;
   const urlSearch = searchParams.get('q') ?? '';
@@ -69,8 +67,6 @@ export function ProductsCatalogView() {
 
   const setActiveTabSlug = (slug: string | null) => updateQuery({ category: slug });
   const setActivePriceRange = (id: string) => updateQuery({ price: id === 'all' ? null : id });
-  const setActiveBrand = (brand: string) => updateQuery({ brand: brand === 'all' ? null : brand });
-  const setInStockOnly = (val: boolean) => updateQuery({ instock: val ? '1' : null });
   const setActiveSort = (sort: ProductListSort) =>
     updateQuery({ sort: sort === ProductListSort.NEWEST ? null : sort });
 
@@ -104,29 +100,10 @@ export function ProductsCatalogView() {
     maxPrice: selectedPriceRange?.max,
   });
 
-  // Extract available brands dynamically from current products
-  const availableBrands = useMemo(() => {
-    const brandsSet = new Set<string>();
-    products.forEach((p) => {
-      if (p.brand && p.brand !== 'Chính hãng') {
-        brandsSet.add(p.brand);
-      }
-    });
-    return Array.from(brandsSet).sort();
-  }, [products]);
-
-  // Apply Client-Side Facet Filters (Brand & In-Stock Only)
-  const displayedProducts = useMemo(() => {
-    return products.filter((product) => {
-      if (activeBrand !== 'all' && product.brand !== activeBrand) {
-        return false;
-      }
-      if (inStockOnly && product.inStock === false) {
-        return false;
-      }
-      return true;
-    });
-  }, [products, activeBrand, inStockOnly]);
+  // CONTRACT: API danh sách sản phẩm chỉ nhận category/search/sort/minPrice/maxPrice. Lọc thương
+  // hiệu và "còn hàng" từng chạy trên client trên đúng một trang đã tải, nên cho kết quả sai (bỏ sót
+  // sản phẩm ở trang sau, đếm "tìm thấy" lệch tổng). Gỡ cho đến khi API có tham số `brand`/`inStock`.
+  const displayedProducts = products;
 
   const activeCategoryLabel = useMemo(() => {
     if (!activeTabSlug) return null;
@@ -141,16 +118,12 @@ export function ProductsCatalogView() {
   const hasActiveFilters =
     activeTabSlug !== null ||
     activePriceRange !== 'all' ||
-    activeBrand !== 'all' ||
-    inStockOnly ||
     activeSort !== ProductListSort.NEWEST ||
     urlSearch !== '';
 
   const activeFilterCount =
     (activeTabSlug !== null ? 1 : 0) +
     (activePriceRange !== 'all' ? 1 : 0) +
-    (activeBrand !== 'all' ? 1 : 0) +
-    (inStockOnly ? 1 : 0) +
     (urlSearch !== '' ? 1 : 0);
 
   const handleResetFilters = () => {
@@ -255,11 +228,6 @@ export function ProductsCatalogView() {
             priceRanges={PRICE_RANGES}
             activePriceRange={activePriceRange}
             onSelectPriceRange={setActivePriceRange}
-            brandOptions={availableBrands}
-            activeBrand={activeBrand}
-            onSelectBrand={setActiveBrand}
-            inStockOnly={inStockOnly}
-            onToggleInStock={setInStockOnly}
             hasActiveFilters={hasActiveFilters}
             onResetFilters={handleResetFilters}
             isTabsPending={isTabsPending}
@@ -323,10 +291,6 @@ export function ProductsCatalogView() {
               onClearCategory={() => setActiveTabSlug(null)}
               priceLabel={activePriceLabel}
               onClearPrice={() => setActivePriceRange('all')}
-              brandLabel={activeBrand !== 'all' ? activeBrand : null}
-              onClearBrand={() => setActiveBrand('all')}
-              inStockOnly={inStockOnly}
-              onClearInStock={() => setInStockOnly(false)}
               searchQuery={urlSearch || null}
               onClearSearch={() => setSearchQuery('')}
               onClearAll={handleResetFilters}
@@ -454,11 +418,6 @@ export function ProductsCatalogView() {
         priceRanges={PRICE_RANGES}
         activePriceRange={activePriceRange}
         onSelectPriceRange={setActivePriceRange}
-        brandOptions={availableBrands}
-        activeBrand={activeBrand}
-        onSelectBrand={setActiveBrand}
-        inStockOnly={inStockOnly}
-        onToggleInStock={setInStockOnly}
         hasActiveFilters={hasActiveFilters}
         onResetFilters={handleResetFilters}
         totalProductsCount={displayedProducts.length}

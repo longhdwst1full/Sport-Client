@@ -1,6 +1,7 @@
 'use client';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { cachePolicyForQueryKey, DEFAULT_STALE_TIME } from '@/app/config/query-cache-policy';
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 import { hydrateCart, resetCartForSignOut } from '@/app/store/cart.slice';
@@ -10,6 +11,7 @@ import { readCustomerAuthTokens } from '@/features/auth';
 import { isCustomerAuthenticated } from '@/features/auth/model/auth-token.store';
 import { pullAccountCart } from '@/features/cart/api/cart-sync';
 import { PwaRegistration } from '@/pwa/pwa-registration';
+import { clearSessionPwaCaches } from '@/pwa/session-caches';
 
 import { GlobalToastProvider } from '@/shared/components/global-toast';
 
@@ -37,7 +39,19 @@ function readAuthenticatedSubject(): string | undefined {
 export function Providers({ children }: { children: ReactNode }) {
   const [cartHydrated, setCartHydrated] = useState(false);
   const [queryClient] = useState(
-    () => new QueryClient({ defaultOptions: { queries: { staleTime: 30_000, retry: 1 } } }),
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            // Query key của Orval bắt đầu bằng đường dẫn API, nên nhóm cache suy được từ key:
+            // dữ liệu tham chiếu/danh mục giữ lâu và không refetch khi quay lại tab.
+            staleTime: (query) => cachePolicyForQueryKey(query.queryKey)?.staleTime ?? DEFAULT_STALE_TIME,
+            refetchOnWindowFocus: (query) =>
+              cachePolicyForQueryKey(query.queryKey)?.refetchOnWindowFocus ?? true,
+            retry: 1,
+          },
+        },
+      }),
   );
 
   useEffect(() => {
@@ -60,16 +74,18 @@ export function Providers({ children }: { children: ReactNode }) {
       const nowAuthenticated = isCustomerAuthenticated();
       const signedOut = wasAuthenticated && !nowAuthenticated;
       const switchedAccount = Boolean(activeSubject && nextSubject && activeSubject !== nextSubject);
-      if (activeSubject && activeSubject !== nextSubject) {
+      if ((activeSubject && activeSubject !== nextSubject) || signedOut) {
         // SECURITY: mọi logout, token hết hạn hoặc đổi tài khoản phải xóa cache
         // cá nhân trước khi màn hình tiếp theo có thể đọc dữ liệu Order/Profile cũ.
-        // Refresh token cùng subject không làm mất query đang hiển thị.
+        // Refresh token cùng subject không làm mất query đang hiển thị. `signedOut` phủ cả ca
+        // transport COOKIE khi access token đã mất khỏi storage trước lúc cờ phiên bị xoá.
         queryClient.clear();
       }
       if (signedOut || switchedAccount) {
         // SECURITY: giỏ trên máy lúc này là giỏ của tài khoản vừa rời đi; xoá để người dùng sau
         // (máy dùng chung) không thấy và không bị gộp nhầm vào tài khoản khác. Giỏ vẫn còn trên server.
         storefrontStore.dispatch(resetCartForSignOut());
+        void clearSessionPwaCaches();
       }
       activeSubject = nextSubject;
       wasAuthenticated = nowAuthenticated;

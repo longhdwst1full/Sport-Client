@@ -6,6 +6,7 @@ import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { ProductShowcase } from '@/features/catalog';
 import { listCatalogCategories } from '@/generated/api/catalog/catalog';
 import type { CatalogCategoryDto } from '@/generated/api/catalog/catalog.schemas';
+import { buildPageMetadata } from '@/shared/seo/page-metadata';
 
 // ISR 2 phút: cây danh mục và số sản phẩm đổi trong ngày, không cần gọi API mỗi lượt xem.
 export const revalidate = 120;
@@ -36,13 +37,13 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const category = await loadCategory(slug);
-  if (!category) return { title: 'Danh mục — Bảo An Sport' };
+  if (!category) return { title: 'Danh mục' };
 
-  return {
-    title: `${category.name} — Bảo An Sport`,
-    description: category.description,
-    openGraph: { title: category.name, description: category.description },
-  };
+  return buildPageMetadata({
+    title: category.name,
+    description: category.description ?? undefined,
+    path: `/category/${category.slug}`,
+  });
 }
 
 export default async function CategoryDetailPage({

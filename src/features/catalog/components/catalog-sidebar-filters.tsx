@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { RotateCcw, PackageCheck, Tag, Boxes, Check } from 'lucide-react';
+import { RotateCcw, Tag, Boxes } from 'lucide-react';
 import type { CategoryTabView } from '../hooks/use-category-tabs';
 
 export interface PriceRangeOption {
@@ -18,11 +18,6 @@ export interface CatalogSidebarFiltersProps {
   priceRanges: PriceRangeOption[];
   activePriceRange: string;
   onSelectPriceRange: (id: string) => void;
-  brandOptions: string[];
-  activeBrand: string;
-  onSelectBrand: (brand: string) => void;
-  inStockOnly: boolean;
-  onToggleInStock: (val: boolean) => void;
   hasActiveFilters: boolean;
   onResetFilters: () => void;
   isTabsPending?: boolean;
@@ -35,11 +30,6 @@ export function CatalogSidebarFilters({
   priceRanges,
   activePriceRange,
   onSelectPriceRange,
-  brandOptions,
-  activeBrand,
-  onSelectBrand,
-  inStockOnly,
-  onToggleInStock,
   hasActiveFilters,
   onResetFilters,
   isTabsPending = false,
@@ -156,62 +146,6 @@ export function CatalogSidebarFilters({
         </div>
       </div>
 
-      {/* Brand Facet */}
-      {brandOptions.length > 0 && (
-        <div className="border-t border-slate-100 pt-5">
-          <h3 className="mb-2.5 flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-slate-800">
-            <span>Thương hiệu</span>
-          </h3>
-          <div className="space-y-1 max-h-48 overflow-y-auto no-scrollbar">
-            <button
-              type="button"
-              onClick={() => onSelectBrand('all')}
-              className={`flex w-full items-center justify-between rounded-xl px-3 py-1.5 text-xs font-semibold transition text-left ${
-                activeBrand === 'all'
-                  ? 'bg-emerald-50 text-emerald-800 font-bold'
-                  : 'text-slate-600 hover:bg-slate-100'
-              }`}
-            >
-              <span>Tất cả thương hiệu</span>
-              {activeBrand === 'all' && <Check className="size-3 text-emerald-600" />}
-            </button>
-            {brandOptions.map((brand) => {
-              const isSelected = activeBrand === brand;
-              return (
-                <button
-                  key={brand}
-                  type="button"
-                  onClick={() => onSelectBrand(brand)}
-                  className={`flex w-full items-center justify-between rounded-xl px-3 py-1.5 text-xs font-semibold transition text-left ${
-                    isSelected
-                      ? 'bg-emerald-50 text-emerald-800 font-bold'
-                      : 'text-slate-600 hover:bg-slate-100'
-                  }`}
-                >
-                  <span className="truncate">{brand}</span>
-                  {isSelected && <Check className="size-3 text-emerald-600" />}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* In Stock Only Toggle */}
-      <div className="border-t border-slate-100 pt-5">
-        <label className="flex cursor-pointer items-center justify-between rounded-xl border border-slate-200/80 bg-slate-50/70 p-3 text-xs font-bold text-slate-800 hover:border-emerald-300 hover:bg-emerald-50/30 transition">
-          <div className="flex items-center gap-2">
-            <PackageCheck className="size-4 text-emerald-600" />
-            <span>Chỉ hiện sản phẩm còn hàng</span>
-          </div>
-          <input
-            type="checkbox"
-            checked={inStockOnly}
-            onChange={(e) => onToggleInStock(e.target.checked)}
-            className="size-4 rounded text-emerald-600 focus:ring-emerald-500 border-slate-300"
-          />
-        </label>
-      </div>
     </aside>
   );
 }

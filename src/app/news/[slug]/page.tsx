@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { ArticleDetailPage } from '@/features/content';
@@ -7,19 +8,36 @@ import {
   toContentPostView,
 } from '@/features/content/model/content-post.mapper';
 import { getPublishedPost, listPublishedPosts } from '@/generated/api/content/content';
+import { ApiError } from '@/lib/api/fetcher';
+import { buildPageMetadata } from '@/shared/seo/page-metadata';
 
-export const revalidate = 0;
+// ISR 5 phút thay cho render mỗi request: bài viết đổi trong ngày là cùng. Bài mới/sửa hiện ngay
+// khi API gọi `POST /api/revalidate` (xem `src/app/api/revalidate/route.ts`).
+export const revalidate = 300;
 
-async function loadArticle(slug: string) {
+// Không build trước slug nào; render lần đầu theo yêu cầu rồi cache theo `revalidate`.
+export function generateStaticParams() {
+  return [];
+}
+
+/**
+ * `cache` gộp lượt gọi của `generateMetadata` và `Page` trong cùng request.
+ *
+ * Chỉ 404 của API mới là "không có bài". Lỗi tạm thời (mạng, 5xx) phải ném ra: với ISR, trả
+ * `undefined` ở đây sẽ đóng băng một trang 404 suốt cửa sổ revalidate, còn ném lỗi thì Next giữ
+ * nguyên bản tốt trước đó.
+ */
+const loadArticle = cache(async (slug: string) => {
   try {
     const post = await getPublishedPost(slug);
     // Trang chính sách nằm chung bảng với bài viết nhưng có route riêng; không loại ra
     // thì /news/<slug-chinh-sach> sẽ dựng một bài viết giả từ trang bảo hành, đổi trả.
     return post.postType === POLICY_POST_TYPE ? undefined : post;
-  } catch {
-    return undefined;
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) return undefined;
+    throw error;
   }
-}
+});
 
 export async function generateMetadata({
   params,
@@ -28,19 +46,16 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const post = await loadArticle(slug);
-  if (!post) return { title: 'Tin tức — Bảo An Sport' };
+  if (!post) return { title: 'Tin tức' };
 
-  return {
-    title: `${post.title} — Bảo An Sport`,
+  return buildPageMetadata({
+    title: post.title,
     description: post.excerpt,
-    openGraph: {
-      title: post.title,
-      description: post.excerpt,
-      type: 'article',
-      images: post.coverUrl ? [post.coverUrl] : undefined,
-      publishedTime: post.publishedAt,
-    },
-  };
+    path: `/news/${post.slug}`,
+    type: 'article',
+    images: post.coverUrl ? [post.coverUrl] : undefined,
+    publishedTime: post.publishedAt,
+  });
 }
 
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {

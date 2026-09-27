@@ -34,38 +34,58 @@ export interface Ward extends AddressDivision {
  * mã không tồn tại bên hãng vận chuyển.
  */
 const cache = {
-  provinces: null as Province[] | null,
-  districts: new Map<string, District[]>(),
-  wards: new Map<string, Ward[]>(),
+  provinces: new Map<string, Promise<Province[]>>(),
+  districts: new Map<string, Promise<District[]>>(),
+  wards: new Map<string, Promise<Ward[]>>(),
 };
+
+/**
+ * Giữ **promise** thay vì kết quả: hai form địa chỉ cùng mở (checkout + popup sổ địa chỉ) hoặc
+ * React StrictMode chạy effect hai lần sẽ dùng chung một lượt gọi đang bay thay vì bắn hai request.
+ * Lỗi thì bỏ khỏi cache để lần chọn sau gọi lại được; không nhớ một lỗi mạng suốt phiên.
+ */
+function memoize<T>(store: Map<string, Promise<T>>, key: string, load: () => Promise<T>): Promise<T> {
+  const existing = store.get(key);
+  if (existing) return existing;
+  const pending = load().catch((error: unknown) => {
+    store.delete(key);
+    throw error;
+  });
+  store.set(key, pending);
+  return pending;
+}
+
+/** @internal Chỉ cho test: xoá cache module giữa các ca. */
+export function resetVietnamAddressCache(): void {
+  cache.provinces.clear();
+  cache.districts.clear();
+  cache.wards.clear();
+}
 
 const toDivision = (item: { code: string; name: string }): AddressDivision => ({
   code: item.code,
   name: item.name,
 });
 
-export async function fetchVietnamProvinces(): Promise<Province[]> {
-  if (cache.provinces?.length) return cache.provinces;
-  const { items } = await listShippingProvinces();
-  const provinces = items.map(toDivision);
-  cache.provinces = provinces;
-  return provinces;
+export function fetchVietnamProvinces(): Promise<Province[]> {
+  return memoize(cache.provinces, 'all', async () => {
+    const { items } = await listShippingProvinces();
+    // Danh sách tỉnh rỗng chỉ có thể là API/hãng vận chuyển trục trặc: không giữ, lần sau gọi lại.
+    if (items.length === 0) queueMicrotask(() => cache.provinces.delete('all'));
+    return items.map(toDivision);
+  });
 }
 
-export async function fetchVietnamDistricts(provinceCode: string): Promise<District[]> {
-  const cached = cache.districts.get(provinceCode);
-  if (cached) return cached;
-  const { items } = await listShippingDistricts({ provinceCode });
-  const districts = items.map((item) => ({ ...toDivision(item), province_code: provinceCode }));
-  cache.districts.set(provinceCode, districts);
-  return districts;
+export function fetchVietnamDistricts(provinceCode: string): Promise<District[]> {
+  return memoize(cache.districts, provinceCode, async () => {
+    const { items } = await listShippingDistricts({ provinceCode });
+    return items.map((item) => ({ ...toDivision(item), province_code: provinceCode }));
+  });
 }
 
-export async function fetchVietnamWards(districtCode: string): Promise<Ward[]> {
-  const cached = cache.wards.get(districtCode);
-  if (cached) return cached;
-  const { items } = await listShippingWards({ districtCode });
-  const wards = items.map((item) => ({ ...toDivision(item), district_code: districtCode }));
-  cache.wards.set(districtCode, wards);
-  return wards;
+export function fetchVietnamWards(districtCode: string): Promise<Ward[]> {
+  return memoize(cache.wards, districtCode, async () => {
+    const { items } = await listShippingWards({ districtCode });
+    return items.map((item) => ({ ...toDivision(item), district_code: districtCode }));
+  });
 }

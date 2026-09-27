@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react';
 import { useListProductReviews } from '@/generated/api/reviews/reviews';
+import { CACHE_POLICY } from '@/app/config/query-cache-policy';
 import {
   toRatingBreakdown,
   toReviewView,
@@ -18,7 +19,9 @@ export function useProductReviews(productSlug: string): {
   isError: boolean;
 } {
   const query = useListProductReviews(productSlug, {
-    query: { enabled: Boolean(productSlug) },
+    // Đánh giá chỉ hiện sau khi Admin duyệt nên không cần tươi từng giây; dùng mức CATALOG như
+    // chi tiết sản phẩm để khách đi qua lại giữa các sản phẩm không gọi lại mỗi lần.
+    query: { enabled: Boolean(productSlug), ...CACHE_POLICY.CATALOG },
   });
 
   const reviews = useMemo(

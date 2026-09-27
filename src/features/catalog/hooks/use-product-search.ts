@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react';
 import { useListCatalogProducts } from '@/generated/api/catalog/catalog';
+import { CACHE_POLICY } from '@/app/config/query-cache-policy';
 import { toProductSuggestionView, type ProductSuggestionView } from '../model/product.mapper';
 
 /** Gợi ý đủ để chọn nhanh mà không che hết trang; gõ tiếp sẽ thu hẹp thêm. */
@@ -25,7 +26,8 @@ export function useProductSearch(
   const search = query.trim();
   const result = useListCatalogProducts(
     { page: 1, limit, search: search || undefined },
-    { query: { enabled: search.length > 0 } },
+    // Gõ rồi xoá về lại đúng từ khoá cũ thì dùng lại kết quả thay vì gọi lại API.
+    { query: { enabled: search.length > 0, ...CACHE_POLICY.CATALOG } },
   );
 
   const suggestions = useMemo(

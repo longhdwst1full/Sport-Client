@@ -20,6 +20,7 @@ import { ProductReviewSection } from '@/features/reviews';
 import { getCatalogProduct, listCatalogCategories } from '@/generated/api/catalog/catalog';
 import { ApiError } from '@/lib/api/fetcher';
 import { Breadcrumb } from '@/foundation/components/navigation';
+import { buildPageMetadata } from '@/shared/seo/page-metadata';
 
 // ISR 2 phút: trang public đọc nhiều, giá ở đây chỉ để tham khảo vì bước báo giá checkout
 // luôn tính lại. `revalidate = 0` trước đây bắt mọi lượt xem gọi API tới hai lần.
@@ -60,28 +61,17 @@ export async function generateMetadata({
   try {
     product = await loadProduct(slug);
   } catch {
-    return { title: 'Sản phẩm — Bảo An Sport' };
+    return { title: 'Sản phẩm' };
   }
 
   // Không gắn "Trả Góp 0%" vào tiêu đề: contract không có gói trả góp theo sản phẩm.
-  const title = `${product.name} — Bảo An Sport`;
-  const description = product.shortDescription ?? undefined;
   // Sản phẩm chưa có ảnh thì bỏ hẳn thẻ ảnh thay vì chèn ảnh của sản phẩm khác.
-  const images = product.imageUrl
-    ? [{ url: product.imageUrl, width: 1200, height: 630, alt: product.name }]
-    : undefined;
-
-  return {
-    title,
-    description,
-    openGraph: { title, description, type: 'website', ...(images ? { images } : {}) },
-    twitter: {
-      card: 'summary_large_image',
-      title,
-      description,
-      ...(product.imageUrl ? { images: [product.imageUrl] } : {}),
-    },
-  };
+  return buildPageMetadata({
+    title: product.name,
+    description: product.shortDescription ?? undefined,
+    path: `/products/${product.slug}`,
+    images: product.imageUrl ? [product.imageUrl] : undefined,
+  });
 }
 
 export default async function ProductDetailPage({

@@ -8,10 +8,6 @@ export interface CatalogActiveChipsProps {
   onClearCategory?: () => void;
   priceLabel?: string | null;
   onClearPrice?: () => void;
-  brandLabel?: string | null;
-  onClearBrand?: () => void;
-  inStockOnly?: boolean;
-  onClearInStock?: () => void;
   searchQuery?: string | null;
   onClearSearch?: () => void;
   onClearAll?: () => void;
@@ -22,16 +18,12 @@ export function CatalogActiveChips({
   onClearCategory,
   priceLabel,
   onClearPrice,
-  brandLabel,
-  onClearBrand,
-  inStockOnly,
-  onClearInStock,
   searchQuery,
   onClearSearch,
   onClearAll,
 }: CatalogActiveChipsProps) {
   const hasAnyFilter = Boolean(
-    categoryLabel || priceLabel || brandLabel || inStockOnly || searchQuery,
+    categoryLabel || priceLabel || searchQuery,
   );
 
   if (!hasAnyFilter) return null;
@@ -67,38 +59,6 @@ export function CatalogActiveChips({
               onClick={onClearPrice}
               className="rounded-full p-0.5 hover:bg-emerald-200/60"
               aria-label="Bỏ lọc giá"
-            >
-              <X className="size-3" />
-            </button>
-          )}
-        </span>
-      )}
-
-      {brandLabel && (
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-800 ring-1 ring-emerald-600/20">
-          <span>Hãng: {brandLabel}</span>
-          {onClearBrand && (
-            <button
-              type="button"
-              onClick={onClearBrand}
-              className="rounded-full p-0.5 hover:bg-emerald-200/60"
-              aria-label="Bỏ lọc thương hiệu"
-            >
-              <X className="size-3" />
-            </button>
-          )}
-        </span>
-      )}
-
-      {inStockOnly && (
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-800 ring-1 ring-emerald-600/20">
-          <span>Còn hàng</span>
-          {onClearInStock && (
-            <button
-              type="button"
-              onClick={onClearInStock}
-              className="rounded-full p-0.5 hover:bg-emerald-200/60"
-              aria-label="Bỏ lọc còn hàng"
             >
               <X className="size-3" />
             </button>

@@ -6,17 +6,17 @@ import '@fontsource/noto-sans/vietnamese-600.css';
 import '@fontsource/noto-sans/vietnamese-700.css';
 import '@fontsource/noto-sans/vietnamese-800.css';
 import '@fontsource/noto-sans/vietnamese-900.css';
+import { SITE_NAME, SITE_URL } from '@/shared/seo/page-metadata';
 import { Providers } from './providers';
 import './globals.css';
 
-const SITE_URL = 'https://baoansport.vn';
-const SITE_NAME = 'Bảo An Sport';
 const DEFAULT_TITLE = 'Bảo An Sport — Dụng Cụ Thể Thao Chính Hãng Giá Tốt Nhất';
 const DEFAULT_DESC =
   'Bảo An Sport chuyên cung cấp dụng cụ thể thao, thiết bị thể dục và thể hình. Máy chạy bộ, xe đạp tập, giàn tạ đa năng, dụng cụ võ thuật, bóng bàn, bóng rổ. Sản phẩm đa dạng, giá tốt, giao hàng toàn quốc. Hotline: 0939 987 456.';
 
 export const viewport: Viewport = {
-  themeColor: '#006c5b',
+  // Trùng `theme_color` của manifest (brand-600) để thanh trạng thái không đổi màu khi mở app đã cài.
+  themeColor: '#059669',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
@@ -54,13 +54,20 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  alternates: {
-    canonical: '/',
-  },
+  // Không đặt `alternates.canonical` ở layout: mọi trang con kế thừa nó, tức là tự khai mình là
+  // bản sao của trang chủ. Mỗi trang index được tự khai canonical (`buildPageMetadata`).
   icons: {
-    icon: '/images/favicon.png',
+    icon: [
+      { url: '/images/favicon.png', type: 'image/png' },
+      { url: '/icon.svg', type: 'image/svg+xml' },
+    ],
     shortcut: '/images/favicon.png',
-    apple: '/images/favicon.png',
+    apple: [{ url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }],
+  },
+  appleWebApp: {
+    capable: true,
+    title: SITE_NAME,
+    statusBarStyle: 'default',
   },
   openGraph: {
     type: 'website',

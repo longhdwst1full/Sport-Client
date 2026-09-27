@@ -14,11 +14,6 @@ export interface CatalogMobileFilterDrawerProps {
   priceRanges: PriceRangeOption[];
   activePriceRange: string;
   onSelectPriceRange: (id: string) => void;
-  brandOptions: string[];
-  activeBrand: string;
-  onSelectBrand: (brand: string) => void;
-  inStockOnly: boolean;
-  onToggleInStock: (val: boolean) => void;
   hasActiveFilters: boolean;
   onResetFilters: () => void;
   totalProductsCount: number;
@@ -33,11 +28,6 @@ export function CatalogMobileFilterDrawer({
   priceRanges,
   activePriceRange,
   onSelectPriceRange,
-  brandOptions,
-  activeBrand,
-  onSelectBrand,
-  inStockOnly,
-  onToggleInStock,
   hasActiveFilters,
   onResetFilters,
   totalProductsCount,
@@ -124,54 +114,6 @@ export function CatalogMobileFilterDrawer({
               })}
             </div>
           </div>
-
-          {/* Brand */}
-          {brandOptions.length > 0 && (
-            <div>
-              <h4 className="text-xs font-black uppercase text-slate-700 mb-2">Thương hiệu</h4>
-              <div className="flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  onClick={() => onSelectBrand('all')}
-                  className={`rounded-full px-3 py-1.5 text-xs font-bold transition ${
-                    activeBrand === 'all'
-                      ? 'bg-emerald-600 text-white'
-                      : 'border border-slate-200 bg-slate-50 text-slate-700'
-                  }`}
-                >
-                  Tất cả
-                </button>
-                {brandOptions.map((brand) => {
-                  const isSelected = activeBrand === brand;
-                  return (
-                    <button
-                      key={brand}
-                      type="button"
-                      onClick={() => onSelectBrand(brand)}
-                      className={`rounded-full px-3 py-1.5 text-xs font-bold transition ${
-                        isSelected
-                          ? 'bg-emerald-600 text-white'
-                          : 'border border-slate-200 bg-slate-50 text-slate-700'
-                      }`}
-                    >
-                      {brand}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* In Stock */}
-          <label className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 p-3.5 text-xs font-bold text-slate-800">
-            <span>Chỉ hiện sản phẩm còn hàng</span>
-            <input
-              type="checkbox"
-              checked={inStockOnly}
-              onChange={(e) => onToggleInStock(e.target.checked)}
-              className="size-4 rounded text-emerald-600 focus:ring-emerald-500 border-slate-300"
-            />
-          </label>
         </div>
 
         {/* Footer Actions */}

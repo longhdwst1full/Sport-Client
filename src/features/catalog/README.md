@@ -1,10 +1,10 @@
 # Storefront Catalog — maintenance note
 
-> **Document version:** 1.3.0
+> **Document version:** 1.4.0
 >
-> **Last updated:** 2026-09-25
+> **Last updated:** 2026-09-27
 >
-> **Change summary:** Một helper `isSellable`/`hasOfferPrice` cho mọi lưới, phân trang theo `page`, gỡ giá/khuyến mãi/cam kết bịa, ISR 120s cho chi tiết và danh mục.
+> **Change summary:** Lọc/sắp xếp/khoảng giá chạy server-side; gỡ facet thương hiệu và "còn hàng" lọc trên client; search/review dùng `CACHE_POLICY.CATALOG`; metadata canonical theo `buildPageMetadata`.
 
 ## Phạm vi và ranh giới
 
@@ -27,7 +27,9 @@
 ## Phân trang và lọc
 
 - `useProductShowcase` dùng `useInfiniteQuery` theo `page`, `limit` cố định ≤ 100 (API trả 400 khi vượt). Query key thêm hậu tố `'infinite'` để không đè cache một trang của `useListCatalogProducts`.
-- `/products`: search debounce 300ms; không có ô sắp xếp vì API chưa có sort; lọc mức giá chỉ xét sản phẩm có giá trong phần đã tải và ghi rõ trên màn hình (`CONTRACT:` trong `products-catalog-view.tsx`). Khi API có sort/price param, chuyển sang server-side và đưa filter lên URL (`RULE-LIST-02`).
+- `/products`: search debounce 300ms; danh mục, từ khoá, sắp xếp (`sort`) và khoảng giá (`minPrice`/`maxPrice`) đều gửi lên API và nằm trên URL (`RULE-LIST-02`).
+- Không có facet thương hiệu và "chỉ còn hàng": API danh sách chưa có tham số `brand`/`inStock`, và lọc trên client chỉ xét trang đã tải nên sai (bỏ sót trang sau, đếm lệch tổng). Thêm lại khi API có tham số.
+- Cache: `useProductSearch`, `useProductReviews`, `useProductShowcase` dùng `CACHE_POLICY.CATALOG`; danh mục dùng `LOOKUP`. `QueryClient` còn suy policy từ query key (`cachePolicyForQueryKey`) làm lưới an toàn.
 - Catalog public có thể cache theo contract PWA, nhưng cart/checkout/order/customer luôn private hoặc network-only.
 - Không biến lỗi API thành dữ liệu đặt hàng giả ở production; fixture chỉ dành Storybook/dev được gắn flag rõ.
 
@@ -43,6 +45,7 @@
 
 | Version | Date | Change summary | Source |
 | --- | --- | --- | --- |
+| 1.4.0 | 2026-09-27 | Filter server-side, gỡ facet client-side không đúng, CACHE_POLICY cho search/review, canonical/OG theo `buildPageMetadata`. | CLIENT-20260927-CACHE-PWA-SEO |
 | 1.3.0 | 2026-09-25 | Helper bán được dùng chung, phân trang theo page, gallery `media[]`, gỡ nội dung bịa, ISR 120s + `cache()`. | CLIENT-20260925-TRUTHFUL-CATALOG |
 | 1.2.0 | 2026-09-13 | Nối `defaultVariantId/defaultVariantSku` với cart và vô hiệu quick-add khi API không có offer hợp lệ. | CLIENT-20260913-QUICK-ADD-CONTRACT |
 | 1.1.0 | 2026-09-13 | Browser E2E phát hiện `/catalog` 404; thêm alias dùng chung Products page để không nhân đôi behavior. | CLIENT-20260913-CATALOG-ROUTE-E2E |

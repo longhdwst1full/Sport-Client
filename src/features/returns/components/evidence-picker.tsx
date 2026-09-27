@@ -58,7 +58,8 @@ export function EvidencePicker({ orderNo, value, onChange, onUploadingChange, di
       <div className="flex flex-wrap gap-3">
         {value.map((image) => (
           <div key={image.publicId} className="relative size-24 overflow-hidden rounded-xl border border-slate-200">
-            <Image src={image.previewUrl} alt="Ảnh minh chứng đã tải" fill sizes="96px" className="object-cover" />
+            {/* SECURITY: ảnh minh chứng của khách: `unoptimized` để không đi qua bộ tối ưu ảnh dùng chung của Next (cache server) và cache ảnh của service worker. */}
+            <Image src={image.previewUrl} alt="Ảnh minh chứng đã tải" fill sizes="96px" unoptimized className="object-cover" />
             <button
               type="button"
               disabled={disabled}

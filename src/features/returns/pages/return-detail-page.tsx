@@ -155,7 +155,8 @@ export function ReturnDetailPage({ returnNo }: { returnNo: string }) {
                   <div className="mt-4 flex flex-wrap gap-3">
                     {detail.evidenceImages.map((image) => (
                       <a key={image.url} href={image.url} target="_blank" rel="noreferrer" className="relative block size-24 overflow-hidden rounded-xl border border-slate-200">
-                        <Image src={image.thumbnailUrl} alt="Ảnh minh chứng" fill sizes="96px" className="object-cover" />
+                        {/* SECURITY: ảnh minh chứng riêng tư, không qua bộ tối ưu ảnh/cache SW. */}
+                        <Image src={image.thumbnailUrl} alt="Ảnh minh chứng" fill sizes="96px" unoptimized className="object-cover" />
                       </a>
                     ))}
                   </div>

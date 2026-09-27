@@ -1,7 +1,8 @@
 import { Suspense } from 'react';
 import { CheckoutPage } from '@/features/checkout';
+import { NOINDEX_ROBOTS } from '@/shared/seo/page-metadata';
 
-export const metadata = { title: 'Đặt hàng & Thanh toán — Bảo An Sport' };
+export const metadata = { title: 'Đặt hàng & Thanh toán', robots: NOINDEX_ROBOTS };
 export default function Page() {
   return (
     <Suspense
