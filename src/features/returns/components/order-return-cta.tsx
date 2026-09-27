@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { PhoneCall, RotateCcw, ShieldCheck } from 'lucide-react';
+import { RotateCcw, ShieldCheck } from 'lucide-react';
 import { useGetAccountReturnEligibility } from '@/generated/api/returns/returns';
 import { formatDate } from '@/shared/format/date-time';
 import { RETURN_FIELD_LABELS, returnEligibilityReasonLabels } from '../model/return.constants';
@@ -15,28 +15,10 @@ import { RETURN_FIELD_LABELS, returnEligibilityReasonLabels } from '../model/ret
 export function OrderReturnCta({ orderNo, authenticated }: { orderNo: string; authenticated: boolean }) {
   const eligibility = useGetAccountReturnEligibility(orderNo, { query: { enabled: authenticated, retry: false } });
   if (!authenticated) {
-    return (
-      <section className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-card transition-shadow hover:shadow-card-hover">
-        <div className="flex items-center gap-2.5">
-          <div className="grid size-8 place-items-center rounded-xl bg-emerald-100 text-emerald-700">
-            <RotateCcw className="size-4" />
-          </div>
-          <h2 className="text-sm font-black text-slate-900">Đổi trả & Bảo hành</h2>
-        </div>
-        <p className="mt-3 text-xs leading-relaxed text-slate-600">
-          Chính sách đổi trả trong 7 ngày cho sản phẩm có lỗi từ nhà sản xuất. Khách vãng lai vui lòng liên hệ hotline để nhân viên hỗ trợ tạo phiếu.
-        </p>
-        <a
-          href="tel:0939987456"
-          className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 py-2.5 text-xs font-bold text-slate-800 transition hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-800"
-        >
-          <PhoneCall className="size-3.5 text-emerald-600" /> Hotline đổi trả: 0939 987 456
-        </a>
-      </section>
-    );
+    return null;
   }
   const data = eligibility.data;
-  if (!data || data.reason === 'ORDER_NOT_RETURNABLE') return null;
+  if (!data || data.reason === 'ORDER_NOT_RETURNABLE' || (!data.eligible && !data.openReturnNo)) return null;
 
   return (
     <section className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-card transition-shadow hover:shadow-card-hover">

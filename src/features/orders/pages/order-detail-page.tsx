@@ -374,9 +374,226 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
               </div>
             </div>
 
+            {/* Order Milestones Progress Timeline (Full Width, directly below Hero Box) */}
+            <section className="mt-6 rounded-3xl border border-slate-200/80 bg-white p-6 sm:p-7 shadow-card transition-shadow hover:shadow-card-hover">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                <div className="flex items-center gap-2.5">
+                  <div className="grid size-8 place-items-center rounded-xl bg-emerald-100 text-emerald-700">
+                    <Truck className="size-4" />
+                  </div>
+                  <div>
+                    <h2 className="text-base font-black text-slate-900">Tiến trình đơn hàng</h2>
+                    <p className="text-xs text-slate-500">Cập nhật trạng thái xử lý và vận chuyển theo thời gian thực</p>
+                  </div>
+                </div>
+
+                {view?.shipment?.trackingNo && (
+                  <div className="flex items-center gap-2 rounded-xl bg-slate-50 px-3 py-1.5 border border-slate-200/80">
+                    <span className="text-[11px] font-semibold text-slate-500">Mã vận đơn ({view.shipment.carrierLabel}):</span>
+                    <span className="font-mono text-xs font-black text-slate-900">{view.shipment.trackingNo}</span>
+                    <button
+                      type="button"
+                      onClick={() => handleCopyOrderNo(view.shipment?.trackingNo ?? '')}
+                      className="rounded p-1 text-slate-400 hover:text-slate-700 transition"
+                      title="Sao chép mã vận đơn"
+                    >
+                      <Copy className="size-3.5" />
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Desktop / Tablet Horizontal Stepper (sm: and above) */}
+              <div className="hidden sm:block mt-7 mb-2">
+                <div className="grid grid-cols-5 gap-2 relative">
+                  {(view?.milestones ?? []).map((milestone, index, list) => {
+                    const isDone = milestone.state === 'done';
+                    const isCurrent = milestone.state === 'current';
+                    const isFailed = milestone.state === 'failed';
+
+                    return (
+                      <div key={milestone.key} className="relative flex flex-col items-center text-center px-1">
+                        {/* Connecting line to the next step */}
+                        {index < list.length - 1 && (
+                          <div
+                            className={`absolute top-4 left-1/2 w-full h-1 -translate-y-1/2 z-0 ${
+                              isDone
+                                ? 'bg-emerald-500'
+                                : isCurrent
+                                ? 'bg-gradient-to-r from-emerald-500 to-slate-200'
+                                : 'bg-slate-200'
+                            }`}
+                          />
+                        )}
+
+                        {/* Node Circle */}
+                        <div className="relative z-10 grid size-8 place-items-center rounded-full bg-white">
+                          {isDone ? (
+                            <span className="grid size-8 place-items-center rounded-full bg-emerald-600 text-white shadow-sm ring-4 ring-emerald-50">
+                              <Check className="size-4 stroke-[3]" />
+                            </span>
+                          ) : isCurrent ? (
+                            <span className="relative flex size-8 items-center justify-center">
+                              <span className="absolute size-full animate-ping rounded-full bg-emerald-400 opacity-60" />
+                              <span className="relative grid size-8 place-items-center rounded-full border-2 border-emerald-600 bg-white text-emerald-600 shadow-sm ring-4 ring-emerald-50">
+                                <span className="size-3 rounded-full bg-emerald-600" />
+                              </span>
+                            </span>
+                          ) : isFailed ? (
+                            <span className="grid size-8 place-items-center rounded-full bg-rose-600 text-white shadow-sm ring-4 ring-rose-50">
+                              <X className="size-4 stroke-[3]" />
+                            </span>
+                          ) : (
+                            <span className="grid size-8 place-items-center rounded-full border-2 border-slate-200 bg-white text-slate-300 ring-4 ring-slate-50">
+                              <span className="size-2 rounded-full bg-slate-200" />
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Step Label & Date */}
+                        <div className="mt-3 w-full">
+                          <strong
+                            className={`block text-xs leading-snug ${
+                              isCurrent
+                                ? 'font-black text-emerald-800'
+                                : isDone
+                                ? 'font-bold text-slate-900'
+                                : isFailed
+                                ? 'font-bold text-rose-700'
+                                : 'font-medium text-slate-400'
+                            }`}
+                          >
+                            {milestone.label}
+                          </strong>
+                          {milestone.occurredLabel && (
+                            <p className="mt-1 text-[11px] font-medium text-slate-500">
+                              {milestone.occurredLabel}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Mobile Vertical Stepper (< sm) */}
+              <div className="block sm:hidden mt-5">
+                <ol className="space-y-0">
+                  {(view?.milestones ?? []).map((milestone, index, list) => {
+                    const isDone = milestone.state === 'done';
+                    const isCurrent = milestone.state === 'current';
+                    const isFailed = milestone.state === 'failed';
+
+                    return (
+                      <li key={milestone.key} className="relative flex gap-3.5 pb-5 last:pb-0">
+                        {index < list.length - 1 && (
+                          <span
+                            aria-hidden
+                            className={`absolute left-[13px] top-6 h-[calc(100%-1rem)] w-0.5 ${
+                              isDone ? 'bg-emerald-500' : 'bg-slate-200'
+                            }`}
+                          />
+                        )}
+                        <span className="relative grid size-7 shrink-0 place-items-center rounded-full">
+                          {isDone ? (
+                            <span className="grid size-7 place-items-center rounded-full bg-emerald-600 text-white shadow-sm">
+                              <Check className="size-4 stroke-[2.5]" />
+                            </span>
+                          ) : isCurrent ? (
+                            <span className="relative flex size-7 items-center justify-center">
+                              <span className="absolute size-full animate-ping rounded-full bg-emerald-400 opacity-60" />
+                              <span className="relative grid size-7 place-items-center rounded-full border-2 border-emerald-600 bg-white text-emerald-600 shadow-sm">
+                                <span className="size-2.5 rounded-full bg-emerald-600" />
+                              </span>
+                            </span>
+                          ) : isFailed ? (
+                            <span className="grid size-7 place-items-center rounded-full bg-rose-600 text-white shadow-sm">
+                              <X className="size-4 stroke-[2.5]" />
+                            </span>
+                          ) : (
+                            <span className="grid size-7 place-items-center rounded-full border-2 border-slate-200 bg-white text-slate-300">
+                              <span className="size-2 rounded-full bg-slate-200" />
+                            </span>
+                          )}
+                        </span>
+
+                        <div className="min-w-0 pt-0.5">
+                          <strong
+                            className={`text-sm ${
+                              isCurrent
+                                ? 'font-black text-emerald-800'
+                                : isDone
+                                ? 'font-bold text-slate-900'
+                                : isFailed
+                                ? 'font-bold text-rose-700'
+                                : 'font-medium text-slate-400'
+                            }`}
+                          >
+                            {milestone.label}
+                          </strong>
+                          {milestone.occurredLabel && (
+                            <p className="mt-0.5 flex items-center gap-1 text-[11px] text-slate-500">
+                              <Clock className="size-3 text-slate-400" />
+                              {milestone.occurredLabel}
+                            </p>
+                          )}
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ol>
+              </div>
+
+              {/* Shipment Link & Detailed History Toggle */}
+              <div className="mt-5 pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3 text-xs">
+                {view?.shipment?.trackingUrl ? (
+                  <a
+                    href={view.shipment.trackingUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-4 py-2 font-bold text-white shadow-sm transition hover:bg-emerald-700"
+                  >
+                    <Truck className="size-3.5" /> Tra cứu vận đơn trên hệ thống hãng <ExternalLink className="size-3" />
+                  </a>
+                ) : (
+                  <span className="text-slate-400 text-xs">
+                    {view?.shipment ? `Đơn vị vận chuyển: ${view.shipment.carrierLabel}` : 'Đơn hàng đang trong quy trình xử lý tại kho'}
+                  </span>
+                )}
+
+                {(view?.timeline ?? []).length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setShowTimeline(!showTimeline)}
+                    className="inline-flex items-center gap-1.5 font-bold text-slate-700 hover:text-emerald-700 transition ml-auto"
+                  >
+                    <PackageCheck className="size-3.5 text-emerald-600" />
+                    Lịch sử cập nhật ({view?.timeline.length})
+                    {showTimeline ? <ChevronUp className="size-3.5" /> : <ChevronDown className="size-3.5" />}
+                  </button>
+                )}
+              </div>
+
+              {/* Collapsible status history */}
+              {showTimeline && (view?.timeline ?? []).length > 0 && (
+                <div className="mt-4 space-y-2.5 rounded-2xl bg-slate-50 p-4 border border-slate-100 animate-fade-in text-xs">
+                  {(view?.timeline ?? []).map((entry) => (
+                    <div key={entry.key} className="flex items-start justify-between gap-3 border-b border-slate-200/50 pb-2 last:border-0 last:pb-0">
+                      <div>
+                        <span className="font-bold text-slate-900">{entry.statusLabel}</span>
+                        {entry.note && <p className="mt-0.5 text-slate-600">{entry.note}</p>}
+                      </div>
+                      <span className="shrink-0 text-[11px] text-slate-400">{entry.occurredLabel}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </section>
+
             {/* Main Content Two Columns */}
-            <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_360px] items-start">
-              {/* Left Column: Products, Bill Summary & Recipient Address */}
+            <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px] items-start">
+              {/* Left Column: Products & Bill Summary */}
               <div className="space-y-6">
                 {/* Product List Card */}
                 <section className="rounded-3xl border border-slate-200/80 bg-white p-6 sm:p-7 shadow-card transition-shadow hover:shadow-card-hover">
@@ -469,6 +686,51 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
                   )}
                 </section>
 
+                {/* Actions Bar */}
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+                  <div className="flex flex-wrap gap-2.5">
+                    <Link
+                      href="/orders"
+                      className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50"
+                    >
+                      <ArrowLeft className="size-3.5" /> Danh sách đơn
+                    </Link>
+                    <Link
+                      href="/products"
+                      className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-emerald-700"
+                    >
+                      <ShoppingBag className="size-3.5" /> Tiếp tục mua sắm
+                    </Link>
+                  </div>
+
+                  {canCancel && (
+                    <button
+                      type="button"
+                      onClick={() => setShowCancel(true)}
+                      className="inline-flex items-center gap-1.5 rounded-xl border border-rose-200 bg-rose-50/50 px-4 py-2.5 text-xs font-bold text-rose-700 transition hover:bg-rose-100 hover:border-rose-300"
+                    >
+                      <X className="size-3.5" /> Hủy đơn hàng
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Right Aside Column: Payment Panel & Delivery Address */}
+              <aside className="space-y-6">
+                <OrderPaymentPanel
+                  orderNo={orderNo}
+                  authenticated={isAuthenticated}
+                  guestToken={guestToken}
+                  onPaymentChanged={async () => {
+                    await queryClient.invalidateQueries({ queryKey: isAuthenticated ? getGetAccountOrderQueryKey(orderNo) : getGetGuestOrderQueryKey(orderNo) });
+                    if (isAuthenticated) {
+                      await queryClient.invalidateQueries({ queryKey: getListAccountOrdersQueryKey() });
+                    }
+                  }}
+                />
+
+                <OrderReturnCta orderNo={orderNo} authenticated={isAuthenticated} />
+
                 {/* Delivery Address Card */}
                 <section className="rounded-3xl border border-slate-200/80 bg-white p-6 sm:p-7 shadow-card transition-shadow hover:shadow-card-hover">
                   <div className="flex items-center gap-2.5 border-b border-slate-100 pb-4">
@@ -502,200 +764,6 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
                       <span>Đơn hàng được chuẩn bị và xuất phát từ: <strong className="text-slate-900">{view?.branchName}</strong></span>
                     </div>
                   </div>
-                </section>
-
-                {/* Bottom Actions Bar */}
-                <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
-                  <div className="flex flex-wrap gap-2.5">
-                    <Link
-                      href="/orders"
-                      className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50"
-                    >
-                      <ArrowLeft className="size-3.5" /> Danh sách đơn
-                    </Link>
-                    <Link
-                      href="/products"
-                      className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-emerald-700"
-                    >
-                      <ShoppingBag className="size-3.5" /> Tiếp tục mua sắm
-                    </Link>
-                  </div>
-
-                  {canCancel && (
-                    <button
-                      type="button"
-                      onClick={() => setShowCancel(true)}
-                      className="inline-flex items-center gap-1.5 rounded-xl border border-rose-200 bg-rose-50/50 px-4 py-2.5 text-xs font-bold text-rose-700 transition hover:bg-rose-100 hover:border-rose-300"
-                    >
-                      <X className="size-3.5" /> Hủy đơn hàng
-                    </button>
-                  )}
-                </div>
-              </div>
-
-              {/* Right Aside Column: Payment, Return, Milestones Timeline */}
-              <aside className="space-y-6">
-                <OrderPaymentPanel
-                  orderNo={orderNo}
-                  authenticated={isAuthenticated}
-                  guestToken={guestToken}
-                  onPaymentChanged={async () => {
-                    await queryClient.invalidateQueries({ queryKey: isAuthenticated ? getGetAccountOrderQueryKey(orderNo) : getGetGuestOrderQueryKey(orderNo) });
-                    if (isAuthenticated) {
-                      await queryClient.invalidateQueries({ queryKey: getListAccountOrdersQueryKey() });
-                    }
-                  }}
-                />
-
-                <OrderReturnCta orderNo={orderNo} authenticated={isAuthenticated} />
-
-                {/* Order Milestones Progress Timeline */}
-                <section className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-card transition-shadow hover:shadow-card-hover">
-                  <div className="flex items-center gap-2.5 border-b border-slate-100 pb-4">
-                    <div className="grid size-8 place-items-center rounded-xl bg-emerald-100 text-emerald-700">
-                      <Truck className="size-4" />
-                    </div>
-                    <h2 className="text-base font-black text-slate-900">Tiến trình đơn hàng</h2>
-                  </div>
-
-                  {/* Milestones list */}
-                  <ol className="mt-5 space-y-0">
-                    {(view?.milestones ?? []).map((milestone, index, list) => {
-                      const isDone = milestone.state === 'done';
-                      const isCurrent = milestone.state === 'current';
-                      const isFailed = milestone.state === 'failed';
-
-                      return (
-                        <li key={milestone.key} className="relative flex gap-3.5 pb-6 last:pb-0">
-                          {index < list.length - 1 && (
-                            <span
-                              aria-hidden
-                              className={`absolute left-[13px] top-6 h-[calc(100%-1rem)] w-0.5 ${
-                                isDone ? 'bg-emerald-500' : 'bg-slate-200'
-                              }`}
-                            />
-                          )}
-                          <span className="relative grid size-7 shrink-0 place-items-center rounded-full">
-                            {isDone ? (
-                              <span className="grid size-7 place-items-center rounded-full bg-emerald-600 text-white shadow-sm">
-                                <Check className="size-4 stroke-[2.5]" />
-                              </span>
-                            ) : isCurrent ? (
-                              <span className="relative flex size-7 items-center justify-center">
-                                <span className="absolute size-full animate-ping rounded-full bg-emerald-400 opacity-60" />
-                                <span className="relative grid size-7 place-items-center rounded-full border-2 border-emerald-600 bg-white text-emerald-600 shadow-sm">
-                                  <span className="size-2.5 rounded-full bg-emerald-600" />
-                                </span>
-                              </span>
-                            ) : isFailed ? (
-                              <span className="grid size-7 place-items-center rounded-full bg-rose-600 text-white shadow-sm">
-                                <X className="size-4 stroke-[2.5]" />
-                              </span>
-                            ) : (
-                              <span className="grid size-7 place-items-center rounded-full border-2 border-slate-200 bg-white text-slate-300">
-                                <span className="size-2 rounded-full bg-slate-200" />
-                              </span>
-                            )}
-                          </span>
-
-                          <div className="min-w-0 pt-0.5">
-                            <strong
-                              className={`text-sm ${
-                                isCurrent
-                                  ? 'font-black text-emerald-800'
-                                  : isDone
-                                  ? 'font-bold text-slate-900'
-                                  : isFailed
-                                  ? 'font-bold text-rose-700'
-                                  : 'font-medium text-slate-400'
-                              }`}
-                            >
-                              {milestone.label}
-                            </strong>
-                            {milestone.occurredLabel && (
-                              <p className="mt-0.5 flex items-center gap-1 text-[11px] text-slate-500">
-                                <Clock className="size-3 text-slate-400" />
-                                {milestone.occurredLabel}
-                              </p>
-                            )}
-                          </div>
-                        </li>
-                      );
-                    })}
-                  </ol>
-
-                  {/* Shipment carrier details */}
-                  {view?.shipment && (
-                    <div className="mt-5 rounded-2xl bg-gradient-to-br from-slate-50 to-emerald-50/40 p-4 border border-emerald-100 text-xs">
-                      <div className="flex items-center justify-between">
-                        <span className="inline-flex items-center gap-1.5 font-bold uppercase tracking-wide text-emerald-800">
-                          <Truck className="size-3.5 text-emerald-600" /> {view.shipment.carrierLabel}
-                        </span>
-                        <span className="rounded-full bg-emerald-100 px-2.5 py-0.5 text-[10px] font-bold text-emerald-800">
-                          Vận chuyển
-                        </span>
-                      </div>
-                      {view.shipment.trackingNo && (
-                        <div className="mt-3 flex items-center justify-between rounded-xl bg-white px-3 py-2 border border-slate-200/70">
-                          <div>
-                            <span className="block text-[10px] uppercase text-slate-400 font-semibold">Mã vận đơn</span>
-                            <span className="font-mono text-xs font-black text-slate-900">{view.shipment.trackingNo}</span>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => handleCopyOrderNo(view.shipment?.trackingNo ?? '')}
-                            className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition"
-                            title="Sao chép mã vận đơn"
-                          >
-                            <Copy className="size-3.5" />
-                          </button>
-                        </div>
-                      )}
-                      {view.shipment.trackingUrl && (
-                        <a
-                          href={view.shipment.trackingUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-emerald-700"
-                        >
-                          <Truck className="size-3.5" /> Theo dõi trên hệ thống hãng <ExternalLink className="size-3" />
-                        </a>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Status history collapsible */}
-                  {(view?.timeline ?? []).length > 0 && (
-                    <div className="mt-6 border-t border-slate-100 pt-4">
-                      <button
-                        type="button"
-                        onClick={() => setShowTimeline(!showTimeline)}
-                        className="flex w-full items-center justify-between text-xs font-bold text-slate-700 hover:text-emerald-700 transition"
-                      >
-                        <span className="flex items-center gap-1.5">
-                          <PackageCheck className="size-3.5 text-emerald-600" />
-                          Lịch sử chi tiết ({view?.timeline.length})
-                        </span>
-                        {showTimeline ? <ChevronUp className="size-4" /> : <ChevronDown className="size-4" />}
-                      </button>
-                      {showTimeline && (
-                        <div className="mt-4 space-y-3 pl-2 border-l-2 border-slate-100 animate-fade-in">
-                          {(view?.timeline ?? []).map((entry) => (
-                            <div key={entry.key} className="relative pl-3 text-xs">
-                              <div className="absolute -left-[11px] top-1 size-2 rounded-full bg-emerald-500 ring-2 ring-white" />
-                              <div className="font-bold text-slate-800">{entry.statusLabel}</div>
-                              <div className="text-[11px] text-slate-400">{entry.occurredLabel}</div>
-                              {entry.note && (
-                                <p className="mt-1 rounded-lg bg-slate-50 p-2 text-slate-600 text-[11px]">
-                                  {entry.note}
-                                </p>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  )}
                 </section>
               </aside>
             </div>

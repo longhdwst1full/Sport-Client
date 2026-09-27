@@ -196,13 +196,6 @@ export function OrderPaymentPanel({
             {view.customerMessage}
           </p>
         )}
-
-        <div className="mt-4 flex items-baseline justify-between border-t border-slate-200/70 pt-3">
-          <span className="text-xs font-medium text-slate-500">Số tiền cần thanh toán</span>
-          <strong className="text-xl font-black tracking-tight text-emerald-700">
-            {view.expectedAmountLabel}
-          </strong>
-        </div>
       </div>
 
       {/* Expiry Notice */}
