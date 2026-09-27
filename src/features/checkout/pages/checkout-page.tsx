@@ -24,6 +24,7 @@ import { useToast } from '@/shared/components/global-toast';
 import { usePublicNumberParameter } from '@/shared/hooks';
 import { confirmCheckout, placeOrder, prepareCheckout, reloadCheckout, type CheckoutContext } from '../api/checkout.workflow';
 import { toCheckoutQuoteView } from '../model/checkout.mapper';
+import { resolveCheckoutQuoteGate } from '../model/checkout-quote-gate';
 import { UnavailableCartLinesError } from '@/features/cart';
 import { toOrderDetailView } from '@/features/orders/model/order.mapper';
 import { CheckoutOrderSummary } from '../components/checkout-order-summary';
@@ -258,6 +259,8 @@ export function CheckoutPage() {
   };
 
   const addressValid = readyToQuote;
+  // Debounce 700 ms trước lượt báo giá cũng là "đang tính": chưa có quote nhưng không phải lỗi.
+  const quotePending = autoQuoting || (readyToQuote && !quote && !error);
   const canConfirm = Boolean(quote && context && !quote.requiresShippingConsultation);
 
   /** VNPay: đặt đơn xong chuyển thẳng sang cổng; lỗi thì để khách thanh toán lại ở trang đơn. */
@@ -303,6 +306,8 @@ export function CheckoutPage() {
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!isLoaded || busy) return;
+    // Giữ lỗi báo giá trước khi xoá khung lỗi, để báo đúng lý do nếu chưa có phí.
+    const quoteError = error;
     setError('');
 
     if (!addressValid) {
@@ -312,17 +317,18 @@ export function CheckoutPage() {
       return;
     }
 
-    if (autoQuoting) {
-      const msg = 'Hệ thống đang tính toán phí vận chuyển, vui lòng chờ trong giây lát...';
-      setError(msg);
-      toast({ type: 'info', title: 'Đang tính phí vận chuyển', message: msg });
+    const gate = resolveCheckoutQuoteGate({ readyToQuote, autoQuoting, hasQuote: Boolean(quote && context), quoteError });
+    if (gate.kind === 'QUOTING') {
+      // Không setError: lỗi sẽ chặn effect báo giá đang chờ debounce và hiện khung "Thử lại" giả.
+      toast({ type: 'info', title: 'Đang tính phí vận chuyển', message: 'Hệ thống đang tính phí vận chuyển, vui lòng chờ trong giây lát rồi bấm đặt hàng.' });
       return;
     }
 
-    if (!quote || !context) {
-      const msg = 'Chưa thể tính phí vận chuyển hoặc địa chỉ không hợp lệ. Vui lòng kiểm tra lại địa chỉ nhận hàng.';
-      setError(msg);
-      toast({ type: 'error', title: 'Chưa có phí vận chuyển', message: msg });
+    if (gate.kind === 'QUOTE_FAILED' || !quote || !context) {
+      // Hiện đúng lý do từ API rồi báo giá lại; effect không tự chạy lại sau lỗi.
+      const reason = gate.kind === 'QUOTE_FAILED' ? gate.reason : 'Vui lòng kiểm tra lại địa chỉ nhận hàng.';
+      toast({ type: 'error', title: 'Chưa có phí vận chuyển', message: `${reason} Hệ thống đang thử tính lại phí.` });
+      retryQuote();
       return;
     }
 
@@ -636,7 +642,7 @@ export function CheckoutPage() {
                   type="button"
                   role="radio"
                   aria-checked={!requestConsultation}
-                  onClick={() => { setRequestConsultation(false); invalidateQuote(); }}
+                  onClick={() => { if (!requestConsultation) return; setRequestConsultation(false); invalidateQuote(); }}
                   className={optionClass(!requestConsultation)}
                 >
                   <div className="flex items-center justify-between gap-2">
@@ -651,7 +657,7 @@ export function CheckoutPage() {
 
                   {!requestConsultation && (
                     <div className="mt-3.5 border-t border-slate-100 pt-3 text-xs" aria-live="polite">
-                      {autoQuoting ? (
+                      {quotePending ? (
                         <span className="inline-flex items-center gap-1.5 font-bold text-slate-500">
                           <LoaderCircle className="size-3.5 animate-spin text-emerald-600" /> Đang tính phí vận chuyển...
                         </span>
@@ -686,7 +692,7 @@ export function CheckoutPage() {
                   type="button"
                   role="radio"
                   aria-checked={requestConsultation}
-                  onClick={() => { setRequestConsultation(true); invalidateQuote(); }}
+                  onClick={() => { if (requestConsultation) return; setRequestConsultation(true); invalidateQuote(); }}
                   className={optionClass(requestConsultation)}
                 >
                   <strong className="text-sm font-bold text-slate-900">Nhờ shop tư vấn & gửi chành</strong>
@@ -747,7 +753,7 @@ export function CheckoutPage() {
                     type="button"
                     role="radio"
                     aria-checked={paymentMethod === value}
-                    onClick={() => { setPaymentMethod(value); invalidateQuote(); }}
+                    onClick={() => { if (paymentMethod === value) return; setPaymentMethod(value); invalidateQuote(); }}
                     className={optionClass(paymentMethod === value)}
                   >
                     <div className="flex items-center justify-between gap-2">
@@ -834,7 +840,7 @@ export function CheckoutPage() {
             localSubtotal={localSubtotal}
             quote={quoteView}
             busy={busy || redirectingToVnpay}
-            quoting={autoQuoting}
+            quoting={quotePending}
             authLoaded={isLoaded}
             shopArranged={requestConsultation}
             showSubmit={true}
