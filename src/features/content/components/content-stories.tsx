@@ -177,7 +177,7 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
             onClick={() => setExpanded(true)}
             className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-bold text-slate-700 transition hover:border-emerald-400 hover:text-emerald-700"
           >
-            <span>Xem thêm {hiddenCount} bài</span>
+            <span>Xem thêm</span>
             <ArrowRight className="size-4" />
           </button>
         </div>
