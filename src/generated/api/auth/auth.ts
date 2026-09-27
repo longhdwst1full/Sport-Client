@@ -234,7 +234,7 @@ export const refreshCustomerToken = (
 };
 
 export const getRefreshCustomerTokenMutationOptions = <
-  TError = ErrorType<ErrorResponseDto>,
+  TError = ErrorType<ErrorResponseDto | ErrorResponseDto>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
@@ -273,12 +273,15 @@ export type RefreshCustomerTokenMutationResult = NonNullable<
   Awaited<ReturnType<typeof refreshCustomerToken>>
 >;
 export type RefreshCustomerTokenMutationBody = BodyType<RefreshTokenDto>;
-export type RefreshCustomerTokenMutationError = ErrorType<ErrorResponseDto>;
+export type RefreshCustomerTokenMutationError = ErrorType<ErrorResponseDto | ErrorResponseDto>;
 
 /**
  * @summary Rotate a customer refresh token
  */
-export const useRefreshCustomerToken = <TError = ErrorType<ErrorResponseDto>, TContext = unknown>(
+export const useRefreshCustomerToken = <
+  TError = ErrorType<ErrorResponseDto | ErrorResponseDto>,
+  TContext = unknown,
+>(
   options?: {
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof refreshCustomerToken>>,

@@ -21,6 +21,7 @@ import { STORE_POLICY_PAGES } from '@/shared/constants';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { ApiError } from '@/lib/api/fetcher';
 import { useToast } from '@/shared/components/global-toast';
+import { usePublicNumberParameter } from '@/shared/hooks';
 import { confirmCheckout, placeOrder, prepareCheckout, reloadCheckout, type CheckoutContext } from '../api/checkout.workflow';
 import { toCheckoutQuoteView } from '../model/checkout.mapper';
 import { UnavailableCartLinesError } from '@/features/cart';
@@ -72,6 +73,8 @@ function messageOf(error: unknown): string {
 }
 
 export function CheckoutPage() {
+  // Bán kính giao miễn phí do Admin cấu hình; 10 km là giá trị mặc định của API khi chưa tải được.
+  const freeRadiusKm = usePublicNumberParameter('SHIPPING_FREE_RADIUS_KM', 10);
   const router = useRouter();
   const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
@@ -598,7 +601,7 @@ export function CheckoutPage() {
                   className="inline-flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50/50 px-3.5 py-2 text-xs font-bold text-emerald-800 transition hover:bg-emerald-100"
                 >
                   <LocateFixed className="size-4 text-emerald-600" />
-                  <span>{coordinates ? 'Đã lấy vị trí của bạn' : 'Định vị vị trí hiện tại (Miễn phí nếu dưới 10 km)'}</span>
+                  <span>{coordinates ? 'Đã lấy vị trí của bạn' : `Định vị vị trí hiện tại (Miễn phí nếu dưới ${freeRadiusKm} km)`}</span>
                 </button>
               </div>
 
@@ -643,7 +646,7 @@ export function CheckoutPage() {
                     </span>
                   </div>
                   <span className="mt-1.5 block text-xs leading-5 text-slate-500">
-                    Đội xe Bảo An giao miễn phí trong 10 km, giao toàn quốc qua GHN Express.
+                    Đội xe Bảo An giao miễn phí trong {freeRadiusKm} km, giao toàn quốc qua GHN Express.
                   </span>
 
                   {!requestConsultation && (
