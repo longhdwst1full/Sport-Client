@@ -14,26 +14,37 @@ const base = {
 const states = (dto: OrderDetailDto) => toOrderMilestones(dto).map(({ key, state }) => `${key}:${state}`);
 
 describe('order milestones', () => {
-  it('VNPay chưa thanh toán: đang chờ ở mốc thanh toán', () => {
-    expect(states(base)).toEqual(['PLACED:done', 'PAID:current', 'SHIPMENT_CREATED:todo', 'IN_TRANSIT:todo', 'DELIVERED:todo']);
+  it('đơn mới tạo (PENDING_CONFIRMATION): đang ở bước chờ xác nhận', () => {
+    expect(states(base)).toEqual(['PLACED:done', 'CONFIRMED:current', 'PACKED:todo', 'IN_TRANSIT:todo', 'DELIVERED:todo']);
   });
 
-  it('đã thanh toán và đã có vận đơn GHN đang giao: hiện mã và link theo dõi', () => {
+  it('đơn đã xác nhận (CONFIRMED): đang ở bước chuẩn bị đóng gói / xuất kho', () => {
+    const dto = { ...base, status: 'CONFIRMED' } as OrderDetailDto;
+    expect(states(dto)).toEqual(['PLACED:done', 'CONFIRMED:done', 'PACKED:current', 'IN_TRANSIT:todo', 'DELIVERED:todo']);
+  });
+
+  it('đã xuất kho và có vận đơn GHN đang giao: hiện mã và thông tin vận chuyển', () => {
     const dto = {
-      ...base, paymentStatus: 'SUCCESS', paidAt: '2026-09-26T01:05:00.000Z', fulfillmentStatus: 'SHIPPED',
+      ...base, status: 'SHIPPED', paymentStatus: 'SUCCESS', paidAt: '2026-09-26T01:05:00.000Z', fulfillmentStatus: 'SHIPPED',
       shipment: { status: 'SHIPPED', carrierCode: 'GHN', trackingNo: 'LXQ7A9', trackingUrl: 'https://track/LXQ7A9', shippedAt: '2026-09-26T03:00:00.000Z', deliveredAt: null },
     } as OrderDetailDto;
-    expect(states(dto)).toEqual(['PLACED:done', 'PAID:done', 'SHIPMENT_CREATED:done', 'IN_TRANSIT:current', 'DELIVERED:todo']);
-    expect(toOrderDetailView(dto).shipment).toEqual({ carrierLabel: 'Giao Hàng Nhanh (GHN)', trackingNo: 'LXQ7A9', trackingUrl: 'https://track/LXQ7A9' });
+    expect(states(dto)).toEqual(['PLACED:done', 'CONFIRMED:done', 'PACKED:done', 'IN_TRANSIT:current', 'DELIVERED:todo']);
+    const view = toOrderDetailView(dto);
+    expect(view.shipment.carrierLabel).toBe('Giao Hàng Nhanh (GHN)');
+    expect(view.shipment.trackingNo).toBe('LXQ7A9');
+    expect(view.shipment.trackingUrl).toBe('https://track/LXQ7A9');
+    expect(view.shipment.hasTracking).toBe(true);
+    expect(view.shipment.estimatedDeliveryLabel).toBe('Dự kiến 1 - 3 ngày làm việc');
   });
 
-  it('COD không bị chặn ở mốc thanh toán', () => {
-    const dto = { ...base, paymentMethod: 'COD' } as OrderDetailDto;
-    expect(states(dto)).toEqual(['PLACED:done', 'PAID:todo', 'SHIPMENT_CREATED:current', 'IN_TRANSIT:todo', 'DELIVERED:todo']);
+  it('COD không bị nhầm lẫn mốc thanh toán trong chuỗi giao hàng', () => {
+    const dto = { ...base, paymentMethod: 'COD', status: 'CONFIRMED' } as OrderDetailDto;
+    expect(states(dto)).toEqual(['PLACED:done', 'CONFIRMED:done', 'PACKED:current', 'IN_TRANSIT:todo', 'DELIVERED:todo']);
   });
 
-  it('đơn huỷ: không mốc nào "current" và thêm mốc đã huỷ', () => {
+  it('đơn huỷ: không mốc nào "current" và có mốc CANCELLED failed', () => {
     const dto = { ...base, status: 'CANCELLED', paymentStatus: 'CANCELLED' } as OrderDetailDto;
-    expect(states(dto)).toEqual(['PLACED:done', 'PAID:failed', 'SHIPMENT_CREATED:todo', 'IN_TRANSIT:todo', 'DELIVERED:todo', 'CANCELLED:failed']);
+    expect(states(dto)).toEqual(['PLACED:done', 'CONFIRMED:todo', 'PACKED:todo', 'IN_TRANSIT:todo', 'DELIVERED:todo', 'CANCELLED:failed']);
   });
 });
+

@@ -1,10 +1,10 @@
 # Storefront Orders — maintenance note
 
-> **Document version:** 1.3.0
+> **Document version:** 1.4.0
 >
-> **Last updated:** 2026-09-26
+> **Last updated:** 2026-09-28
 >
-> **Change summary:** Trang chi tiết đơn có tiến trình theo mốc và mã vận đơn/link theo dõi từ `shipment`.
+> **Change summary:** Nâng cấp UX/UI theo đánh giá chuyên sâu: tách biệt 5 mốc giao nhận khỏi trạng thái thanh toán, nổi bật trạng thái đơn hàng kèm mô tả và timestamp, bổ sung khối thông tin vận chuyển thực tế và tiện ích hỗ trợ/hủy/mua lại.
 
 ## Phạm vi và ranh giới
 
@@ -27,16 +27,18 @@
 - [ ] Retry cùng payload phải giữ cùng idempotency key; payload đổi phải tạo key mới.
 - [ ] Thay đổi contract phải sửa API/OpenAPI trước rồi regenerate.
 
-## Tiến trình đơn (2026-09-26)
+## Tiến trình đơn và Vận chuyển (2026-09-28)
 
-- `toOrderMilestones` dựng 5 mốc: đặt hàng → thanh toán → tạo vận đơn/xuất kho → đang giao → đã giao; mốc đầu tiên chưa xong là "current", đơn huỷ thêm mốc "Đã huỷ".
-- COD thu tiền khi giao nên mốc thanh toán không chặn các mốc giao; chuyển khoản/VNPay chờ ở mốc thanh toán tới khi `paymentStatus = SUCCESS`.
-- Mã vận đơn và nút "Theo dõi vận đơn" lấy từ `shipment` (API `OrderDetailDto`); chỉ có link khi API trả `trackingUrl` (hiện GHN). Lịch sử chi tiết `statusHistory` nằm trong phần "Lịch sử chi tiết".
+- `toOrderMilestones` dựng 5 mốc giao nhận độc lập: Đặt hàng thành công → Đã xác nhận đơn hàng → Đã xuất kho/Đóng gói → Đang giao hàng → Đã giao hàng (kèm mốc "Đơn đã hủy" nếu đơn hủy).
+- Trạng thái thanh toán (đặc biệt là COD) được tách khỏi thanh tiến trình giao hàng để tránh khách hàng hiểu nhầm bước thanh toán nằm giữa chuỗi xử lý kho.
+- Khối "Thông tin vận chuyển thực tế" tổng hợp Đơn vị vận chuyển, Mã vận đơn điện tử (kèm sao chép nhanh), Thời gian dự kiến giao và Tình trạng bưu kiện; link theo dõi trực tiếp từ `shipment.trackingUrl`.
+- Hỗ trợ theo ngữ cảnh: Nút hủy đơn chỉ kích hoạt khi đơn còn ở trạng thái `PENDING_CONFIRMATION` và `PENDING` fulfillment. Khi đơn đã xuất kho/đang giao, giao diện thay bằng nút "Liên hệ hỗ trợ đơn" tự đính kèm mã đơn để tiện thoại/chat với CSKH.
 
 ## Revision history
 
 | Version | Date | Change summary | Source |
 | --- | --- | --- | --- |
+| 1.4.0 | 2026-09-28 | Tách tiến trình giao nhận và thanh toán, nổi bật trạng thái đơn, thêm khối thông tin vận chuyển và hỗ trợ ngữ cảnh. | UX-REVIEW-ORDER-TRACKING-20260928 |
 | 1.3.0 | 2026-09-26 | Tiến trình theo mốc, mã vận đơn và link theo dõi. | API-20260926-ORDER-TRACKING-VNPAY-RULES |
 | 1.2.0 | 2026-09-12 | Thêm Guest token TTL/terminal cleanup và Payment→Order list invalidation. | API-20260912-ORDER-GUEST-HARDENING |
 | 1.1.0 | 2026-09-11 | Hardening cache isolation, pagination, cancel invalidation và Guest storage fallback. | CLIENT-20260911-ORDER-S41-HARDENING |
