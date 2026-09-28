@@ -4,7 +4,7 @@ import { BenefitsStrip } from '@/widgets/benefits-strip/benefits-strip';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { SectionHeading } from '@/foundation/components/structure/section-heading';
 import { ProductShowcase, toCategoryCardView, toCategoryRailView } from '@/features/catalog';
-import { CATALOG_PAGE_SIZE } from '@/features/catalog/model/product.mapper';
+import { CATALOG_PAGE_SIZE } from '@/features/catalog';
 import { listCatalogCategories, listCatalogProducts } from '@/generated/api/catalog/catalog';
 import type { CatalogCategoryDto } from '@/generated/api/catalog/catalog.schemas';
 import { listPublishedPosts } from '@/generated/api/content/content';
@@ -12,7 +12,7 @@ import { ContentStories } from '@/features/content';
 import {
   POLICY_POST_TYPE,
   toContentPostView,
-} from '@/features/content/model/content-post.mapper';
+} from '@/features/content';
 import { ProductReviews } from '@/features/reviews';
 import { HeroBannerSlider } from '../components/hero-banner-slider';
 import { QuickGoalNavigation } from '../components/quick-goal-navigation';

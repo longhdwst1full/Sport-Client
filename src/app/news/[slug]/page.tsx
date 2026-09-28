@@ -6,7 +6,7 @@ import {
   POLICY_POST_TYPE,
   toArticleDetailView,
   toContentPostView,
-} from '@/features/content/model/content-post.mapper';
+} from '@/features/content';
 import { getPublishedPost, listPublishedPosts } from '@/generated/api/content/content';
 import { ApiError } from '@/lib/api/fetcher';
 import { buildPageMetadata } from '@/lib/seo/page-metadata';

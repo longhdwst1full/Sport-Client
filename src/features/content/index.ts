@@ -5,3 +5,5 @@ export { usePolicyPages } from './hooks/use-policy-pages';
 export { PolicyListPage } from './pages/policy-list-page';
 export { PolicyDetailPage } from './pages/policy-detail-page';
 export { ArticleDetailPage } from './pages/article-detail-page';
+export * from './model/content-post.mapper';
+export * from './model/policy.mapper';

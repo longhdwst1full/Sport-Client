@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight, ShieldCheck, Zap, ArrowRight, Flame } from 'lucide-react';
 import { useFlashSale } from '@/features/promotions';
-import type { ContentPostView } from '@/features/content/model/content-post.mapper';
+import type { ContentPostView } from '@/features/content';
 import { STORE_CONFIG } from '@/shared/constants';
 
 interface HeroSlide {

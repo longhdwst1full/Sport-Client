@@ -6,7 +6,7 @@ import {
   isPolicyPost,
   toPolicyDetailView,
   toPolicySummaryView,
-} from '@/features/content/model/policy.mapper';
+} from '@/features/content';
 import { getPublishedPost, listPublishedPosts } from '@/generated/api/content/content';
 import { ApiError } from '@/lib/api/fetcher';
 import { buildPageMetadata } from '@/lib/seo/page-metadata';

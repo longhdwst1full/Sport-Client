@@ -20,3 +20,5 @@ export { CatalogActiveChips, type CatalogActiveChipsProps } from './components/c
 export { CatalogMobileFilterDrawer, type CatalogMobileFilterDrawerProps } from './components/catalog-mobile-filter-drawer';
 export { ProductSpecifications, type ProductSpecItem } from './components/product-specifications';
 export { useMegaMenuCategories, type MegaMenuEntry } from './hooks/use-mega-menu-categories';
+export { useProductSearch } from './hooks/use-product-search';
+export * from './model/product.mapper';

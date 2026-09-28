@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Search, X, ChevronRight, Sparkles } from 'lucide-react';
-import { useProductSearch } from '@/features/catalog/hooks/use-product-search';
+import { useProductSearch } from '@/features/catalog';
 import { useDebounce } from '@/shared/hooks';
 
 interface AutocompleteSearchProps {

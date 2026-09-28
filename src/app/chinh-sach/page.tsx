@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { PolicyListPage } from '@/features/content';
-import { toPolicySummaryView } from '@/features/content/model/policy.mapper';
+import { toPolicySummaryView } from '@/features/content';
 import { listPublishedPosts } from '@/generated/api/content/content';
 import { buildPageMetadata } from '@/lib/seo/page-metadata';
 

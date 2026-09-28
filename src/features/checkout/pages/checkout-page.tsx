@@ -13,8 +13,6 @@ import type { OrderDetailDto } from '@/generated/api/orders/orders.schemas';
 import type { CustomerAddressDto } from '@/generated/api/customer/customer.schemas';
 import { listCustomerAddresses } from '@/generated/api/customer/customer';
 import { getAccountPayment, getGuestPayment } from '@/generated/api/payments/payments';
-import { paymentRequest } from '@/features/orders/api/payment-request';
-import { readGuestOrderAccessToken } from '@/features/orders/model/guest-order-access.store';
 import { STORE_POLICY_PAGES } from '@/shared/constants';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { apiErrorMessage } from '@/lib/api/error-message';
@@ -24,7 +22,7 @@ import { confirmCheckout, placeOrder, prepareCheckout, reloadCheckout, type Chec
 import { toCheckoutQuoteView } from '../model/checkout.mapper';
 import { resolveCheckoutQuoteGate } from '../model/checkout-quote-gate';
 import { UnavailableCartLinesError } from '@/features/cart';
-import { toOrderDetailView } from '@/features/orders/model/order.mapper';
+import { paymentRequest, readGuestOrderAccessToken, toOrderDetailView } from '@/features/orders';
 import { CheckoutOrderSummary } from '../components/checkout-order-summary';
 import { CheckoutSuccess } from '../components/checkout-success';
 

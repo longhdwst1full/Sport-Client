@@ -84,8 +84,11 @@ vi.mock('@/generated/api/payments/payments', () => ({
   getAccountPayment: vi.fn(),
   getGuestPayment: vi.fn(),
 }));
-vi.mock('@/features/orders/api/payment-request', () => ({ paymentRequest: vi.fn() }));
-vi.mock('@/features/orders/model/guest-order-access.store', () => ({ readGuestOrderAccessToken: vi.fn() }));
+vi.mock('@/features/orders', () => ({
+  paymentRequest: vi.fn(),
+  readGuestOrderAccessToken: vi.fn(),
+  toOrderDetailView: vi.fn(),
+}));
 vi.mock('@/shared/components/global-toast', () => ({ useToast: () => ({ toast: vi.fn() }) }));
 
 // Header/footer thật kéo theo useGetCustomerProfile (react-query) và nhiều widget không liên quan

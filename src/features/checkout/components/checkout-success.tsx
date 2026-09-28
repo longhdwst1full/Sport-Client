@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { CheckCircle2 } from 'lucide-react';
-import type { OrderDetailView } from '@/features/orders/model/order.mapper';
+import type { OrderDetailView } from '@/features/orders';
 
 interface CheckoutSuccessProps {
   order: OrderDetailView;

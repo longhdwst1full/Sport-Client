@@ -15,7 +15,7 @@ import {
   toDisplayBrand,
   toProductGalleryView,
   toProductPurchaseView,
-} from '@/features/catalog/model/product.mapper';
+} from '@/features/catalog';
 import { ProductReviewSection } from '@/features/reviews';
 import { getCatalogProduct, listCatalogCategories } from '@/generated/api/catalog/catalog';
 import { ApiError } from '@/lib/api/fetcher';

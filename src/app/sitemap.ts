@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next';
 import { listCatalogCategories, listCatalogProducts } from '@/generated/api/catalog/catalog';
 import { listPublishedPosts } from '@/generated/api/content/content';
-import { POLICY_POST_TYPE } from '@/features/content/model/content-post.mapper';
+import { POLICY_POST_TYPE } from '@/features/content';
 import { SITE_URL } from '@/lib/seo/page-metadata';
 
 /**
