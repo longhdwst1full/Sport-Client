@@ -22,39 +22,6 @@ export enum AppRoute {
 }
 
 // ==========================================
-// 3. ORDER & PAYMENT ENUMS
-// ==========================================
-export enum PaymentMethod {
-  COD = 'COD',
-  BANK_TRANSFER = 'BANK_TRANSFER',
-  MOMO = 'MOMO',
-  VNPAY = 'VNPAY',
-  INSTALLMENT_CREDIT = 'INSTALLMENT_CREDIT',
-}
-
-export enum OrderStatus {
-  PENDING = 'PENDING',
-  CONFIRMED = 'CONFIRMED',
-  PROCESSING = 'PROCESSING',
-  SHIPPING = 'SHIPPING',
-  DELIVERED = 'DELIVERED',
-  CANCELLED = 'CANCELLED',
-}
-
-export enum ProductType {
-  SIMPLE = 'SIMPLE',
-  BUNDLE = 'BUNDLE',
-  CONFIGURABLE = 'CONFIGURABLE',
-}
-
-export enum SocialPlatform {
-  FACEBOOK = 'facebook',
-  YOUTUBE = 'youtube',
-  ZALO = 'zalo',
-  TIKTOK = 'tiktok',
-}
-
-// ==========================================
 // 4. STORE BRAND CONFIGURATION
 // ==========================================
 export const STORE_CONFIG = {
