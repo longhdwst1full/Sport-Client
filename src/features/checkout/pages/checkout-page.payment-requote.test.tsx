@@ -21,7 +21,18 @@ vi.mock('next/navigation', () => ({
 vi.mock('@/app/store/hooks', () => ({
   useAppDispatch: () => vi.fn(),
   useAppSelector: (selector: (state: unknown) => unknown) =>
-    selector({ cart: { items: [{ variantId: 'v1', quantity: 1, price: 100000 }] } }),
+    selector({
+      cart: {
+        items: [{
+          variantId: 'v1',
+          sku: 'TEST-SKU-01',
+          name: 'Sản phẩm kiểm thử',
+          imageUrl: null,
+          quantity: 1,
+          price: 100000,
+        }],
+      },
+    }),
 }));
 
 vi.mock('@/app/providers', () => ({

@@ -53,31 +53,30 @@ export default defineConfig({
       use: {
         ...devices['Desktop Chrome'],
         launchOptions: {
-          args: [
-            '--disable-gpu',
-            '--disable-dev-shm-usage',
-            '--no-sandbox',
-          ],
+          args: ['--disable-gpu', '--disable-dev-shm-usage', '--no-sandbox'],
         },
       },
     },
   ],
 
-  // Mặc định chạy production build: next dev tạo rất nhiều file watcher và có thể
-  // chạm ENOSPC trên workstation/CI. E2E_DEV=1 chỉ dùng khi cần debug UI nhanh.
+  // Build ngay trong lượt chạy để NEXT_PUBLIC_API_URL được đóng gói đúng API mục
+  // tiêu. Không chạy build/dev khác dùng `.next` song song với E2E.
+  // E2E_DEV=1 chỉ dùng khi cần debug UI nhanh.
   // CI có thể trỏ E2E_BASE_URL sang môi trường khác.
   webServer: process.env.E2E_BASE_URL
     ? undefined
     : {
-        command: process.env.E2E_DEV === '1'
-          ? `yarn next dev -p ${PORT}`
-          : `yarn next start -p ${PORT}`,
+        command:
+          process.env.E2E_DEV === '1'
+            ? `yarn next dev -p ${PORT}`
+            : `yarn next build && yarn next start -p ${PORT}`,
         url: BASE_URL,
         reuseExistingServer: !process.env.CI,
         timeout: 240_000,
         env: {
           PORT: String(PORT),
           NEXT_PUBLIC_API_URL: API_URL,
+          INTERNAL_API_URL: API_URL,
         },
       },
 });

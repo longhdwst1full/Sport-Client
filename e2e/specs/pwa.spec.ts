@@ -36,7 +36,20 @@ test.describe('PWA — manifest, offline và reset', () => {
 
     await page.getByRole('button', { name: 'Reset cache và service worker' }).click();
     await expect(page.getByRole('heading', { name: 'Trạng thái PWA' })).toBeVisible();
-    await expect.poll(() => page.evaluate(() => caches.keys())).toContain('other-app-e2e');
-    await expect.poll(() => page.evaluate(() => caches.keys())).not.toContain('dctd-storefront-e2e');
+    // Reset chủ động reload trang. Đọc hai điều kiện trong cùng execution context
+    // và retry khi context cũ vừa bị huỷ để tránh flaky giữa hai lần poll.
+    await expect
+      .poll(async () => {
+        try {
+          const names = await page.evaluate(() => caches.keys());
+          return {
+            keepsOtherApp: names.includes('other-app-e2e'),
+            removesStorefront: !names.includes('dctd-storefront-e2e'),
+          };
+        } catch {
+          return null;
+        }
+      })
+      .toEqual({ keepsOtherApp: true, removesStorefront: true });
   });
 });

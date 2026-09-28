@@ -2,23 +2,7 @@
 
 import React from 'react';
 import { ListOrdered } from 'lucide-react';
-import type { ArticleBlock } from '../model/content-post.mapper';
-
-export interface TocHeading {
-  id: string;
-  text: string;
-  level: number;
-}
-
-export function extractTocHeadings(blocks: ArticleBlock[]): TocHeading[] {
-  return blocks
-    .filter((b): b is Extract<ArticleBlock, { kind: 'heading' }> => b.kind === 'heading')
-    .map((b, idx) => ({
-      id: `heading-${idx}-${encodeURIComponent(b.text.slice(0, 24).replace(/\s+/g, '-').toLowerCase())}`,
-      text: b.text,
-      level: b.level,
-    }));
-}
+import type { TocHeading } from '../model/article-toc';
 
 export function ArticleTableOfContents({ headings }: { headings: TocHeading[] }) {
   if (headings.length < 2) return null;

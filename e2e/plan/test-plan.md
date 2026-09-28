@@ -1,14 +1,15 @@
 # Kịch bản Playwright — Storefront
 
-> **Document version:** 1.0.1
+> **Document version:** 1.1.0
 >
-> **Last updated:** 2026-09-18
+> **Last updated:** 2026-09-27
 >
-> **Change summary:** Tổng hợp luồng Client đã kiểm, bổ sung PWA, tách DB test cô lập và đặt output Playwright trong `.playwright/` đã ignore.
+> **Change summary:** Đồng bộ ma trận với 81 ca/19 file và kết quả 81/81 pass; runner tự build đúng URL API, visual artifact portable, PWA reset không flaky và yêu cầu chạy tuần tự với `.next`.
 
 ## Nguyên tắc môi trường
 
-- Mặc định Playwright chạy production build trên cổng 3199, API đọc từ `E2E_API_URL`.
+- Mặc định Playwright tự build production với `E2E_API_URL`, sau đó chạy cổng 3199. Không được chỉ truyền URL lúc `next start` vì URL public đã đóng gói ở build-time.
+- Không chạy build/dev khác dùng chung `.next` trong lúc Playwright. Lượt kiểm 2026-09-27 từng mất manifest do có hai tiến trình cùng dùng workspace này.
 - Artifact/report sinh ra ở `.playwright/artifacts` và `.playwright/report` (đã ignore), không ghi đè artifact lịch sử trong `e2e/`.
 - Các ca hiện có chỉ GET catalog/content và thao tác giỏ cục bộ trong browser context. Không tạo đơn, thanh toán, tài khoản hay sửa Supabase dùng chung.
 - Ca có POST/PATCH/DELETE thật phải dùng database test cô lập với seed có thể lặp lại và cleanup theo ID của lần chạy. Không chạy trên DB dev/prod dùng chung.
@@ -16,22 +17,25 @@
 
 ## Ma trận kịch bản
 
-| Nhóm | Hiện có | Kịch bản chính | Còn thiếu |
-| --- | ---: | --- | --- |
-| Trang chủ/danh mục | 14 | điều hướng, tab, sản phẩm thật, sort/filter, link chi tiết | ảnh lỗi, màn hình nhỏ, loading API chậm |
-| Chi tiết/tìm kiếm | 9 | slug thật/404, metadata, số lượng, giỏ, gợi ý tìm kiếm | biến thể/combo không còn hàng, lỗi API 5xx |
-| Giỏ hàng | 6 | rỗng, thêm/tăng/xoá, tổng tiền, reload | giá/tồn thay đổi sau khi lưu giỏ |
-| Chính sách/SEO/smoke | 9 | bài thật, breadcrumb, 404 đúng HTTP status | news 5xx, cache revalidation |
-| PWA | 3 | manifest/icon 192–512, banner mất mạng, reset cache đúng prefix | cài đặt trên HTTPS, update prompt, offline navigation sau activate |
-| Auth/Checkout/Orders | 0 | — | môi trường test cô lập: login/guest, quote, idempotency, thanh toán, xem đơn |
+| Nhóm                       | Hiện có | Kịch bản chính                                                                      | Còn thiếu                                                                 |
+| -------------------------- | ------: | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| Trang chủ/danh mục/catalog |      16 | điều hướng, tab, sản phẩm thật, sort/filter, link chi tiết                          | ảnh lỗi, loading API chậm                                                 |
+| Chi tiết/tìm kiếm          |       9 | slug thật/404, metadata, số lượng, giỏ, gợi ý tìm kiếm                              | biến thể/combo không còn hàng, lỗi API 5xx                                |
+| Giỏ hàng                   |       6 | rỗng, thêm/tăng/xoá, tổng tiền, reload                                              | giá/tồn thay đổi sau khi lưu giỏ                                          |
+| Chính sách/SEO/smoke       |       9 | bài thật, breadcrumb, 404 đúng HTTP status                                          | news 5xx, cache revalidation                                              |
+| PWA                        |       3 | manifest/icon 192–512, banner mất mạng, reset cache đúng prefix                     | cài đặt trên HTTPS, update prompt, offline navigation sau activate        |
+| Auth/Checkout/Profile      |      10 | form login/register, checkout shell, profile guest                                  | login thật, quote, idempotency, thanh toán, xem đơn cần môi trường cô lập |
+| UI shell/responsive        |      28 | header, footer, hero, product card/mobile, contact, news, flash sale, visual funnel | visual baseline và nhiều viewport chuẩn hoá                               |
+
+Tổng được Playwright phát hiện và chạy ngày 2026-09-27: **81/81 ca pass trong 19 file** trên API local read-only.
 
 ## Ca PWA mới — `e2e/specs/pwa.spec.ts`
 
-| ID | Điều kiện | Kết quả mong đợi |
-| --- | --- | --- |
-| PWA-01 | GET manifest và icon | `standalone`, hai PNG 192/512 trả 200 đúng MIME |
-| PWA-02 | Mất kết nối khi đang ở `/pwa` | Banner nói rõ đặt hàng/thanh toán cần mạng |
-| PWA-03 | Reset với cache của Storefront và ứng dụng khác | Chỉ cache prefix `dctd-storefront-` bị xoá |
+| ID     | Điều kiện                                       | Kết quả mong đợi                                |
+| ------ | ----------------------------------------------- | ----------------------------------------------- |
+| PWA-01 | GET manifest và icon                            | `standalone`, hai PNG 192/512 trả 200 đúng MIME |
+| PWA-02 | Mất kết nối khi đang ở `/pwa`                   | Banner nói rõ đặt hàng/thanh toán cần mạng      |
+| PWA-03 | Reset với cache của Storefront và ứng dụng khác | Chỉ cache prefix `dctd-storefront-` bị xoá      |
 
 ## Thứ tự bổ sung tiếp
 
@@ -42,7 +46,8 @@
 
 ## Revision history
 
-| Version | Date | Change summary |
-| --- | --- | --- |
-| 1.0.1 | 2026-09-18 | Tách output Playwright khỏi artifact cũ đã được Git theo dõi. |
-| 1.0.0 | 2026-09-18 | Lập ma trận 41 ca và backlog an toàn dữ liệu. |
+| Version | Date       | Change summary                                                                                                                                 |
+| ------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.1.0   | 2026-09-27 | Đồng bộ và chạy xanh 81/81 ca; runner build đúng API URL, visual artifact portable, PWA reset không flaky và yêu cầu chạy tuần tự với `.next`. |
+| 1.0.1   | 2026-09-18 | Tách output Playwright khỏi artifact cũ đã được Git theo dõi.                                                                                  |
+| 1.0.0   | 2026-09-18 | Lập ma trận 41 ca và backlog an toàn dữ liệu.                                                                                                  |

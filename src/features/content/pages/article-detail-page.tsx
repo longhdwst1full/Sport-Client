@@ -5,9 +5,10 @@ import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { Breadcrumb } from '@/foundation/components/navigation';
 import type { ArticleDetailView, ContentPostView } from '../model/content-post.mapper';
 import { ArticleReadingProgress } from '../components/article-reading-progress';
-import { ArticleTableOfContents, extractTocHeadings } from '../components/article-table-of-contents';
+import { ArticleTableOfContents } from '../components/article-table-of-contents';
 import { ArticleConsultationCta } from '../components/article-consultation-cta';
 import { ArticleRelatedPosts } from '../components/article-related-posts';
+import { createArticleHeadingId, extractTocHeadings } from '../model/article-toc';
 
 export function ArticleDetailPage({
   article,
@@ -86,9 +87,7 @@ export function ArticleDetailPage({
             <div className="mt-8 text-base leading-8 text-slate-700">
               {article.blocks.map((block, index) => {
                 if (block.kind === 'heading') {
-                  const headingId = `heading-${index}-${encodeURIComponent(
-                    block.text.slice(0, 24).replace(/\s+/g, '-').toLowerCase(),
-                  )}`;
+                  const headingId = createArticleHeadingId(block, index);
 
                   return block.level === 2 ? (
                     <h2
