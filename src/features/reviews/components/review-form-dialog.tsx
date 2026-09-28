@@ -2,9 +2,10 @@
 
 import Image from 'next/image';
 import { FormEvent, useRef, useState } from 'react';
-import { ImagePlus, Star, X } from 'lucide-react';
+import { ImagePlus, X } from 'lucide-react';
 import { Spinner } from '@/foundation/components/feedback';
 import { Modal } from '@/foundation/components/overlay';
+import { RatingStars } from '@/foundation/components/indicators';
 import { createAccountProductReview } from '@/generated/api/reviews/reviews';
 import { apiErrorMessage } from '@/lib/api/error-message';
 import { uploadReviewMedia, type UploadedReviewMedia } from '../api/review-media-upload';
@@ -99,13 +100,17 @@ export function ReviewFormDialog({
         <form onSubmit={submit} className="mt-6 space-y-5">
           <fieldset>
             <legend className="text-sm font-bold text-slate-800">Mức độ hài lòng <span className="text-rose-600">*</span></legend>
-            <div className="mt-2 flex gap-1" aria-label={`${rating} trên 5 sao`}>
-              {[1, 2, 3, 4, 5].map((value) => (
-                <button key={value} type="button" onClick={() => setRating(value)} className="p-1" aria-label={`${value} sao`}>
-                  <Star className={`size-7 ${value <= rating ? 'fill-amber-400 text-amber-400' : 'text-slate-300'}`} />
-                </button>
-              ))}
-            </div>
+            <RatingStars
+              value={rating}
+              onChange={setRating}
+              size="size-7"
+              activeClassName="fill-amber-400 text-amber-400"
+              inactiveClassName="text-slate-300"
+              wrapperClassName="mt-2 flex gap-1"
+              ariaLabel={`${rating} trên 5 sao`}
+              starButtonClassName="p-1"
+              starAriaLabel={(star) => `${star} sao`}
+            />
           </fieldset>
 
           <label className="block text-sm font-bold text-slate-800">Tiêu đề <span className="text-rose-600">*</span>

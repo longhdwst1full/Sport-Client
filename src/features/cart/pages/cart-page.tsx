@@ -3,13 +3,14 @@
 import { useMemo, useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowLeft, Minus, Plus, ShoppingBag, Trash2, ShieldCheck, RotateCcw, Truck, Sparkles } from 'lucide-react';
+import { ArrowLeft, ShoppingBag, Trash2, ShieldCheck, RotateCcw, Truck, Sparkles } from 'lucide-react';
 import { useCartActions, useCartItems } from '../hooks/use-cart';
 import { Breadcrumb } from '@/foundation/components/navigation';
-import { vndMoney } from '@/shared/format/money';
+import { formatVnd } from '@/shared/format/money';
 import { PRODUCT_PLACEHOLDER_IMAGE } from '@/shared/constants';
 import { useToast } from '@/shared/components/global-toast';
 import { EmptyState } from '@/foundation/components/feedback';
+import { QuantityStepper } from '@/foundation/components/indicators';
 
 const SHIPPING_FEE = 30000;
 
@@ -221,28 +222,18 @@ export function CartPage() {
                     </div>
                     <div className="mt-auto flex items-end justify-between gap-4 pt-3">
                       {/* Quantity */}
-                      <div className="flex items-center rounded-xl border border-ink/10">
-                        <button
-                          type="button"
-                          onClick={() => setQuantity(item.variantId, item.quantity - 1)}
-                          disabled={item.quantity <= 1}
-                          className="grid size-9 place-items-center text-stone-500 transition hover:text-ink disabled:opacity-30"
-                          aria-label="Giảm số lượng"
-                        >
-                          <Minus className="size-3.5" />
-                        </button>
-                        <span className="min-w-[2rem] text-center text-sm font-bold">{item.quantity}</span>
-                        <button
-                          type="button"
-                          onClick={() => setQuantity(item.variantId, item.quantity + 1)}
-                          className="grid size-9 place-items-center text-stone-500 transition hover:text-ink"
-                          aria-label="Tăng số lượng"
-                        >
-                          <Plus className="size-3.5" />
-                        </button>
-                      </div>
+                      <QuantityStepper
+                        value={item.quantity}
+                        onDecrement={() => setQuantity(item.variantId, item.quantity - 1)}
+                        onIncrement={() => setQuantity(item.variantId, item.quantity + 1)}
+                        decrementDisabled={item.quantity <= 1}
+                        wrapperClassName="flex items-center rounded-xl border border-ink/10"
+                        decrementClassName="grid size-9 place-items-center text-stone-500 transition hover:text-ink disabled:opacity-30"
+                        incrementClassName="grid size-9 place-items-center text-stone-500 transition hover:text-ink"
+                        valueClassName="min-w-[2rem] text-center text-sm font-bold"
+                      />
                       {/* Price */}
-                      <strong className="text-sm sm:text-base">{vndMoney.format(item.price * item.quantity)}</strong>
+                      <strong className="text-sm sm:text-base">{formatVnd(item.price * item.quantity)}</strong>
                     </div>
                   </div>
                 </div>
@@ -255,16 +246,16 @@ export function CartPage() {
               <div className="mt-5 space-y-3 text-sm">
                 <div className="flex justify-between">
                   <span className="text-slate-500">Tạm tính ({selectedItems.length} sản phẩm)</span>
-                  <span className="font-semibold text-slate-900">{vndMoney.format(subtotal)}</span>
+                  <span className="font-semibold text-slate-900">{formatVnd(subtotal)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-500">Phí vận chuyển</span>
-                  <span className="font-semibold text-slate-900">{selectedItems.length > 0 ? vndMoney.format(SHIPPING_FEE) : '0 ₫'}</span>
+                  <span className="font-semibold text-slate-900">{selectedItems.length > 0 ? formatVnd(SHIPPING_FEE) : '0 ₫'}</span>
                 </div>
                 <hr className="border-slate-100" />
                 <div className="flex justify-between text-base">
                   <span className="font-bold text-slate-900">Tổng thanh toán</span>
-                  <strong className="text-xl font-black text-emerald-700">{vndMoney.format(total)}</strong>
+                  <strong className="text-xl font-black text-emerald-700">{formatVnd(total)}</strong>
                 </div>
               </div>
 

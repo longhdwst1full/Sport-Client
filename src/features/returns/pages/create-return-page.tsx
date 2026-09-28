@@ -14,7 +14,7 @@ import {
   useGetAccountReturnEligibility,
 } from '@/generated/api/returns/returns';
 import type { ReturnDetailDto } from '@/generated/api/returns/returns.schemas';
-import { vndMoney } from '@/shared/format/money';
+import { formatVnd } from '@/shared/format/money';
 import { formatDate } from '@/shared/format/date-time';
 import { EvidencePicker } from '../components/evidence-picker';
 import {
@@ -207,7 +207,7 @@ export function CreateReturnPage({ orderNo }: { orderNo: string }) {
 
             <section className="rounded-3xl border border-emerald-200 bg-emerald-50 p-6">
               <p className="text-sm text-emerald-900">{RETURN_FIELD_LABELS.estimatedRefund}</p>
-              <p className="text-2xl font-black text-emerald-800">{vndMoney.format(estimate)}</p>
+              <p className="text-2xl font-black text-emerald-800">{formatVnd(estimate)}</p>
               <p className="mt-1 text-xs text-emerald-900">{RETURN_ESTIMATE_NOTE} Chưa gồm phí giao hàng.</p>
             </section>
 

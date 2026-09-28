@@ -5,7 +5,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Banknote, CreditCard, CheckCircle2, Clock3, ImageUp } from 'lucide-react';
 import { Spinner, ErrorState } from '@/foundation/components/feedback';
 import { Card } from '@/foundation/components/structure';
-import { Button } from '@/foundation/components/buttons';
+import { Button, CopyButton } from '@/foundation/components/buttons';
 import {
   getAccountPayment,
   getGetAccountPaymentQueryKey,
@@ -54,7 +54,6 @@ export function OrderPaymentPanel({
   const queryClient = useQueryClient();
   const [file, setFile] = useState<File>();
   const [note, setNote] = useState('');
-  const [copiedRef, setCopiedRef] = useState(false);
   const pendingUpload = useRef<PendingUpload | undefined>(undefined);
   const queryKey = authenticated
     ? getGetAccountPaymentQueryKey(orderNo)
@@ -100,16 +99,6 @@ export function OrderPaymentPanel({
       await onPaymentChanged();
     },
   });
-
-  const handleCopyRef = async (ref: string) => {
-    try {
-      await navigator.clipboard.writeText(ref);
-      setCopiedRef(true);
-      setTimeout(() => setCopiedRef(false), 2000);
-    } catch {
-      // fallback
-    }
-  };
 
   if (paymentQuery.isLoading) {
     return (
@@ -159,14 +148,13 @@ export function OrderPaymentPanel({
           </span>
           <div className="mt-1 flex items-center gap-2">
             <span className="font-mono text-sm font-extrabold text-slate-900">{view.paymentRef}</span>
-            <button
-              type="button"
-              onClick={() => handleCopyRef(view.paymentRef)}
+            <CopyButton
+              value={view.paymentRef}
               className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition"
               title="Sao chép mã giao dịch"
-            >
-              {copiedRef ? <CheckCircle2 className="size-3.5 text-emerald-600" /> : <CreditCard className="size-3.5" />}
-            </button>
+              idleIcon={<CreditCard className="size-3.5" />}
+              copiedIcon={<CheckCircle2 className="size-3.5 text-emerald-600" />}
+            />
           </div>
         </div>
 

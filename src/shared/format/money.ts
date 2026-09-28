@@ -3,3 +3,7 @@ export const vndMoney = new Intl.NumberFormat('vi-VN', {
   currency: 'VND',
   maximumFractionDigits: 0,
 });
+
+export function formatVnd(value: number): string {
+  return vndMoney.format(value);
+}

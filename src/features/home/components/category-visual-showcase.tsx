@@ -17,6 +17,7 @@ import {
   Swords,
   Bike,
 } from 'lucide-react';
+import { CarouselDots } from '@/foundation/components/indicators';
 
 function getCategoryIcon(name: string) {
   const n = name.toLowerCase();
@@ -224,21 +225,17 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
           </div>
 
           {/* Slider Pagination Dots Indicator */}
-          <div className="mt-6 flex items-center justify-center gap-1.5">
-            {items.map((cat, idx) => (
-              <button
-                key={cat.id}
-                type="button"
-                onClick={() => scrollToItem(idx)}
-                className={`h-1.5 rounded-full transition-all duration-300 ${
-                  activeIndex === idx
-                    ? 'w-6 bg-emerald-600'
-                    : 'w-1.5 bg-slate-200 hover:bg-slate-300'
-                }`}
-                aria-label={`Đi tới danh mục ${cat.name}`}
-              />
-            ))}
-          </div>
+          <CarouselDots
+            count={items.length}
+            activeIndex={activeIndex}
+            onSelect={scrollToItem}
+            wrapperClassName="mt-6 flex items-center justify-center gap-1.5"
+            baseClassName="h-1.5 rounded-full transition-all duration-300"
+            activeClassName="w-6 bg-emerald-600"
+            inactiveClassName="w-1.5 bg-slate-200 hover:bg-slate-300"
+            keyFor={(index) => items[index].id}
+            ariaLabelFor={(index) => `Đi tới danh mục ${items[index].name}`}
+          />
         </div>
 
         {/* Mobile View All Link */}

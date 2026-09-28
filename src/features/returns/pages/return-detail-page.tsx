@@ -15,7 +15,7 @@ import {
 } from '@/generated/api/returns/returns';
 import type { ReturnDetailDto } from '@/generated/api/returns/returns.schemas';
 import { formatDateTime } from '@/shared/format/date-time';
-import { vndMoney } from '@/shared/format/money';
+import { formatVnd } from '@/shared/format/money';
 import {
   RETURN_ESTIMATE_NOTE,
   RETURN_FIELD_LABELS,
@@ -28,7 +28,7 @@ import {
 import { canCustomerCancel, toReturnProgress } from '../model/return.mapper';
 import { returnErrorMessage } from '../model/return-error';
 
-const money = (value: string | number) => vndMoney.format(Number(value));
+const money = (value: string | number) => formatVnd(Number(value));
 
 export function ReturnDetailPage({ returnNo }: { returnNo: string }) {
   const queryClient = useQueryClient();

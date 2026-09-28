@@ -1,6 +1,7 @@
 'use client';
 
-import { MessageCircle, Star } from 'lucide-react';
+import { MessageCircle } from 'lucide-react';
+import { RatingStars } from '@/foundation/components/indicators';
 import { useProductReviews } from '../hooks/use-product-reviews';
 
 /**
@@ -28,14 +29,11 @@ export function ProductReviews({ productSlug }: { productSlug: string }) {
           {averageRating.toFixed(1)}
           <span className="text-xl font-bold text-slate-400">/5</span>
         </p>
-        <div className="mt-2.5 flex gap-1 text-amber-400">
-          {Array.from({ length: 5 }, (_, index) => (
-            <Star
-              key={index}
-              className={`size-4 ${index < Math.round(averageRating) ? 'fill-current' : 'text-slate-700'}`}
-            />
-          ))}
-        </div>
+        <RatingStars
+          value={Math.round(averageRating)}
+          inactiveClassName="text-slate-700"
+          wrapperClassName="mt-2.5 flex gap-1 text-amber-400"
+        />
         <p className="mt-2 text-xs font-semibold text-slate-400">
           {total} đánh giá đã được duyệt
         </p>

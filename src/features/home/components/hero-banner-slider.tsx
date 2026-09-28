@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight, ShieldCheck, Zap, ArrowRight, Flame } from 'lucide-react';
+import { CarouselDots } from '@/foundation/components/indicators';
 import { useFlashSale } from '@/features/promotions';
 import type { ContentPostView } from '@/features/content';
 import { STORE_CONFIG } from '@/shared/constants';
@@ -219,21 +220,17 @@ export function HeroBannerSlider({ posts = [] }: { posts?: ContentPostView[] }) 
                 </button>
 
                 {/* Slide Indicators Dots */}
-                <div className="absolute bottom-4 left-6 z-20 flex items-center gap-2 sm:left-10">
-                  {slides.map((slide, i) => (
-                    <button
-                      key={slide.id}
-                      type="button"
-                      onClick={() => setCurrentSlide(i)}
-                      className={`h-2 rounded-full transition-all duration-300 ${
-                        i === activeIndex
-                          ? 'w-7 bg-emerald-400'
-                          : 'w-2 bg-white/40 hover:bg-white/70'
-                      }`}
-                      aria-label={`Chuyển tới slide ${i + 1}`}
-                    />
-                  ))}
-                </div>
+                <CarouselDots
+                  count={slides.length}
+                  activeIndex={activeIndex}
+                  onSelect={setCurrentSlide}
+                  wrapperClassName="absolute bottom-4 left-6 z-20 flex items-center gap-2 sm:left-10"
+                  baseClassName="h-2 rounded-full transition-all duration-300"
+                  activeClassName="w-7 bg-emerald-400"
+                  inactiveClassName="w-2 bg-white/40 hover:bg-white/70"
+                  keyFor={(index) => slides[index].id}
+                  ariaLabelFor={(index) => `Chuyển tới slide ${index + 1}`}
+                />
               </>
             )}
           </div>

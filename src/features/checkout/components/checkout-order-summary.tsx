@@ -4,7 +4,7 @@ import { CheckCircle2, ShieldCheck } from 'lucide-react';
 import { Spinner } from '@/foundation/components/feedback';
 import type { CartItem } from '@/features/cart';
 import type { CheckoutQuoteView } from '../model/checkout.mapper';
-import { vndMoney } from '@/shared/format/money';
+import { formatVnd } from '@/shared/format/money';
 import { PRODUCT_PLACEHOLDER_IMAGE } from '@/shared/constants';
 
 interface CheckoutOrderSummaryProps {
@@ -58,12 +58,12 @@ export function CheckoutOrderSummary({
                 <p className="truncate text-xs font-bold text-slate-900">{item.name}</p>
                 <p className="text-xs text-slate-500">{item.sku} · ×{item.quantity}</p>
               </div>
-              <strong className="text-xs">{vndMoney.format(item.price * item.quantity)}</strong>
+              <strong className="text-xs">{formatVnd(item.price * item.quantity)}</strong>
             </div>
           ))}
         </div>
         <div className="mt-5 space-y-2 border-t pt-4 text-sm">
-          <div className="flex justify-between"><span>Tạm tính tham khảo</span><span>{vndMoney.format(localSubtotal)}</span></div>
+          <div className="flex justify-between"><span>Tạm tính tham khảo</span><span>{formatVnd(localSubtotal)}</span></div>
           {shippingPending ? (
             <>
               <div className="flex justify-between">
@@ -72,7 +72,7 @@ export function CheckoutOrderSummary({
               </div>
               <div className="flex justify-between border-t pt-3 text-base font-black">
                 <span>Tiền hàng</span>
-                <span className="text-emerald-700">{vndMoney.format(localSubtotal)}</span>
+                <span className="text-emerald-700">{formatVnd(localSubtotal)}</span>
               </div>
               <p className="rounded-xl bg-amber-50 p-3 text-xs leading-5 text-amber-900">
                 {consultationPending

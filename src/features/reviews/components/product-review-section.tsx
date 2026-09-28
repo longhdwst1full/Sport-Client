@@ -2,8 +2,9 @@
 
 import Image from 'next/image';
 import { useMemo, useState } from 'react';
-import { MessageCircle, ShieldCheck, Star } from 'lucide-react';
+import { MessageCircle, ShieldCheck } from 'lucide-react';
 import { Skeleton, SkeletonText } from '@/foundation/components/feedback';
+import { RatingStars } from '@/foundation/components/indicators';
 import { useProductReviews } from '../hooks/use-product-reviews';
 import type { ReviewView } from '../model/review.mapper';
 
@@ -13,14 +14,13 @@ type ReviewFilter = 'all' | '5' | '4' | 'verified';
 
 function StarRow({ rating, className = 'size-4' }: { rating: number; className?: string }) {
   return (
-    <div className="flex gap-0.5 text-amber-400" aria-label={`${rating} trên 5 sao`}>
-      {Array.from({ length: 5 }, (_, index) => (
-        <Star
-          key={index}
-          className={`${className} ${index < rating ? 'fill-current' : 'text-slate-300'}`}
-        />
-      ))}
-    </div>
+    <RatingStars
+      value={rating}
+      size={className}
+      inactiveClassName="text-slate-300"
+      wrapperClassName="flex gap-0.5 text-amber-400"
+      ariaLabel={`${rating} trên 5 sao`}
+    />
   );
 }
 

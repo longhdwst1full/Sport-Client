@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { useCustomerAuth } from '@/features/auth';
 import { useListAccountOrders } from '@/generated/api/orders/orders';
 import { apiErrorMessage } from '@/lib/api/error-message';
-import { vndMoney } from '@/shared/format/money';
+import { formatVnd } from '@/shared/format/money';
 import { orderStatusLabels, paymentStatusLabels } from '../model/order.constants';
 
 function errorMessage(error: unknown): string {
@@ -66,7 +66,7 @@ export function AccountOrdersPage() {
               <div className="mt-5 grid gap-3 border-t border-slate-100 pt-4 text-sm sm:grid-cols-3">
                 <div><span className="block text-xs text-slate-500">Người nhận</span><strong>{order.recipient.name}</strong></div>
                 <div><span className="block text-xs text-slate-500">Thanh toán</span><strong>{paymentStatusLabels[order.paymentStatus] ?? order.paymentStatus}</strong></div>
-                <div className="sm:text-right"><span className="block text-xs text-slate-500">Tổng tiền</span><strong className="text-emerald-700">{vndMoney.format(Number(order.grandTotal))}</strong></div>
+                <div className="sm:text-right"><span className="block text-xs text-slate-500">Tổng tiền</span><strong className="text-emerald-700">{formatVnd(Number(order.grandTotal))}</strong></div>
               </div>
             </Link>
           ))}

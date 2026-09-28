@@ -10,12 +10,11 @@ import {
   Truck,
   RotateCcw,
   CheckCircle2,
-  Minus,
-  Plus,
   CreditCard,
   Check,
   Phone,
 } from 'lucide-react';
+import { QuantityStepper } from '@/foundation/components/indicators';
 import { useCartActions } from '@/features/cart';
 import type { ProductPurchaseView } from '../model/product.mapper';
 import { STORE_CONTACT, STORE_POLICY_PAGES } from '@/shared/constants';
@@ -220,27 +219,17 @@ export function ProductPurchasePanel({ product }: { product: ProductPurchaseView
       {/* Quantity Selector */}
       <div className="flex items-center justify-between">
         <span className="text-sm font-bold text-ink">Số lượng:</span>
-        <div className="flex items-center rounded-full border border-stone-200 bg-stone-50 p-1">
-          <button
-            type="button"
-            aria-label="Giảm số lượng"
-            onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-            className={`grid size-8 place-items-center rounded-full bg-white text-ink shadow-sm transition hover:bg-stone-200 ${
-              quantity <= 1 ? 'opacity-40 cursor-not-allowed' : ''
-            }`}
-          >
-            <Minus className="size-3.5" />
-          </button>
-          <span className="w-12 text-center text-sm font-extrabold text-ink">{quantity}</span>
-          <button
-            type="button"
-            aria-label="Tăng số lượng"
-            onClick={() => setQuantity((q) => q + 1)}
-            className="grid size-8 place-items-center rounded-full bg-white text-ink shadow-sm transition hover:bg-stone-200"
-          >
-            <Plus className="size-3.5" />
-          </button>
-        </div>
+        <QuantityStepper
+          value={quantity}
+          onDecrement={() => setQuantity((q) => Math.max(1, q - 1))}
+          onIncrement={() => setQuantity((q) => q + 1)}
+          wrapperClassName="flex items-center rounded-full border border-stone-200 bg-stone-50 p-1"
+          decrementClassName={`grid size-8 place-items-center rounded-full bg-white text-ink shadow-sm transition hover:bg-stone-200 ${
+            quantity <= 1 ? 'opacity-40 cursor-not-allowed' : ''
+          }`}
+          incrementClassName="grid size-8 place-items-center rounded-full bg-white text-ink shadow-sm transition hover:bg-stone-200"
+          valueClassName="w-12 text-center text-sm font-extrabold text-ink"
+        />
       </div>
 
       {/* Không hiển thị quà tặng hay "trả góp từ ~x đ/tháng": contract chưa có khuyến mãi quà tặng

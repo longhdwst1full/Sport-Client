@@ -3,7 +3,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { ShoppingBag } from 'lucide-react';
-import { vndMoney } from '@/shared/format/money';
+import { formatVnd } from '@/shared/format/money';
+import { PriceText } from '@/shared/components/price-text';
 import type { FlashSaleDealView } from '../model/flash-sale.mapper';
 
 export function FlashSaleDealCard({
@@ -49,14 +50,12 @@ export function FlashSaleDealCard({
         </h3>
 
         <div className="mt-4 flex items-baseline gap-2">
-          <strong className="text-lg font-black text-rose-400 sm:text-xl">
-            {vndMoney.format(deal.price)}
-          </strong>
-          {deal.originalPrice !== null ? (
-            <span className="text-xs text-slate-500 line-through">
-              {vndMoney.format(deal.originalPrice)}
-            </span>
-          ) : null}
+          <PriceText
+            label={formatVnd(deal.price)}
+            className="text-lg font-black text-rose-400 sm:text-xl"
+            strikeLabel={deal.originalPrice !== null ? formatVnd(deal.originalPrice) : null}
+            strikeClassName="text-xs text-slate-500 line-through"
+          />
         </div>
 
         <div className="mt-4">
