@@ -3,7 +3,7 @@
 import { useMemo, useState, useEffect } from 'react';
 import { useListCatalogCategories } from '@/generated/api/catalog/catalog';
 import type { CatalogCategoryDto } from '@/generated/api/catalog/catalog.schemas';
-import { CACHE_POLICY } from '@/app/config/query-cache-policy';
+import { CACHE_POLICY } from '@/lib/query/query-cache-policy';
 
 export interface MegaMenuEntry {
   slug: string;

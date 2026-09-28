@@ -1,5 +1,5 @@
 import { CategoryListPage } from '@/features/catalog';
-import { buildPageMetadata } from '@/shared/seo/page-metadata';
+import { buildPageMetadata } from '@/lib/seo/page-metadata';
 
 // Danh mục thay đổi chậm nhưng vẫn phải tự làm mới: ISR 5 phút thay vì
 // đóng băng kết quả tại thời điểm build (`01-next-rendering.md`, `02-api-contract.md`).

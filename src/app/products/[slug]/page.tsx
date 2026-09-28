@@ -20,7 +20,7 @@ import { ProductReviewSection } from '@/features/reviews';
 import { getCatalogProduct, listCatalogCategories } from '@/generated/api/catalog/catalog';
 import { ApiError } from '@/lib/api/fetcher';
 import { Breadcrumb } from '@/foundation/components/navigation';
-import { buildPageMetadata } from '@/shared/seo/page-metadata';
+import { buildPageMetadata } from '@/lib/seo/page-metadata';
 
 // ISR 2 phút: trang public đọc nhiều, giá ở đây chỉ để tham khảo vì bước báo giá checkout
 // luôn tính lại. `revalidate = 0` trước đây bắt mọi lượt xem gọi API tới hai lần.

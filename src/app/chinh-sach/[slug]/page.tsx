@@ -9,7 +9,7 @@ import {
 } from '@/features/content/model/policy.mapper';
 import { getPublishedPost, listPublishedPosts } from '@/generated/api/content/content';
 import { ApiError } from '@/lib/api/fetcher';
-import { buildPageMetadata } from '@/shared/seo/page-metadata';
+import { buildPageMetadata } from '@/lib/seo/page-metadata';
 
 // ISR 5 phút; chính sách vừa sửa hiện ngay khi API gọi `POST /api/revalidate`.
 export const revalidate = 300;

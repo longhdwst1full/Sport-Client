@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useListCatalogCategories } from '@/generated/api/catalog/catalog';
-import { CACHE_POLICY } from '@/app/config/query-cache-policy';
+import { CACHE_POLICY } from '@/lib/query/query-cache-policy';
 
 export interface CategoryTabView {
   /** Slug thật của danh mục, dùng để lọc ở Backend. `null` nghĩa là "Tất cả". */

@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next';
 import { listCatalogCategories, listCatalogProducts } from '@/generated/api/catalog/catalog';
 import { listPublishedPosts } from '@/generated/api/content/content';
 import { POLICY_POST_TYPE } from '@/features/content/model/content-post.mapper';
-import { SITE_URL } from '@/shared/seo/page-metadata';
+import { SITE_URL } from '@/lib/seo/page-metadata';
 
 /**
  * Sitemap dựng từ dữ liệu thật của API, làm mới mỗi giờ (và ngay khi `/api/revalidate` được gọi).

@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react';
 import { useListProductReviews } from '@/generated/api/reviews/reviews';
-import { CACHE_POLICY } from '@/app/config/query-cache-policy';
+import { CACHE_POLICY } from '@/lib/query/query-cache-policy';
 import {
   toRatingBreakdown,
   toReviewView,

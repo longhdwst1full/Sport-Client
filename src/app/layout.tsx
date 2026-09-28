@@ -6,7 +6,7 @@ import '@fontsource/noto-sans/vietnamese-600.css';
 import '@fontsource/noto-sans/vietnamese-700.css';
 import '@fontsource/noto-sans/vietnamese-800.css';
 import '@fontsource/noto-sans/vietnamese-900.css';
-import { SITE_NAME, SITE_URL } from '@/shared/seo/page-metadata';
+import { SITE_NAME, SITE_URL } from '@/lib/seo/page-metadata';
 import { Providers } from './providers';
 import './globals.css';
 

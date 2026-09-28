@@ -1,10 +1,7 @@
 import type { Metadata } from 'next';
+import { SITE_URL } from '@/shared/constants/site';
 
-/**
- * Origin công khai dùng cho canonical, OpenGraph, sitemap, robots. Build-time env
- * (`NEXT_PUBLIC_SITE_URL`, đã khai ở `.env.production`); thiếu thì về domain production.
- */
-export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://baoansport.vn').replace(/\/+$/, '');
+export { SITE_URL };
 export const SITE_NAME = 'Bảo An Sport';
 
 /** Trang cá nhân/giao dịch/tiện ích: không index nhưng vẫn cho bot đi theo link. */

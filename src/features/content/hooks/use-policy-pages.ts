@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useListPublishedPosts } from '@/generated/api/content/content';
 import { toContentPostView, type ContentPostView } from '../model/content-post.mapper';
-import { CACHE_POLICY } from '@/app/config/query-cache-policy';
+import { CACHE_POLICY } from '@/lib/query/query-cache-policy';
 
 /** Trang chính sách (bảo hành, đổi trả, vận chuyển…) lấy riêng bằng bộ lọc của API. */
 export function usePolicyPages(): {

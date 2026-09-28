@@ -6,7 +6,7 @@ import {
   readCustomerAuthTokens,
   saveCustomerAuthTokens,
   usesCustomerAuthCookieTransport,
-} from '../../features/auth/model/auth-token.store';
+} from '@/core/auth/customer-auth-token.store';
 import {
   AUTH_REFRESH_CONFLICT_RETRY_DELAY_MS,
   AUTH_REFRESH_LOCK_NAME,

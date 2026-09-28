@@ -1,5 +1,5 @@
 import { ProfilePage } from '@/features/profile';
-import { NOINDEX_ROBOTS } from '@/shared/seo/page-metadata';
+import { NOINDEX_ROBOTS } from '@/lib/seo/page-metadata';
 
 export const metadata = {
   title: 'Tài khoản thành viên',

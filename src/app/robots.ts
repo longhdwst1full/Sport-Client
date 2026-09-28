@@ -1,5 +1,5 @@
 import type { MetadataRoute } from 'next';
-import { SITE_URL } from '@/shared/seo/page-metadata';
+import { SITE_URL } from '@/lib/seo/page-metadata';
 
 /**
  * Chặn crawl vùng cá nhân/giao dịch/tiện ích. Các trang này cũng tự khai `noindex`

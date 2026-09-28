@@ -1,5 +1,5 @@
 import { OrderDetailPage } from '@/features/orders';
-import { NOINDEX_ROBOTS } from '@/shared/seo/page-metadata';
+import { NOINDEX_ROBOTS } from '@/lib/seo/page-metadata';
 
 export const dynamic = 'force-dynamic';
 

@@ -1,14 +1,14 @@
 'use client';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { cachePolicyForQueryKey, DEFAULT_STALE_TIME } from '@/app/config/query-cache-policy';
+import { cachePolicyForQueryKey, DEFAULT_STALE_TIME } from '@/lib/query/query-cache-policy';
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 import { hydrateCart, resetCartForSignOut } from '@/app/store/cart.slice';
 import { readPersistedCart } from '@/app/store/root.saga';
 import { storefrontStore } from '@/app/store/store';
 import { readCustomerAuthTokens } from '@/features/auth';
-import { isCustomerAuthenticated } from '@/features/auth/model/auth-token.store';
+import { isCustomerAuthenticated } from '@/core/auth/customer-auth-token.store';
 import { pullAccountCart } from '@/features/cart/api/cart-sync';
 import { PwaRegistration } from '@/pwa/pwa-registration';
 import { clearSessionPwaCaches } from '@/pwa/session-caches';

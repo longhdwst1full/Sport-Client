@@ -7,7 +7,7 @@ import {
   isCustomerAuthenticated,
   readCustomerAuthTokens,
   clearCustomerAuthTokens,
-} from '../model/auth-token.store';
+} from '@/core/auth/customer-auth-token.store';
 import { ApiError } from '@/lib/api/fetcher';
 
 export function useCustomerAuth() {

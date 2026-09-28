@@ -1,5 +1,5 @@
 import { useListPublicSystemParameters } from '@/generated/api/system/system';
-import { CACHE_POLICY } from '@/app/config/query-cache-policy';
+import { CACHE_POLICY } from '@/lib/query/query-cache-policy';
 
 /**
  * Đọc một tham số công khai (Admin đổi được trong "Tham số hệ thống") và trả `fallback`

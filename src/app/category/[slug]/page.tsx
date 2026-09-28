@@ -6,7 +6,7 @@ import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { ProductShowcase } from '@/features/catalog';
 import { listCatalogCategories } from '@/generated/api/catalog/catalog';
 import type { CatalogCategoryDto } from '@/generated/api/catalog/catalog.schemas';
-import { buildPageMetadata } from '@/shared/seo/page-metadata';
+import { buildPageMetadata } from '@/lib/seo/page-metadata';
 
 // ISR 2 phút: cây danh mục và số sản phẩm đổi trong ngày, không cần gọi API mỗi lượt xem.
 export const revalidate = 120;

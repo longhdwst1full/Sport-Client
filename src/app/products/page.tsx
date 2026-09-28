@@ -1,5 +1,5 @@
 import { ProductsPage } from '@/features/catalog';
-import { buildPageMetadata } from '@/shared/seo/page-metadata';
+import { buildPageMetadata } from '@/lib/seo/page-metadata';
 
 // `/catalog` re-export metadata này nên canonical của nó cũng trỏ về `/products`.
 export const metadata = buildPageMetadata({

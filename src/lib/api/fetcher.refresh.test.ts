@@ -33,7 +33,7 @@ async function setup(refreshReplies: RefreshReply[]) {
   vi.resetModules();
   process.env.NEXT_PUBLIC_AUTH_TOKEN_TRANSPORT = 'BODY';
   const fetcher = await import('./fetcher');
-  const store = await import('@/features/auth/model/auth-token.store');
+  const store = await import('@/core/auth/customer-auth-token.store');
 
   const refreshCalls: InternalAxiosRequestConfig[] = [];
   const resourceCalls: InternalAxiosRequestConfig[] = [];

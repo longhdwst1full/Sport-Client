@@ -1,5 +1,5 @@
 import { NewsListPage } from '@/features/content';
-import { buildPageMetadata } from '@/shared/seo/page-metadata';
+import { buildPageMetadata } from '@/lib/seo/page-metadata';
 
 export const metadata = buildPageMetadata({
   title: 'Tin tức & Kiến thức thể thao',

@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react';
 import { useListCatalogProducts } from '@/generated/api/catalog/catalog';
-import { CACHE_POLICY } from '@/app/config/query-cache-policy';
+import { CACHE_POLICY } from '@/lib/query/query-cache-policy';
 import { toProductSuggestionView, type ProductSuggestionView } from '../model/product.mapper';
 
 /** Gợi ý đủ để chọn nhanh mà không che hết trang; gõ tiếp sẽ thu hẹp thêm. */

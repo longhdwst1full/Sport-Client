@@ -1,5 +1,5 @@
 import { FlashSalePage } from '@/features/promotions';
-import { buildPageMetadata } from '@/shared/seo/page-metadata';
+import { buildPageMetadata } from '@/lib/seo/page-metadata';
 
 export const metadata = buildPageMetadata({
   title: 'Flash Sale',

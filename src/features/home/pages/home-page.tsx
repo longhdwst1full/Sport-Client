@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { ArrowRight, MoveUpRight, Sparkles } from 'lucide-react';
 import { BenefitsStrip } from '@/widgets/benefits-strip/benefits-strip';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
-import { SectionHeading } from '@/foundation/components/section-heading';
+import { SectionHeading } from '@/foundation/components/structure/section-heading';
 import { ProductShowcase, toCategoryCardView, toCategoryRailView } from '@/features/catalog';
 import { CATALOG_PAGE_SIZE } from '@/features/catalog/model/product.mapper';
 import { listCatalogCategories, listCatalogProducts } from '@/generated/api/catalog/catalog';

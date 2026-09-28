@@ -26,7 +26,7 @@ import { useRegisterCustomer } from '@/generated/api/auth/auth';
 import type { RegisterCustomerDto } from '@/generated/api/auth/auth.schemas';
 import { useToast } from '@/shared/components/global-toast';
 import { getCustomerAuthError } from '../model/auth-error';
-import { saveCustomerAuthTokens } from '../model/auth-token.store';
+import { saveCustomerAuthTokens } from '@/core/auth/customer-auth-token.store';
 import { syncCartAfterAuth } from '@/features/cart';
 import { hydrateCart } from '@/app/store/cart.slice';
 import { storefrontStore } from '@/app/store/store';

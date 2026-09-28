@@ -30,7 +30,7 @@ import { syncCartAfterAuth } from '@/features/cart';
 import { hydrateCart } from '@/app/store/cart.slice';
 import { storefrontStore } from '@/app/store/store';
 import { getCustomerAuthError } from '../model/auth-error';
-import { saveCustomerAuthTokens } from '../model/auth-token.store';
+import { saveCustomerAuthTokens } from '@/core/auth/customer-auth-token.store';
 
 const schema: yup.ObjectSchema<LoginDto> = yup.object({
   identifier: yup.string().trim().required('Vui lòng nhập email hoặc số điện thoại').max(255),

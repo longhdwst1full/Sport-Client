@@ -19,7 +19,7 @@ const TOKENS: TokenPairDto = {
 async function loadStore(transport: 'COOKIE' | 'BODY') {
   vi.resetModules();
   process.env.NEXT_PUBLIC_AUTH_TOKEN_TRANSPORT = transport;
-  return import('./auth-token.store');
+  return import('./customer-auth-token.store');
 }
 
 const originalTransport = process.env.NEXT_PUBLIC_AUTH_TOKEN_TRANSPORT;

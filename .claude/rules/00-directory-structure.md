@@ -9,7 +9,7 @@
 - `src/pwa`: client-side PWA utilities; the service worker entry remains in `public/sw.js`.
 - `src/generated/api`: disposable Orval output; never hand edit.
 
-Dependencies flow: `app -> layouts -> widgets -> features -> foundation/shared -> core/lib -> generated (types only for lib)`. `foundation` never imports `features`/`widgets`/`layouts`/`@/generated`. `shared` never imports `features`/`widgets`/`layouts`/`app`/`@/generated`. `core`/`lib` never import `features`/`widgets`/`layouts`/`app`/`foundation`/`shared` (type-only imports from `@/generated/api/*/*.schemas` are the sole exception, for the fetcher). Do not create a generic shared layer that mixes cart, customer, catalog and checkout policy.
+Dependencies flow: `app -> layouts -> widgets -> features -> foundation/shared -> core/lib -> generated (types only for lib)`. `foundation` never imports `features`/`widgets`/`layouts`/`@/generated`. `shared` never imports `features`/`widgets`/`layouts`/`app`/`@/generated`. `core`/`lib` never import `features`/`widgets`/`layouts`/`app`/`foundation`/`shared`, except: type-only imports from `@/generated/api/*/*.schemas` for the fetcher, and `lib/seo/page-metadata.ts` importing `SITE_URL` from `shared/constants/site.ts` (single source of truth for the public origin, deliberately narrow). Do not create a generic shared layer that mixes cart, customer, catalog and checkout policy.
 
 ## Feature → feature edges
 

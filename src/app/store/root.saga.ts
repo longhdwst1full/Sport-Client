@@ -1,5 +1,5 @@
 import { call, debounce, select, takeEvery } from 'redux-saga/effects';
-import { isCustomerAuthenticated } from '@/features/auth/model/auth-token.store';
+import { isCustomerAuthenticated } from '@/core/auth/customer-auth-token.store';
 import { syncAccountCart, toCartLines } from '@/features/cart/api/cart-sync';
 import {
   addCartItem,

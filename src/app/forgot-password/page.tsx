@@ -1,5 +1,5 @@
 import { ForgotPasswordPage } from '@/features/auth';
-import { NOINDEX_ROBOTS } from '@/shared/seo/page-metadata';
+import { NOINDEX_ROBOTS } from '@/lib/seo/page-metadata';
 
 export const metadata = { title: 'Quên mật khẩu', robots: NOINDEX_ROBOTS };
 

@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { AuthService } from '@/core/storage';
 import { CookieKey } from '@/core/storage/constants';
 import { CookieManager } from '@/core/storage/manager/cookie.manager';
-import { isCustomerAuthenticated, readCustomerAuthTokens } from './auth-token.store';
+import { isCustomerAuthenticated, readCustomerAuthTokens } from './customer-auth-token.store';
 
 describe('isCustomerAuthenticated', () => {
   beforeEach(() => {

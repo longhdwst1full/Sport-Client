@@ -1,5 +1,5 @@
 import { ContactPage } from '@/features/support';
-import { buildPageMetadata } from '@/shared/seo/page-metadata';
+import { buildPageMetadata } from '@/lib/seo/page-metadata';
 
 export const metadata = buildPageMetadata({
   title: 'Liên hệ',

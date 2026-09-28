@@ -9,7 +9,7 @@ import {
 } from '@/features/content/model/content-post.mapper';
 import { getPublishedPost, listPublishedPosts } from '@/generated/api/content/content';
 import { ApiError } from '@/lib/api/fetcher';
-import { buildPageMetadata } from '@/shared/seo/page-metadata';
+import { buildPageMetadata } from '@/lib/seo/page-metadata';
 
 // ISR 5 phút thay cho render mỗi request: bài viết đổi trong ngày là cùng. Bài mới/sửa hiện ngay
 // khi API gọi `POST /api/revalidate` (xem `src/app/api/revalidate/route.ts`).

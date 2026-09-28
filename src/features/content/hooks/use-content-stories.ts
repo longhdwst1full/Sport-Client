@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useListPublishedPosts } from '@/generated/api/content/content';
-import { CACHE_POLICY } from '@/app/config/query-cache-policy';
+import { CACHE_POLICY } from '@/lib/query/query-cache-policy';
 import {
   POLICY_POST_TYPE,
   toContentPostView,

@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { PolicyListPage } from '@/features/content';
 import { toPolicySummaryView } from '@/features/content/model/policy.mapper';
 import { listPublishedPosts } from '@/generated/api/content/content';
-import { buildPageMetadata } from '@/shared/seo/page-metadata';
+import { buildPageMetadata } from '@/lib/seo/page-metadata';
 
 // ISR 5 phút (cùng mức LOOKUP của client): trang chính sách gần như không đổi. Bài vừa đăng/sửa
 // hiện ngay khi API gọi `POST /api/revalidate` (xem `src/app/api/revalidate/route.ts`).
