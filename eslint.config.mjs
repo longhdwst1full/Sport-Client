@@ -107,10 +107,9 @@ const restrictedPaths = (allow) => ['error', { zones: zones(allow) }];
  */
 const EXCEPTIONS = [
   {
-    // Product detail wraps itself in StorefrontLayout although its route is already inside the (storefront)
-    // group (the shell renders twice) and composes the reviews section directly. Both need a UI/route change.
+    // Product detail composes the reviews section directly; moving it to the route changes page composition.
     files: ['src/features/catalog/pages/product-detail-page.tsx'],
-    allow: { featureToLayouts: true, featureEdges: { catalog: ['reviews'] } },
+    allow: { featureEdges: { catalog: ['reviews'] } },
   },
   {
     // The catalog listing embeds the flash-sale strip; moving it to the route changes the page composition.

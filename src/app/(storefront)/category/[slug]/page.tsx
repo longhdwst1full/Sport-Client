@@ -2,7 +2,6 @@ import { cache } from 'react';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Breadcrumb } from '@/foundation/components/navigation';
-import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { ProductShowcase } from '@/features/catalog';
 import { listCatalogCategories } from '@/generated/api/catalog/catalog';
 import type { CatalogCategoryDto } from '@/generated/api/catalog/catalog.schemas';
@@ -62,7 +61,7 @@ export default async function CategoryDetailPage({
     : undefined;
 
   return (
-    <StorefrontLayout>
+    <>
       <div className="bg-stone-50/60 pb-20 pt-8">
         <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Breadcrumb
@@ -101,6 +100,6 @@ export default async function CategoryDetailPage({
           </div>
         </main>
       </div>
-    </StorefrontLayout>
+    </>
   );
 }

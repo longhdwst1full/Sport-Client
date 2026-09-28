@@ -1,5 +1,4 @@
 import { Images } from 'lucide-react';
-import { StorefrontLayout } from '@/layouts/storefront-layout';
 import {
   ProductImageGallery,
   ProductPurchasePanel,
@@ -57,7 +56,7 @@ export function ProductDetailPage({ product, slug, relatedCategorySlug }: Produc
   const breadcrumbJsonLd = buildBreadcrumbJsonLd(product);
 
   return (
-    <StorefrontLayout>
+    <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
@@ -150,6 +149,6 @@ export function ProductDetailPage({ product, slug, relatedCategorySlug }: Produc
         {/* Related Products ("Cùng loại"), Flash Sale & Category List */}
         <ProductRelatedSection currentSlug={product.slug} categorySlug={relatedCategorySlug} />
       </div>
-    </StorefrontLayout>
+    </>
   );
 }
