@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { ArrowLeft, Loader2, MailCheck, Send } from 'lucide-react';
 import { useRequestCustomerPasswordReset } from '@/generated/api/auth/auth';
+import { Field, TextInput } from '@/foundation/components/field-system';
 import { STORE_CONFIG } from '@/shared/constants';
 
 /**
@@ -66,18 +67,17 @@ export function ForgotPasswordPage() {
             Nhập email đăng nhập của bạn. Chúng tôi sẽ gửi đường dẫn để đặt lại mật khẩu.
           </p>
 
-          <label className="mt-5 block text-xs font-bold uppercase tracking-wider text-stone-600">
-            Email đăng nhập
-          </label>
-          <input
-            required
-            type="email"
-            autoComplete="email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            placeholder="ban@example.com"
-            className="mt-1.5 w-full rounded-xl border border-stone-200 px-4 py-2.5 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
-          />
+          <Field label="Email đăng nhập" labelClassName="mt-5 block text-xs font-bold uppercase tracking-wider text-stone-600">
+            <TextInput
+              required
+              type="email"
+              autoComplete="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              placeholder="ban@example.com"
+              className="mt-1.5 w-full rounded-xl border border-stone-200 px-4 py-2.5 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
+            />
+          </Field>
 
           <button
             type="submit"

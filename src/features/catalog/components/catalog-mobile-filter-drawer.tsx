@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { X, SlidersHorizontal, RotateCcw } from 'lucide-react';
+import { Drawer } from '@/foundation/components/overlay';
 import type { CategoryTabView } from '../hooks/use-category-tabs';
 import type { PriceRangeOption } from './catalog-sidebar-filters';
 
@@ -35,8 +36,10 @@ export function CatalogMobileFilterDrawer({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end bg-slate-950/60 backdrop-blur-xs lg:hidden animate-in fade-in duration-200">
-      <div className="flex max-h-[85vh] w-full flex-col rounded-t-[32px] bg-white p-6 shadow-2xl animate-in slide-in-from-bottom duration-200">
+    <Drawer
+      backdropClassName="fixed inset-0 z-50 flex items-end bg-slate-950/60 backdrop-blur-xs lg:hidden animate-in fade-in duration-200"
+      className="flex max-h-[85vh] w-full flex-col rounded-t-[32px] bg-white p-6 shadow-2xl animate-in slide-in-from-bottom duration-200"
+    >
         {/* Header */}
         <div className="flex items-center justify-between border-b border-slate-100 pb-4">
           <span className="flex items-center gap-2 text-sm font-black uppercase text-slate-900">
@@ -136,7 +139,6 @@ export function CatalogMobileFilterDrawer({
             Xem {totalProductsCount} sản phẩm
           </button>
         </div>
-      </div>
-    </div>
+    </Drawer>
   );
 }

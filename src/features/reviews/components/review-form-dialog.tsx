@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { FormEvent, useRef, useState } from 'react';
 import { ImagePlus, Star, X } from 'lucide-react';
 import { Spinner } from '@/foundation/components/feedback';
+import { Modal } from '@/foundation/components/overlay';
 import { createAccountProductReview } from '@/generated/api/reviews/reviews';
 import { apiErrorMessage } from '@/lib/api/error-message';
 import { uploadReviewMedia, type UploadedReviewMedia } from '../api/review-media-upload';
@@ -79,8 +80,13 @@ export function ReviewFormDialog({
   };
 
   return (
-    <div className="fixed inset-0 z-[80] grid place-items-center bg-slate-950/60 p-4" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && !submitting && onClose()}>
-      <section role="dialog" aria-modal="true" aria-labelledby="review-dialog-title" className="max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-3xl bg-white p-6 shadow-2xl sm:p-7">
+    <Modal
+      onClose={onClose}
+      disableClose={submitting}
+      labelledBy="review-dialog-title"
+      backdropClassName="fixed inset-0 z-[80] grid place-items-center bg-slate-950/60 p-4"
+      className="max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-3xl bg-white p-6 shadow-2xl sm:p-7"
+    >
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-700">Đánh giá đã mua hàng</p>
@@ -135,7 +141,6 @@ export function ReviewFormDialog({
             </button>
           </div>
         </form>
-      </section>
-    </div>
+    </Modal>
   );
 }

@@ -7,6 +7,7 @@ import { AlertTriangle, CheckCircle2, KeyRound, Loader2 } from 'lucide-react';
 import { useResetCustomerPassword } from '@/generated/api/auth/auth';
 import { apiErrorMessage } from '@/lib/api/error-message';
 import { InlineAlert } from '@/foundation/components/feedback';
+import { Field, TextInput } from '@/foundation/components/field-system';
 
 function messageOf(error: unknown): string {
   return apiErrorMessage(error, 'Không đặt lại được mật khẩu. Vui lòng thử lại.');
@@ -91,31 +92,29 @@ export function ResetPasswordPage() {
         <h1 className="text-lg font-black text-stone-900">Đặt mật khẩu mới</h1>
         <p className="mt-1 text-xs text-stone-500">Tối thiểu 8 ký tự.</p>
 
-        <label className="mt-5 block text-xs font-bold uppercase tracking-wider text-stone-600">
-          Mật khẩu mới
-        </label>
-        <input
-          required
-          type="password"
-          minLength={8}
-          autoComplete="new-password"
-          value={password.next}
-          onChange={(event) => setPassword((c) => ({ ...c, next: event.target.value }))}
-          className="mt-1.5 w-full rounded-xl border border-stone-200 px-4 py-2.5 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
-        />
+        <Field label="Mật khẩu mới" labelClassName="mt-5 block text-xs font-bold uppercase tracking-wider text-stone-600">
+          <TextInput
+            required
+            type="password"
+            minLength={8}
+            autoComplete="new-password"
+            value={password.next}
+            onChange={(event) => setPassword((c) => ({ ...c, next: event.target.value }))}
+            className="mt-1.5 w-full rounded-xl border border-stone-200 px-4 py-2.5 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
+          />
+        </Field>
 
-        <label className="mt-4 block text-xs font-bold uppercase tracking-wider text-stone-600">
-          Nhập lại mật khẩu mới
-        </label>
-        <input
-          required
-          type="password"
-          minLength={8}
-          autoComplete="new-password"
-          value={password.confirm}
-          onChange={(event) => setPassword((c) => ({ ...c, confirm: event.target.value }))}
-          className="mt-1.5 w-full rounded-xl border border-stone-200 px-4 py-2.5 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
-        />
+        <Field label="Nhập lại mật khẩu mới" labelClassName="mt-4 block text-xs font-bold uppercase tracking-wider text-stone-600">
+          <TextInput
+            required
+            type="password"
+            minLength={8}
+            autoComplete="new-password"
+            value={password.confirm}
+            onChange={(event) => setPassword((c) => ({ ...c, confirm: event.target.value }))}
+            className="mt-1.5 w-full rounded-xl border border-stone-200 px-4 py-2.5 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
+          />
+        </Field>
 
         {(localError || reset.isError) && (
           <InlineAlert as="p" className="mt-4 rounded-xl bg-rose-50 px-3 py-2 text-xs font-semibold text-rose-700">

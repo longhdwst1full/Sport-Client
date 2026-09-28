@@ -7,9 +7,8 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
+import { PasswordInput } from '@/foundation/components/field-system';
 import {
-  Eye,
-  EyeOff,
   ShieldCheck,
   CheckCircle2,
   ArrowRight,
@@ -42,7 +41,6 @@ export function CustomerLoginPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [submitError, setSubmitError] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm<LoginDto>({
     resolver: yupResolver(schema),
@@ -311,24 +309,15 @@ export function CustomerLoginPage() {
                       Quên mật khẩu?
                     </Link>
                   </div>
-                  <div className="relative mt-2">
-                    <input
-                      {...form.register('password')}
-                      type={showPassword ? 'text' : 'password'}
-                      autoComplete="current-password"
-                      className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-3.5 pl-11 pr-11 text-sm text-slate-900 placeholder-slate-400 outline-none transition focus:border-emerald-600 focus:bg-white focus:ring-4 focus:ring-emerald-500/15"
-                      placeholder="Nhập tối thiểu 8 ký tự"
-                    />
-                    <Lock className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3.5 top-1/2 -translate-y-1/2 rounded-lg p-1 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
-                      aria-label={showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
-                    >
-                      {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-                    </button>
-                  </div>
+                  <PasswordInput
+                    {...form.register('password')}
+                    autoComplete="current-password"
+                    wrapperClassName="relative mt-2"
+                    className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-3.5 pl-11 pr-11 text-sm text-slate-900 placeholder-slate-400 outline-none transition focus:border-emerald-600 focus:bg-white focus:ring-4 focus:ring-emerald-500/15"
+                    placeholder="Nhập tối thiểu 8 ký tự"
+                    leadingIcon={<Lock className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />}
+                    toggleClassName="absolute right-3.5 top-1/2 -translate-y-1/2 rounded-lg p-1 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+                  />
                   {form.formState.errors.password && (
                     <span className="mt-1.5 block text-xs font-medium text-rose-600">
                       {form.formState.errors.password.message}
