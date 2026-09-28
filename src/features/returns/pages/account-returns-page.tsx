@@ -1,29 +1,31 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
 import { ChevronLeft, ChevronRight, RotateCcw } from 'lucide-react';
 import { Spinner } from '@/foundation/components/feedback';
-import { useCustomerAuth } from '@/features/auth';
-import { useListAccountReturns } from '@/generated/api/returns/returns';
 import { formatDateTime } from '@/shared/format/date-time';
 import {
   RETURN_FIELD_LABELS,
-  RETURN_PAGE_SIZE,
   returnReasonLabels,
   returnStatusLabels,
   returnStatusTone,
 } from '../model/return.constants';
-import { returnErrorMessage } from '../model/return-error';
+import { useAccountReturns } from '../hooks/use-account-returns';
 
 export function AccountReturnsPage() {
-  const [page, setPage] = useState(1);
-  const { isAuthenticated, isLoaded } = useCustomerAuth();
-  const returns = useListAccountReturns(
-    { page, limit: RETURN_PAGE_SIZE },
-    { query: { enabled: isLoaded && isAuthenticated, retry: false } },
-  );
-  const totalPages = returns.data ? Math.ceil(returns.data.total / RETURN_PAGE_SIZE) : 1;
+  const {
+    page,
+    setPage,
+    isLoaded,
+    isAuthenticated,
+    isLoading,
+    isError,
+    errorMessage,
+    isFetching,
+    items,
+    hasData,
+    totalPages,
+  } = useAccountReturns();
 
   return (
       <main className="mx-auto min-h-[60vh] max-w-6xl px-4 py-10 sm:px-6">
@@ -33,7 +35,7 @@ export function AccountReturnsPage() {
           <p className="mt-2 text-sm text-slate-600">Tạo yêu cầu từ trang chi tiết của đơn đã giao; theo dõi tiến độ tại đây.</p>
         </div>
 
-        {(!isLoaded || (isAuthenticated && returns.isLoading)) && (
+        {(!isLoaded || (isAuthenticated && isLoading)) && (
           <div className="grid min-h-56 place-items-center"><Spinner className="size-8 animate-spin text-emerald-600" /></div>
         )}
         {isLoaded && !isAuthenticated && (
@@ -42,12 +44,12 @@ export function AccountReturnsPage() {
             <Link href="/login" className="mt-5 inline-flex rounded-xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white">Đăng nhập</Link>
           </section>
         )}
-        {isAuthenticated && returns.isError && (
+        {isAuthenticated && isError && (
           <div className="rounded-2xl border border-rose-200 bg-rose-50 p-5 text-sm text-rose-800">
-            {returnErrorMessage(returns.error, 'Không tải được danh sách yêu cầu đổi trả.')}
+            {errorMessage}
           </div>
         )}
-        {isAuthenticated && returns.data?.items.length === 0 && (
+        {isAuthenticated && hasData && items.length === 0 && (
           <section className="rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center">
             <RotateCcw className="mx-auto size-12 text-slate-400" />
             <h2 className="mt-4 text-lg font-black">Chưa có yêu cầu đổi trả</h2>
@@ -56,7 +58,7 @@ export function AccountReturnsPage() {
         )}
         {isAuthenticated && (
           <div className="grid gap-4">
-            {returns.data?.items.map((item) => (
+            {items.map((item) => (
               <Link
                 key={item.id}
                 href={`/returns/${encodeURIComponent(item.returnNo)}`}
@@ -77,11 +79,11 @@ export function AccountReturnsPage() {
             ))}
           </div>
         )}
-        {isAuthenticated && returns.data && totalPages > 1 && (
+        {isAuthenticated && hasData && totalPages > 1 && (
           <nav className="mt-7 flex items-center justify-center gap-3" aria-label="Phân trang yêu cầu đổi trả">
-            <button type="button" disabled={page === 1 || returns.isFetching} onClick={() => setPage((value) => Math.max(1, value - 1))} className="grid size-10 place-items-center rounded-xl border border-slate-200 bg-white disabled:opacity-40" aria-label="Trang trước"><ChevronLeft className="size-4" /></button>
+            <button type="button" disabled={page === 1 || isFetching} onClick={() => setPage((value) => Math.max(1, value - 1))} className="grid size-10 place-items-center rounded-xl border border-slate-200 bg-white disabled:opacity-40" aria-label="Trang trước"><ChevronLeft className="size-4" /></button>
             <span className="text-sm font-bold text-slate-700">Trang {page} / {totalPages}</span>
-            <button type="button" disabled={page >= totalPages || returns.isFetching} onClick={() => setPage((value) => value + 1)} className="grid size-10 place-items-center rounded-xl border border-slate-200 bg-white disabled:opacity-40" aria-label="Trang sau"><ChevronRight className="size-4" /></button>
+            <button type="button" disabled={page >= totalPages || isFetching} onClick={() => setPage((value) => value + 1)} className="grid size-10 place-items-center rounded-xl border border-slate-200 bg-white disabled:opacity-40" aria-label="Trang sau"><ChevronRight className="size-4" /></button>
           </nav>
         )}
       </main>

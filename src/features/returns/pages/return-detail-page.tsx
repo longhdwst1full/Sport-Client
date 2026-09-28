@@ -2,18 +2,8 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRef, useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { CheckCircle2, Circle, CircleDot } from 'lucide-react';
 import { Spinner } from '@/foundation/components/feedback';
-import { useCustomerAuth } from '@/features/auth';
-import {
-  cancelAccountReturn,
-  getGetAccountReturnQueryKey,
-  getListAccountReturnsQueryKey,
-  useGetAccountReturn,
-} from '@/generated/api/returns/returns';
-import type { ReturnDetailDto } from '@/generated/api/returns/returns.schemas';
 import { formatDateTime } from '@/shared/format/date-time';
 import { formatVnd } from '@/shared/format/money';
 import {
@@ -25,42 +15,25 @@ import {
   returnStatusLabels,
   returnStatusTone,
 } from '../model/return.constants';
-import { canCustomerCancel, toReturnProgress } from '../model/return.mapper';
 import { returnErrorMessage } from '../model/return-error';
+import { useReturnDetail } from '../hooks/use-return-detail';
 
 const money = (value: string | number) => formatVnd(Number(value));
 
 export function ReturnDetailPage({ returnNo }: { returnNo: string }) {
-  const queryClient = useQueryClient();
-  const { isAuthenticated, isLoaded } = useCustomerAuth();
-  const [showCancel, setShowCancel] = useState(false);
-  const [reason, setReason] = useState('');
-  const idempotencyRef = useRef<{ signature: string; key: string } | undefined>(undefined);
-  const query = useGetAccountReturn(returnNo, { query: { enabled: isLoaded && isAuthenticated, retry: false } });
-  const detail = query.data;
-
-  const cancel = useMutation<ReturnDetailDto>({
-    retry: false,
-    mutationFn: () => {
-      if (!detail) throw new Error('Chưa tải được yêu cầu');
-      const body = { expectedVersion: detail.version, reason: reason.trim() };
-      const signature = JSON.stringify({ returnNo, ...body });
-      if (idempotencyRef.current?.signature !== signature) {
-        idempotencyRef.current = { signature, key: crypto.randomUUID() };
-      }
-      return cancelAccountReturn(returnNo, body, { headers: { 'idempotency-key': idempotencyRef.current.key } });
-    },
-    onSuccess: async (updated) => {
-      idempotencyRef.current = undefined;
-      queryClient.setQueryData(getGetAccountReturnQueryKey(returnNo), updated);
-      // CACHE: trạng thái đổi làm đổi nhãn trên danh sách phiếu.
-      await queryClient.invalidateQueries({ queryKey: getListAccountReturnsQueryKey() });
-      setShowCancel(false);
-      setReason('');
-    },
-  });
-
-  const progress = detail ? toReturnProgress(detail) : [];
+  const {
+    isAuthenticated,
+    isLoaded,
+    query,
+    detail,
+    progress,
+    showCancel,
+    setShowCancel,
+    reason,
+    setReason,
+    cancel,
+    canCustomerCancel: canCancel,
+  } = useReturnDetail(returnNo);
 
   return (
       <main className="mx-auto min-h-[60vh] max-w-5xl px-4 py-10 sm:px-6">
@@ -194,7 +167,7 @@ export function ReturnDetailPage({ returnNo }: { returnNo: string }) {
 
             <div className="mt-6 flex flex-wrap justify-between gap-3">
               <Link href="/returns" className="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-bold">Danh sách yêu cầu</Link>
-              {canCustomerCancel(detail.status) && (
+              {canCancel(detail.status) && (
                 <button type="button" onClick={() => setShowCancel(true)} className="rounded-xl border border-rose-200 px-4 py-2.5 text-sm font-bold text-rose-700">Huỷ yêu cầu</button>
               )}
             </div>
