@@ -3,47 +3,13 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import {
-  User,
-  Package,
-  MapPin,
-  LogOut,
-  ChevronRight,
-  Clock,
-  Phone,
-  Mail,
-  Edit2,
-  Trash2,
-  Plus,
-  Truck,
-  Check,
-  Search,
-  Wrench,
-  AlertCircle,
-  X,
-  RotateCcw,
-} from 'lucide-react';
 import { useCustomerAuth } from '@/features/auth';
 import { useGetCustomerProfile } from '@/generated/api/customer/customer';
 import { AccountSettingsForm } from '../components/account-settings-form';
-import { STORE_CONTACT } from '@/shared/constants';
-import {
-  VietnamAddressSelector,
-  type SelectedAddressData,
-} from '@/features/address';
-import { useToast } from '@/shared/components/global-toast';
-
-// Tab tra cứu bảo hành đã gỡ cùng dữ liệu mẫu: chưa có API bảo hành để tra cứu thật.
-type ProfileTab = 'address' | 'settings';
-
-import { useCustomerAddresses } from '../api/use-customer-addresses';
-import {
-  EMPTY_LOCATION,
-  toCreateAddressPayload,
-  toSelectorInitialData,
-  toUpdateAddressPayload,
-  type AddressView,
-} from '../model/address.mapper';
+import { AddressBookPanel } from '../components/address-book-panel';
+import { AddressFormDialog } from '../components/address-form-dialog';
+import { ProfileSidebar, type ProfileTab } from '../components/profile-sidebar';
+import { useAddressBook } from '../hooks/use-address-book';
 
 export function ProfilePage() {
   const router = useRouter();
@@ -51,24 +17,6 @@ export function ProfilePage() {
   // Order history now has a dedicated API-backed feature. Keep Profile focused
   // on account preferences instead of rendering the legacy local fixture first.
   const [activeTab, setActiveTab] = useState<ProfileTab>('settings');
-
-  // Address state — dữ liệu do API tài khoản sở hữu, form chỉ giữ input đang nhập.
-  const {
-    addresses,
-    isLoading: addressesLoading,
-    isError: addressesError,
-    refetch: refetchAddresses,
-    createAddress,
-    updateAddress,
-    removeAddress,
-    isMutating: addressMutating,
-  } = useCustomerAddresses(authLoaded && isAuthenticated);
-  const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
-  const [editingAddress, setEditingAddress] = useState<AddressView | null>(null);
-  const [addressFormName, setAddressFormName] = useState('');
-  const [addressFormPhone, setAddressFormPhone] = useState('');
-  const [addressFormIsDefault, setAddressFormIsDefault] = useState(false);
-  const [modalAddressData, setModalAddressData] = useState<SelectedAddressData>(EMPTY_LOCATION);
 
   // Trang tài khoản là nội dung riêng của từng khách; chưa đăng nhập thì đưa về đăng nhập
   // thay vì hiện khung rỗng.
@@ -85,91 +33,30 @@ export function ProfilePage() {
   const profileEmail = profileQuery.data?.email ?? '';
   const profilePhone = profileQuery.data?.phone ?? '';
 
-  const { success } = useToast();
-  const showToast = (msg: string) => {
-    success('Thông báo', msg);
-  };
-
-  const { error: showError } = useToast();
-
-  const handleOpenAddAddress = () => {
-    setEditingAddress(null);
-    setAddressFormName(profileName);
-    setAddressFormPhone(profilePhone);
-    setAddressFormIsDefault(addresses.length === 0);
-    setModalAddressData(EMPTY_LOCATION);
-    setIsAddressModalOpen(true);
-  };
-
-  const handleOpenEditAddress = (addr: AddressView) => {
-    setEditingAddress(addr);
-    setAddressFormName(addr.recipient);
-    setAddressFormPhone(addr.phone);
-    setAddressFormIsDefault(addr.isDefault);
-    setModalAddressData(toSelectorInitialData(addr));
-    setIsAddressModalOpen(true);
-  };
-
-  const reportAddressError = (fallback: string) => (error: unknown) => {
-    const message = error instanceof Error ? error.message : fallback;
-    showError('Không thực hiện được', message);
-  };
-
-  const handleSaveAddress = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!modalAddressData.streetAddress.trim() || modalAddressData.provinceCode == null) {
-      showError('Thiếu thông tin', 'Vui lòng chọn Tỉnh/Thành và nhập số nhà, tên đường.');
-      return;
-    }
-
-    const values = {
-      recipient: addressFormName,
-      phone: addressFormPhone,
-      isDefault: addressFormIsDefault,
-      location: modalAddressData,
-    };
-
-    try {
-      if (editingAddress) {
-        // `expectedVersion` là optimistic concurrency của BE: gửi đúng version đã
-        // đọc để một bản ghi bị sửa nơi khác sẽ bị từ chối thay vì ghi đè.
-        await updateAddress.mutateAsync({
-          addressId: editingAddress.id,
-          data: toUpdateAddressPayload(values, editingAddress.version),
-        });
-        showToast('Đã cập nhật địa chỉ thành công!');
-      } else {
-        await createAddress.mutateAsync({ data: toCreateAddressPayload(values) });
-        showToast('Đã thêm địa chỉ mới vào sổ địa chỉ!');
-      }
-      setIsAddressModalOpen(false);
-    } catch (error) {
-      // Giữ nguyên modal và dữ liệu đã nhập khi mutation thất bại.
-      reportAddressError('Không lưu được địa chỉ, vui lòng thử lại.')(error);
-    }
-  };
-
-  const handleDeleteAddress = async (id: string) => {
-    if (!confirm('Bạn có chắc chắn muốn xóa địa chỉ này?')) return;
-    try {
-      await removeAddress.mutateAsync({ addressId: id });
-      showToast('Đã xóa địa chỉ thành công.');
-    } catch (error) {
-      reportAddressError('Không xóa được địa chỉ, vui lòng thử lại.')(error);
-    }
-  };
-
-  const handleSetDefaultAddress = async (addr: AddressView) => {
-    try {
-      await updateAddress.mutateAsync({
-        addressId: addr.id,
-        data: { isDefault: true, expectedVersion: addr.version },
-      });
-      showToast('Đã đổi địa chỉ mặc định!');
-    } catch (error) {
-      reportAddressError('Không đổi được địa chỉ mặc định.')(error);
-    }
-  };
+  // Address state — dữ liệu do API tài khoản sở hữu, form chỉ giữ input đang nhập.
+  const {
+    addresses,
+    addressesLoading,
+    addressesError,
+    refetchAddresses,
+    addressMutating,
+    isAddressModalOpen,
+    setIsAddressModalOpen,
+    editingAddress,
+    addressFormName,
+    setAddressFormName,
+    addressFormPhone,
+    setAddressFormPhone,
+    addressFormIsDefault,
+    setAddressFormIsDefault,
+    modalAddressData,
+    setModalAddressData,
+    handleOpenAddAddress,
+    handleOpenEditAddress,
+    handleSaveAddress,
+    handleDeleteAddress,
+    handleSetDefaultAddress,
+  } = useAddressBook(authLoaded && isAuthenticated, profileName, profilePhone);
 
   const handleLogout = () => {
     logout();
@@ -193,80 +80,15 @@ export function ProfilePage() {
             {/* ======================================================== */}
             {/* SIDEBAR USER CARD                                        */}
             {/* ======================================================== */}
-            <aside className="space-y-6">
-              <div className="rounded-[28px] border border-slate-200/80 bg-white p-6 shadow-sm">
-                <div className="flex items-center gap-4">
-                  <div className="grid size-16 place-items-center rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 text-2xl font-black text-white shadow-md shadow-emerald-600/20">
-                    A
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <h1 className="truncate text-base font-black text-slate-900">
-                      {profileName}
-                    </h1>
-                    <p className="mt-1 truncate text-xs text-slate-400">{profileEmail}</p>
-                  </div>
-                </div>
-
-                {/* Navigation tabs */}
-                <nav className="mt-6 space-y-1">
-                  {[
-                    { id: 'orders' as const, label: 'Lịch sử đơn hàng', icon: Package },
-                    { id: 'returns' as const, label: 'Yêu cầu đổi trả', icon: RotateCcw },
-                    { id: 'address' as const, label: 'Sổ địa chỉ nhận hàng', icon: MapPin },
-                    { id: 'settings' as const, label: 'Cài đặt tài khoản', icon: User },
-                  ].map(({ id, label, icon: Icon }) => (
-                    <button
-                      key={id}
-                      type="button"
-                      onClick={() => {
-                        if (id === 'orders') {
-                          router.push('/orders');
-                          return;
-                        }
-                        if (id === 'returns') {
-                          router.push('/returns');
-                          return;
-                        }
-                        setActiveTab(id);
-                      }}
-                      className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-xs font-bold transition sm:text-sm ${
-                        activeTab === id
-                          ? 'bg-emerald-50 text-emerald-700'
-                          : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
-                      }`}
-                    >
-                      <span className="flex items-center gap-3">
-                        <Icon className="size-4.5" />
-                        {label}
-                      </span>
-                      <ChevronRight className="size-4 opacity-40" />
-                    </button>
-                  ))}
-
-                  <button
-                    type="button"
-                    onClick={handleLogout}
-                    className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-xs font-bold text-rose-600 transition hover:bg-rose-50 sm:text-sm"
-                  >
-                    <LogOut className="size-4.5" />
-                    Đăng xuất
-                  </button>
-                </nav>
-              </div>
-
-              {/* Quick hotline widget */}
-              <div className="rounded-2xl border border-slate-200/80 bg-white p-4 text-xs text-slate-600">
-                <span className="font-bold text-slate-800">Cần hỗ trợ đơn hàng gấp?</span>
-                <p className="mt-1 text-slate-500">Hotline 24/7 từ showroom gần bạn nhất:</p>
-                <a
-                  href={`tel:${STORE_CONTACT.primaryHotlineRaw}`}
-                  className="mt-2 flex items-center gap-2 font-mono font-bold text-emerald-700 hover:underline"
-                >
-                  <Phone className="size-3.5" />
-                  {STORE_CONTACT.primaryHotline} (Toàn quốc)
-                </a>
-              </div>
-            </aside>
+            <ProfileSidebar
+              profileName={profileName}
+              profileEmail={profileEmail}
+              activeTab={activeTab}
+              onSelectTab={setActiveTab}
+              onNavigateOrders={() => router.push('/orders')}
+              onNavigateReturns={() => router.push('/returns')}
+              onLogout={handleLogout}
+            />
 
             {/* ======================================================== */}
             {/* MAIN CONTENT PANE                                        */}
@@ -274,110 +96,16 @@ export function ProfilePage() {
             <div className="rounded-[28px] border border-slate-200/80 bg-white p-6 shadow-sm sm:p-8">
               {/* TAB 2: ADDRESS MANAGEMENT (SỔ ĐỊA CHỈ & VIETNAMESE DIVISION API) */}
               {activeTab === 'address' && (
-                <div>
-                  <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-5">
-                    <div>
-                      <h2 className="text-xl font-black text-slate-900">Sổ địa chỉ nhận hàng</h2>
-                      <p className="mt-1 text-xs text-slate-500">
-                        Quản lý các địa chỉ giao hàng và lắp đặt thiết bị tận nơi
-                      </p>
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={handleOpenAddAddress}
-                      className="inline-flex items-center gap-2 rounded-2xl bg-emerald-600 px-4 py-2.5 text-xs font-bold text-white shadow-md shadow-emerald-600/20 transition hover:bg-emerald-500"
-                    >
-                      <Plus className="size-4" />
-                      <span>Thêm địa chỉ mới</span>
-                    </button>
-                  </div>
-
-                  {/* Address List */}
-                  {addressesLoading && addresses.length === 0 ? (
-                    <div className="mt-6 space-y-4" aria-busy="true">
-                      {[0, 1].map((row) => (
-                        <div key={row} className="rounded-2xl border border-slate-200 p-5">
-                          <div className="h-4 w-40 animate-pulse rounded bg-slate-200" />
-                          <div className="mt-3 h-3 w-full animate-pulse rounded bg-slate-100" />
-                        </div>
-                      ))}
-                    </div>
-                  ) : addressesError ? (
-                    <div className="mt-6 rounded-2xl border border-rose-200 bg-rose-50 p-5 text-xs text-rose-700">
-                      <p className="font-bold">Không tải được sổ địa chỉ.</p>
-                      <button
-                        type="button"
-                        onClick={() => void refetchAddresses()}
-                        className="mt-2 font-bold underline"
-                      >
-                        Thử lại
-                      </button>
-                    </div>
-                  ) : addresses.length === 0 ? (
-                    <div className="mt-6 rounded-2xl border border-dashed border-slate-300 p-8 text-center text-xs text-slate-500">
-                      Chưa có địa chỉ nhận hàng nào. Thêm địa chỉ để thanh toán nhanh hơn.
-                    </div>
-                  ) : (
-                  <div className="mt-6 space-y-4">
-                    {addresses.map((addr) => (
-                      <div
-                        key={addr.id}
-                        className={`relative rounded-2xl border p-5 transition ${
-                          addr.isDefault
-                            ? 'border-2 border-emerald-500/60 bg-emerald-50/20 shadow-sm'
-                            : 'border-slate-200 hover:border-slate-300'
-                        }`}
-                      >
-                        <div className="flex flex-wrap items-center justify-between gap-2">
-                          <div className="flex items-center gap-2">
-                            <strong className="text-sm font-bold text-slate-900">{addr.recipient}</strong>
-                            <span className="text-xs text-slate-400">· {addr.phone}</span>
-                            {addr.isDefault && (
-                              <span className="rounded-full bg-emerald-600 px-2.5 py-0.5 text-[10px] font-black uppercase text-white">
-                                Mặc định
-                              </span>
-                            )}
-                          </div>
-
-                          {/* Actions */}
-                          <div className="flex items-center gap-3 text-xs">
-                            {!addr.isDefault && (
-                              <button
-                                type="button"
-                                onClick={() => handleSetDefaultAddress(addr)}
-                                className="font-bold text-emerald-700 hover:underline"
-                              >
-                                Đặt làm mặc định
-                              </button>
-                            )}
-                            <button
-                              type="button"
-                              onClick={() => handleOpenEditAddress(addr)}
-                              className="font-bold text-slate-600 hover:text-slate-900"
-                            >
-                              Sửa
-                            </button>
-                            {addresses.length > 1 && (
-                              <button
-                                type="button"
-                                onClick={() => handleDeleteAddress(addr.id)}
-                                className="font-bold text-rose-600 hover:underline"
-                              >
-                                Xóa
-                              </button>
-                            )}
-                          </div>
-                        </div>
-
-                        <p className="mt-2 text-xs leading-relaxed text-slate-600 sm:text-sm">
-                          {addr.fullAddress}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                  )}
-                </div>
+                <AddressBookPanel
+                  addresses={addresses}
+                  addressesLoading={addressesLoading}
+                  addressesError={addressesError}
+                  onRetry={() => void refetchAddresses()}
+                  onAdd={handleOpenAddAddress}
+                  onEdit={handleOpenEditAddress}
+                  onDelete={handleDeleteAddress}
+                  onSetDefault={handleSetDefaultAddress}
+                />
               )}
 
               {/* TAB 4: SETTINGS (CÀI ĐẶT TÀI KHOẢN) */}
@@ -406,94 +134,20 @@ export function ProfilePage() {
         {/* MODAL: ADD / EDIT ADDRESS WITH VIETNAM CASCADING SELECTOR */}
         {/* ======================================================== */}
         {isAddressModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="w-full max-w-2xl rounded-[32px] border border-slate-200/80 bg-white p-6 shadow-2xl sm:p-8">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-                <h3 className="text-lg font-black text-slate-900">
-                  {editingAddress ? 'Chỉnh sửa địa chỉ' : 'Thêm địa chỉ nhận hàng mới'}
-                </h3>
-                <button
-                  type="button"
-                  onClick={() => setIsAddressModalOpen(false)}
-                  className="rounded-xl p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
-                >
-                  <X className="size-5" />
-                </button>
-              </div>
-
-              <form onSubmit={handleSaveAddress} className="mt-5 space-y-4">
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-600">
-                      Tên người nhận *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={addressFormName}
-                      onChange={(e) => setAddressFormName(e.target.value)}
-                      placeholder="Nguyễn Văn An"
-                      className="mt-1.5 w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-xs font-medium text-slate-800 outline-none focus:border-emerald-500 sm:text-sm"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-600">
-                      Số điện thoại *
-                    </label>
-                    <input
-                      type="tel"
-                      required
-                      value={addressFormPhone}
-                      onChange={(e) => setAddressFormPhone(e.target.value)}
-                      placeholder="0912 345 678"
-                      className="mt-1.5 w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-xs font-medium text-slate-800 outline-none focus:border-emerald-500 sm:text-sm"
-                    />
-                  </div>
-                </div>
-
-                {/* Vietnam Cascading Address Selector Component */}
-                <div className="border-y border-slate-100 py-4">
-                  <VietnamAddressSelector
-                    initialData={modalAddressData}
-                    onChange={(data) => setModalAddressData(data)}
-                    required
-                  />
-                </div>
-
-                {/* Default toggle — contract chưa có nhãn loại địa chỉ nên bỏ phần chọn nhãn. */}
-                <div className="flex flex-wrap items-center justify-end gap-4 pt-1">
-                  <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-slate-700">
-                    <input
-                      type="checkbox"
-                      checked={addressFormIsDefault}
-                      onChange={(e) => setAddressFormIsDefault(e.target.checked)}
-                      className="size-4 rounded text-emerald-600"
-                    />
-                    <span>Đặt làm địa chỉ mặc định</span>
-                  </label>
-                </div>
-
-                {/* Modal Footer Buttons */}
-                <div className="mt-6 flex justify-end gap-3 border-t border-slate-100 pt-4">
-                  <button
-                    type="button"
-                    onClick={() => setIsAddressModalOpen(false)}
-                    className="rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-bold text-slate-600 hover:bg-slate-50"
-                  >
-                    Hủy bỏ
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={addressMutating}
-                    className="rounded-xl bg-emerald-600 px-5 py-2.5 text-xs font-bold text-white shadow-md shadow-emerald-600/20 hover:bg-emerald-500 disabled:cursor-not-allowed disabled:bg-slate-300"
-                  >
-                    {addressMutating ? 'Đang lưu…' : 'Lưu địa chỉ'}
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
+          <AddressFormDialog
+            editingAddress={editingAddress}
+            addressFormName={addressFormName}
+            onAddressFormNameChange={setAddressFormName}
+            addressFormPhone={addressFormPhone}
+            onAddressFormPhoneChange={setAddressFormPhone}
+            addressFormIsDefault={addressFormIsDefault}
+            onAddressFormIsDefaultChange={setAddressFormIsDefault}
+            modalAddressData={modalAddressData}
+            onModalAddressDataChange={setModalAddressData}
+            addressMutating={addressMutating}
+            onClose={() => setIsAddressModalOpen(false)}
+            onSubmit={handleSaveAddress}
+          />
         )}
 
       </div>
