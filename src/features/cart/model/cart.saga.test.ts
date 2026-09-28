@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { readPersistedCart } from './root.saga';
+import { readPersistedCart } from './cart.saga';
 
 describe('readPersistedCart', () => {
   afterEach(() => vi.unstubAllGlobals());

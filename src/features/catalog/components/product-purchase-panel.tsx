@@ -16,8 +16,7 @@ import {
   Check,
   Phone,
 } from 'lucide-react';
-import { addCartItem } from '@/app/store/cart.slice';
-import { useAppDispatch } from '@/app/store/hooks';
+import { useCartActions } from '@/features/cart';
 import type { ProductPurchaseView } from '../model/product.mapper';
 import { STORE_CONTACT, STORE_POLICY_PAGES } from '@/shared/constants';
 import { useToast } from '@/shared/components/global-toast';
@@ -38,7 +37,7 @@ const STORE_POLICY_LINKS = [
 const ADDED_TOAST_MS = 2500;
 
 export function ProductPurchasePanel({ product }: { product: ProductPurchaseView }) {
-  const dispatch = useAppDispatch();
+  const { addItem } = useCartActions();
   const router = useRouter();
   const { cart: toastCart } = useToast();
 
@@ -70,8 +69,7 @@ export function ProductPurchasePanel({ product }: { product: ProductPurchaseView
 
   const handleAddToCart = () => {
     if (!selectedVariant || !canAdd || price === null) return;
-    dispatch(
-      addCartItem({
+    addItem({
         productId: product.id,
         variantId: selectedVariant.id,
         sku: selectedVariant.sku,
@@ -81,8 +79,7 @@ export function ProductPurchasePanel({ product }: { product: ProductPurchaseView
         imageUrl: product.imageUrl ?? undefined,
         price,
         quantity,
-      })
-    );
+      });
     setIsAddedToast(true);
     toastCart('Đã thêm vào giỏ hàng', `${product.name} (${selectedVariant.name}) x${quantity}`);
     clearTimeout(toastTimerRef.current);
@@ -91,8 +88,7 @@ export function ProductPurchasePanel({ product }: { product: ProductPurchaseView
 
   const handleBuyNow = () => {
     if (!selectedVariant || !canAdd || price === null) return;
-    dispatch(
-      addCartItem({
+    addItem({
         productId: product.id,
         variantId: selectedVariant.id,
         sku: selectedVariant.sku,
@@ -102,8 +98,7 @@ export function ProductPurchasePanel({ product }: { product: ProductPurchaseView
         imageUrl: product.imageUrl ?? undefined,
         price,
         quantity,
-      })
-    );
+      });
     router.push(`/checkout?buyNow=${selectedVariant.id}`);
   };
 

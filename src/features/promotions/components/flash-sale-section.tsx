@@ -2,22 +2,20 @@
 
 import Link from 'next/link';
 import { ArrowRight, Clock, Flame } from 'lucide-react';
-import { useAppDispatch } from '@/app/store/hooks';
-import { addCartItem } from '@/app/store/cart.slice';
+import { useCartActions } from '@/features/cart';
 import { FlashSaleDealCard } from './flash-sale-deal-card';
 import { useFlashSale } from '../hooks/use-flash-sale';
 import type { FlashSaleDealView } from '../model/flash-sale.mapper';
 
 export function FlashSaleSection() {
-  const dispatch = useAppDispatch();
+  const { addItem } = useCartActions();
   const { campaign, countdown } = useFlashSale();
 
   const handleQuickAdd = (item: FlashSaleDealView, e: React.MouseEvent) => {
     e.preventDefault();
     // SKU và variantId lấy từ suất flash thật; giá phải trả cuối cùng vẫn do
     // checkout xác thực lại với server (`07-state-tools-performance.md`).
-    dispatch(
-      addCartItem({
+    addItem({
         variantId: item.variantId,
         productId: item.variantId,
         name: item.name,
@@ -27,8 +25,7 @@ export function FlashSaleSection() {
         quantity: 1,
         imageUrl: item.imageUrl ?? undefined,
         slug: item.slug,
-      })
-    );
+      });
   };
 
   const format2Digits = (num: number) => String(num).padStart(2, '0');

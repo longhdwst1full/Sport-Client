@@ -2,24 +2,22 @@
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { cachePolicyForQueryKey, DEFAULT_STALE_TIME } from '@/lib/query/query-cache-policy';
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
-import { hydrateCart, resetCartForSignOut } from '@/app/store/cart.slice';
-import { readPersistedCart } from '@/app/store/root.saga';
 import { storefrontStore } from '@/app/store/store';
 import { readCustomerAuthTokens } from '@/features/auth';
 import { isCustomerAuthenticated } from '@/core/auth/customer-auth-token.store';
-import { pullAccountCart } from '@/features/cart/api/cart-sync';
+import {
+  CartHydrationContext,
+  hydrateCart,
+  pullAccountCart,
+  readPersistedCart,
+  resetCartForSignOut,
+} from '@/features/cart';
 import { PwaRegistration } from '@/pwa/pwa-registration';
 import { clearSessionPwaCaches } from '@/pwa/session-caches';
 
 import { GlobalToastProvider } from '@/shared/components/global-toast';
-
-const CartHydrationContext = createContext(false);
-
-export function useCartHydrated(): boolean {
-  return useContext(CartHydrationContext);
-}
 
 function readAuthenticatedSubject(): string | undefined {
   const accessToken = readCustomerAuthTokens()?.accessToken;

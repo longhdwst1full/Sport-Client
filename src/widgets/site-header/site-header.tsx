@@ -17,7 +17,7 @@ import {
   X,
 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useAppSelector } from '@/app/store/hooks';
+import { useCartItems } from '@/features/cart';
 import {
   STORE_CONFIG,
   STORE_CONTACT,
@@ -44,9 +44,8 @@ export function SiteHeader() {
     setIsMounted(true);
   }, []);
 
-  const rawCartQuantity = useAppSelector((state) =>
-    state.cart.items.reduce((total, item) => total + item.quantity, 0),
-  );
+  const cartItems = useCartItems();
+  const rawCartQuantity = cartItems.reduce((total, item) => total + item.quantity, 0);
   // Avoid hydration mismatch by waiting until mounted to show client-persisted cart quantity and auth
   const cartQuantity = isMounted ? rawCartQuantity : 0;
   const { isAuthenticated } = useCustomerAuth();

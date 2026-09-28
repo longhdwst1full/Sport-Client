@@ -5,8 +5,7 @@ import { ArrowRight, Clock, Flame } from 'lucide-react';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { Breadcrumb } from '@/foundation/components/navigation';
 import { Skeleton } from '@/foundation/components/feedback';
-import { useAppDispatch } from '@/app/store/hooks';
-import { addCartItem } from '@/app/store/cart.slice';
+import { useCartActions } from '@/features/cart';
 import { FlashSaleDealCard } from '../components/flash-sale-deal-card';
 import { useFlashSale } from '../hooks/use-flash-sale';
 import type { FlashSaleDealView } from '../model/flash-sale.mapper';
@@ -16,13 +15,12 @@ function pad(value: number): string {
 }
 
 export function FlashSalePage() {
-  const dispatch = useAppDispatch();
+  const { addItem } = useCartActions();
   const { campaigns, countdown, isPending, isError } = useFlashSale();
 
   const handleQuickAdd = (deal: FlashSaleDealView, event: React.MouseEvent) => {
     event.preventDefault();
-    dispatch(
-      addCartItem({
+    addItem({
         variantId: deal.variantId,
         productId: deal.variantId,
         name: deal.name,
@@ -32,8 +30,7 @@ export function FlashSalePage() {
         quantity: 1,
         imageUrl: deal.imageUrl ?? undefined,
         slug: deal.slug,
-      }),
-    );
+      });
   };
 
   return (

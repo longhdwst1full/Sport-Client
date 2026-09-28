@@ -5,8 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, Sparkles, Zap } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useAppDispatch } from '@/app/store/hooks';
-import { addCartItem } from '@/app/store/cart.slice';
+import { useCartActions } from '@/features/cart';
 import { ProductCard } from './product-card';
 import { Skeleton, SkeletonText } from '@/foundation/components/feedback';
 import { useProductShowcase, type ProductShowcaseItem } from '../hooks/use-product-showcase';
@@ -32,7 +31,7 @@ export function ProductRelatedSection({
   categorySlug?: string;
 }) {
   const router = useRouter();
-  const dispatch = useAppDispatch();
+  const { addItem } = useCartActions();
   // Lấy dư một sản phẩm vì sản phẩm đang xem có thể nằm trong trang đầu của chính danh mục đó.
   const { products, isPending, isError } = useProductShowcase(categorySlug, undefined, {
     pageSize: RELATED_LIMIT + 1,
@@ -48,8 +47,7 @@ export function ProductRelatedSection({
       router.push(`/products/${product.slug}`);
       return;
     }
-    dispatch(
-      addCartItem({
+    addItem({
         variantId: product.defaultVariantId,
         productId: product.id,
         sku: product.defaultVariantSku,
@@ -59,8 +57,7 @@ export function ProductRelatedSection({
         quantity: 1,
         imageUrl: product.imageUrl,
         slug: product.slug,
-      }),
-    );
+      });
     router.push(`/checkout?buyNow=${product.defaultVariantId}`);
   };
 

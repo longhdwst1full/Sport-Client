@@ -28,7 +28,7 @@ import { useToast } from '@/shared/components/global-toast';
 import { getCustomerAuthError } from '../model/auth-error';
 import { saveCustomerAuthTokens } from '@/core/auth/customer-auth-token.store';
 import { syncCartAfterAuth } from '@/features/cart';
-import { hydrateCart } from '@/app/store/cart.slice';
+import { hydrateCart } from '@/features/cart';
 import { storefrontStore } from '@/app/store/store';
 
 const optionalIdentity = () =>

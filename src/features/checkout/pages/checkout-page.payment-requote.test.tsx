@@ -18,24 +18,16 @@ vi.mock('next/navigation', () => ({
   useSearchParams: () => new URLSearchParams(),
 }));
 
-vi.mock('@/app/store/hooks', () => ({
-  useAppDispatch: () => vi.fn(),
-  useAppSelector: (selector: (state: unknown) => unknown) =>
-    selector({
-      cart: {
-        items: [{
-          variantId: 'v1',
-          sku: 'TEST-SKU-01',
-          name: 'Sản phẩm kiểm thử',
-          imageUrl: null,
-          quantity: 1,
-          price: 100000,
-        }],
-      },
-    }),
-}));
-
-vi.mock('@/app/providers', () => ({
+vi.mock('@/features/cart', () => ({
+  useCartActions: () => ({ addItem: vi.fn(), removeItem: vi.fn(), updateQuantity: vi.fn(), clear: vi.fn() }),
+  useCartItems: () => [{
+    variantId: 'v1',
+    sku: 'TEST-SKU-01',
+    name: 'Sản phẩm kiểm thử',
+    imageUrl: null,
+    quantity: 1,
+    price: 100000,
+  }],
   useCartHydrated: () => true,
 }));
 

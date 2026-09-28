@@ -62,8 +62,7 @@ import { readGuestOrderAccessToken, retireGuestOrderAccessToken } from '../model
 import { OrderReturnCta } from '@/features/returns';
 import { ReviewFormDialog } from '@/features/reviews';
 import { OrderPaymentPanel } from '../components/order-payment-panel';
-import { useAppDispatch } from '@/app/store/hooks';
-import { addCartItem } from '@/app/store/cart.slice';
+import { useCartActions } from '@/features/cart';
 
 function errorMessage(error: unknown): string {
   return apiErrorMessage(error, 'Không tải được đơn hàng. Vui lòng kiểm tra tài khoản hoặc đường dẫn truy cập.');
@@ -155,7 +154,7 @@ function getPaymentStatusBadge(statusCode: string, label: string) {
 }
 
 export function OrderDetailPage({ orderNo }: { orderNo: string }) {
-  const dispatch = useAppDispatch();
+  const { addItem } = useCartActions();
   const { isAuthenticated, isLoaded } = useCustomerAuth();
   const queryClient = useQueryClient();
   const [reason, setReason] = useState('');
@@ -277,8 +276,7 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
   const handleReorderAll = () => {
     if (!order || !order.items.length) return;
     order.items.forEach((item) => {
-      dispatch(
-        addCartItem({
+      addItem({
           productId: item.id,
           variantId: item.id,
           sku: item.sku,
@@ -287,15 +285,13 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
           imageUrl: item.imageUrl ?? undefined,
           price: Number(item.unitPrice) || 0,
           quantity: item.quantity || 1,
-        }),
-      );
+        });
     });
     triggerToast(`Đã thêm ${order.items.length} sản phẩm vào giỏ hàng!`);
   };
 
   const handleReorderItem = (item: { id: string; sku: string; productName: string; imageUrl: string | null; quantity: number }, unitPrice: number) => {
-    dispatch(
-      addCartItem({
+    addItem({
         productId: item.id,
         variantId: item.id,
         sku: item.sku,
@@ -304,8 +300,7 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
         imageUrl: item.imageUrl ?? undefined,
         price: unitPrice,
         quantity: item.quantity || 1,
-      }),
-    );
+      });
     triggerToast(`Đã thêm "${item.productName}" vào giỏ hàng!`);
   };
 

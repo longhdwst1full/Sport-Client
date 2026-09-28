@@ -5,9 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState  } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { AlertTriangle, CheckCircle2, CreditCard, LoaderCircle, LocateFixed, MapPin, Pencil, RotateCcw, ShieldCheck, Truck } from 'lucide-react';
-import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
-import { clearCart, removeCartItem } from '@/app/store/cart.slice';
-import { useCartHydrated } from '@/app/providers';
+import { useCartActions, useCartHydrated, useCartItems } from '@/features/cart';
 import { VietnamAddressSelector, type SelectedAddressData } from '@/shared/components/address/vietnam-address-selector';
 import { useCustomerAuth } from '@/features/auth';
 import type { CheckoutQuoteDto, CheckoutPaymentMethod } from '@/generated/api/checkout/checkout.schemas';
@@ -77,10 +75,10 @@ export function CheckoutPage() {
   const freeRadiusKm = usePublicNumberParameter('SHIPPING_FREE_RADIUS_KM', 10);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const dispatch = useAppDispatch();
+  const { removeItem } = useCartActions();
   const { toast } = useToast();
   const { isAuthenticated, isLoaded } = useCustomerAuth();
-  const items = useAppSelector((state) => state.cart.items);
+  const items = useCartItems();
   const cartHydrated = useCartHydrated();
 
   const buyNowParam = searchParams.get('buyNow');
@@ -179,7 +177,7 @@ export function CheckoutPage() {
   /** SKU trong giỏ trên máy không còn bán: bỏ khỏi giỏ để báo giá lại với các dòng còn lại. */
   const handleCheckoutError = (caught: unknown) => {
     if (caught instanceof UnavailableCartLinesError) {
-      caught.variantIds.forEach((variantId) => dispatch(removeCartItem(variantId)));
+      caught.variantIds.forEach((variantId) => removeItem(variantId));
     }
     const msg = messageOf(caught);
     setError(msg);
@@ -366,7 +364,7 @@ export function CheckoutPage() {
       await confirmCheckout(context, quote.checkoutToken, confirmIdempotencyKey.current);
       const order = await placeOrder(context, quote.checkoutToken, orderIdempotencyKey.current);
       // Xoá đúng các sản phẩm đã thanh toán khỏi giỏ hàng
-      effectiveItems.forEach((item) => dispatch(removeCartItem(item.variantId)));
+      effectiveItems.forEach((item) => removeItem(item.variantId));
       if (paymentMethod === 'VNPAY' && (await redirectToVnpay(order))) return;
       setPlacedOrder(order);
       toast({

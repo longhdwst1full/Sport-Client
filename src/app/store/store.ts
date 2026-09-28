@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import createSagaMiddleware from 'redux-saga';
-import { cartSlice } from './cart.slice';
+import { cartSlice } from '@/features/cart/model/cart.slice';
 import { rootSaga } from './root.saga';
 
 const sagaMiddleware = createSagaMiddleware();

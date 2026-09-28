@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { CheckCircle2, LoaderCircle, ShieldCheck } from 'lucide-react';
-import type { CartItem } from '@/app/store/cart.slice';
+import type { CartItem } from '@/features/cart';
 import type { CheckoutQuoteView } from '../model/checkout.mapper';
 import { vndMoney } from '@/shared/format/money';
 import { PRODUCT_PLACEHOLDER_IMAGE } from '@/shared/constants';

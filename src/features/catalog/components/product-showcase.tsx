@@ -8,8 +8,7 @@ import { useRouter } from 'next/navigation';
 import { useCategoryTabs } from '../hooks/use-category-tabs';
 import { useProductShowcase } from '../hooks/use-product-showcase';
 import type { ProductListResponseDto } from '@/generated/api/catalog/catalog.schemas';
-import { useAppDispatch } from '@/app/store/hooks';
-import { addCartItem } from '@/app/store/cart.slice';
+import { useCartActions } from '@/features/cart';
 import { ProductCard } from './product-card';
 
 export function ProductShowcase({
@@ -41,7 +40,7 @@ export function ProductShowcase({
     isError,
     refetch,
   } = useProductShowcase(effectiveCategory, searchQuery, { initialPage, initialPageFetchedAt });
-  const dispatch = useAppDispatch();
+  const { addItem } = useCartActions();
 
   // Lọc danh mục chạy ở Backend (gồm cả nhánh con), nên ở đây không lọc lại. Bản trước
   // so `product.category` (tên danh mục thật) với id tab tự đặt như 'gym' — hai vế không
@@ -56,8 +55,7 @@ export function ProductShowcase({
       return;
     }
 
-    dispatch(
-      addCartItem({
+    addItem({
         productId: product.id,
         variantId: product.defaultVariantId,
         sku: product.defaultVariantSku,
@@ -67,8 +65,7 @@ export function ProductShowcase({
         imageUrl: product.imageUrl,
         price: product.numericPrice,
         quantity: 1,
-      })
-    );
+      });
 
     router.push(`/checkout?buyNow=${product.defaultVariantId}`);
   };

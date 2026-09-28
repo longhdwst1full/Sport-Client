@@ -4,8 +4,7 @@ import { useMemo, useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowLeft, Minus, Plus, ShoppingBag, Trash2, ShieldCheck, RotateCcw, Truck, Sparkles } from 'lucide-react';
-import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
-import { clearCart, removeCartItem, updateQuantity } from '@/app/store/cart.slice';
+import { useCartActions, useCartItems } from '../hooks/use-cart';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { Breadcrumb } from '@/foundation/components/navigation';
 import { vndMoney } from '@/shared/format/money';
@@ -15,9 +14,9 @@ import { useToast } from '@/shared/components/global-toast';
 const SHIPPING_FEE = 30000;
 
 export function CartPage() {
-  const dispatch = useAppDispatch();
+  const { removeItem, clear, updateQuantity: setQuantity } = useCartActions();
   const { toast } = useToast();
-  const items = useAppSelector((s) => s.cart.items);
+  const items = useCartItems();
 
   // Lựa chọn sản phẩm thanh toán trong giỏ hàng
   const [selectedVariantIds, setSelectedVariantIds] = useState<string[]>(() => items.map((i) => i.variantId));
@@ -58,7 +57,7 @@ export function CartPage() {
   const total = selectedItems.length > 0 ? subtotal + SHIPPING_FEE : 0;
 
   const handleRemoveItem = (variantId: string, name: string) => {
-    dispatch(removeCartItem(variantId));
+    removeItem(variantId);
     toast({
       type: 'info',
       title: 'Đã xóa sản phẩm',
@@ -68,7 +67,7 @@ export function CartPage() {
 
   const handleClearCart = () => {
     if (window.confirm('Bạn có chắc chắn muốn xóa toàn bộ sản phẩm trong giỏ hàng?')) {
-      dispatch(clearCart());
+      clear();
       toast({
         type: 'info',
         title: 'Giỏ hàng trống',
@@ -222,7 +221,7 @@ export function CartPage() {
                       <div className="flex items-center rounded-xl border border-ink/10">
                         <button
                           type="button"
-                          onClick={() => dispatch(updateQuantity({ variantId: item.variantId, quantity: item.quantity - 1 }))}
+                          onClick={() => setQuantity(item.variantId, item.quantity - 1)}
                           disabled={item.quantity <= 1}
                           className="grid size-9 place-items-center text-stone-500 transition hover:text-ink disabled:opacity-30"
                           aria-label="Giảm số lượng"
@@ -232,7 +231,7 @@ export function CartPage() {
                         <span className="min-w-[2rem] text-center text-sm font-bold">{item.quantity}</span>
                         <button
                           type="button"
-                          onClick={() => dispatch(updateQuantity({ variantId: item.variantId, quantity: item.quantity + 1 }))}
+                          onClick={() => setQuantity(item.variantId, item.quantity + 1)}
                           className="grid size-9 place-items-center text-stone-500 transition hover:text-ink"
                           aria-label="Tăng số lượng"
                         >

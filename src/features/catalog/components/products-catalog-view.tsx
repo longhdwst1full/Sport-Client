@@ -3,8 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Search, X, RotateCcw, SlidersHorizontal } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useAppDispatch } from '@/app/store/hooks';
-import { addCartItem } from '@/app/store/cart.slice';
+import { useCartActions } from '@/features/cart';
 import { useProductShowcase } from '../hooks/use-product-showcase';
 import { useCategoryTabs } from '../hooks/use-category-tabs';
 import { useDebounce } from '@/shared/hooks';
@@ -37,7 +36,7 @@ export function ProductsCatalogView() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const dispatch = useAppDispatch();
+  const { addItem } = useCartActions();
 
   // Mobile filter drawer state
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
@@ -139,8 +138,7 @@ export function ProductsCatalogView() {
       return;
     }
 
-    dispatch(
-      addCartItem({
+    addItem({
         productId: product.id,
         variantId: product.defaultVariantId,
         sku: product.defaultVariantSku,
@@ -150,8 +148,7 @@ export function ProductsCatalogView() {
         imageUrl: product.imageUrl,
         price: product.numericPrice,
         quantity: 1,
-      })
-    );
+      });
 
     router.push(`/checkout?buyNow=${product.defaultVariantId}`);
   };
