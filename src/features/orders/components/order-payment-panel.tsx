@@ -1,44 +1,11 @@
 'use client';
 
-import { useRef, useState, useMemo } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Banknote, CreditCard, CheckCircle2, Clock3, ImageUp } from 'lucide-react';
 import { Spinner, ErrorState } from '@/foundation/components/feedback';
 import { Card } from '@/foundation/components/structure';
 import { Button, CopyButton } from '@/foundation/components/buttons';
-import {
-  getAccountPayment,
-  getGetAccountPaymentQueryKey,
-  getGetGuestPaymentQueryKey,
-  getGuestPayment,
-  submitAccountPaymentEvidence,
-  submitGuestPaymentEvidence,
-} from '@/generated/api/payments/payments';
-import type { PaymentDetailDto } from '@/generated/api/payments/payments.schemas';
-import { apiErrorMessage } from '@/lib/api/error-message';
-import { uploadPaymentEvidence, type VerifiedPaymentEvidenceUpload } from '../api/payment-evidence-upload';
-import { paymentRequest } from '../api/payment-request';
-import { toPaymentDetailView } from '../model/payment.mapper';
-import {
-  EVIDENCE_SUBMITTABLE_PAYMENT_STATUSES,
-  PAYMENT_METHOD,
-  PAYMENT_STATUS,
-  VNPAY_RETRYABLE_PAYMENT_STATUSES,
-  statusIn,
-} from '../model/order.constants';
-
-interface PendingUpload {
-  signature: string;
-  idempotencyKey: string;
-  verified?: VerifiedPaymentEvidenceUpload;
-}
-
-function errorMessage(error: unknown): string {
-  const fallback = error instanceof Error && error.message
-    ? error.message
-    : 'Không xử lý được bằng chứng thanh toán. Vui lòng thử lại.';
-  return apiErrorMessage(error, fallback);
-}
+import { useOrderPayment, paymentErrorMessage } from '../hooks/use-order-payment';
+import { PAYMENT_METHOD, PAYMENT_STATUS } from '../model/order.constants';
 
 export function OrderPaymentPanel({
   orderNo,
@@ -51,56 +18,22 @@ export function OrderPaymentPanel({
   guestToken: string | null;
   onPaymentChanged: () => Promise<void>;
 }) {
-  const queryClient = useQueryClient();
-  const [file, setFile] = useState<File>();
-  const [note, setNote] = useState('');
-  const pendingUpload = useRef<PendingUpload | undefined>(undefined);
-  const queryKey = authenticated
-    ? getGetAccountPaymentQueryKey(orderNo)
-    : getGetGuestPaymentQueryKey(orderNo);
-  const paymentQuery = useQuery({
-    queryKey,
-    retry: false,
-    queryFn: ({ signal }) => authenticated
-      ? getAccountPayment(orderNo, paymentRequest(), signal)
-      : getGuestPayment(orderNo, paymentRequest({ headers: { 'x-cart-token': guestToken } }), signal),
-  });
-  const payment = paymentQuery.data;
-  // DTO giữ cho lệnh gửi bằng chứng; hiển thị dùng view model.
-  const view = useMemo(() => (payment ? toPaymentDetailView(payment) : undefined), [payment]);
-  const submit = useMutation({
-    retry: false,
-    mutationFn: async (): Promise<PaymentDetailDto> => {
-      if (!file || !payment) throw new Error('Vui lòng chọn ảnh bằng chứng chuyển khoản.');
-      const signature = `${file.name}:${file.size}:${file.lastModified}:${payment.version}:${note.trim()}`;
-      if (pendingUpload.current?.signature !== signature) {
-        pendingUpload.current = { signature, idempotencyKey: crypto.randomUUID() };
-      }
-      // RETRY: Sau khi Cloudinary upload thành công, giữ lại provider response để
-      // retry chỉ gọi finalize API với cùng idempotency payload, không upload ảnh lần hai.
-      pendingUpload.current.verified ??= await uploadPaymentEvidence(
-        orderNo, file, authenticated, guestToken,
-      );
-      const body = {
-        ...pendingUpload.current.verified,
-        note: note.trim() || undefined,
-        expectedVersion: payment.version,
-      };
-      const headers = { 'idempotency-key': pendingUpload.current.idempotencyKey };
-      return authenticated
-        ? submitAccountPaymentEvidence(orderNo, body, paymentRequest({ headers }))
-        : submitGuestPaymentEvidence(orderNo, body, paymentRequest({ headers: { ...headers, 'x-cart-token': guestToken } }));
-    },
-    onSuccess: async (updated) => {
-      queryClient.setQueryData(queryKey, updated);
-      pendingUpload.current = undefined;
-      setFile(undefined);
-      setNote('');
-      await onPaymentChanged();
-    },
-  });
+  const {
+    isLoading,
+    isError,
+    error,
+    view,
+    canSubmit,
+    canRetryVnpay,
+    file,
+    setFile,
+    note,
+    setNote,
+    submit,
+    resetPendingUpload,
+  } = useOrderPayment({ orderNo, authenticated, guestToken, onPaymentChanged });
 
-  if (paymentQuery.isLoading) {
+  if (isLoading) {
     return (
       <Card as="section" className="grid min-h-48 place-items-center rounded-3xl border border-slate-200/80 bg-white shadow-card">
         <div className="flex flex-col items-center gap-2">
@@ -110,7 +43,7 @@ export function OrderPaymentPanel({
       </Card>
     );
   }
-  if (paymentQuery.isError || !payment || !view) {
+  if (isError || !view) {
     return (
       <ErrorState
         as="section"
@@ -119,13 +52,10 @@ export function OrderPaymentPanel({
         titleClassName="font-bold"
         title="Không thể tải thông tin thanh toán"
         descriptionClassName="mt-1 text-xs text-rose-700"
-        description={errorMessage(paymentQuery.error)}
+        description={paymentErrorMessage(error)}
       />
     );
   }
-
-  const canSubmit = view.methodCode === PAYMENT_METHOD.BANK_TRANSFER
-    && statusIn(EVIDENCE_SUBMITTABLE_PAYMENT_STATUSES, view.statusCode);
 
   const isSuccess = view.statusCode === PAYMENT_STATUS.SUCCESS;
   const isFailed = view.statusCode === PAYMENT_STATUS.FAILED || view.statusCode === PAYMENT_STATUS.CANCELLED;
@@ -209,11 +139,9 @@ export function OrderPaymentPanel({
       )}
 
       {/* VNPay Actions */}
-      {view.methodCode === PAYMENT_METHOD.VNPAY
-        && view.redirectUrl
-        && statusIn(VNPAY_RETRYABLE_PAYMENT_STATUSES, view.statusCode) && (
+      {canRetryVnpay && (
         <a
-          href={view.redirectUrl}
+          href={view.redirectUrl ?? undefined}
           className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 px-5 py-3.5 text-sm font-black text-white shadow-glow transition hover:from-emerald-700 hover:to-teal-700"
         >
           <CreditCard className="size-4.5" />
@@ -269,7 +197,7 @@ export function OrderPaymentPanel({
                 onChange={(event) => {
                   setFile(event.target.files?.[0]);
                   submit.reset();
-                  pendingUpload.current = undefined;
+                  resetPendingUpload();
                 }}
                 className="mt-1.5 block w-full cursor-pointer rounded-xl border border-slate-200 bg-slate-50 p-2.5 text-xs text-slate-700 file:mr-3 file:cursor-pointer file:rounded-lg file:border-0 file:bg-emerald-600 file:px-3 file:py-1.5 file:text-xs file:font-bold file:text-white hover:file:bg-emerald-700"
               />
@@ -282,7 +210,7 @@ export function OrderPaymentPanel({
                 value={note}
                 onChange={(event) => {
                   setNote(event.target.value);
-                  pendingUpload.current = undefined;
+                  resetPendingUpload();
                 }}
                 rows={2}
                 maxLength={1000}
@@ -293,7 +221,7 @@ export function OrderPaymentPanel({
           </div>
           {submit.isError && (
             <p className="mt-2.5 text-xs font-semibold text-rose-700">
-              {errorMessage(submit.error)}
+              {paymentErrorMessage(submit.error)}
             </p>
           )}
           <Button

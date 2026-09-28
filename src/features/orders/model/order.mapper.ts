@@ -1,5 +1,5 @@
-import type { OrderDetailDto } from '@/generated/api/orders/orders.schemas';
-import { vndMoney } from '@/shared/format/money';
+import type { OrderDetailDto, OrderSummaryDto } from '@/generated/api/orders/orders.schemas';
+import { vndMoney, formatVnd } from '@/shared/format/money';
 import { formatDateTime } from '@/shared/format/date-time';
 import { orderStatusLabels, paymentStatusLabels } from './order.constants';
 
@@ -216,6 +216,33 @@ export function toOrderMilestones(dto: OrderDetailDto): OrderMilestoneView[] {
   }
 
   return milestones;
+}
+
+export interface OrderListItemView {
+  id: string;
+  orderNo: string;
+  placedAtLabel: string;
+  branchName: string;
+  statusCode: string;
+  statusLabel: string;
+  paymentStatusLabel: string;
+  recipientName: string;
+  grandTotalLabel: string;
+}
+
+/** Danh sách đơn dùng nhãn ngắn gọn cho item card; chi tiết đầy đủ dùng `toOrderDetailView`. */
+export function toOrderListItemView(order: OrderSummaryDto): OrderListItemView {
+  return {
+    id: order.id,
+    orderNo: order.orderNo,
+    placedAtLabel: new Date(order.placedAt).toLocaleString('vi-VN'),
+    branchName: order.branchName,
+    statusCode: order.status,
+    statusLabel: orderStatusLabels[order.status] ?? order.status,
+    paymentStatusLabel: paymentStatusLabels[order.paymentStatus] ?? order.paymentStatus,
+    recipientName: order.recipient.name,
+    grandTotalLabel: formatVnd(Number(order.grandTotal)),
+  };
 }
 
 function money(value: string | null | undefined): string {

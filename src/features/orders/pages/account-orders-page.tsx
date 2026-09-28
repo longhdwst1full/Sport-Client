@@ -3,25 +3,24 @@
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight, PackageSearch } from 'lucide-react';
 import { Spinner } from '@/foundation/components/feedback';
-import { useState } from 'react';
-import { useCustomerAuth } from '@/features/auth';
-import { useListAccountOrders } from '@/generated/api/orders/orders';
-import { apiErrorMessage } from '@/lib/api/error-message';
-import { formatVnd } from '@/shared/format/money';
-import { orderStatusLabels, paymentStatusLabels } from '../model/order.constants';
-
-function errorMessage(error: unknown): string {
-  return apiErrorMessage(error, 'Không tải được danh sách đơn hàng. Vui lòng thử lại.');
-}
+import { useAccountOrders } from '../hooks/use-account-orders';
 
 export function AccountOrdersPage() {
-  const [page, setPage] = useState(1);
-  const limit = 10;
-  const { isAuthenticated, isLoaded } = useCustomerAuth();
-  const orders = useListAccountOrders(
-    { page, limit },
-    { query: { enabled: isLoaded && isAuthenticated, retry: false } },
-  );
+  const {
+    page,
+    setPage,
+    isLoaded,
+    isAuthenticated,
+    isLoading,
+    isError,
+    errorMessage,
+    isFetching,
+    items,
+    total,
+    totalPages,
+    hasData,
+    limit,
+  } = useAccountOrders();
 
   return (
       <main className="mx-auto min-h-[60vh] max-w-6xl px-4 py-10 sm:px-6">
@@ -43,39 +42,39 @@ export function AccountOrdersPage() {
             <Link href="/login" className="mt-5 inline-flex rounded-xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white">Đăng nhập</Link>
           </section>
         )}
-        {isAuthenticated && orders.isLoading && <div className="grid min-h-56 place-items-center"><Spinner className="size-8 animate-spin text-emerald-600" /></div>}
-        {isAuthenticated && orders.isError && (
-          <div className="rounded-2xl border border-rose-200 bg-rose-50 p-5 text-sm text-rose-800">{errorMessage(orders.error)}</div>
+        {isAuthenticated && isLoading && <div className="grid min-h-56 place-items-center"><Spinner className="size-8 animate-spin text-emerald-600" /></div>}
+        {isAuthenticated && isError && (
+          <div className="rounded-2xl border border-rose-200 bg-rose-50 p-5 text-sm text-rose-800">{errorMessage}</div>
         )}
-        {isAuthenticated && orders.data?.items.length === 0 && (
+        {isAuthenticated && items.length === 0 && hasData && (
           <section className="rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center">
             <PackageSearch className="mx-auto size-12 text-slate-400" />
             <h2 className="mt-4 text-lg font-black">Chưa có đơn hàng</h2>
           </section>
         )}
         {isAuthenticated && <div className="grid gap-4">
-          {orders.data?.items.map((order) => (
+          {items.map((order) => (
             <Link key={order.id} href={`/orders/${order.orderNo}`} className="group rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md">
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
                   <div className="font-mono text-sm font-black text-emerald-700">{order.orderNo}</div>
-                  <div className="mt-1 text-xs text-slate-500">{new Date(order.placedAt).toLocaleString('vi-VN')} · {order.branchName}</div>
+                  <div className="mt-1 text-xs text-slate-500">{order.placedAtLabel} · {order.branchName}</div>
                 </div>
-                <div className="rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-800">{orderStatusLabels[order.status] ?? order.status}</div>
+                <div className="rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-800">{order.statusLabel}</div>
               </div>
               <div className="mt-5 grid gap-3 border-t border-slate-100 pt-4 text-sm sm:grid-cols-3">
-                <div><span className="block text-xs text-slate-500">Người nhận</span><strong>{order.recipient.name}</strong></div>
-                <div><span className="block text-xs text-slate-500">Thanh toán</span><strong>{paymentStatusLabels[order.paymentStatus] ?? order.paymentStatus}</strong></div>
-                <div className="sm:text-right"><span className="block text-xs text-slate-500">Tổng tiền</span><strong className="text-emerald-700">{formatVnd(Number(order.grandTotal))}</strong></div>
+                <div><span className="block text-xs text-slate-500">Người nhận</span><strong>{order.recipientName}</strong></div>
+                <div><span className="block text-xs text-slate-500">Thanh toán</span><strong>{order.paymentStatusLabel}</strong></div>
+                <div className="sm:text-right"><span className="block text-xs text-slate-500">Tổng tiền</span><strong className="text-emerald-700">{order.grandTotalLabel}</strong></div>
               </div>
             </Link>
           ))}
         </div>}
-        {isAuthenticated && orders.data && orders.data.total > limit && (
+        {isAuthenticated && hasData && total > limit && (
           <nav className="mt-7 flex items-center justify-center gap-3" aria-label="Phân trang đơn hàng">
-            <button type="button" disabled={page === 1 || orders.isFetching} onClick={() => setPage((value) => Math.max(1, value - 1))} className="grid size-10 place-items-center rounded-xl border border-slate-200 bg-white disabled:opacity-40" aria-label="Trang trước"><ChevronLeft className="size-4" /></button>
-            <span className="text-sm font-bold text-slate-700">Trang {page} / {Math.ceil(orders.data.total / limit)}</span>
-            <button type="button" disabled={page >= Math.ceil(orders.data.total / limit) || orders.isFetching} onClick={() => setPage((value) => value + 1)} className="grid size-10 place-items-center rounded-xl border border-slate-200 bg-white disabled:opacity-40" aria-label="Trang sau"><ChevronRight className="size-4" /></button>
+            <button type="button" disabled={page === 1 || isFetching} onClick={() => setPage((value) => Math.max(1, value - 1))} className="grid size-10 place-items-center rounded-xl border border-slate-200 bg-white disabled:opacity-40" aria-label="Trang trước"><ChevronLeft className="size-4" /></button>
+            <span className="text-sm font-bold text-slate-700">Trang {page} / {totalPages}</span>
+            <button type="button" disabled={page >= totalPages || isFetching} onClick={() => setPage((value) => value + 1)} className="grid size-10 place-items-center rounded-xl border border-slate-200 bg-white disabled:opacity-40" aria-label="Trang sau"><ChevronRight className="size-4" /></button>
           </nav>
         )}
       </main>
