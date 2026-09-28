@@ -4,7 +4,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRef, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { CheckCircle2, Circle, CircleDot, LoaderCircle } from 'lucide-react';
+import { CheckCircle2, Circle, CircleDot } from 'lucide-react';
+import { Spinner } from '@/foundation/components/feedback';
 import { useCustomerAuth } from '@/features/auth';
 import {
   cancelAccountReturn,
@@ -64,7 +65,7 @@ export function ReturnDetailPage({ returnNo }: { returnNo: string }) {
   return (
       <main className="mx-auto min-h-[60vh] max-w-5xl px-4 py-10 sm:px-6">
         {(!isLoaded || (isAuthenticated && query.isLoading)) && (
-          <div className="grid min-h-72 place-items-center"><LoaderCircle className="size-9 animate-spin text-emerald-600" /></div>
+          <div className="grid min-h-72 place-items-center"><Spinner className="size-9 animate-spin text-emerald-600" /></div>
         )}
         {isLoaded && !isAuthenticated && (
           <section className="rounded-3xl border border-slate-200 bg-white p-10 text-center shadow-sm">

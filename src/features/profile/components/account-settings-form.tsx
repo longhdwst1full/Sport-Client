@@ -10,6 +10,7 @@ import {
 import { useChangeCustomerPassword } from '@/generated/api/auth/auth';
 import type { CustomerProfileDto } from '@/generated/api/customer/customer.schemas';
 import { apiErrorMessage as messageOf } from '@/lib/api/error-message';
+import { InlineAlert } from '@/foundation/components/feedback';
 
 /**
  * Cài đặt tài khoản: sửa hồ sơ và đổi mật khẩu.
@@ -142,14 +143,14 @@ export function AccountSettingsForm({ profile }: { profile: CustomerProfileDto }
         </label>
 
         {profileNotice && (
-          <p className="rounded-xl bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-800">
+          <InlineAlert as="p" className="rounded-xl bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-800">
             {profileNotice}
-          </p>
+          </InlineAlert>
         )}
         {profileError && (
-          <p className="rounded-xl bg-rose-50 px-3 py-2 text-xs font-semibold text-rose-700">
+          <InlineAlert as="p" className="rounded-xl bg-rose-50 px-3 py-2 text-xs font-semibold text-rose-700">
             {profileError}
-          </p>
+          </InlineAlert>
         )}
 
         <button
@@ -235,14 +236,14 @@ export function AccountSettingsForm({ profile }: { profile: CustomerProfileDto }
         </p>
 
         {passwordNotice && (
-          <p className="rounded-xl bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-800">
+          <InlineAlert as="p" className="rounded-xl bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-800">
             {passwordNotice}
-          </p>
+          </InlineAlert>
         )}
         {passwordError && (
-          <p className="rounded-xl bg-rose-50 px-3 py-2 text-xs font-semibold text-rose-700">
+          <InlineAlert as="p" className="rounded-xl bg-rose-50 px-3 py-2 text-xs font-semibold text-rose-700">
             {passwordError}
-          </p>
+          </InlineAlert>
         )}
 
         <button

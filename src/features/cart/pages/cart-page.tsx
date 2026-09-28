@@ -9,6 +9,7 @@ import { Breadcrumb } from '@/foundation/components/navigation';
 import { vndMoney } from '@/shared/format/money';
 import { PRODUCT_PLACEHOLDER_IMAGE } from '@/shared/constants';
 import { useToast } from '@/shared/components/global-toast';
+import { EmptyState } from '@/foundation/components/feedback';
 
 const SHIPPING_FEE = 30000;
 
@@ -98,47 +99,51 @@ export function CartPage() {
         </div>
 
         {items.length === 0 ? (
-          <div className="mt-12 rounded-3xl border border-dashed border-slate-300 bg-white p-8 text-center sm:p-16 shadow-sm">
-            <div className="mx-auto grid size-20 place-items-center rounded-3xl bg-emerald-50 text-emerald-600 shadow-inner">
-              <ShoppingBag className="size-10" />
-            </div>
-            <h2 className="mt-6 text-2xl font-black text-slate-900">Giỏ hàng trống</h2>
-            <p className="mx-auto mt-2 max-w-md text-sm text-slate-500 leading-relaxed">
-              Bạn chưa có trang thiết bị nào trong giỏ hàng. Hãy khám phá các thiết bị thể thao chuẩn thi đấu để sẵn sàng bứt phá mục tiêu!
-            </p>
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-              <Link
-                href="/products"
-                className="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-7 py-3.5 font-bold text-white shadow-lg shadow-emerald-600/20 transition hover:bg-emerald-500"
-              >
-                <ArrowLeft className="size-4" /> Tiếp tục mua sắm
-              </Link>
-            </div>
-
-            {/* Quick Explore Pills */}
-            <div className="mt-10 border-t border-slate-100 pt-8">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                Gợi ý danh mục phổ biến:
-              </span>
-              <div className="mt-3 flex flex-wrap justify-center gap-2">
-                {[
-                  { name: 'Máy chạy bộ', href: '/products?category=may-chay-bo' },
-                  { name: 'Xe đạp tập', href: '/products?category=xe-dap-tap' },
-                  { name: 'Dụng cụ gym', href: '/products?category=dung-cu-tap-gym' },
-                  { name: 'Bóng bàn', href: '/products?category=dung-cu-bong-ban' },
-                  { name: 'Cầu lông', href: '/products?category=dung-cu-cau-long' },
-                ].map((cat) => (
+          <EmptyState
+            className="mt-12 rounded-3xl border border-dashed border-slate-300 bg-white p-8 text-center sm:p-16 shadow-sm"
+            iconWrapClassName="mx-auto grid size-20 place-items-center rounded-3xl bg-emerald-50 text-emerald-600 shadow-inner"
+            icon={<ShoppingBag className="size-10" />}
+            titleClassName="mt-6 text-2xl font-black text-slate-900"
+            title="Giỏ hàng trống"
+            descriptionClassName="mx-auto mt-2 max-w-md text-sm text-slate-500 leading-relaxed"
+            description="Bạn chưa có trang thiết bị nào trong giỏ hàng. Hãy khám phá các thiết bị thể thao chuẩn thi đấu để sẵn sàng bứt phá mục tiêu!"
+            actions={
+              <>
+                <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
                   <Link
-                    key={cat.name}
-                    href={cat.href}
-                    className="rounded-full border border-slate-200 bg-slate-50 px-3.5 py-1.5 text-xs font-bold text-slate-700 transition hover:border-emerald-500 hover:bg-emerald-50 hover:text-emerald-700"
+                    href="/products"
+                    className="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-7 py-3.5 font-bold text-white shadow-lg shadow-emerald-600/20 transition hover:bg-emerald-500"
                   >
-                    {cat.name}
+                    <ArrowLeft className="size-4" /> Tiếp tục mua sắm
                   </Link>
-                ))}
-              </div>
-            </div>
-          </div>
+                </div>
+
+                {/* Quick Explore Pills */}
+                <div className="mt-10 border-t border-slate-100 pt-8">
+                  <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                    Gợi ý danh mục phổ biến:
+                  </span>
+                  <div className="mt-3 flex flex-wrap justify-center gap-2">
+                    {[
+                      { name: 'Máy chạy bộ', href: '/products?category=may-chay-bo' },
+                      { name: 'Xe đạp tập', href: '/products?category=xe-dap-tap' },
+                      { name: 'Dụng cụ gym', href: '/products?category=dung-cu-tap-gym' },
+                      { name: 'Bóng bàn', href: '/products?category=dung-cu-bong-ban' },
+                      { name: 'Cầu lông', href: '/products?category=dung-cu-cau-long' },
+                    ].map((cat) => (
+                      <Link
+                        key={cat.name}
+                        href={cat.href}
+                        className="rounded-full border border-slate-200 bg-slate-50 px-3.5 py-1.5 text-xs font-bold text-slate-700 transition hover:border-emerald-500 hover:bg-emerald-50 hover:text-emerald-700"
+                      >
+                        {cat.name}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </>
+            }
+          />
         ) : (
           <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_380px]">
             {/* Cart Items List */}

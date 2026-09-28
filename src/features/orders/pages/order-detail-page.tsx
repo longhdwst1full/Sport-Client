@@ -20,9 +20,7 @@ import {
   FileText,
   Headphones,
   HelpCircle,
-  Info,
-  LoaderCircle,
-  MapPin,
+  Info, MapPin,
   MessageCircle,
   MessageSquarePlus,
   Package,
@@ -37,6 +35,7 @@ import {
   X,
   XCircle,
 } from 'lucide-react';
+import { Spinner, ErrorState } from '@/foundation/components/feedback';
 import { useCustomerAuth } from '@/features/auth';
 import {
   cancelAccountOrder,
@@ -317,50 +316,54 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
         {!isLoaded || orderQuery.isLoading ? (
           <div className="grid min-h-80 place-items-center">
             <div className="flex flex-col items-center gap-3">
-              <LoaderCircle className="size-10 animate-spin text-emerald-600" />
+              <Spinner className="size-10 animate-spin text-emerald-600" />
               <span className="text-sm font-semibold text-slate-500">Đang tải thông tin đơn hàng...</span>
             </div>
           </div>
         ) : !isAuthenticated && !guestToken ? (
-          <section className="mx-auto max-w-xl rounded-3xl border border-amber-200 bg-amber-50/70 p-8 sm:p-10 text-center shadow-card">
-            <div className="mx-auto grid size-16 place-items-center rounded-2xl bg-amber-100 text-amber-600">
-              <XCircle className="size-9" />
-            </div>
-            <h1 className="mt-5 text-xl font-black text-slate-900">Không tìm thấy mã truy cập đơn hàng</h1>
-            <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-amber-900">
-              Hãy mở đơn trên trình duyệt đã dùng để đặt hàng hoặc đăng nhập tài khoản để xem toàn bộ lịch sử đơn.
-            </p>
-            <div className="mt-6 flex flex-wrap justify-center gap-3">
-              <Link href="/login" className="rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-emerald-700">
-                Đăng nhập
-              </Link>
-              <Link href="/" className="rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-bold text-slate-700 transition hover:bg-slate-50">
-                Về trang chủ
-              </Link>
-            </div>
-          </section>
+          <ErrorState
+            className="mx-auto max-w-xl rounded-3xl border border-amber-200 bg-amber-50/70 p-8 sm:p-10 text-center shadow-card"
+            iconWrapClassName="mx-auto grid size-16 place-items-center rounded-2xl bg-amber-100 text-amber-600"
+            icon={<XCircle className="size-9" />}
+            titleClassName="mt-5 text-xl font-black text-slate-900"
+            title="Không tìm thấy mã truy cập đơn hàng"
+            descriptionClassName="mx-auto mt-2 max-w-md text-sm leading-relaxed text-amber-900"
+            description="Hãy mở đơn trên trình duyệt đã dùng để đặt hàng hoặc đăng nhập tài khoản để xem toàn bộ lịch sử đơn."
+            actions={
+              <div className="mt-6 flex flex-wrap justify-center gap-3">
+                <Link href="/login" className="rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-emerald-700">
+                  Đăng nhập
+                </Link>
+                <Link href="/" className="rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-bold text-slate-700 transition hover:bg-slate-50">
+                  Về trang chủ
+                </Link>
+              </div>
+            }
+          />
         ) : orderQuery.isError ? (
-          <section className="mx-auto max-w-xl rounded-3xl border border-rose-200 bg-rose-50/80 p-8 sm:p-10 text-center shadow-card">
-            <div className="mx-auto grid size-16 place-items-center rounded-2xl bg-rose-100 text-rose-600">
-              <AlertTriangle className="size-9" />
-            </div>
-            <h1 className="mt-5 text-xl font-black text-rose-950">Không thể tải thông tin đơn hàng</h1>
-            <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-rose-800">
-              {errorMessage(orderQuery.error)}
-            </p>
-            <div className="mt-6 flex flex-wrap justify-center gap-3">
-              <button
-                type="button"
-                onClick={() => orderQuery.refetch()}
-                className="rounded-xl bg-rose-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-rose-700"
-              >
-                Thử lại
-              </button>
-              <Link href="/" className="rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-bold text-slate-700 transition hover:bg-slate-50">
-                Về trang chủ
-              </Link>
-            </div>
-          </section>
+          <ErrorState
+            className="mx-auto max-w-xl rounded-3xl border border-rose-200 bg-rose-50/80 p-8 sm:p-10 text-center shadow-card"
+            iconWrapClassName="mx-auto grid size-16 place-items-center rounded-2xl bg-rose-100 text-rose-600"
+            icon={<AlertTriangle className="size-9" />}
+            titleClassName="mt-5 text-xl font-black text-rose-950"
+            title="Không thể tải thông tin đơn hàng"
+            descriptionClassName="mx-auto mt-2 max-w-md text-sm leading-relaxed text-rose-800"
+            description={errorMessage(orderQuery.error)}
+            actions={
+              <div className="mt-6 flex flex-wrap justify-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => orderQuery.refetch()}
+                  className="rounded-xl bg-rose-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-rose-700"
+                >
+                  Thử lại
+                </button>
+                <Link href="/" className="rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-bold text-slate-700 transition hover:bg-slate-50">
+                  Về trang chủ
+                </Link>
+              </div>
+            }
+          />
         ) : order ? (
           <>
             {/* Breadcrumb Navigation Bar */}
@@ -1246,7 +1249,7 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
                       onClick={() => cancel.mutate()}
                       className="flex items-center gap-1.5 rounded-xl bg-rose-600 px-5 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-rose-700 disabled:opacity-50"
                     >
-                      {cancel.isPending ? <LoaderCircle className="size-4 animate-spin" /> : <X className="size-4" />}
+                      {cancel.isPending ? <Spinner className="size-4 animate-spin" /> : <X className="size-4" />}
                       {cancel.isPending ? 'Đang hủy...' : 'Xác nhận hủy đơn'}
                     </button>
                   </div>

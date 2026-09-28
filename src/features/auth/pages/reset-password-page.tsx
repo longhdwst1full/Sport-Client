@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { AlertTriangle, CheckCircle2, KeyRound, Loader2 } from 'lucide-react';
 import { useResetCustomerPassword } from '@/generated/api/auth/auth';
 import { apiErrorMessage } from '@/lib/api/error-message';
+import { InlineAlert } from '@/foundation/components/feedback';
 
 function messageOf(error: unknown): string {
   return apiErrorMessage(error, 'Không đặt lại được mật khẩu. Vui lòng thử lại.');
@@ -117,9 +118,9 @@ export function ResetPasswordPage() {
         />
 
         {(localError || reset.isError) && (
-          <p className="mt-4 rounded-xl bg-rose-50 px-3 py-2 text-xs font-semibold text-rose-700">
+          <InlineAlert as="p" className="mt-4 rounded-xl bg-rose-50 px-3 py-2 text-xs font-semibold text-rose-700">
             {localError ?? messageOf(reset.error)}
-          </p>
+          </InlineAlert>
         )}
 
         <button

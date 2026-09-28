@@ -4,7 +4,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { LoaderCircle, PackageX } from 'lucide-react';
+import { PackageX } from 'lucide-react';
+import { Spinner } from '@/foundation/components/feedback';
 import { useCustomerAuth } from '@/features/auth';
 import {
   createAccountReturn,
@@ -83,7 +84,7 @@ export function CreateReturnPage({ orderNo }: { orderNo: string }) {
         <h1 className="mt-2 text-3xl font-black text-slate-950">Yêu cầu trả hàng · <span className="font-mono">{orderNo}</span></h1>
 
         {(!isLoaded || eligibility.isLoading) && (
-          <div className="grid min-h-56 place-items-center"><LoaderCircle className="size-8 animate-spin text-emerald-600" /></div>
+          <div className="grid min-h-56 place-items-center"><Spinner className="size-8 animate-spin text-emerald-600" /></div>
         )}
         {isLoaded && !isAuthenticated && (
           <section className="mt-6 rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-sm">

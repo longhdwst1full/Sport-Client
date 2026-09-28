@@ -4,7 +4,8 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState  } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { AlertTriangle, CheckCircle2, CreditCard, LoaderCircle, LocateFixed, MapPin, Pencil, RotateCcw, ShieldCheck, Truck } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, CreditCard, LocateFixed, MapPin, Pencil, RotateCcw, ShieldCheck, Truck } from 'lucide-react';
+import { Spinner } from '@/foundation/components/feedback';
 import { useCartActions, useCartHydrated, useCartItems } from '@/features/cart';
 import { VietnamAddressSelector, type SelectedAddressData } from '@/features/address';
 import { useCustomerAuth } from '@/features/auth';
@@ -384,7 +385,7 @@ export function CheckoutPage() {
     return (
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
           <div className="flex items-center gap-2.5 text-sm font-semibold text-slate-600">
-            <LoaderCircle className="size-5 animate-spin text-emerald-600" />
+            <Spinner className="size-5 animate-spin text-emerald-600" />
             <span>Đang tải thông tin thanh toán đơn hàng…</span>
           </div>
         </div>
@@ -661,7 +662,7 @@ export function CheckoutPage() {
                     <div className="mt-3.5 border-t border-slate-100 pt-3 text-xs" aria-live="polite">
                       {quotePending ? (
                         <span className="inline-flex items-center gap-1.5 font-bold text-slate-500">
-                          <LoaderCircle className="size-3.5 animate-spin text-emerald-600" /> Đang tính phí vận chuyển...
+                          <Spinner className="size-3.5 animate-spin text-emerald-600" /> Đang tính phí vận chuyển...
                         </span>
                       ) : quoteView ? (
                         <div className="space-y-1">
@@ -826,7 +827,7 @@ export function CheckoutPage() {
                   disabled={busy || redirectingToVnpay}
                   className="flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-600 py-4 text-sm font-black text-white shadow-md shadow-emerald-600/20 transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-slate-300"
                 >
-                  {busy ? <LoaderCircle className="size-5 animate-spin" /> : <CheckCircle2 className="size-5" />}
+                  {busy ? <Spinner className="size-5 animate-spin" /> : <CheckCircle2 className="size-5" />}
                   <span>
                     {redirectingToVnpay
                       ? 'Đang chuyển sang VNPay...'

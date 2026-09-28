@@ -2,7 +2,8 @@
 
 import Image from 'next/image';
 import { useRef, useState } from 'react';
-import { ImagePlus, LoaderCircle, X } from 'lucide-react';
+import { ImagePlus, X } from 'lucide-react';
+import { Spinner } from '@/foundation/components/feedback';
 import { uploadReturnEvidence } from '../api/return-evidence-upload';
 import type { UploadedEvidence } from '../model/return.mapper';
 import { MAX_EVIDENCE_IMAGES } from '../model/return.constants';
@@ -78,7 +79,7 @@ export function EvidencePicker({ orderNo, value, onChange, onUploadingChange, di
             onClick={() => inputRef.current?.click()}
             className="grid size-24 place-items-center rounded-xl border border-dashed border-slate-300 text-xs font-bold text-slate-500 hover:border-emerald-500 disabled:opacity-50"
           >
-            {uploading > 0 ? <LoaderCircle className="size-5 animate-spin" /> : <span className="grid place-items-center gap-1"><ImagePlus className="size-5" />Thêm ảnh</span>}
+            {uploading > 0 ? <Spinner className="size-5 animate-spin" /> : <span className="grid place-items-center gap-1"><ImagePlus className="size-5" />Thêm ảnh</span>}
           </button>
         )}
       </div>

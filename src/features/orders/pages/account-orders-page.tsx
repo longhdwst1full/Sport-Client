@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { ChevronLeft, ChevronRight, LoaderCircle, PackageSearch } from 'lucide-react';
+import { ChevronLeft, ChevronRight, PackageSearch } from 'lucide-react';
+import { Spinner } from '@/foundation/components/feedback';
 import { useState } from 'react';
 import { useCustomerAuth } from '@/features/auth';
 import { useListAccountOrders } from '@/generated/api/orders/orders';
@@ -33,7 +34,7 @@ export function AccountOrdersPage() {
           <Link href="/products" className="rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-bold text-white">Tiếp tục mua sắm</Link>
         </div>
 
-        {!isLoaded && <div className="grid min-h-56 place-items-center"><LoaderCircle className="size-8 animate-spin text-emerald-600" /></div>}
+        {!isLoaded && <div className="grid min-h-56 place-items-center"><Spinner className="size-8 animate-spin text-emerald-600" /></div>}
         {isLoaded && !isAuthenticated && (
           <section className="rounded-3xl border border-slate-200 bg-white p-10 text-center shadow-sm">
             <PackageSearch className="mx-auto size-12 text-slate-400" />
@@ -42,7 +43,7 @@ export function AccountOrdersPage() {
             <Link href="/login" className="mt-5 inline-flex rounded-xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white">Đăng nhập</Link>
           </section>
         )}
-        {isAuthenticated && orders.isLoading && <div className="grid min-h-56 place-items-center"><LoaderCircle className="size-8 animate-spin text-emerald-600" /></div>}
+        {isAuthenticated && orders.isLoading && <div className="grid min-h-56 place-items-center"><Spinner className="size-8 animate-spin text-emerald-600" /></div>}
         {isAuthenticated && orders.isError && (
           <div className="rounded-2xl border border-rose-200 bg-rose-50 p-5 text-sm text-rose-800">{errorMessage(orders.error)}</div>
         )}

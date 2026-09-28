@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { CheckCircle2, LoaderCircle, ShieldCheck } from 'lucide-react';
+import { CheckCircle2, ShieldCheck } from 'lucide-react';
+import { Spinner } from '@/foundation/components/feedback';
 import type { CartItem } from '@/features/cart';
 import type { CheckoutQuoteView } from '../model/checkout.mapper';
 import { vndMoney } from '@/shared/format/money';
@@ -83,7 +84,7 @@ export function CheckoutOrderSummary({
             <div className="flex justify-between">
               <span>Phí giao</span>
               <span className="inline-flex items-center gap-1 text-slate-500">
-                {quoting ? <><LoaderCircle className="size-3.5 animate-spin" /> Đang tính phí...</> : 'Chưa tính'}
+                {quoting ? <><Spinner className="size-3.5 animate-spin" /> Đang tính phí...</> : 'Chưa tính'}
               </span>
             </div>
           ) : (
@@ -101,7 +102,7 @@ export function CheckoutOrderSummary({
         </div>
         {showSubmit && (
           <button type="submit" disabled={busy || !authLoaded || submitDisabled} className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-600 py-3.5 text-sm font-black text-white disabled:cursor-not-allowed disabled:bg-slate-300">
-            {busy ? <LoaderCircle className="size-5 animate-spin" /> : <CheckCircle2 className="size-5" />}
+            {busy ? <Spinner className="size-5 animate-spin" /> : <CheckCircle2 className="size-5" />}
             {busy ? 'Đang xử lý...' : submitLabel}
           </button>
         )}

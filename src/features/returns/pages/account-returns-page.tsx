@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { ChevronLeft, ChevronRight, LoaderCircle, RotateCcw } from 'lucide-react';
+import { ChevronLeft, ChevronRight, RotateCcw } from 'lucide-react';
+import { Spinner } from '@/foundation/components/feedback';
 import { useCustomerAuth } from '@/features/auth';
 import { useListAccountReturns } from '@/generated/api/returns/returns';
 import { formatDateTime } from '@/shared/format/date-time';
@@ -33,7 +34,7 @@ export function AccountReturnsPage() {
         </div>
 
         {(!isLoaded || (isAuthenticated && returns.isLoading)) && (
-          <div className="grid min-h-56 place-items-center"><LoaderCircle className="size-8 animate-spin text-emerald-600" /></div>
+          <div className="grid min-h-56 place-items-center"><Spinner className="size-8 animate-spin text-emerald-600" /></div>
         )}
         {isLoaded && !isAuthenticated && (
           <section className="rounded-3xl border border-slate-200 bg-white p-10 text-center shadow-sm">

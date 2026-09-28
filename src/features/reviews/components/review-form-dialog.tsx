@@ -2,7 +2,8 @@
 
 import Image from 'next/image';
 import { FormEvent, useRef, useState } from 'react';
-import { ImagePlus, LoaderCircle, Star, X } from 'lucide-react';
+import { ImagePlus, Star, X } from 'lucide-react';
+import { Spinner } from '@/foundation/components/feedback';
 import { createAccountProductReview } from '@/generated/api/reviews/reviews';
 import { apiErrorMessage } from '@/lib/api/error-message';
 import { uploadReviewMedia, type UploadedReviewMedia } from '../api/review-media-upload';
@@ -119,7 +120,7 @@ export function ReviewFormDialog({
               ))}
               {media.length < MAX_MEDIA && (
                 <button type="button" disabled={uploading || submitting} onClick={() => inputRef.current?.click()} className="grid size-20 place-items-center rounded-xl border border-dashed border-slate-300 text-xs font-bold text-slate-500 disabled:opacity-50">
-                  {uploading ? <LoaderCircle className="size-5 animate-spin" /> : <span className="grid place-items-center gap-1"><ImagePlus className="size-5" />Thêm ảnh</span>}
+                  {uploading ? <Spinner className="size-5 animate-spin" /> : <span className="grid place-items-center gap-1"><ImagePlus className="size-5" />Thêm ảnh</span>}
                 </button>
               )}
             </div>
@@ -130,7 +131,7 @@ export function ReviewFormDialog({
           <div className="flex justify-end gap-3 border-t border-slate-100 pt-5">
             <button type="button" onClick={onClose} disabled={submitting} className="rounded-xl border border-slate-300 px-5 py-2.5 text-sm font-bold text-slate-700">Hủy</button>
             <button type="submit" disabled={submitting || uploading} className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-bold text-white disabled:opacity-50">
-              {submitting && <LoaderCircle className="size-4 animate-spin" />} Gửi đánh giá
+              {submitting && <Spinner className="size-4 animate-spin" />} Gửi đánh giá
             </button>
           </div>
         </form>

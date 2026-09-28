@@ -2,7 +2,8 @@
 
 import { useRef, useState, useMemo } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Banknote, CreditCard, CheckCircle2, Clock3, ImageUp, LoaderCircle } from 'lucide-react';
+import { Banknote, CreditCard, CheckCircle2, Clock3, ImageUp } from 'lucide-react';
+import { Spinner } from '@/foundation/components/feedback';
 import {
   getAccountPayment,
   getGetAccountPaymentQueryKey,
@@ -112,7 +113,7 @@ export function OrderPaymentPanel({
     return (
       <section className="grid min-h-48 place-items-center rounded-3xl border border-slate-200/80 bg-white shadow-card">
         <div className="flex flex-col items-center gap-2">
-          <LoaderCircle className="size-8 animate-spin text-emerald-600" />
+          <Spinner className="size-8 animate-spin text-emerald-600" />
           <span className="text-xs font-medium text-slate-500">Đang tải thông tin thanh toán...</span>
         </div>
       </section>
@@ -306,7 +307,7 @@ export function OrderPaymentPanel({
             onClick={() => submit.mutate()}
             className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-emerald-700 disabled:opacity-50"
           >
-            {submit.isPending ? <LoaderCircle className="size-4 animate-spin" /> : <ImageUp className="size-4" />}
+            {submit.isPending ? <Spinner className="size-4 animate-spin" /> : <ImageUp className="size-4" />}
             {submit.isPending ? 'Đang tải ảnh và gửi...' : 'Gửi xác nhận chuyển khoản'}
           </button>
         </div>
