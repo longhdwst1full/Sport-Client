@@ -1,10 +1,10 @@
 # Storefront Cart — maintenance note
 
-> **Document version:** 1.1.0
+> **Document version:** 2.0.0
 >
-> **Last updated:** 2026-09-14
+> **Last updated:** 2026-09-28
 >
-> **Change summary:** Thêm gộp giỏ vãng lai vào tài khoản khi đăng nhập/đăng ký trên cùng máy.
+> **Change summary:** Account cart đã là nguồn đồng bộ đa thiết bị; login/register merge guest rồi pull giỏ server.
 
 ## Phạm vi
 
@@ -34,7 +34,7 @@
 | Gọi lại lần hai cùng token | Không cộng thêm — giỏ vãng lai đã chuyển `CONVERTED` |
 | Token sai hoặc hết hạn | Không lỗi, trả giỏ tài khoản hiện tại |
 
-**Phạm vi có chủ đích:** chỉ gộp **trên cùng một trình duyệt**, vì token giỏ vãng lai nằm ở máy khách. **Không đồng bộ giỏ giữa nhiều thiết bị** — Owner đã quyết không làm.
+Guest token vẫn chỉ tồn tại trên cùng trình duyệt. Sau khi đăng nhập, `account cart` trên server là nguồn chung: thiết bị đẩy thay đổi qua API và lần đăng nhập ở thiết bị khác pull lại cùng giỏ.
 
 **Lỗi khi gộp không chặn đăng nhập.** Khách đã xác thực xong rồi; hỏng việc gộp giỏ thì cùng lắm mất giỏ tạm, không được làm mất phiên.
 
@@ -43,9 +43,10 @@
 | Dùng | Ở đâu |
 | --- | --- |
 | `mergeGuestCartIntoAccount` | `api/merge-guest-cart.ts` |
+| `getAccountCart`, `setAccountCartItem`, `removeAccountCartItem` | `api/cart-sync.ts` |
 | `createGuestCart`, `setGuestCartItem`, quote/reserve/confirm | `features/checkout/api/checkout.workflow.ts` |
 
-Mutation cập nhật/xoá dòng giỏ (`updateGuestCartItem`, `removeGuestCartItem` và bản Account) **chưa dùng**: giỏ hiển thị vẫn thuần Redux và Owner đã quyết không đồng bộ đa thiết bị. Ghi nhận theo `RULE-CTR-06`.
+`api/cart-sync.ts` reconcile từng dòng server, bỏ dòng không còn ở local, xử lý SKU ngừng bán và pull `account cart` về Redux sau đăng nhập. Redux giữ state tương tác của tab hiện tại; API là authority đồng bộ tài khoản.
 
 ## State owner
 
@@ -68,4 +69,6 @@ Persist allowlist: `productId, variantId, sku, productType, name, price, quantit
 
 | Version | Date | Change summary |
 | --- | --- | --- |
+| 2.0.0 | 2026-09-28 | Đồng bộ account cart đa thiết bị; merge guest rồi pull server cart sau auth. |
+| 1.1.0 | 2026-09-14 | Gộp guest cart vào account khi auth. |
 | 1.0.0 | 2026-09-13 | Tạo note, ghi nhận cart SDK chưa được nối. |

@@ -20,6 +20,7 @@ import {
   FileText,
   LoaderCircle,
   MapPin,
+  MessageSquarePlus,
   Package,
   PackageCheck,
   Phone,
@@ -53,6 +54,7 @@ import {
 } from '../model/order.constants';
 import { readGuestOrderAccessToken, retireGuestOrderAccessToken } from '../model/guest-order-access.store';
 import { OrderReturnCta } from '@/features/returns';
+import { ReviewFormDialog } from '@/features/reviews';
 import { OrderPaymentPanel } from '../components/order-payment-panel';
 
 function errorMessage(error: unknown): string {
@@ -147,6 +149,8 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
   const [showCancel, setShowCancel] = useState(false);
   const [copiedOrderNo, setCopiedOrderNo] = useState(false);
   const [showTimeline, setShowTimeline] = useState(false);
+  const [reviewingItem, setReviewingItem] = useState<{ id: string; productName: string }>();
+  const [submittedReviewItems, setSubmittedReviewItems] = useState<Set<string>>(() => new Set());
   const idempotencyRef = useRef<{ signature: string; key: string } | undefined>(undefined);
 
   const guestToken = useMemo(
@@ -641,6 +645,21 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
                           <strong className="block text-sm sm:text-base font-black text-slate-900">
                             {item.lineTotalLabel}
                           </strong>
+                          {isAuthenticated && order.status === 'COMPLETED' && (
+                            submittedReviewItems.has(item.id) ? (
+                              <span className="mt-2 inline-flex items-center gap-1 text-xs font-bold text-emerald-700">
+                                <CheckCircle2 className="size-3.5" /> Đang chờ duyệt
+                              </span>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={() => setReviewingItem({ id: item.id, productName: item.productName })}
+                                className="mt-2 inline-flex items-center gap-1 rounded-lg border border-emerald-200 px-2.5 py-1.5 text-xs font-bold text-emerald-700 transition hover:bg-emerald-50"
+                              >
+                                <MessageSquarePlus className="size-3.5" /> Đánh giá
+                              </button>
+                            )
+                          )}
                         </div>
                       </div>
                     ))}
@@ -846,6 +865,17 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
           </>
         ) : null}
       </main>
+      {reviewingItem && (
+        <ReviewFormDialog
+          orderItemId={reviewingItem.id}
+          productName={reviewingItem.productName}
+          onClose={() => setReviewingItem(undefined)}
+          onSubmitted={(orderItemId) => {
+            setSubmittedReviewItems((current) => new Set(current).add(orderItemId));
+            setReviewingItem(undefined);
+          }}
+        />
+      )}
     </StorefrontLayout>
   );
 }

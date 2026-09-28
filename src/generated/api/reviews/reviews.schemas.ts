@@ -11,6 +11,102 @@ export interface ProductReviewListDto {
   averageRating: number;
 }
 
+export interface CreateMediaUploadDto {
+  fileName: string;
+  contentType: ImageMimeType;
+  /**
+   * @minimum 1
+   * @maximum 10485760
+   */
+  sizeBytes: number;
+}
+
+export interface SignedMediaUploadDto {
+  provider: MediaProvider;
+  uploadUrl: string;
+  cloudName: string;
+  apiKey: string;
+  timestamp: number;
+  signature: string;
+  folder: string;
+  publicId: string;
+  allowedFormats: string[];
+  maxBytes: number;
+  overwrite: boolean;
+  uniqueFilename: boolean;
+  expiresAt: string;
+}
+
+export interface ErrorResponseDto {
+  statusCode: number;
+  code: string;
+  message: string;
+  details?: ErrorDetailDto[];
+  path: string;
+  method: string;
+  timestamp: string;
+  requestId?: string;
+}
+
+export interface FinalizeMediaUploadDto {
+  publicId: string;
+  version: number;
+  signature: string;
+}
+
+export type MediaAssetDtoStatus = (typeof MediaAssetDtoStatus)[keyof typeof MediaAssetDtoStatus];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const MediaAssetDtoStatus = {
+  ACTIVE: 'ACTIVE',
+} as const;
+
+export interface MediaAssetDto {
+  /** @pattern ^[1-9][0-9]*$ */
+  id: string;
+  provider: MediaProvider;
+  providerAssetId: string;
+  publicId: string;
+  secureUrl: string;
+  thumbnailUrl: string;
+  mimeType: string;
+  width: number;
+  height: number;
+  sizeBytes: number;
+  format: string;
+  /** Cloudinary resource version used during provider verification */
+  providerVersion: number;
+  status: MediaAssetDtoStatus;
+}
+
+export interface CreateCustomerReviewDto {
+  /**
+   * Dòng hàng thuộc đơn COMPLETED của khách đang đăng nhập
+   * @pattern ^[1-9][0-9]*$
+   */
+  orderItemId: string;
+  /**
+   * @minimum 1
+   * @maximum 5
+   */
+  rating: number;
+  /**
+   * @minLength 3
+   * @maxLength 255
+   */
+  title: string;
+  /**
+   * @minLength 10
+   * @maxLength 5000
+   */
+  content: string;
+  /**
+   * Media asset đã finalize bởi chính tài khoản khách
+   * @maxItems 5
+   */
+  mediaAssetIds?: string[];
+}
+
 export interface ProductReviewDto {
   id: string;
   productSlug: string;
@@ -23,24 +119,49 @@ export interface ProductReviewDto {
   title: string;
   content: string;
   verifiedPurchase: boolean;
-  /** Đánh giá hiển thị ngay khi gửi; REJECTED là đã bị Admin gỡ khỏi website */
+  /** Đánh giá mới ở PENDING; chỉ APPROVED được hiển thị công khai */
   status: ReviewModerationStatus;
   /** @minimum 0 */
   version: number;
   moderationReason?: string;
   moderatedAt?: string;
   comments: ReviewCommentDto[];
+  media: ReviewMediaDto[];
   createdAt: string;
 }
 
+export type ImageMimeType = (typeof ImageMimeType)[keyof typeof ImageMimeType];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ImageMimeType = {
+  'image/jpeg': 'image/jpeg',
+  'image/png': 'image/png',
+  'image/webp': 'image/webp',
+  'image/avif': 'image/avif',
+} as const;
+
+export type MediaProvider = (typeof MediaProvider)[keyof typeof MediaProvider];
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const MediaProvider = {
+  CLOUDINARY: 'CLOUDINARY',
+} as const;
+
+export interface ErrorDetailDto {
+  field?: string;
+  code: string;
+  message: string;
+}
+
 /**
- * Đánh giá hiển thị ngay khi gửi; REJECTED là đã bị Admin gỡ khỏi website
+ * Đánh giá mới ở PENDING; chỉ APPROVED được hiển thị công khai
  */
 export type ReviewModerationStatus =
   (typeof ReviewModerationStatus)[keyof typeof ReviewModerationStatus];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ReviewModerationStatus = {
+  PENDING: 'PENDING',
   APPROVED: 'APPROVED',
   REJECTED: 'REJECTED',
 } as const;
@@ -60,4 +181,14 @@ export interface ReviewCommentDto {
   authorName: string;
   content: string;
   createdAt: string;
+}
+
+export interface ReviewMediaDto {
+  /** @pattern ^[1-9][0-9]*$ */
+  id: string;
+  /** @pattern ^[1-9][0-9]*$ */
+  mediaAssetId: string;
+  url: string;
+  thumbnailUrl: string;
+  sortOrder: number;
 }

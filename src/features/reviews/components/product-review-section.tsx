@@ -1,9 +1,9 @@
 'use client';
 
+import Image from 'next/image';
 import { useMemo, useState } from 'react';
 import { MessageCircle, ShieldCheck, Star } from 'lucide-react';
 import { Skeleton, SkeletonText } from '@/foundation/components/feedback';
-import { STORE_CONTACT } from '@/shared/constants';
 import { useProductReviews } from '../hooks/use-product-reviews';
 import type { ReviewView } from '../model/review.mapper';
 
@@ -158,6 +158,16 @@ export function ProductReviewSection({
                     <h3 className="mt-2 text-sm font-black text-ink">{review.title}</h3>
                     <p className="mt-1.5 text-sm leading-relaxed text-slate-600">{review.content}</p>
 
+                    {review.media.length > 0 && (
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {review.media.map((item) => (
+                          <a key={item.id} href={item.url} target="_blank" rel="noreferrer" className="relative size-20 overflow-hidden rounded-xl border border-slate-200">
+                            <Image src={item.thumbnailUrl} alt={`Ảnh thực tế từ ${review.authorName}`} fill sizes="80px" className="object-cover" />
+                          </a>
+                        ))}
+                      </div>
+                    )}
+
                     {review.reply && (
                       <div className="mt-4 rounded-2xl border border-slate-100 bg-slate-50/80 p-4">
                         <p className="flex items-center gap-1.5 text-xs font-bold text-emerald-700">
@@ -177,15 +187,10 @@ export function ProductReviewSection({
           </>
         )}
 
-        {/*
-          CONTRACT: chưa có endpoint gửi đánh giá từ Storefront — `Storefront Reviews`
-          mới chỉ có GET. Không dựng form gửi giả rồi tự sinh phản hồi của cửa hàng,
-          vì như vậy khách tin là đã gửi được trong khi không có gì tới hệ thống.
-        */}
         <div className="mt-8 rounded-2xl border border-dashed border-slate-300 bg-slate-50/60 p-5 text-center">
           <p className="text-sm font-bold text-ink">Bạn đã mua sản phẩm này?</p>
           <p className="mt-1 text-xs text-slate-500">
-            Gọi {STORE_CONTACT.primaryHotline} để gửi đánh giá. Chúng tôi sẽ đăng sau khi kiểm duyệt.
+            Mở đơn hàng đã hoàn tất, chọn sản phẩm và gửi đánh giá. Nội dung sẽ hiển thị sau khi được duyệt.
           </p>
         </div>
       </div>

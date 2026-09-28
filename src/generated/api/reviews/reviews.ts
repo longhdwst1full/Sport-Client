@@ -5,23 +5,35 @@
  * Contract for storefront and admin applications
  * OpenAPI spec version: 1.0.0
  */
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
   DefinedUseQueryResult,
+  MutationFunction,
   QueryClient,
   QueryFunction,
   QueryKey,
   UndefinedInitialDataOptions,
+  UseMutationOptions,
+  UseMutationResult,
   UseQueryOptions,
   UseQueryResult,
 } from '@tanstack/react-query';
 
-import type { ProductReviewListDto } from './reviews.schemas';
+import type {
+  CreateCustomerReviewDto,
+  CreateMediaUploadDto,
+  ErrorResponseDto,
+  FinalizeMediaUploadDto,
+  MediaAssetDto,
+  ProductReviewDto,
+  ProductReviewListDto,
+  SignedMediaUploadDto,
+} from './reviews.schemas';
 
 import { apiFetcher } from '../../../lib/api/fetcher';
-import type { ErrorType } from '../../../lib/api/fetcher';
+import type { ErrorType, BodyType } from '../../../lib/api/fetcher';
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
@@ -148,3 +160,279 @@ export function useListProductReviews<
 
   return query;
 }
+
+/**
+ * @summary Tạo chữ ký upload ảnh đánh giá cho khách đã đăng nhập
+ */
+export const createAccountReviewMediaUpload = (
+  createMediaUploadDto: BodyType<CreateMediaUploadDto>,
+  options?: SecondParameter<typeof apiFetcher>,
+  signal?: AbortSignal,
+) => {
+  return apiFetcher<SignedMediaUploadDto>(
+    {
+      url: `/api/v1/account/reviews/uploads/signature`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: createMediaUploadDto,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getCreateAccountReviewMediaUploadMutationOptions = <
+  TError = ErrorType<ErrorResponseDto | ErrorResponseDto>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createAccountReviewMediaUpload>>,
+    TError,
+    { data: BodyType<CreateMediaUploadDto> },
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetcher>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createAccountReviewMediaUpload>>,
+  TError,
+  { data: BodyType<CreateMediaUploadDto> },
+  TContext
+> => {
+  const mutationKey = ['createAccountReviewMediaUpload'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createAccountReviewMediaUpload>>,
+    { data: BodyType<CreateMediaUploadDto> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return createAccountReviewMediaUpload(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CreateAccountReviewMediaUploadMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createAccountReviewMediaUpload>>
+>;
+export type CreateAccountReviewMediaUploadMutationBody = BodyType<CreateMediaUploadDto>;
+export type CreateAccountReviewMediaUploadMutationError = ErrorType<
+  ErrorResponseDto | ErrorResponseDto
+>;
+
+/**
+ * @summary Tạo chữ ký upload ảnh đánh giá cho khách đã đăng nhập
+ */
+export const useCreateAccountReviewMediaUpload = <
+  TError = ErrorType<ErrorResponseDto | ErrorResponseDto>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof createAccountReviewMediaUpload>>,
+      TError,
+      { data: BodyType<CreateMediaUploadDto> },
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof createAccountReviewMediaUpload>>,
+  TError,
+  { data: BodyType<CreateMediaUploadDto> },
+  TContext
+> => {
+  const mutationOptions = getCreateAccountReviewMediaUploadMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * @summary Xác minh ảnh đánh giá đã upload và tạo media asset thuộc khách
+ */
+export const finalizeAccountReviewMediaUpload = (
+  finalizeMediaUploadDto: BodyType<FinalizeMediaUploadDto>,
+  options?: SecondParameter<typeof apiFetcher>,
+  signal?: AbortSignal,
+) => {
+  return apiFetcher<MediaAssetDto>(
+    {
+      url: `/api/v1/account/reviews/uploads/finalize`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: finalizeMediaUploadDto,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getFinalizeAccountReviewMediaUploadMutationOptions = <
+  TError = ErrorType<ErrorResponseDto | ErrorResponseDto | ErrorResponseDto>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof finalizeAccountReviewMediaUpload>>,
+    TError,
+    { data: BodyType<FinalizeMediaUploadDto> },
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetcher>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof finalizeAccountReviewMediaUpload>>,
+  TError,
+  { data: BodyType<FinalizeMediaUploadDto> },
+  TContext
+> => {
+  const mutationKey = ['finalizeAccountReviewMediaUpload'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof finalizeAccountReviewMediaUpload>>,
+    { data: BodyType<FinalizeMediaUploadDto> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return finalizeAccountReviewMediaUpload(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type FinalizeAccountReviewMediaUploadMutationResult = NonNullable<
+  Awaited<ReturnType<typeof finalizeAccountReviewMediaUpload>>
+>;
+export type FinalizeAccountReviewMediaUploadMutationBody = BodyType<FinalizeMediaUploadDto>;
+export type FinalizeAccountReviewMediaUploadMutationError = ErrorType<
+  ErrorResponseDto | ErrorResponseDto | ErrorResponseDto
+>;
+
+/**
+ * @summary Xác minh ảnh đánh giá đã upload và tạo media asset thuộc khách
+ */
+export const useFinalizeAccountReviewMediaUpload = <
+  TError = ErrorType<ErrorResponseDto | ErrorResponseDto | ErrorResponseDto>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof finalizeAccountReviewMediaUpload>>,
+      TError,
+      { data: BodyType<FinalizeMediaUploadDto> },
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof finalizeAccountReviewMediaUpload>>,
+  TError,
+  { data: BodyType<FinalizeMediaUploadDto> },
+  TContext
+> => {
+  const mutationOptions = getFinalizeAccountReviewMediaUploadMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+/**
+ * @summary Khách gửi đánh giá cho một dòng hàng thuộc đơn đã hoàn tất
+ */
+export const createAccountProductReview = (
+  createCustomerReviewDto: BodyType<CreateCustomerReviewDto>,
+  options?: SecondParameter<typeof apiFetcher>,
+  signal?: AbortSignal,
+) => {
+  return apiFetcher<ProductReviewDto>(
+    {
+      url: `/api/v1/account/reviews`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: createCustomerReviewDto,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getCreateAccountProductReviewMutationOptions = <
+  TError = ErrorType<ErrorResponseDto | ErrorResponseDto | ErrorResponseDto | ErrorResponseDto>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createAccountProductReview>>,
+    TError,
+    { data: BodyType<CreateCustomerReviewDto> },
+    TContext
+  >;
+  request?: SecondParameter<typeof apiFetcher>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createAccountProductReview>>,
+  TError,
+  { data: BodyType<CreateCustomerReviewDto> },
+  TContext
+> => {
+  const mutationKey = ['createAccountProductReview'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createAccountProductReview>>,
+    { data: BodyType<CreateCustomerReviewDto> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return createAccountProductReview(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CreateAccountProductReviewMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createAccountProductReview>>
+>;
+export type CreateAccountProductReviewMutationBody = BodyType<CreateCustomerReviewDto>;
+export type CreateAccountProductReviewMutationError = ErrorType<
+  ErrorResponseDto | ErrorResponseDto | ErrorResponseDto | ErrorResponseDto
+>;
+
+/**
+ * @summary Khách gửi đánh giá cho một dòng hàng thuộc đơn đã hoàn tất
+ */
+export const useCreateAccountProductReview = <
+  TError = ErrorType<ErrorResponseDto | ErrorResponseDto | ErrorResponseDto | ErrorResponseDto>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof createAccountProductReview>>,
+      TError,
+      { data: BodyType<CreateCustomerReviewDto> },
+      TContext
+    >;
+    request?: SecondParameter<typeof apiFetcher>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof createAccountProductReview>>,
+  TError,
+  { data: BodyType<CreateCustomerReviewDto> },
+  TContext
+> => {
+  const mutationOptions = getCreateAccountProductReviewMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};

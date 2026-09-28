@@ -14,6 +14,7 @@ export interface ReviewView {
   content: string;
   verifiedPurchase: boolean;
   dateLabel: string;
+  media: Array<{ id: string; url: string; thumbnailUrl: string }>;
   reply?: ReviewReplyView;
 }
 
@@ -40,6 +41,7 @@ export function toReviewView(dto: ProductReviewDto): ReviewView {
     content: dto.content,
     verifiedPurchase: dto.verifiedPurchase,
     dateLabel: dateFormatter.format(new Date(dto.createdAt)),
+    media: dto.media.map((item) => ({ id: item.id, url: item.url, thumbnailUrl: item.thumbnailUrl })),
     reply: officialReply
       ? {
           authorName: officialReply.authorName,
