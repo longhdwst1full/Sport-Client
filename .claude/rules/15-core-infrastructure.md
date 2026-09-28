@@ -42,3 +42,7 @@ AuthService.save(tokens); // Max-Age = expiresIn, SameSite=Lax, Secure trên htt
 ## RULE-CORE-05: Không cache dữ liệu riêng tư trong core (P0)
 
 Token, PII, payload thanh toán không được ghi vào cache dùng chung (`03-pwa-security-caching.md`).
+
+## RULE-CORE-06: `core/auth` sở hữu token store (P0)
+
+`core/auth/customer-auth-token.store.ts` là nơi duy nhất giữ auth token store (dùng bởi `lib/api/fetcher.ts` và `features/auth`). `features/auth` không tự định nghĩa token store; nó gọi `core/auth` rồi expose hook/API nghiệp vụ (login/logout/refresh) qua barrel của feature.

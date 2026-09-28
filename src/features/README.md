@@ -1,10 +1,10 @@
 # Storefront features — maintenance guide
 
-> **Document version:** 1.1.0
+> **Document version:** 1.2.0
 >
-> **Last updated:** 2026-09-24
+> **Last updated:** 2026-09-28
 >
-> **Change summary:** Thêm feature `returns` (yêu cầu đổi trả của khách) vào bản đồ.
+> **Change summary:** Thêm feature `address`, `site-config`; ghi rõ ma trận feature → feature và barrel `index.ts` là public API bắt buộc.
 
 ## Luồng phụ thuộc chuẩn
 
@@ -17,7 +17,7 @@ Next.js app route (server-first)
 ```
 
 - `app/` khai báo route, metadata và boundary của Next.js; không đặt commerce workflow dài tại đây.
-- `features/<domain>` sở hữu UI và orchestration của một domain.
+- `features/<domain>` sở hữu UI và orchestration của một domain. `features/<domain>/index.ts` là public API duy nhất; mọi import từ ngoài feature (kể cả `widgets`, kể cả feature khác) phải qua barrel này, không deep-import `model/`, `components/`, `hooks/` trực tiếp.
 - `widgets/` chỉ dành cho khối ghép nhiều feature hoặc xuất hiện xuyên nhiều route.
 - `shared/` chứa thành phần trung lập thật sự; không chuyển policy catalog/cart/checkout vào shared.
 - `src/generated/api` là output Orval, read-only.
@@ -34,6 +34,21 @@ Next.js app route (server-first)
 | `profile` | Hồ sơ/địa chỉ customer | Dữ liệu private không cache offline công khai. |
 | `returns` | Khách tạo/theo dõi/huỷ yêu cầu trả hàng | Luật lấy từ API eligibility; route `/returns` network-only trong SW. Xem README trong feature. |
 | `content` / `reviews` | Bài viết và social proof | Public read; nội dung rich text phải sanitize theo boundary hiện tại. |
+| `address` | Tra cứu địa giới hành chính VN, chọn/định dạng địa chỉ giao hàng | Dùng bởi `checkout`, `profile`; không giữ policy đơn hàng. |
+| `site-config` | Tham số hệ thống công khai (public system parameter) | Chỉ đọc, cache ngắn hạn qua TanStack Query. |
+
+## Ma trận feature → feature
+
+Chỉ được import feature khác qua barrel `index.ts` của feature đích, và chỉ theo các cạnh sau:
+
+| Feature | Được phụ thuộc |
+| --- | --- |
+| mọi feature | `auth`, `cart` |
+| `checkout` | `orders`, `address` |
+| `orders` | `returns`, `reviews` |
+| `home` | `catalog`, `content`, `reviews`, `promotions` |
+
+Không có cạnh nào khác. `auth` và `cart` không phụ thuộc feature nào ngoài nhau.
 
 ## State ownership
 
@@ -69,5 +84,6 @@ Không sao chép cùng một API payload vào Redux và TanStack Query. Nếu st
 
 | Version | Date | Change summary | Source |
 | --- | --- | --- | --- |
+| 1.2.0 | 2026-09-28 | Thêm feature `address`, `site-config`; ma trận feature → feature; bắt buộc barrel `index.ts`. | client-restructure |
 | 1.1.0 | 2026-09-24 | Thêm feature `returns`. | API-20260924-RETURN-EVIDENCE-IMAGES |
 | 1.0.0 | 2026-09-09 | Tạo bản đồ và quy tắc maintenance cho Storefront features. | DOC-20260909-FEATURE-MAINTENANCE-NOTES |

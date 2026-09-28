@@ -30,4 +30,8 @@ Cấm một module `shared` trộn chính sách cart + customer + catalog + chec
 
 ## RULE-SHR-04: `src/components` đã đóng băng (P1)
 
-Chỉ còn giá trị tương thích. Component mới đi vào `foundation` / `shared/components` / `features/<domain>/components`, không thêm vào `src/components`.
+`src/components` đã bị gỡ bỏ hoàn toàn. Component mới đi vào `foundation` / `shared/components` / `features/<domain>/components`, không tạo lại `src/components`.
+
+## RULE-SHR-05: Không đặt logic phụ thuộc SDK trong `shared` (P0)
+
+`shared/services`, `shared/hooks` không được gọi `@/generated/api/<domain>`. Hook/service phụ thuộc một domain SDK cụ thể (vd. tra cứu địa chỉ hành chính, tham số hệ thống công khai) chuyển vào feature sở hữu domain đó (`features/address`, `features/site-config`).
