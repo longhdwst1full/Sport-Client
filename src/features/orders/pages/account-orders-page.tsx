@@ -6,16 +6,12 @@ import { useState } from 'react';
 import { useCustomerAuth } from '@/features/auth';
 import { useListAccountOrders } from '@/generated/api/orders/orders';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
-import { ApiError } from '@/lib/api/fetcher';
+import { apiErrorMessage } from '@/lib/api/error-message';
 import { vndMoney } from '@/shared/format/money';
 import { orderStatusLabels, paymentStatusLabels } from '../model/order.constants';
 
 function errorMessage(error: unknown): string {
-  if (error instanceof ApiError && error.payload && typeof error.payload === 'object' && 'message' in error.payload) {
-    const value = (error.payload as { message?: unknown }).message;
-    if (typeof value === 'string') return value;
-  }
-  return 'Không tải được danh sách đơn hàng. Vui lòng thử lại.';
+  return apiErrorMessage(error, 'Không tải được danh sách đơn hàng. Vui lòng thử lại.');
 }
 
 export function AccountOrdersPage() {

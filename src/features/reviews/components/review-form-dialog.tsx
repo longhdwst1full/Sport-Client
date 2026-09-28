@@ -4,17 +4,16 @@ import Image from 'next/image';
 import { FormEvent, useRef, useState } from 'react';
 import { ImagePlus, LoaderCircle, Star, X } from 'lucide-react';
 import { createAccountProductReview } from '@/generated/api/reviews/reviews';
-import { ApiError } from '@/lib/api/fetcher';
+import { apiErrorMessage } from '@/lib/api/error-message';
 import { uploadReviewMedia, type UploadedReviewMedia } from '../api/review-media-upload';
 
 const MAX_MEDIA = 5;
 
 function messageOf(error: unknown): string {
-  if (error instanceof ApiError && error.payload && typeof error.payload === 'object' && 'message' in error.payload) {
-    const message = (error.payload as { message?: unknown }).message;
-    if (typeof message === 'string') return message;
-  }
-  return error instanceof Error ? error.message : 'Không thể gửi đánh giá. Vui lòng thử lại.';
+  return apiErrorMessage(
+    error,
+    error instanceof Error ? error.message : 'Không thể gửi đánh giá. Vui lòng thử lại.',
+  );
 }
 
 export function ReviewFormDialog({

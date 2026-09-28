@@ -9,15 +9,7 @@ import {
 } from '@/generated/api/customer/customer';
 import { useChangeCustomerPassword } from '@/generated/api/auth/auth';
 import type { CustomerProfileDto } from '@/generated/api/customer/customer.schemas';
-import { ApiError } from '@/lib/api/fetcher';
-
-function messageOf(error: unknown, fallback: string): string {
-  if (error instanceof ApiError && error.payload && typeof error.payload === 'object') {
-    const message = (error.payload as { message?: unknown }).message;
-    if (typeof message === 'string') return message;
-  }
-  return fallback;
-}
+import { apiErrorMessage as messageOf } from '@/lib/api/error-message';
 
 /**
  * Cài đặt tài khoản: sửa hồ sơ và đổi mật khẩu.

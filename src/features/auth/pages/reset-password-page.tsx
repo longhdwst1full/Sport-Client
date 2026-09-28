@@ -5,14 +5,10 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { AlertTriangle, CheckCircle2, KeyRound, Loader2 } from 'lucide-react';
 import { useResetCustomerPassword } from '@/generated/api/auth/auth';
-import { ApiError } from '@/lib/api/fetcher';
+import { apiErrorMessage } from '@/lib/api/error-message';
 
 function messageOf(error: unknown): string {
-  if (error instanceof ApiError && error.payload && typeof error.payload === 'object') {
-    const message = (error.payload as { message?: unknown }).message;
-    if (typeof message === 'string') return message;
-  }
-  return 'Không đặt lại được mật khẩu. Vui lòng thử lại.';
+  return apiErrorMessage(error, 'Không đặt lại được mật khẩu. Vui lòng thử lại.');
 }
 
 /**

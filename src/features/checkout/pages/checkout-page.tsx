@@ -19,7 +19,7 @@ import { paymentRequest } from '@/features/orders/api/payment-request';
 import { readGuestOrderAccessToken } from '@/features/orders/model/guest-order-access.store';
 import { STORE_POLICY_PAGES } from '@/shared/constants';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
-import { ApiError } from '@/lib/api/fetcher';
+import { apiErrorMessage } from '@/lib/api/error-message';
 import { useToast } from '@/shared/components/global-toast';
 import { usePublicNumberParameter } from '@/shared/hooks';
 import { confirmCheckout, placeOrder, prepareCheckout, reloadCheckout, type CheckoutContext } from '../api/checkout.workflow';
@@ -66,11 +66,10 @@ function toSelectedAddress(saved: CustomerAddressDto): SelectedAddressData {
 }
 
 function messageOf(error: unknown): string {
-  if (error instanceof ApiError && error.payload && typeof error.payload === 'object' && 'message' in error.payload) {
-    const message = (error.payload as { message?: unknown }).message;
-    if (typeof message === 'string') return message;
-  }
-  return error instanceof Error ? error.message : 'Không thể xử lý yêu cầu. Vui lòng thử lại.';
+  return apiErrorMessage(
+    error,
+    error instanceof Error ? error.message : 'Không thể xử lý yêu cầu. Vui lòng thử lại.',
+  );
 }
 
 export function CheckoutPage() {

@@ -12,7 +12,7 @@ import {
   submitGuestPaymentEvidence,
 } from '@/generated/api/payments/payments';
 import type { PaymentDetailDto } from '@/generated/api/payments/payments.schemas';
-import { ApiError } from '@/lib/api/fetcher';
+import { apiErrorMessage } from '@/lib/api/error-message';
 import { uploadPaymentEvidence, type VerifiedPaymentEvidenceUpload } from '../api/payment-evidence-upload';
 import { paymentRequest } from '../api/payment-request';
 import { toPaymentDetailView } from '../model/payment.mapper';
@@ -31,12 +31,10 @@ interface PendingUpload {
 }
 
 function errorMessage(error: unknown): string {
-  if (error instanceof ApiError && error.payload && typeof error.payload === 'object' && 'message' in error.payload) {
-    const value = (error.payload as { message?: unknown }).message;
-    if (typeof value === 'string') return value;
-  }
-  if (error instanceof Error && error.message) return error.message;
-  return 'Không xử lý được bằng chứng thanh toán. Vui lòng thử lại.';
+  const fallback = error instanceof Error && error.message
+    ? error.message
+    : 'Không xử lý được bằng chứng thanh toán. Vui lòng thử lại.';
+  return apiErrorMessage(error, fallback);
 }
 
 export function OrderPaymentPanel({

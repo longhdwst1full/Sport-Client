@@ -49,7 +49,7 @@ import {
 } from '@/generated/api/orders/orders';
 import type { OrderDetailDto } from '@/generated/api/orders/orders.schemas';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
-import { ApiError } from '@/lib/api/fetcher';
+import { apiErrorMessage } from '@/lib/api/error-message';
 import { PRODUCT_PLACEHOLDER_IMAGE } from '@/shared/constants';
 import { toOrderDetailView } from '../model/order.mapper';
 import {
@@ -66,11 +66,7 @@ import { useAppDispatch } from '@/app/store/hooks';
 import { addCartItem } from '@/app/store/cart.slice';
 
 function errorMessage(error: unknown): string {
-  if (error instanceof ApiError && error.payload && typeof error.payload === 'object' && 'message' in error.payload) {
-    const value = (error.payload as { message?: unknown }).message;
-    if (typeof value === 'string') return value;
-  }
-  return 'Không tải được đơn hàng. Vui lòng kiểm tra tài khoản hoặc đường dẫn truy cập.';
+  return apiErrorMessage(error, 'Không tải được đơn hàng. Vui lòng kiểm tra tài khoản hoặc đường dẫn truy cập.');
 }
 
 const CANCEL_REASONS = [
