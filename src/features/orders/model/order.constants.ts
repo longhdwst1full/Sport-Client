@@ -1,49 +1,27 @@
-/** Mã trạng thái thanh toán. Khớp `PAYMENT_STATUS` ở backend. */
-export const PAYMENT_STATUS = {
-  PENDING: 'PENDING',
-  AWAITING_CONFIRMATION: 'AWAITING_CONFIRMATION',
-  NEED_REVIEW: 'NEED_REVIEW',
-  SUCCESS: 'SUCCESS',
-  FAILED: 'FAILED',
-  CANCELLED: 'CANCELLED',
-  REFUNDED: 'REFUNDED',
-} as const;
+import { OrderFulfillmentStatus, OrderStatus } from '@/generated/api/orders/orders.schemas';
+import { PaymentMethod, PaymentStatus } from '@/generated/api/payments/payments.schemas';
 
-export type PaymentStatus = (typeof PAYMENT_STATUS)[keyof typeof PAYMENT_STATUS];
+/** Mã trạng thái thanh toán. Re-export enum generated từ contract (`payments.schemas`). */
+export const PAYMENT_STATUS = PaymentStatus;
+export type { PaymentStatus };
 
-/** Mã phương thức thanh toán. Khớp ràng buộc `payments_method_check` ở database. */
-export const PAYMENT_METHOD = {
-  COD: 'COD',
-  BANK_TRANSFER: 'BANK_TRANSFER',
-  VNPAY: 'VNPAY',
-  CASH: 'CASH',
-} as const;
+/** Mã phương thức thanh toán. Re-export enum generated từ contract (`payments.schemas`). */
+export const PAYMENT_METHOD = PaymentMethod;
+export type { PaymentMethod };
 
-export type PaymentMethod = (typeof PAYMENT_METHOD)[keyof typeof PAYMENT_METHOD];
+/** Mã trạng thái giao hàng. Re-export enum generated từ contract (`orders.schemas`). */
+export const FULFILLMENT_STATUS = OrderFulfillmentStatus;
+export type { OrderFulfillmentStatus };
 
-/** Mã trạng thái giao hàng dùng ở Storefront. */
-export const FULFILLMENT_STATUS = {
-  PENDING: 'PENDING',
-  PICKING: 'PICKING',
-  PACKED: 'PACKED',
-  SHIPPED: 'SHIPPED',
-  DELIVERED: 'DELIVERED',
-  CANCELLED: 'CANCELLED',
-} as const;
+/** Mã trạng thái đơn hàng. Re-export enum generated từ contract (`orders.schemas`). */
+export const ORDER_STATUS = OrderStatus;
+export type { OrderStatus };
 
-/** Mã trạng thái đơn hàng dùng ở Storefront. */
-export const ORDER_STATUS = {
-  PENDING_CONFIRMATION: 'PENDING_CONFIRMATION',
-  CONFIRMED: 'CONFIRMED',
-  PICKING: 'PICKING',
-  PACKED: 'PACKED',
-  SHIPPED: 'SHIPPED',
-  DELIVERED: 'DELIVERED',
-  COMPLETED: 'COMPLETED',
-  CANCELLED: 'CANCELLED',
-} as const;
-
-export const orderStatusLabels: Record<string, string> = {
+/**
+ * Nhãn hiển thị cho khách. Kiểu `Record<Enum, …>` bắt lỗi compile khi contract
+ * thêm trạng thái mà quên nhãn (theo đúng pattern `returns/model/return.constants.ts`).
+ */
+export const orderStatusLabels: Record<OrderStatus, string> = {
   PENDING_CONFIRMATION: 'Chờ xác nhận',
   CONFIRMED: 'Đã xác nhận',
   PICKING: 'Đang lấy hàng',
@@ -54,13 +32,25 @@ export const orderStatusLabels: Record<string, string> = {
   CANCELLED: 'Đã hủy',
 };
 
-export const paymentStatusLabels: Record<string, string> = {
+export const paymentStatusLabels: Record<PaymentStatus, string> = {
   PENDING: 'Chờ thanh toán',
   AWAITING_CONFIRMATION: 'Chờ đối soát',
+  NEED_REVIEW: 'Cần kiểm tra lại',
   SUCCESS: 'Đã thanh toán',
   FAILED: 'Thanh toán thất bại',
   CANCELLED: 'Đã hủy thanh toán',
   REFUNDED: 'Đã hoàn tiền',
+};
+
+export const fulfillmentStatusLabels: Record<OrderFulfillmentStatus, string> = {
+  PENDING: 'Chờ xử lý',
+  PICKING: 'Đang lấy hàng',
+  PACKED: 'Đã đóng gói',
+  SHIPPED: 'Đang giao hàng',
+  DELIVERED: 'Đã giao',
+  FAILED: 'Giao hàng thất bại',
+  RETURNED: 'Đã hoàn về kho',
+  CANCELLED: 'Đã hủy',
 };
 
 /**
