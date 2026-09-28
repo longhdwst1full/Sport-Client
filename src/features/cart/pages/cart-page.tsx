@@ -5,7 +5,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowLeft, Minus, Plus, ShoppingBag, Trash2, ShieldCheck, RotateCcw, Truck, Sparkles } from 'lucide-react';
 import { useCartActions, useCartItems } from '../hooks/use-cart';
-import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { Breadcrumb } from '@/foundation/components/navigation';
 import { vndMoney } from '@/shared/format/money';
 import { PRODUCT_PLACEHOLDER_IMAGE } from '@/shared/constants';
@@ -77,7 +76,6 @@ export function CartPage() {
   };
 
   return (
-    <StorefrontLayout>
       <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-10">
         <Breadcrumb
           className="mb-6"
@@ -316,7 +314,6 @@ export function CartPage() {
           </div>
         )}
       </main>
-    </StorefrontLayout>
   );
 }
 

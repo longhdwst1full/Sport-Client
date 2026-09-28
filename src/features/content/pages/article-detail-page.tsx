@@ -1,7 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowLeft, CalendarDays, Clock, Share2 } from 'lucide-react';
-import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { Breadcrumb } from '@/foundation/components/navigation';
 import type { ArticleDetailView, ContentPostView } from '../model/content-post.mapper';
 import { ArticleReadingProgress } from '../components/article-reading-progress';
@@ -20,7 +19,7 @@ export function ArticleDetailPage({
   const tocHeadings = extractTocHeadings(article.blocks);
 
   return (
-    <StorefrontLayout>
+    <>
       {/* Scroll Reading Progress Bar */}
       <ArticleReadingProgress />
 
@@ -147,6 +146,6 @@ export function ArticleDetailPage({
           <ArticleRelatedPosts related={related} />
         </main>
       </div>
-    </StorefrontLayout>
+    </>
   );
 }

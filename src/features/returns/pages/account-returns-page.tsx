@@ -5,7 +5,6 @@ import { useState } from 'react';
 import { ChevronLeft, ChevronRight, LoaderCircle, RotateCcw } from 'lucide-react';
 import { useCustomerAuth } from '@/features/auth';
 import { useListAccountReturns } from '@/generated/api/returns/returns';
-import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { formatDateTime } from '@/shared/format/date-time';
 import {
   RETURN_FIELD_LABELS,
@@ -26,7 +25,6 @@ export function AccountReturnsPage() {
   const totalPages = returns.data ? Math.ceil(returns.data.total / RETURN_PAGE_SIZE) : 1;
 
   return (
-    <StorefrontLayout>
       <main className="mx-auto min-h-[60vh] max-w-6xl px-4 py-10 sm:px-6">
         <div className="mb-7">
           <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-700">Tài khoản</p>
@@ -86,6 +84,5 @@ export function AccountReturnsPage() {
           </nav>
         )}
       </main>
-    </StorefrontLayout>
   );
 }

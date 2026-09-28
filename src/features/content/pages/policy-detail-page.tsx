@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { ArrowLeft, CalendarDays } from 'lucide-react';
-import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { Breadcrumb } from '@/foundation/components/navigation';
 import type { PolicyDetailView, PolicySummaryView } from '../model/policy.mapper';
 
@@ -12,7 +11,6 @@ export function PolicyDetailPage({
   others: PolicySummaryView[];
 }) {
   return (
-    <StorefrontLayout>
       <div className="bg-stone-50/60 pb-20 pt-8">
         <main className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <Breadcrumb
@@ -69,6 +67,5 @@ export function PolicyDetailPage({
           )}
         </main>
       </div>
-    </StorefrontLayout>
   );
 }

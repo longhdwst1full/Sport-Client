@@ -12,7 +12,6 @@ import {
   Building,
   ShieldCheck,
 } from 'lucide-react';
-import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { Breadcrumb } from '@/foundation/components/navigation';
 import { STORE_CONFIG, STORE_CONTACT, STORE_SHOWROOMS } from '@/shared/constants';
 
@@ -53,7 +52,6 @@ export function ContactPage() {
   };
 
   return (
-    <StorefrontLayout>
       <div className="bg-stone-50/60 pb-20 pt-8">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {/* Breadcrumbs */}
@@ -274,6 +272,5 @@ export function ContactPage() {
           </div>
         </div>
       </div>
-    </StorefrontLayout>
   );
 }

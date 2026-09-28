@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { Breadcrumb } from '@/foundation/components/navigation';
 import { listCatalogCategories } from '@/generated/api/catalog/catalog';
 import type { CatalogCategoryDto } from '@/generated/api/catalog/catalog.schemas';
@@ -23,7 +22,6 @@ export async function CategoryListPage() {
   const items = categories.map(toCategoryCardView);
 
   return (
-    <StorefrontLayout>
       <div className="bg-stone-50/60 pb-20 pt-8">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Breadcrumb
@@ -64,6 +62,5 @@ export async function CategoryListPage() {
           </div>
         </div>
       </div>
-    </StorefrontLayout>
   );
 }

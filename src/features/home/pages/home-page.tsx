@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { ArrowRight, MoveUpRight, Sparkles } from 'lucide-react';
 import { BenefitsStrip } from '@/widgets/benefits-strip/benefits-strip';
-import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { SectionHeading } from '@/foundation/components/structure/section-heading';
 import { ProductShowcase, toCategoryCardView, toCategoryRailView } from '@/features/catalog';
 import { CATALOG_PAGE_SIZE } from '@/features/catalog';
@@ -86,7 +85,7 @@ export async function HomePage() {
     .slice(0, QUICK_LINK_COUNT);
 
   return (
-    <StorefrontLayout>
+    <>
       {/* 1. Hero: bài viết thật + flash sale đang chạy. */}
       <HeroBannerSlider posts={heroPosts} />
 
@@ -191,6 +190,6 @@ export async function HomePage() {
           <ContentStories initialPosts={heroPosts} />
         </section>
       )}
-    </StorefrontLayout>
+    </>
   );
 }

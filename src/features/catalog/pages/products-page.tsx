@@ -1,7 +1,6 @@
 import { Suspense } from 'react';
 import Link from 'next/link';
 import { Sparkles, ShieldCheck, Truck, RotateCcw, CreditCard } from 'lucide-react';
-import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { STORE_POLICY_PAGES } from '@/shared/constants';
 import { Breadcrumb } from '@/foundation/components/navigation';
 import { ProductsCatalogView } from '../components/products-catalog-view';
@@ -10,7 +9,6 @@ import { FlashSaleSection } from '@/features/promotions';
 
 export function ProductsPage() {
   return (
-    <StorefrontLayout>
       <div className="bg-slate-50/60 pb-20 pt-8">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Breadcrumb
@@ -85,6 +83,5 @@ export function ProductsPage() {
           </div>
         </div>
       </div>
-    </StorefrontLayout>
   );
 }

@@ -3,7 +3,6 @@
 import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Search, Sparkles, Filter, ChevronRight } from 'lucide-react';
-import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { Breadcrumb } from '@/foundation/components/navigation';
 import { ProductShowcase } from '../components/product-showcase';
 import { AutocompleteSearch } from '@/widgets/site-header/autocomplete-search';
@@ -59,10 +58,8 @@ function SearchContent() {
 
 export function SearchPage() {
   return (
-    <StorefrontLayout>
       <Suspense fallback={<div className="min-h-screen bg-stone-50 p-20 text-center">Đang tải kết quả tìm kiếm…</div>}>
         <SearchContent />
       </Suspense>
-    </StorefrontLayout>
   );
 }

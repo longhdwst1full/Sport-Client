@@ -48,7 +48,6 @@ import {
   getGuestOrder,
 } from '@/generated/api/orders/orders';
 import type { OrderDetailDto } from '@/generated/api/orders/orders.schemas';
-import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { apiErrorMessage } from '@/lib/api/error-message';
 import { PRODUCT_PLACEHOLDER_IMAGE } from '@/shared/constants';
 import { toOrderDetailView } from '../model/order.mapper';
@@ -305,7 +304,7 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
   };
 
   return (
-    <StorefrontLayout>
+    <>
       {/* Toast Notification */}
       {toastMessage && (
         <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2 rounded-2xl bg-slate-900 px-4 py-3 text-xs font-bold text-white shadow-2xl border border-slate-700 animate-fade-in-up">
@@ -1354,6 +1353,6 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
           }}
         />
       )}
-    </StorefrontLayout>
+    </>
   );
 }

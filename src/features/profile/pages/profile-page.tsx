@@ -23,7 +23,6 @@ import {
   X,
   RotateCcw,
 } from 'lucide-react';
-import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { useCustomerAuth } from '@/features/auth';
 import { useGetCustomerProfile } from '@/generated/api/customer/customer';
 import { AccountSettingsForm } from '../components/account-settings-form';
@@ -178,7 +177,6 @@ export function ProfilePage() {
   };
 
   return (
-    <StorefrontLayout>
       <div className="bg-slate-50/60 pb-20 pt-6">
 
         <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -499,6 +497,5 @@ export function ProfilePage() {
         )}
 
       </div>
-    </StorefrontLayout>
   );
 }

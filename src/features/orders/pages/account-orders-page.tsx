@@ -5,7 +5,6 @@ import { ChevronLeft, ChevronRight, LoaderCircle, PackageSearch } from 'lucide-r
 import { useState } from 'react';
 import { useCustomerAuth } from '@/features/auth';
 import { useListAccountOrders } from '@/generated/api/orders/orders';
-import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { apiErrorMessage } from '@/lib/api/error-message';
 import { vndMoney } from '@/shared/format/money';
 import { orderStatusLabels, paymentStatusLabels } from '../model/order.constants';
@@ -24,7 +23,6 @@ export function AccountOrdersPage() {
   );
 
   return (
-    <StorefrontLayout>
       <main className="mx-auto min-h-[60vh] max-w-6xl px-4 py-10 sm:px-6">
         <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
           <div>
@@ -80,6 +78,5 @@ export function AccountOrdersPage() {
           </nav>
         )}
       </main>
-    </StorefrontLayout>
   );
 }

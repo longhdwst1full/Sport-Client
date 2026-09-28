@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { CheckCircle2, CircleAlert, XCircle } from 'lucide-react';
-import { StorefrontLayout } from '@/layouts/storefront-layout';
 import type { VnpayReturnView } from '../model/checkout.mapper';
 
 const PRESENTATION = {
@@ -29,7 +28,6 @@ export function VnpayReturnPage({ result }: { result: VnpayReturnView }) {
   const Icon = presentation.icon;
 
   return (
-    <StorefrontLayout>
       <div className="bg-stone-50/60 pb-20 pt-10">
         <main className="mx-auto max-w-2xl px-4 sm:px-6">
           <section className={`rounded-3xl border p-8 shadow-sm ${presentation.tone}`}>
@@ -70,6 +68,5 @@ export function VnpayReturnPage({ result }: { result: VnpayReturnView }) {
           </div>
         </main>
       </div>
-    </StorefrontLayout>
   );
 }

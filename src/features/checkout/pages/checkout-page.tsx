@@ -14,7 +14,6 @@ import type { CustomerAddressDto } from '@/generated/api/customer/customer.schem
 import { listCustomerAddresses } from '@/generated/api/customer/customer';
 import { getAccountPayment, getGuestPayment } from '@/generated/api/payments/payments';
 import { STORE_POLICY_PAGES } from '@/shared/constants';
-import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { apiErrorMessage } from '@/lib/api/error-message';
 import { useToast } from '@/shared/components/global-toast';
 import { usePublicNumberParameter } from '@/features/site-config';
@@ -383,28 +382,23 @@ export function CheckoutPage() {
 
   if (!cartHydrated) {
     return (
-      <StorefrontLayout>
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
           <div className="flex items-center gap-2.5 text-sm font-semibold text-slate-600">
             <LoaderCircle className="size-5 animate-spin text-emerald-600" />
             <span>Đang tải thông tin thanh toán đơn hàng…</span>
           </div>
         </div>
-      </StorefrontLayout>
     );
   }
 
   if (placedOrder) {
     return (
-      <StorefrontLayout>
         <CheckoutSuccess order={toOrderDetailView(placedOrder)} />
-      </StorefrontLayout>
     );
   }
 
   if (!effectiveItems.length) {
     return (
-      <StorefrontLayout>
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
           <div className="mb-8">
             <Link href="/cart" className="text-sm font-bold text-emerald-700 hover:underline">
@@ -477,7 +471,6 @@ export function CheckoutPage() {
             </aside>
           </div>
         </div>
-      </StorefrontLayout>
     );
   }
 
@@ -485,9 +478,8 @@ export function CheckoutPage() {
   const optionClass = (selected: boolean) =>
     `rounded-2xl border p-4 text-left transition ${selected ? 'border-emerald-600 bg-emerald-50 ring-1 ring-emerald-600' : 'border-slate-200 hover:border-emerald-300'}`;
 
+  // Route group layout đã có <main>; lồng thêm <main> ở đây là sai landmark cho trình đọc màn hình.
   return (
-    <StorefrontLayout>
-      {/* StorefrontLayout đã có <main>; lồng thêm <main> là sai landmark cho trình đọc màn hình. */}
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="mb-8">
           <Link href="/cart" className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 hover:underline">
@@ -871,6 +863,5 @@ export function CheckoutPage() {
           />
         </form>
       </div>
-    </StorefrontLayout>
   );
 }

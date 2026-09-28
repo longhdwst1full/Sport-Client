@@ -1,12 +1,10 @@
 import Link from 'next/link';
 import { FileText, ChevronRight } from 'lucide-react';
-import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { Breadcrumb } from '@/foundation/components/navigation';
 import type { PolicySummaryView } from '../model/policy.mapper';
 
 export function PolicyListPage({ policies }: { policies: PolicySummaryView[] }) {
   return (
-    <StorefrontLayout>
       <div className="bg-stone-50/60 pb-20 pt-8">
         <main className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <Breadcrumb
@@ -58,6 +56,5 @@ export function PolicyListPage({ policies }: { policies: PolicySummaryView[] }) 
           )}
         </main>
       </div>
-    </StorefrontLayout>
   );
 }

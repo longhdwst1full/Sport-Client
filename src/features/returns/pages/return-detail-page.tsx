@@ -13,7 +13,6 @@ import {
   useGetAccountReturn,
 } from '@/generated/api/returns/returns';
 import type { ReturnDetailDto } from '@/generated/api/returns/returns.schemas';
-import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { formatDateTime } from '@/shared/format/date-time';
 import { vndMoney } from '@/shared/format/money';
 import {
@@ -63,7 +62,6 @@ export function ReturnDetailPage({ returnNo }: { returnNo: string }) {
   const progress = detail ? toReturnProgress(detail) : [];
 
   return (
-    <StorefrontLayout>
       <main className="mx-auto min-h-[60vh] max-w-5xl px-4 py-10 sm:px-6">
         {(!isLoaded || (isAuthenticated && query.isLoading)) && (
           <div className="grid min-h-72 place-items-center"><LoaderCircle className="size-9 animate-spin text-emerald-600" /></div>
@@ -223,6 +221,5 @@ export function ReturnDetailPage({ returnNo }: { returnNo: string }) {
           </>
         )}
       </main>
-    </StorefrontLayout>
   );
 }

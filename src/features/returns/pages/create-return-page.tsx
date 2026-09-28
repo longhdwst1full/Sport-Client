@@ -13,7 +13,6 @@ import {
   useGetAccountReturnEligibility,
 } from '@/generated/api/returns/returns';
 import type { ReturnDetailDto } from '@/generated/api/returns/returns.schemas';
-import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { vndMoney } from '@/shared/format/money';
 import { formatDate } from '@/shared/format/date-time';
 import { EvidencePicker } from '../components/evidence-picker';
@@ -79,7 +78,6 @@ export function CreateReturnPage({ orderNo }: { orderNo: string }) {
   const canSubmit = Boolean(form.reasonCode) && selectedCount > 0 && !uploading && !submit.isPending;
 
   return (
-    <StorefrontLayout>
       <main className="mx-auto min-h-[60vh] max-w-4xl px-4 py-10 sm:px-6">
         <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-700">Đổi trả</p>
         <h1 className="mt-2 text-3xl font-black text-slate-950">Yêu cầu trả hàng · <span className="font-mono">{orderNo}</span></h1>
@@ -226,6 +224,5 @@ export function CreateReturnPage({ orderNo }: { orderNo: string }) {
           </form>
         )}
       </main>
-    </StorefrontLayout>
   );
 }

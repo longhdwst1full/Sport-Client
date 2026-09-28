@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { ArrowRight, Clock, Flame } from 'lucide-react';
-import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { Breadcrumb } from '@/foundation/components/navigation';
 import { Skeleton } from '@/foundation/components/feedback';
 import { useCartActions } from '@/features/cart';
@@ -34,7 +33,6 @@ export function FlashSalePage() {
   };
 
   return (
-    <StorefrontLayout>
       <div className="bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 pb-20 pt-10 text-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Breadcrumb
@@ -126,6 +124,5 @@ export function FlashSalePage() {
           )}
         </div>
       </div>
-    </StorefrontLayout>
   );
 }

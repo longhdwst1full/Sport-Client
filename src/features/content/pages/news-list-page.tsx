@@ -12,7 +12,6 @@ import {
   ChevronRight,
   TrendingUp,
 } from 'lucide-react';
-import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { Breadcrumb } from '@/foundation/components/navigation';
 import { Skeleton, SkeletonText } from '@/foundation/components/feedback';
 import { useContentStories } from '../hooks/use-content-stories';
@@ -35,7 +34,6 @@ export function NewsListPage() {
   const featured = articles[0];
 
   return (
-    <StorefrontLayout>
       <div className="bg-stone-50/60 pb-20 pt-8">
         <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Breadcrumb
@@ -204,6 +202,5 @@ export function NewsListPage() {
           )}
         </main>
       </div>
-    </StorefrontLayout>
   );
 }
