@@ -3,7 +3,7 @@ import type {
   CustomerAddressDto,
   UpdateCustomerAddressDto,
 } from '@/generated/api/customer/customer.schemas';
-import type { SelectedAddressData } from '@/shared/components/address/vietnam-address-selector';
+import type { SelectedAddressData } from '@/features/address';
 
 /**
  * View model cho sổ địa chỉ. Chỉ chứa field có thật trong `CustomerAddressDto`;

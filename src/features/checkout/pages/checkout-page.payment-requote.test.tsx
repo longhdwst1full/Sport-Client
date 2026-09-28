@@ -35,7 +35,7 @@ vi.mock('@/features/auth', () => ({
   useCustomerAuth: () => ({ isAuthenticated: false, isLoaded: true }),
 }));
 
-vi.mock('@/shared/hooks', () => ({
+vi.mock('@/features/site-config', () => ({
   usePublicNumberParameter: () => 10,
 }));
 
@@ -43,7 +43,7 @@ vi.mock('@tanstack/react-query', () => ({
   useQuery: () => ({ data: undefined }),
 }));
 
-vi.mock('@/shared/components/address/vietnam-address-selector', () => ({
+vi.mock('@/features/address', () => ({
   VietnamAddressSelector: ({ onChange }: { onChange: (data: unknown) => void }) => (
     <button
       type="button"

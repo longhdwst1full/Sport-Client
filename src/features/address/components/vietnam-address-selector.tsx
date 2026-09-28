@@ -9,7 +9,7 @@ import {
   type Province,
   type District,
   type Ward,
-} from '@/shared/services/vietnam-address.service';
+} from '../api/vietnam-divisions';
 
 export interface SelectedAddressData {
   provinceCode: string | null;

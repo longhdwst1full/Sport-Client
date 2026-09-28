@@ -10,7 +10,7 @@ vi.mock('@/generated/api/shipping/shipping', () => ({
 }));
 
 const { fetchVietnamDistricts, fetchVietnamProvinces, resetVietnamAddressCache } = await import(
-  './vietnam-address.service'
+  './vietnam-divisions'
 );
 
 describe('vietnam-address.service cache', () => {

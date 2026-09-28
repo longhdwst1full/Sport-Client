@@ -31,7 +31,7 @@ import { STORE_CONTACT } from '@/shared/constants';
 import {
   VietnamAddressSelector,
   type SelectedAddressData,
-} from '@/shared/components/address/vietnam-address-selector';
+} from '@/features/address';
 import { useToast } from '@/shared/components/global-toast';
 
 // Tab tra cứu bảo hành đã gỡ cùng dữ liệu mẫu: chưa có API bảo hành để tra cứu thật.
