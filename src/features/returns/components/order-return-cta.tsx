@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { RotateCcw, ShieldCheck } from 'lucide-react';
+import { Card } from '@/foundation/components/structure';
 import { useGetAccountReturnEligibility } from '@/generated/api/returns/returns';
 import { formatDate } from '@/shared/format/date-time';
 import { RETURN_FIELD_LABELS, returnEligibilityReasonLabels } from '../model/return.constants';
@@ -21,7 +22,7 @@ export function OrderReturnCta({ orderNo, authenticated }: { orderNo: string; au
   if (!data || data.reason === 'ORDER_NOT_RETURNABLE' || (!data.eligible && !data.openReturnNo)) return null;
 
   return (
-    <section className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-card transition-shadow hover:shadow-card-hover">
+    <Card as="section" className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-card transition-shadow hover:shadow-card-hover">
       <div className="flex items-center gap-2.5">
         <div className="grid size-8 place-items-center rounded-xl bg-emerald-100 text-emerald-700">
           <RotateCcw className="size-4" />
@@ -54,6 +55,6 @@ export function OrderReturnCta({ orderNo, authenticated }: { orderNo: string; au
           )}
         </div>
       )}
-    </section>
+    </Card>
   );
 }

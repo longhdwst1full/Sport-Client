@@ -1,7 +1,8 @@
 'use client';
 
 import React from 'react';
-import { X, RotateCcw } from 'lucide-react';
+import { RotateCcw } from 'lucide-react';
+import { Chip } from '@/foundation/components/tabs-chips';
 
 export interface CatalogActiveChipsProps {
   categoryLabel?: string | null;
@@ -35,51 +36,36 @@ export function CatalogActiveChips({
       </span>
 
       {categoryLabel && (
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-800 ring-1 ring-emerald-600/20">
+        <Chip
+          className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-800 ring-1 ring-emerald-600/20"
+          onRemove={onClearCategory}
+          removeAriaLabel="Bỏ lọc danh mục"
+          removeClassName="rounded-full p-0.5 hover:bg-emerald-200/60"
+        >
           <span>Danh mục: {categoryLabel}</span>
-          {onClearCategory && (
-            <button
-              type="button"
-              onClick={onClearCategory}
-              className="rounded-full p-0.5 hover:bg-emerald-200/60"
-              aria-label="Bỏ lọc danh mục"
-            >
-              <X className="size-3" />
-            </button>
-          )}
-        </span>
+        </Chip>
       )}
 
       {priceLabel && (
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-800 ring-1 ring-emerald-600/20">
+        <Chip
+          className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-800 ring-1 ring-emerald-600/20"
+          onRemove={onClearPrice}
+          removeAriaLabel="Bỏ lọc giá"
+          removeClassName="rounded-full p-0.5 hover:bg-emerald-200/60"
+        >
           <span>Giá: {priceLabel}</span>
-          {onClearPrice && (
-            <button
-              type="button"
-              onClick={onClearPrice}
-              className="rounded-full p-0.5 hover:bg-emerald-200/60"
-              aria-label="Bỏ lọc giá"
-            >
-              <X className="size-3" />
-            </button>
-          )}
-        </span>
+        </Chip>
       )}
 
       {searchQuery && (
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-800 ring-1 ring-slate-300/60">
+        <Chip
+          className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-800 ring-1 ring-slate-300/60"
+          onRemove={onClearSearch}
+          removeAriaLabel="Bỏ từ khóa tìm kiếm"
+          removeClassName="rounded-full p-0.5 hover:bg-slate-200"
+        >
           <span>Từ khóa: "{searchQuery}"</span>
-          {onClearSearch && (
-            <button
-              type="button"
-              onClick={onClearSearch}
-              className="rounded-full p-0.5 hover:bg-slate-200"
-              aria-label="Bỏ từ khóa tìm kiếm"
-            >
-              <X className="size-3" />
-            </button>
-          )}
-        </span>
+        </Chip>
       )}
 
       {onClearAll && (

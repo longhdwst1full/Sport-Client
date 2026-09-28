@@ -36,6 +36,8 @@ import {
   XCircle,
 } from 'lucide-react';
 import { Spinner, ErrorState } from '@/foundation/components/feedback';
+import { Badge } from '@/foundation/components/tabs-chips';
+import { Button } from '@/foundation/components/buttons';
 import { useCustomerAuth } from '@/features/auth';
 import {
   cancelAccountOrder,
@@ -78,50 +80,50 @@ function getOrderStatusBadge(statusCode: string, label: string) {
   switch (statusCode) {
     case 'PENDING_CONFIRMATION':
       return (
-        <span className="inline-flex items-center gap-2 rounded-2xl border border-amber-400/40 bg-amber-500/20 px-4 py-2 text-sm font-black text-amber-300 backdrop-blur-md shadow-sm">
+        <Badge className="inline-flex items-center gap-2 rounded-2xl border border-amber-400/40 bg-amber-500/20 px-4 py-2 text-sm font-black text-amber-300 backdrop-blur-md shadow-sm">
           <span className="relative flex size-2.5">
             <span className="absolute inline-flex size-full animate-ping rounded-full bg-amber-400 opacity-75" />
             <span className="relative inline-flex size-2.5 rounded-full bg-amber-400" />
           </span>
           {label}
-        </span>
+        </Badge>
       );
     case 'CONFIRMED':
     case 'PICKING':
     case 'PACKED':
       return (
-        <span className="inline-flex items-center gap-2 rounded-2xl border border-blue-400/40 bg-blue-500/25 px-4 py-2 text-sm font-black text-blue-200 backdrop-blur-md shadow-sm">
+        <Badge className="inline-flex items-center gap-2 rounded-2xl border border-blue-400/40 bg-blue-500/25 px-4 py-2 text-sm font-black text-blue-200 backdrop-blur-md shadow-sm">
           <Package className="size-4" />
           {label}
-        </span>
+        </Badge>
       );
     case 'SHIPPED':
       return (
-        <span className="inline-flex items-center gap-2 rounded-2xl border border-teal-400/40 bg-teal-500/25 px-4 py-2 text-sm font-black text-teal-200 backdrop-blur-md shadow-sm">
+        <Badge className="inline-flex items-center gap-2 rounded-2xl border border-teal-400/40 bg-teal-500/25 px-4 py-2 text-sm font-black text-teal-200 backdrop-blur-md shadow-sm">
           <Truck className="size-4" />
           {label}
-        </span>
+        </Badge>
       );
     case 'DELIVERED':
     case 'COMPLETED':
       return (
-        <span className="inline-flex items-center gap-2 rounded-2xl border border-emerald-400/40 bg-emerald-500/25 px-4 py-2 text-sm font-black text-emerald-300 backdrop-blur-md shadow-sm">
+        <Badge className="inline-flex items-center gap-2 rounded-2xl border border-emerald-400/40 bg-emerald-500/25 px-4 py-2 text-sm font-black text-emerald-300 backdrop-blur-md shadow-sm">
           <CheckCircle2 className="size-4" />
           {label}
-        </span>
+        </Badge>
       );
     case 'CANCELLED':
       return (
-        <span className="inline-flex items-center gap-2 rounded-2xl border border-rose-400/40 bg-rose-500/25 px-4 py-2 text-sm font-black text-rose-300 backdrop-blur-md shadow-sm">
+        <Badge className="inline-flex items-center gap-2 rounded-2xl border border-rose-400/40 bg-rose-500/25 px-4 py-2 text-sm font-black text-rose-300 backdrop-blur-md shadow-sm">
           <XCircle className="size-4" />
           {label}
-        </span>
+        </Badge>
       );
     default:
       return (
-        <span className="inline-flex items-center gap-2 rounded-2xl border border-white/20 bg-white/10 px-4 py-2 text-sm font-black text-slate-200 backdrop-blur-md">
+        <Badge className="inline-flex items-center gap-2 rounded-2xl border border-white/20 bg-white/10 px-4 py-2 text-sm font-black text-slate-200 backdrop-blur-md">
           {label}
-        </span>
+        </Badge>
       );
   }
 }
@@ -130,23 +132,23 @@ function getPaymentStatusBadge(statusCode: string, label: string) {
   switch (statusCode) {
     case 'SUCCESS':
       return (
-        <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/20 border border-emerald-400/30 px-2.5 py-0.5 text-xs font-bold text-emerald-300">
+        <Badge className="inline-flex items-center gap-1 rounded-full bg-emerald-500/20 border border-emerald-400/30 px-2.5 py-0.5 text-xs font-bold text-emerald-300">
           <CheckCircle2 className="size-3" /> {label}
-        </span>
+        </Badge>
       );
     case 'FAILED':
     case 'CANCELLED':
       return (
-        <span className="inline-flex items-center gap-1 rounded-full bg-rose-500/20 border border-rose-400/30 px-2.5 py-0.5 text-xs font-bold text-rose-300">
+        <Badge className="inline-flex items-center gap-1 rounded-full bg-rose-500/20 border border-rose-400/30 px-2.5 py-0.5 text-xs font-bold text-rose-300">
           <XCircle className="size-3" /> {label}
-        </span>
+        </Badge>
       );
     case 'PENDING':
     default:
       return (
-        <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/20 border border-amber-400/30 px-2.5 py-0.5 text-xs font-bold text-amber-300">
+        <Badge className="inline-flex items-center gap-1 rounded-full bg-amber-500/20 border border-amber-400/30 px-2.5 py-0.5 text-xs font-bold text-amber-300">
           <Clock3 className="size-3" /> {label}
-        </span>
+        </Badge>
       );
   }
 }
@@ -1235,15 +1237,15 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
                   )}
 
                   <div className="mt-6 flex justify-end gap-3">
-                    <button
+                    <Button
                       type="button"
                       disabled={cancel.isPending}
                       onClick={closeCancel}
                       className="rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-xs font-bold text-slate-700 transition hover:bg-slate-50"
                     >
                       Đóng
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       type="button"
                       disabled={cancel.isPending || reason.trim().length < 3}
                       onClick={() => cancel.mutate()}
@@ -1251,7 +1253,7 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
                     >
                       {cancel.isPending ? <Spinner className="size-4 animate-spin" /> : <X className="size-4" />}
                       {cancel.isPending ? 'Đang hủy...' : 'Xác nhận hủy đơn'}
-                    </button>
+                    </Button>
                   </div>
                 </div>
               </div>

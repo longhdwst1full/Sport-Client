@@ -3,7 +3,9 @@
 import { useRef, useState, useMemo } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Banknote, CreditCard, CheckCircle2, Clock3, ImageUp } from 'lucide-react';
-import { Spinner } from '@/foundation/components/feedback';
+import { Spinner, ErrorState } from '@/foundation/components/feedback';
+import { Card } from '@/foundation/components/structure';
+import { Button } from '@/foundation/components/buttons';
 import {
   getAccountPayment,
   getGetAccountPaymentQueryKey,
@@ -111,20 +113,25 @@ export function OrderPaymentPanel({
 
   if (paymentQuery.isLoading) {
     return (
-      <section className="grid min-h-48 place-items-center rounded-3xl border border-slate-200/80 bg-white shadow-card">
+      <Card as="section" className="grid min-h-48 place-items-center rounded-3xl border border-slate-200/80 bg-white shadow-card">
         <div className="flex flex-col items-center gap-2">
           <Spinner className="size-8 animate-spin text-emerald-600" />
           <span className="text-xs font-medium text-slate-500">Đang tải thông tin thanh toán...</span>
         </div>
-      </section>
+      </Card>
     );
   }
   if (paymentQuery.isError || !payment || !view) {
     return (
-      <section className="rounded-3xl border border-rose-200 bg-rose-50/80 p-6 text-sm text-rose-800 shadow-sm">
-        <p className="font-bold">Không thể tải thông tin thanh toán</p>
-        <p className="mt-1 text-xs text-rose-700">{errorMessage(paymentQuery.error)}</p>
-      </section>
+      <ErrorState
+        as="section"
+        className="rounded-3xl border border-rose-200 bg-rose-50/80 p-6 text-sm text-rose-800 shadow-sm"
+        titleAs="p"
+        titleClassName="font-bold"
+        title="Không thể tải thông tin thanh toán"
+        descriptionClassName="mt-1 text-xs text-rose-700"
+        description={errorMessage(paymentQuery.error)}
+      />
     );
   }
 
@@ -301,7 +308,7 @@ export function OrderPaymentPanel({
               {errorMessage(submit.error)}
             </p>
           )}
-          <button
+          <Button
             type="button"
             disabled={!file || submit.isPending}
             onClick={() => submit.mutate()}
@@ -309,7 +316,7 @@ export function OrderPaymentPanel({
           >
             {submit.isPending ? <Spinner className="size-4 animate-spin" /> : <ImageUp className="size-4" />}
             {submit.isPending ? 'Đang tải ảnh và gửi...' : 'Gửi xác nhận chuyển khoản'}
-          </button>
+          </Button>
         </div>
       )}
     </section>
