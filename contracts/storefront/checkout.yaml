@@ -31,13 +31,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
         "422":
           description: ""
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
       summary: Estimate the shipping fee for cart lines and a recipient area (no side effects)
       tags:
         - Storefront Guest Checkout
@@ -73,13 +73,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
         "422":
           description: ""
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
       summary: Revalidate a guest cart and choose an eligible fulfillment branch
       tags:
         - Storefront Guest Checkout
@@ -109,7 +109,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
       summary: Reload an owned guest quote after staff consultation
       tags:
         - Storefront Guest Checkout
@@ -144,7 +144,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
       summary: Confirm a guest quote and reserve its physical SKU demand atomically
       tags:
         - Storefront Guest Checkout
@@ -205,13 +205,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
         "422":
           description: ""
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
       security:
         - bearer: []
       summary: Revalidate an account cart and choose an eligible fulfillment branch
@@ -238,7 +238,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
       security:
         - bearer: []
       summary: Reload an owned account quote after staff consultation
@@ -299,149 +299,17 @@ paths:
         - Storefront Account Checkout
 components:
   schemas:
-    CheckoutShippingEstimateRequestDto:
-      type: object
-      properties:
-        lines:
-          minItems: 1
-          maxItems: 100
-          type: array
-          items:
-            $ref: "#/components/schemas/ShippingEstimateLineDto"
-        recipient:
-          $ref: "#/components/schemas/ShippingEstimateRecipientDto"
-        paymentMethod:
-          allOf:
-            - $ref: "#/components/schemas/CheckoutPaymentMethod"
-        shippingArrangement:
-          default: STANDARD
-          allOf:
-            - $ref: "#/components/schemas/CheckoutShippingArrangement"
-      required:
-        - lines
-        - recipient
-    CheckoutShippingEstimateDto:
-      type: object
-      properties:
-        deliveryMode:
-          description: "SHOP_DELIVERY: shop tự giao (BRANCH_FREE hoặc SHOP_ARRANGED); CARRIER: hãng vận chuyển/nhà xe."
-          allOf:
-            - $ref: "#/components/schemas/CheckoutDeliveryMode"
-        shippingMethod:
-          allOf:
-            - $ref: "#/components/schemas/ShippingMethod"
-        shippingFee:
-          type: string
-          nullable: true
-          example: "30000.00"
-          description: null khi phải chờ nhân viên tư vấn phí (requiresShippingConsultation).
-        freeReason:
-          type: string
-          enum:
-            - BRANCH_DISTRICT
-            - WITHIN_RADIUS
-          nullable: true
-        shippingFeePending:
-          type: boolean
-          description: "true khi SHOP_ARRANGED: phí do shop báo và thu riêng."
-        requiresShippingConsultation:
-          type: boolean
-          description: true khi phí phải chờ nhân viên tư vấn (ví dụ hàng nằm ở nhiều chi nhánh).
-        branchId:
-          type: string
-          pattern: ^[1-9][0-9]*$
-          example: "1"
-          description: Chi nhánh dự kiến xuất hàng; báo giá thật có thể chọn lại nếu tồn kho thay đổi.
-        etaMinDays:
-          type: number
-          nullable: true
-        etaMaxDays:
-          type: number
-          nullable: true
-        currency:
-          type: string
-          enum:
-            - VND
-          example: VND
-        feeSource:
-          description: Nguồn sinh ra phí. CARRIER_GHN là đường đi mong đợi; WEIGHT_TIER_FALLBACK nghĩa là hãng không trả lời được và hệ thống đang dùng biểu phí cứng theo bậc cân nặng.
-          allOf:
-            - $ref: "#/components/schemas/ShippingFeeSource"
-        fallbackReason:
-          type: string
-          nullable: true
-          example: Chi nhánh gửi chưa khai GHN districtCode
-          description: Vì sao phải rơi về nguồn dự phòng; null khi phí đến từ hãng hoặc miễn phí nội khu.
-      required:
-        - deliveryMode
-        - shippingMethod
-        - freeReason
-        - shippingFeePending
-        - requiresShippingConsultation
-        - branchId
-        - currency
-        - feeSource
-        - fallbackReason
-    ErrorResponseDto:
-      type: object
-      properties:
-        statusCode:
-          type: number
-          example: 400
-        code:
-          type: string
-          example: VALIDATION_ERROR
-        message:
-          type: string
-          example: Dữ liệu gửi lên không hợp lệ.
-        details:
-          type: array
-          items:
-            $ref: "#/components/schemas/ErrorDetailDto"
-        path:
-          type: string
-          example: /api/v1/catalog/products
-        method:
-          type: string
-          example: POST
-        timestamp:
-          type: string
-          format: date-time
-        requestId:
-          type: string
-      required:
-        - statusCode
-        - code
-        - message
-        - path
-        - method
-        - timestamp
-    CreateCheckoutQuoteDto:
-      type: object
-      properties:
-        recipient:
-          $ref: "#/components/schemas/CheckoutRecipientDto"
-        paymentMethod:
-          example: COD
-          description: Storefront chỉ nhận COD hoặc VNPAY. BANK_TRANSFER bị từ chối (400 VALIDATION_ERROR); chuyển khoản thủ công chỉ dùng ở POS.
-          allOf:
-            - $ref: "#/components/schemas/CheckoutPaymentMethod"
-        requestShippingConsultation:
-          type: boolean
-          default: false
-          description: Request a staff-agreed fee/ETA for coach bus or special delivery. Takes precedence over shippingArrangement.
-        shippingArrangement:
-          default: STANDARD
-          description: 'SHOP_ARRANGED ("Nhờ shop gửi"): shop tự sắp xếp vận chuyển và báo/thu phí riêng ngoài hệ thống; báo giá ghi phí vận chuyển 0 và vẫn đặt được đơn (QUOTED).'
-          allOf:
-            - $ref: "#/components/schemas/CheckoutShippingArrangement"
-        note:
-          type: string
-          maxLength: 1000
-          example: Gọi trước khi giao hàng
-      required:
-        - recipient
-        - paymentMethod
+    CheckoutDeliveryMode:
+      type: string
+      enum:
+        - SHOP_DELIVERY
+        - CARRIER
+      description: "SHOP_DELIVERY: shop tự giao (BRANCH_FREE hoặc SHOP_ARRANGED); CARRIER: hãng vận chuyển/nhà xe."
+    CheckoutPaymentMethod:
+      type: string
+      enum:
+        - COD
+        - VNPAY
     CheckoutQuoteDto:
       type: object
       properties:
@@ -525,135 +393,42 @@ components:
         - requiresShippingConsultation
         - items
         - expiresAt
-    ReservationDto:
-      type: object
-      properties:
-        id:
-          type: string
-          pattern: ^[1-9][0-9]*$
-          example: "1"
-        reservationToken:
-          type: string
-          description: Opaque token used to release this reservation
-        status:
-          type: string
-          enum:
-            - ACTIVE
-            - RELEASED
-            - EXPIRED
-            - COMMITTED
-        expiresAt:
-          type: string
-          format: date-time
-        items:
-          type: array
-          items:
-            $ref: "#/components/schemas/ReservationItemDto"
-      required:
-        - id
-        - reservationToken
-        - status
-        - expiresAt
-        - items
-    ReleaseReservationDto:
-      type: object
-      properties:
-        reason:
-          type: string
-          example: Khách đổi ý trước khi bàn giao hàng
-      required:
-        - reason
-    ShippingEstimateLineDto:
+    CheckoutQuoteItemDto:
       type: object
       properties:
         productVariantId:
           type: string
           pattern: ^[1-9][0-9]*$
           example: "1"
+        sku:
+          type: string
+        name:
+          type: string
         quantity:
           type: number
-          minimum: 1
-          maximum: 999
-          example: 1
+        unitPrice:
+          type: string
+        lineTotal:
+          type: string
       required:
         - productVariantId
+        - sku
+        - name
         - quantity
-    ShippingEstimateRecipientDto:
-      type: object
-      properties:
-        provinceCode:
-          type: string
-          example: "202"
-          description: Mã tỉnh/thành (bộ mã GHN).
-        districtCode:
-          type: string
-          example: "1454"
-          description: GHN DistrictID; cần để xét miễn phí theo quận/huyện của chi nhánh và để gọi GHN.
-        wardCode:
-          type: string
-          example: "21211"
-          description: GHN WardCode; cần để gọi GHN.
-        latitude:
-          type: number
-          example: 10.7769
-          minimum: -90
-          maximum: 90
-        longitude:
-          type: number
-          example: 106.7009
-          minimum: -180
-          maximum: 180
-      required:
-        - provinceCode
-    CheckoutPaymentMethod:
+        - unitPrice
+        - lineTotal
+    CheckoutQuotePaymentMethod:
       type: string
       enum:
+        - BANK_TRANSFER
         - COD
         - VNPAY
-    CheckoutShippingArrangement:
+      description: Checkout mới từ Storefront chỉ có COD/VNPAY; BANK_TRANSFER chỉ xuất hiện ở báo giá cũ.
+    CheckoutQuoteStatus:
       type: string
       enum:
-        - STANDARD
-        - SHOP_ARRANGED
-    CheckoutDeliveryMode:
-      type: string
-      enum:
-        - SHOP_DELIVERY
-        - CARRIER
-      description: "SHOP_DELIVERY: shop tự giao (BRANCH_FREE hoặc SHOP_ARRANGED); CARRIER: hãng vận chuyển/nhà xe."
-    ShippingMethod:
-      type: string
-      enum:
-        - BRANCH_FREE
-        - STANDARD_DELIVERY
-        - THIRD_PARTY
-        - MANUAL_EXTERNAL
-        - SHOP_ARRANGED
-    ShippingFeeSource:
-      type: string
-      enum:
-        - BRANCH_FREE
-        - CARRIER_GHN
-        - RATE_TABLE
-        - WEIGHT_TIER_FALLBACK
-        - SHOP_ARRANGED
-        - PENDING_CONSULTATION
-      description: Nguồn sinh ra phí. CARRIER_GHN là đường đi mong đợi; WEIGHT_TIER_FALLBACK nghĩa là hãng không trả lời được và hệ thống đang dùng biểu phí cứng theo bậc cân nặng.
-    ErrorDetailDto:
-      type: object
-      properties:
-        field:
-          type: string
-          example: name
-        code:
-          type: string
-          example: INVALID_VALUE
-        message:
-          type: string
-          example: 'Trường "name": Trường này không được để trống.'
-      required:
-        - code
-        - message
+        - QUOTED
+        - AWAITING_SHIPPING_CONSULTATION
     CheckoutRecipientDto:
       type: object
       properties:
@@ -704,42 +479,158 @@ components:
         - district
         - province
         - provinceCode
-    CheckoutQuoteStatus:
+    CheckoutShippingArrangement:
       type: string
       enum:
-        - QUOTED
-        - AWAITING_SHIPPING_CONSULTATION
-    CheckoutQuotePaymentMethod:
-      type: string
-      enum:
-        - BANK_TRANSFER
-        - COD
-        - VNPAY
-      description: Checkout mới từ Storefront chỉ có COD/VNPAY; BANK_TRANSFER chỉ xuất hiện ở báo giá cũ.
-    CheckoutQuoteItemDto:
+        - STANDARD
+        - SHOP_ARRANGED
+    CheckoutShippingEstimateDto:
       type: object
       properties:
-        productVariantId:
+        deliveryMode:
+          description: "SHOP_DELIVERY: shop tự giao (BRANCH_FREE hoặc SHOP_ARRANGED); CARRIER: hãng vận chuyển/nhà xe."
+          allOf:
+            - $ref: "#/components/schemas/CheckoutDeliveryMode"
+        shippingMethod:
+          allOf:
+            - $ref: "#/components/schemas/ShippingMethod"
+        shippingFee:
+          type: string
+          nullable: true
+          example: "30000.00"
+          description: null khi phải chờ nhân viên tư vấn phí (requiresShippingConsultation).
+        freeReason:
+          type: string
+          enum:
+            - BRANCH_DISTRICT
+            - WITHIN_RADIUS
+          nullable: true
+        shippingFeePending:
+          type: boolean
+          description: "true khi SHOP_ARRANGED: phí do shop báo và thu riêng."
+        requiresShippingConsultation:
+          type: boolean
+          description: true khi phí phải chờ nhân viên tư vấn (ví dụ hàng nằm ở nhiều chi nhánh).
+        branchId:
           type: string
           pattern: ^[1-9][0-9]*$
           example: "1"
-        sku:
-          type: string
-        name:
-          type: string
-        quantity:
+          description: Chi nhánh dự kiến xuất hàng; báo giá thật có thể chọn lại nếu tồn kho thay đổi.
+        etaMinDays:
           type: number
-        unitPrice:
+          nullable: true
+        etaMaxDays:
+          type: number
+          nullable: true
+        currency:
           type: string
-        lineTotal:
+          enum:
+            - VND
+          example: VND
+        feeSource:
+          description: Nguồn sinh ra phí. CARRIER_GHN là đường đi mong đợi; WEIGHT_TIER_FALLBACK nghĩa là hãng không trả lời được và hệ thống đang dùng biểu phí cứng theo bậc cân nặng.
+          allOf:
+            - $ref: "#/components/schemas/ShippingFeeSource"
+        fallbackReason:
           type: string
+          nullable: true
+          example: Chi nhánh gửi chưa khai GHN districtCode
+          description: Vì sao phải rơi về nguồn dự phòng; null khi phí đến từ hãng hoặc miễn phí nội khu.
       required:
-        - productVariantId
-        - sku
-        - name
-        - quantity
-        - unitPrice
-        - lineTotal
+        - deliveryMode
+        - shippingMethod
+        - freeReason
+        - shippingFeePending
+        - requiresShippingConsultation
+        - branchId
+        - currency
+        - feeSource
+        - fallbackReason
+    CheckoutShippingEstimateRequestDto:
+      type: object
+      properties:
+        lines:
+          minItems: 1
+          maxItems: 100
+          type: array
+          items:
+            $ref: "#/components/schemas/ShippingEstimateLineDto"
+        recipient:
+          $ref: "#/components/schemas/ShippingEstimateRecipientDto"
+        paymentMethod:
+          allOf:
+            - $ref: "#/components/schemas/CheckoutPaymentMethod"
+        shippingArrangement:
+          default: STANDARD
+          allOf:
+            - $ref: "#/components/schemas/CheckoutShippingArrangement"
+      required:
+        - lines
+        - recipient
+    CreateCheckoutQuoteDto:
+      type: object
+      properties:
+        recipient:
+          $ref: "#/components/schemas/CheckoutRecipientDto"
+        paymentMethod:
+          example: COD
+          description: Storefront chỉ nhận COD hoặc VNPAY. BANK_TRANSFER bị từ chối (400 VALIDATION_ERROR); chuyển khoản thủ công chỉ dùng ở POS.
+          allOf:
+            - $ref: "#/components/schemas/CheckoutPaymentMethod"
+        requestShippingConsultation:
+          type: boolean
+          default: false
+          description: Request a staff-agreed fee/ETA for coach bus or special delivery. Takes precedence over shippingArrangement.
+        shippingArrangement:
+          default: STANDARD
+          description: 'SHOP_ARRANGED ("Nhờ shop gửi"): shop tự sắp xếp vận chuyển và báo/thu phí riêng ngoài hệ thống; báo giá ghi phí vận chuyển 0 và vẫn đặt được đơn (QUOTED).'
+          allOf:
+            - $ref: "#/components/schemas/CheckoutShippingArrangement"
+        note:
+          type: string
+          maxLength: 1000
+          example: Gọi trước khi giao hàng
+      required:
+        - recipient
+        - paymentMethod
+    ReleaseReservationDto:
+      type: object
+      properties:
+        reason:
+          type: string
+          example: Khách đổi ý trước khi bàn giao hàng
+      required:
+        - reason
+    ReservationDto:
+      type: object
+      properties:
+        id:
+          type: string
+          pattern: ^[1-9][0-9]*$
+          example: "1"
+        reservationToken:
+          type: string
+          description: Opaque token used to release this reservation
+        status:
+          type: string
+          enum:
+            - ACTIVE
+            - RELEASED
+            - EXPIRED
+            - COMMITTED
+        expiresAt:
+          type: string
+          format: date-time
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/ReservationItemDto"
+      required:
+        - id
+        - reservationToken
+        - status
+        - expiresAt
+        - items
     ReservationItemDto:
       type: object
       properties:
@@ -753,6 +644,66 @@ components:
       required:
         - productVariantId
         - quantity
+    ShippingEstimateLineDto:
+      type: object
+      properties:
+        productVariantId:
+          type: string
+          pattern: ^[1-9][0-9]*$
+          example: "1"
+        quantity:
+          type: number
+          minimum: 1
+          maximum: 999
+          example: 1
+      required:
+        - productVariantId
+        - quantity
+    ShippingEstimateRecipientDto:
+      type: object
+      properties:
+        provinceCode:
+          type: string
+          example: "202"
+          description: Mã tỉnh/thành (bộ mã GHN).
+        districtCode:
+          type: string
+          example: "1454"
+          description: GHN DistrictID; cần để xét miễn phí theo quận/huyện của chi nhánh và để gọi GHN.
+        wardCode:
+          type: string
+          example: "21211"
+          description: GHN WardCode; cần để gọi GHN.
+        latitude:
+          type: number
+          example: 10.7769
+          minimum: -90
+          maximum: 90
+        longitude:
+          type: number
+          example: 106.7009
+          minimum: -180
+          maximum: 180
+      required:
+        - provinceCode
+    ShippingFeeSource:
+      type: string
+      enum:
+        - BRANCH_FREE
+        - CARRIER_GHN
+        - RATE_TABLE
+        - WEIGHT_TIER_FALLBACK
+        - SHOP_ARRANGED
+        - PENDING_CONSULTATION
+      description: Nguồn sinh ra phí. CARRIER_GHN là đường đi mong đợi; WEIGHT_TIER_FALLBACK nghĩa là hãng không trả lời được và hệ thống đang dùng biểu phí cứng theo bậc cân nặng.
+    ShippingMethod:
+      type: string
+      enum:
+        - BRANCH_FREE
+        - STANDARD_DELIVERY
+        - THIRD_PARTY
+        - MANUAL_EXTERNAL
+        - SHOP_ARRANGED
   securitySchemes:
     bearer:
       scheme: bearer

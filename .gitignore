@@ -16,3 +16,6 @@ coverage/
 /playwright-report/
 /blob-report/
 /.playwright/
+
+# Generated API SDK (orval) — regenerated from contracts/, never committed
+src/generated/

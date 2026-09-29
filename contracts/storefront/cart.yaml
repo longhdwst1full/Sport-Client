@@ -44,7 +44,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
       summary: Get the active anonymous cart
       tags:
         - Storefront Guest Cart
@@ -76,13 +76,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
         "422":
           description: ""
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
       summary: Set quantity for a variant in the guest cart
       tags:
         - Storefront Guest Cart
@@ -261,43 +261,10 @@ paths:
         - Storefront Account Cart
 components:
   schemas:
-    GuestCartDto:
-      type: object
-      properties:
-        id:
-          type: string
-          pattern: ^[1-9][0-9]*$
-          example: "1"
-        status:
-          allOf:
-            - $ref: "#/components/schemas/ActiveCartStatus"
-        currencyCode:
-          allOf:
-            - $ref: "#/components/schemas/CurrencyCode"
-        version:
-          type: number
-          minimum: 0
-        items:
-          type: array
-          items:
-            $ref: "#/components/schemas/CartItemDto"
-        subtotalPreview:
-          type: string
-          example: "1780000.00"
-        expiresAt:
-          type: object
-          format: date-time
-          nullable: true
-        cartToken:
-          type: string
-          description: Returned only when a new guest cart is created; store securely on the client
-      required:
-        - id
-        - status
-        - currencyCode
-        - version
-        - items
-        - subtotalPreview
+    ActiveCartStatus:
+      type: string
+      enum:
+        - ACTIVE
     CartDto:
       type: object
       properties:
@@ -310,7 +277,7 @@ components:
             - $ref: "#/components/schemas/ActiveCartStatus"
         currencyCode:
           allOf:
-            - $ref: "#/components/schemas/CurrencyCode"
+            - $ref: ./_components.yaml#/components/schemas/CurrencyCode
         version:
           type: number
           minimum: 0
@@ -332,90 +299,6 @@ components:
         - version
         - items
         - subtotalPreview
-    ErrorResponseDto:
-      type: object
-      properties:
-        statusCode:
-          type: number
-          example: 400
-        code:
-          type: string
-          example: VALIDATION_ERROR
-        message:
-          type: string
-          example: Dữ liệu gửi lên không hợp lệ.
-        details:
-          type: array
-          items:
-            $ref: "#/components/schemas/ErrorDetailDto"
-        path:
-          type: string
-          example: /api/v1/catalog/products
-        method:
-          type: string
-          example: POST
-        timestamp:
-          type: string
-          format: date-time
-        requestId:
-          type: string
-      required:
-        - statusCode
-        - code
-        - message
-        - path
-        - method
-        - timestamp
-    SetCartItemDto:
-      type: object
-      properties:
-        productVariantId:
-          type: string
-          pattern: ^[1-9][0-9]*$
-          example: "1"
-        quantity:
-          type: number
-          minimum: 1
-          example: 2
-        expectedCartVersion:
-          type: number
-          minimum: 0
-          example: 0
-      required:
-        - productVariantId
-        - quantity
-        - expectedCartVersion
-    UpdateCartItemDto:
-      type: object
-      properties:
-        quantity:
-          type: number
-          minimum: 1
-          example: 2
-        expectedCartVersion:
-          type: number
-          minimum: 0
-          example: 1
-      required:
-        - quantity
-        - expectedCartVersion
-    MutateCartDto:
-      type: object
-      properties:
-        expectedCartVersion:
-          type: number
-          minimum: 0
-          example: 1
-      required:
-        - expectedCartVersion
-    ActiveCartStatus:
-      type: string
-      enum:
-        - ACTIVE
-    CurrencyCode:
-      type: string
-      enum:
-        - VND
     CartItemDto:
       type: object
       properties:
@@ -433,7 +316,7 @@ components:
           example: "1"
         productType:
           allOf:
-            - $ref: "#/components/schemas/ProductType"
+            - $ref: ./_components.yaml#/components/schemas/ProductType
         sku:
           type: string
         name:
@@ -467,26 +350,85 @@ components:
         - productName
         - productSlug
         - quantity
-    ErrorDetailDto:
+    GuestCartDto:
       type: object
       properties:
-        field:
+        id:
           type: string
-          example: name
-        code:
+          pattern: ^[1-9][0-9]*$
+          example: "1"
+        status:
+          allOf:
+            - $ref: "#/components/schemas/ActiveCartStatus"
+        currencyCode:
+          allOf:
+            - $ref: ./_components.yaml#/components/schemas/CurrencyCode
+        version:
+          type: number
+          minimum: 0
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/CartItemDto"
+        subtotalPreview:
           type: string
-          example: INVALID_VALUE
-        message:
+          example: "1780000.00"
+        expiresAt:
+          type: object
+          format: date-time
+          nullable: true
+        cartToken:
           type: string
-          example: 'Trường "name": Trường này không được để trống.'
+          description: Returned only when a new guest cart is created; store securely on the client
       required:
-        - code
-        - message
-    ProductType:
-      type: string
-      enum:
-        - STANDARD
-        - BUNDLE
+        - id
+        - status
+        - currencyCode
+        - version
+        - items
+        - subtotalPreview
+    MutateCartDto:
+      type: object
+      properties:
+        expectedCartVersion:
+          type: number
+          minimum: 0
+          example: 1
+      required:
+        - expectedCartVersion
+    SetCartItemDto:
+      type: object
+      properties:
+        productVariantId:
+          type: string
+          pattern: ^[1-9][0-9]*$
+          example: "1"
+        quantity:
+          type: number
+          minimum: 1
+          example: 2
+        expectedCartVersion:
+          type: number
+          minimum: 0
+          example: 0
+      required:
+        - productVariantId
+        - quantity
+        - expectedCartVersion
+    UpdateCartItemDto:
+      type: object
+      properties:
+        quantity:
+          type: number
+          minimum: 1
+          example: 2
+        expectedCartVersion:
+          type: number
+          minimum: 0
+          example: 1
+      required:
+        - quantity
+        - expectedCartVersion
   securitySchemes:
     bearer:
       scheme: bearer

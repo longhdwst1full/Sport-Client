@@ -92,7 +92,7 @@ export function ReviewFormDialog({
           <div>
             <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-700">Đánh giá đã mua hàng</p>
             <h2 id="review-dialog-title" className="mt-1 text-xl font-black text-slate-950">{productName}</h2>
-            <p className="mt-1 text-sm text-slate-500">Đánh giá sẽ hiển thị sau khi cửa hàng duyệt.</p>
+            <p className="mt-1 text-sm text-slate-500">Đánh giá được hiển thị ngay sau khi gửi.</p>
           </div>
           <button type="button" onClick={onClose} disabled={submitting} className="grid size-9 place-items-center rounded-full bg-slate-100 text-slate-600" aria-label="Đóng"><X className="size-4" /></button>
         </div>

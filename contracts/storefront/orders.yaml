@@ -40,19 +40,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
         "404":
           description: ""
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
         "409":
           description: ""
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
       summary: Tạo đơn idempotent từ checkout và reservation đã xác nhận của khách vãng lai
       tags:
         - Storefront Guest Orders
@@ -82,13 +82,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
         "404":
           description: ""
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
       summary: Xem đơn bằng mã đơn và token bí mật của khách vãng lai
       tags:
         - Storefront Guest Orders
@@ -129,19 +129,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
         "404":
           description: ""
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
         "409":
           description: ""
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
       summary: Khách vãng lai hủy đơn chưa thanh toán/xử lý
       tags:
         - Storefront Guest Orders
@@ -171,25 +171,25 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
         "401":
           description: ""
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
         "404":
           description: ""
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
         "409":
           description: ""
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
       security:
         - bearer: []
       summary: Tạo đơn idempotent từ checkout và reservation đã xác nhận của khách đăng nhập
@@ -226,7 +226,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
       security:
         - bearer: []
       summary: Danh sách đơn hàng của khách đang đăng nhập
@@ -253,19 +253,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
         "401":
           description: ""
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
         "404":
           description: ""
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
       security:
         - bearer: []
       summary: Chi tiết đơn hàng thuộc khách đang đăng nhập
@@ -303,25 +303,25 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
         "401":
           description: ""
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
         "404":
           description: ""
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
         "409":
           description: ""
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
       security:
         - bearer: []
       summary: Khách đăng nhập hủy đơn chưa thanh toán/xử lý
@@ -329,6 +329,24 @@ paths:
         - Storefront Account Orders
 components:
   schemas:
+    AccountOrderListDto:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderSummaryDto"
+        page:
+          type: number
+        limit:
+          type: number
+        total:
+          type: number
+      required:
+        - items
+        - page
+        - limit
+        - total
     GuestOrderPlacementDto:
       type: object
       properties:
@@ -343,7 +361,7 @@ components:
             - $ref: "#/components/schemas/OrderStatus"
         paymentStatus:
           allOf:
-            - $ref: "#/components/schemas/PaymentStatus"
+            - $ref: ./_components.yaml#/components/schemas/PaymentStatus
         fulfillmentStatus:
           allOf:
             - $ref: "#/components/schemas/OrderFulfillmentStatus"
@@ -432,40 +450,20 @@ components:
         - items
         - statusHistory
         - guestAccessToken
-    ErrorResponseDto:
+    OrderCancelCommandDto:
       type: object
       properties:
-        statusCode:
+        expectedVersion:
           type: number
-          example: 400
-        code:
+          minimum: 0
+          description: Version đơn hàng mà người dùng đang xem
+        reason:
           type: string
-          example: VALIDATION_ERROR
-        message:
-          type: string
-          example: Dữ liệu gửi lên không hợp lệ.
-        details:
-          type: array
-          items:
-            $ref: "#/components/schemas/ErrorDetailDto"
-        path:
-          type: string
-          example: /api/v1/catalog/products
-        method:
-          type: string
-          example: POST
-        timestamp:
-          type: string
-          format: date-time
-        requestId:
-          type: string
+          minLength: 3
+          maxLength: 500
       required:
-        - statusCode
-        - code
-        - message
-        - path
-        - method
-        - timestamp
+        - expectedVersion
+        - reason
     OrderDetailDto:
       type: object
       properties:
@@ -480,7 +478,7 @@ components:
             - $ref: "#/components/schemas/OrderStatus"
         paymentStatus:
           allOf:
-            - $ref: "#/components/schemas/PaymentStatus"
+            - $ref: ./_components.yaml#/components/schemas/PaymentStatus
         fulfillmentStatus:
           allOf:
             - $ref: "#/components/schemas/OrderFulfillmentStatus"
@@ -565,59 +563,6 @@ components:
         - taxTotal
         - items
         - statusHistory
-    OrderCancelCommandDto:
-      type: object
-      properties:
-        expectedVersion:
-          type: number
-          minimum: 0
-          description: Version đơn hàng mà người dùng đang xem
-        reason:
-          type: string
-          minLength: 3
-          maxLength: 500
-      required:
-        - expectedVersion
-        - reason
-    AccountOrderListDto:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: "#/components/schemas/OrderSummaryDto"
-        page:
-          type: number
-        limit:
-          type: number
-        total:
-          type: number
-      required:
-        - items
-        - page
-        - limit
-        - total
-    OrderStatus:
-      type: string
-      enum:
-        - PENDING_CONFIRMATION
-        - CONFIRMED
-        - PICKING
-        - PACKED
-        - SHIPPED
-        - DELIVERED
-        - COMPLETED
-        - CANCELLED
-    PaymentStatus:
-      type: string
-      enum:
-        - PENDING
-        - AWAITING_CONFIRMATION
-        - NEED_REVIEW
-        - SUCCESS
-        - FAILED
-        - CANCELLED
-        - REFUNDED
     OrderFulfillmentStatus:
       type: string
       enum:
@@ -629,31 +574,27 @@ components:
         - FAILED
         - RETURNED
         - CANCELLED
-    OrderRecipientDto:
+    OrderItemComponentDto:
       type: object
       properties:
+        productVariantId:
+          type: string
+          pattern: ^[1-9][0-9]*$
+          example: "1"
+        sku:
+          type: string
         name:
           type: string
-        phone:
-          type: string
-        email:
-          type: string
-          nullable: true
-        addressLine:
-          type: string
-        ward:
-          type: string
-          nullable: true
-        district:
-          type: string
-          nullable: true
-        province:
-          type: string
+        quantityPerBundle:
+          type: number
+        totalQuantity:
+          type: number
       required:
+        - productVariantId
+        - sku
         - name
-        - phone
-        - addressLine
-        - province
+        - quantityPerBundle
+        - totalQuantity
     OrderItemDto:
       type: object
       properties:
@@ -695,31 +636,31 @@ components:
         - unitPrice
         - lineTotal
         - components
-    OrderStatusHistoryDto:
+    OrderRecipientDto:
       type: object
       properties:
-        sequenceNo:
-          type: number
-        fromStatus:
-          nullable: true
-          allOf:
-            - $ref: "#/components/schemas/OrderStatus"
-        toStatus:
-          allOf:
-            - $ref: "#/components/schemas/OrderStatus"
-        reason:
+        name:
+          type: string
+        phone:
+          type: string
+        email:
           type: string
           nullable: true
-        actorType:
+        addressLine:
           type: string
-        createdAt:
+        ward:
           type: string
-          format: date-time
+          nullable: true
+        district:
+          type: string
+          nullable: true
+        province:
+          type: string
       required:
-        - sequenceNo
-        - toStatus
-        - actorType
-        - createdAt
+        - name
+        - phone
+        - addressLine
+        - province
     OrderShipmentDto:
       type: object
       properties:
@@ -748,21 +689,42 @@ components:
           nullable: true
       required:
         - status
-    ErrorDetailDto:
+    OrderStatus:
+      type: string
+      enum:
+        - PENDING_CONFIRMATION
+        - CONFIRMED
+        - PICKING
+        - PACKED
+        - SHIPPED
+        - DELIVERED
+        - COMPLETED
+        - CANCELLED
+    OrderStatusHistoryDto:
       type: object
       properties:
-        field:
+        sequenceNo:
+          type: number
+        fromStatus:
+          nullable: true
+          allOf:
+            - $ref: "#/components/schemas/OrderStatus"
+        toStatus:
+          allOf:
+            - $ref: "#/components/schemas/OrderStatus"
+        reason:
           type: string
-          example: name
-        code:
+          nullable: true
+        actorType:
           type: string
-          example: INVALID_VALUE
-        message:
+        createdAt:
           type: string
-          example: 'Trường "name": Trường này không được để trống.'
+          format: date-time
       required:
-        - code
-        - message
+        - sequenceNo
+        - toStatus
+        - actorType
+        - createdAt
     OrderSummaryDto:
       type: object
       properties:
@@ -777,7 +739,7 @@ components:
             - $ref: "#/components/schemas/OrderStatus"
         paymentStatus:
           allOf:
-            - $ref: "#/components/schemas/PaymentStatus"
+            - $ref: ./_components.yaml#/components/schemas/PaymentStatus
         fulfillmentStatus:
           allOf:
             - $ref: "#/components/schemas/OrderFulfillmentStatus"
@@ -820,27 +782,6 @@ components:
         - recipient
         - placedAt
         - version
-    OrderItemComponentDto:
-      type: object
-      properties:
-        productVariantId:
-          type: string
-          pattern: ^[1-9][0-9]*$
-          example: "1"
-        sku:
-          type: string
-        name:
-          type: string
-        quantityPerBundle:
-          type: number
-        totalQuantity:
-          type: number
-      required:
-        - productVariantId
-        - sku
-        - name
-        - quantityPerBundle
-        - totalQuantity
   securitySchemes:
     bearer:
       scheme: bearer

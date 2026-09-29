@@ -75,13 +75,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
         "409":
           description: ""
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
       security:
         - bearer: []
       summary: Update an owned delivery address
@@ -103,13 +103,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
         "409":
           description: ""
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
       security:
         - bearer: []
       summary: Deactivate an owned delivery address
@@ -131,7 +131,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
       security:
         - bearer: []
       summary: "Hồ sơ của khách đang đăng nhập: tên, email, số điện thoại"
@@ -158,19 +158,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
         "404":
           description: ""
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
         "409":
           description: Version không khớp, hoặc email/SĐT đã thuộc về tài khoản khác
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
       security:
         - bearer: []
       summary: Khách tự cập nhật tên, email, số điện thoại và tuỳ chọn nhận tin
@@ -178,64 +178,11 @@ paths:
         - Storefront Customer
 components:
   schemas:
-    CustomerAddressDto:
-      type: object
-      properties:
-        id:
-          type: string
-          pattern: ^[1-9][0-9]*$
-          example: "1"
-        recipient:
-          type: string
-        phone:
-          type: string
-        addressLine:
-          type: string
-        ward:
-          type: string
-          nullable: true
-        wardCode:
-          type: string
-          nullable: true
-          example: "21012"
-        district:
-          type: string
-          nullable: true
-        districtCode:
-          type: string
-          nullable: true
-          example: "1442"
-        province:
-          type: string
-          nullable: true
-        provinceCode:
-          type: string
-        codeProvider:
-          nullable: true
-          description: Hãng đã cấp bộ mã địa giới của địa chỉ này.
-          allOf:
-            - $ref: "#/components/schemas/AddressCodeProvider"
-        postalCode:
-          type: string
-          nullable: true
-        countryCode:
-          type: string
-          enum:
-            - VN
-        isDefault:
-          type: boolean
-        version:
-          type: number
-          minimum: 0
-      required:
-        - id
-        - recipient
-        - phone
-        - addressLine
-        - provinceCode
-        - countryCode
-        - isDefault
-        - version
+    AddressCodeProvider:
+      type: string
+      enum:
+        - GHN
+      description: Hãng đã cấp bộ mã địa giới của địa chỉ này.
     CreateCustomerAddressDto:
       type: object
       properties:
@@ -294,6 +241,105 @@ components:
         - phone
         - addressLine
         - provinceCode
+    CustomerAddressDto:
+      type: object
+      properties:
+        id:
+          type: string
+          pattern: ^[1-9][0-9]*$
+          example: "1"
+        recipient:
+          type: string
+        phone:
+          type: string
+        addressLine:
+          type: string
+        ward:
+          type: string
+          nullable: true
+        wardCode:
+          type: string
+          nullable: true
+          example: "21012"
+        district:
+          type: string
+          nullable: true
+        districtCode:
+          type: string
+          nullable: true
+          example: "1442"
+        province:
+          type: string
+          nullable: true
+        provinceCode:
+          type: string
+        codeProvider:
+          nullable: true
+          description: Hãng đã cấp bộ mã địa giới của địa chỉ này.
+          allOf:
+            - $ref: "#/components/schemas/AddressCodeProvider"
+        postalCode:
+          type: string
+          nullable: true
+        countryCode:
+          type: string
+          enum:
+            - VN
+        isDefault:
+          type: boolean
+        version:
+          type: number
+          minimum: 0
+      required:
+        - id
+        - recipient
+        - phone
+        - addressLine
+        - provinceCode
+        - countryCode
+        - isDefault
+        - version
+    CustomerProfileDto:
+      type: object
+      properties:
+        id:
+          type: string
+          pattern: ^[1-9][0-9]*$
+          example: "1"
+        customerNo:
+          type: string
+          example: KH-000128
+          description: Mã khách, dùng khi liên hệ hỗ trợ
+        name:
+          type: string
+          example: Nguyễn Minh Anh
+        email:
+          type: string
+          nullable: true
+          example: minhanh@example.com
+        phone:
+          type: string
+          nullable: true
+          example: "0903456789"
+        marketingConsent:
+          type: boolean
+          description: Khách có đồng ý nhận tin khuyến mãi
+        createdAt:
+          type: string
+          description: Thời điểm tạo tài khoản
+        version:
+          type: number
+          example: 3
+          description: Gửi lại làm expectedVersion khi cập nhật hồ sơ
+      required:
+        - id
+        - customerNo
+        - name
+        - email
+        - phone
+        - marketingConsent
+        - createdAt
+        - version
     UpdateCustomerAddressDto:
       type: object
       properties:
@@ -353,81 +399,6 @@ components:
           example: 0
       required:
         - expectedVersion
-    ErrorResponseDto:
-      type: object
-      properties:
-        statusCode:
-          type: number
-          example: 400
-        code:
-          type: string
-          example: VALIDATION_ERROR
-        message:
-          type: string
-          example: Dữ liệu gửi lên không hợp lệ.
-        details:
-          type: array
-          items:
-            $ref: "#/components/schemas/ErrorDetailDto"
-        path:
-          type: string
-          example: /api/v1/catalog/products
-        method:
-          type: string
-          example: POST
-        timestamp:
-          type: string
-          format: date-time
-        requestId:
-          type: string
-      required:
-        - statusCode
-        - code
-        - message
-        - path
-        - method
-        - timestamp
-    CustomerProfileDto:
-      type: object
-      properties:
-        id:
-          type: string
-          pattern: ^[1-9][0-9]*$
-          example: "1"
-        customerNo:
-          type: string
-          example: KH-000128
-          description: Mã khách, dùng khi liên hệ hỗ trợ
-        name:
-          type: string
-          example: Nguyễn Minh Anh
-        email:
-          type: string
-          nullable: true
-          example: minhanh@example.com
-        phone:
-          type: string
-          nullable: true
-          example: "0903456789"
-        marketingConsent:
-          type: boolean
-          description: Khách có đồng ý nhận tin khuyến mãi
-        createdAt:
-          type: string
-          description: Thời điểm tạo tài khoản
-        version:
-          type: number
-          example: 3
-          description: Gửi lại làm expectedVersion khi cập nhật hồ sơ
-      required:
-        - id
-        - customerNo
-        - name
-        - email
-        - phone
-        - marketingConsent
-        - createdAt
-        - version
     UpdateCustomerProfileDto:
       type: object
       properties:
@@ -454,26 +425,6 @@ components:
           description: Khách có đồng ý nhận tin khuyến mãi
       required:
         - expectedVersion
-    AddressCodeProvider:
-      type: string
-      enum:
-        - GHN
-      description: Hãng đã cấp bộ mã địa giới của địa chỉ này.
-    ErrorDetailDto:
-      type: object
-      properties:
-        field:
-          type: string
-          example: name
-        code:
-          type: string
-          example: INVALID_VALUE
-        message:
-          type: string
-          example: 'Trường "name": Trường này không được để trống.'
-      required:
-        - code
-        - message
   securitySchemes:
     bearer:
       scheme: bearer

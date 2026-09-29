@@ -214,6 +214,15 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
             setSubmittedReviewItems((current) => new Set(current).add(orderItemId));
             setReviewingItem(undefined);
             triggerToast('Cảm ơn bạn đã gửi đánh giá sản phẩm!');
+            // Đánh giá hiển thị ngay sau khi gửi (không còn chờ duyệt) nên phải làm mới cache
+            // đánh giá của sản phẩm; đơn hàng không giữ productSlug nên khớp theo mẫu đường dẫn
+            // thay vì một query key cụ thể.
+            void queryClient.invalidateQueries({
+              predicate: (query) => {
+                const key = query.queryKey[0];
+                return typeof key === 'string' && /^\/api\/v1\/catalog\/products\/[^/]+\/reviews$/.test(key);
+              },
+            });
           }}
         />
       )}

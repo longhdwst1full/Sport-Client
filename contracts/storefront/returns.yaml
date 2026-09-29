@@ -36,25 +36,25 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
         "401":
           description: ""
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
         "404":
           description: ""
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
         "409":
           description: Quá hạn, vượt số lượng, combo trả lẻ hoặc đã có phiếu mở
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
       security:
         - bearer: []
       summary: Khách đăng nhập tạo yêu cầu trả hàng cho đơn đã giao, trong hạn đổi trả
@@ -90,7 +90,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
       security:
         - bearer: []
       summary: Danh sách phiếu trả hàng của khách đang đăng nhập
@@ -112,31 +112,31 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SignedMediaUploadDto"
+                $ref: ./_components.yaml#/components/schemas/SignedMediaUploadDto
         "400":
           description: ""
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
         "401":
           description: ""
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
         "404":
           description: ""
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
         "409":
           description: ""
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
       security:
         - bearer: []
       summary: Chữ ký upload Cloudinary ngắn hạn cho ảnh minh chứng trả hàng của một đơn đã giao
@@ -163,13 +163,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
         "404":
           description: ""
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
       security:
         - bearer: []
       summary: Đơn có trả được không, hạn trả, số lượng còn trả được và tiền hoàn ước tính từng dòng
@@ -196,13 +196,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
         "404":
           description: ""
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
       security:
         - bearer: []
       summary: Chi tiết phiếu trả hàng thuộc khách đang đăng nhập
@@ -240,19 +240,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
         "404":
           description: ""
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
         "409":
           description: ""
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
       security:
         - bearer: []
       summary: Khách huỷ phiếu trả chưa gửi hàng về
@@ -289,6 +289,119 @@ components:
         - reasonCode
         - items
         - orderNo
+    CreateAccountReturnEvidenceUploadDto:
+      type: object
+      properties:
+        fileName:
+          type: string
+          example: product-front.webp
+        contentType:
+          example: image/webp
+          allOf:
+            - $ref: ./_components.yaml#/components/schemas/ImageMimeType
+        sizeBytes:
+          type: number
+          minimum: 1
+          maximum: 10485760
+          example: 245760
+        orderNo:
+          type: string
+          maxLength: 40
+          example: ORD-20260924-0001
+      required:
+        - fileName
+        - contentType
+        - sizeBytes
+        - orderNo
+    OrderItemType:
+      type: string
+      enum:
+        - STANDARD
+        - BUNDLE
+    RefundDto:
+      type: object
+      properties:
+        id:
+          type: string
+          pattern: ^[1-9][0-9]*$
+          example: "1"
+        refundNo:
+          type: string
+        method:
+          allOf:
+            - $ref: "#/components/schemas/RefundMethod"
+        amount:
+          type: string
+          example: "570000.00"
+        status:
+          allOf:
+            - $ref: "#/components/schemas/RefundStatus"
+        externalRef:
+          type: string
+          nullable: true
+        note:
+          type: string
+          nullable: true
+        failureReason:
+          type: string
+          nullable: true
+        proofImages:
+          description: Chứng từ lưu khi xác nhận; không trả cho khách
+          type: array
+          items:
+            $ref: "#/components/schemas/ReturnEvidenceImageDto"
+        processedAt:
+          type: string
+          format: date-time
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        version:
+          type: string
+      required:
+        - id
+        - refundNo
+        - method
+        - amount
+        - status
+        - proofImages
+        - createdAt
+        - version
+    RefundMethod:
+      type: string
+      enum:
+        - CASH
+        - BANK_TRANSFER
+    RefundStatus:
+      type: string
+      enum:
+        - PENDING
+        - SUCCEEDED
+        - FAILED
+    ReturnAction:
+      type: string
+      enum:
+        - CREATE
+        - APPROVE
+        - REJECT
+        - CANCEL
+        - RECEIVE
+        - REFUND_REQUEST
+        - REFUND_CONFIRM
+        - REFUND_FAIL
+        - CLOSE
+    ReturnChannel:
+      type: string
+      enum:
+        - ACCOUNT
+        - ADMIN
+    ReturnCondition:
+      type: string
+      enum:
+        - SELLABLE
+        - DAMAGED
+        - MISSING
     ReturnDetailDto:
       type: object
       properties:
@@ -411,134 +524,6 @@ components:
         - items
         - refunds
         - history
-    ErrorResponseDto:
-      type: object
-      properties:
-        statusCode:
-          type: number
-          example: 400
-        code:
-          type: string
-          example: VALIDATION_ERROR
-        message:
-          type: string
-          example: Dữ liệu gửi lên không hợp lệ.
-        details:
-          type: array
-          items:
-            $ref: "#/components/schemas/ErrorDetailDto"
-        path:
-          type: string
-          example: /api/v1/catalog/products
-        method:
-          type: string
-          example: POST
-        timestamp:
-          type: string
-          format: date-time
-        requestId:
-          type: string
-      required:
-        - statusCode
-        - code
-        - message
-        - path
-        - method
-        - timestamp
-    ReturnListDto:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: "#/components/schemas/ReturnSummaryDto"
-        page:
-          type: number
-        limit:
-          type: number
-        total:
-          type: number
-      required:
-        - items
-        - page
-        - limit
-        - total
-    CreateAccountReturnEvidenceUploadDto:
-      type: object
-      properties:
-        fileName:
-          type: string
-          example: product-front.webp
-        contentType:
-          example: image/webp
-          allOf:
-            - $ref: "#/components/schemas/ImageMimeType"
-        sizeBytes:
-          type: number
-          minimum: 1
-          maximum: 10485760
-          example: 245760
-        orderNo:
-          type: string
-          maxLength: 40
-          example: ORD-20260924-0001
-      required:
-        - fileName
-        - contentType
-        - sizeBytes
-        - orderNo
-    SignedMediaUploadDto:
-      type: object
-      properties:
-        provider:
-          allOf:
-            - $ref: "#/components/schemas/MediaProvider"
-        uploadUrl:
-          type: string
-          format: uri
-        cloudName:
-          type: string
-        apiKey:
-          type: string
-        timestamp:
-          type: number
-        signature:
-          type: string
-        folder:
-          type: string
-        publicId:
-          type: string
-        allowedFormats:
-          type: array
-          items:
-            type: string
-        maxBytes:
-          type: number
-        overwrite:
-          type: boolean
-          enum:
-            - false
-        uniqueFilename:
-          type: boolean
-          enum:
-            - false
-        expiresAt:
-          type: string
-          format: date-time
-      required:
-        - provider
-        - uploadUrl
-        - cloudName
-        - apiKey
-        - timestamp
-        - signature
-        - folder
-        - publicId
-        - allowedFormats
-        - maxBytes
-        - overwrite
-        - uniqueFilename
-        - expiresAt
     ReturnEligibilityDto:
       type: object
       properties:
@@ -585,78 +570,53 @@ components:
         - withinWindow
         - windowOverrideRequired
         - items
-    ReturnReasonCommandDto:
-      type: object
-      properties:
-        expectedVersion:
-          type: string
-          pattern: ^\d+$
-          example: "0"
-        reason:
-          type: string
-          minLength: 5
-          maxLength: 500
-      required:
-        - expectedVersion
-        - reason
-    ReturnReasonCode:
-      type: string
-      enum:
-        - DEFECTIVE
-        - WRONG_ITEM
-        - NOT_AS_DESCRIBED
-        - WRONG_SIZE
-        - CHANGED_MIND
-        - OTHER
-    ReturnEvidenceInputDto:
-      type: object
-      properties:
-        publicId:
-          type: string
-          example: sport-sys/sport/return-evidence/o9/8ece7be0-b7da-4ff1-a37e-fdd473b08d5e
-        providerVersion:
-          type: number
-          example: 1787999000
-        providerSignature:
-          type: string
-      required:
-        - publicId
-        - providerVersion
-        - providerSignature
-    ReturnLineInputDto:
+    ReturnEligibilityLineDto:
       type: object
       properties:
         orderItemId:
           type: string
           pattern: ^[1-9][0-9]*$
           example: "1"
-        quantity:
+        sku:
+          type: string
+        productName:
+          type: string
+        variantName:
+          type: string
+        imageUrl:
+          type: string
+          nullable: true
+        isBundle:
+          type: boolean
+          description: "Combo: chỉ được trả đúng returnableQuantity, không trả lẻ"
+        purchasedQuantity:
           type: number
-          minimum: 1
-          description: Combo phải bằng toàn bộ số bộ còn trả được của dòng
+        returnedQuantity:
+          type: number
+          description: Đã nằm trên phiếu khác chưa bị từ chối/huỷ
+        returnableQuantity:
+          type: number
+          description: 0 khi đã trả hết hoặc danh mục không áp dụng đổi trả
+        blockedByCategory:
+          type: boolean
+        unitRefundEstimate:
+          type: string
+          description: Tiền hoàn ước tính cho 1 sản phẩm (làm tròn xuống)
+        maxRefundEstimate:
+          type: string
+          description: Tiền hoàn ước tính khi trả toàn bộ returnableQuantity
       required:
         - orderItemId
-        - quantity
-    ReturnStatus:
-      type: string
-      enum:
-        - REQUESTED
-        - APPROVED
-        - REJECTED
-        - RECEIVED
-        - REFUNDED
-        - CLOSED
-        - CANCELLED
-    ReturnChannel:
-      type: string
-      enum:
-        - ACCOUNT
-        - ADMIN
-    ReturnFault:
-      type: string
-      enum:
-        - SHOP
-        - CUSTOMER
+        - sku
+        - productName
+        - variantName
+        - isBundle
+        - purchasedQuantity
+        - returnedQuantity
+        - returnableQuantity
+        - blockedByCategory
+        - unitRefundEstimate
+        - maxRefundEstimate
     ReturnEvidenceImageDto:
       type: object
       properties:
@@ -675,11 +635,64 @@ components:
         - thumbnailUrl
         - width
         - height
-    RefundMethod:
+    ReturnEvidenceInputDto:
+      type: object
+      properties:
+        publicId:
+          type: string
+          example: sport-sys/sport/return-evidence/o9/8ece7be0-b7da-4ff1-a37e-fdd473b08d5e
+        providerVersion:
+          type: number
+          example: 1787999000
+        providerSignature:
+          type: string
+      required:
+        - publicId
+        - providerVersion
+        - providerSignature
+    ReturnFault:
       type: string
       enum:
-        - CASH
-        - BANK_TRANSFER
+        - SHOP
+        - CUSTOMER
+    ReturnHistoryDto:
+      type: object
+      properties:
+        sequenceNo:
+          type: number
+        action:
+          allOf:
+            - $ref: "#/components/schemas/ReturnAction"
+        fromStatus:
+          type: string
+          nullable: true
+        toStatus:
+          allOf:
+            - $ref: "#/components/schemas/ReturnStatus"
+        reason:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - sequenceNo
+        - action
+        - toStatus
+        - createdAt
+    ReturnIneligibleReason:
+      type: string
+      enum:
+        - ORDER_NOT_RETURNABLE
+        - OPEN_RETURN_EXISTS
+        - WINDOW_EXPIRED
+        - NOTHING_RETURNABLE
+    ReturnItemDisposition:
+      type: string
+      enum:
+        - RESTOCK
+        - HOLD
+        - WRITE_OFF
     ReturnItemDto:
       type: object
       properties:
@@ -731,96 +744,71 @@ components:
         - quantity
         - unitPrice
         - restockQty
-    RefundDto:
+    ReturnLineInputDto:
       type: object
       properties:
-        id:
+        orderItemId:
           type: string
           pattern: ^[1-9][0-9]*$
           example: "1"
-        refundNo:
-          type: string
-        method:
-          allOf:
-            - $ref: "#/components/schemas/RefundMethod"
-        amount:
-          type: string
-          example: "570000.00"
-        status:
-          allOf:
-            - $ref: "#/components/schemas/RefundStatus"
-        externalRef:
-          type: string
-          nullable: true
-        note:
-          type: string
-          nullable: true
-        failureReason:
-          type: string
-          nullable: true
-        proofImages:
-          description: Chứng từ lưu khi xác nhận; không trả cho khách
+        quantity:
+          type: number
+          minimum: 1
+          description: Combo phải bằng toàn bộ số bộ còn trả được của dòng
+      required:
+        - orderItemId
+        - quantity
+    ReturnListDto:
+      type: object
+      properties:
+        items:
           type: array
           items:
-            $ref: "#/components/schemas/ReturnEvidenceImageDto"
-        processedAt:
-          type: string
-          format: date-time
-          nullable: true
-        createdAt:
-          type: string
-          format: date-time
-        version:
-          type: string
+            $ref: "#/components/schemas/ReturnSummaryDto"
+        page:
+          type: number
+        limit:
+          type: number
+        total:
+          type: number
       required:
-        - id
-        - refundNo
-        - method
-        - amount
-        - status
-        - proofImages
-        - createdAt
-        - version
-    ReturnHistoryDto:
+        - items
+        - page
+        - limit
+        - total
+    ReturnReasonCode:
+      type: string
+      enum:
+        - DEFECTIVE
+        - WRONG_ITEM
+        - NOT_AS_DESCRIBED
+        - WRONG_SIZE
+        - CHANGED_MIND
+        - OTHER
+    ReturnReasonCommandDto:
       type: object
       properties:
-        sequenceNo:
-          type: number
-        action:
-          allOf:
-            - $ref: "#/components/schemas/ReturnAction"
-        fromStatus:
+        expectedVersion:
           type: string
-          nullable: true
-        toStatus:
-          allOf:
-            - $ref: "#/components/schemas/ReturnStatus"
+          pattern: ^\d+$
+          example: "0"
         reason:
           type: string
-          nullable: true
-        createdAt:
-          type: string
-          format: date-time
+          minLength: 5
+          maxLength: 500
       required:
-        - sequenceNo
-        - action
-        - toStatus
-        - createdAt
-    ErrorDetailDto:
-      type: object
-      properties:
-        field:
-          type: string
-          example: name
-        code:
-          type: string
-          example: INVALID_VALUE
-        message:
-          type: string
-          example: 'Trường "name": Trường này không được để trống.'
-      required:
-        - code
-        - message
+        - expectedVersion
+        - reason
+    ReturnStatus:
+      type: string
+      enum:
+        - REQUESTED
+        - APPROVED
+        - REJECTED
+        - RECEIVED
+        - REFUNDED
+        - CLOSED
+        - CANCELLED
     ReturnSummaryDto:
       type: object
       properties:
@@ -871,106 +859,6 @@ components:
         - itemCount
         - createdAt
         - version
-    ImageMimeType:
-      type: string
-      enum:
-        - image/jpeg
-        - image/png
-        - image/webp
-        - image/avif
-    MediaProvider:
-      type: string
-      enum:
-        - CLOUDINARY
-    ReturnIneligibleReason:
-      type: string
-      enum:
-        - ORDER_NOT_RETURNABLE
-        - OPEN_RETURN_EXISTS
-        - WINDOW_EXPIRED
-        - NOTHING_RETURNABLE
-    ReturnEligibilityLineDto:
-      type: object
-      properties:
-        orderItemId:
-          type: string
-          pattern: ^[1-9][0-9]*$
-          example: "1"
-        sku:
-          type: string
-        productName:
-          type: string
-        variantName:
-          type: string
-        imageUrl:
-          type: string
-          nullable: true
-        isBundle:
-          type: boolean
-          description: "Combo: chỉ được trả đúng returnableQuantity, không trả lẻ"
-        purchasedQuantity:
-          type: number
-        returnedQuantity:
-          type: number
-          description: Đã nằm trên phiếu khác chưa bị từ chối/huỷ
-        returnableQuantity:
-          type: number
-          description: 0 khi đã trả hết hoặc danh mục không áp dụng đổi trả
-        blockedByCategory:
-          type: boolean
-        unitRefundEstimate:
-          type: string
-          description: Tiền hoàn ước tính cho 1 sản phẩm (làm tròn xuống)
-        maxRefundEstimate:
-          type: string
-          description: Tiền hoàn ước tính khi trả toàn bộ returnableQuantity
-      required:
-        - orderItemId
-        - sku
-        - productName
-        - variantName
-        - isBundle
-        - purchasedQuantity
-        - returnedQuantity
-        - returnableQuantity
-        - blockedByCategory
-        - unitRefundEstimate
-        - maxRefundEstimate
-    OrderItemType:
-      type: string
-      enum:
-        - STANDARD
-        - BUNDLE
-    ReturnCondition:
-      type: string
-      enum:
-        - SELLABLE
-        - DAMAGED
-        - MISSING
-    ReturnItemDisposition:
-      type: string
-      enum:
-        - RESTOCK
-        - HOLD
-        - WRITE_OFF
-    RefundStatus:
-      type: string
-      enum:
-        - PENDING
-        - SUCCEEDED
-        - FAILED
-    ReturnAction:
-      type: string
-      enum:
-        - CREATE
-        - APPROVE
-        - REJECT
-        - CANCEL
-        - RECEIVE
-        - REFUND_REQUEST
-        - REFUND_CONFIRM
-        - REFUND_FAIL
-        - CLOSE
   securitySchemes:
     bearer:
       scheme: bearer

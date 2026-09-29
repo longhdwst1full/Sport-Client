@@ -1,4 +1,4 @@
-import type { ContentPostDto } from '@/generated/api/content/content.schemas';
+import type { ContentPostDto, ContentPostSummaryDto } from '@/generated/api/content/content.schemas';
 import { POLICY_POST_TYPE } from './content-post.mapper';
 
 export interface PolicySummaryView {
@@ -23,7 +23,9 @@ export function isPolicyPost(dto: ContentPostDto): boolean {
   return dto.postType === POLICY_POST_TYPE;
 }
 
-export function toPolicySummaryView(dto: ContentPostDto): PolicySummaryView {
+// Danh sách chính sách đọc từ `listPublishedPosts` (ContentPostSummaryDto, không có `body`);
+// chỉ trang chi tiết chính sách mới cần `ContentPostDto` đầy đủ để tách đoạn thân bài.
+export function toPolicySummaryView(dto: ContentPostSummaryDto): PolicySummaryView {
   return { slug: dto.slug, title: dto.title, excerpt: dto.excerpt };
 }
 

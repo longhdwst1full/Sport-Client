@@ -19,8 +19,8 @@ export function useProductReviews(productSlug: string): {
   isError: boolean;
 } {
   const query = useListProductReviews(productSlug, {
-    // Đánh giá chỉ hiện sau khi Admin duyệt nên không cần tươi từng giây; dùng mức CATALOG như
-    // chi tiết sản phẩm để khách đi qua lại giữa các sản phẩm không gọi lại mỗi lần.
+    // Đánh giá hiển thị ngay sau khi khách gửi nên vẫn dùng mức CATALOG như chi tiết sản phẩm
+    // (đủ tươi khi khách đi qua lại giữa các sản phẩm); submit thành công tự invalidate query này.
     query: { enabled: Boolean(productSlug), ...CACHE_POLICY.CATALOG },
   });
 

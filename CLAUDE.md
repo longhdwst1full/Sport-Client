@@ -9,16 +9,24 @@ Read `AGENTS.md` and the task-relevant files under `.agent/rules` and `.agent/sk
 ## Commands
 
 ```bash
-yarn dev                 # Next dev server on :3000
-yarn build && yarn start # production build / serve (required before handoff)
-yarn lint                # tsc --noEmit + ESLint (eslint.config.mjs: import-boundary rules only)
+yarn dev                 # Next dev server on :3000 (predev regenerates the SDK first)
+yarn build && yarn start # production build / serve (prebuild regenerates the SDK first)
+yarn lint                # prelint regenerates the SDK, then tsc --noEmit + ESLint (eslint.config.mjs: import-boundary rules only)
 yarn lint:boundaries     # ESLint layer/feature boundary check alone
-yarn test                # vitest run --pool=threads
+yarn test                # pretest regenerates the SDK, then vitest run --pool=threads
 yarn verify              # lint + test + generate:api + build (full quality gate)
 
-yarn contracts:sync      # pull Storefront OpenAPI slices into contracts/storefront/*.yaml
-yarn generate:api        # clean + regenerate src/generated/api from those contracts
+yarn contracts:sync      # pull Storefront OpenAPI slices (+ any shared `_*.yaml` file, e.g. `_components.yaml`)
+                          # into contracts/storefront/*.yaml. Source resolution order:
+                          # $CONTRACTS_SOURCE_DIR (or legacy $SPORT_API_CONTRACT_DIR) > sibling
+                          # ../api/document/api/storefront checkout > GitHub raw fallback.
+yarn generate:api         # clean + regenerate src/generated/api from contracts/ (orval, devDependency)
 ```
+
+`src/generated/` is disposable, git-ignored and never committed — it regenerates automatically via
+`predev`/`prebuild`/`prelint`/`pretest`. `contracts/storefront/*.yaml` stay committed (the storefront
+deploys independently, with no sibling `api` repo on Vercel), so a fresh clone only needs
+`yarn install && yarn build` to produce a working SDK and build.
 
 Single test: `yarn vitest run src/features/cart/model/cart.saga.test.ts` (add `-t "name"` for one case).
 Tests live next to the code (`*.test.ts(x)`): transport, cart slice/saga, auth token store and page-level flows such as checkout requote and order detail.

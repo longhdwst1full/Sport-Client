@@ -37,26 +37,26 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateMediaUploadDto"
+              $ref: ./_components.yaml#/components/schemas/CreateMediaUploadDto
       responses:
         "201":
           description: ""
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SignedMediaUploadDto"
+                $ref: ./_components.yaml#/components/schemas/SignedMediaUploadDto
         "400":
           description: ""
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
         "401":
           description: ""
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
       security:
         - bearer: []
       summary: Tạo chữ ký upload ảnh đánh giá cho khách đã đăng nhập
@@ -84,19 +84,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
         "401":
           description: ""
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
         "409":
           description: ""
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
       security:
         - bearer: []
       summary: Xác minh ảnh đánh giá đã upload và tạo media asset thuộc khách
@@ -104,6 +104,7 @@ paths:
         - Storefront Account Reviews
   /api/v1/account/reviews:
     post:
+      description: Đánh giá được xuất bản ngay (status APPROVED), không chờ Admin duyệt; Admin có thể gỡ sau.
       operationId: createAccountProductReview
       parameters: []
       requestBody:
@@ -124,25 +125,25 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
         "401":
           description: ""
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
         "404":
           description: ""
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
         "409":
           description: ""
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
       security:
         - bearer: []
       summary: Khách gửi đánh giá cho một dòng hàng thuộc đơn đã hoàn tất
@@ -150,126 +151,39 @@ paths:
         - Storefront Account Reviews
 components:
   schemas:
-    ProductReviewListDto:
+    CreateCustomerReviewDto:
       type: object
       properties:
-        items:
-          type: array
-          items:
-            $ref: "#/components/schemas/ProductReviewDto"
-        total:
-          type: number
-        averageRating:
-          type: number
-      required:
-        - items
-        - total
-        - averageRating
-    CreateMediaUploadDto:
-      type: object
-      properties:
-        fileName:
+        orderItemId:
           type: string
-          example: product-front.webp
-        contentType:
-          example: image/webp
-          allOf:
-            - $ref: "#/components/schemas/ImageMimeType"
-        sizeBytes:
+          pattern: ^[1-9][0-9]*$
+          example: "1"
+          description: Dòng hàng thuộc đơn COMPLETED của khách đang đăng nhập
+        rating:
           type: number
           minimum: 1
-          maximum: 10485760
-          example: 245760
-      required:
-        - fileName
-        - contentType
-        - sizeBytes
-    SignedMediaUploadDto:
-      type: object
-      properties:
-        provider:
-          allOf:
-            - $ref: "#/components/schemas/MediaProvider"
-        uploadUrl:
+          maximum: 5
+        title:
           type: string
-          format: uri
-        cloudName:
+          minLength: 3
+          maxLength: 255
+        content:
           type: string
-        apiKey:
-          type: string
-        timestamp:
-          type: number
-        signature:
-          type: string
-        folder:
-          type: string
-        publicId:
-          type: string
-        allowedFormats:
+          minLength: 10
+          maxLength: 5000
+        mediaAssetIds:
+          example: "1"
+          maxItems: 5
+          description: Media asset đã finalize bởi chính tài khoản khách
           type: array
           items:
             type: string
-        maxBytes:
-          type: number
-        overwrite:
-          type: boolean
-          enum:
-            - false
-        uniqueFilename:
-          type: boolean
-          enum:
-            - false
-        expiresAt:
-          type: string
-          format: date-time
+            pattern: ^[1-9][0-9]*$
       required:
-        - provider
-        - uploadUrl
-        - cloudName
-        - apiKey
-        - timestamp
-        - signature
-        - folder
-        - publicId
-        - allowedFormats
-        - maxBytes
-        - overwrite
-        - uniqueFilename
-        - expiresAt
-    ErrorResponseDto:
-      type: object
-      properties:
-        statusCode:
-          type: number
-          example: 400
-        code:
-          type: string
-          example: VALIDATION_ERROR
-        message:
-          type: string
-          example: Dữ liệu gửi lên không hợp lệ.
-        details:
-          type: array
-          items:
-            $ref: "#/components/schemas/ErrorDetailDto"
-        path:
-          type: string
-          example: /api/v1/catalog/products
-        method:
-          type: string
-          example: POST
-        timestamp:
-          type: string
-          format: date-time
-        requestId:
-          type: string
-      required:
-        - statusCode
-        - code
-        - message
-        - path
-        - method
-        - timestamp
+        - orderItemId
+        - rating
+        - title
+        - content
     FinalizeMediaUploadDto:
       type: object
       properties:
@@ -294,7 +208,7 @@ components:
           example: "1"
         provider:
           allOf:
-            - $ref: "#/components/schemas/MediaProvider"
+            - $ref: ./_components.yaml#/components/schemas/MediaProvider
         providerAssetId:
           type: string
         publicId:
@@ -337,39 +251,6 @@ components:
         - format
         - providerVersion
         - status
-    CreateCustomerReviewDto:
-      type: object
-      properties:
-        orderItemId:
-          type: string
-          pattern: ^[1-9][0-9]*$
-          example: "1"
-          description: Dòng hàng thuộc đơn COMPLETED của khách đang đăng nhập
-        rating:
-          type: number
-          minimum: 1
-          maximum: 5
-        title:
-          type: string
-          minLength: 3
-          maxLength: 255
-        content:
-          type: string
-          minLength: 10
-          maxLength: 5000
-        mediaAssetIds:
-          example: "1"
-          maxItems: 5
-          description: Media asset đã finalize bởi chính tài khoản khách
-          type: array
-          items:
-            type: string
-            pattern: ^[1-9][0-9]*$
-      required:
-        - orderItemId
-        - rating
-        - title
-        - content
     ProductReviewDto:
       type: object
       properties:
@@ -390,7 +271,7 @@ components:
         verifiedPurchase:
           type: boolean
         status:
-          description: Đánh giá mới ở PENDING; chỉ APPROVED được hiển thị công khai
+          description: Đánh giá của khách đã mua vào thẳng APPROVED và hiển thị ngay; kiểm duyệt là hậu kiểm, Admin gỡ bằng REJECTED. PENDING chỉ còn ở dữ liệu cũ.
           allOf:
             - $ref: "#/components/schemas/ReviewModerationStatus"
         version:
@@ -401,6 +282,7 @@ components:
         moderatedAt:
           type: string
           format: date-time
+          description: Mốc xuất bản (review tự hiển thị) hoặc lần Admin gỡ/khôi phục gần nhất.
         comments:
           type: array
           items:
@@ -425,39 +307,21 @@ components:
         - comments
         - media
         - createdAt
-    ImageMimeType:
-      type: string
-      enum:
-        - image/jpeg
-        - image/png
-        - image/webp
-        - image/avif
-    MediaProvider:
-      type: string
-      enum:
-        - CLOUDINARY
-    ErrorDetailDto:
+    ProductReviewListDto:
       type: object
       properties:
-        field:
-          type: string
-          example: name
-        code:
-          type: string
-          example: INVALID_VALUE
-        message:
-          type: string
-          example: 'Trường "name": Trường này không được để trống.'
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProductReviewDto"
+        total:
+          type: number
+        averageRating:
+          type: number
       required:
-        - code
-        - message
-    ReviewModerationStatus:
-      type: string
-      enum:
-        - PENDING
-        - APPROVED
-        - REJECTED
-      description: Đánh giá mới ở PENDING; chỉ APPROVED được hiển thị công khai
+        - items
+        - total
+        - averageRating
     ReviewCommentDto:
       type: object
       properties:
@@ -506,6 +370,13 @@ components:
         - url
         - thumbnailUrl
         - sortOrder
+    ReviewModerationStatus:
+      type: string
+      enum:
+        - PENDING
+        - APPROVED
+        - REJECTED
+      description: Đánh giá của khách đã mua vào thẳng APPROVED và hiển thị ngay; kiểm duyệt là hậu kiểm, Admin gỡ bằng REJECTED. PENDING chỉ còn ở dữ liệu cũ.
   securitySchemes:
     bearer:
       scheme: bearer

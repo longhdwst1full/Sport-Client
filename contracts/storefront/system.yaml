@@ -25,24 +25,6 @@ paths:
         - Storefront System
 components:
   schemas:
-    SystemParameterListDto:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: "#/components/schemas/SystemParameterDto"
-        page:
-          type: number
-        limit:
-          type: number
-        total:
-          type: number
-      required:
-        - items
-        - page
-        - limit
-        - total
     SystemParameterDto:
       type: object
       properties:
@@ -128,6 +110,24 @@ components:
         - CART
         - PROMOTION
         - INTEGRATION
+    SystemParameterListDto:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/SystemParameterDto"
+        page:
+          type: number
+        limit:
+          type: number
+        total:
+          type: number
+      required:
+        - items
+        - page
+        - limit
+        - total
     SystemParameterValueType:
       type: string
       enum:

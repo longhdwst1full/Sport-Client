@@ -1,5 +1,5 @@
 const { existsSync } = require('node:fs');
-const { mkdir, readFile, writeFile } = require('node:fs/promises');
+const { mkdir, readdir, readFile, writeFile } = require('node:fs/promises');
 const { resolve } = require('node:path');
 
 // Storefront chỉ đồng bộ những domain mình thực sự dùng. `system` cấp tham số công khai
@@ -9,10 +9,22 @@ const defaultBaseUrl =
   'https://raw.githubusercontent.com/longhdwst1full/dctd-utc/main/document/api/storefront';
 const baseUrl = (process.env.SPORT_API_CONTRACT_BASE_URL || defaultBaseUrl).replace(/\/$/, '');
 const siblingContractDirectory = resolve(__dirname, '../../api/document/api/storefront');
-const contractDirectory = process.env.SPORT_API_CONTRACT_DIR
-  ? resolve(process.env.SPORT_API_CONTRACT_DIR)
+// CONTRACTS_SOURCE_DIR: override cho phép trỏ tới một checkout/worktree api/ bất kỳ
+// (vd. một worktree đang review contract chưa merge vào api main). SPORT_API_CONTRACT_DIR
+// giữ lại để tương thích ngược.
+const contractDirectoryOverride = process.env.CONTRACTS_SOURCE_DIR || process.env.SPORT_API_CONTRACT_DIR;
+const contractDirectory = contractDirectoryOverride
+  ? resolve(contractDirectoryOverride)
   : (existsSync(siblingContractDirectory) ? siblingContractDirectory : undefined);
 const outputDirectory = resolve(__dirname, '../contracts/storefront');
+
+async function findSharedFiles() {
+  // File dùng chung (vd. `_components.yaml`) mà các slice domain tham chiếu qua
+  // `$ref: ./_components.yaml#/components/...`. Chỉ tồn tại khi sync từ thư mục cục bộ.
+  if (!contractDirectory) return [];
+  const entries = await readdir(contractDirectory).catch(() => []);
+  return entries.filter((name) => name.startsWith('_') && name.endsWith('.yaml'));
+}
 
 async function main() {
   const contracts = await Promise.all(
@@ -30,13 +42,24 @@ async function main() {
     }),
   );
 
+  const sharedFileNames = await findSharedFiles();
+  const sharedFiles = await Promise.all(
+    sharedFileNames.map(async (name) => ({
+      name,
+      content: await readFile(resolve(contractDirectory, name), 'utf8'),
+    })),
+  );
+
   await mkdir(outputDirectory, { recursive: true });
-  await Promise.all(
-    contracts.map(({ domain, content }) =>
+  await Promise.all([
+    ...contracts.map(({ domain, content }) =>
       writeFile(resolve(outputDirectory, `${domain}.yaml`), content, 'utf8'),
     ),
+    ...sharedFiles.map(({ name, content }) => writeFile(resolve(outputDirectory, name), content, 'utf8')),
+  ]);
+  console.log(
+    `Synced ${contracts.length} Storefront API contracts${sharedFiles.length ? ` + ${sharedFiles.length} shared file(s)` : ''} from ${contractDirectory ?? baseUrl}`,
   );
-  console.log(`Synced ${contracts.length} Storefront API contracts from ${contractDirectory ?? baseUrl}`);
 }
 
 main().catch((error) => {

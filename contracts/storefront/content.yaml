@@ -13,6 +13,21 @@ paths:
     get:
       operationId: listPublishedPosts
       parameters:
+        - name: page
+          required: false
+          in: query
+          schema:
+            minimum: 1
+            default: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          schema:
+            minimum: 1
+            maximum: 50
+            default: 20
+            type: number
         - name: postType
           required: false
           in: query
@@ -26,7 +41,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ContentPostListDto"
-      summary: List published content posts
+        "400":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
+      summary: List published content posts (paginated summaries without body)
       tags:
         - Storefront Content
   /api/v1/content/posts/{slug}:
@@ -50,32 +71,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
       summary: Get a published post by slug
       tags:
         - Storefront Content
 components:
   schemas:
-    ContentPostType:
-      type: string
-      enum:
-        - NEWS
-        - TRAINING_GUIDE
-        - PRODUCT_GUIDE
-        - ABOUT
-        - POLICY
-    ContentPostListDto:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: "#/components/schemas/ContentPostDto"
-        total:
-          type: number
-      required:
-        - items
-        - total
     ContentPostDto:
       type: object
       properties:
@@ -94,15 +95,80 @@ components:
           type: string
         excerpt:
           type: string
-        body:
-          type: string
         coverUrl:
           type: string
           format: uri
+        publishedAt:
+          type: string
+          format: date-time
+        status:
+          allOf:
+            - $ref: "#/components/schemas/ContentPostStatus"
+        version:
+          type: number
+          minimum: 0
+        archivedAt:
+          type: string
+          format: date-time
+        archiveReason:
+          type: string
+        body:
+          type: string
         relatedProductSlugs:
           type: array
           items:
             type: string
+      required:
+        - id
+        - slug
+        - postType
+        - isPublished
+        - title
+        - excerpt
+        - coverUrl
+        - publishedAt
+        - status
+        - version
+        - body
+        - relatedProductSlugs
+    ContentPostListDto:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/ContentPostSummaryDto"
+        meta:
+          $ref: "#/components/schemas/PageMetaDto"
+      required:
+        - items
+        - meta
+    ContentPostStatus:
+      type: string
+      enum:
+        - PUBLISHED
+        - ARCHIVED
+    ContentPostSummaryDto:
+      type: object
+      properties:
+        id:
+          type: string
+        slug:
+          type: string
+        postType:
+          allOf:
+            - $ref: "#/components/schemas/ContentPostType"
+        isPublished:
+          type: boolean
+          example: true
+          description: Có hiển thị trên website hay không; tách khỏi status để ẩn tạm bài viết
+        title:
+          type: string
+        excerpt:
+          type: string
+        coverUrl:
+          type: string
+          format: uri
         publishedAt:
           type: string
           format: date-time
@@ -124,66 +190,39 @@ components:
         - isPublished
         - title
         - excerpt
-        - body
         - coverUrl
-        - relatedProductSlugs
         - publishedAt
         - status
         - version
-    ErrorResponseDto:
-      type: object
-      properties:
-        statusCode:
-          type: number
-          example: 400
-        code:
-          type: string
-          example: VALIDATION_ERROR
-        message:
-          type: string
-          example: Dữ liệu gửi lên không hợp lệ.
-        details:
-          type: array
-          items:
-            $ref: "#/components/schemas/ErrorDetailDto"
-        path:
-          type: string
-          example: /api/v1/catalog/products
-        method:
-          type: string
-          example: POST
-        timestamp:
-          type: string
-          format: date-time
-        requestId:
-          type: string
-      required:
-        - statusCode
-        - code
-        - message
-        - path
-        - method
-        - timestamp
-    ContentPostStatus:
+    ContentPostType:
       type: string
       enum:
-        - PUBLISHED
-        - ARCHIVED
-    ErrorDetailDto:
+        - NEWS
+        - TRAINING_GUIDE
+        - PRODUCT_GUIDE
+        - ABOUT
+        - POLICY
+    PageMetaDto:
       type: object
       properties:
-        field:
-          type: string
-          example: name
-        code:
-          type: string
-          example: INVALID_VALUE
-        message:
-          type: string
-          example: 'Trường "name": Trường này không được để trống.'
+        page:
+          type: number
+          example: 1
+        limit:
+          type: number
+          example: 20
+        total:
+          type: number
+          example: 42
+          description: Tổng số dòng khớp bộ lọc, không phụ thuộc trang
+        hasMore:
+          type: boolean
+          example: true
       required:
-        - code
-        - message
+        - page
+        - limit
+        - total
+        - hasMore
   securitySchemes:
     bearer:
       scheme: bearer

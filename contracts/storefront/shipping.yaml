@@ -31,13 +31,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
         "422":
           description: ""
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
       summary: Preview V1 delivery fee and ETA; checkout revalidates inputs
       tags:
         - Storefront Shipping
@@ -57,7 +57,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
       summary: Danh sách tỉnh/thành theo mã của hãng vận chuyển
       tags:
         - Shipping Areas
@@ -84,7 +84,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
       summary: Danh sách quận/huyện của một tỉnh/thành
       tags:
         - Shipping Areas
@@ -111,12 +111,67 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
       summary: Danh sách phường/xã của một quận/huyện
       tags:
         - Shipping Areas
 components:
   schemas:
+    ShippingAreaDto:
+      type: object
+      properties:
+        code:
+          type: string
+          example: "1442"
+          description: Mã địa giới của hãng vận chuyển; lưu vào districtCode/wardCode của địa chỉ
+        name:
+          type: string
+          example: Quận Ba Đình
+      required:
+        - code
+        - name
+    ShippingAreaListDto:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/ShippingAreaDto"
+      required:
+        - items
+    ShippingQuoteDto:
+      type: object
+      properties:
+        shippingRateId:
+          type: string
+          pattern: ^[1-9][0-9]*$
+          example: "1"
+        branchId:
+          type: string
+          pattern: ^[1-9][0-9]*$
+          example: "1"
+        zoneCode:
+          type: string
+        currencyCode:
+          allOf:
+            - $ref: ./_components.yaml#/components/schemas/CurrencyCode
+        fee:
+          type: string
+          example: "45000.00"
+        etaMinDays:
+          type: number
+          minimum: 0
+        etaMaxDays:
+          type: number
+          minimum: 0
+      required:
+        - shippingRateId
+        - branchId
+        - zoneCode
+        - currencyCode
+        - fee
+        - etaMinDays
+        - etaMaxDays
     ShippingQuoteRequestDto:
       type: object
       properties:
@@ -141,114 +196,6 @@ components:
         - provinceCode
         - subtotal
         - weightGrams
-    ShippingQuoteDto:
-      type: object
-      properties:
-        shippingRateId:
-          type: string
-          pattern: ^[1-9][0-9]*$
-          example: "1"
-        branchId:
-          type: string
-          pattern: ^[1-9][0-9]*$
-          example: "1"
-        zoneCode:
-          type: string
-        currencyCode:
-          allOf:
-            - $ref: "#/components/schemas/CurrencyCode"
-        fee:
-          type: string
-          example: "45000.00"
-        etaMinDays:
-          type: number
-          minimum: 0
-        etaMaxDays:
-          type: number
-          minimum: 0
-      required:
-        - shippingRateId
-        - branchId
-        - zoneCode
-        - currencyCode
-        - fee
-        - etaMinDays
-        - etaMaxDays
-    ErrorResponseDto:
-      type: object
-      properties:
-        statusCode:
-          type: number
-          example: 400
-        code:
-          type: string
-          example: VALIDATION_ERROR
-        message:
-          type: string
-          example: Dữ liệu gửi lên không hợp lệ.
-        details:
-          type: array
-          items:
-            $ref: "#/components/schemas/ErrorDetailDto"
-        path:
-          type: string
-          example: /api/v1/catalog/products
-        method:
-          type: string
-          example: POST
-        timestamp:
-          type: string
-          format: date-time
-        requestId:
-          type: string
-      required:
-        - statusCode
-        - code
-        - message
-        - path
-        - method
-        - timestamp
-    ShippingAreaListDto:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: "#/components/schemas/ShippingAreaDto"
-      required:
-        - items
-    CurrencyCode:
-      type: string
-      enum:
-        - VND
-    ErrorDetailDto:
-      type: object
-      properties:
-        field:
-          type: string
-          example: name
-        code:
-          type: string
-          example: INVALID_VALUE
-        message:
-          type: string
-          example: 'Trường "name": Trường này không được để trống.'
-      required:
-        - code
-        - message
-    ShippingAreaDto:
-      type: object
-      properties:
-        code:
-          type: string
-          example: "1442"
-          description: Mã địa giới của hãng vận chuyển; lưu vào districtCode/wardCode của địa chỉ
-        name:
-          type: string
-          example: Quận Ba Đình
-      required:
-        - code
-        - name
   securitySchemes:
     bearer:
       scheme: bearer

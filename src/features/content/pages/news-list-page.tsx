@@ -14,14 +14,15 @@ import {
 } from 'lucide-react';
 import { Breadcrumb } from '@/foundation/components/navigation';
 import { Skeleton, SkeletonText } from '@/foundation/components/feedback';
-import { useContentStories } from '../hooks/use-content-stories';
+import { usePaginatedContentPosts } from '../hooks/use-paginated-content-posts';
 import { CONTENT_POST_TYPE_LABELS } from '../model/content-post.mapper';
 
 const ALL_CATEGORY = 'ALL';
 
 export function NewsListPage() {
   const [selectedCat, setSelectedCat] = useState(ALL_CATEGORY);
-  const { stories: articles, isPending, isError } = useContentStories();
+  const { posts: articles, isPending, isError, hasMore, isLoadingMore, loadMore } =
+    usePaginatedContentPosts();
 
   // Bộ lọc dựng từ đúng những loại bài đang có, không phải danh sách cố định.
   const categories = [ALL_CATEGORY, ...new Set(articles.map((article) => article.postType))];
@@ -199,6 +200,21 @@ export function NewsListPage() {
               </article>
             ))}
           </div>
+          )}
+
+          {/* Xem thêm: chỉ áp dụng khi xem "Tất cả" vì phân trang lấy theo trang từ API,
+              không lọc theo loại bài — lọc theo danh mục vẫn chạy trên các bài đã tải. */}
+          {!isPending && !isError && selectedCat === ALL_CATEGORY && hasMore && (
+            <div className="mt-12 flex justify-center">
+              <button
+                type="button"
+                onClick={loadMore}
+                disabled={isLoadingMore}
+                className="rounded-full border border-stone-200 bg-white px-8 py-3 text-sm font-bold text-stone-700 shadow-sm transition hover:border-emerald-400 hover:text-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {isLoadingMore ? 'Đang tải…' : 'Xem thêm'}
+              </button>
+            </div>
           )}
         </main>
       </div>

@@ -49,7 +49,7 @@ export function ProductReviewSection({
           Đánh giá từ khách hàng
         </h2>
         <p className="mt-1 text-sm text-slate-500">
-          Nhận xét về {productName} đã được kiểm duyệt trước khi hiển thị.
+          Nhận xét về {productName} được hiển thị ngay sau khi khách gửi đánh giá.
         </p>
 
         {isPending ? (
@@ -67,7 +67,7 @@ export function ProductReviewSection({
           </p>
         ) : total === 0 ? (
           <p className="mt-8 rounded-2xl border border-dashed border-slate-300 p-8 text-center text-sm text-slate-500">
-            Sản phẩm chưa có đánh giá nào được duyệt.
+            Sản phẩm chưa có đánh giá nào.
           </p>
         ) : (
           <>
@@ -81,7 +81,7 @@ export function ProductReviewSection({
                   <StarRow rating={Math.round(averageRating)} />
                 </div>
                 <p className="mt-2 text-xs font-semibold text-slate-500">
-                  {total} đánh giá đã duyệt
+                  {total} đánh giá
                 </p>
               </div>
 
@@ -190,7 +190,7 @@ export function ProductReviewSection({
         <div className="mt-8 rounded-2xl border border-dashed border-slate-300 bg-slate-50/60 p-5 text-center">
           <p className="text-sm font-bold text-ink">Bạn đã mua sản phẩm này?</p>
           <p className="mt-1 text-xs text-slate-500">
-            Mở đơn hàng đã hoàn tất, chọn sản phẩm và gửi đánh giá. Nội dung sẽ hiển thị sau khi được duyệt.
+            Mở đơn hàng đã hoàn tất, chọn sản phẩm và gửi đánh giá. Nội dung được hiển thị ngay sau khi gửi.
           </p>
         </div>
       </div>

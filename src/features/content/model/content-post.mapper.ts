@@ -1,4 +1,4 @@
-import type { ContentPostDto } from '@/generated/api/content/content.schemas';
+import type { ContentPostDto, ContentPostSummaryDto } from '@/generated/api/content/content.schemas';
 
 export interface ContentPostView {
   id: string;
@@ -37,13 +37,19 @@ const dateFormatter = new Intl.DateTimeFormat('vi-VN', {
   year: 'numeric',
 });
 
-/** Ước lượng thời gian đọc từ độ dài bài thật, không phải con số cố định. */
-function readTimeLabel(body: string, excerpt: string): string {
-  const words = `${excerpt} ${body}`.trim().split(/\s+/).length;
+/** Ước lượng thời gian đọc từ độ dài văn bản đưa vào, không phải con số cố định. */
+function readTimeLabel(text: string): string {
+  const words = text.trim().split(/\s+/).length;
   return `${Math.max(1, Math.round(words / 200))} phút đọc`;
 }
 
-export function toContentPostView(dto: ContentPostDto): ContentPostView {
+/**
+ * Danh sách bài viết (`listPublishedPosts`) trả `ContentPostSummaryDto` — không có `body`
+ * (contract v2: tóm tắt cho danh sách, tránh tải nguyên thân bài không dùng tới). Ước lượng
+ * thời gian đọc ở đây vì vậy chỉ dựa trên `excerpt`; bài chi tiết dùng `toArticleDetailView`
+ * bên dưới để tính đúng theo thân bài đầy đủ.
+ */
+export function toContentPostView(dto: ContentPostSummaryDto): ContentPostView {
   return {
     id: dto.id,
     slug: dto.slug,
@@ -53,7 +59,7 @@ export function toContentPostView(dto: ContentPostDto): ContentPostView {
     postType: dto.postType,
     categoryLabel: CONTENT_POST_TYPE_LABELS[dto.postType] ?? dto.postType,
     publishedLabel: dateFormatter.format(new Date(dto.publishedAt)),
-    readTimeLabel: readTimeLabel(dto.body, dto.excerpt),
+    readTimeLabel: readTimeLabel(dto.excerpt),
   };
 }
 
@@ -89,7 +95,17 @@ export function toArticleBlocks(body: string): ArticleBlock[] {
 
 export function toArticleDetailView(dto: ContentPostDto): ArticleDetailView {
   return {
-    ...toContentPostView(dto),
+    id: dto.id,
+    slug: dto.slug,
+    title: dto.title,
+    excerpt: dto.excerpt,
+    coverUrl: dto.coverUrl,
+    postType: dto.postType,
+    categoryLabel: CONTENT_POST_TYPE_LABELS[dto.postType] ?? dto.postType,
+    publishedLabel: dateFormatter.format(new Date(dto.publishedAt)),
+    // Trang chi tiết có `body` đầy đủ (ContentPostDto) nên vẫn tính thời gian đọc như cũ,
+    // khác với `toContentPostView` ở trên vốn chỉ nhận được summary không có `body`.
+    readTimeLabel: readTimeLabel(`${dto.excerpt} ${dto.body}`),
     blocks: toArticleBlocks(dto.body),
     hasCover: Boolean(dto.coverUrl),
   };

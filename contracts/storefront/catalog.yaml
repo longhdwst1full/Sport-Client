@@ -130,12 +130,72 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponseDto"
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
       summary: Get product by slug
       tags:
         - Storefront Catalog
 components:
   schemas:
+    AttributeDataType:
+      type: string
+      enum:
+        - TEXT
+        - NUMBER
+        - BOOLEAN
+        - OPTION
+    BundleComponentDto:
+      type: object
+      properties:
+        componentVariantId:
+          type: string
+          pattern: ^[1-9][0-9]*$
+          example: "1"
+        componentSku:
+          type: string
+        componentName:
+          type: string
+        quantity:
+          type: number
+          minimum: 1
+      required:
+        - componentVariantId
+        - componentSku
+        - componentName
+        - quantity
+    CatalogCategoryDto:
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          type: string
+        slug:
+          type: string
+        description:
+          type: string
+        imageUrl:
+          type: string
+          format: uri
+          nullable: true
+        sortOrder:
+          type: number
+        productCount:
+          type: number
+          description: Số sản phẩm PUBLISHED thuộc danh mục
+        depth:
+          type: number
+          description: Độ sâu trong cây danh mục; 0 là danh mục gốc
+        parentSlug:
+          type: string
+          nullable: true
+          description: Slug danh mục cha; null nếu là danh mục gốc. Dùng để dựng menu nhiều cấp.
+      required:
+        - code
+        - name
+        - slug
+        - sortOrder
+        - productCount
+        - depth
     CatalogCategoryListDto:
       type: object
       properties:
@@ -148,31 +208,47 @@ components:
       required:
         - items
         - total
-    ProductStatus:
-      type: string
-      enum:
-        - DRAFT
-        - PUBLISHED
-        - ARCHIVED
-    ProductListSort:
-      type: string
-      enum:
-        - NEWEST
-        - PRICE_ASC
-        - PRICE_DESC
-        - NAME_ASC
-    ProductListResponseDto:
+    ProductBundleDto:
       type: object
       properties:
-        items:
+        bundleType:
+          allOf:
+            - $ref: "#/components/schemas/ProductBundleType"
+        status:
+          allOf:
+            - $ref: "#/components/schemas/ProductBundleStatus"
+        components:
           type: array
           items:
-            $ref: "#/components/schemas/ProductSummaryDto"
-        meta:
-          $ref: "#/components/schemas/ProductListMetaDto"
+            $ref: "#/components/schemas/BundleComponentDto"
       required:
-        - items
-        - meta
+        - bundleType
+        - status
+        - components
+    ProductBundleStatus:
+      type: string
+      enum:
+        - ACTIVE
+        - INACTIVE
+    ProductBundleType:
+      type: string
+      enum:
+        - FIXED_VIRTUAL
+    ProductCategoryDto:
+      type: object
+      properties:
+        id:
+          type: string
+          pattern: ^[1-9][0-9]*$
+          example: "1"
+        name:
+          type: string
+        isPrimary:
+          type: boolean
+      required:
+        - id
+        - name
+        - isPrimary
     ProductDetailDto:
       type: object
       properties:
@@ -202,7 +278,7 @@ components:
           type: string
         productType:
           allOf:
-            - $ref: "#/components/schemas/ProductType"
+            - $ref: ./_components.yaml#/components/schemas/ProductType
         status:
           allOf:
             - $ref: "#/components/schemas/ProductStatus"
@@ -220,7 +296,7 @@ components:
         currency:
           example: VND
           allOf:
-            - $ref: "#/components/schemas/CurrencyCode"
+            - $ref: ./_components.yaml#/components/schemas/CurrencyCode
         imageUrl:
           type: string
           format: uri
@@ -283,74 +359,136 @@ components:
         - media
         - categories
         - categoryIds
-    ErrorResponseDto:
+    ProductListMetaDto:
       type: object
       properties:
-        statusCode:
+        page:
           type: number
-          example: 400
-        code:
-          type: string
-          example: VALIDATION_ERROR
-        message:
-          type: string
-          example: Dữ liệu gửi lên không hợp lệ.
-        details:
+          example: 1
+        limit:
+          type: number
+          example: 12
+        total:
+          type: number
+          example: 2
+        totalPages:
+          type: number
+          example: 1
+      required:
+        - page
+        - limit
+        - total
+        - totalPages
+    ProductListResponseDto:
+      type: object
+      properties:
+        items:
           type: array
           items:
-            $ref: "#/components/schemas/ErrorDetailDto"
-        path:
-          type: string
-          example: /api/v1/catalog/products
-        method:
-          type: string
-          example: POST
-        timestamp:
-          type: string
-          format: date-time
-        requestId:
-          type: string
+            $ref: "#/components/schemas/ProductSummaryDto"
+        meta:
+          $ref: "#/components/schemas/ProductListMetaDto"
       required:
-        - statusCode
-        - code
-        - message
-        - path
-        - method
-        - timestamp
-    CatalogCategoryDto:
+        - items
+        - meta
+    ProductListSort:
+      type: string
+      enum:
+        - NEWEST
+        - PRICE_ASC
+        - PRICE_DESC
+        - NAME_ASC
+    ProductMediaDto:
       type: object
       properties:
-        code:
+        id:
           type: string
-        name:
+          pattern: ^[1-9][0-9]*$
+          example: "1"
+        mediaAssetId:
           type: string
-        slug:
+          pattern: ^[1-9][0-9]*$
+          example: "1"
+        variantId:
           type: string
-        description:
+          pattern: ^[1-9][0-9]*$
+          example: "1"
+          nullable: true
+        secureUrl:
           type: string
-        imageUrl:
+          format: uri
+        thumbnailUrl:
           type: string
           format: uri
           nullable: true
-        sortOrder:
-          type: number
-        productCount:
-          type: number
-          description: Số sản phẩm PUBLISHED thuộc danh mục
-        depth:
-          type: number
-          description: Độ sâu trong cây danh mục; 0 là danh mục gốc
-        parentSlug:
+        altText:
           type: string
           nullable: true
-          description: Slug danh mục cha; null nếu là danh mục gốc. Dùng để dựng menu nhiều cấp.
+        sortOrder:
+          type: number
+          minimum: 0
+        isPrimary:
+          type: boolean
+        status:
+          allOf:
+            - $ref: "#/components/schemas/ProductMediaStatus"
+      required:
+        - id
+        - mediaAssetId
+        - secureUrl
+        - sortOrder
+        - isPrimary
+        - status
+    ProductMediaStatus:
+      type: string
+      enum:
+        - ACTIVE
+        - INACTIVE
+    ProductSpecificationDto:
+      type: object
+      properties:
+        code:
+          type: string
+          example: ADJUSTABLE_HEIGHT
+        name:
+          type: string
+          example: Chiều cao điều chỉnh
+        dataType:
+          allOf:
+            - $ref: "#/components/schemas/AttributeDataType"
+        unit:
+          type: string
+          nullable: true
+        values:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProductSpecificationValueDto"
       required:
         - code
         - name
-        - slug
-        - sortOrder
-        - productCount
-        - depth
+        - dataType
+        - values
+    ProductSpecificationValueDto:
+      type: object
+      properties:
+        value:
+          oneOf:
+            - type: string
+            - type: number
+            - type: boolean
+        label:
+          type: string
+          example: 2.25 m
+          description: Nhãn hiển thị đã ghép đơn vị / nhãn lựa chọn
+      required:
+        - value
+        - label
+    ProductStatus:
+      type: string
+      enum:
+        - DRAFT
+        - PUBLISHED
+        - ARCHIVED
     ProductSummaryDto:
       type: object
       properties:
@@ -380,7 +518,7 @@ components:
           type: string
         productType:
           allOf:
-            - $ref: "#/components/schemas/ProductType"
+            - $ref: ./_components.yaml#/components/schemas/ProductType
         status:
           allOf:
             - $ref: "#/components/schemas/ProductStatus"
@@ -398,7 +536,7 @@ components:
         currency:
           example: VND
           allOf:
-            - $ref: "#/components/schemas/CurrencyCode"
+            - $ref: ./_components.yaml#/components/schemas/CurrencyCode
         imageUrl:
           type: string
           format: uri
@@ -420,59 +558,6 @@ components:
         - isPublished
         - version
         - currency
-    ProductListMetaDto:
-      type: object
-      properties:
-        page:
-          type: number
-          example: 1
-        limit:
-          type: number
-          example: 12
-        total:
-          type: number
-          example: 2
-        totalPages:
-          type: number
-          example: 1
-      required:
-        - page
-        - limit
-        - total
-        - totalPages
-    ProductType:
-      type: string
-      enum:
-        - STANDARD
-        - BUNDLE
-    CurrencyCode:
-      type: string
-      enum:
-        - VND
-    ProductSpecificationDto:
-      type: object
-      properties:
-        code:
-          type: string
-          example: ADJUSTABLE_HEIGHT
-        name:
-          type: string
-          example: Chiều cao điều chỉnh
-        dataType:
-          allOf:
-            - $ref: "#/components/schemas/AttributeDataType"
-        unit:
-          type: string
-          nullable: true
-        values:
-          type: array
-          items:
-            $ref: "#/components/schemas/ProductSpecificationValueDto"
-      required:
-        - code
-        - name
-        - dataType
-        - values
     ProductVariantDto:
       type: object
       properties:
@@ -535,154 +620,11 @@ components:
         - weightGrams
         - status
         - version
-    ProductMediaDto:
-      type: object
-      properties:
-        id:
-          type: string
-          pattern: ^[1-9][0-9]*$
-          example: "1"
-        mediaAssetId:
-          type: string
-          pattern: ^[1-9][0-9]*$
-          example: "1"
-        variantId:
-          type: string
-          pattern: ^[1-9][0-9]*$
-          example: "1"
-          nullable: true
-        secureUrl:
-          type: string
-          format: uri
-        thumbnailUrl:
-          type: string
-          format: uri
-          nullable: true
-        altText:
-          type: string
-          nullable: true
-        sortOrder:
-          type: number
-          minimum: 0
-        isPrimary:
-          type: boolean
-        status:
-          allOf:
-            - $ref: "#/components/schemas/ProductMediaStatus"
-      required:
-        - id
-        - mediaAssetId
-        - secureUrl
-        - sortOrder
-        - isPrimary
-        - status
-    ProductCategoryDto:
-      type: object
-      properties:
-        id:
-          type: string
-          pattern: ^[1-9][0-9]*$
-          example: "1"
-        name:
-          type: string
-        isPrimary:
-          type: boolean
-      required:
-        - id
-        - name
-        - isPrimary
-    ErrorDetailDto:
-      type: object
-      properties:
-        field:
-          type: string
-          example: name
-        code:
-          type: string
-          example: INVALID_VALUE
-        message:
-          type: string
-          example: 'Trường "name": Trường này không được để trống.'
-      required:
-        - code
-        - message
-    AttributeDataType:
-      type: string
-      enum:
-        - TEXT
-        - NUMBER
-        - BOOLEAN
-        - OPTION
-    ProductSpecificationValueDto:
-      type: object
-      properties:
-        value:
-          oneOf:
-            - type: string
-            - type: number
-            - type: boolean
-        label:
-          type: string
-          example: 2.25 m
-          description: Nhãn hiển thị đã ghép đơn vị / nhãn lựa chọn
-      required:
-        - value
-        - label
     ProductVariantStatus:
       type: string
       enum:
         - ACTIVE
         - INACTIVE
-    ProductBundleDto:
-      type: object
-      properties:
-        bundleType:
-          allOf:
-            - $ref: "#/components/schemas/ProductBundleType"
-        status:
-          allOf:
-            - $ref: "#/components/schemas/ProductBundleStatus"
-        components:
-          type: array
-          items:
-            $ref: "#/components/schemas/BundleComponentDto"
-      required:
-        - bundleType
-        - status
-        - components
-    ProductMediaStatus:
-      type: string
-      enum:
-        - ACTIVE
-        - INACTIVE
-    ProductBundleType:
-      type: string
-      enum:
-        - FIXED_VIRTUAL
-    ProductBundleStatus:
-      type: string
-      enum:
-        - ACTIVE
-        - INACTIVE
-    BundleComponentDto:
-      type: object
-      properties:
-        componentVariantId:
-          type: string
-          pattern: ^[1-9][0-9]*$
-          example: "1"
-        componentSku:
-          type: string
-        componentName:
-          type: string
-        quantity:
-          type: number
-          minimum: 1
-      required:
-        - componentVariantId
-        - componentSku
-        - componentName
-        - quantity
   securitySchemes:
     bearer:
       scheme: bearer
