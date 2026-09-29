@@ -1,10 +1,10 @@
 # Storefront Orders — maintenance note
 
-> **Document version:** 1.4.0
+> **Document version:** 1.5.0
 >
-> **Last updated:** 2026-09-28
+> **Last updated:** 2026-09-29
 >
-> **Change summary:** Nâng cấp UX/UI theo đánh giá chuyên sâu: tách biệt 5 mốc giao nhận khỏi trạng thái thanh toán, nổi bật trạng thái đơn hàng kèm mô tả và timestamp, bổ sung khối thông tin vận chuyển thực tế và tiện ích hỗ trợ/hủy/mua lại.
+> **Change summary:** Trang chi tiết đơn và danh sách đơn tách thành hook + component; hành vi, query key và idempotency giữ nguyên. Thêm mục Cấu trúc.
 
 ## Phạm vi và ranh giới
 
@@ -19,6 +19,20 @@
 - Payment mutation cập nhật Payment detail và invalidate cả Order detail lẫn mọi trang Account Order list vì `paymentStatus` là summary của Order.
 - Lỗi localStorage sau khi server tạo Order không được biến thành lỗi đặt hàng; UI cảnh báo khách lưu mã đơn/liên hệ cửa hàng.
 - DTO/request chỉ nhập từ `src/generated/api/orders`; không hard-code endpoint.
+
+## Cấu trúc
+
+| File | Vai trò |
+| --- | --- |
+| `pages/order-detail-page.tsx` | Chỉ ghép hook và component; giữ `showTimeline`/`showSupportModal` ở page để state không reset khi block bị unmount. |
+| `hooks/use-order-detail.ts` | Chọn Guest/Account, query detail, thu hồi guest token khi đơn kết thúc, `view`, `canCancel`. |
+| `hooks/use-cancel-order.ts` | Mutation hủy + ref idempotency theo chữ ký `id:version:reason`. |
+| `hooks/use-reorder.ts`, `use-order-copy.ts`, `use-order-detail-toast.ts` | Mua lại; 3 cờ copy (`copiedTrackingNo` dùng chung cho hai nút copy mã vận đơn); toast cục bộ của trang. |
+| `components/order-detail/*` | Header, trạng thái, stepper mốc (bản desktop và mobile), vận chuyển, sản phẩm, hóa đơn, hành động, địa chỉ, hỗ trợ, dialog hủy (`CANCEL_REASONS`) và dialog hỗ trợ. |
+| `hooks/use-account-orders.ts`, `use-order-payment.ts` | Danh sách đơn có phân trang; trạng thái thanh toán + gửi bằng chứng chuyển khoản. |
+| `model/order-detail-error.ts` | Map lỗi truy cập đơn sang thông báo. |
+
+Orders chỉ được import `returns`, `reviews` (và `auth`, `cart`) qua barrel; `yarn lint` chặn phần còn lại.
 
 ## Checklist khi sửa
 
@@ -38,6 +52,7 @@
 
 | Version | Date | Change summary | Source |
 | --- | --- | --- | --- |
+| 1.5.0 | 2026-09-29 | Tách order-detail thành 5 hook + 15 component và đưa data danh sách/thanh toán vào hook, không đổi hành vi; thêm mục Cấu trúc. | Client restructure (order detail split) |
 | 1.4.0 | 2026-09-28 | Tách tiến trình giao nhận và thanh toán, nổi bật trạng thái đơn, thêm khối thông tin vận chuyển và hỗ trợ ngữ cảnh. | UX-REVIEW-ORDER-TRACKING-20260928 |
 | 1.3.0 | 2026-09-26 | Tiến trình theo mốc, mã vận đơn và link theo dõi. | API-20260926-ORDER-TRACKING-VNPAY-RULES |
 | 1.2.0 | 2026-09-12 | Thêm Guest token TTL/terminal cleanup và Payment→Order list invalidation. | API-20260912-ORDER-GUEST-HARDENING |

@@ -11,11 +11,11 @@ const FEATURE_EDGES = {
   auth: [],
   cart: [],
   catalog: [],
-  checkout: ['orders', 'address'],
+  checkout: ['orders', 'address', 'site-config'],
   content: [],
   home: ['catalog', 'content', 'reviews', 'promotions'],
   orders: ['returns', 'reviews'],
-  profile: [],
+  profile: ['address'],
   promotions: [],
   returns: [],
   reviews: [],
@@ -121,20 +121,6 @@ const EXCEPTIONS = [
     // edge of the page, so hoisting them into the route is a markup change.
     files: ['src/features/catalog/pages/search-page.tsx', 'src/features/home/pages/home-page.tsx'],
     allow: { featureToWidgets: true },
-  },
-  {
-    // Free-delivery radius is an Admin-configured public parameter read client-side while the form is open.
-    files: ['src/features/checkout/pages/checkout-page.tsx'],
-    allow: { featureEdges: { checkout: ['site-config'] } },
-  },
-  {
-    // The address book reuses the shared Vietnam address selector/types that features/address was created for.
-    files: [
-      'src/features/profile/components/address-form-dialog.tsx',
-      'src/features/profile/hooks/use-address-book.ts',
-      'src/features/profile/model/address.mapper.ts',
-    ],
-    allow: { featureEdges: { profile: ['address'] } },
   },
   {
     // The header's profile query has its own options (enabled after mount, default retry); switching to the

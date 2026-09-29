@@ -18,11 +18,12 @@ Features are otherwise isolated. The only allowed cross-feature imports (always 
 | Feature | May depend on |
 | --- | --- |
 | every feature | `auth` (session), `cart` (cart actions/selectors) |
-| `checkout` | `orders`, `address` |
+| `checkout` | `orders`, `address`, `site-config` |
 | `orders` | `returns`, `reviews` |
+| `profile` | `address` |
 | `home` | `catalog`, `content`, `reviews`, `promotions` |
 
-No other feature imports another feature. `auth` and `cart` do not depend on any feature besides each other.
+No other feature imports another feature. `auth` and `cart` do not depend on any feature besides each other. `eslint.config.mjs` (`yarn lint`) enforces this table; its `EXCEPTIONS` list scopes the few remaining pre-existing violations to single files and may only shrink.
 
 Preferred storefront flow, adapted from `dragon-web-v2` and `dragonx-employer-web` for Next.js:
 

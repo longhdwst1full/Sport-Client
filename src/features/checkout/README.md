@@ -1,10 +1,10 @@
 # Storefront checkout — maintenance note
 
-> **Document version:** 1.5.0
+> **Document version:** 1.6.0
 >
-> **Last updated:** 2026-09-27
+> **Last updated:** 2026-09-29
 >
-> **Change summary:** "Nhờ shop gửi" chuyển sang `shippingArrangement: SHOP_ARRANGED` nên đặt được đơn ngay; `resolveCheckoutQuoteGate` nhận thêm trạng thái chờ tư vấn cước.
+> **Change summary:** Trang checkout tách thành hook + section; hành vi, query key và idempotency giữ nguyên. Cập nhật bảng Cấu trúc.
 
 ## Luồng 3 bước (2026-09-26)
 
@@ -45,11 +45,19 @@ Order mới ở `PENDING_CONFIRMATION`, chưa ghi nhận doanh thu và chưa đ�
 
 | File | Vai trò |
 | --- | --- |
-| `pages/checkout-page.tsx` | Điều phối form, quote, consultation refresh, confirm và UI states. |
+| `pages/checkout-page.tsx` | Chỉ ghép hook và section theo bước; không tự giữ logic quote/đặt đơn. |
+| `hooks/use-checkout-cart.ts` | Đọc cart đã hydrate, gate cart trống/redirect. |
+| `hooks/use-checkout-form.ts` | State form, `buildInput`, `readyToQuote`. |
+| `hooks/use-checkout-quote.ts` | `useCheckoutQuote` giữ quote/context, 2 ref idempotency, `quoteSeq`, invalidate/retry/refresh; `useAutoQuote` chạy effect debounce 700 ms. Tách hai hook để effect auto-quote vẫn chạy sau effect điền sẵn địa chỉ như trước. |
+| `hooks/use-checkout-saved-addresses.ts` | Query sổ địa chỉ (`['account-addresses']`) và điền sẵn địa chỉ mặc định. |
+| `hooks/use-place-order.ts` | Confirm + place order, chuyển VNPay, `placedOrder`. |
+| `components/sections/*` | Section bước: thông tin giao hàng, phương thức giao, thanh toán, xác nhận; class dùng chung ở `checkout-section.styles.ts`. |
+| `components/checkout-empty-cart.tsx`, `checkout-order-summary.tsx`, `checkout-success.tsx` | Cart trống, tóm tắt đơn + CTA, trạng thái đặt hàng thành công. |
+| `model/checkout-address.ts` | `initialAddress`, `toSelectedAddress`. |
 | `api/checkout.workflow.ts` | Ghép generated Cart/Checkout/Order operations cho Guest và Account. |
-| `components/checkout-order-summary.tsx` | Hiển thị snapshot hàng, phí và CTA theo trạng thái. |
-| `components/checkout-success.tsx` | Hiển thị Order number, branch, tổng tiền và trạng thái thật. |
-| `index.ts` | Public export để `app/checkout/page.tsx` không import internal file. |
+| `index.ts` | Public export duy nhất cho route và feature khác. |
+
+Checkout chỉ được import `orders`, `address`, `site-config` (và `auth`, `cart`) qua barrel; `yarn lint` chặn phần còn lại.
 
 ## Guest và Account
 
@@ -83,6 +91,7 @@ Order mới ở `PENDING_CONFIRMATION`, chưa ghi nhận doanh thu và chưa đ�
 
 | Version | Date | Change summary | Source |
 | --- | --- | --- | --- |
+| 1.6.0 | 2026-09-29 | Tách checkout-page thành 5 hook + 4 section, không đổi hành vi; cập nhật bảng Cấu trúc. | Client restructure (checkout split) |
 | 1.5.0 | 2026-09-27 | "Nhờ shop gửi" dùng `shippingArrangement: SHOP_ARRANGED` và đặt được đơn ngay; gate thêm `CONSULTATION_PENDING`. | D62 checkout shipping arrangement |
 | 1.4.0 | 2026-09-26 | Checkout 3 bước, sổ địa chỉ, tự chuyển VNPay, timeout 30 giây. | Đối chiếu đặc tả checkout/GHN/VNPay |
 | 1.3.0 | 2026-09-25 | Tự báo giá theo địa chỉ, "Nhờ shop gửi", COD + VNPay. | Checkout FE-only request |
