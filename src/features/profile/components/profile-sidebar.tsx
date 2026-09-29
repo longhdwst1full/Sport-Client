@@ -1,4 +1,4 @@
-import { ChevronRight, LogOut, MapPin, Package, Phone, RotateCcw, User } from 'lucide-react';
+import { ChevronRight, LifeBuoy, LogOut, MapPin, Package, Phone, RotateCcw, User } from 'lucide-react';
 import { STORE_CONTACT } from '@/shared/constants';
 
 export type ProfileTab = 'address' | 'settings';
@@ -10,6 +10,7 @@ interface ProfileSidebarProps {
   onSelectTab: (tab: ProfileTab) => void;
   onNavigateOrders: () => void;
   onNavigateReturns: () => void;
+  onNavigateSupport: () => void;
   onLogout: () => void;
 }
 
@@ -20,6 +21,7 @@ export function ProfileSidebar({
   onSelectTab,
   onNavigateOrders,
   onNavigateReturns,
+  onNavigateSupport,
   onLogout,
 }: ProfileSidebarProps) {
   return (
@@ -42,6 +44,7 @@ export function ProfileSidebar({
           {[
             { id: 'orders' as const, label: 'Lịch sử đơn hàng', icon: Package },
             { id: 'returns' as const, label: 'Yêu cầu đổi trả', icon: RotateCcw },
+            { id: 'support' as const, label: 'Hỗ trợ của tôi', icon: LifeBuoy },
             { id: 'address' as const, label: 'Sổ địa chỉ nhận hàng', icon: MapPin },
             { id: 'settings' as const, label: 'Cài đặt tài khoản', icon: User },
           ].map(({ id, label, icon: Icon }) => (
@@ -55,6 +58,10 @@ export function ProfileSidebar({
                 }
                 if (id === 'returns') {
                   onNavigateReturns();
+                  return;
+                }
+                if (id === 'support') {
+                  onNavigateSupport();
                   return;
                 }
                 onSelectTab(id);

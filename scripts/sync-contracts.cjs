@@ -4,7 +4,8 @@ const { resolve } = require('node:path');
 
 // Storefront chỉ đồng bộ những domain mình thực sự dùng. `system` cấp tham số công khai
 // (bán kính giao miễn phí, biểu phí…) để UI không hardcode giá trị Admin có thể đổi.
-const domains = ['auth', 'catalog', 'content', 'reviews', 'cart', 'customer', 'shipping', 'checkout', 'orders', 'payments', 'promotions', 'returns', 'system'];
+// `assistant` (chat trợ lý mua sắm) và `support` (phiếu hỗ trợ của khách) thuộc Assistant V1.0.
+const domains = ['auth', 'catalog', 'content', 'reviews', 'cart', 'customer', 'shipping', 'checkout', 'orders', 'payments', 'promotions', 'returns', 'system', 'assistant', 'support'];
 const defaultBaseUrl =
   'https://raw.githubusercontent.com/longhdwst1full/dctd-utc/main/document/api/storefront';
 const baseUrl = (process.env.SPORT_API_CONTRACT_BASE_URL || defaultBaseUrl).replace(/\/$/, '');

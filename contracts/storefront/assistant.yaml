@@ -1,0 +1,670 @@
+# Generated from NestJS decorators. Do not edit by hand.
+openapi: 3.0.0
+info:
+  title: DCTD-UTC Commerce API
+  description: Contract for storefront and admin applications
+  version: 1.0.0
+  contact: {}
+servers:
+  - url: http://localhost:4000
+    description: Local
+paths:
+  /api/v1/assistant/conversations:
+    post:
+      operationId: createChatConversation
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateChatConversationDto"
+      responses:
+        "201":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreatedChatConversationDto"
+        "400":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
+        "401":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
+        "403":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
+        "429":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
+        "503":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
+      security:
+        - bearer: []
+      summary: Tạo hội thoại với trợ lý (khách đăng nhập hoặc ẩn danh; ẩn danh nhận sessionKey một lần)
+      tags:
+        - Storefront Assistant
+  /api/v1/assistant/conversations/{id}/messages:
+    post:
+      operationId: sendChatMessage
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: x-assistant-session
+          in: header
+          description: Session key nhận khi tạo hội thoại ẩn danh; bắt buộc với khách chưa đăng nhập
+          required: false
+          schema:
+            type: string
+        - name: idempotency-key
+          in: header
+          description: Khoá của lượt chat; gửi lại cùng khoá + cùng nội dung trả lại câu trả lời cũ
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SendChatMessageDto"
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SendChatMessageResponseDto"
+        "400":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
+        "401":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
+        "403":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
+        "404":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
+        "409":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
+        "429":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
+        "503":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
+      security:
+        - bearer: []
+      summary: Gửi tin nhắn và nhận câu trả lời của trợ lý (JSON, không streaming)
+      tags:
+        - Storefront Assistant
+    get:
+      operationId: listChatMessages
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: cursor
+          required: false
+          in: query
+          description: Cursor từ meta.nextCursor để lấy các tin cũ hơn
+          schema:
+            pattern: ^[1-9][0-9]*$
+            type: string
+        - name: limit
+          required: false
+          in: query
+          schema:
+            minimum: 1
+            maximum: 100
+            default: 30
+            type: number
+        - name: x-assistant-session
+          in: header
+          description: Session key nhận khi tạo hội thoại ẩn danh; bắt buộc với khách chưa đăng nhập
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatMessageListDto"
+        "400":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
+        "401":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
+        "403":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
+        "404":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
+        "503":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
+      security:
+        - bearer: []
+      summary: Lịch sử tin nhắn của hội thoại (cursor, mới nhất trước khi lật trang)
+      tags:
+        - Storefront Assistant
+  /api/v1/assistant/conversations/{id}/messages/{messageId}/feedback:
+    put:
+      operationId: submitChatMessageFeedback
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: messageId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: x-assistant-session
+          in: header
+          description: Session key nhận khi tạo hội thoại ẩn danh; bắt buộc với khách chưa đăng nhập
+          required: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SubmitChatMessageFeedbackDto"
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatMessageDto"
+        "400":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
+        "401":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
+        "403":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
+        "404":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
+        "409":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
+        "503":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
+      security:
+        - bearer: []
+      summary: Đánh giá một câu trả lời của trợ lý (ghi một lần)
+      tags:
+        - Storefront Assistant
+components:
+  schemas:
+    ChatActorType:
+      type: string
+      enum:
+        - CUSTOMER
+        - ANONYMOUS
+    ChatCardDto:
+      type: object
+      properties:
+        type:
+          allOf:
+            - $ref: "#/components/schemas/ChatCardType"
+        product:
+          $ref: "#/components/schemas/ChatProductCardDto"
+        order:
+          $ref: "#/components/schemas/ChatOrderCardDto"
+        ticket:
+          $ref: "#/components/schemas/ChatTicketCardDto"
+      required:
+        - type
+    ChatCardType:
+      type: string
+      enum:
+        - PRODUCT
+        - ORDER
+        - TICKET
+    ChatChannel:
+      type: string
+      enum:
+        - WEB
+    ChatConversationDto:
+      type: object
+      properties:
+        id:
+          type: string
+          pattern: ^[1-9][0-9]*$
+          example: "1"
+        status:
+          allOf:
+            - $ref: "#/components/schemas/ChatConversationStatus"
+        channel:
+          allOf:
+            - $ref: "#/components/schemas/ChatChannel"
+        actorType:
+          allOf:
+            - $ref: "#/components/schemas/ChatActorType"
+        branchId:
+          type: string
+          pattern: ^[1-9][0-9]*$
+          example: "1"
+          nullable: true
+        lastMessageAt:
+          type: string
+          format: date-time
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - status
+        - channel
+        - actorType
+        - branchId
+        - lastMessageAt
+        - createdAt
+    ChatConversationStatus:
+      type: string
+      enum:
+        - ACTIVE
+        - CLOSED
+        - HANDED_OFF
+    ChatMessageDto:
+      type: object
+      properties:
+        id:
+          type: string
+          pattern: ^[1-9][0-9]*$
+          example: "1"
+        role:
+          allOf:
+            - $ref: "#/components/schemas/ChatMessageRole"
+        content:
+          type: string
+          description: Nội dung đã che email/số điện thoại
+        sources:
+          type: array
+          items:
+            $ref: "#/components/schemas/ChatSourceDto"
+        cards:
+          type: array
+          items:
+            $ref: "#/components/schemas/ChatCardDto"
+        feedback:
+          nullable: true
+          allOf:
+            - $ref: "#/components/schemas/ChatMessageFeedback"
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - role
+        - content
+        - sources
+        - cards
+        - feedback
+        - createdAt
+    ChatMessageFeedback:
+      type: string
+      enum:
+        - HELPFUL
+        - NOT_HELPFUL
+    ChatMessageListDto:
+      type: object
+      properties:
+        items:
+          description: Tin nhắn USER/ASSISTANT, cũ trước mới sau trong một trang
+          type: array
+          items:
+            $ref: "#/components/schemas/ChatMessageDto"
+        meta:
+          $ref: "#/components/schemas/ChatMessageListMetaDto"
+      required:
+        - items
+        - meta
+    ChatMessageListMetaDto:
+      type: object
+      properties:
+        limit:
+          type: number
+        hasMore:
+          type: boolean
+        nextCursor:
+          type: string
+          nullable: true
+      required:
+        - limit
+        - hasMore
+        - nextCursor
+    ChatMessageRole:
+      type: string
+      enum:
+        - USER
+        - ASSISTANT
+    ChatOrderCardDto:
+      type: object
+      properties:
+        orderNo:
+          type: string
+        status:
+          type: string
+        paymentStatus:
+          type: string
+        fulfillmentStatus:
+          type: string
+        grandTotal:
+          type: string
+          example: "1940000.00"
+        currencyCode:
+          type: string
+          example: VND
+        placedAt:
+          type: string
+          format: date-time
+        carrierCode:
+          type: string
+          nullable: true
+        trackingNo:
+          type: string
+          nullable: true
+      required:
+        - orderNo
+        - status
+        - paymentStatus
+        - fulfillmentStatus
+        - grandTotal
+        - currencyCode
+        - placedAt
+        - carrierCode
+        - trackingNo
+    ChatProductCardDto:
+      type: object
+      properties:
+        productId:
+          type: string
+          pattern: ^[1-9][0-9]*$
+          example: "1"
+        variantId:
+          type: string
+          pattern: ^[1-9][0-9]*$
+          example: "1"
+          nullable: true
+          description: Biến thể mặc định (ứng với price) để thêm vào giỏ nhanh; null khi sản phẩm chưa có biến thể bán được
+        slug:
+          type: string
+        name:
+          type: string
+        brand:
+          type: string
+          nullable: true
+        imageUrl:
+          type: string
+          format: uri
+          nullable: true
+        price:
+          type: string
+          nullable: true
+          example: "1890000.00"
+          description: Giá thấp nhất VND đã gồm VAT
+        inStock:
+          type: boolean
+          nullable: true
+          description: Chỉ còn/hết hàng; không bao giờ có số lượng (D75)
+        variants:
+          type: array
+          items:
+            $ref: "#/components/schemas/ChatProductVariantCardDto"
+      required:
+        - productId
+        - variantId
+        - slug
+        - name
+        - brand
+        - imageUrl
+        - price
+        - inStock
+        - variants
+    ChatProductVariantCardDto:
+      type: object
+      properties:
+        variantId:
+          type: string
+          pattern: ^[1-9][0-9]*$
+          example: "1"
+          description: ID biến thể dùng cho thêm vào giỏ
+        sku:
+          type: string
+        name:
+          type: string
+        effectivePrice:
+          type: string
+          nullable: true
+          example: "1890000.00"
+          description: Giá hiện hành VND đã gồm VAT
+        inStock:
+          type: boolean
+          nullable: true
+          description: Chỉ còn/hết hàng; không bao giờ có số lượng (D75)
+      required:
+        - variantId
+        - sku
+        - name
+        - effectivePrice
+        - inStock
+    ChatSourceDto:
+      type: object
+      properties:
+        documentId:
+          type: string
+          pattern: ^[1-9][0-9]*$
+          example: "1"
+        documentVersion:
+          type: number
+          minimum: 0
+        chunkOrdinal:
+          type: number
+          minimum: 0
+        title:
+          type: string
+      required:
+        - documentId
+        - documentVersion
+        - chunkOrdinal
+        - title
+    ChatTicketCardDto:
+      type: object
+      properties:
+        id:
+          type: string
+          pattern: ^[1-9][0-9]*$
+          example: "1"
+        ticketNo:
+          type: string
+        status:
+          type: string
+          example: OPEN
+      required:
+        - id
+        - ticketNo
+        - status
+    CreateChatConversationDto:
+      type: object
+      properties:
+        branchId:
+          type: string
+          pattern: ^[1-9][0-9]*$
+          example: "1"
+          description: Chi nhánh khách đang xem; dùng cho tri thức theo chi nhánh và phí giao
+    CreatedChatConversationDto:
+      type: object
+      properties:
+        id:
+          type: string
+          pattern: ^[1-9][0-9]*$
+          example: "1"
+        status:
+          allOf:
+            - $ref: "#/components/schemas/ChatConversationStatus"
+        channel:
+          allOf:
+            - $ref: "#/components/schemas/ChatChannel"
+        actorType:
+          allOf:
+            - $ref: "#/components/schemas/ChatActorType"
+        branchId:
+          type: string
+          pattern: ^[1-9][0-9]*$
+          example: "1"
+          nullable: true
+        lastMessageAt:
+          type: string
+          format: date-time
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        sessionKey:
+          type: string
+          nullable: true
+          description: "Chỉ có với khách ẩn danh và CHỈ trả một lần: server chỉ lưu SHA-256. Client gửi lại qua header x-assistant-session ở mọi request sau."
+      required:
+        - id
+        - status
+        - channel
+        - actorType
+        - branchId
+        - lastMessageAt
+        - createdAt
+        - sessionKey
+    SendChatMessageDto:
+      type: object
+      properties:
+        content:
+          type: string
+          minLength: 1
+          maxLength: 8000
+          description: Tin nhắn của khách; trần hiệu lực do tham số ASSISTANT_MAX_INPUT_CHARS
+      required:
+        - content
+    SendChatMessageResponseDto:
+      type: object
+      properties:
+        conversation:
+          $ref: "#/components/schemas/ChatConversationDto"
+        userMessage:
+          $ref: "#/components/schemas/ChatMessageDto"
+        assistantMessage:
+          $ref: "#/components/schemas/ChatMessageDto"
+        handoffSuggested:
+          type: boolean
+          description: true khi trợ lý không trả lời được (lỗi provider/tool, hết vòng tool) và nên mời chuyển nhân viên
+      required:
+        - conversation
+        - userMessage
+        - assistantMessage
+        - handoffSuggested
+    SubmitChatMessageFeedbackDto:
+      type: object
+      properties:
+        feedback:
+          allOf:
+            - $ref: "#/components/schemas/ChatMessageFeedback"
+      required:
+        - feedback
+  securitySchemes:
+    bearer:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http

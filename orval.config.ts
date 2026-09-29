@@ -23,6 +23,19 @@ function operationOverrides(domain: string): Record<string, { requestOptions: bo
       cancelAccountReturn: { requestOptions: true },
     };
   }
+  if (domain === 'assistant') {
+    // Khách ẩn danh gửi `x-assistant-session` ở mọi lời gọi sau khi tạo hội thoại; gửi tin cần `idempotency-key`.
+    return {
+      sendChatMessage: { requestOptions: true },
+      listChatMessages: { requestOptions: true },
+      submitChatMessageFeedback: { requestOptions: true },
+    };
+  }
+  if (domain === 'support') {
+    return {
+      createSupportRequest: { requestOptions: true },
+    };
+  }
   return {};
 }
 
@@ -60,4 +73,6 @@ export default defineConfig({
   payments: createDomainConfig('payments'),
   returns: createDomainConfig('returns'),
   system: createDomainConfig('system'),
+  assistant: createDomainConfig('assistant'),
+  support: createDomainConfig('support'),
 });

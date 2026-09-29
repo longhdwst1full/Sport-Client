@@ -3,6 +3,7 @@ import { SiteHeader } from '@/widgets/site-header/site-header';
 import { SiteFooter } from '@/widgets/site-footer/site-footer';
 import { FooterNewsletterBanner } from '@/widgets/site-footer/footer-newsletter-banner';
 import { FloatingContactBar } from '@/widgets/floating-contact-bar/floating-contact-bar';
+import { AssistantChat } from '@/widgets/assistant-chat/assistant-chat';
 
 export function StorefrontLayout({ children }: { children: ReactNode }) {
   return (
@@ -12,6 +13,7 @@ export function StorefrontLayout({ children }: { children: ReactNode }) {
       <FooterNewsletterBanner />
       <SiteFooter />
       <FloatingContactBar />
+      <AssistantChat />
     </div>
   );
 }

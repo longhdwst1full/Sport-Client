@@ -31,7 +31,13 @@ export function createBrowserStore<T>(
 
   return {
     read() {
-      const raw = safeStorage(area)?.getItem(key);
+      let raw: string | null | undefined;
+      try {
+        raw = safeStorage(area)?.getItem(key);
+      } catch {
+        // `getItem` có thể ném (SecurityError/storage bị chặn) dù truy cập `window.localStorage` thành công.
+        return undefined;
+      }
       if (!raw) return undefined;
       try {
         const parsed: unknown = JSON.parse(raw);

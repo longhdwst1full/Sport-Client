@@ -139,7 +139,7 @@ components:
           items:
             $ref: "#/components/schemas/ContentPostSummaryDto"
         meta:
-          $ref: "#/components/schemas/PageMetaDto"
+          $ref: ./_components.yaml#/components/schemas/PageMetaDto
       required:
         - items
         - meta
@@ -202,27 +202,6 @@ components:
         - PRODUCT_GUIDE
         - ABOUT
         - POLICY
-    PageMetaDto:
-      type: object
-      properties:
-        page:
-          type: number
-          example: 1
-        limit:
-          type: number
-          example: 20
-        total:
-          type: number
-          example: 42
-          description: Tổng số dòng khớp bộ lọc, không phụ thuộc trang
-        hasMore:
-          type: boolean
-          example: true
-      required:
-        - page
-        - limit
-        - total
-        - hasMore
   securitySchemes:
     bearer:
       scheme: bearer

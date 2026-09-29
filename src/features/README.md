@@ -1,10 +1,10 @@
 # Storefront features — maintenance guide
 
-> **Document version:** 1.2.0
+> **Document version:** 1.3.1
 >
-> **Last updated:** 2026-09-28
+> **Last updated:** 2026-09-29
 >
-> **Change summary:** Thêm feature `address`, `site-config`; ghi rõ ma trận feature → feature và barrel `index.ts` là public API bắt buộc.
+> **Change summary:** Bỏ cạnh `assistant → catalog` (thẻ chat đã có `productId`/`variantId`); còn `assistant → support, orders`.
 
 ## Luồng phụ thuộc chuẩn
 
@@ -36,6 +36,8 @@ Next.js app route (server-first)
 | `content` / `reviews` | Bài viết và social proof | Public read; nội dung rich text phải sanitize theo boundary hiện tại. |
 | `address` | Tra cứu địa giới hành chính VN, chọn/định dạng địa chỉ giao hàng | Dùng bởi `checkout`, `profile`; không giữ policy đơn hàng. |
 | `site-config` | Tham số hệ thống công khai (public system parameter) | Chỉ đọc, cache ngắn hạn qua TanStack Query. |
+| `assistant` | Widget chat "Trợ lý mua sắm" nổi trên mọi trang storefront | Chỉ launcher trong bundle đầu; panel tải lười. Tin nhắn trong cache Query; session ẩn danh ở localStorage. Xem README trong feature. |
+| `support` | Trang liên hệ và phiếu hỗ trợ của khách (`/account/support*`) | Private, network-only; không bao giờ hiện ghi chú nội bộ. Xem README trong feature. |
 
 ## Ma trận feature → feature
 
@@ -47,6 +49,7 @@ Chỉ được import feature khác qua barrel `index.ts` của feature đích, 
 | `checkout` | `orders`, `address` |
 | `orders` | `returns`, `reviews` |
 | `home` | `catalog`, `content`, `reviews`, `promotions` |
+| `assistant` | `support` (handoff, thẻ phiếu), `orders` (nhãn trạng thái thẻ đơn) |
 
 Không có cạnh nào khác. `auth` và `cart` không phụ thuộc feature nào ngoài nhau.
 
@@ -84,6 +87,8 @@ Không sao chép cùng một API payload vào Redux và TanStack Query. Nếu st
 
 | Version | Date | Change summary | Source |
 | --- | --- | --- | --- |
+| 1.3.1 | 2026-09-29 | Bỏ cạnh `assistant → catalog`. | feat/assistant-v1 review fixes |
+| 1.3.0 | 2026-09-29 | Thêm `assistant`, phiếu hỗ trợ trong `support`; cạnh `assistant → support, orders, catalog`. | feat/assistant-v1 |
 | 1.2.0 | 2026-09-28 | Thêm feature `address`, `site-config`; ma trận feature → feature; bắt buộc barrel `index.ts`. | client-restructure |
 | 1.1.0 | 2026-09-24 | Thêm feature `returns`. | API-20260924-RETURN-EVIDENCE-IMAGES |
 | 1.0.0 | 2026-09-09 | Tạo bản đồ và quy tắc maintenance cho Storefront features. | DOC-20260909-FEATURE-MAINTENANCE-NOTES |

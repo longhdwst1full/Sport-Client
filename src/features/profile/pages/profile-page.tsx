@@ -87,6 +87,7 @@ export function ProfilePage() {
               onSelectTab={setActiveTab}
               onNavigateOrders={() => router.push('/orders')}
               onNavigateReturns={() => router.push('/returns')}
+              onNavigateSupport={() => router.push('/account/support')}
               onLogout={handleLogout}
             />
 

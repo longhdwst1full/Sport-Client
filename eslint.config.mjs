@@ -8,6 +8,8 @@ import tseslint from 'typescript-eslint';
 const KERNEL = ['auth', 'cart'];
 const FEATURE_EDGES = {
   address: [],
+  // Trợ lý: chuyển nhân viên = phiếu hỗ trợ (`support`); nhãn trạng thái thẻ đơn (`orders`).
+  assistant: ['support', 'orders'],
   auth: [],
   cart: [],
   catalog: [],
