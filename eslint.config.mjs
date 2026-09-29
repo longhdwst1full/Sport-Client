@@ -122,12 +122,6 @@ const EXCEPTIONS = [
     files: ['src/features/catalog/pages/search-page.tsx', 'src/features/home/pages/home-page.tsx'],
     allow: { featureToWidgets: true },
   },
-  {
-    // The header's profile query has its own options (enabled after mount, default retry); switching to the
-    // auth feature's profile observer changes retry/staleness behaviour, so it is left until done deliberately.
-    files: ['src/widgets/site-header/site-header.tsx'],
-    allow: { widgetToGenerated: true },
-  },
 ];
 
 export default [

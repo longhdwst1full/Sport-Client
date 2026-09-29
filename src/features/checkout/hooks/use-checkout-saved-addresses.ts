@@ -1,9 +1,8 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
 import type { CustomerAddressDto } from '@/generated/api/customer/customer.schemas';
-import { listCustomerAddresses } from '@/generated/api/customer/customer';
+import { useCustomerAddressList } from '@/features/address';
 import { initialAddress, toSelectedAddress } from '../model/checkout-address';
 import type { CheckoutForm } from './use-checkout-form';
 
@@ -25,10 +24,10 @@ export function useCheckoutSavedAddresses({
   const { name, address, selectedAddressId, setSelectedAddressId, setName, setPhone, setAddress, setAddressFormKey } = form;
 
   // Sổ địa chỉ chỉ có với khách đã đăng nhập; khách vãng lai nhập tay.
-  const savedAddresses = useQuery({
-    queryKey: ['account-addresses'],
-    queryFn: ({ signal }) => listCustomerAddresses(undefined, signal),
-    enabled: isLoaded && isAuthenticated,
+  // Dùng chung generated query key với profile (qua features/address) để sửa/xóa địa chỉ ở
+  // profile invalidate đúng cache và checkout thấy dữ liệu mới ngay, thay vì query key tự đặt
+  // ['account-addresses'] trước đây không liên quan gì tới cache của profile.
+  const savedAddresses = useCustomerAddressList(isLoaded && isAuthenticated, {
     staleTime: 60_000,
   });
 

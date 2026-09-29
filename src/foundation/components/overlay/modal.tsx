@@ -1,11 +1,12 @@
-import type { ReactNode } from 'react';
+'use client';
+
+import { useRef, type ReactNode } from 'react';
+import { useDialogA11y } from './use-dialog-a11y';
 
 /**
- * Backdrop + dialog wrapper. This mirrors exactly the structure already used
- * by the one call site with `role="dialog"`/`aria-modal` today (backdrop
- * click-outside close, no Esc handling, no focus trap yet) — it only removes
- * duplicated JSX, it does not add new a11y behavior a call site didn't
- * already have.
+ * Backdrop + dialog wrapper. Mirrors the structure already used by the one call site with
+ * `role="dialog"`/`aria-modal` (backdrop click-outside close). Adds Escape-to-close (respecting
+ * `disableClose`) and moves focus into the dialog on open, restoring it on close — no visual change.
  */
 export function Modal({
   onClose,
@@ -22,13 +23,23 @@ export function Modal({
   className?: string;
   children: ReactNode;
 }) {
+  const dialogRef = useRef<HTMLElement | null>(null);
+  useDialogA11y(dialogRef, { onClose, disableClose });
+
   return (
     <div
       className={backdropClassName}
       role="presentation"
       onMouseDown={(event) => event.target === event.currentTarget && !disableClose && onClose()}
     >
-      <section role="dialog" aria-modal="true" aria-labelledby={labelledBy} className={className}>
+      <section
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={labelledBy}
+        className={className}
+        tabIndex={-1}
+      >
         {children}
       </section>
     </div>

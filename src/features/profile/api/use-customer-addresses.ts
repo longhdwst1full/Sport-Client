@@ -4,12 +4,11 @@ import { useMemo } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 
 import {
-  getListCustomerAddressesQueryKey,
   useCreateCustomerAddress,
-  useListCustomerAddresses,
   useRemoveCustomerAddress,
   useUpdateCustomerAddress,
 } from '@/generated/api/customer/customer';
+import { getListCustomerAddressesQueryKey, useCustomerAddressList } from '@/features/address';
 
 import { toAddressView, type AddressView } from '../model/address.mapper';
 
@@ -22,9 +21,7 @@ export function useCustomerAddresses(enabled: boolean) {
   const queryClient = useQueryClient();
   const listKey = getListCustomerAddressesQueryKey();
 
-  const query = useListCustomerAddresses({
-    query: { enabled, staleTime: 0, gcTime: 0 },
-  });
+  const query = useCustomerAddressList(enabled, { staleTime: 0, gcTime: 0 });
 
   const invalidate = () => queryClient.invalidateQueries({ queryKey: listKey });
   const mutationOptions = { mutation: { onSuccess: invalidate } } as const;

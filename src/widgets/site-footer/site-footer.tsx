@@ -2,11 +2,11 @@ import Image from 'next/image';
 import {
   CreditCard,
   Facebook,
-  Instagram,
   Mail,
   MessageCircle,
   ShieldCheck,
   Truck,
+  Youtube,
 } from 'lucide-react';
 import { STORE_CONFIG, STORE_CONTACT } from '@/shared/constants';
 import { FooterLinkColumn, type FooterLinkItem } from './footer-link-column';
@@ -14,9 +14,7 @@ import { ShowroomCard, type ShowroomCardData } from './showroom-card';
 
 const SOCIAL_LINKS = [
   { icon: Facebook, href: STORE_CONTACT.facebookUrl, label: 'Facebook' },
-  // WORKAROUND: nhãn/href là YouTube nhưng icon vẫn là Instagram — lỗi có sẵn trước khi tách file
-  // này, giữ nguyên để không đổi giao diện đang render; cần chủ sản phẩm quyết định trước khi sửa.
-  { icon: Instagram, href: STORE_CONTACT.youtubeUrl, label: 'YouTube' },
+  { icon: Youtube, href: STORE_CONTACT.youtubeUrl, label: 'YouTube' },
   { icon: MessageCircle, href: STORE_CONTACT.zaloUrl, label: 'Zalo' },
 ];
 

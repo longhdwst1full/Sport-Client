@@ -14,7 +14,6 @@ import { DesktopMegaMenu } from './desktop-mega-menu';
 import { MobileMenuDrawer } from './mobile-menu-drawer';
 import { useCustomerAuth } from '@/features/auth';
 import { useFlashSaleAvailability } from '@/features/promotions';
-import { useGetCustomerProfile } from '@/generated/api/customer/customer';
 
 export function SiteHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -31,12 +30,9 @@ export function SiteHeader() {
   const rawCartQuantity = cartItems.reduce((total, item) => total + item.quantity, 0);
   // Avoid hydration mismatch by waiting until mounted to show client-persisted cart quantity and auth
   const cartQuantity = isMounted ? rawCartQuantity : 0;
-  const { isAuthenticated } = useCustomerAuth();
+  const { isAuthenticated, customer } = useCustomerAuth();
   const isLoggedIn = isMounted && isAuthenticated;
-  const profileQuery = useGetCustomerProfile({
-    query: { enabled: isLoggedIn },
-  });
-  const customerName = profileQuery.data?.name || (profileQuery.data?.email ? profileQuery.data.email.split('@')[0] : '');
+  const customerName = customer?.name || (customer?.email ? customer.email.split('@')[0] : '');
 
   return (
     <header className="sticky top-0 z-50">

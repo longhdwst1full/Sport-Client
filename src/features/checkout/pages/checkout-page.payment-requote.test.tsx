@@ -44,6 +44,7 @@ vi.mock('@tanstack/react-query', () => ({
 }));
 
 vi.mock('@/features/address', () => ({
+  useCustomerAddressList: () => ({ data: undefined }),
   VietnamAddressSelector: ({ onChange }: { onChange: (data: unknown) => void }) => (
     <button
       type="button"

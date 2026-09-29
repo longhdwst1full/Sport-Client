@@ -11,3 +11,4 @@ export {
   type District,
   type Ward,
 } from './api/vietnam-divisions';
+export { useCustomerAddressList, getListCustomerAddressesQueryKey } from './api/customer-address-query';
