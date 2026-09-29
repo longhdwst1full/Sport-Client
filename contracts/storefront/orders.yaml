@@ -388,6 +388,8 @@ components:
           format: date-time
         version:
           type: number
+        branchContact:
+          $ref: "#/components/schemas/OrderBranchContactDto"
         currencyCode:
           type: string
         pricesIncludeTax:
@@ -441,6 +443,7 @@ components:
         - recipient
         - placedAt
         - version
+        - branchContact
         - currencyCode
         - pricesIncludeTax
         - subtotal
@@ -450,6 +453,16 @@ components:
         - items
         - statusHistory
         - guestAccessToken
+    OrderBranchContactDto:
+      type: object
+      properties:
+        phone:
+          type: string
+          nullable: true
+        address:
+          type: string
+          nullable: true
+          description: Địa chỉ chi nhánh đã ghép thành một dòng
     OrderCancelCommandDto:
       type: object
       properties:
@@ -505,6 +518,8 @@ components:
           format: date-time
         version:
           type: number
+        branchContact:
+          $ref: "#/components/schemas/OrderBranchContactDto"
         currencyCode:
           type: string
         pricesIncludeTax:
@@ -555,6 +570,7 @@ components:
         - recipient
         - placedAt
         - version
+        - branchContact
         - currencyCode
         - pricesIncludeTax
         - subtotal

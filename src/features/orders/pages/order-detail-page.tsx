@@ -23,6 +23,8 @@ import { OrderShipmentSection } from '../components/order-detail/order-shipment-
 import { OrderStatusHero } from '../components/order-detail/order-status-hero';
 import { OrderSupportCard } from '../components/order-detail/order-support-card';
 import { OrderSupportDialog } from '../components/order-detail/order-support-dialog';
+import { OrderReceiptPrint } from '../components/order-detail/order-receipt-print';
+import { printOrderReceipt } from '../model/print-receipt';
 import { useCancelOrder } from '../hooks/use-cancel-order';
 import { useOrderCopy } from '../hooks/use-order-copy';
 import { useOrderDetail } from '../hooks/use-order-detail';
@@ -153,8 +155,10 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
                   canCancel={canCancel}
                   onReorderAll={handleReorderAll}
                   onOpenCancel={() => setShowCancel(true)}
+                  onPrintReceipt={printOrderReceipt}
                   onOpenSupport={() => setShowSupportModal(true)}
                 />
+                <OrderReceiptPrint order={order} />
               </div>
 
               {/* Right Aside Column: Payment Panel, Address & Contextual Support */}
