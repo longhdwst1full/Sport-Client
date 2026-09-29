@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowLeft, Headphones, RotateCcw, ShoppingBag, X } from 'lucide-react';
+import { ArrowLeft, Headphones, Printer, RotateCcw, ShoppingBag, X } from 'lucide-react';
 
 /**
  * Hành động sau bán: mua tiếp, mua lại cả đơn (đơn hoàn tất), về danh sách đơn (tài khoản). Nút hủy chỉ
@@ -12,6 +12,7 @@ export function OrderActionsBar({
   onReorderAll,
   onOpenCancel,
   onOpenSupport,
+  onPrintReceipt,
 }: {
   orderStatus: string;
   isAuthenticated: boolean;
@@ -19,6 +20,8 @@ export function OrderActionsBar({
   onReorderAll: () => void;
   onOpenCancel: () => void;
   onOpenSupport: () => void;
+  /** D16: in biên lai nội bộ; không hiện với đơn đã huỷ. */
+  onPrintReceipt?: () => void;
 }) {
   return (
     <div className="rounded-3xl border border-slate-200/80 bg-white p-5 shadow-card">
@@ -38,6 +41,16 @@ export function OrderActionsBar({
               className="inline-flex items-center gap-2 rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-2.5 text-xs font-bold text-emerald-800 transition hover:bg-emerald-100"
             >
               <RotateCcw className="size-3.5 text-emerald-600" /> Mua lại cả đơn
+            </button>
+          )}
+
+          {onPrintReceipt && orderStatus !== 'CANCELLED' && (
+            <button
+              type="button"
+              onClick={onPrintReceipt}
+              className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 shadow-sm transition hover:bg-slate-50"
+            >
+              <Printer className="size-3.5" /> In biên lai
             </button>
           )}
 

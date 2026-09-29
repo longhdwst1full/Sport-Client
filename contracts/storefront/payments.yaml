@@ -408,6 +408,11 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/PaymentEvidenceDto"
+        lateReceipts:
+          description: "Chỉ có ở API Admin: tiền về sau khi payment đã hủy, cần hoàn tiền thủ công (D04)"
+          type: array
+          items:
+            $ref: "#/components/schemas/PaymentLateReceiptDto"
       required:
         - id
         - orderId
@@ -492,6 +497,37 @@ components:
         - provider
         - reference
         - customerMessage
+    PaymentLateReceiptDto:
+      type: object
+      properties:
+        id:
+          type: string
+          pattern: ^[1-9][0-9]*$
+          example: "1"
+        provider:
+          type: string
+          description: VNPAY khi IPN báo thu tiền trễ; MANUAL_BANK_TRANSFER khi Admin ghi nhận
+        reference:
+          type: string
+          description: Mã giao dịch VNPay hoặc số tham chiếu ngân hàng
+        amount:
+          type: string
+          example: "1490000.00"
+        receivedAt:
+          type: string
+          format: date-time
+        recordedAt:
+          type: string
+          format: date-time
+        note:
+          type: string
+      required:
+        - id
+        - provider
+        - reference
+        - amount
+        - receivedAt
+        - recordedAt
     PaymentMethod:
       type: string
       enum:
