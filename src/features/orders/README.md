@@ -1,10 +1,10 @@
 # Storefront Orders — maintenance note
 
-> **Document version:** 1.6.0
+> **Document version:** 1.7.0
 >
 > **Last updated:** 2026-09-30
 >
-> **Change summary:** Thêm tra cứu đơn khách vãng lai bằng OTP email (V1.1): trang `/orders/lookup`, grant ở sessionStorage, đường truy cập "lookup" chỉ xem trong trang chi tiết đơn; grant còn được trợ lý chat dùng qua header.
+> **Change summary:** Tra cứu đơn khách vãng lai bằng OTP email (V1.1): trang `/orders/lookup`, grant ở sessionStorage, đường truy cập "lookup" chỉ xem; thống nhất một câu lỗi duy nhất cho mọi thất bại `verify` theo API đã hardening (`GUEST_LOOKUP_LOCKED` chỉ còn là nhánh dự phòng), map thêm `GUEST_LOOKUP_UNAVAILABLE`.
 
 ## Phạm vi và ranh giới
 
@@ -26,7 +26,9 @@
 - SECURITY: bước 1 luôn hiện cùng một câu ("nếu thông tin khớp, mã đã được gửi") và luôn chuyển sang bước nhập mã — không tiết lộ đơn/email có tồn tại. API trả 202 cùng body trong mọi trường hợp.
 - Grant (`model/guest-order-lookup.store.ts`) chỉ ở **sessionStorage** (mất khi đóng tab), bỏ khi hết hạn; storage bị chặn thì giữ trong bộ nhớ cho lần điều hướng hiện tại. Không bao giờ localStorage.
 - `useOrderDetail` chọn `accessMode`: `account` → `guest-cart` (`x-cart-token`, có quyền thanh toán/huỷ) → `lookup` (`getGuestOrderByLookup` + header `x-order-lookup-token`, query key `getGetGuestOrderByLookupQueryKey`) → `none`. Chế độ `lookup` **chỉ xem**: ẩn khối thanh toán, `canCancel = false`, hiện thời điểm hết hạn.
-- Lỗi theo mã: `GUEST_LOOKUP_INVALID` (mã sai/hết hạn), `GUEST_LOOKUP_LOCKED` (hết lượt thử → xoá mã, gửi mã mới), `GUEST_LOOKUP_TOKEN_INVALID`/401 (grant chết → dọn sessionStorage, mời xác thực lại), 429 không mã (throttle IP).
+- **Không tiết lộ đơn nào có thật.** Bước 1 luôn hiện đúng một câu (`GUEST_LOOKUP_COPY.sent`) và luôn sang bước 2, dù cặp `orderNo + email` có khớp hay không. Bước 2: API trả **duy nhất** 400 `GUEST_LOOKUP_INVALID` cho mọi lý do thất bại (mã sai, hết hạn, không có challenge, hết lượt thử, đơn không tồn tại) — lý do thật chỉ nằm trong log server. Vì vậy client map tất cả về một câu `GUEST_LOOKUP_INVALID_MESSAGE` và **không** được suy lý do từ status hay `message` của backend; làm vậy sẽ dựng lại đúng kênh rò rỉ mà API đã bịt. Test khoá bất biến này: `model/guest-order-lookup-error.test.ts`.
+- Mã lỗi còn lại: `GUEST_LOOKUP_TOKEN_INVALID`/401 (grant chết → dọn sessionStorage, mời xác thực lại), `GUEST_LOOKUP_UNAVAILABLE`/503 (server thiếu khoá HMAC → tạm ngưng), 429 không mã (throttle theo IP ở tầng ngoài).
+- `GUEST_LOOKUP_LOCKED` đã bị **gỡ khỏi API**. `GuestLookupErrorCode.LOCKED_LEGACY` + `isGuestLookupLocked` chỉ còn là nhánh dự phòng cho backend cũ chưa deploy: dùng chung câu của `INVALID` nên không lộ thêm gì, chỉ khác ở chỗ xoá mã đang nhập và buộc gửi mã mới. Xoá được khi mọi môi trường đã lên bản đã hardening.
 - Lối vào: trạng thái "không có mã truy cập" của trang chi tiết đơn, trang `/orders` khi chưa đăng nhập, và gợi ý trong widget trợ lý khi khách ẩn danh hỏi về đơn. Barrel export `GUEST_LOOKUP_ROUTE`, `readLatestGuestOrderLookupGrant`, `clearGuestOrderLookupGrant` cho `features/assistant`.
 
 ## Cấu trúc
@@ -61,6 +63,7 @@ Orders chỉ được import `returns`, `reviews` (và `auth`, `cart`) qua barre
 
 | Version | Date | Change summary | Source |
 | --- | --- | --- | --- |
+| 1.7.0 | 2026-09-30 | Một câu lỗi duy nhất cho mọi thất bại `verify`; `GUEST_LOOKUP_LOCKED` thành nhánh dự phòng; map `GUEST_LOOKUP_UNAVAILABLE`. | feat/assistant-v1 (V1.1 guest lookup hardening) |
 | 1.6.0 | 2026-09-30 | Tra cứu đơn khách vãng lai bằng OTP email, grant sessionStorage, chế độ xem "lookup". | feat/assistant-v1 (V1.1 guest lookup) |
 | 1.5.0 | 2026-09-29 | Tách order-detail thành 5 hook + 15 component và đưa data danh sách/thanh toán vào hook, không đổi hành vi; thêm mục Cấu trúc. | Client restructure (order detail split) |
 | 1.4.0 | 2026-09-28 | Tách tiến trình giao nhận và thanh toán, nổi bật trạng thái đơn, thêm khối thông tin vận chuyển và hỗ trợ ngữ cảnh. | UX-REVIEW-ORDER-TRACKING-20260928 |

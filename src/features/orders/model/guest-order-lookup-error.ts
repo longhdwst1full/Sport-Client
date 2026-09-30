@@ -8,10 +8,19 @@ export function guestLookupErrorCode(error: unknown): string | undefined {
   return typeof payload?.code === 'string' ? payload.code : undefined;
 }
 
-/** Thông điệp theo mã lỗi ổn định; 429 không mã (throttle theo IP) là "thử lại sau". */
+/**
+ * Thông điệp theo mã lỗi ổn định.
+ *
+ * SECURITY: mọi lý do `verify` thất bại đều tới đây dưới cùng một mã `GUEST_LOOKUP_INVALID`, nên hàm này không
+ * được suy ra lý do từ status hay từ `message` của backend — làm vậy sẽ dựng lại đúng kênh rò rỉ mà API vừa bịt.
+ * 429 không mã là throttle theo IP ở tầng ngoài (chưa chạm tới challenge nào) nên nói "thử lại sau" là an toàn.
+ */
 export function guestLookupErrorMessage(error: unknown, fallback: string): string {
   const code = guestLookupErrorCode(error);
   if (code && GUEST_LOOKUP_ERROR_MESSAGES[code]) return GUEST_LOOKUP_ERROR_MESSAGES[code];
+  if (error instanceof ApiError && error.status === 503) {
+    return GUEST_LOOKUP_ERROR_MESSAGES[GuestLookupErrorCode.UNAVAILABLE];
+  }
   if (error instanceof ApiError && error.status === 429) return 'Bạn thao tác quá nhanh. Vui lòng thử lại sau ít phút.';
   return apiErrorMessage(error, fallback);
 }
@@ -22,7 +31,13 @@ export function isGuestLookupTokenInvalid(error: unknown): boolean {
     || (error instanceof ApiError && error.status === 401);
 }
 
-/** Mã OTP bị khoá: phải gửi mã mới, không cho nhập tiếp. */
+/**
+ * Chỉ đúng với backend **cũ** còn trả `GUEST_LOOKUP_LOCKED`: khoá ô nhập và bắt gửi mã mới.
+ *
+ * API hiện tại đã gộp trường hợp hết lượt vào `GUEST_LOOKUP_INVALID`, nên với backend mới hàm này luôn `false`
+ * và khách cứ nhập lại bình thường — server mới là nơi đếm lượt. Giữ nhánh này để bản cũ chưa deploy không rơi
+ * vào vòng lặp nhập mã đã chết; xoá được khi mọi môi trường đã lên bản đã hardening.
+ */
 export function isGuestLookupLocked(error: unknown): boolean {
-  return guestLookupErrorCode(error) === GuestLookupErrorCode.LOCKED;
+  return guestLookupErrorCode(error) === GuestLookupErrorCode.LOCKED_LEGACY;
 }

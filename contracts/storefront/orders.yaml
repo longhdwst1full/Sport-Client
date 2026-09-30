@@ -39,6 +39,12 @@ paths:
             application/json:
               schema:
                 $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
+        "503":
+          description: "GUEST_LOOKUP_UNAVAILABLE: server chưa cấu hình khoá tra cứu"
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
       summary: Gửi mã xác thực tra cứu đơn tới email người nhận của đơn
       tags:
         - Storefront Guest Orders
@@ -60,13 +66,19 @@ paths:
               schema:
                 $ref: "#/components/schemas/GuestOrderLookupGrantDto"
         "400":
-          description: "GUEST_LOOKUP_INVALID: mã sai, hết hạn hoặc không có yêu cầu"
+          description: "GUEST_LOOKUP_INVALID: mã sai, hết hạn, hết lượt thử hoặc không có yêu cầu nào khớp"
           content:
             application/json:
               schema:
                 $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
         "429":
-          description: "GUEST_LOOKUP_LOCKED: hết lượt thử của mã này"
+          description: Burst throttle theo IP
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
+        "503":
+          description: "GUEST_LOOKUP_UNAVAILABLE: server chưa cấu hình khoá tra cứu"
           content:
             application/json:
               schema:
@@ -98,6 +110,12 @@ paths:
                 $ref: "#/components/schemas/OrderDetailDto"
         "401":
           description: GUEST_LOOKUP_TOKEN_INVALID
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
+        "503":
+          description: "GUEST_LOOKUP_UNAVAILABLE: server chưa cấu hình khoá tra cứu"
           content:
             application/json:
               schema:
