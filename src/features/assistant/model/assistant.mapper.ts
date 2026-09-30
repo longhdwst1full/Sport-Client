@@ -38,6 +38,7 @@ function toProductCard(dto: ChatProductCardDto): AssistantProductCardView {
   return {
     kind: 'product',
     productId: dto.productId,
+    productType: dto.productType,
     slug: dto.slug,
     name: dto.name,
     brand: dto.brand,

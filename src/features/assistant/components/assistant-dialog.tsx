@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
 import Link from 'next/link';
 import { AlertTriangle, Bot, Headset, RotateCw, SendHorizontal, X } from 'lucide-react';
+import { GUEST_LOOKUP_ROUTE } from '@/features/orders';
 import { Modal } from '@/foundation/components/overlay';
 import { Spinner } from '@/foundation/components/feedback';
 import { STORE_CONTACT } from '@/shared/constants';
@@ -151,6 +152,12 @@ export function AssistantDialog({ chat, onClose }: { chat: AssistantChatState; o
           {chat.feedbackError != null && (
             <li role="alert" className="text-center text-[11px] text-rose-700">
               {assistantErrorMessage(chat.feedbackError, ASSISTANT_COPY.feedbackError)}
+            </li>
+          )}
+          {chat.suggestOrderLookup && (
+            <li className="flex flex-wrap items-center gap-2 rounded-xl bg-sky-50 px-3 py-2 text-xs text-sky-900">
+              <span>{ASSISTANT_COPY.orderLookupHint}</span>
+              <Link href={GUEST_LOOKUP_ROUTE} onClick={onClose} className="font-bold underline">{ASSISTANT_COPY.orderLookupLink}</Link>
             </li>
           )}
           {chat.isHandedOff && (

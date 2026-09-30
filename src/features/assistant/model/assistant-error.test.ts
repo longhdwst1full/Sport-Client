@@ -6,6 +6,7 @@ import {
   assistantErrorMessage,
   assistantRequestHeaders,
   isAssistantConversationGone,
+  isAssistantOrderLookupTokenInvalid,
   isAssistantQuotaExceeded,
   isAssistantUnavailable,
   requiresFreshIdempotencyKey,
@@ -102,5 +103,23 @@ describe('assistantRequestHeaders', () => {
       [ASSISTANT_HEADERS.IDEMPOTENCY]: 'ik',
     });
     expect(assistantRequestHeaders(undefined, 'ik')).toEqual({ [ASSISTANT_HEADERS.IDEMPOTENCY]: 'ik' });
+  });
+
+  it('grant tra đơn chỉ đi qua header x-order-lookup-token', () => {
+    expect(assistantRequestHeaders('sk', 'ik', 'grant-token')).toEqual({
+      [ASSISTANT_HEADERS.SESSION]: 'sk',
+      [ASSISTANT_HEADERS.IDEMPOTENCY]: 'ik',
+      'x-order-lookup-token': 'grant-token',
+    });
+    expect(assistantRequestHeaders('sk', 'ik', null)).not.toHaveProperty('x-order-lookup-token');
+  });
+});
+
+describe('isAssistantOrderLookupTokenInvalid', () => {
+  it('nhận đúng mã ASSISTANT_ORDER_LOOKUP_TOKEN_INVALID và có thông điệp tiếng Việt', () => {
+    const error = err(400, AssistantErrorCode.ORDER_LOOKUP_TOKEN_INVALID, 'header is malformed');
+    expect(isAssistantOrderLookupTokenInvalid(error)).toBe(true);
+    expect(assistantErrorMessage(error)).toContain('tra cứu lại đơn');
+    expect(isAssistantOrderLookupTokenInvalid(err(400, AssistantErrorCode.CONTENT_INVALID))).toBe(false);
   });
 });

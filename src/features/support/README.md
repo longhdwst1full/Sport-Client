@@ -1,10 +1,10 @@
 # Storefront Support — maintenance note
 
-> **Document version:** 3.0.1
+> **Document version:** 3.1.0
 >
-> **Last updated:** 2026-09-29
+> **Last updated:** 2026-09-30
 >
-> **Change summary:** Map thêm `SUPPORT_BRANCH_INVALID` (400); phiếu hỗ trợ của khách và hook tạo phiếu dùng chung cho handoff của trợ lý giữ nguyên.
+> **Change summary:** Nhắn thêm trên phiếu (`addAccountSupportTicketMessage`) gửi `Idempotency-Key` bắt buộc theo mẫu dùng lại khoá khi cùng nội dung + version; map `SUPPORT_IDEMPOTENCY_KEY_INVALID`/`SUPPORT_IDEMPOTENCY_CONFLICT`.
 
 ## Phạm vi
 
@@ -27,11 +27,11 @@
 | --- | --- | --- |
 | `listAccountSupportTickets` | `use-account-support-tickets.ts` | Phân trang `page/limit` (10), `meta.total`. |
 | `getAccountSupportTicket` | `use-account-support-ticket.ts` | Chi tiết + thread. |
-| `addAccountSupportTicketMessage` | `use-account-support-ticket.ts` | Gửi `expectedVersion` = `version` đang xem; trả chi tiết mới và ghi thẳng vào cache chi tiết. |
+| `addAccountSupportTicketMessage` | `use-account-support-ticket.ts` | `requestOptions: true` để gửi `idempotency-key`; body có `expectedVersion` = `version` đang xem; trả chi tiết mới và ghi thẳng vào cache chi tiết. |
 | `createSupportRequest` | `use-create-support-request.ts` | `requestOptions: true` để gửi `idempotency-key`. |
 
 - Mapper duy nhất: `model/support-ticket.mapper.ts`. SECURITY: API khách không trả ghi chú nội bộ; mapper vẫn loại mọi tin có `isInternal === true` và view model không có field này.
-- IDEMPOTENCY: tạo phiếu dùng lại khoá khi gửi lại đúng `subject/message/conversationId` (server trả lại phiếu cũ), khoá mới khi đổi nội dung. Nhắn thêm không có Idempotency-Key: `expectedVersion` chặn ghi trùng (lần gửi lại sau khi đã thành công nhận 409 `SUPPORT_VERSION_CONFLICT`).
+- IDEMPOTENCY: tạo phiếu dùng lại khoá khi gửi lại đúng `subject/message/conversationId` (server trả lại phiếu cũ), khoá mới khi đổi nội dung. Nhắn thêm: khoá theo chữ ký `ticketNo:expectedVersion:body` — gửi lại cùng nội dung trên cùng version dùng lại khoá (server trả lại kết quả cũ, không ghi tin trùng); `SUPPORT_IDEMPOTENCY_KEY_INVALID` (400) / `SUPPORT_IDEMPOTENCY_CONFLICT` (409, cùng khoá khác nội dung) thì bỏ khoá để lần sau sinh khoá mới. `expectedVersion` vẫn chặn ghi đè phiếu đã đổi.
 - Lỗi theo mã (`model/support-error.ts`): `SUPPORT_TICKET_CLOSED`, `SUPPORT_VERSION_CONFLICT`/`SUPPORT_CONCURRENT_UPDATE` (tải lại chi tiết, giữ nội dung đang gõ), `SUPPORT_CUSTOMER_NOT_FOUND`, `SUPPORT_CONVERSATION_NOT_FOUND`, `SUPPORT_BRANCH_INVALID` (400), `SUPPORT_IDEMPOTENCY_CONFLICT`, 503.
 - Trạng thái `OPEN|ASSIGNED|RESOLVED|CLOSED` có nhãn tiếng Việt `Record<SupportTicketStatus, string>`; phiếu CLOSED khoá ô trả lời. Trần độ dài khớp API: tiêu đề 255, nội dung 4000.
 
@@ -64,6 +64,7 @@ Hotline/địa chỉ/giờ mở cửa lấy từ `@/shared/constants` (`STORE_CO
 
 | Version | Date | Change summary |
 | --- | --- | --- |
+| 3.1.0 | 2026-09-30 | Idempotency-Key cho nhắn thêm trên phiếu; map lỗi idempotency. |
 | 3.0.1 | 2026-09-29 | Map thêm `SUPPORT_BRANCH_INVALID`. |
 | 3.0.0 | 2026-09-29 | Thêm phiếu hỗ trợ của khách trên contract `support`; hook tạo phiếu dùng cho handoff của trợ lý. |
 | 2.0.0 | 2026-09-21 | Form liên hệ mở email soạn sẵn thay vì báo gửi thành công giả. |

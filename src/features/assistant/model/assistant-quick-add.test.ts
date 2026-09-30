@@ -5,6 +5,7 @@ import type { AssistantProductCardView } from './assistant.types';
 const card = (over: Partial<AssistantProductCardView> = {}): AssistantProductCardView => ({
   kind: 'product',
   productId: '7',
+  productType: 'STANDARD',
   slug: 'vot-a',
   name: 'Vợt A',
   brand: null,
@@ -29,6 +30,10 @@ describe('toQuickAddCartItem', () => {
       price: 1500000,
       quantity: 1,
     });
+  });
+
+  it('dòng giỏ mang đúng productType của thẻ (combo)', () => {
+    expect(toQuickAddCartItem(card({ productType: 'BUNDLE' }))?.productType).toBe('BUNDLE');
   });
 
   it('nhiều biến thể thì tên dòng giỏ kèm tên biến thể', () => {

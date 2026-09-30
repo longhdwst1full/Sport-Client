@@ -31,10 +31,15 @@ import { useOrderDetail } from '../hooks/use-order-detail';
 import { useOrderDetailToast } from '../hooks/use-order-detail-toast';
 import { useReorder } from '../hooks/use-reorder';
 import { errorMessage } from '../model/order-detail-error';
+import { GUEST_LOOKUP_COPY, GUEST_LOOKUP_ROUTE } from '../model/guest-order-lookup.constants';
+import { guestLookupErrorMessage } from '../model/guest-order-lookup-error';
+import { formatDateTime } from '@/shared/format/date-time';
 
 export function OrderDetailPage({ orderNo }: { orderNo: string }) {
   // Hook tải đơn gọi trước hook hủy đơn: effect thu hồi mã truy cập vãng lai giữ nguyên thứ tự chạy cũ.
-  const { isAuthenticated, isLoaded, guestToken, orderQuery, order, view, canCancel } = useOrderDetail(orderNo);
+  const { isAuthenticated, isLoaded, guestToken, accessMode, lookupGrant, lookupExpired, orderQuery, order, view, canCancel } =
+    useOrderDetail(orderNo);
+  const lookupHref = `${GUEST_LOOKUP_ROUTE}?orderNo=${encodeURIComponent(orderNo)}`;
   const queryClient = useQueryClient();
   const { toastMessage, triggerToast } = useOrderDetailToast();
   const [showSupportModal, setShowSupportModal] = useState(false);
@@ -69,7 +74,7 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
               <span className="text-sm font-semibold text-slate-500">Đang tải thông tin đơn hàng...</span>
             </div>
           </div>
-        ) : !isAuthenticated && !guestToken ? (
+        ) : accessMode === 'none' ? (
           <ErrorState
             className="mx-auto max-w-xl rounded-3xl border border-amber-200 bg-amber-50/70 p-8 sm:p-10 text-center shadow-card"
             iconWrapClassName="mx-auto grid size-16 place-items-center rounded-2xl bg-amber-100 text-amber-600"
@@ -77,9 +82,12 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
             titleClassName="mt-5 text-xl font-black text-slate-900"
             title="Không tìm thấy mã truy cập đơn hàng"
             descriptionClassName="mx-auto mt-2 max-w-md text-sm leading-relaxed text-amber-900"
-            description="Hãy mở đơn trên trình duyệt đã dùng để đặt hàng hoặc đăng nhập tài khoản để xem toàn bộ lịch sử đơn."
+            description="Hãy mở đơn trên trình duyệt đã dùng để đặt hàng, tra cứu bằng email người nhận, hoặc đăng nhập tài khoản để xem toàn bộ lịch sử đơn."
             actions={
               <div className="mt-6 flex flex-wrap justify-center gap-3">
+                <Link href={lookupHref} className="rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-emerald-700">
+                  Tra cứu bằng email
+                </Link>
                 <Link href="/login" className="rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-emerald-700">
                   Đăng nhập
                 </Link>
@@ -97,9 +105,18 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
             titleClassName="mt-5 text-xl font-black text-rose-950"
             title="Không thể tải thông tin đơn hàng"
             descriptionClassName="mx-auto mt-2 max-w-md text-sm leading-relaxed text-rose-800"
-            description={errorMessage(orderQuery.error)}
+            description={
+              accessMode === 'lookup'
+                ? guestLookupErrorMessage(orderQuery.error, errorMessage(orderQuery.error))
+                : errorMessage(orderQuery.error)
+            }
             actions={
               <div className="mt-6 flex flex-wrap justify-center gap-3">
+                {lookupExpired ? (
+                  <Link href={lookupHref} className="rounded-xl bg-rose-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-rose-700">
+                    Xác thực lại bằng email
+                  </Link>
+                ) : (
                 <button
                   type="button"
                   onClick={() => orderQuery.refetch()}
@@ -107,6 +124,7 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
                 >
                   Thử lại
                 </button>
+                )}
                 <Link href="/" className="rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-bold text-slate-700 transition hover:bg-slate-50">
                   Về trang chủ
                 </Link>
@@ -120,6 +138,13 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
               isAuthenticated={isAuthenticated}
               onOpenSupport={() => setShowSupportModal(true)}
             />
+
+            {accessMode === 'lookup' && lookupGrant && (
+              <div role="status" className="mt-4 rounded-2xl border border-sky-200 bg-sky-50 p-4 text-xs text-sky-900">
+                {GUEST_LOOKUP_COPY.viaLookupNotice} <strong>{formatDateTime(lookupGrant.expiresAt)}</strong>.{' '}
+                {GUEST_LOOKUP_COPY.viaLookupReadOnly}
+              </div>
+            )}
 
             <OrderStatusHero
               orderNo={order.orderNo}
@@ -163,6 +188,8 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
 
               {/* Right Aside Column: Payment Panel, Address & Contextual Support */}
               <aside className="space-y-6">
+                {/* Grant OTP chỉ cho xem; thanh toán khách vãng lai cần `x-cart-token` của trình duyệt đã đặt. */}
+                {accessMode !== 'lookup' && (
                 <OrderPaymentPanel
                   orderNo={orderNo}
                   authenticated={isAuthenticated}
@@ -174,6 +201,7 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
                     }
                   }}
                 />
+                )}
 
                 <OrderReturnCta orderNo={orderNo} authenticated={isAuthenticated} />
 

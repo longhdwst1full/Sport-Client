@@ -1,5 +1,5 @@
 import type { SupportTicketStatus } from '@/features/support';
-import type { ChatMessageFeedback, ChatMessageRole } from '@/generated/api/assistant/assistant.schemas';
+import type { ChatMessageFeedback, ChatMessageRole, ProductType } from '@/generated/api/assistant/assistant.schemas';
 
 /**
  * View model của trợ lý mua sắm. `assistant.mapper.ts` là nơi duy nhất đọc tên field của `ChatMessageDto`.
@@ -30,6 +30,8 @@ export type AssistantQuickAddView = {
 export type AssistantProductCardView = {
   kind: 'product';
   productId: string;
+  /** Loại sản phẩm theo contract (STANDARD/BUNDLE) — ghi đúng vào dòng giỏ. */
+  productType: ProductType;
   slug: string;
   name: string;
   brand: string | null;

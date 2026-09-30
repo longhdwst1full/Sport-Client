@@ -18,11 +18,18 @@ function message(overrides: Partial<ChatMessageDto> = {}): ChatMessageDto {
 type VariantInput = { variantId?: string; sku: string; effectivePrice: string | null; inStock: boolean | null };
 
 const productCard = (
-  over: { inStock?: boolean | null; variants?: VariantInput[]; price?: string | null; variantId?: string | null } = {},
+  over: {
+    inStock?: boolean | null;
+    variants?: VariantInput[];
+    price?: string | null;
+    variantId?: string | null;
+    productType?: 'STANDARD' | 'BUNDLE';
+  } = {},
 ): ChatCardDto => ({
   type: 'PRODUCT',
   product: {
     productId: '7',
+    productType: over.productType ?? 'STANDARD',
     variantId: over.variantId === undefined ? '71' : over.variantId,
     slug: 'vot-a',
     name: 'Vợt A',
@@ -49,6 +56,11 @@ describe('toAssistantMessageView', () => {
       inStock: true,
       quickAdd: { variantId: '71', sku: 'SKU1', variantName: 'SKU1', price: 1500000 },
     });
+  });
+
+  it('giữ productType của thẻ (combo BUNDLE)', () => {
+    const [card] = toAssistantMessageView(message({ cards: [productCard({ productType: 'BUNDLE' })] })).cards;
+    expect(card).toMatchObject({ kind: 'product', productType: 'BUNDLE' });
   });
 
   it('nhiều biến thể vẫn thêm nhanh đúng biến thể mặc định do API chỉ định', () => {

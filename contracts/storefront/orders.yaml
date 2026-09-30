@@ -9,6 +9,102 @@ servers:
   - url: http://localhost:4000
     description: Local
 paths:
+  /api/v1/orders/guest/lookup/challenges:
+    post:
+      description: Luôn trả 202 với cùng body dù mã đơn/email có khớp hay bị giới hạn tần suất; chỉ khi khớp mới gửi mã 6 chữ số (hết hạn sau 10 phút).
+      operationId: createGuestOrderLookupChallenge
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateGuestOrderLookupChallengeDto"
+      responses:
+        "202":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GuestOrderLookupAcceptedDto"
+        "400":
+          description: Body sai định dạng
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
+        "429":
+          description: Burst throttle theo IP
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
+      summary: Gửi mã xác thực tra cứu đơn tới email người nhận của đơn
+      tags:
+        - Storefront Guest Orders
+  /api/v1/orders/guest/lookup/verify:
+    post:
+      operationId: verifyGuestOrderLookup
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VerifyGuestOrderLookupDto"
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GuestOrderLookupGrantDto"
+        "400":
+          description: "GUEST_LOOKUP_INVALID: mã sai, hết hạn hoặc không có yêu cầu"
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
+        "429":
+          description: "GUEST_LOOKUP_LOCKED: hết lượt thử của mã này"
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
+      summary: Xác thực mã OTP và nhận token tra cứu đơn (30 phút, trả một lần)
+      tags:
+        - Storefront Guest Orders
+  /api/v1/orders/guest/lookup/{orderNo}:
+    get:
+      operationId: getGuestOrderByLookup
+      parameters:
+        - name: orderNo
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: x-order-lookup-token
+          in: header
+          description: lookupToken nhận từ verifyGuestOrderLookup
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderDetailDto"
+        "401":
+          description: GUEST_LOOKUP_TOKEN_INVALID
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
+      summary: Xem đơn bằng token tra cứu OTP
+      tags:
+        - Storefront Guest Orders
   /api/v1/orders/guest/from-checkout/{checkoutToken}:
     post:
       operationId: placeGuestOrder
@@ -347,6 +443,55 @@ components:
         - page
         - limit
         - total
+    CreateGuestOrderLookupChallengeDto:
+      type: object
+      properties:
+        orderNo:
+          type: string
+          example: DH260929000123
+          maxLength: 32
+        email:
+          type: string
+          example: khach@example.com
+          maxLength: 255
+          description: Email người nhận đã nhập khi đặt đơn
+      required:
+        - orderNo
+        - email
+    GuestOrderLookupAcceptedDto:
+      type: object
+      properties:
+        accepted:
+          type: boolean
+          example: true
+          description: Luôn true; không cho biết mã đơn/email có khớp hay không
+        message:
+          type: string
+          example: Nếu mã đơn và email khớp với một đơn hàng, chúng tôi đã gửi mã xác thực tới email đó.
+        expiresInSeconds:
+          type: number
+          example: 600
+          description: Thời gian sống của mã, giây
+      required:
+        - accepted
+        - message
+        - expiresInSeconds
+    GuestOrderLookupGrantDto:
+      type: object
+      properties:
+        orderNo:
+          type: string
+          example: DH260929000123
+        lookupToken:
+          type: string
+          description: Token tra cứu, chỉ trả một lần; gửi lại qua header x-order-lookup-token. Server chỉ lưu hash.
+        expiresAt:
+          type: string
+          format: date-time
+      required:
+        - orderNo
+        - lookupToken
+        - expiresAt
     GuestOrderPlacementDto:
       type: object
       properties:
@@ -798,6 +943,27 @@ components:
         - recipient
         - placedAt
         - version
+    VerifyGuestOrderLookupDto:
+      type: object
+      properties:
+        orderNo:
+          type: string
+          example: DH260929000123
+          maxLength: 32
+        email:
+          type: string
+          example: khach@example.com
+          maxLength: 255
+          description: Email người nhận đã nhập khi đặt đơn
+        code:
+          type: string
+          example: "042913"
+          pattern: ^\d{6}$
+          description: Mã 6 chữ số nhận qua email
+      required:
+        - orderNo
+        - email
+        - code
   securitySchemes:
     bearer:
       scheme: bearer

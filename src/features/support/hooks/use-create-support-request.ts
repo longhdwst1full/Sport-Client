@@ -10,7 +10,7 @@ import {
 import type { AccountSupportTicketDetailDto } from '@/generated/api/support/support.schemas';
 import { toCreatedSupportTicketView } from '../model/support-ticket.mapper';
 import type { CreateSupportRequestInput, CreatedSupportTicketView } from '../model/support-ticket.types';
-import { supportErrorMessage } from '../model/support-error';
+import { requiresFreshSupportIdempotencyKey, supportErrorMessage } from '../model/support-error';
 
 /**
  * Tạo phiếu hỗ trợ (form "Tạo yêu cầu hỗ trợ" và nút "Chuyển nhân viên" của trợ lý).
@@ -36,6 +36,9 @@ export function useCreateSupportRequest(options: { onCreated?: (ticket: CreatedS
       queryClient.setQueryData(getGetAccountSupportTicketQueryKey(ticket.ticketNo), ticket);
       void queryClient.invalidateQueries({ queryKey: getListAccountSupportTicketsQueryKey() });
       options.onCreated?.(toCreatedSupportTicketView(ticket));
+    },
+    onError: (error) => {
+      if (requiresFreshSupportIdempotencyKey(error)) idempotencyRef.current = undefined;
     },
   });
 

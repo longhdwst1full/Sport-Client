@@ -1,10 +1,10 @@
 # Storefront Orders — maintenance note
 
-> **Document version:** 1.5.0
+> **Document version:** 1.6.0
 >
-> **Last updated:** 2026-09-29
+> **Last updated:** 2026-09-30
 >
-> **Change summary:** Trang chi tiết đơn và danh sách đơn tách thành hook + component; hành vi, query key và idempotency giữ nguyên. Thêm mục Cấu trúc.
+> **Change summary:** Thêm tra cứu đơn khách vãng lai bằng OTP email (V1.1): trang `/orders/lookup`, grant ở sessionStorage, đường truy cập "lookup" chỉ xem trong trang chi tiết đơn; grant còn được trợ lý chat dùng qua header.
 
 ## Phạm vi và ranh giới
 
@@ -20,6 +20,15 @@
 - Lỗi localStorage sau khi server tạo Order không được biến thành lỗi đặt hàng; UI cảnh báo khách lưu mã đơn/liên hệ cửa hàng.
 - DTO/request chỉ nhập từ `src/generated/api/orders`; không hard-code endpoint.
 
+## Tra cứu đơn bằng OTP email (V1.1)
+
+- `/orders/lookup` (`pages/guest-order-lookup-page.tsx`, `hooks/use-guest-order-lookup.ts`): bước 1 `{orderNo, email}` → `createGuestOrderLookupChallenge`; bước 2 mã 6 số → `verifyGuestOrderLookup` → lưu grant `{orderNo, lookupToken, expiresAt}` rồi mở `/orders/[orderNo]`. Gửi lại mã sau 60 giây.
+- SECURITY: bước 1 luôn hiện cùng một câu ("nếu thông tin khớp, mã đã được gửi") và luôn chuyển sang bước nhập mã — không tiết lộ đơn/email có tồn tại. API trả 202 cùng body trong mọi trường hợp.
+- Grant (`model/guest-order-lookup.store.ts`) chỉ ở **sessionStorage** (mất khi đóng tab), bỏ khi hết hạn; storage bị chặn thì giữ trong bộ nhớ cho lần điều hướng hiện tại. Không bao giờ localStorage.
+- `useOrderDetail` chọn `accessMode`: `account` → `guest-cart` (`x-cart-token`, có quyền thanh toán/huỷ) → `lookup` (`getGuestOrderByLookup` + header `x-order-lookup-token`, query key `getGetGuestOrderByLookupQueryKey`) → `none`. Chế độ `lookup` **chỉ xem**: ẩn khối thanh toán, `canCancel = false`, hiện thời điểm hết hạn.
+- Lỗi theo mã: `GUEST_LOOKUP_INVALID` (mã sai/hết hạn), `GUEST_LOOKUP_LOCKED` (hết lượt thử → xoá mã, gửi mã mới), `GUEST_LOOKUP_TOKEN_INVALID`/401 (grant chết → dọn sessionStorage, mời xác thực lại), 429 không mã (throttle IP).
+- Lối vào: trạng thái "không có mã truy cập" của trang chi tiết đơn, trang `/orders` khi chưa đăng nhập, và gợi ý trong widget trợ lý khi khách ẩn danh hỏi về đơn. Barrel export `GUEST_LOOKUP_ROUTE`, `readLatestGuestOrderLookupGrant`, `clearGuestOrderLookupGrant` cho `features/assistant`.
+
 ## Cấu trúc
 
 | File | Vai trò |
@@ -32,7 +41,7 @@
 | `hooks/use-account-orders.ts`, `use-order-payment.ts` | Danh sách đơn có phân trang; trạng thái thanh toán + gửi bằng chứng chuyển khoản. |
 | `model/order-detail-error.ts` | Map lỗi truy cập đơn sang thông báo. |
 
-Orders chỉ được import `returns`, `reviews` (và `auth`, `cart`) qua barrel; `yarn lint` chặn phần còn lại.
+Orders chỉ được import `returns`, `reviews` (và `auth`, `cart`) qua barrel; `yarn lint` chặn phần còn lại. `assistant` được import barrel của Orders.
 
 ## Checklist khi sửa
 
@@ -52,6 +61,7 @@ Orders chỉ được import `returns`, `reviews` (và `auth`, `cart`) qua barre
 
 | Version | Date | Change summary | Source |
 | --- | --- | --- | --- |
+| 1.6.0 | 2026-09-30 | Tra cứu đơn khách vãng lai bằng OTP email, grant sessionStorage, chế độ xem "lookup". | feat/assistant-v1 (V1.1 guest lookup) |
 | 1.5.0 | 2026-09-29 | Tách order-detail thành 5 hook + 15 component và đưa data danh sách/thanh toán vào hook, không đổi hành vi; thêm mục Cấu trúc. | Client restructure (order detail split) |
 | 1.4.0 | 2026-09-28 | Tách tiến trình giao nhận và thanh toán, nổi bật trạng thái đơn, thêm khối thông tin vận chuyển và hỗ trợ ngữ cảnh. | UX-REVIEW-ORDER-TRACKING-20260928 |
 | 1.3.0 | 2026-09-26 | Tiến trình theo mốc, mã vận đơn và link theo dõi. | API-20260926-ORDER-TRACKING-VNPAY-RULES |

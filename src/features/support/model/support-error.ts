@@ -10,6 +10,7 @@ export const SupportErrorCode = {
   TICKET_CLOSED: 'SUPPORT_TICKET_CLOSED',
   VERSION_CONFLICT: 'SUPPORT_VERSION_CONFLICT',
   CONCURRENT_UPDATE: 'SUPPORT_CONCURRENT_UPDATE',
+  IDEMPOTENCY_KEY_INVALID: 'SUPPORT_IDEMPOTENCY_KEY_INVALID',
   IDEMPOTENCY_CONFLICT: 'SUPPORT_IDEMPOTENCY_CONFLICT',
   PERSISTENCE_DISABLED: 'SUPPORT_PERSISTENCE_DISABLED',
 } as const;
@@ -22,7 +23,8 @@ const SUPPORT_ERROR_MESSAGES: Record<string, string> = {
   [SupportErrorCode.TICKET_CLOSED]: 'Yêu cầu đã đóng. Vui lòng tạo yêu cầu mới nếu cần hỗ trợ thêm.',
   [SupportErrorCode.VERSION_CONFLICT]: 'Yêu cầu vừa có cập nhật mới. Hãy xem lại trao đổi rồi gửi lại.',
   [SupportErrorCode.CONCURRENT_UPDATE]: 'Yêu cầu vừa có cập nhật mới. Hãy xem lại trao đổi rồi gửi lại.',
-  [SupportErrorCode.IDEMPOTENCY_CONFLICT]: 'Yêu cầu trước đó đang được xử lý. Vui lòng thử lại sau giây lát.',
+  [SupportErrorCode.IDEMPOTENCY_KEY_INVALID]: 'Yêu cầu gửi không hợp lệ. Vui lòng bấm gửi lại.',
+  [SupportErrorCode.IDEMPOTENCY_CONFLICT]: 'Nội dung khác với lần gửi trước đó. Vui lòng bấm gửi lại.',
   [SupportErrorCode.PERSISTENCE_DISABLED]: 'Hệ thống hỗ trợ đang tạm ngưng. Vui lòng gọi hotline.',
 };
 
@@ -43,4 +45,10 @@ export function supportErrorMessage(error: unknown, fallback: string): string {
 export function isSupportConflict(error: unknown): boolean {
   const code = supportErrorCode(error);
   return code === SupportErrorCode.VERSION_CONFLICT || code === SupportErrorCode.CONCURRENT_UPDATE || code === SupportErrorCode.TICKET_CLOSED;
+}
+
+/** Khoá idempotency bị từ chối (400 sai định dạng / 409 đã dùng cho nội dung khác): lần gửi sau sinh khoá mới. */
+export function requiresFreshSupportIdempotencyKey(error: unknown): boolean {
+  const code = supportErrorCode(error);
+  return code === SupportErrorCode.IDEMPOTENCY_KEY_INVALID || code === SupportErrorCode.IDEMPOTENCY_CONFLICT;
 }

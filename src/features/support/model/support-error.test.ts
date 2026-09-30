@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import { ApiError } from '@/lib/api/fetcher';
-import { isSupportConflict, SupportErrorCode, supportErrorCode, supportErrorMessage } from './support-error';
+import {
+  isSupportConflict,
+  requiresFreshSupportIdempotencyKey,
+  SupportErrorCode,
+  supportErrorCode,
+  supportErrorMessage,
+} from './support-error';
 
 const err = (status: number, code?: string, message?: string) => new ApiError(status, { code, message });
 
@@ -44,5 +50,18 @@ describe('supportErrorCode / isSupportConflict', () => {
     expect(isSupportConflict(err(409, SupportErrorCode.CONCURRENT_UPDATE))).toBe(true);
     expect(isSupportConflict(err(409, SupportErrorCode.TICKET_CLOSED))).toBe(true);
     expect(isSupportConflict(err(404, SupportErrorCode.TICKET_NOT_FOUND))).toBe(false);
+  });
+});
+
+describe('requiresFreshSupportIdempotencyKey', () => {
+  it('KEY_INVALID và IDEMPOTENCY_CONFLICT buộc sinh khoá mới; lỗi khác giữ khoá để retry', () => {
+    expect(requiresFreshSupportIdempotencyKey(err(400, SupportErrorCode.IDEMPOTENCY_KEY_INVALID))).toBe(true);
+    expect(requiresFreshSupportIdempotencyKey(err(409, SupportErrorCode.IDEMPOTENCY_CONFLICT))).toBe(true);
+    expect(requiresFreshSupportIdempotencyKey(err(409, SupportErrorCode.VERSION_CONFLICT))).toBe(false);
+    expect(requiresFreshSupportIdempotencyKey(new Error('network'))).toBe(false);
+  });
+
+  it('SUPPORT_IDEMPOTENCY_KEY_INVALID có thông điệp tiếng Việt', () => {
+    expect(supportErrorMessage(err(400, SupportErrorCode.IDEMPOTENCY_KEY_INVALID), 'fb')).toContain('gửi lại');
   });
 });

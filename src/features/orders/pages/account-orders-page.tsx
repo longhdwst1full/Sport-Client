@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { ChevronLeft, ChevronRight, PackageSearch } from 'lucide-react';
 import { Spinner } from '@/foundation/components/feedback';
 import { useAccountOrders } from '../hooks/use-account-orders';
+import { GUEST_LOOKUP_ROUTE } from '../model/guest-order-lookup.constants';
 
 export function AccountOrdersPage() {
   const {
@@ -39,7 +40,10 @@ export function AccountOrdersPage() {
             <PackageSearch className="mx-auto size-12 text-slate-400" />
             <h2 className="mt-4 text-xl font-black">Đăng nhập để xem toàn bộ đơn hàng</h2>
             <p className="mt-2 text-sm text-slate-600">Khách mua không đăng nhập có thể mở đơn trực tiếp từ trang đặt hàng thành công.</p>
-            <Link href="/login" className="mt-5 inline-flex rounded-xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white">Đăng nhập</Link>
+            <div className="mt-5 flex flex-wrap justify-center gap-3">
+              <Link href="/login" className="inline-flex rounded-xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white">Đăng nhập</Link>
+              <Link href={GUEST_LOOKUP_ROUTE} className="inline-flex rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700">Tra cứu đơn bằng email</Link>
+            </div>
           </section>
         )}
         {isAuthenticated && isLoading && <div className="grid min-h-56 place-items-center"><Spinner className="size-8 animate-spin text-emerald-600" /></div>}

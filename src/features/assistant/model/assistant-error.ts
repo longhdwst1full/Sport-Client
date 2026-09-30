@@ -43,6 +43,7 @@ const ASSISTANT_ERROR_MESSAGES: Record<string, string> = {
   [AssistantErrorCode.CUSTOMER_PROFILE_REQUIRED]:
     'Tài khoản này chưa dùng được trợ lý (không phải tài khoản khách hàng hoặc đang bị khoá). Vui lòng liên hệ hotline.',
   [AssistantErrorCode.CONTENT_INVALID]: 'Tin nhắn chứa ký tự không hợp lệ. Vui lòng sửa lại rồi gửi.',
+  [AssistantErrorCode.ORDER_LOOKUP_TOKEN_INVALID]: 'Phiên tra cứu đơn không hợp lệ. Vui lòng tra cứu lại đơn bằng email rồi gửi lại.',
   [AssistantErrorCode.INVALID_BRANCH]: 'Chi nhánh đã chọn không còn hoạt động. Vui lòng tải lại trang rồi thử lại.',
   [AssistantErrorCode.CONVERSATION_CLOSED]: 'Cuộc trò chuyện đã kết thúc. Gửi lại để bắt đầu cuộc trò chuyện mới.',
   [AssistantErrorCode.CONVERSATION_NOT_FOUND]: 'Không tìm thấy cuộc trò chuyện. Gửi lại để bắt đầu cuộc trò chuyện mới.',
@@ -76,9 +77,21 @@ export function assistantErrorMessage(
  * SECURITY: `sessionKey` chỉ gửi cho khách ẩn danh; khách đăng nhập đi bằng bearer của `apiFetcher` (backend ưu tiên
  * bearer), không gửi kèm session key cũ để không trộn hai danh tính trên một request.
  */
-export function assistantRequestHeaders(sessionKey: string | null | undefined, idempotencyKey?: string): Record<string, string> {
+export function assistantRequestHeaders(
+  sessionKey: string | null | undefined,
+  idempotencyKey?: string,
+  orderLookupToken?: string | null,
+): Record<string, string> {
   const headers: Record<string, string> = {};
   if (sessionKey) headers[ASSISTANT_HEADERS.SESSION] = sessionKey;
   if (idempotencyKey) headers[ASSISTANT_HEADERS.IDEMPOTENCY] = idempotencyKey;
+  // SECURITY: grant tra đơn chỉ đi qua header (không bao giờ trong nội dung tin nhắn) và chỉ cho khách ẩn danh —
+  // caller không truyền token khi đã đăng nhập (backend cũng bỏ qua nếu có bearer).
+  if (orderLookupToken) headers[ASSISTANT_HEADERS.ORDER_LOOKUP_TOKEN] = orderLookupToken;
   return headers;
+}
+
+/** Header grant tra đơn sai định dạng (400): bỏ grant đó để lần gửi sau không gửi lại. */
+export function isAssistantOrderLookupTokenInvalid(error: unknown): boolean {
+  return assistantErrorCode(error) === AssistantErrorCode.ORDER_LOOKUP_TOKEN_INVALID;
 }

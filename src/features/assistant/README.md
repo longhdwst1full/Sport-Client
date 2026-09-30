@@ -1,10 +1,10 @@
 # Storefront Assistant — maintenance note
 
-> **Document version:** 1.1.0
+> **Document version:** 1.2.0
 >
-> **Last updated:** 2026-09-29
+> **Last updated:** 2026-09-30
 >
-> **Change summary:** "Thêm vào giỏ" dùng `productId`/`variantId` của thẻ (bỏ lời gọi Catalog và cạnh `catalog`), chỉ khi biến thể mặc định còn hàng thật và có giá; map thêm `ASSISTANT_CONTENT_INVALID`, `ASSISTANT_INVALID_BRANCH`, quota ẩn danh mời đăng nhập.
+> **Change summary:** Dòng giỏ dùng `productType` của thẻ; khách ẩn danh gửi grant tra đơn OTP qua header `x-order-lookup-token` (không bao giờ trong nội dung) và được gợi ý tra cứu đơn khi hỏi về đơn; map `ASSISTANT_ORDER_LOOKUP_TOKEN_INVALID`.
 
 ## Phạm vi
 
@@ -23,14 +23,14 @@
 | operationId | Dùng ở | Ghi chú |
 | --- | --- | --- |
 | `createChatConversation` | `use-assistant-chat.ts` | Gọi ở lần gửi đầu. Không có Idempotency-Key. Ẩn danh nhận `sessionKey` **một lần**. `branchId` chưa gửi (Storefront chưa có chi nhánh đang xem). |
-| `sendChatMessage` | `use-assistant-chat.ts` | `requestOptions: true` để gửi `idempotency-key` và `x-assistant-session`. Trả `{conversation, userMessage, assistantMessage, handoffSuggested}`. |
+| `sendChatMessage` | `use-assistant-chat.ts` | `requestOptions: true` để gửi `idempotency-key`, `x-assistant-session` và (khách ẩn danh có grant) `x-order-lookup-token`. Trả `{conversation, userMessage, assistantMessage, handoffSuggested}`. |
 | `listChatMessages` | `use-assistant-chat.ts` | `useListChatMessages(id, {limit: 30})`; header session qua `request`. Chỉ trang mới nhất. |
 | `submitChatMessageFeedback` | `use-assistant-chat.ts` | Ghi một lần; UI khoá nút sau khi đã có `feedback`. |
 | `createSupportRequest` | qua `features/support` (`useCreateSupportRequest`) | Handoff: `subject` cố định + mô tả của khách + `conversationId`. |
 
 `assistant.mapper.ts` là nơi duy nhất đọc field của `ChatMessageDto`/`ChatCardDto`.
 
-"Thêm vào giỏ" (`model/assistant-quick-add.ts` + `use-assistant-quick-add.ts`): dòng giỏ dựng thẳng từ `productId` và biến thể mặc định `variantId` của thẻ. INVARIANT: nút chỉ hiện khi biến thể mặc định có trong `variants`, `inStock === true` (không nhận `null`), có giá > 0 và sản phẩm không báo hết hàng; còn lại chỉ có "Xem sản phẩm". CONTRACT: thẻ chưa có `productType` nên dòng giỏ ghi `STANDARD` (server cart chỉ dùng `variantId` + số lượng).
+"Thêm vào giỏ" (`model/assistant-quick-add.ts` + `use-assistant-quick-add.ts`): dòng giỏ dựng thẳng từ `productId` và biến thể mặc định `variantId` của thẻ. INVARIANT: nút chỉ hiện khi biến thể mặc định có trong `variants`, `inStock === true` (không nhận `null`), có giá > 0 và sản phẩm không báo hết hàng; còn lại chỉ có "Xem sản phẩm". Dòng giỏ mang `productType` (STANDARD/BUNDLE) của thẻ.
 
 ## State owner
 
@@ -45,6 +45,7 @@
 
 - SECURITY: khách đăng nhập đi bằng bearer của `apiFetcher` và không gửi `x-assistant-session`; ẩn danh gửi session key ở mọi lời gọi sau khi tạo hội thoại. Tài khoản không có hồ sơ khách (nhân viên) nhận 403 `ASSISTANT_CUSTOMER_PROFILE_REQUIRED`.
 - IDEMPOTENCY: khoá theo chữ ký `conversationId:content`. "Thử lại" cùng nội dung dùng lại khoá (server trả lại lượt gốc, không sinh lượt thứ hai sau timeout); nội dung mới sinh khoá mới. `ASSISTANT_TURN_IN_PROGRESS` / `IDEMPOTENCY_KEY_REUSED` thì bỏ khoá để lần sau dùng khoá mới.
+- SECURITY: grant tra đơn OTP (sessionStorage của `features/orders`) chỉ gửi qua header `x-order-lookup-token`, chỉ cho khách ẩn danh, đọc tại lúc gửi (grant còn hạn mới nhất của tab). Không bao giờ chèn token vào nội dung chat. 400 `ASSISTANT_ORDER_LOOKUP_TOKEN_INVALID` → bỏ grant đó. Khách ẩn danh hỏi về đơn (`assistant-order-intent.ts`) mà chưa có grant → gợi ý link `/orders/lookup`.
 - INVARIANT (D75): view model sản phẩm chỉ có `inStock` (còn/hết/không rõ), không có field số lượng; UI chỉ in "Còn hàng"/"Hết hàng".
 - Nội dung trợ lý render văn bản thuần (không HTML).
 
@@ -76,5 +77,6 @@ Chuyển nhân viên bắt buộc đăng nhập (V1.0): khách ẩn danh chỉ t
 
 | Version | Date | Change summary | Source |
 | --- | --- | --- | --- |
+| 1.2.0 | 2026-09-30 | `productType` vào dòng giỏ; grant tra đơn qua header; gợi ý tra cứu đơn. | feat/assistant-v1 (V1.1 guest lookup) |
 | 1.1.0 | 2026-09-29 | Thêm vào giỏ theo `productId`/`variantId` của thẻ, bỏ cạnh `catalog`; mã lỗi mới và quota ẩn danh. | feat/assistant-v1 review fixes |
 | 1.0.0 | 2026-09-29 | Tạo note cho widget Trợ lý mua sắm V1.0. | feat/assistant-v1 |

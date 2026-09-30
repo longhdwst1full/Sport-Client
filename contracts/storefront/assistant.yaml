@@ -70,6 +70,12 @@ paths:
           in: path
           schema:
             type: string
+        - name: x-order-lookup-token
+          in: header
+          description: Grant token tra đơn khách vãng lai (từ verifyGuestOrderLookup, base64url 32–128 ký tự). Chỉ dùng cho khách ẩn danh; gửi qua header, KHÔNG dán vào nội dung chat.
+          required: false
+          schema:
+            type: string
         - name: x-assistant-session
           in: header
           description: Session key nhận khi tạo hội thoại ẩn danh; bắt buộc với khách chưa đăng nhập
@@ -482,6 +488,10 @@ components:
           example: "1"
           nullable: true
           description: Biến thể mặc định (ứng với price) để thêm vào giỏ nhanh; null khi sản phẩm chưa có biến thể bán được
+        productType:
+          description: Loại sản phẩm theo Catalog; Storefront dùng để tạo đúng loại dòng giỏ (combo BUNDLE khác STANDARD)
+          allOf:
+            - $ref: ./_components.yaml#/components/schemas/ProductType
         slug:
           type: string
         name:
@@ -509,6 +519,7 @@ components:
       required:
         - productId
         - variantId
+        - productType
         - slug
         - name
         - brand

@@ -6,8 +6,10 @@ import { useCustomerAuth } from '@/features/auth';
 import {
   getAccountOrder,
   getGetAccountOrderQueryKey,
+  getGetGuestOrderByLookupQueryKey,
   getGetGuestOrderQueryKey,
   getGuestOrder,
+  getGuestOrderByLookup,
 } from '@/generated/api/orders/orders';
 import { toOrderDetailView } from '../model/order.mapper';
 import {
@@ -17,10 +19,16 @@ import {
   statusIn,
 } from '../model/order.constants';
 import { readGuestOrderAccessToken, retireGuestOrderAccessToken } from '../model/guest-order-access.store';
+import { clearGuestOrderLookupGrant, readGuestOrderLookupGrant } from '../model/guest-order-lookup.store';
+import { isGuestLookupTokenInvalid } from '../model/guest-order-lookup-error';
+
+/** Đường truy cập đơn: tài khoản, mã truy cập của trình duyệt đã đặt, hoặc grant tra cứu OTP email (chỉ xem). */
+export type OrderAccessMode = 'account' | 'guest-cart' | 'lookup' | 'none';
 
 /**
  * Tải đơn theo đúng đường truy cập: khách đã đăng nhập dùng API tài khoản, khách vãng lai dùng mã truy cập
- * lưu trên trình duyệt đã đặt đơn. Mã truy cập vãng lai bị thu hồi khi đơn sang trạng thái kết thúc.
+ * lưu trên trình duyệt đã đặt đơn; không có mã đó thì dùng grant tra cứu OTP email (sessionStorage, 30 phút).
+ * Mã truy cập vãng lai bị thu hồi khi đơn sang trạng thái kết thúc.
  */
 export function useOrderDetail(orderNo: string) {
   const { isAuthenticated, isLoaded } = useCustomerAuth();
@@ -32,14 +40,43 @@ export function useOrderDetail(orderNo: string) {
     [isAuthenticated, isLoaded, orderNo],
   );
 
+  // SECURITY: grant OTP chỉ dùng khi là khách vãng lai và trình duyệt không có mã truy cập của đơn; mã truy cập (có quyền
+  // thanh toán/huỷ) luôn được ưu tiên. Grant chỉ cho XEM đơn.
+  const lookupGrant = useMemo(
+    () => (isLoaded && !isAuthenticated && !guestToken ? readGuestOrderLookupGrant(orderNo) : null),
+    [isAuthenticated, isLoaded, guestToken, orderNo],
+  );
+  const accessMode: OrderAccessMode = isAuthenticated
+    ? 'account'
+    : guestToken
+      ? 'guest-cart'
+      : lookupGrant
+        ? 'lookup'
+        : 'none';
+
   const orderQuery = useQuery({
-    queryKey: isAuthenticated ? getGetAccountOrderQueryKey(orderNo) : getGetGuestOrderQueryKey(orderNo),
-    enabled: isLoaded && (isAuthenticated || Boolean(guestToken)),
+    queryKey:
+      accessMode === 'account'
+        ? getGetAccountOrderQueryKey(orderNo)
+        : accessMode === 'lookup'
+          ? getGetGuestOrderByLookupQueryKey(orderNo)
+          : getGetGuestOrderQueryKey(orderNo),
+    enabled: isLoaded && accessMode !== 'none',
     retry: false,
-    queryFn: ({ signal }) => isAuthenticated
-      ? getAccountOrder(orderNo, undefined, signal)
-      : getGuestOrder(orderNo, { headers: { 'x-cart-token': guestToken } }, signal),
+    queryFn: ({ signal }) => {
+      if (accessMode === 'account') return getAccountOrder(orderNo, undefined, signal);
+      if (accessMode === 'lookup' && lookupGrant) {
+        return getGuestOrderByLookup(orderNo, { headers: { 'x-order-lookup-token': lookupGrant.lookupToken } }, signal);
+      }
+      return getGuestOrder(orderNo, { headers: { 'x-cart-token': guestToken } }, signal);
+    },
   });
+
+  const lookupExpired = accessMode === 'lookup' && orderQuery.isError && isGuestLookupTokenInvalid(orderQuery.error);
+  useEffect(() => {
+    // Grant hết hạn/bị thu hồi: dọn sessionStorage (hệ thống ngoài React) để lần sau không gửi lại token chết.
+    if (lookupExpired) clearGuestOrderLookupGrant(orderNo);
+  }, [lookupExpired, orderNo]);
 
   const order = orderQuery.data;
 
@@ -51,9 +88,11 @@ export function useOrderDetail(orderNo: string) {
 
   const view = useMemo(() => (order ? toOrderDetailView(order) : undefined), [order]);
 
-  const canCancel = order?.status === 'PENDING_CONFIRMATION'
+  // Grant tra cứu chỉ cho xem: không huỷ/thanh toán qua đường này (API huỷ/thanh toán của khách cần `x-cart-token`).
+  const canCancel = accessMode !== 'lookup'
+    && order?.status === 'PENDING_CONFIRMATION'
     && statusIn(CANCELLABLE_PAYMENT_STATUSES, order.paymentStatus)
     && order.fulfillmentStatus === FULFILLMENT_STATUS.PENDING;
 
-  return { isAuthenticated, isLoaded, guestToken, orderQuery, order, view, canCancel };
+  return { isAuthenticated, isLoaded, guestToken, accessMode, lookupGrant, lookupExpired, orderQuery, order, view, canCancel };
 }

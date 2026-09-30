@@ -15,3 +15,9 @@ export const LocalStorageKey = {
   /** Hội thoại trợ lý của khách ẩn danh: `conversationId` + `sessionKey` do server cấp. */
   ASSISTANT_SESSION: 'dctd-storefront-assistant-session-v1',
 } as const;
+
+/** Key sessionStorage: dữ liệu chỉ sống trong tab hiện tại, tự mất khi đóng tab. */
+export const SessionStorageKey = {
+  /** Grant tra cứu đơn khách vãng lai bằng OTP email: `{ [orderNo]: { lookupToken, expiresAt } }`. */
+  GUEST_ORDER_LOOKUP: 'dctd-storefront-guest-order-lookup-v1',
+} as const;

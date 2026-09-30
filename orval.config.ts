@@ -8,6 +8,8 @@ function operationOverrides(domain: string): Record<string, { requestOptions: bo
     return {
       cancelGuestOrder: { requestOptions: true },
       cancelAccountOrder: { requestOptions: true },
+      // Tra cứu đơn bằng OTP email: token grant đi qua header `x-order-lookup-token`.
+      getGuestOrderByLookup: { requestOptions: true },
     };
   }
   if (domain === 'payments') {
@@ -34,6 +36,7 @@ function operationOverrides(domain: string): Record<string, { requestOptions: bo
   if (domain === 'support') {
     return {
       createSupportRequest: { requestOptions: true },
+      addAccountSupportTicketMessage: { requestOptions: true },
     };
   }
   return {};

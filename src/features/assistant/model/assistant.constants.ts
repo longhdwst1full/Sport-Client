@@ -20,12 +20,15 @@ export const AssistantErrorCode = {
   SESSION_REQUIRED: 'ASSISTANT_SESSION_REQUIRED',
   IDEMPOTENCY_KEY_REUSED: 'IDEMPOTENCY_KEY_REUSED',
   TURN_IN_PROGRESS: 'ASSISTANT_TURN_IN_PROGRESS',
+  ORDER_LOOKUP_TOKEN_INVALID: 'ASSISTANT_ORDER_LOOKUP_TOKEN_INVALID',
 } as const;
 
 export const ASSISTANT_HEADERS = {
   /** Session key của khách ẩn danh; khách đăng nhập dùng bearer của transport, không gửi header này. */
   SESSION: 'x-assistant-session',
   IDEMPOTENCY: 'idempotency-key',
+  /** Grant tra đơn khách vãng lai (OTP email). Chỉ khách ẩn danh; KHÔNG bao giờ đưa vào nội dung chat. */
+  ORDER_LOOKUP_TOKEN: 'x-order-lookup-token',
 } as const;
 
 export const ASSISTANT_HANDOFF_SUBJECT = 'Chuyển nhân viên từ trợ lý mua sắm';
@@ -43,6 +46,8 @@ export const ASSISTANT_COPY = {
   handoff: 'Chuyển nhân viên',
   handoffSuggested: 'Trợ lý chưa trả lời được câu này. Bạn có muốn chuyển cho nhân viên?',
   handoffLoginRequired: 'Vui lòng đăng nhập để chuyển yêu cầu cho nhân viên — phiếu hỗ trợ gắn với tài khoản của bạn.',
+  orderLookupHint: 'Để trợ lý xem được đơn của bạn khi chưa đăng nhập, hãy xác thực đơn bằng email trước.',
+  orderLookupLink: 'Tra cứu đơn bằng email',
   handedOff: 'Cuộc trò chuyện đã được chuyển cho nhân viên. Theo dõi phản hồi trong mục Hỗ trợ của tôi.',
   inStock: 'Còn hàng',
   outOfStock: 'Hết hàng',

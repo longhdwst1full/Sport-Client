@@ -169,6 +169,12 @@ paths:
           in: path
           schema:
             type: string
+        - name: idempotency-key
+          in: header
+          description: 8-120 ký tự; giữ nguyên khi retry cùng lệnh
+          required: true
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -183,7 +189,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/AccountSupportTicketDetailDto"
         "400":
-          description: ""
+          description: SUPPORT_IDEMPOTENCY_KEY_INVALID
           content:
             application/json:
               schema:
@@ -201,7 +207,7 @@ paths:
               schema:
                 $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
         "409":
-          description: SUPPORT_TICKET_CLOSED, SUPPORT_VERSION_CONFLICT
+          description: SUPPORT_TICKET_CLOSED, SUPPORT_VERSION_CONFLICT, SUPPORT_IDEMPOTENCY_CONFLICT
           content:
             application/json:
               schema:

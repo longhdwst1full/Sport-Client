@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCustomerAuth } from '@/features/auth';
+import { clearGuestOrderLookupGrant, readLatestGuestOrderLookupGrant } from '@/features/orders';
 import {
   createChatConversation,
   getListChatMessagesQueryKey,
@@ -26,11 +27,13 @@ import {
 import {
   assistantRequestHeaders,
   isAssistantConversationGone,
+  isAssistantOrderLookupTokenInvalid,
   isAssistantUnavailable,
   requiresFreshIdempotencyKey,
 } from '../model/assistant-error';
 import { resolveIdempotencyEntry, type AssistantIdempotencyEntry } from '../model/assistant-idempotency';
 import type { AssistantFeedback } from '../model/assistant.types';
+import { mentionsOrder } from '../model/assistant-order-intent';
 
 /** Tin khách vừa gửi, hiển thị ngay trong lúc chờ trợ lý trả lời hoặc khi gửi lỗi. */
 export type PendingAssistantMessage = { content: string; error: unknown | null };
@@ -107,6 +110,14 @@ export function useAssistantChat({ enabled }: { enabled: boolean }) {
 
   const messages = useMemo(() => history.data?.items.map(toAssistantMessageView) ?? [], [history.data]);
 
+  // Grant tra đơn OTP của tab (sessionStorage). Đọc lại mỗi khi mở panel/đổi phiên/sau lỗi token.
+  const [grantRevision, setGrantRevision] = useState(0);
+  const orderLookupGrant = useMemo(
+    () => (isAuthenticated ? null : readLatestGuestOrderLookupGrant()),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [isAuthenticated, enabled, grantRevision],
+  );
+
   const sendTurn = useMutation<SendChatMessageResponseDto, unknown, string>({
     retry: false,
     mutationFn: async (content) => {
@@ -132,8 +143,11 @@ export function useAssistantChat({ enabled }: { enabled: boolean }) {
       idempotencyRef.current = resolveIdempotencyEntry(idempotencyRef.current, targetId, content, () =>
         crypto.randomUUID(),
       );
+      // SECURITY: grant tra đơn chỉ gửi qua header `x-order-lookup-token`, chỉ khi khách ẩn danh; đọc tại thời điểm
+      // gửi để lấy grant mới nhất (khách có thể vừa xác thực đơn ở tab này). Không bao giờ chèn vào `content`.
+      const lookupToken = isAuthenticated ? null : readLatestGuestOrderLookupGrant()?.lookupToken ?? null;
       return sendChatMessage(targetId, { content }, {
-        headers: assistantRequestHeaders(targetSessionKey, idempotencyRef.current.key),
+        headers: assistantRequestHeaders(targetSessionKey, idempotencyRef.current.key, lookupToken),
       });
     },
     onSuccess: (response) => {
@@ -148,6 +162,12 @@ export function useAssistantChat({ enabled }: { enabled: boolean }) {
     onError: (error, content) => {
       if (requiresFreshIdempotencyKey(error)) idempotencyRef.current = undefined;
       if (isAssistantConversationGone(error)) forgetConversation();
+      if (isAssistantOrderLookupTokenInvalid(error)) {
+        // Grant sai định dạng: bỏ để lần "Thử lại" không gửi lại token hỏng.
+        const grant = readLatestGuestOrderLookupGrant();
+        if (grant) clearGuestOrderLookupGrant(grant.orderNo);
+        setGrantRevision((value) => value + 1);
+      }
       setPending({ content, error });
     },
   });
@@ -201,6 +221,11 @@ export function useAssistantChat({ enabled }: { enabled: boolean }) {
     isSending: sendTurn.isPending,
     isUnavailable,
     handoffSuggested: lastTurn?.handoffSuggested ?? false,
+    /** Khách ẩn danh hỏi về đơn mà tab chưa có grant tra cứu: mời xác thực đơn bằng email. */
+    suggestOrderLookup:
+      !isAuthenticated &&
+      !orderLookupGrant &&
+      mentionsOrder(pending?.content ?? [...messages].reverse().find((message) => message.role === 'USER')?.content),
     isHandedOff: lastTurn?.status === 'HANDED_OFF',
     send,
     discardPending: () => {
