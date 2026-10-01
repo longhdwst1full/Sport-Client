@@ -5,8 +5,8 @@ import type { TokenPairDto } from '@/generated/api/auth/auth.schemas';
 import { AUTH_REFRESH_LOCK_NAME, AUTH_REFRESH_PATH, AuthRefreshErrorCode } from './constants';
 
 /**
- * Xoay token trong `apiFetcher` ở transport BODY (refresh token JS đọc được), jsdom chạy tại
- * `http://localhost` — đúng môi trường local dev/E2E nơi lỗi cross-origin từng xảy ra.
+ * Xoay token trong `apiFetcher` ở transport BODY (refresh token JS đọc được). Browser luôn dùng
+ * same-origin; production/preview không được gọi thẳng API vì refresh cookie phải là first-party.
  */
 const SESSION_HINT_KEY = 'dctd.customer-session';
 
@@ -105,7 +105,7 @@ describe('apiFetcher — xoay token khi 401', () => {
     expect(ctx.store.readCustomerAuthTokens()?.refreshToken).toBe('refresh-2');
   });
 
-  it('refresh đi same-origin (baseURL rỗng) trên localhost như request thường', async () => {
+  it('refresh và request thường đều đi same-origin trên browser', async () => {
     const ctx = await setup([okRefresh]);
     ctx.store.saveCustomerAuthTokens(tokens('access-1', 'refresh-1'));
 
@@ -114,6 +114,21 @@ describe('apiFetcher — xoay token khi 401', () => {
     expect(window.location.hostname).toBe('localhost');
     expect(ctx.refreshCalls[0]?.baseURL).toBe('');
     expect(ctx.refreshCalls[0]?.withCredentials).toBe(true);
+    expect(ctx.resourceCalls.every((config) => config.baseURL === '')).toBe(true);
+  });
+
+  it('vẫn đi same-origin trên hostname production', async () => {
+    vi.stubGlobal('window', {
+      ...window,
+      location: { ...window.location, hostname: 'shop.example.com' },
+      dispatchEvent: window.dispatchEvent.bind(window),
+    });
+    const ctx = await setup([okRefresh]);
+    ctx.store.saveCustomerAuthTokens(tokens('access-1', 'refresh-1'));
+
+    await ctx.get();
+
+    expect(ctx.refreshCalls[0]?.baseURL).toBe('');
     expect(ctx.resourceCalls.every((config) => config.baseURL === '')).toBe(true);
   });
 

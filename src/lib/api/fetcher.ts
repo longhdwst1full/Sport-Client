@@ -34,17 +34,12 @@ export class ApiError<T = unknown> extends Error {
 }
 
 /**
- * Chạy trên trình duyệt tại localhost / 127.0.0.1 (local dev, Playwright E2E) thì đi same-origin
- * qua Next rewrite `/api/v1/:path*`, tránh CORS/trusted-origin của API deploy. Mọi môi trường khác
- * giữ nguyên `NEXT_PUBLIC_API_URL` — không đổi topology production.
+ * Browser luôn đi same-origin qua Next rewrite `/api/v1/:path*` để refresh cookie HttpOnly là
+ * first-party và không phụ thuộc CORS/cookie third-party. Server Component vẫn gọi API nội bộ
+ * trực tiếp bằng `NEXT_PUBLIC_API_URL`, tránh vòng qua public origin của Storefront.
  */
 export function resolveApiBaseURL(): string {
-  if (
-    typeof window !== 'undefined' &&
-    (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-  ) {
-    return '';
-  }
+  if (typeof window !== 'undefined') return '';
   return API_URL;
 }
 
@@ -119,7 +114,7 @@ async function refreshUnderLock(staleAccessToken: string | undefined): Promise<s
       throw new ApiError(401, { code: AuthRefreshErrorCode.MISSING });
     }
     try {
-      // Dùng chính `apiClient` để cùng baseURL same-origin trên localhost. Không đệ quy 401:
+      // Dùng chính `apiClient` để browser luôn cùng baseURL same-origin. Không đệ quy 401:
       // nhánh xoay token nằm trong `apiFetcher`, còn lời gọi này không đi qua `apiFetcher`.
       const { data } = await apiClient.post<TokenPairDto>(
         AUTH_REFRESH_PATH,
