@@ -1,3 +1,9 @@
+---
+paths:
+  - "src/core/**"
+  - "src/lib/**"
+---
+
 # Storefront core infrastructure
 
 `src/core` sở hữu hạ tầng trình duyệt dùng chung: storage, session. Transport nằm ở `src/lib/api` (adapter Orval), giống Admin — không tách đôi. Kế thừa `core/` của `dragon-web-v2` nhưng cắt gọn theo nhu cầu storefront.

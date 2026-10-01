@@ -1,3 +1,8 @@
+---
+paths:
+  - "src/features/**"
+---
+
 # Feature maintenance notes
 
 - Feature có nhiều page/component, Guest/Account flow, commerce invariant hoặc offline policy phải có `src/features/<feature>/README.md`.

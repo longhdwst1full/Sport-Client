@@ -1,3 +1,12 @@
+---
+paths:
+  - "document/**"
+  - "_docs/**"
+  - "_plans/**"
+  - "_features/**"
+  - "_prompts/**"
+---
+
 # Storefront document versioning
 
 > **Rule version:** 2.2.0

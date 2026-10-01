@@ -1,3 +1,10 @@
+---
+paths:
+  - "src/pwa/**"
+  - "src/features/cart/**"
+  - "src/features/checkout/**"
+---
+
 # Offline commerce UX
 
 - Show persistent connectivity state when offline behavior affects the current page.

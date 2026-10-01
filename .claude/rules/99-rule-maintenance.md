@@ -1,3 +1,9 @@
+---
+paths:
+  - ".claude/rules/**"
+  - ".agent/rules/**"
+---
+
 # Storefront rule maintenance
 
 Rules in `.agent/rules/` are authoritative; `.claude/rules/` is a byte-identical mirror.

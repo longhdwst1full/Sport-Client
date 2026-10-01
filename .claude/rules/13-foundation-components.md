@@ -1,3 +1,8 @@
+---
+paths:
+  - "src/foundation/**"
+---
+
 # Storefront foundation components
 
 `src/foundation` là tầng trình bày cấp thấp, không biết gì về commerce.

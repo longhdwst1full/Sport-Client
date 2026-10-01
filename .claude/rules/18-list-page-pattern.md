@@ -1,3 +1,9 @@
+---
+paths:
+  - "src/features/**"
+  - "src/app/**"
+---
+
 # Storefront list page pattern
 
 Áp dụng cho danh mục, tìm kiếm, tin tức, lịch sử đơn hàng.
