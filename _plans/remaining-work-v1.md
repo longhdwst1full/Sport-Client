@@ -1,10 +1,10 @@
 # Phương án cho phần việc còn lại
 
-> **Document version:** 2.4.0
+> **Document version:** 2.5.0
 >
-> **Last updated:** 2026-09-15
+> **Last updated:** 2026-10-02
 >
-> **Change summary:** Đóng R3 (quản lý khách hàng chạy dữ liệu thật). Còn R2 và R6.
+> **Change summary:** Cập nhật trạng thái 2026-10-02 (giữ lịch sử): R2 Return/Refund xong; banner, thư viện ảnh, template email (D90) xong; SMS/in-app bỏ và CMS-03 hoãn (D91); Serial/Warranty V2 ngoài phạm vi. Trước đó: Đóng R3 (quản lý khách hàng chạy dữ liệu thật). Còn R2 và R6.
 
 ## Cách đọc tài liệu này
 
@@ -12,6 +12,18 @@ Mọi mục "đã xong" ở đây đều được kiểm bằng mã nguồn ho�
 nhật, không dựa vào trí nhớ. Mục nào chưa kiểm được thì ghi rõ là **chưa kiểm chứng**.
 
 ---
+
+## Cập nhật trạng thái 2026-10-02
+
+Các mục R2/R6 bên dưới là trạng thái tại 2026-09-15, giữ làm lịch sử. Hiện tại (đã kiểm theo thư mục tính năng trong mã nguồn):
+
+- R2 Đổi trả - Kiểm tra - Hoàn tiền: **xong** (`api/src/modules/return`, `client/src/features/returns`, `admin/src/features/returns`; schema đã có model Return/Refund). Dòng kiểm chứng `grep ... → 0` bên dưới không còn đúng.
+- R6 Marketing trang chủ: banner (CMS-02) **xong** (`api/src/modules/cms/banners`, `client/src/features/home`).
+- Thư viện ảnh (MED-02/MED-03): **xong** (`api/src/modules/media`, `admin/src/features/media`).
+- Template email (NOT-02): **xong** qua tham số hệ thống (D90).
+- SMS / in-app: bỏ khỏi V1; CMS-03: hoãn (D91).
+- V2 Serial/Warranty: chủ dự án đưa ra khỏi phạm vi (theo chỉ đạo, chưa thấy ghi trong D-number); nhóm "Bảo hành" của R6 không còn thuộc kế hoạch.
+- R6 "Thông báo" và các mục "Việc lẻ" chưa được rà lại trong lần cập nhật này.
 
 ## Đã đóng kể từ bản 1.0.0
 
@@ -80,6 +92,7 @@ thuộc về shop; khách trả tiền mặt thì hoàn tiền mặt. Nhóm hàn
 
 | Version | Date | Change summary | Source |
 | --- | --- | --- | --- |
+| 2.5.0 | 2026-10-02 | Thêm mục cập nhật trạng thái; giữ nguyên nội dung cũ. | Rà soát mã nguồn 2026-10-02 |
 | 2.1.0 | 2026-09-15 | Mở sổ tồn kho Hà Nội; R1 hết chặn, chuyển sang chờ nhập tồn thật. | Quyết định của chủ dự án |
 | 2.0.0 | 2026-09-15 | Viết lại theo trạng thái kiểm chứng; đóng W1/W3; thêm VNPay, báo cáo, bán tại quầy; Sprint 6 thành khối chặn chính. | Rà soát mã nguồn + database |
 | 1.0.0 | 2026-09-14 | Chốt phương án cho 4 nhóm việc còn tồn. | Execution review |

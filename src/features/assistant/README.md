@@ -1,10 +1,10 @@
 # Storefront Assistant — maintenance note
 
-> **Document version:** 1.2.0
+> **Document version:** 1.2.1
 >
-> **Last updated:** 2026-09-30
+> **Last updated:** 2026-10-02
 >
-> **Change summary:** Dòng giỏ dùng `productType` của thẻ; khách ẩn danh gửi grant tra đơn OTP qua header `x-order-lookup-token` (không bao giờ trong nội dung) và được gợi ý tra cứu đơn khi hỏi về đơn; map `ASSISTANT_ORDER_LOOKUP_TOKEN_INVALID`.
+> **Change summary:** Sửa mô tả `ASSISTANT_TURN_IN_PROGRESS`: giữ khoá idempotency và chờ lượt gốc (tối đa 90 giây), không bỏ khoá. Trước đó: Dòng giỏ dùng `productType` của thẻ; khách ẩn danh gửi grant tra đơn OTP qua header `x-order-lookup-token` (không bao giờ trong nội dung) và được gợi ý tra cứu đơn khi hỏi về đơn; map `ASSISTANT_ORDER_LOOKUP_TOKEN_INVALID`.
 
 ## Phạm vi
 
@@ -44,7 +44,7 @@
 ## Security, idempotency và lỗi
 
 - SECURITY: khách đăng nhập đi bằng bearer của `apiFetcher` và không gửi `x-assistant-session`; ẩn danh gửi session key ở mọi lời gọi sau khi tạo hội thoại. Tài khoản không có hồ sơ khách (nhân viên) nhận 403 `ASSISTANT_CUSTOMER_PROFILE_REQUIRED`.
-- IDEMPOTENCY: khoá theo chữ ký `conversationId:content`. "Thử lại" cùng nội dung dùng lại khoá (server trả lại lượt gốc, không sinh lượt thứ hai sau timeout); nội dung mới sinh khoá mới. `ASSISTANT_TURN_IN_PROGRESS` / `IDEMPOTENCY_KEY_REUSED` thì bỏ khoá để lần sau dùng khoá mới.
+- IDEMPOTENCY: khoá theo chữ ký `conversationId:content`. "Thử lại" cùng nội dung dùng lại khoá (server trả lại lượt gốc, không sinh lượt thứ hai sau timeout); nội dung mới sinh khoá mới. `IDEMPOTENCY_KEY_REUSED` thì bỏ khoá để lần sau dùng khoá mới. `ASSISTANT_TURN_IN_PROGRESS` thì GIỮ nguyên khoá và chờ kết quả của lượt gốc (hỏi lại lịch sử định kỳ, tối đa `ASSISTANT_SEND_TIMEOUT_MS` = 90 giây), vì đổi khoá sẽ sinh lượt thứ hai và trừ quota lần nữa (`requiresFreshIdempotencyKey` trong `assistant-error.ts`).
 - SECURITY: grant tra đơn OTP (sessionStorage của `features/orders`) chỉ gửi qua header `x-order-lookup-token`, chỉ cho khách ẩn danh, đọc tại lúc gửi (grant còn hạn mới nhất của tab). Không bao giờ chèn token vào nội dung chat. 400 `ASSISTANT_ORDER_LOOKUP_TOKEN_INVALID` → bỏ grant đó. Khách ẩn danh hỏi về đơn (`assistant-order-intent.ts`) mà chưa có grant → gợi ý link `/orders/lookup`.
 - INVARIANT (D75): view model sản phẩm chỉ có `inStock` (còn/hết/không rõ), không có field số lượng; UI chỉ in "Còn hàng"/"Hết hàng".
 - Nội dung trợ lý render văn bản thuần (không HTML).
@@ -77,6 +77,7 @@ Chuyển nhân viên bắt buộc đăng nhập (V1.0): khách ẩn danh chỉ t
 
 | Version | Date | Change summary | Source |
 | --- | --- | --- | --- |
+| 1.2.1 | 2026-10-02 | Sửa: TURN_IN_PROGRESS giữ khoá idempotency và chờ lượt gốc (tối đa 90 giây). | commit b72d92a |
 | 1.2.0 | 2026-09-30 | `productType` vào dòng giỏ; grant tra đơn qua header; gợi ý tra cứu đơn. | feat/assistant-v1 (V1.1 guest lookup) |
 | 1.1.0 | 2026-09-29 | Thêm vào giỏ theo `productId`/`variantId` của thẻ, bỏ cạnh `catalog`; mã lỗi mới và quota ẩn danh. | feat/assistant-v1 review fixes |
 | 1.0.0 | 2026-09-29 | Tạo note cho widget Trợ lý mua sắm V1.0. | feat/assistant-v1 |
