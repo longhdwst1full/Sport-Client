@@ -23,11 +23,10 @@ const loadProduct = cache((slug: string) => getCatalogProduct(slug));
  * `ProductDetailDto` chỉ có tên danh mục chính, trong khi lọc sản phẩm liên quan cần slug.
  * Tra theo tên trong cây danh mục; không khớp hoặc API lỗi thì trả undefined (liên quan chung).
  */
-const loadCategorySlugByName = cache(async (name: string | undefined) => {
-  if (!name) return undefined;
+const loadCategories = cache(async () => {
   try {
     const { items } = await listCatalogCategories();
-    return items.find((item) => item.name === name)?.slug;
+    return items;
   } catch {
     return undefined;
   }
@@ -64,9 +63,12 @@ export default async function ProductDetailRoute({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  // Danh mục không phụ thuộc sản phẩm: tải song song thay vì chờ sản phẩm xong mới gọi.
+  // `loadCategories` không bao giờ reject nên lỗi của `loadProduct` vẫn đi đúng nhánh dưới.
+  const categoriesPromise = loadCategories();
   let product: Awaited<ReturnType<typeof getCatalogProduct>>;
   try {
-    product = await loadProduct(slug);
+    [product] = await Promise.all([loadProduct(slug), categoriesPromise]);
   } catch (error) {
     // Không còn fallback sang dữ liệu mẫu: hiển thị sản phẩm không tồn tại còn
     // tệ hơn báo lỗi, vì khách có thể đặt mua thứ cửa hàng không bán.
@@ -74,7 +76,10 @@ export default async function ProductDetailRoute({
     throw error;
   }
 
-  const relatedCategorySlug = await loadCategorySlugByName(product.primaryCategory);
+  const primaryCategory = product.primaryCategory;
+  const relatedCategorySlug = primaryCategory
+    ? (await categoriesPromise)?.find((item) => item.name === primaryCategory)?.slug
+    : undefined;
 
   return <ProductDetailPage product={product} slug={slug} relatedCategorySlug={relatedCategorySlug} />;
 }
