@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useFlashSale } from '@/features/promotions';
-import type { ContentPostView } from '@/features/content';
+import { BANNER_DEFAULT_CTA_TEXT, type BannerView, type ContentPostView } from '@/features/content';
 import { HeroSlider, type HeroSlide } from './hero-slider';
 import { HeroPromoCards } from './hero-promo-cards';
 
@@ -14,10 +14,30 @@ const MAX_POST_SLIDES = 3;
  * cùng chu kỳ ISR của `/`) và chiến dịch flash sale đang chạy (client, theo giờ server).
  * Bản trước đọc `MOCK_HERO_SLIDES` với mức giảm giá và quà tặng viết cứng. Không có gì để
  * hiển thị thì dùng một slide thương hiệu tĩnh, không kèm giá hay phần trăm.
+ *
+ * Banner CMS (HOME_HERO, `heroBanners`) và thẻ bên phải (HOME_PROMO, `promoBanners`) do server
+ * truyền xuống; có banner thì banner đứng đầu slider, không có thì slider/thẻ giữ nguyên như cũ.
  */
-export function HeroBannerSlider({ posts = [] }: { posts?: ContentPostView[] }) {
+export function HeroBannerSlider({
+  posts = [],
+  heroBanners = [],
+  promoBanners = [],
+}: {
+  posts?: ContentPostView[];
+  heroBanners?: BannerView[];
+  promoBanners?: BannerView[];
+}) {
   const { campaigns } = useFlashSale();
   const slides = useMemo<HeroSlide[]>(() => {
+    const bannerSlides: HeroSlide[] = heroBanners.map((banner) => ({
+      id: `banner-${banner.id}`,
+      title: banner.title,
+      subtitle: banner.subtitle,
+      ctaText: banner.ctaText ?? BANNER_DEFAULT_CTA_TEXT,
+      ctaLink: banner.targetUrl,
+      imageUrl: banner.desktopImageUrl,
+      mobileImageUrl: banner.mobileImageUrl,
+    }));
     // Bài viết đứng trước để slide đầu tiên của HTML SSR không bị thay sau khi flash sale tải xong.
     const postSlides = posts
       .filter((post) => post.coverUrl)
@@ -54,9 +74,10 @@ export function HeroBannerSlider({ posts = [] }: { posts?: ContentPostView[] }) 
         'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?auto=format&fit=crop&w=1600&q=85',
     };
 
-    const all = [homeGymHeroSlide, ...campaignSlides, ...postSlides];
+    // Banner CMS là dữ liệu server nên đứng đầu cũng không làm slide đầu của HTML SSR bị thay.
+    const all = [...bannerSlides, homeGymHeroSlide, ...campaignSlides, ...postSlides];
     return all;
-  }, [posts, campaigns]);
+  }, [heroBanners, posts, campaigns]);
   const hasCampaign = campaigns.some((campaign) => campaign.deals.length > 0);
 
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -119,7 +140,7 @@ export function HeroBannerSlider({ posts = [] }: { posts?: ContentPostView[] }) 
           />
 
           {/* Right Side: 2 Stacked Campaign Banners (4 cols) */}
-          <HeroPromoCards />
+          <HeroPromoCards banners={promoBanners} />
         </div>
       </div>
     </section>

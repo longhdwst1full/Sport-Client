@@ -7,3 +7,7 @@ export { PolicyDetailPage } from './pages/policy-detail-page';
 export { ArticleDetailPage } from './pages/article-detail-page';
 export * from './model/content-post.mapper';
 export * from './model/policy.mapper';
+export * from './model/banner.mapper';
+export { loadActiveBanners } from './api/active-banners';
+export { BannerPicture } from './components/banner-picture';
+export { CategoryTopBanners } from './components/category-top-banners';

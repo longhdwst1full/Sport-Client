@@ -3,8 +3,10 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Breadcrumb } from '@/foundation/components/navigation';
 import { ProductShowcase } from '@/features/catalog';
+import { CategoryTopBanners, loadActiveBanners } from '@/features/content';
 import { listCatalogCategories } from '@/generated/api/catalog/catalog';
 import type { CatalogCategoryDto } from '@/generated/api/catalog/catalog.schemas';
+import { BannerPlacement } from '@/generated/api/content/content.schemas';
 import { buildPageMetadata } from '@/lib/seo/page-metadata';
 
 // ISR 2 phút: cây danh mục và số sản phẩm đổi trong ngày, không cần gọi API mỗi lượt xem.
@@ -56,9 +58,12 @@ export default async function CategoryDetailPage({
   const category = await loadCategory(slug);
   if (!category) notFound();
 
-  const parent = category.parentSlug
-    ? await loadCategory(category.parentSlug)
-    : undefined;
+  // GAP: `CatalogCategoryDto` công khai chưa có `id` nên chưa lọc được banner riêng của danh mục;
+  // tạm chỉ hiện banner CATEGORY_TOP áp cho mọi danh mục (API trả khi không gửi `categoryId`).
+  const [parent, topBanners] = await Promise.all([
+    category.parentSlug ? loadCategory(category.parentSlug) : Promise.resolve(undefined),
+    loadActiveBanners(BannerPlacement.CATEGORY_TOP),
+  ]);
 
   return (
     <>
@@ -88,6 +93,8 @@ export default async function CategoryDetailPage({
 
             <div className="pointer-events-none absolute -right-20 -top-20 size-80 rounded-full bg-emerald-500/10 blur-[100px]" />
           </div>
+
+          <CategoryTopBanners banners={topBanners} />
 
           <div className="mt-12">
             <div className="mb-6 border-b border-stone-200/80 pb-4">

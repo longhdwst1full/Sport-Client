@@ -1,10 +1,10 @@
 # Storefront Content — maintenance note
 
-> **Document version:** 2.1.0
+> **Document version:** 2.2.0
 >
-> **Last updated:** 2026-09-27
+> **Last updated:** 2026-10-02
 >
-> **Change summary:** Trang bài viết/chính sách chuyển sang ISR 5 phút + webhook `/api/revalidate`; ghi nhận lọc `postType` chạy trên toàn bộ tập (API không phân trang).
+> **Change summary:** Thêm banner CMS-02 (`listActiveBanners`): HOME_HERO/HOME_PROMO trên trang chủ, FOOTER trong layout, CATEGORY_TOP trên trang danh mục; không có banner thì giao diện giữ nguyên.
 
 ## Phạm vi
 
@@ -50,6 +50,14 @@ Chưa dùng: `getPublishedPost` (trang chi tiết `/news/[slug]`).
 - Client hooks dùng `CACHE_POLICY.LOOKUP` (không refetch khi quay lại tab).
 - Lọc theo loại bài (`postType`) và loại trang chính sách chạy trên client **trên toàn bộ danh sách**: `listPublishedPosts` không phân trang, nên kết quả đúng. Khi API thêm phân trang, phải chuyển bộ lọc sang tham số `postType` của API.
 
+## Banner (CMS-02)
+
+- Server-only: `api/active-banners.ts` (`loadActiveBanners(placement, categoryId?)`) gọi `listActiveBanners`, map qua `model/banner.mapper.ts` (`BannerView`). API lỗi → `[]`, nơi gọi giữ giao diện mặc định.
+- Nơi dùng: `features/home` (HOME_HERO thành slide đứng đầu slider, HOME_PROMO thay hai thẻ bên phải, tối đa 2), `widgets/site-footer/footer-newsletter-banner.tsx` (FOOTER: dải banner đầu tiên phía trên khối nhận tin, khối nhận tin luôn giữ), `app/(storefront)/category/[slug]` (`CategoryTopBanners` trên lưới sản phẩm, không có thì không render).
+- Ảnh: `BannerPicture` (`next/image` `fill`; ảnh mobile dưới `md` nếu có). Host Cloudinary đã có trong `next.config` `remotePatterns`.
+- Cache: trang chủ ISR 300s; layout storefront đặt `revalidate = 300` vì footer đọc banner bằng Axios (không tự gắn ISR); trang danh mục giữ 120s.
+- GAP: `CatalogCategoryDto` công khai chưa có `id`, nên CATEGORY_TOP hiện chỉ lấy banner áp cho mọi danh mục (không gửi `categoryId`). Cần API bổ sung `id` (hoặc lọc theo slug) để hiện banner riêng từng danh mục.
+
 ## State owner
 
 TanStack Query. Không mirror dữ liệu bài viết vào Redux hay `useState`.
@@ -64,5 +72,6 @@ TanStack Query. Không mirror dữ liệu bài viết vào Redux hay `useState`.
 
 | Version | Date | Change summary |
 | --- | --- | --- |
+| 2.2.0 | 2026-10-02 | Banner CMS-02: loader server, mapper, `BannerPicture`, `CategoryTopBanners`; fallback giữ nguyên UI khi không có banner. |
 | 2.1.0 | 2026-09-27 | ISR 300s + `/api/revalidate` cho trang bài viết/chính sách; ghi nhận phạm vi lọc client. |
 | 1.0.0 | 2026-09-13 | Tạo note, ghi nhận CMS backend in-memory. |

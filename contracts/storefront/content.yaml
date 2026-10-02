@@ -75,8 +75,121 @@ paths:
       summary: Get a published post by slug
       tags:
         - Storefront Content
+  /api/v1/content/banners:
+    get:
+      description: Chỉ PUBLISHED và trong khung hiệu lực; sắp theo sortOrder, id; tối đa 50 banner, không phân trang.
+      operationId: listActiveBanners
+      parameters:
+        - name: placement
+          required: false
+          in: query
+          description: Bỏ trống = mọi vị trí.
+          schema:
+            $ref: "#/components/schemas/BannerPlacement"
+        - name: categoryId
+          required: false
+          in: query
+          description: Danh mục đang xem; trả banner CATEGORY_TOP của danh mục này và banner áp cho mọi danh mục.
+          schema:
+            pattern: ^[1-9][0-9]*$
+            example: "1"
+            type: string
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ActiveBannerListDto"
+        "400":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
+        "503":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
+      summary: Banner đang hiển thị theo vị trí (và danh mục với CATEGORY_TOP)
+      tags:
+        - Storefront Content
 components:
   schemas:
+    ActiveBannerDto:
+      type: object
+      properties:
+        id:
+          type: string
+          pattern: ^[1-9][0-9]*$
+          example: "1"
+        placement:
+          allOf:
+            - $ref: "#/components/schemas/BannerPlacement"
+        title:
+          type: string
+          nullable: true
+        subtitle:
+          type: string
+          nullable: true
+        ctaText:
+          type: string
+          nullable: true
+        targetUrl:
+          type: string
+          nullable: true
+        desktopImageUrl:
+          type: string
+        mobileImageUrl:
+          type: string
+          nullable: true
+        categoryId:
+          type: string
+          pattern: ^[1-9][0-9]*$
+          example: "1"
+          nullable: true
+        sortOrder:
+          type: number
+        startsAt:
+          type: string
+          format: date-time
+          nullable: true
+        endsAt:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+        - id
+        - placement
+        - title
+        - subtitle
+        - ctaText
+        - targetUrl
+        - desktopImageUrl
+        - mobileImageUrl
+        - categoryId
+        - sortOrder
+        - startsAt
+        - endsAt
+    ActiveBannerListDto:
+      type: object
+      properties:
+        items:
+          description: Không phân trang; tối đa 50 banner, sắp theo sortOrder rồi id.
+          type: array
+          items:
+            $ref: "#/components/schemas/ActiveBannerDto"
+      required:
+        - items
+    BannerPlacement:
+      type: string
+      enum:
+        - HOME_HERO
+        - HOME_PROMO
+        - FOOTER
+        - CATEGORY_TOP
     ContentPostDto:
       type: object
       properties:
