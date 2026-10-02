@@ -7,6 +7,7 @@ import { clearGuestOrderLookupGrant, readLatestGuestOrderLookupGrant } from '@/f
 import {
   createChatConversation,
   getListChatMessagesQueryKey,
+  listChatMessages,
   sendChatMessage,
   submitChatMessageFeedback,
   useListChatMessages,
@@ -18,7 +19,12 @@ import type {
   ListChatMessagesParams,
   SendChatMessageResponseDto,
 } from '@/generated/api/assistant/assistant.schemas';
-import { ASSISTANT_HISTORY_PAGE_SIZE, ASSISTANT_MESSAGE_MAX_LENGTH } from '../model/assistant.constants';
+import {
+  ASSISTANT_HISTORY_PAGE_SIZE,
+  ASSISTANT_MESSAGE_MAX_LENGTH,
+  ASSISTANT_SEND_TIMEOUT_MS,
+  ASSISTANT_TURN_POLL,
+} from '../model/assistant.constants';
 import { toAssistantMessageView } from '../model/assistant.mapper';
 import {
   anonymousAssistantSessionStore,
@@ -28,6 +34,7 @@ import {
   assistantRequestHeaders,
   isAssistantConversationGone,
   isAssistantOrderLookupTokenInvalid,
+  isAssistantTurnInProgress,
   isAssistantUnavailable,
   requiresFreshIdempotencyKey,
 } from '../model/assistant-error';
@@ -50,6 +57,16 @@ function appendMessages(current: ChatMessageListDto | undefined, added: ChatMess
     items,
     meta: current?.meta ?? { limit: ASSISTANT_HISTORY_PAGE_SIZE, hasMore: false, nextCursor: null },
   };
+}
+
+function wait(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/** Trang mới nhất đã có câu trả lời cho tin USER cuối cùng (tin vừa gửi — widget chỉ gửi tuần tự từng tin). */
+function lastUserMessageAnswered(page: ChatMessageListDto): boolean {
+  const lastUser = page.items.map((item) => item.role).lastIndexOf('USER');
+  return lastUser >= 0 && page.items.slice(lastUser + 1).some((item) => item.role === 'ASSISTANT');
 }
 
 /**
@@ -146,9 +163,30 @@ export function useAssistantChat({ enabled }: { enabled: boolean }) {
       // SECURITY: grant tra đơn chỉ gửi qua header `x-order-lookup-token`, chỉ khi khách ẩn danh; đọc tại thời điểm
       // gửi để lấy grant mới nhất (khách có thể vừa xác thực đơn ở tab này). Không bao giờ chèn vào `content`.
       const lookupToken = isAuthenticated ? null : readLatestGuestOrderLookupGrant()?.lookupToken ?? null;
-      return sendChatMessage(targetId, { content }, {
-        headers: assistantRequestHeaders(targetSessionKey, idempotencyRef.current.key, lookupToken),
-      });
+      const headers = assistantRequestHeaders(targetSessionKey, idempotencyRef.current.key, lookupToken);
+      // Lượt chat (LLM + tool) dài hơn timeout 10 giây mặc định của transport; chỉ lời gọi này nới trần.
+      const submit = () => sendChatMessage(targetId, { content }, { headers, timeout: ASSISTANT_SEND_TIMEOUT_MS });
+      try {
+        return await submit();
+      } catch (error) {
+        if (!isAssistantTurnInProgress(error)) throw error;
+      }
+      // IDEMPOTENCY: lượt cùng khoá đang chạy (thường do lần gửi trước bị timeout phía client). Giữ khoá, hỏi lại lịch
+      // sử tới khi tin USER cuối đã có câu trả lời (hoặc hết trần chờ), rồi gửi lại CÙNG khoá: API replay lượt gốc,
+      // hoặc chạy lại lượt kẹt — không sinh lượt thứ hai, không trừ quota lần nữa.
+      const deadline = Date.now() + ASSISTANT_TURN_POLL.MAX_WAIT_MS;
+      while (Date.now() < deadline) {
+        await wait(ASSISTANT_TURN_POLL.INTERVAL_MS);
+        try {
+          const page = await listChatMessages(targetId, HISTORY_PARAMS, {
+            headers: assistantRequestHeaders(targetSessionKey),
+          });
+          if (lastUserMessageAnswered(page)) break;
+        } catch {
+          // Lỗi tạm thời khi hỏi lịch sử: thử lại ở vòng sau, trần chờ vẫn giữ nguyên.
+        }
+      }
+      return submit();
     },
     onSuccess: (response) => {
       idempotencyRef.current = undefined;

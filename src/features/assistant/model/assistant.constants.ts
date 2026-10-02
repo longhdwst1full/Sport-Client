@@ -4,6 +4,21 @@ export const ASSISTANT_MESSAGE_MAX_LENGTH = 2000;
 export const ASSISTANT_HISTORY_PAGE_SIZE = 30;
 export const ASSISTANT_DIALOG_ID = 'assistant-chat-dialog';
 
+/**
+ * Một lượt chat gồm nhiều vòng LLM + tool (API: `ASSISTANT_LLM_TIMEOUT_MS` × số bước), dài hơn hẳn timeout 10 giây
+ * mặc định của `apiClient`. Chỉ lời gọi `sendChatMessage` dùng trần này.
+ */
+export const ASSISTANT_SEND_TIMEOUT_MS = 90_000;
+
+/**
+ * IDEMPOTENCY: lượt đang chạy (`ASSISTANT_TURN_IN_PROGRESS`) thì giữ nguyên khoá và hỏi lại lịch sử định kỳ; quá trần
+ * thì gửi lại đúng khoá đó (API replay lượt gốc, hoặc chạy lại lượt kẹt sau `TURN_REDRIVE_AFTER_MS` = 120 giây).
+ */
+export const ASSISTANT_TURN_POLL = {
+  INTERVAL_MS: 3_000,
+  MAX_WAIT_MS: 120_000,
+} as const;
+
 /** Mã lỗi ổn định của API Assistant (`api/src/modules/assistant/assistant.constants.ts`). */
 export const AssistantErrorCode = {
   UNAVAILABLE: 'ASSISTANT_UNAVAILABLE',

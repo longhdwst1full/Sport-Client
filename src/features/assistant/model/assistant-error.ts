@@ -27,12 +27,16 @@ export function isAssistantConversationGone(error: unknown): boolean {
 }
 
 /**
- * IDEMPOTENCY: lượt gốc chưa xong (`ASSISTANT_TURN_IN_PROGRESS`) hoặc khoá đã dùng cho nội dung khác
- * (`IDEMPOTENCY_KEY_REUSED`) — server yêu cầu client đổi khoá ở lần thử sau.
+ * IDEMPOTENCY: chỉ khoá đã dùng cho nội dung khác (`IDEMPOTENCY_KEY_REUSED`) mới phải đổi khoá. Lượt gốc chưa xong
+ * (`ASSISTANT_TURN_IN_PROGRESS`) thì GIỮ khoá: đổi khoá sẽ sinh lượt thứ hai và trừ quota lần nữa cho cùng một tin.
  */
 export function requiresFreshIdempotencyKey(error: unknown): boolean {
-  const code = assistantErrorCode(error);
-  return code === AssistantErrorCode.TURN_IN_PROGRESS || code === AssistantErrorCode.IDEMPOTENCY_KEY_REUSED;
+  return assistantErrorCode(error) === AssistantErrorCode.IDEMPOTENCY_KEY_REUSED;
+}
+
+/** 409 `ASSISTANT_TURN_IN_PROGRESS`: lượt cùng khoá đang chạy ở server. */
+export function isAssistantTurnInProgress(error: unknown): boolean {
+  return assistantErrorCode(error) === AssistantErrorCode.TURN_IN_PROGRESS;
 }
 
 const ASSISTANT_ERROR_MESSAGES: Record<string, string> = {
