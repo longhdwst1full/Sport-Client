@@ -8,6 +8,7 @@ import {
   isAssistantConversationGone,
   isAssistantOrderLookupTokenInvalid,
   isAssistantQuotaExceeded,
+  isAssistantTurnInProgress,
   isAssistantUnavailable,
   requiresFreshIdempotencyKey,
 } from './assistant-error';
@@ -88,9 +89,10 @@ describe('isAssistantConversationGone', () => {
 });
 
 describe('requiresFreshIdempotencyKey', () => {
-  it('TURN_IN_PROGRESS và IDEMPOTENCY_KEY_REUSED cần khoá mới', () => {
-    expect(requiresFreshIdempotencyKey(err(409, AssistantErrorCode.TURN_IN_PROGRESS))).toBe(true);
+  it('chỉ IDEMPOTENCY_KEY_REUSED cần khoá mới; TURN_IN_PROGRESS giữ khoá để chờ lượt gốc', () => {
     expect(requiresFreshIdempotencyKey(err(409, AssistantErrorCode.IDEMPOTENCY_KEY_REUSED))).toBe(true);
+    expect(requiresFreshIdempotencyKey(err(409, AssistantErrorCode.TURN_IN_PROGRESS))).toBe(false);
+    expect(isAssistantTurnInProgress(err(409, AssistantErrorCode.TURN_IN_PROGRESS))).toBe(true);
     expect(requiresFreshIdempotencyKey(err(500, 'OTHER'))).toBe(false);
   });
 });
