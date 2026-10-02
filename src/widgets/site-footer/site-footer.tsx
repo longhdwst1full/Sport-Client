@@ -73,7 +73,7 @@ export function SiteFooter() {
   return (
     <footer
       id="about"
-      className="border-t border-slate-800/80 bg-slate-950 px-4 py-14 text-white sm:px-6 lg:px-10"
+      className="border-t border-slate-800/80 bg-slate-950 px-4 py-10 sm:py-12 text-white sm:px-6 lg:px-10"
     >
       <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1.1fr] [&>*]:min-w-0">
         <div className="space-y-4">

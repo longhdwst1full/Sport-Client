@@ -9,9 +9,11 @@ import type { CatalogCategoryDto } from '@/generated/api/catalog/catalog.schemas
 import { listPublishedPosts } from '@/generated/api/content/content';
 import { ContentStories } from '@/features/content';
 import {
+  loadActiveBanners,
   POLICY_POST_TYPE,
   toContentPostView,
 } from '@/features/content';
+import { BannerPlacement } from '@/generated/api/content/content.schemas';
 import { ProductReviews } from '@/features/reviews';
 import { HeroBannerSlider } from '../components/hero-banner-slider';
 import { QuickGoalNavigation } from '../components/quick-goal-navigation';
@@ -61,10 +63,12 @@ async function loadShowcaseFirstPage() {
 }
 
 export async function HomePage() {
-  const [categories, heroPosts, showcase] = await Promise.all([
+  const [categories, heroPosts, showcase, heroBanners, promoBanners] = await Promise.all([
     loadCategories(),
     loadHeroPosts(),
     loadShowcaseFirstPage(),
+    loadActiveBanners(BannerPlacement.HOME_HERO),
+    loadActiveBanners(BannerPlacement.HOME_PROMO),
   ]);
   const categoryRail = categories.map(toCategoryRailView);
   const featuredProductSlug = showcase?.page.items[0]?.slug;
@@ -86,8 +90,8 @@ export async function HomePage() {
 
   return (
     <>
-      {/* 1. Hero: bài viết thật + flash sale đang chạy. */}
-      <HeroBannerSlider posts={heroPosts} />
+      {/* 1. Hero: banner CMS (nếu có) + bài viết thật + flash sale đang chạy. */}
+      <HeroBannerSlider posts={heroPosts} heroBanners={heroBanners} promoBanners={promoBanners} />
 
       {/* 2. Quick Goal Navigation: Bạn đang tìm thiết bị cho mục tiêu nào? */}
       <QuickGoalNavigation />
@@ -172,8 +176,9 @@ export async function HomePage() {
       {/* 10. Bằng chứng tin cậy & Hệ thống Showroom Bảo An Sport */}
       <TrustSocialProof />
 
-      {/* 11. Product Reviews */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
+      {/* 11. Product Reviews — `ProductReviews` trả null khi chưa có đánh giá; `empty:hidden` để
+          section rỗng không còn chiếm 128–160px padding trước footer. */}
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-14 empty:hidden">
         {featuredProductSlug ? <ProductReviews productSlug={featuredProductSlug} /> : null}
       </section>
 
@@ -185,7 +190,7 @@ export async function HomePage() {
 
       {/* 14. Content Stories — Chỉ hiển thị khi có bài viết thật */}
       {heroPosts.length > 0 && (
-        <section id="stories" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-24">
+        <section id="stories" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-10 sm:pb-12">
           <SectionHeading eyebrow="Kiến thức luyện tập" title="Bài viết mới" />
           <ContentStories initialPosts={heroPosts} />
         </section>
