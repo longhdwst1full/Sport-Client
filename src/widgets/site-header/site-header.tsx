@@ -5,15 +5,23 @@ import { useMegaMenuCategories } from '@/features/catalog';
 import Image from 'next/image';
 import { Phone } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
 import { useCartItems } from '@/features/cart';
 import { STORE_CONTACT } from '@/shared/constants';
 import { AutocompleteSearch } from './autocomplete-search';
 import { AnnouncementTicker } from './announcement-ticker';
 import { HeaderActions } from './header-actions';
 import { DesktopMegaMenu } from './desktop-mega-menu';
-import { MobileMenuDrawer } from './mobile-menu-drawer';
 import { useCustomerAuth } from '@/features/auth';
 import { useFlashSaleAvailability } from '@/features/promotions';
+import { preloadOnIdle } from '@/shared/hooks';
+
+// Drawer chỉ hiện sau khi bấm nút menu nên không cần trong bundle đầu trang; chunk được tải sẵn
+// lúc trình duyệt rảnh nên lần bấm đầu vẫn mở ngay như trước.
+const loadMobileMenuDrawer = () => import('./mobile-menu-drawer');
+const MobileMenuDrawer = dynamic(() => import('./mobile-menu-drawer').then((mod) => mod.MobileMenuDrawer), {
+  ssr: false,
+});
 
 export function SiteHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -24,6 +32,7 @@ export function SiteHeader() {
 
   useEffect(() => {
     setIsMounted(true);
+    return preloadOnIdle(loadMobileMenuDrawer);
   }, []);
 
   const cartItems = useCartItems();

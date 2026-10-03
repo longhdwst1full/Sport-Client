@@ -14,10 +14,16 @@ import {
   readPersistedCart,
   resetCartForSignOut,
 } from '@/features/cart';
-import { PwaRegistration } from '@/pwa/pwa-registration';
+import dynamic from 'next/dynamic';
 import { clearSessionPwaCaches } from '@/pwa/session-caches';
 
 import { GlobalToastProvider } from '@/shared/components/global-toast';
+
+// Đăng ký service worker và hai thanh trạng thái (ngoại tuyến/có bản mới) không hiện gì ở lượt
+// render đầu, nên tách khỏi bundle đầu trang và chỉ chạy ở client sau hydrate.
+const PwaRegistration = dynamic(() => import('@/pwa/pwa-registration').then((mod) => mod.PwaRegistration), {
+  ssr: false,
+});
 
 function readAuthenticatedSubject(): string | undefined {
   const accessToken = readCustomerAuthTokens()?.accessToken;
