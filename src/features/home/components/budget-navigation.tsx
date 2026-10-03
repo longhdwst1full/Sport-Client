@@ -1,5 +1,3 @@
-'use client';
-
 import Link from 'next/link';
 import { Banknote, ChevronRight, Tag, Sparkles, ArrowRight } from 'lucide-react';
 

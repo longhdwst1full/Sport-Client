@@ -1,5 +1,3 @@
-'use client';
-
 import Link from 'next/link';
 import { Award, CheckCircle2, Clock, MapPin, Phone, ShieldCheck, Star } from 'lucide-react';
 import { STORE_CONTACT, STORE_SHOWROOMS } from '@/shared/constants';

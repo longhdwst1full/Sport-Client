@@ -1,5 +1,3 @@
-'use client';
-
 import Link from 'next/link';
 import { Building2, Dumbbell, Flame, Home, MoveUpRight, Sparkles } from 'lucide-react';
 
