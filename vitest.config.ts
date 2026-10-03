@@ -9,6 +9,6 @@ export default defineConfig({
     pool: 'threads',
     // `e2e/` là bộ Playwright, chạy bằng `yarn e2e`. Vitest nạp nó sẽ hỏng vì
     // `@playwright/test` không phải runner của Vitest.
-    exclude: ['node_modules/**', 'dist/**', '.next/**', 'e2e/**', '.agents/**'],
+    exclude: ['node_modules/**', 'dist/**', '.next/**', 'e2e/**', '.agents/**', '.claude/**'],
   },
 });
