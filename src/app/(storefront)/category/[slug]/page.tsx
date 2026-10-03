@@ -53,16 +53,18 @@ export default async function CategoryDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  // GAP: `CatalogCategoryDto` công khai chưa có `id` nên chưa lọc được banner riêng của danh mục;
+  // tạm chỉ hiện banner CATEGORY_TOP áp cho mọi danh mục (API trả khi không gửi `categoryId`).
+  // Banner không phụ thuộc danh mục nên gọi song song với cây danh mục; hàm không bao giờ reject.
+  const topBannersPromise = loadActiveBanners(BannerPlacement.CATEGORY_TOP);
   // Slug không có trong cây danh mục là đường dẫn sai; dựng tiêu đề từ slug sẽ tạo ra
   // một trang danh mục không tồn tại và vẫn trả HTTP 200 cho công cụ tìm kiếm.
   const category = await loadCategory(slug);
   if (!category) notFound();
 
-  // GAP: `CatalogCategoryDto` công khai chưa có `id` nên chưa lọc được banner riêng của danh mục;
-  // tạm chỉ hiện banner CATEGORY_TOP áp cho mọi danh mục (API trả khi không gửi `categoryId`).
   const [parent, topBanners] = await Promise.all([
     category.parentSlug ? loadCategory(category.parentSlug) : Promise.resolve(undefined),
-    loadActiveBanners(BannerPlacement.CATEGORY_TOP),
+    topBannersPromise,
   ]);
 
   return (
