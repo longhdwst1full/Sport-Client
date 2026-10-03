@@ -1,10 +1,10 @@
 # Storefront Content — maintenance note
 
-> **Document version:** 2.2.0
+> **Document version:** 2.3.0
 >
-> **Last updated:** 2026-10-02
+> **Last updated:** 2026-10-03
 >
-> **Change summary:** Thêm banner CMS-02 (`listActiveBanners`): HOME_HERO/HOME_PROMO trên trang chủ, FOOTER trong layout, CATEGORY_TOP trên trang danh mục; không có banner thì giao diện giữ nguyên.
+> **Change summary:** Ảnh bìa bài viết qua `CoverImage` (rỗng/lỗi → ảnh thay thế dùng chung); og:image bài viết dùng bản JPEG 1200×630 của Cloudinary (`lib/seo/og-image.ts`). Trước đó: Thêm banner CMS-02 (`listActiveBanners`): HOME_HERO/HOME_PROMO trên trang chủ, FOOTER trong layout, CATEGORY_TOP trên trang danh mục; không có banner thì giao diện giữ nguyên.
 
 ## Phạm vi
 
@@ -58,6 +58,14 @@ Chưa dùng: `getPublishedPost` (trang chi tiết `/news/[slug]`).
 - Cache: trang chủ ISR 300s; layout storefront đặt `revalidate = 300` vì footer đọc banner bằng Axios (không tự gắn ISR); trang danh mục giữ 120s.
 - GAP: `CatalogCategoryDto` công khai chưa có `id`, nên CATEGORY_TOP hiện chỉ lấy banner áp cho mọi danh mục (không gửi `categoryId`). Cần API bổ sung `id` (hoặc lọc theo slug) để hiện banner riêng từng danh mục.
 
+## Ảnh bìa
+
+- `components/cover-image.tsx` bọc `next/image`: `coverUrl` rỗng hoặc tải lỗi thì hiện `PRODUCT_PLACEHOLDER_IMAGE`; ảnh tải
+  được hiển thị y như cũ. Dùng ở danh sách tin, bài nổi bật, chi tiết bài, `ContentStories`, bài liên quan.
+- Host ảnh bìa: API chỉ nhận host thuộc `images.remotePatterns` của `next.config.ts` (400 `CMS_COVER_URL_NOT_ALLOWED`,
+  hằng `CMS_COVER_IMAGE_HOSTS` bên API). Thêm host thì sửa cả hai nơi.
+- og:image `/news/[slug]`: `toOgImageUrl` chèn `f_jpg,w_1200,h_630,c_fill` cho URL Cloudinary; URL khác giữ nguyên.
+
 ## State owner
 
 TanStack Query. Không mirror dữ liệu bài viết vào Redux hay `useState`.
@@ -72,6 +80,7 @@ TanStack Query. Không mirror dữ liệu bài viết vào Redux hay `useState`.
 
 | Version | Date | Change summary |
 | --- | --- | --- |
+| 2.3.0 | 2026-10-03 | `CoverImage` fallback ảnh bìa, og:image JPEG 1200×630 cho Cloudinary. |
 | 2.2.0 | 2026-10-02 | Banner CMS-02: loader server, mapper, `BannerPicture`, `CategoryTopBanners`; fallback giữ nguyên UI khi không có banner. |
 | 2.1.0 | 2026-09-27 | ISR 300s + `/api/revalidate` cho trang bài viết/chính sách; ghi nhận phạm vi lọc client. |
 | 1.0.0 | 2026-09-13 | Tạo note, ghi nhận CMS backend in-memory. |

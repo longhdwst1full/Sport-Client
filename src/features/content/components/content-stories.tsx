@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import Image from 'next/image';
+import { CoverImage } from './cover-image';
 import Link from 'next/link';
 import {
   ArrowRight,
@@ -106,7 +106,7 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
           >
             {/* Image Thumbnail */}
             <div className="relative min-h-[220px] overflow-hidden bg-slate-100 sm:min-h-[240px]">
-              <Image
+              <CoverImage
                 src={post.coverUrl}
                 alt={post.title}
                 fill

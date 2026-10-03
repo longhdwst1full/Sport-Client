@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import { CoverImage } from '../components/cover-image';
 import Link from 'next/link';
 import { ArrowLeft, CalendarDays, Clock, Share2 } from 'lucide-react';
 import { Breadcrumb } from '@/foundation/components/navigation';
@@ -68,7 +68,7 @@ export function ArticleDetailPage({
             {/* Cover Image */}
             {article.hasCover && (
               <div className="relative my-8 aspect-[16/9] overflow-hidden rounded-2xl bg-slate-100 shadow-xs">
-                <Image
+                <CoverImage
                   src={article.coverUrl}
                   alt={article.title}
                   fill

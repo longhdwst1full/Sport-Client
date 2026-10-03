@@ -211,6 +211,12 @@ components:
         coverUrl:
           type: string
           format: uri
+        coverAssetId:
+          type: string
+          pattern: ^[1-9][0-9]*$
+          example: "1"
+          nullable: true
+          description: Asset thư viện đang làm ảnh bìa; null khi ảnh bìa là URL ngoài thư viện.
         publishedAt:
           type: string
           format: date-time
@@ -239,6 +245,7 @@ components:
         - title
         - excerpt
         - coverUrl
+        - coverAssetId
         - publishedAt
         - status
         - version
@@ -282,6 +289,12 @@ components:
         coverUrl:
           type: string
           format: uri
+        coverAssetId:
+          type: string
+          pattern: ^[1-9][0-9]*$
+          example: "1"
+          nullable: true
+          description: Asset thư viện đang làm ảnh bìa; null khi ảnh bìa là URL ngoài thư viện.
         publishedAt:
           type: string
           format: date-time
@@ -304,6 +317,7 @@ components:
         - title
         - excerpt
         - coverUrl
+        - coverAssetId
         - publishedAt
         - status
         - version

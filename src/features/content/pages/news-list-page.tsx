@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
+import { CoverImage } from '../components/cover-image';
 import Link from 'next/link';
 import {
   BookOpen,
@@ -80,7 +80,7 @@ export function NewsListPage() {
           {featured && selectedCat === ALL_CATEGORY && (
             <div className="mt-10 overflow-hidden rounded-[36px] border border-stone-200/80 bg-white shadow-sm transition hover:shadow-lg lg:grid lg:grid-cols-[1.2fr_0.8fr]">
               <div className="relative min-h-[320px] lg:min-h-[420px]">
-                <Image
+                <CoverImage
                   src={featured.coverUrl}
                   alt={featured.title}
                   fill
@@ -158,7 +158,7 @@ export function NewsListPage() {
                 className="group flex flex-col overflow-hidden rounded-[28px] border border-stone-200/80 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl"
               >
                 <div className="relative aspect-[16/10] overflow-hidden bg-stone-100">
-                  <Image
+                  <CoverImage
                     src={item.coverUrl}
                     alt={item.title}
                     fill

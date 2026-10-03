@@ -1,5 +1,5 @@
 import React from 'react';
-import Image from 'next/image';
+import { CoverImage } from './cover-image';
 import Link from 'next/link';
 import { ArrowRight, CalendarDays, Clock } from 'lucide-react';
 import type { ContentPostView } from '../model/content-post.mapper';
@@ -38,7 +38,7 @@ export function ArticleRelatedPosts({ related }: { related: ContentPostView[] })
               className="relative aspect-[16/10] overflow-hidden bg-slate-100 block"
             >
               {item.coverUrl ? (
-                <Image
+                <CoverImage
                   src={item.coverUrl}
                   alt={item.title}
                   fill

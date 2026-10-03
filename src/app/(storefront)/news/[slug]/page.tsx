@@ -9,6 +9,7 @@ import {
 } from '@/features/content';
 import { getPublishedPost, listPublishedPosts } from '@/generated/api/content/content';
 import { ApiError } from '@/lib/api/fetcher';
+import { toOgImageUrl } from '@/lib/seo/og-image';
 import { buildPageMetadata } from '@/lib/seo/page-metadata';
 
 // ISR 5 phút thay cho render mỗi request: bài viết đổi trong ngày là cùng. Bài mới/sửa hiện ngay
@@ -53,7 +54,7 @@ export async function generateMetadata({
     description: post.excerpt,
     path: `/news/${post.slug}`,
     type: 'article',
-    images: post.coverUrl ? [post.coverUrl] : undefined,
+    images: post.coverUrl ? [toOgImageUrl(post.coverUrl)] : undefined,
     publishedTime: post.publishedAt,
   });
 }
