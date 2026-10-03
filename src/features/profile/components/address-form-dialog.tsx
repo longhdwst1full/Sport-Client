@@ -1,4 +1,6 @@
 import { X } from 'lucide-react';
+import { useRef } from 'react';
+import { useDialogA11y } from '@/foundation/components/overlay/use-dialog-a11y';
 import { VietnamAddressSelector, type SelectedAddressData } from '@/features/address';
 import type { AddressView } from '../model/address.mapper';
 
@@ -19,8 +21,8 @@ interface AddressFormDialogProps {
 
 /**
  * Add/edit address modal. Kept as its pre-existing markup rather than foundation's Modal
- * primitive — that primitive adds backdrop-click-close and dialog/aria-modal semantics this
- * dialog does not have today, so swapping it in would change behavior.
+ * primitive — that primitive adds backdrop-click-close, which would discard a half-filled form on a
+ * stray click. Dialog semantics, Escape, focus trap/restore come from `useDialogA11y` instead.
  */
 export function AddressFormDialog({
   editingAddress,
@@ -36,16 +38,27 @@ export function AddressFormDialog({
   onClose,
   onSubmit,
 }: AddressFormDialogProps) {
+  const dialogRef = useRef<HTMLDivElement | null>(null);
+  useDialogA11y(dialogRef, { onClose, disableClose: addressMutating, trapFocus: true });
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="w-full max-w-2xl rounded-[32px] border border-slate-200/80 bg-white p-6 shadow-2xl sm:p-8">
+      <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="address-form-dialog-title"
+        tabIndex={-1}
+        className="w-full max-w-2xl rounded-[32px] border border-slate-200/80 bg-white p-6 shadow-2xl sm:p-8 outline-none"
+      >
         <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-          <h3 className="text-lg font-black text-slate-900">
+          <h3 id="address-form-dialog-title" className="text-lg font-black text-slate-900">
             {editingAddress ? 'Chỉnh sửa địa chỉ' : 'Thêm địa chỉ nhận hàng mới'}
           </h3>
           <button
             type="button"
             onClick={onClose}
+            aria-label="Đóng"
             className="rounded-xl p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
           >
             <X className="size-5" />

@@ -1,4 +1,6 @@
 import { AlertTriangle, X } from 'lucide-react';
+import { useRef } from 'react';
+import { useDialogA11y } from '@/foundation/components/overlay/use-dialog-a11y';
 import { Button } from '@/foundation/components/buttons';
 import { Spinner } from '@/foundation/components/feedback';
 import type { useCancelOrder } from '../../hooks/use-cancel-order';
@@ -26,16 +28,26 @@ export function OrderCancelDialog({
   cancel: ReturnType<typeof useCancelOrder>['cancel'];
   closeCancel: () => void;
 }) {
+  const dialogRef = useRef<HTMLDivElement | null>(null);
+  useDialogA11y(dialogRef, { onClose: closeCancel, disableClose: cancel.isPending, trapFocus: true });
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-fade-in">
-      <div className="relative w-full max-w-lg rounded-3xl border border-slate-100 bg-white p-6 sm:p-7 shadow-2xl animate-fade-in-up">
+      <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="order-cancel-dialog-title"
+        tabIndex={-1}
+        className="relative w-full max-w-lg rounded-3xl border border-slate-100 bg-white p-6 sm:p-7 shadow-2xl animate-fade-in-up outline-none"
+      >
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className="grid size-11 place-items-center rounded-2xl bg-rose-100 text-rose-600">
               <AlertTriangle className="size-5.5" />
             </div>
             <div>
-              <h2 className="text-base font-black text-slate-900">Xác nhận hủy đơn hàng</h2>
+              <h2 id="order-cancel-dialog-title" className="text-base font-black text-slate-900">Xác nhận hủy đơn hàng</h2>
               <p className="font-mono text-xs text-slate-500">#{orderNo}</p>
             </div>
           </div>
@@ -43,6 +55,7 @@ export function OrderCancelDialog({
             type="button"
             onClick={closeCancel}
             disabled={cancel.isPending}
+            aria-label="Đóng"
             className="rounded-xl p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition"
           >
             <X className="size-5" />

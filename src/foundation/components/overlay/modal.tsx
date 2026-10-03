@@ -24,7 +24,7 @@ export function Modal({
   children: ReactNode;
 }) {
   const dialogRef = useRef<HTMLElement | null>(null);
-  useDialogA11y(dialogRef, { onClose, disableClose });
+  useDialogA11y(dialogRef, { onClose, disableClose, trapFocus: true });
 
   return (
     <div

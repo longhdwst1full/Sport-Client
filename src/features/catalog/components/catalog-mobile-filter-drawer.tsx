@@ -38,6 +38,7 @@ export function CatalogMobileFilterDrawer({
   return (
     <Drawer
       onClose={onClose}
+      ariaLabel="Bộ lọc tìm kiếm"
       backdropClassName="fixed inset-0 z-50 flex items-end bg-slate-950/60 backdrop-blur-xs lg:hidden animate-in fade-in duration-200"
       className="flex max-h-[85vh] w-full flex-col rounded-t-[32px] bg-white p-6 shadow-2xl animate-in slide-in-from-bottom duration-200"
     >

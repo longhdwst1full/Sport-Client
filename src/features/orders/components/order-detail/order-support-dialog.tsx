@@ -1,4 +1,6 @@
 import { Headphones, MessageCircle, Phone, X } from 'lucide-react';
+import { useRef } from 'react';
+import { useDialogA11y } from '@/foundation/components/overlay/use-dialog-a11y';
 
 /** Kênh hỗ trợ theo đơn (gọi tổng đài, email kèm mã đơn) và nút chép mã đơn để đọc khi gọi. */
 export function OrderSupportDialog({
@@ -12,22 +14,33 @@ export function OrderSupportDialog({
   onCopyOrderNo: (code: string) => void;
   onClose: () => void;
 }) {
+  const dialogRef = useRef<HTMLDivElement | null>(null);
+  useDialogA11y(dialogRef, { onClose, trapFocus: true });
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-fade-in">
-      <div className="relative w-full max-w-md rounded-3xl border border-slate-100 bg-white p-6 sm:p-7 shadow-2xl animate-fade-in-up">
+      <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="order-support-dialog-title"
+        tabIndex={-1}
+        className="relative w-full max-w-md rounded-3xl border border-slate-100 bg-white p-6 sm:p-7 shadow-2xl animate-fade-in-up outline-none"
+      >
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className="grid size-11 place-items-center rounded-2xl bg-emerald-100 text-emerald-700">
               <Headphones className="size-5.5" />
             </div>
             <div>
-              <h2 className="text-base font-black text-slate-900">Hỗ trợ đơn hàng #{orderNo}</h2>
+              <h2 id="order-support-dialog-title" className="text-base font-black text-slate-900">Hỗ trợ đơn hàng #{orderNo}</h2>
               <p className="text-xs text-slate-500">Bảo An Sport Support Center</p>
             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
+            aria-label="Đóng"
             className="rounded-xl p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition"
           >
             <X className="size-5" />

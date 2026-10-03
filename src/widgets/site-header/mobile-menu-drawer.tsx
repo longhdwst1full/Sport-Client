@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ChevronDown, ChevronRight, Dumbbell, MapPin, Phone, ShoppingBag, UserRound } from 'lucide-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import { useDialogA11y } from '@/foundation/components/overlay/use-dialog-a11y';
 import { STORE_CONTACT } from '@/shared/constants';
 import { AutocompleteSearch } from './autocomplete-search';
 import type { MegaMenuEntry } from '@/features/catalog';
@@ -25,9 +26,13 @@ export function MobileMenuDrawer({
   onClose,
 }: MobileMenuDrawerProps) {
   const [expandedMobileCat, setExpandedMobileCat] = useState<string | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  // Non-modal: the header toggle stays reachable, so no focus trap; focus the container (not the
+  // search input) to avoid popping the mobile keyboard.
+  useDialogA11y(containerRef, { onClose, initialFocus: 'container' });
 
   return (
-    <>
+    <div ref={containerRef} role="dialog" aria-label="Menu di động" tabIndex={-1} className="outline-none">
       {/* Backdrop */}
       <div
         className="fixed inset-0 top-[110px] z-40 bg-slate-950/60 backdrop-blur-sm lg:hidden animate-in fade-in duration-200"
@@ -223,6 +228,6 @@ export function MobileMenuDrawer({
           </div>
         </div>
       </nav>
-    </>
+    </div>
   );
 }
