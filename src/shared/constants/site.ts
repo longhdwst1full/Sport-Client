@@ -6,7 +6,7 @@
  * trong JSON-LD làm công cụ tìm kiếm gom nhầm trang.
  */
 export const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL ?? 'https://baoansport.vn'
+  process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.baoansport.click'
 ).replace(/\/$/, '');
 
 export function siteUrl(path = ''): string {
