@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 import { SITE_NAME, SITE_URL } from '@/lib/seo/page-metadata';
+import { serializeJsonLd } from '@/lib/seo/json-ld';
 import { Providers } from './providers';
 import './globals.css';
 
@@ -150,7 +151,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
       <body suppressHydrationWarning>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
         />
         <Providers>{children}</Providers>
       </body>

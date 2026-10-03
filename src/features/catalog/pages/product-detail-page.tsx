@@ -15,6 +15,7 @@ import { ProductReviewSection } from '@/features/reviews';
 import type { ProductDetailDto } from '@/generated/api/catalog/catalog.schemas';
 import { Breadcrumb } from '@/foundation/components/navigation';
 import { buildProductJsonLd, buildBreadcrumbJsonLd } from '../model/product-json-ld';
+import { serializeJsonLd } from '@/lib/seo/json-ld';
 
 interface ProductDetailPageProps {
   product: ProductDetailDto;
@@ -44,11 +45,15 @@ export function ProductDetailPage({ product, slug, relatedCategorySlug }: Produc
 
   const purchaseView = toProductPurchaseView(product);
   const gallery = toProductGalleryView(product);
-  // Mô tả lưu dạng văn bản thuần; React tự escape. Chưa có sanitizer trong repo nên không
-  // dùng dangerouslySetInnerHTML. Bỏ phần mô tả dài nếu trùng nguyên văn mô tả ngắn.
+  // SECURITY/CONTRACT: `description` là HTML đã được API làm sạch theo allowlist (CKEditor ở Admin
+  // lưu HTML tuỳ ý) — chỉ render HTML từ trường này, không từ trường văn bản thuần nào khác.
+  // Bỏ phần mô tả dài nếu nội dung chữ trùng nguyên văn mô tả ngắn.
   const shortDescription = product.shortDescription?.trim();
-  const longDescription = product.description?.trim();
-  const showLongDescription = Boolean(longDescription && longDescription !== shortDescription);
+  const longDescriptionHtml = product.description?.trim();
+  const longDescriptionText = longDescriptionHtml?.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+  const showLongDescription = Boolean(
+    longDescriptionHtml && longDescriptionText !== shortDescription?.replace(/\s+/g, ' '),
+  );
   // Có biến thể mở bán mới khai `offers`; `minPrice` có thể thuộc biến thể đã ngừng bán.
   const hasPrice =
     hasOfferPrice(product.minPrice) && purchaseView.variants.some(({ sellable }) => sellable);
@@ -59,11 +64,11 @@ export function ProductDetailPage({ product, slug, relatedCategorySlug }: Produc
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(productJsonLd) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbJsonLd) }}
       />
       <div className="bg-[var(--dc-canvas)] pb-24">
         <Breadcrumb
@@ -126,9 +131,10 @@ export function ProductDetailPage({ product, slug, relatedCategorySlug }: Produc
                   </p>
                 )}
                 {showLongDescription && (
-                  <div className="mt-4 whitespace-pre-line break-words text-sm leading-relaxed text-stone-600 sm:text-base">
-                    {longDescription}
-                  </div>
+                  <div
+                    className="mt-4 break-words text-sm leading-relaxed text-stone-600 sm:text-base [&_a]:text-[var(--dc-primary-700)] [&_a]:underline [&_h2]:mt-6 [&_h2]:text-lg [&_h2]:font-bold [&_h2]:text-ink [&_h3]:mt-4 [&_h3]:font-bold [&_h3]:text-ink [&_iframe]:my-4 [&_iframe]:aspect-video [&_iframe]:h-auto [&_iframe]:w-full [&_iframe]:max-w-full [&_iframe]:rounded-2xl [&_img]:my-4 [&_img]:h-auto [&_img]:max-w-full [&_img]:rounded-2xl [&_li]:mt-1 [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:mt-3 [&_table]:my-4 [&_table]:w-full [&_table]:border-collapse [&_td]:border [&_td]:border-[var(--dc-border)] [&_td]:p-2 [&_th]:border [&_th]:border-[var(--dc-border)] [&_th]:p-2 [&_ul]:list-disc [&_ul]:pl-5"
+                    dangerouslySetInnerHTML={{ __html: longDescriptionHtml ?? '' }}
+                  />
                 )}
               </div>
             )}

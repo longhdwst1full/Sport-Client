@@ -113,6 +113,7 @@ components:
         - INTEGRATION
         - ASSISTANT
         - NOTIFICATION
+        - SECURITY
     SystemParameterListDto:
       type: object
       properties:
