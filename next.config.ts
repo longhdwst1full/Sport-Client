@@ -13,6 +13,14 @@ const nextConfig: NextConfig = {
      */
     unoptimized: process.env.NEXT_IMAGE_UNOPTIMIZED === 'true',
     formats: ['image/avif', 'image/webp'],
+    /**
+     * Ảnh có `sizes` cố định theo px (thẻ danh mục 112px, logo, mega menu) nhận srcset gồm MỌI
+     * độ rộng `imageSizes + deviceSizes`; ~60 thẻ như vậy trên `/` làm HTML phình. Bỏ các mốc
+     * layout không dùng: không `sizes` nào dưới 48px (bỏ 16/32/64) và 750 nằm sát 828. Mốc lớn nhất
+     * giữ nguyên nên trình duyệt (luôn chọn mốc nhỏ nhất ≥ nhu cầu) không bao giờ nhận ảnh kém nét hơn.
+     */
+    imageSizes: [48, 96, 128, 256, 384],
+    deviceSizes: [640, 828, 1080, 1200, 1920, 2048, 3840],
     // Ảnh sản phẩm/bài viết đổi URL khi đổi ảnh, nên giữ bản đã tối ưu lâu để không tối ưu lại.
     minimumCacheTTL: 60 * 60 * 24 * 30,
     remotePatterns: [
