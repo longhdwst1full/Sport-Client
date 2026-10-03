@@ -164,9 +164,10 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
           <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-8 bg-gradient-to-l from-slate-50/80 to-transparent sm:w-12" />
 
           {/* Horizontal Sliding Container */}
+          {/* Không padding trái: snap-start với px-1 tự cuộn 4px lúc tải, Chrome coi là scroll và bỏ LCP (Lighthouse NO_LCP). */}
           <div
             ref={scrollContainerRef}
-            className="flex gap-4 sm:gap-5 overflow-x-auto scroll-smooth snap-x snap-mandatory py-4 px-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+            className="flex gap-4 sm:gap-5 overflow-x-auto scroll-smooth snap-x snap-mandatory py-4 pr-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
             role="region"
             aria-label="Thanh trượt danh mục ngành hàng"
           >
