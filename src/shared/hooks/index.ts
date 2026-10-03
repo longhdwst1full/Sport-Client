@@ -1,2 +1,3 @@
 export { useDebounce } from './use-debounce';
 export { preloadOnIdle } from './preload-on-idle';
+export { useAutoplayAllowed } from './use-autoplay-allowed';

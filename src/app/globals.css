@@ -322,6 +322,8 @@ html {
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
+    /* Vòng lặp vô hạn với 0.01ms vẫn chạy mỗi khung hình (ping/pulse/brand-scroll): chỉ chạy một lần. */
+    animation-iteration-count: 1 !important;
   }
   .reveal-fade-up,
   .reveal-fade-left,

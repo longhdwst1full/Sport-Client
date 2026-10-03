@@ -5,6 +5,7 @@ import { useFlashSale } from '@/features/promotions';
 import { BANNER_DEFAULT_CTA_TEXT, type BannerView, type ContentPostView } from '@/features/content';
 import { HeroSlider, type HeroSlide } from './hero-slider';
 import { HeroPromoCards } from './hero-promo-cards';
+import { useAutoplayAllowed } from '@/shared/hooks';
 
 /** Số bài viết tối đa lên slider; phần còn lại vẫn ở khối "Bài viết mới". */
 const MAX_POST_SLIDES = 3;
@@ -83,6 +84,9 @@ export function HeroBannerSlider({
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const touchStartX = useRef<number | null>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  // Dừng tự chuyển slide khi cuộn khỏi màn hình, ẩn tab hoặc người dùng chọn giảm chuyển động.
+  const autoplay = useAutoplayAllowed(sectionRef);
   const slideCount = slides.length;
   // Số slide đổi khi flash sale tải xong; giữ chỉ số trong khoảng mà không cần effect.
   const activeIndex = currentSlide % slideCount;
@@ -97,12 +101,12 @@ export function HeroBannerSlider({
 
   // Auto-play interval
   useEffect(() => {
-    if (isPaused || slideCount < 2) return;
+    if (isPaused || !autoplay || slideCount < 2) return;
     const timer = setInterval(() => {
       nextSlide();
     }, 5000);
     return () => clearInterval(timer);
-  }, [isPaused, nextSlide, slideCount]);
+  }, [isPaused, autoplay, nextSlide, slideCount]);
 
   // Touch swipe support
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -119,6 +123,7 @@ export function HeroBannerSlider({
 
   return (
     <section
+      ref={sectionRef}
       className="px-4 pt-3 pb-6 sm:px-6 lg:px-8"
       aria-label="Khu vực banner chính"
       onMouseEnter={() => setIsPaused(true)}

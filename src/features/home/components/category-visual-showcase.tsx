@@ -11,9 +11,13 @@ import {
 import { CarouselDots } from '@/foundation/components/indicators';
 import { CategoryRailItem } from './category-rail-item';
 import type { CategoryRailView } from '@/features/catalog';
+import { useAutoplayAllowed } from '@/shared/hooks';
 
 export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] }) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  // Dừng tự trượt khi cuộn khỏi màn hình, ẩn tab hoặc người dùng chọn giảm chuyển động.
+  const autoplay = useAutoplayAllowed(sectionRef);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
@@ -70,7 +74,7 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
 
   // Auto-play sliding motion when not hovered
   useEffect(() => {
-    if (isPaused) return;
+    if (isPaused || !autoplay) return;
 
     const interval = setInterval(() => {
       const el = scrollContainerRef.current;
@@ -86,7 +90,7 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
     }, 3800);
 
     return () => clearInterval(interval);
-  }, [isPaused]);
+  }, [isPaused, autoplay]);
 
   const scrollToItem = (index: number) => {
     const el = scrollContainerRef.current;
@@ -97,6 +101,7 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
 
   return (
     <section
+      ref={sectionRef}
       id="categories"
       className="py-12 bg-gradient-to-b from-slate-50/80 via-white to-slate-50/60 border-y border-slate-200/80"
       aria-label="Danh mục ngành hàng thể thao"
