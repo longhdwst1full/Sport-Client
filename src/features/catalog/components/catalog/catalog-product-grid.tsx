@@ -98,12 +98,11 @@ export function CatalogProductGrid({
       {/* PRODUCT GRID */}
       {!isPending && !isError && displayedProducts.length > 0 && (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {displayedProducts.map((product, idx) => (
+          {displayedProducts.map((product) => (
             <ProductCard
               key={product.id}
               product={product}
               onBuyNow={onBuyNow}
-              priority={idx < 3}
             />
           ))}
         </div>

@@ -133,12 +133,11 @@ export function ProductShowcase({
 
       {/* Products Grid */}
       <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-        {displayedProducts.map((product, idx) => (
+        {displayedProducts.map((product) => (
           <ProductCard
             key={product.id}
             product={product}
             onBuyNow={handleBuyNow}
-            priority={idx < 4}
           />
         ))}
       </div>

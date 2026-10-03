@@ -28,8 +28,8 @@ export const CACHE_POLICY = {
    */
   REFERENCE: { staleTime: 30 * 60_000, gcTime: 60 * 60_000, refetchOnWindowFocus: false },
 
-  /** Danh mục nghiệp vụ: danh mục sản phẩm, bài viết nội dung. Đổi trong ngày là cùng. */
-  LOOKUP: { staleTime: 5 * 60_000, gcTime: 30 * 60_000, refetchOnWindowFocus: false },
+  /** Danh mục nghiệp vụ: danh mục sản phẩm, banner, bài viết nội dung. Đổi trong ngày là cùng. */
+  LOOKUP: { staleTime: 10 * 60_000, gcTime: 30 * 60_000, refetchOnWindowFocus: false },
 
   /**
    * Nội dung bán hàng: danh sách và chi tiết sản phẩm, đánh giá.
@@ -57,6 +57,7 @@ const CACHE_POLICY_ROUTES: ReadonlyArray<readonly [RegExp, CachePolicyName]> = [
   [/^\/api\/v1\/system\/parameters\/public$/, 'REFERENCE'],
   [/^\/api\/v1\/catalog\/categories$/, 'LOOKUP'],
   [/^\/api\/v1\/content\/posts(\/[^/]+)?$/, 'LOOKUP'],
+  [/^\/api\/v1\/content\/banners$/, 'LOOKUP'],
   [/^\/api\/v1\/catalog\/products(\/[^/]+(\/reviews)?)?$/, 'CATALOG'],
 ];
 

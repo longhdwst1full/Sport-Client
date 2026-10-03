@@ -43,6 +43,7 @@ describe('cachePolicyForQueryKey', () => {
     expect(cachePolicyForQueryKey(['/api/v1/catalog/categories'])).toBe(CACHE_POLICY.LOOKUP);
     expect(cachePolicyForQueryKey(['/api/v1/content/posts', { postType: 'POLICY' }])).toBe(CACHE_POLICY.LOOKUP);
     expect(cachePolicyForQueryKey(['/api/v1/content/posts/bao-hanh'])).toBe(CACHE_POLICY.LOOKUP);
+    expect(cachePolicyForQueryKey(['/api/v1/content/banners', { placement: 'HOME_HERO' }])).toBe(CACHE_POLICY.LOOKUP);
   });
 
   it('xếp sản phẩm và đánh giá vào CATALOG, kể cả key infinite', () => {
