@@ -28,7 +28,7 @@ export const STORE_CONFIG = {
   name: 'Bảo An Sport',
   legalName: 'Công ty TNHH Dụng Cụ Thể Thao Bảo An Việt Nam',
   shortName: 'Bảo An Sport',
-  domain: 'https://www.baoansport.click',
+  domain: 'https://www.baoansprot.click',
   tagline: 'Dụng Cụ & Thiết Bị Thể Thao Chính Hãng Hàng Đầu',
   slogan: 'Đồng hành cùng sức khỏe & thể lực Việt',
   description:
