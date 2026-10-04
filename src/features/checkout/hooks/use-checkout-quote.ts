@@ -5,13 +5,16 @@ import type { CartItem } from '@/features/cart';
 import { UnavailableCartLinesError } from '@/features/cart';
 import type { CheckoutQuoteDto } from '@/generated/api/checkout/checkout.schemas';
 import type { OrderDetailDto } from '@/generated/api/orders/orders.schemas';
-import { apiErrorMessage } from '@/lib/api/error-message';
+import { apiErrorCode, apiErrorMessage } from '@/lib/api/error-message';
 import type { useToast } from '@/shared/components/global-toast';
 import { prepareCheckout, reloadCheckout, type CheckoutContext } from '../api/checkout.workflow';
 import { toCheckoutQuoteView } from '../model/checkout.mapper';
 import type { CheckoutForm } from './use-checkout-form';
 
 type Toast = ReturnType<typeof useToast>['toast'];
+
+/** Tiền tố mã lỗi suất flash của API (`FLASH_SALE_*`, kể cả `FLASH_SALE_QUOTA_HOLD_EXPIRED`). */
+const FLASH_SALE_ERROR_PREFIX = 'FLASH_SALE_';
 
 function messageOf(error: unknown): string {
   return apiErrorMessage(
@@ -61,6 +64,18 @@ export function useCheckoutQuote({
   const handleCheckoutError = (caught: unknown) => {
     if (caught instanceof UnavailableCartLinesError) {
       caught.variantIds.forEach((variantId) => removeItem(variantId));
+    }
+    // Suất flash hết/hết giờ/vượt giới hạn: báo giá cũ mang giá flash nên bấm lại chỉ gặp đúng lỗi đó.
+    // Bỏ báo giá + khoá idempotency rồi báo giá lại ngay để khách thấy giá mới và đặt tiếp, không bỏ đơn.
+    if (apiErrorCode(caught)?.startsWith(FLASH_SALE_ERROR_PREFIX)) {
+      invalidateQuote();
+      form.setAddress((current) => ({ ...current }));
+      toast({
+        type: 'warning',
+        title: 'Ưu đãi flash sale đã thay đổi',
+        message: `${messageOf(caught)}. Đơn đã được báo giá lại — vui lòng kiểm tra tổng tiền rồi đặt hàng lại.`,
+      });
+      return;
     }
     const msg = messageOf(caught);
     setError(msg);

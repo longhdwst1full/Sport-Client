@@ -18,3 +18,10 @@ export function apiErrorMessage(error: unknown, fallback: string): string {
   }
   return fallback;
 }
+
+/** Mã lỗi ổn định `code` trong payload của backend (ví dụ `FLASH_SALE_QUOTA_EXHAUSTED`). */
+export function apiErrorCode(error: unknown): string | undefined {
+  if (!(error instanceof ApiError) || !error.payload || typeof error.payload !== 'object') return undefined;
+  const code = (error.payload as { code?: unknown }).code;
+  return typeof code === 'string' ? code : undefined;
+}
