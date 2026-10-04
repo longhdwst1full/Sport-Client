@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { useFlashSale } from '@/features/promotions';
+import { useFlashSaleCampaigns } from '@/features/promotions';
 import { BANNER_DEFAULT_CTA_TEXT, type BannerView, type ContentPostView } from '@/features/content';
 import { HeroSlider, type HeroSlide } from './hero-slider';
 import { HeroPromoCards } from './hero-promo-cards';
@@ -28,7 +28,7 @@ export function HeroBannerSlider({
   heroBanners?: BannerView[];
   promoBanners?: BannerView[];
 }) {
-  const { campaigns } = useFlashSale();
+  const { campaigns } = useFlashSaleCampaigns();
   const slides = useMemo<HeroSlide[]>(() => {
     const bannerSlides: HeroSlide[] = heroBanners.map((banner) => ({
       id: `banner-${banner.id}`,

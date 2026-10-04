@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import { useFlashSale } from './use-flash-sale';
+import { useFlashSaleCampaigns } from './use-flash-sale';
 
 export interface FlashSaleAvailability {
   /** Có chiến dịch đang chạy theo giờ server hay không. */
@@ -20,10 +20,10 @@ export interface FlashSaleAvailability {
  * quan gì tới giá thật.
  *
  * Dùng chung query với `useFlashSale`, nên react-query gộp lời gọi: thêm lối vào không tạo thêm
- * request nào.
+ * request nào; không kèm đồng hồ nên header không render lại mỗi giây.
  */
 export function useFlashSaleAvailability(): FlashSaleAvailability {
-  const { campaigns, isPending } = useFlashSale();
+  const { campaigns, isPending } = useFlashSaleCampaigns();
 
   return useMemo(() => {
     const discounts = campaigns

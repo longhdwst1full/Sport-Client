@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useListPublicFlashSales } from '@/generated/api/promotions/promotions';
 import {
   toFlashSaleCampaignView,
@@ -28,7 +28,51 @@ function splitRemaining(remainingMs: number): FlashSaleCountdown {
 }
 
 /**
- * Nguồn dữ liệu flash sale cho Storefront.
+ * Dữ liệu chiến dịch, KHÔNG có đồng hồ — cho lối vào (header, menu, banner) chỉ cần biết có chương
+ * trình hay không. Tách khỏi đồng hồ để header không render lại mỗi giây.
+ *
+ * Mọi component dùng chung một query key nên react-query chỉ gọi mạng một lần cho cả trang.
+ * `staleTime` 60 giây + không refetch khi quay lại tab: header có mặt ở mọi trang, nên mặc định
+ * (30 giây, refetch khi focus) làm mỗi lần chuyển trang/chuyển tab là một lượt gọi. Số suất còn lại
+ * không cần chính xác từng giây ở đây — giá và suất luôn được server chốt lại ở bước báo giá checkout;
+ * hết giờ thì `useFlashSale` chủ động refetch.
+ */
+export function useFlashSaleCampaigns({ live = false }: { live?: boolean } = {}): {
+  campaigns: FlashSaleCampaignView[];
+  serverTime: string | undefined;
+  refetch: () => Promise<unknown>;
+  isPending: boolean;
+  isError: boolean;
+} {
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const query = useListPublicFlashSales({
+    // `live`: nơi hiển thị suất/đồng hồ (khối và trang flash sale) vẫn cập nhật khi khách quay lại tab.
+    query: { enabled: isMounted, staleTime: live ? 30_000 : 60_000, refetchOnWindowFocus: live },
+  });
+  const campaigns = useMemo(
+    () => (query.data?.items ?? []).map(toFlashSaleCampaignView),
+    [query.data],
+  );
+  const { refetch } = query;
+  // `cancelRefetch: false`: nhiều đồng hồ cùng chạm 0 trong một giây thì dùng chung lượt đang bay,
+  // không huỷ lượt kia rồi gọi lại (mặc định của react-query sinh ra N request cho N component).
+  const refetchShared = useCallback(() => refetch({ cancelRefetch: false }), [refetch]);
+
+  return {
+    campaigns,
+    serverTime: query.data?.serverTime,
+    refetch: refetchShared,
+    isPending: query.isPending,
+    isError: query.isError,
+  };
+}
+
+/**
+ * Chiến dịch + đồng hồ đếm ngược — chỉ dùng ở nơi HIỂN THỊ đồng hồ (khối flash sale, trang flash sale).
  *
  * Đồng hồ đếm ngược chạy theo **giờ server**: `serverTime` trong response cho
  * biết độ lệch giữa máy khách và server, nên người dùng chỉnh đồng hồ máy cũng
@@ -42,31 +86,19 @@ export function useFlashSale(): {
   isPending: boolean;
   isError: boolean;
 } {
-  const [isMounted, setIsMounted] = useState(false);
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  const query = useListPublicFlashSales({
-    query: { enabled: isMounted },
-  });
+  const { campaigns, serverTime, refetch, isPending, isError } = useFlashSaleCampaigns({ live: true });
   const clockOffsetRef = useRef(0);
   const [countdown, setCountdown] = useState<FlashSaleCountdown>(ZERO);
 
-  const campaigns = useMemo(
-    () => (query.data?.items ?? []).map(toFlashSaleCampaignView),
-    [query.data],
-  );
   // Đồng hồ đếm ngược bám chiến dịch kết thúc sớm nhất (API đã sắp theo endsAt).
   const campaign = campaigns[0];
 
   useEffect(() => {
-    if (!query.data?.serverTime) return;
-    clockOffsetRef.current = new Date(query.data.serverTime).getTime() - Date.now();
-  }, [query.data?.serverTime]);
+    if (!serverTime) return;
+    clockOffsetRef.current = new Date(serverTime).getTime() - Date.now();
+  }, [serverTime]);
 
   const endsAtMs = campaign?.endsAtMs;
-  const refetch = query.refetch;
 
   useEffect(() => {
     if (!endsAtMs) {
@@ -88,11 +120,5 @@ export function useFlashSale(): {
     return () => clearInterval(timer);
   }, [endsAtMs, refetch]);
 
-  return {
-    campaign,
-    campaigns,
-    countdown,
-    isPending: query.isPending,
-    isError: query.isError,
-  };
+  return { campaign, campaigns, countdown, isPending, isError };
 }

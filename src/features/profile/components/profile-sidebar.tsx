@@ -1,108 +1,124 @@
-import { ChevronRight, LifeBuoy, LogOut, MapPin, Package, Phone, RotateCcw, User } from 'lucide-react';
+import Link from 'next/link';
+import {
+  ChevronRight,
+  LifeBuoy,
+  LogOut,
+  MapPin,
+  Package,
+  Phone,
+  RotateCcw,
+  ShieldCheck,
+  UserRound,
+  type LucideIcon,
+} from 'lucide-react';
 import { STORE_CONTACT } from '@/shared/constants';
 
-export type ProfileTab = 'address' | 'settings';
+export type ProfileTab = 'info' | 'security' | 'address';
+
+export const PROFILE_TABS: ReadonlyArray<{ id: ProfileTab; label: string; icon: LucideIcon }> = [
+  { id: 'info', label: 'Thông tin cá nhân', icon: UserRound },
+  { id: 'security', label: 'Mật khẩu & bảo mật', icon: ShieldCheck },
+  { id: 'address', label: 'Sổ địa chỉ', icon: MapPin },
+];
+
+/** Trang mua sắm có route riêng — điều hướng bằng link thật để mở tab mới/quay lại đúng. */
+const SHOPPING_LINKS: ReadonlyArray<{ href: string; label: string; icon: LucideIcon }> = [
+  { href: '/orders', label: 'Đơn hàng của tôi', icon: Package },
+  { href: '/returns', label: 'Đổi trả & hoàn tiền', icon: RotateCcw },
+  { href: '/account/support', label: 'Yêu cầu hỗ trợ', icon: LifeBuoy },
+];
+
+const navItemClass = (active: boolean) =>
+  `flex w-full items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-semibold transition ${
+    active
+      ? 'bg-[var(--dc-primary-50)] text-[var(--dc-primary-700)]'
+      : 'text-[var(--dc-text-secondary)] hover:bg-[var(--dc-canvas)] hover:text-[var(--dc-text-primary)]'
+  }`;
 
 interface ProfileSidebarProps {
-  profileName: string;
-  profileEmail: string;
   activeTab: ProfileTab;
   onSelectTab: (tab: ProfileTab) => void;
-  onNavigateOrders: () => void;
-  onNavigateReturns: () => void;
-  onNavigateSupport: () => void;
   onLogout: () => void;
 }
 
-export function ProfileSidebar({
-  profileName,
-  profileEmail,
-  activeTab,
-  onSelectTab,
-  onNavigateOrders,
-  onNavigateReturns,
-  onNavigateSupport,
-  onLogout,
-}: ProfileSidebarProps) {
+/** Điều hướng tài khoản cho màn hình lớn; màn hình nhỏ dùng thanh tab ngang ở `ProfilePage`. */
+export function ProfileSidebar({ activeTab, onSelectTab, onLogout }: ProfileSidebarProps) {
   return (
-    <aside className="space-y-6">
-      <div className="rounded-[28px] border border-slate-200/80 bg-white p-6 shadow-sm">
-        <div className="flex items-center gap-4">
-          <div className="grid size-16 place-items-center rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 text-2xl font-black text-white shadow-md shadow-emerald-600/20">
-            A
-          </div>
-          <div className="min-w-0 flex-1">
-            <h1 className="truncate text-base font-black text-slate-900">
-              {profileName}
-            </h1>
-            <p className="mt-1 truncate text-xs text-slate-400">{profileEmail}</p>
-          </div>
-        </div>
-
-        {/* Navigation tabs */}
-        <nav className="mt-6 space-y-1">
-          {[
-            { id: 'orders' as const, label: 'Lịch sử đơn hàng', icon: Package },
-            { id: 'returns' as const, label: 'Yêu cầu đổi trả', icon: RotateCcw },
-            { id: 'support' as const, label: 'Hỗ trợ của tôi', icon: LifeBuoy },
-            { id: 'address' as const, label: 'Sổ địa chỉ nhận hàng', icon: MapPin },
-            { id: 'settings' as const, label: 'Cài đặt tài khoản', icon: User },
-          ].map(({ id, label, icon: Icon }) => (
-            <button
-              key={id}
-              type="button"
-              onClick={() => {
-                if (id === 'orders') {
-                  onNavigateOrders();
-                  return;
-                }
-                if (id === 'returns') {
-                  onNavigateReturns();
-                  return;
-                }
-                if (id === 'support') {
-                  onNavigateSupport();
-                  return;
-                }
-                onSelectTab(id);
-              }}
-              className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-xs font-bold transition sm:text-sm ${
-                activeTab === id
-                  ? 'bg-emerald-50 text-emerald-700'
-                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
-              }`}
-            >
-              <span className="flex items-center gap-3">
-                <Icon className="size-4.5" />
-                {label}
-              </span>
-              <ChevronRight className="size-4 opacity-40" />
-            </button>
-          ))}
-
+    <aside className="hidden space-y-4 lg:block">
+      <nav
+        aria-label="Tài khoản"
+        className="rounded-[24px] border border-[var(--dc-border)] bg-white p-3 shadow-sm"
+      >
+        <p className="px-3.5 pb-1 pt-2 text-[11px] font-bold uppercase tracking-wider text-[var(--dc-text-secondary)]">
+          Tài khoản
+        </p>
+        {PROFILE_TABS.map(({ id, label, icon: Icon }) => (
           <button
+            key={id}
             type="button"
-            onClick={onLogout}
-            className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-xs font-bold text-rose-600 transition hover:bg-rose-50 sm:text-sm"
+            aria-current={activeTab === id ? 'page' : undefined}
+            onClick={() => onSelectTab(id)}
+            className={navItemClass(activeTab === id)}
           >
-            <LogOut className="size-4.5" />
-            Đăng xuất
+            <span className="flex items-center gap-3">
+              <Icon className="size-4.5" />
+              {label}
+            </span>
           </button>
-        </nav>
-      </div>
+        ))}
 
-      {/* Quick hotline widget */}
-      <div className="rounded-2xl border border-slate-200/80 bg-white p-4 text-xs text-slate-600">
-        <span className="font-bold text-slate-800">Cần hỗ trợ đơn hàng gấp?</span>
-        <p className="mt-1 text-slate-500">Hotline 24/7 từ showroom gần bạn nhất:</p>
+        <p className="mt-2 border-t border-[var(--dc-border)] px-3.5 pb-1 pt-4 text-[11px] font-bold uppercase tracking-wider text-[var(--dc-text-secondary)]">
+          Mua sắm
+        </p>
+        {SHOPPING_LINKS.map(({ href, label, icon: Icon }) => (
+          <Link key={href} href={href} className={navItemClass(false)}>
+            <span className="flex items-center gap-3">
+              <Icon className="size-4.5" />
+              {label}
+            </span>
+            <ChevronRight className="size-4 opacity-40" />
+          </Link>
+        ))}
+
+        <button
+          type="button"
+          onClick={onLogout}
+          className="mt-2 flex w-full items-center gap-3 rounded-xl border-t border-[var(--dc-border)] px-3.5 pb-2.5 pt-4 text-sm font-semibold text-rose-600 transition hover:bg-rose-50"
+        >
+          <LogOut className="size-4.5" />
+          Đăng xuất
+        </button>
+      </nav>
+
+      <div className="rounded-[24px] border border-[var(--dc-border)] bg-white p-5 text-sm">
+        <p className="font-bold text-[var(--dc-text-primary)]">Cần hỗ trợ đơn hàng?</p>
+        <p className="mt-1 text-xs text-[var(--dc-text-secondary)]">Gọi hotline, nhân viên hỗ trợ ngay.</p>
         <a
           href={`tel:${STORE_CONTACT.primaryHotlineRaw}`}
-          className="mt-2 flex items-center gap-2 font-mono font-bold text-emerald-700 hover:underline"
+          className="mt-3 inline-flex items-center gap-2 font-bold text-[var(--dc-primary-700)] hover:underline"
         >
-          <Phone className="size-3.5" />
-          {STORE_CONTACT.primaryHotline} (Toàn quốc)
+          <Phone className="size-4" />
+          {STORE_CONTACT.primaryHotline}
         </a>
       </div>
     </aside>
+  );
+}
+
+/** Liên kết mua sắm cho màn hình nhỏ (sidebar ẩn dưới `lg`). */
+export function ProfileShoppingLinks() {
+  return (
+    <div className="grid grid-cols-3 gap-2 lg:hidden">
+      {SHOPPING_LINKS.map(({ href, label, icon: Icon }) => (
+        <Link
+          key={href}
+          href={href}
+          className="flex flex-col items-center gap-1.5 rounded-2xl border border-[var(--dc-border)] bg-white px-2 py-3 text-center text-[11px] font-semibold text-[var(--dc-text-secondary)] transition hover:border-[var(--dc-primary-500)] hover:text-[var(--dc-primary-700)]"
+        >
+          <Icon className="size-5" />
+          {label}
+        </Link>
+      ))}
+    </div>
   );
 }
