@@ -1,5 +1,35 @@
 import type { NextConfig } from 'next';
 
+/**
+ * SECURITY: CSP chạy ở chế độ Report-Only — chỉ báo vi phạm trong console, KHÔNG chặn. Theo dõi
+ * vi phạm một thời gian rồi mới đổi key sang `Content-Security-Policy` để enforce.
+ * `'unsafe-inline'` ở script/style là bắt buộc vì Next inline script hydrate và style; muốn bỏ phải
+ * dùng nonce (middleware), nên để dành bước sau.
+ */
+const IMAGE_HOSTS = [
+  'https://res.cloudinary.com',
+  'https://images.unsplash.com',
+  'https://baoansport.vn',
+  'https://www.baoansport.vn',
+];
+const contentSecurityPolicyReportOnly = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline'",
+  "style-src 'self' 'unsafe-inline'",
+  `img-src 'self' data: blob: ${IMAGE_HOSTS.join(' ')}`,
+  "font-src 'self' data:",
+  // Trình duyệt gọi API cùng origin qua rewrite /api/v1.
+  "connect-src 'self'",
+  // Video YouTube trong mô tả sản phẩm (đã sanitize).
+  'frame-src https://www.youtube.com https://www.youtube-nocookie.com',
+  "worker-src 'self'",
+  "manifest-src 'self'",
+  "frame-ancestors 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "object-src 'none'",
+].join('; ');
+
 const nextConfig: NextConfig = {
   allowedDevOrigins: ['127.0.0.1', 'localhost', '127.0.0.1:3199', 'localhost:3199'],
   // Nén HTTP (gzip) do `next start` tự làm; trên Vercel CDN nén thay. Giữ mặc định `compress: true`.
@@ -34,6 +64,22 @@ const nextConfig: NextConfig = {
   },
   async headers() {
     return [
+      {
+        // SECURITY: header bảo mật cho mọi route. VNPay là redirect top-level (window.location.assign)
+        // nên không cần mở connect-src/form-action cho domain cổng thanh toán.
+        source: '/:path*',
+        headers: [
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'X-Frame-Options', value: 'DENY' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          // geolocation=(self): checkout dùng navigator.geolocation để lấy vị trí giao hàng.
+          { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=(self), payment=(), usb=()' },
+          { key: 'Cross-Origin-Opener-Policy', value: 'same-origin' },
+          // Không preload: preload khó gỡ, cân nhắc sau khi chắc chắn mọi subdomain đều HTTPS.
+          { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains' },
+          { key: 'Content-Security-Policy-Report-Only', value: contentSecurityPolicyReportOnly },
+        ],
+      },
       {
         // Worker và file luật phải luôn lấy bản mới để bản sửa lỗi cache tới tay người dùng ngay.
         source: '/:file(sw.js|sw-routing.js)',
