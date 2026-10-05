@@ -8,7 +8,7 @@ info:
 paths: {}
 components:
   schemas:
-    CreateMediaUploadDto:
+    CreateImageUploadDto:
       type: object
       properties:
         fileName:
@@ -91,6 +91,11 @@ components:
       type: string
       enum:
         - CLOUDINARY
+    MediaResourceType:
+      type: string
+      enum:
+        - IMAGE
+        - VIDEO
     PageMetaDto:
       type: object
       properties:
@@ -133,9 +138,13 @@ components:
         provider:
           allOf:
             - $ref: "#/components/schemas/MediaProvider"
+        resourceType:
+          allOf:
+            - $ref: "#/components/schemas/MediaResourceType"
         uploadUrl:
           type: string
           format: uri
+          description: "Ảnh: `.../image/upload`; video: `.../video/upload`"
         cloudName:
           type: string
         apiKey:
@@ -149,11 +158,13 @@ components:
         publicId:
           type: string
         allowedFormats:
+          description: "Ảnh: jpg/jpeg/png/webp/avif; video: mp4/mov"
           type: array
           items:
             type: string
         maxBytes:
           type: number
+          description: "Giới hạn hiệu lực theo loại: ảnh 10 MB, video theo MEDIA_VIDEO_MAX_MB"
         overwrite:
           type: boolean
           enum:
@@ -162,11 +173,25 @@ components:
           type: boolean
           enum:
             - false
+        eager:
+          type: string
+          nullable: true
+          example: ac_aac,q_auto,vc_h264/mp4
+          description: "Video: tham số `eager` đã ký, gửi nguyên văn (bản MP4 H.264/AAC cho Facebook). Ảnh: null, không gửi."
+        eagerAsync:
+          type: boolean
+          description: "true (video): gửi `eager_async=true` — tham số đã ký. false (ảnh): không gửi."
+        chunkSizeBytes:
+          type: number
+          nullable: true
+          example: 20971520
+          description: "Video: kích thước chunk khuyến nghị (gửi mọi chunk cùng tham số + X-Unique-Upload-Id + Content-Range). Ảnh: null."
         expiresAt:
           type: string
           format: date-time
       required:
         - provider
+        - resourceType
         - uploadUrl
         - cloudName
         - apiKey
@@ -178,4 +203,7 @@ components:
         - maxBytes
         - overwrite
         - uniqueFilename
+        - eager
+        - eagerAsync
+        - chunkSizeBytes
         - expiresAt

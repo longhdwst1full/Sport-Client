@@ -37,7 +37,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: ./_components.yaml#/components/schemas/CreateMediaUploadDto
+              $ref: ./_components.yaml#/components/schemas/CreateImageUploadDto
       responses:
         "201":
           description: ""
@@ -209,6 +209,9 @@ components:
         provider:
           allOf:
             - $ref: ./_components.yaml#/components/schemas/MediaProvider
+        resourceType:
+          allOf:
+            - $ref: ./_components.yaml#/components/schemas/MediaResourceType
         providerAssetId:
           type: string
         publicId:
@@ -219,6 +222,7 @@ components:
         thumbnailUrl:
           type: string
           format: uri
+          description: "Video: khung hình đầu (`so_0`) dạng JPG"
         mimeType:
           type: string
           example: image/webp
@@ -240,6 +244,7 @@ components:
       required:
         - id
         - provider
+        - resourceType
         - providerAssetId
         - publicId
         - secureUrl
