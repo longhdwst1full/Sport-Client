@@ -38,10 +38,11 @@ export function AssistantLauncher() {
         aria-expanded={open}
         aria-controls={open ? ASSISTANT_DIALOG_ID : undefined}
         aria-label={open ? 'Đóng trợ lý mua sắm' : 'Mở trợ lý mua sắm'}
-        // Nằm bên trái cột nút liên hệ nổi (FloatingContactBar, right-3.5/right-5) để không che nhau.
-        className="fixed bottom-4 right-[4.25rem] z-50 flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-700 to-teal-600 p-2.5 text-white shadow-xl shadow-emerald-700/30 transition hover:scale-105 active:scale-95 sm:bottom-6 sm:right-20 sm:px-4 sm:py-3"
+        // Mobile: nút dưới cùng của cột nút nổi (FloatingContactBar xếp ngay phía trên), có safe-area iOS.
+        // Từ `sm`: nằm bên trái cột nút liên hệ (right-20) như cũ để không che nhau.
+        className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-3.5 z-50 flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-700 to-teal-600 p-2.5 text-white shadow-xl shadow-emerald-700/30 transition hover:scale-105 active:scale-95 sm:bottom-6 sm:right-20 sm:px-4 sm:py-3"
       >
-        {open ? <X className="size-4.5 sm:size-5" aria-hidden /> : <Bot className="size-4.5 sm:size-5" aria-hidden />}
+        {open ? <X className="size-[18px] sm:size-5" aria-hidden /> : <Bot className="size-[18px] sm:size-5" aria-hidden />}
         <span className="hidden text-xs font-black sm:inline">{ASSISTANT_TITLE}</span>
       </button>
       {requested && <AssistantPanelHost open={open} onClose={close} />}

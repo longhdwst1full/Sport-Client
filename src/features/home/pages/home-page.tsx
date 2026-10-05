@@ -22,6 +22,7 @@ import { TrustSocialProof } from '../components/trust-social-proof';
 import { SmartFitAdvisor } from '../components/smart-fit-advisor';
 import { CategoryVisualShowcase } from '../components/category-visual-showcase';
 import { FlashSaleSection } from '@/features/promotions';
+import { STORE_CONFIG } from '@/shared/constants';
 
 /** Số thẻ "theo bộ môn" và số lối tắt nhóm sản phẩm; chọn theo `productCount` thật. */
 const SPORT_CARD_COUNT = 4;
@@ -90,6 +91,12 @@ export async function HomePage() {
 
   return (
     <>
+      {/* H1 duy nhất của trang chủ: hero là slider nhiều slide (mỗi slide một h2, nội dung đổi theo CMS)
+          nên không có tiêu đề cố định để làm h1. Ẩn trực quan, giữ cho trình đọc màn hình và SEO. */}
+      <h1 className="sr-only">
+        {STORE_CONFIG.name} — {STORE_CONFIG.tagline}
+      </h1>
+
       {/* 1. Hero: banner CMS (nếu có) + bài viết thật + flash sale đang chạy. */}
       <HeroBannerSlider posts={heroPosts} heroBanners={heroBanners} promoBanners={promoBanners} />
 

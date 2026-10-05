@@ -22,7 +22,9 @@ export function FloatingContactBar() {
   };
 
   return (
-    <div className="fixed bottom-4 right-3.5 z-50 flex flex-col items-end gap-2.5 pointer-events-none sm:bottom-6 sm:right-5 sm:gap-3">
+    // Mobile: cột này nằm ngay trên nút trợ lý (AssistantLauncher, 38px + gap 8px) để cả cụm là một cột dọc
+    // ở mép phải, có tính safe-area của iOS. Từ `sm` trở lên giữ nguyên vị trí desktop cũ.
+    <div className="fixed bottom-[calc(3.875rem+env(safe-area-inset-bottom))] right-3.5 z-50 flex flex-col items-end gap-2 pointer-events-none sm:bottom-6 sm:right-5 sm:gap-3">
       {/* Quick Action Buttons Group */}
       <div className="flex flex-col items-end gap-2 pointer-events-auto sm:gap-2.5">
         {/* Zalo Chat Button */}
@@ -36,9 +38,9 @@ export function FloatingContactBar() {
           <span className="pointer-events-none absolute right-full mr-3 hidden whitespace-nowrap rounded-xl bg-slate-900/90 px-3 py-1.5 text-xs font-bold text-white opacity-0 shadow-lg backdrop-blur transition-opacity duration-200 group-hover:opacity-100 sm:block">
             Chat Zalo: {STORE_CONTACT.primaryHotline}
           </span>
-          <div className="relative size-4.5 sm:size-5">
+          <div className="relative size-[18px] sm:size-5">
             <span className="absolute -inset-1 animate-ping rounded-full bg-blue-400 opacity-40"></span>
-            <MessageSquare className="size-4.5 sm:size-5" />
+            <MessageSquare className="size-[18px] sm:size-5" />
           </div>
         </a>
 
@@ -52,9 +54,9 @@ export function FloatingContactBar() {
           <span className="pointer-events-none absolute right-full mr-3 hidden whitespace-nowrap rounded-xl bg-slate-900/90 px-3 py-1.5 text-xs font-bold text-white opacity-0 shadow-lg backdrop-blur transition-opacity duration-200 group-hover:opacity-100 sm:block">
             Hotline: {STORE_CONTACT.primaryHotline}
           </span>
-          <div className="relative size-4.5 sm:size-5">
+          <div className="relative size-[18px] sm:size-5">
             <span className="absolute -inset-1 animate-ping rounded-full bg-emerald-400 opacity-40"></span>
-            <Phone className="size-4.5 sm:size-5" />
+            <Phone className="size-[18px] sm:size-5" />
           </div>
         </a>
 
@@ -67,7 +69,7 @@ export function FloatingContactBar() {
           <span className="pointer-events-none absolute right-full mr-3 hidden whitespace-nowrap rounded-xl bg-slate-900/90 px-3 py-1.5 text-xs font-bold text-white opacity-0 shadow-lg backdrop-blur transition-opacity duration-200 group-hover:opacity-100 sm:block">
             Showroom Bảo An Sport
           </span>
-          <MapPin className="size-4.5 sm:size-5 text-emerald-400" />
+          <MapPin className="size-[18px] sm:size-5 text-emerald-400" />
         </Link>
       </div>
 
