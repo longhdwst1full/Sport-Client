@@ -24,7 +24,13 @@ const tokenStore = vi.hoisted(() => {
 vi.mock('../model/guest-cart-token.store', () => tokenStore);
 
 import { ApiError } from '@/lib/api/fetcher';
-import { syncAccountCart, syncCartAfterAuth, toLocalCartItems, UnavailableCartLinesError } from './cart-sync';
+import {
+  retryPendingGuestCartMerge,
+  syncAccountCart,
+  syncCartAfterAuth,
+  toLocalCartItems,
+  UnavailableCartLinesError,
+} from './cart-sync';
 
 const item = (variantId: string, quantity: number, extra: Partial<CartItemDto> = {}): CartItemDto => ({
   id: `item-${variantId}`,
@@ -108,6 +114,8 @@ describe('cart sync across devices', () => {
     );
     expect(api.mergeGuestCartIntoAccount).toHaveBeenCalledWith({ headers: { 'x-cart-token': 'guest-token' } });
     expect(result?.map(({ variantId, quantity }) => ({ variantId, quantity }))).toEqual([{ variantId: '7', quantity: 3 }]);
+    // Gộp xong thì token giỏ khách bị xoá: không còn lần gộp nào chờ.
+    expect(tokenStore.readGuestCartToken()).toBeUndefined();
   });
 
   it('never blocks login when the sync fails', async () => {
@@ -116,5 +124,40 @@ describe('cart sync across devices', () => {
     await expect(syncCartAfterAuth([
       { productId: 'p', variantId: '7', sku: 'S', productType: 'STANDARD', name: 'n', price: 1, quantity: 1 },
     ])).resolves.toBeUndefined();
+  });
+
+  it('keeps the local cart when the merge fails, even if the account cart is empty', async () => {
+    api.createGuestCart.mockResolvedValue({ ...cart([]), cartToken: 'guest-token' });
+    api.setGuestCartItem.mockResolvedValue(cart([item('7', 1)], 2));
+    api.mergeGuestCartIntoAccount.mockRejectedValue(new ApiError(503, { message: 'unavailable' }));
+    api.getAccountCart.mockResolvedValue(cart([]));
+
+    const result = await syncCartAfterAuth([{ productId: 'product-7', variantId: '7', sku: 'SKU-7', productType: 'STANDARD' as const, name: 'Tạ tay', price: 1, quantity: 1 }]);
+
+    // `undefined` = nơi gọi không thay giỏ trên máy bằng giỏ tài khoản rỗng.
+    expect(result).toBeUndefined();
+    expect(api.getAccountCart).not.toHaveBeenCalled();
+    // Token giữ lại để lần sau gộp lại.
+    expect(tokenStore.readGuestCartToken()).toBe('guest-token');
+  });
+
+  it('retries a pending guest merge and then returns the account cart', async () => {
+    tokenStore.saveGuestCartToken('guest-token');
+    api.getGuestCart.mockResolvedValue(cart([item('7', 1)]));
+    api.mergeGuestCartIntoAccount.mockResolvedValue(cart([item('7', 1)]));
+    api.getAccountCart.mockResolvedValue(cart([item('7', 1)]));
+
+    const result = await retryPendingGuestCartMerge([{ productId: 'product-7', variantId: '7', sku: 'SKU-7', productType: 'STANDARD' as const, name: 'Tạ tay', price: 1, quantity: 1 }]);
+
+    expect(api.createGuestCart).not.toHaveBeenCalled();
+    expect(api.mergeGuestCartIntoAccount).toHaveBeenCalledWith({ headers: { 'x-cart-token': 'guest-token' } });
+    expect(result?.map(({ variantId, quantity }) => ({ variantId, quantity }))).toEqual([{ variantId: '7', quantity: 1 }]);
+    expect(tokenStore.readGuestCartToken()).toBeUndefined();
+  });
+
+  it('does nothing on retry when no guest merge is pending', async () => {
+    await expect(retryPendingGuestCartMerge([{ productId: 'product-7', variantId: '7', sku: 'SKU-7', productType: 'STANDARD' as const, name: 'Tạ tay', price: 1, quantity: 1 }])).resolves.toBeUndefined();
+    expect(api.mergeGuestCartIntoAccount).not.toHaveBeenCalled();
+    expect(api.getAccountCart).not.toHaveBeenCalled();
   });
 });

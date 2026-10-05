@@ -29,7 +29,16 @@ export function useLogin() {
           message: 'Chào mừng bạn quay trở lại với Bảo An Sport!',
         });
         const accountItems = await syncCartAfterAuth(storefrontStore.getState().cart.items);
-        if (accountItems) storefrontStore.dispatch(hydrateCart(accountItems));
+        if (accountItems) {
+          storefrontStore.dispatch(hydrateCart(accountItems));
+        } else {
+          // Gộp giỏ lỗi: giỏ trên máy được giữ nguyên, lần mở app sau sẽ gộp lại. Không chặn đăng nhập.
+          toast({
+            type: 'warning',
+            title: 'Chưa đồng bộ được giỏ hàng',
+            message: 'Giỏ hàng trên máy vẫn được giữ và sẽ được đồng bộ lại vào tài khoản sau.',
+          });
+        }
         router.replace('/');
       },
       onError: (error) => {

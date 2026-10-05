@@ -9,10 +9,12 @@ import { readCustomerAuthTokens } from '@/features/auth';
 import { isCustomerAuthenticated } from '@/core/auth/customer-auth-token.store';
 import {
   CartHydrationContext,
+  hasPendingGuestCartMerge,
   hydrateCart,
   pullAccountCart,
   readPersistedCart,
   resetCartForSignOut,
+  retryPendingGuestCartMerge,
 } from '@/features/cart';
 import dynamic from 'next/dynamic';
 import { clearSessionPwaCaches } from '@/pwa/session-caches';
@@ -59,11 +61,19 @@ export function Providers({ children }: { children: ReactNode }) {
   );
 
   useEffect(() => {
-    storefrontStore.dispatch(hydrateCart(readPersistedCart()));
+    const persistedItems = readPersistedCart();
+    storefrontStore.dispatch(hydrateCart(persistedItems));
     setCartHydrated(true);
-    // Đang đăng nhập: giỏ tài khoản là nguồn chung giữa các máy, nên thay giỏ local bằng giỏ server.
-    // Lỗi mạng thì giữ giỏ local; checkout vẫn đồng bộ lại trước khi báo giá.
-    if (isCustomerAuthenticated()) {
+    if (!isCustomerAuthenticated()) return;
+    // Lần gộp giỏ khách sau đăng nhập trước đó bị lỗi (token giỏ khách còn): gộp lại trước. Còn lỗi thì
+    // KHÔNG tải giỏ tài khoản về — làm vậy sẽ thay mất giỏ trên máy chưa gộp; lần mở app sau thử lại.
+    if (hasPendingGuestCartMerge()) {
+      void retryPendingGuestCartMerge(persistedItems).then((items) => {
+        if (items) storefrontStore.dispatch(hydrateCart(items));
+      });
+    } else {
+      // Đang đăng nhập: giỏ tài khoản là nguồn chung giữa các máy, nên thay giỏ local bằng giỏ server.
+      // Lỗi mạng thì giữ giỏ local; checkout vẫn đồng bộ lại trước khi báo giá.
       pullAccountCart()
         .then((items) => storefrontStore.dispatch(hydrateCart(items)))
         .catch(() => undefined);

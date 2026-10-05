@@ -143,14 +143,34 @@ export async function pullAccountCart(): Promise<CartItem[]> {
 /**
  * Gọi ngay sau khi đăng nhập/đăng ký: đẩy giỏ trên máy lên giỏ khách của server, để server gộp vào
  * giỏ tài khoản trong một transaction có khoá (không mất/không nhân đôi dòng), rồi trả giỏ tài khoản
- * để thay giỏ trên máy. Lỗi không được chặn đăng nhập: trả `undefined` và giữ nguyên giỏ trên máy.
+ * để thay giỏ trên máy.
+ *
+ * INVARIANT: chỉ trả giỏ tài khoản khi đẩy + gộp đều thành công. Bước nào lỗi thì trả `undefined`
+ * để nơi gọi giữ nguyên giỏ trên máy — nếu vẫn tải giỏ tài khoản về (có thể rỗng) thì giỏ khách vừa
+ * chọn bị thay mất. Token giỏ khách được giữ lại để `retryPendingGuestCartMerge` gộp lại sau.
+ * Lỗi không được chặn đăng nhập: hàm này không bao giờ ném.
  */
 export async function syncCartAfterAuth(localItems: CartItem[]): Promise<CartItem[] | undefined> {
   try {
     if (localItems.length > 0) await syncGuestCart(toCartLines(localItems), 'lenient');
-    await mergeGuestCartAfterAuth();
+    if (!(await mergeGuestCartAfterAuth())) return undefined;
     return await pullAccountCart();
   } catch {
     return undefined;
   }
+}
+
+/** Còn token giỏ khách khi đã đăng nhập nghĩa là lần gộp sau đăng nhập trước đó chưa thành công. */
+export function hasPendingGuestCartMerge(): boolean {
+  return Boolean(readGuestCartToken());
+}
+
+/**
+ * Thử gộp lại giỏ khách còn treo (gọi khi mở app lúc đã đăng nhập). Idempotent: server gộp có khoá và
+ * coi token đã gộp/hết hạn là no-op. Trả `undefined` khi không có gì chờ gộp hoặc gộp vẫn lỗi — khi đó
+ * nơi gọi giữ giỏ trên máy và lần mở app sau sẽ thử lại.
+ */
+export async function retryPendingGuestCartMerge(localItems: CartItem[]): Promise<CartItem[] | undefined> {
+  if (!hasPendingGuestCartMerge()) return undefined;
+  return syncCartAfterAuth(localItems);
 }

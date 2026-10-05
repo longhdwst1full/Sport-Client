@@ -15,7 +15,9 @@ export { readPersistedCart } from './model/cart.saga';
 export { useCartItems, useCartActions } from './hooks/use-cart';
 export { useCartHydrated, CartHydrationContext } from './hooks/use-cart-hydrated';
 export {
+  hasPendingGuestCartMerge,
   pullAccountCart,
+  retryPendingGuestCartMerge,
   syncAccountCart,
   syncCartAfterAuth,
   syncGuestCart,
