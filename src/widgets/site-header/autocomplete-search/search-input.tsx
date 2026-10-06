@@ -74,7 +74,7 @@ export function SearchInput({
       {/* Rounded Pill Submit Button */}
       <Button
         type="submit"
-        className="my-1 mr-1 inline-flex shrink-0 items-center gap-1.5 rounded-full bg-brand-600 px-4 py-1.5 text-xs font-black uppercase tracking-wider text-white shadow-xs transition-all hover:bg-brand-700 active:scale-95 sm:px-5 sm:py-2"
+        className="my-1 mr-1.5 inline-flex shrink-0 items-center gap-1.5 rounded-full bg-gradient-to-r from-brand-600 via-brand-600 to-brand-700 px-4 py-1.5 text-xs font-black uppercase tracking-wider text-white shadow-sm shadow-brand-600/25 transition-all duration-200 hover:from-brand-500 hover:to-brand-600 hover:shadow-md hover:shadow-brand-600/35 hover:-translate-y-0.5 active:scale-95 border-t border-white/20 sm:px-5 sm:py-2"
       >
         <Search aria-hidden className="size-3.5 text-white" />
         <span>Tìm kiếm</span>

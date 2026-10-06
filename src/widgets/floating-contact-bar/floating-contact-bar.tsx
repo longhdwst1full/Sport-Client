@@ -57,7 +57,7 @@ export function FloatingContactBar() {
         {/* 24/7 Hotline Call Button */}
         <a
           href={`tel:${STORE_CONTACT.primaryHotlineRaw}`}
-          className="group relative flex items-center gap-2.5 rounded-full bg-brand-600 p-2.5 before:absolute before:-inset-1 before:rounded-full before:content-[''] sm:p-3 text-white shadow-xl shadow-brand-600/30 transition-all duration-300 hover:bg-brand-500 hover:scale-110 active:scale-95"
+          className="group relative flex items-center gap-2.5 rounded-full bg-gradient-to-tr from-brand-700 via-brand-600 to-brand-500 p-2.5 before:absolute before:-inset-1 before:rounded-full before:content-[''] sm:p-3 text-white shadow-xl shadow-brand-600/40 border-t border-white/25 transition-all duration-300 hover:scale-110 active:scale-95"
           aria-label={`Gọi hotline ${STORE_CONTACT.primaryHotline}`}
         >
           {/* Label Tooltip */}

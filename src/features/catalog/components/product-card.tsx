@@ -99,7 +99,7 @@ export const ProductCard = memo(function ProductCard({
                 fullWidth
                 onClick={(e) => onBuyNow(product, e)}
                 disabled={!product.hasPrice || product.inStock === false}
-                className="relative z-10 mt-2 gap-1.5 rounded-lg px-3 text-xs font-bold active:scale-95 disabled:bg-slate-200 disabled:text-slate-600 disabled:opacity-100 sm:text-sm"
+                className="relative z-10 mt-2.5 h-10 gap-1.5 rounded-xl px-3 text-xs font-black sm:text-sm disabled:bg-slate-100 disabled:text-slate-400 disabled:shadow-none disabled:border-0"
                 title={
                   product.inStock === false
                     ? 'Sản phẩm tạm hết hàng'
