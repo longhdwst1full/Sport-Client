@@ -7,19 +7,20 @@ export interface FooterLinkItem {
 
 export function FooterLinkColumn({ title, links }: { title: string; links: FooterLinkItem[] }) {
   return (
-    <div>
-      <h2 className="text-base font-bold uppercase tracking-wider text-white">{title}</h2>
-      <div className="mt-4 grid gap-2.5 text-sm text-slate-300">
+    <nav aria-label={title}>
+      <h2 className="text-sm font-bold uppercase tracking-wider text-white">{title}</h2>
+      <ul className="mt-3 grid text-sm text-slate-300">
         {links.map((link) => (
-          <Link
-            key={link.href}
-            className="transition hover:text-emerald-400 hover:translate-x-0.5 inline-block"
-            href={link.href}
-          >
-            {link.label}
-          </Link>
+          <li key={link.href}>
+            <Link
+              className="inline-flex min-h-10 items-center rounded transition hover:text-brand-400 focus-visible:outline-white"
+              href={link.href}
+            >
+              {link.label}
+            </Link>
+          </li>
         ))}
-      </div>
-    </div>
+      </ul>
+    </nav>
   );
 }

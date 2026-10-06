@@ -1,22 +1,13 @@
 'use client';
 
-import React from 'react';
 import { X, SlidersHorizontal, RotateCcw } from 'lucide-react';
 import { Drawer } from '@/foundation/components/overlay';
-import type { CategoryTabView } from '../hooks/use-category-tabs';
-import type { PriceRangeOption } from './catalog-sidebar-filters';
+import { Button } from '@/foundation/components/buttons';
+import type { CatalogSidebarFiltersProps } from './catalog-sidebar-filters';
 
-export interface CatalogMobileFilterDrawerProps {
+export interface CatalogMobileFilterDrawerProps extends Omit<CatalogSidebarFiltersProps, 'isTabsPending'> {
   isOpen: boolean;
   onClose: () => void;
-  tabs: CategoryTabView[];
-  activeTabSlug: string | null;
-  onSelectCategory: (slug: string | null) => void;
-  priceRanges: PriceRangeOption[];
-  activePriceRange: string;
-  onSelectPriceRange: (id: string) => void;
-  hasActiveFilters: boolean;
-  onResetFilters: () => void;
   totalProductsCount: number;
 }
 
@@ -45,17 +36,18 @@ export function CatalogMobileFilterDrawer({
         {/* Header */}
         <div className="flex items-center justify-between border-b border-slate-100 pb-4">
           <span className="flex items-center gap-2 text-sm font-black uppercase text-slate-900">
-            <SlidersHorizontal className="size-4 text-emerald-600" />
+            <SlidersHorizontal aria-hidden className="size-4 text-brand-600" />
             Bộ lọc tìm kiếm
           </span>
-          <button
-            type="button"
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={onClose}
-            className="grid size-8 place-items-center rounded-full text-slate-400 hover:bg-slate-100"
+            className="size-9 rounded-full text-slate-500"
             aria-label="Đóng bộ lọc"
           >
-            <X className="size-5" />
-          </button>
+            <X aria-hidden className="size-5" />
+          </Button>
         </div>
 
         {/* Filter Content */}
@@ -64,28 +56,17 @@ export function CatalogMobileFilterDrawer({
           <div>
             <h4 className="text-xs font-black uppercase text-slate-700 mb-2">Danh mục</h4>
             <div className="flex flex-wrap gap-2">
-              <button
-                type="button"
-                onClick={() => onSelectCategory(null)}
-                className={`rounded-full px-3.5 py-1.5 text-xs font-bold transition ${
-                  activeTabSlug === null
-                    ? 'bg-slate-900 text-white'
-                    : 'border border-slate-200 bg-slate-50 text-slate-700'
-                }`}
-              >
-                Tất cả
-              </button>
               {tabs.map((tab) => {
-                if (!tab.slug) return null;
                 const isSelected = activeTabSlug === tab.slug;
                 return (
                   <button
-                    key={tab.slug}
+                    key={tab.slug ?? 'all'}
                     type="button"
                     onClick={() => onSelectCategory(tab.slug)}
-                    className={`rounded-full px-3.5 py-1.5 text-xs font-bold transition ${
+                    aria-pressed={isSelected}
+                    className={`rounded-full px-3.5 py-2 text-xs font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-1 ${
                       isSelected
-                        ? 'bg-slate-900 text-white'
+                        ? 'bg-brand-600 text-white'
                         : 'border border-slate-200 bg-slate-50 text-slate-700'
                     }`}
                   >
@@ -107,9 +88,10 @@ export function CatalogMobileFilterDrawer({
                     key={range.id}
                     type="button"
                     onClick={() => onSelectPriceRange(range.id)}
-                    className={`rounded-xl border p-2.5 text-xs font-bold text-center transition ${
+                    aria-pressed={isSelected}
+                    className={`rounded-xl border p-2.5 text-center text-xs font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-1 ${
                       isSelected
-                        ? 'border-emerald-600 bg-emerald-50 text-emerald-800'
+                        ? 'border-brand-600 bg-brand-50 text-brand-800'
                         : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
                     }`}
                   >
@@ -124,22 +106,23 @@ export function CatalogMobileFilterDrawer({
         {/* Footer Actions */}
         <div className="flex items-center gap-3 border-t border-slate-100 pt-4">
           {hasActiveFilters && (
-            <button
-              type="button"
+            <Button
+              variant="outline"
+              size="lg"
               onClick={onResetFilters}
-              className="flex-1 rounded-2xl border border-slate-200 py-3 text-xs font-bold text-slate-700 hover:bg-slate-50 transition flex items-center justify-center gap-1.5"
+              className="flex-1 gap-1.5 rounded-2xl border-slate-200 px-0 text-xs font-bold text-slate-700 hover:border-slate-200 hover:bg-slate-50 hover:text-slate-700"
             >
-              <RotateCcw className="size-3.5" />
+              <RotateCcw aria-hidden className="size-3.5" />
               <span>Đặt lại</span>
-            </button>
+            </Button>
           )}
-          <button
-            type="button"
+          <Button
+            size="lg"
             onClick={onClose}
-            className="flex-2 rounded-2xl bg-emerald-600 py-3 text-xs font-black uppercase tracking-wider text-white shadow-md hover:bg-emerald-700 transition"
+            className="flex-[2] rounded-2xl px-0 text-xs font-black uppercase tracking-wider shadow-md"
           >
             Xem {totalProductsCount} sản phẩm
-          </button>
+          </Button>
         </div>
     </Drawer>
   );

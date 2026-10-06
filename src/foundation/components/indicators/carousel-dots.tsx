@@ -3,6 +3,9 @@
  * base/active/inactive classNames (the "pill grows and changes color when
  * active" look differs slightly per screen), and supply `keyFor`/`ariaLabelFor`
  * so React keys and labels stay identical to what they replace.
+ *
+ * a11y: chấm hiển thị vẫn nhỏ (class của caller áp lên `<span>` bên trong) nhưng nút bọc ngoài có vùng
+ * chạm tối thiểu 24×24px (WCAG 2.5.8); chấm đang chọn có `aria-current`.
  */
 export function CarouselDots({
   count,
@@ -23,7 +26,8 @@ export function CarouselDots({
   activeClassName?: string;
   inactiveClassName?: string;
   keyFor?: (index: number) => string | number;
-  ariaLabelFor: (index: number) => string;
+  /** Mặc định "Chuyển tới slide n". */
+  ariaLabelFor?: (index: number) => string;
 }) {
   return (
     <div className={wrapperClassName}>
@@ -32,9 +36,15 @@ export function CarouselDots({
           key={keyFor ? keyFor(index) : index}
           type="button"
           onClick={() => onSelect(index)}
-          className={`${baseClassName} ${index === activeIndex ? activeClassName : inactiveClassName}`}
-          aria-label={ariaLabelFor(index)}
-        />
+          className="group grid min-h-6 min-w-6 place-items-center rounded-full"
+          aria-label={ariaLabelFor ? ariaLabelFor(index) : `Chuyển tới slide ${index + 1}`}
+          aria-current={index === activeIndex ? 'true' : undefined}
+        >
+          <span
+            aria-hidden
+            className={`block ${baseClassName ?? ''} ${index === activeIndex ? activeClassName ?? '' : inactiveClassName ?? ''}`}
+          />
+        </button>
       ))}
     </div>
   );

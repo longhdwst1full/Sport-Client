@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { CheckCircle2 } from 'lucide-react';
 import type { OrderDetailView } from '@/features/orders';
+import { buttonVariants } from '@/foundation/components/buttons';
+import { DescriptionList } from '@/foundation/components/structure';
 
 interface CheckoutSuccessProps {
   order: OrderDetailView;
@@ -8,37 +10,34 @@ interface CheckoutSuccessProps {
 
 export function CheckoutSuccess({ order }: CheckoutSuccessProps) {
   return (
-    <main className="mx-auto max-w-3xl px-4 py-14 sm:px-6">
-      <section className="rounded-[32px] border border-emerald-200 bg-white p-7 text-center shadow-xl sm:p-12">
-        <div className="mx-auto grid size-20 place-items-center rounded-3xl bg-emerald-100 text-emerald-700">
-          <CheckCircle2 className="size-11" />
+    <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6 sm:py-14">
+      <section className="rounded-[32px] border border-success-200 bg-white p-5 text-center shadow-xl sm:p-12">
+        <div className="mx-auto grid size-20 place-items-center rounded-3xl bg-success-100 text-success-700">
+          <CheckCircle2 aria-hidden className="size-11" />
         </div>
         <h1 className="mt-5 text-2xl font-black text-slate-950">Đặt hàng thành công</h1>
         <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-slate-600">
-          Mã đơn <strong className="font-mono text-emerald-700">{order.orderNo}</strong> đã được tiếp nhận tại{' '}
+          Mã đơn <strong className="break-all font-mono text-slate-950">{order.orderNo}</strong> đã được tiếp nhận tại{' '}
           <strong>{order.branchName}</strong>.
         </p>
-        <div className="mx-auto mt-5 grid max-w-lg gap-3 rounded-2xl bg-slate-50 p-4 text-left text-sm sm:grid-cols-2">
-          <div>
-            <span className="block text-xs text-slate-500">Tổng thanh toán</span>
-            <strong>{order.grandTotalLabel}</strong>
-          </div>
-          <div>
-            <span className="block text-xs text-slate-500">Trạng thái</span>
-            <strong>{order.statusLabel}</strong>
-          </div>
-          <div className="sm:col-span-2">
-            <span className="block text-xs text-slate-500">Thanh toán</span>
-            <strong>{order.paymentMethodLabel}</strong>
-          </div>
-        </div>
+        <DescriptionList
+          columns={2}
+          className="mx-auto mt-5 max-w-lg grid-cols-1 gap-3 rounded-2xl bg-slate-50 p-4 text-left text-sm sm:grid-cols-2"
+          labelClassName="text-xs"
+          valueClassName="font-bold"
+          items={[
+            { label: 'Tổng thanh toán', value: order.grandTotalLabel },
+            { label: 'Trạng thái', value: order.statusLabel },
+            { label: 'Thanh toán', value: order.paymentMethodLabel },
+          ]}
+        />
         <div className="mt-7 flex flex-wrap justify-center gap-3">
-          <Link href="/" className="rounded-xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white">
+          <Link href="/" className={buttonVariants({ variant: 'primary', className: 'px-5 font-bold' })}>
             Tiếp tục mua sắm
           </Link>
           <Link
             href={`/orders/${order.orderNo}`}
-            className="rounded-xl border border-slate-200 px-5 py-3 text-sm font-bold text-slate-700"
+            className={buttonVariants({ variant: 'outline', className: 'px-5 font-bold' })}
           >
             Xem đơn hàng
           </Link>

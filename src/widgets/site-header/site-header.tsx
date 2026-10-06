@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useMegaMenuCategories } from '@/features/catalog';
+import { useMegaMenuCategories, type MegaMenuEntry } from '@/features/catalog';
 import Image from 'next/image';
 import { Phone } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -23,10 +23,17 @@ const MobileMenuDrawer = dynamic(() => import('./mobile-menu-drawer').then((mod)
   ssr: false,
 });
 
-export function SiteHeader() {
+export type { MegaMenuEntry };
+
+export interface SiteHeaderProps {
+  /** Danh mục dựng ở layout server (ISR) để link mega-menu có trong HTML đầu; `undefined` → tải ở client. */
+  initialCategories?: MegaMenuEntry[];
+}
+
+export function SiteHeader({ initialCategories }: SiteHeaderProps = {}) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const { categories: megaMenuCategories } = useMegaMenuCategories();
+  const { categories: megaMenuCategories } = useMegaMenuCategories(initialCategories);
   const flashSale = useFlashSaleAvailability();
   const [isMounted, setIsMounted] = useState(false);
 
@@ -51,46 +58,46 @@ export function SiteHeader() {
       {/* Main Header Row */}
       <div
         style={{ zIndex: 60 }}
-        className="relative border-b border-slate-200/80 bg-white shadow-xs"
+        className="relative border-b border-slate-200 bg-white"
       >
-        <div className="mx-auto flex h-[72px] max-w-7xl items-center gap-4 px-4 sm:gap-6 sm:px-6 lg:px-8">
+        <div className="mx-auto flex h-[72px] max-w-7xl items-center gap-3 px-4 sm:gap-6 sm:px-6 lg:px-8">
           {/* Logo */}
           <Link
             href="/"
-            className="group flex min-w-0 shrink-0 items-center transition-transform hover:scale-[1.02]"
+            className="group flex min-w-0 shrink-0 items-center rounded-lg"
             aria-label="Bảo An Sport - Trang chủ"
           >
             <span className="sr-only">Bảo An Sport</span>
-            <div className="relative h-11 w-44 sm:h-12 sm:w-56">
+            <div className="relative h-10 w-36 xs:h-11 xs:w-44 sm:h-12 sm:w-56">
               <Image
                 src="/images/logo.png"
                 alt="Bảo An Sport — Dụng Cụ Thể Thao Chính Hãng"
                 fill
                 priority
-                sizes="(max-width: 640px) 176px, 224px"
+                sizes="(max-width: 374px) 144px, (max-width: 640px) 176px, 224px"
                 className="object-contain object-left"
               />
             </div>
           </Link>
 
           {/* Search Bar — Desktop Live Autocomplete */}
-          <div className="hidden flex-1 max-w-xl mx-auto lg:block">
+          <div className="mx-auto hidden max-w-2xl flex-1 lg:block">
             <AutocompleteSearch />
           </div>
 
           {/* Hotline — Desktop */}
           <a
             href={`tel:${STORE_CONTACT.primaryHotlineRaw}`}
-            className="group hidden items-center gap-2.5 rounded-2xl border border-slate-200/80 bg-slate-50/80 px-4 py-2 transition hover:border-emerald-400/50 hover:bg-emerald-50/60 shadow-xs lg:flex"
-            aria-label="Gọi tư vấn"
+            className="group hidden items-center gap-2.5 rounded-xl px-2 py-1.5 transition hover:bg-slate-50 lg:flex"
+            aria-label={`Gọi hotline tư vấn ${STORE_CONTACT.primaryHotline}`}
           >
-            <div className="grid size-7 place-items-center rounded-full bg-emerald-600 text-white">
-              <Phone className="size-3.5" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-[10px] font-bold uppercase text-slate-400">Hotline tư vấn</span>
-              <strong className="text-xs font-black text-slate-900">{STORE_CONTACT.primaryHotline}</strong>
-            </div>
+            <span className="grid size-10 place-items-center rounded-full border-2 border-brand-600 text-brand-600 transition group-hover:bg-brand-600 group-hover:text-white">
+              <Phone aria-hidden className="size-4" />
+            </span>
+            <span className="flex flex-col leading-tight">
+              <span className="text-xs font-semibold text-slate-500">Hotline tư vấn</span>
+              <strong className="text-sm font-black text-brand-600">{STORE_CONTACT.primaryHotline}</strong>
+            </span>
           </a>
 
           {/* Action Icons */}
@@ -107,7 +114,7 @@ export function SiteHeader() {
 
         {/* Mobile Search Overlay */}
         {searchOpen && (
-          <div className="border-t border-slate-100 bg-slate-50/90 px-4 py-3 lg:hidden">
+          <div className="border-t border-slate-100 bg-slate-50 px-4 py-3 lg:hidden">
             <AutocompleteSearch isMobile onCloseMobile={() => setSearchOpen(false)} />
           </div>
         )}

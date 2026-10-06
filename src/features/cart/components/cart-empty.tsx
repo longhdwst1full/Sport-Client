@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ArrowLeft, ShoppingBag } from 'lucide-react';
+import { buttonVariants } from '@/foundation/components/buttons';
 import { EmptyState } from '@/foundation/components/feedback';
 
 const QUICK_EXPLORE_CATEGORIES = [
@@ -14,8 +15,8 @@ export function CartEmpty() {
   return (
     <EmptyState
       className="mt-12 rounded-3xl border border-dashed border-slate-300 bg-white p-8 text-center sm:p-16 shadow-sm"
-      iconWrapClassName="mx-auto grid size-20 place-items-center rounded-3xl bg-emerald-50 text-emerald-600 shadow-inner"
-      icon={<ShoppingBag className="size-10" />}
+      iconWrapClassName="mx-auto grid size-20 place-items-center rounded-3xl bg-brand-50 text-brand-600 shadow-inner"
+      icon={<ShoppingBag aria-hidden className="size-10" />}
       titleClassName="mt-6 text-2xl font-black text-slate-900"
       title="Giỏ hàng trống"
       descriptionClassName="mx-auto mt-2 max-w-md text-sm text-slate-500 leading-relaxed"
@@ -25,15 +26,15 @@ export function CartEmpty() {
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link
               href="/products"
-              className="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-7 py-3.5 font-bold text-white shadow-lg shadow-emerald-600/20 transition hover:bg-emerald-500"
+              className={buttonVariants({ size: 'lg', className: 'rounded-full px-7 font-bold shadow-lg shadow-brand-600/20' })}
             >
-              <ArrowLeft className="size-4" /> Tiếp tục mua sắm
+              <ArrowLeft aria-hidden className="size-4" /> Tiếp tục mua sắm
             </Link>
           </div>
 
           {/* Quick Explore Pills */}
           <div className="mt-10 border-t border-slate-100 pt-8">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
               Gợi ý danh mục phổ biến:
             </span>
             <div className="mt-3 flex flex-wrap justify-center gap-2">
@@ -41,7 +42,7 @@ export function CartEmpty() {
                 <Link
                   key={cat.name}
                   href={cat.href}
-                  className="rounded-full border border-slate-200 bg-slate-50 px-3.5 py-1.5 text-xs font-bold text-slate-700 transition hover:border-emerald-500 hover:bg-emerald-50 hover:text-emerald-700"
+                  className="rounded-full border border-slate-200 bg-slate-50 px-3.5 py-2 text-xs font-bold text-slate-700 transition hover:border-brand-500 hover:bg-brand-50 hover:text-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
                 >
                   {cat.name}
                 </Link>

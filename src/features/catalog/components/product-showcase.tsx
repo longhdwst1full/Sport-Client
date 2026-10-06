@@ -1,15 +1,16 @@
 'use client';
 
-import { useMemo, useState } from 'react';
-import Image from 'next/image';
+import { useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, RefreshCw, Zap } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { ArrowRight } from 'lucide-react';
+import { buttonVariants } from '@/foundation/components/buttons';
 import { useCategoryTabs } from '../hooks/use-category-tabs';
 import { useProductShowcase } from '../hooks/use-product-showcase';
 import type { ProductListResponseDto } from '@/generated/api/catalog/catalog.schemas';
-import { useCartActions } from '@/features/cart';
-import { ProductCard } from './product-card';
+import { useCardBuyNow } from '../hooks/use-card-buy-now';
+import { CatalogProductGrid } from './catalog/catalog-product-grid';
+
+const GRID_CLASS = 'grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3 lg:grid-cols-4';
 
 export function ProductShowcase({
   categorySlug,
@@ -19,11 +20,10 @@ export function ProductShowcase({
 }: {
   categorySlug?: string;
   searchQuery?: string;
-  /** Trang 1 server đã lấy (chỉ dùng cho lưới "Tất cả" ở trang chủ) để SSR có sẵn sản phẩm. */
+  /** Trang 1 server đã lấy cho đúng `categorySlug` (trang chủ: không lọc) để HTML SSR có sẵn sản phẩm. */
   initialPage?: ProductListResponseDto;
   initialPageFetchedAt?: number;
 } = {}) {
-  const router = useRouter();
   // Tab lấy từ danh mục thật; `null` là "Tất cả".
   const { tabs } = useCategoryTabs();
   const [activeTabSlug, setActiveTabSlug] = useState<string | null>(null);
@@ -38,72 +38,16 @@ export function ProductShowcase({
     isLoadingMore,
     isLoadMoreError,
     isError,
+    isShowingPreviousResults,
     refetch,
-  } = useProductShowcase(effectiveCategory, searchQuery, { initialPage, initialPageFetchedAt });
-  const { addItem } = useCartActions();
-
-  // Lọc danh mục chạy ở Backend (gồm cả nhánh con), nên ở đây không lọc lại. Bản trước
-  // so `product.category` (tên danh mục thật) với id tab tự đặt như 'gym' — hai vế không
-  // bao giờ bằng nhau nên bấm tab nào cũng ra rỗng.
-  const displayedProducts = products;
-
-  const handleBuyNow = (product: (typeof products)[number], e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (!product.isSellable || !product.defaultVariantId || !product.defaultVariantSku) {
-      router.push(`/products/${product.slug}`);
-      return;
-    }
-
-    addItem({
-        productId: product.id,
-        variantId: product.defaultVariantId,
-        sku: product.defaultVariantSku,
-        productType: product.productType === 'BUNDLE' ? 'BUNDLE' : 'STANDARD',
-        name: product.name,
-        slug: product.slug,
-        imageUrl: product.imageUrl,
-        price: product.numericPrice,
-        quantity: 1,
-      });
-
-    router.push(`/checkout?buyNow=${product.defaultVariantId}`);
-  };
-
-  if (isPending)
-    return (
-      <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4" aria-label="Đang tải sản phẩm">
-        {Array.from({ length: 4 }, (_, index) => (
-          <div key={index} className="overflow-hidden rounded-[28px] bg-white">
-            <div className="aspect-[4/3] animate-pulse bg-stone-200" />
-            <div className="space-y-3 p-5">
-              <div className="h-3 w-24 animate-pulse rounded bg-stone-200" />
-              <div className="h-6 animate-pulse rounded bg-stone-200" />
-              <div className="h-10 animate-pulse rounded bg-stone-100" />
-            </div>
-          </div>
-        ))}
-      </div>
-    );
-  if (isError)
-    return (
-      <div className="rounded-3xl border border-red-200 bg-red-50 p-8 text-center text-red-800" role="alert">
-        <p className="font-bold">Không thể tải sản phẩm lúc này.</p>
-        <button
-          type="button"
-          onClick={() => void refetch()}
-          className="mt-4 inline-flex items-center gap-2 rounded-full bg-red-800 px-5 py-2.5 text-sm font-bold text-white"
-        >
-          <RefreshCw className="size-4" /> Thử lại
-        </button>
-      </div>
-    );
-  if (!displayedProducts.length)
-    return (
-      <div className="rounded-3xl bg-white p-10 text-center text-stone-500">
-        Chưa có sản phẩm phù hợp.
-      </div>
-    );
+  } = useProductShowcase(effectiveCategory, searchQuery, {
+    initialPage,
+    initialPageFetchedAt,
+    // Trang 1 server lấy luôn theo đúng phạm vi của khối (danh mục của trang, không tab/từ khoá).
+    initialPageFilters: { category: categorySlug },
+    keepPreviousResults: true,
+  });
+  const handleBuyNow = useCardBuyNow();
 
   return (
     <div className="space-y-8">
@@ -118,10 +62,10 @@ export function ProductShowcase({
                 type="button"
                 aria-pressed={isActive}
                 onClick={() => setActiveTabSlug(tab.slug)}
-                className={`rounded-full px-4 py-2 text-xs font-bold transition-all duration-200 ${
+                className={`rounded-full px-4 py-2 text-xs font-bold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 ${
                   isActive
-                    ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20'
-                    : 'border border-slate-200 bg-white text-slate-700 hover:border-emerald-300 hover:bg-slate-50'
+                    ? 'bg-brand-600 text-white shadow-md shadow-brand-600/20'
+                    : 'border border-slate-200 bg-white text-slate-700 hover:border-brand-300 hover:bg-slate-50'
                 }`}
               >
                 {tab.label}
@@ -131,38 +75,31 @@ export function ProductShowcase({
         </div>
       )}
 
-      {/* Products Grid */}
-      <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-        {displayedProducts.map((product) => (
-          <ProductCard
-            key={product.id}
-            product={product}
-            onBuyNow={handleBuyNow}
-          />
-        ))}
-      </div>
-
-      {hasMore && (
-        <div className="flex justify-center">
-          <button
-            type="button"
-            onClick={loadMore}
-            disabled={isLoadingMore}
-            className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-bold text-slate-700 transition hover:border-emerald-400 hover:text-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {isLoadingMore
-              ? 'Đang tải…'
-              : isLoadMoreError
-                ? 'Tải thêm chưa được — thử lại'
-                : 'Xem thêm'}
-          </button>
-        </div>
-      )}
+      {/* Products Grid: tab pills luôn render để đổi tab không mất focus/nhảy layout. */}
+      <CatalogProductGrid
+        gridClassName={GRID_CLASS}
+        errorTitle="Không thể tải sản phẩm lúc này."
+        emptyState={
+          <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center text-slate-600">
+            Chưa có sản phẩm phù hợp.
+          </div>
+        }
+        isPending={isPending}
+        isError={isError}
+        isShowingPreviousResults={isShowingPreviousResults}
+        refetch={() => void refetch()}
+        displayedProducts={products}
+        onBuyNow={handleBuyNow}
+        hasMore={hasMore}
+        isLoadingMore={isLoadingMore}
+        isLoadMoreError={isLoadMoreError}
+        onLoadMore={loadMore}
+      />
 
       {/* Catalog View All Banner */}
       <div className="flex flex-col items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:flex-row sm:px-8">
         <div className="text-center sm:text-left">
-          <span className="text-xs font-black uppercase tracking-wider text-emerald-700">Danh mục chính hãng</span>
+          <span className="text-xs font-black uppercase tracking-wider text-brand-700">Danh mục chính hãng</span>
           <p className="text-sm font-bold text-slate-800">
             {total > 0
               ? `${total} mẫu thiết bị thể dục thể thao đang bán`
@@ -171,10 +108,10 @@ export function ProductShowcase({
         </div>
         <Link
           href="/products"
-          className="inline-flex shrink-0 items-center gap-2 rounded-full bg-emerald-600 px-6 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-emerald-700"
+          className={buttonVariants({ className: 'shrink-0 rounded-full px-6 text-xs font-bold shadow-sm' })}
         >
           <span>Khám phá toàn bộ danh mục</span>
-          <ArrowRight className="size-3.5" />
+          <ArrowRight aria-hidden className="size-3.5" />
         </Link>
       </div>
     </div>

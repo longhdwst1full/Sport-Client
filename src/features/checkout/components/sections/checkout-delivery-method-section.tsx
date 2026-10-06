@@ -1,8 +1,10 @@
 import { AlertTriangle, RotateCcw, Truck } from 'lucide-react';
-import { Spinner } from '@/foundation/components/feedback';
+import { Button } from '@/foundation/components/buttons';
+import { InlineAlert, Spinner } from '@/foundation/components/feedback';
 import type { CheckoutQuoteDto } from '@/generated/api/checkout/checkout.schemas';
 import type { CheckoutQuoteView } from '../../model/checkout.mapper';
 import { optionClass } from './checkout-section.styles';
+import { CheckoutStepSection } from './checkout-step-section';
 
 /** Bước 2: giao tiêu chuẩn (kèm kết quả báo giá tự động) hoặc nhờ shop gửi chành; lỗi báo giá có nút thử lại. */
 export function CheckoutDeliveryMethodSection({
@@ -31,19 +33,7 @@ export function CheckoutDeliveryMethodSection({
   retryQuote: () => void;
 }) {
   return (
-    <section className="rounded-3xl border border-slate-200/90 bg-white p-6 shadow-sm transition hover:border-slate-300">
-      <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
-        <span className="grid size-8 place-items-center rounded-xl bg-emerald-600 text-sm font-black text-white shadow-sm shadow-emerald-600/30">
-          2
-        </span>
-        <div>
-          <h2 className="flex items-center gap-2 text-base font-black text-slate-900 sm:text-lg">
-            <Truck className="size-5 text-emerald-600" /> Phương thức vận chuyển
-          </h2>
-          <p className="text-xs text-slate-500">Cước phí tính toán tự động và minh bạch</p>
-        </div>
-      </div>
-
+    <CheckoutStepSection step={2} icon={Truck} title="Phương thức vận chuyển" description="Cước phí tính toán tự động và minh bạch">
       <div className="mt-5 grid gap-3.5 sm:grid-cols-2" role="radiogroup" aria-label="Cách giao hàng">
         <button
           type="button"
@@ -54,7 +44,7 @@ export function CheckoutDeliveryMethodSection({
         >
           <div className="flex items-center justify-between gap-2">
             <strong className="text-sm font-bold text-slate-900">Giao hàng tiêu chuẩn</strong>
-            <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-emerald-800">
+            <span className="rounded-full bg-brand-100 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-brand-800">
               Khuyên dùng
             </span>
           </div>
@@ -66,12 +56,16 @@ export function CheckoutDeliveryMethodSection({
             <div className="mt-3.5 border-t border-slate-100 pt-3 text-xs" aria-live="polite">
               {quotePending ? (
                 <span className="inline-flex items-center gap-1.5 font-bold text-slate-500">
-                  <Spinner className="size-3.5 animate-spin text-emerald-600" /> Đang tính phí vận chuyển...
+                  <Spinner className="size-3.5 animate-spin text-brand-600" /> Đang tính phí vận chuyển...
                 </span>
               ) : quoteView ? (
                 <div className="space-y-1">
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-sm font-black text-emerald-700">
+                  <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                    <span
+                      className={`text-sm font-black ${
+                        !quoteView.shippingFeePending && quoteView.shippingTotalAmount === 0 ? 'text-success-700' : 'text-brand-700'
+                      }`}
+                    >
                       {quoteView.shippingFeePending
                         ? 'Shop báo riêng'
                         : quoteView.shippingTotalAmount === 0
@@ -121,13 +115,13 @@ export function CheckoutDeliveryMethodSection({
       </div>
 
       {error && !autoQuoting && !quote && (
-        <div role="alert" className="mt-4 flex flex-col gap-3 rounded-2xl border border-rose-200 bg-rose-50 p-4 text-xs font-semibold text-rose-700 sm:flex-row sm:items-center sm:justify-between">
-          <span className="flex items-start gap-2"><AlertTriangle className="mt-0.5 size-4 shrink-0" /> {error}</span>
-          <button type="button" onClick={retryQuote} className="inline-flex shrink-0 items-center gap-1.5 rounded-xl bg-rose-600 px-3.5 py-1.5 text-xs font-bold text-white shadow-sm hover:bg-rose-700">
-            <RotateCcw className="size-3.5" /> Thử lại
-          </button>
-        </div>
+        <InlineAlert role="alert" className="mt-4 flex flex-col gap-3 rounded-2xl border border-rose-200 bg-rose-50 p-4 text-xs font-semibold text-rose-700 sm:flex-row sm:items-center sm:justify-between">
+          <span className="flex items-start gap-2"><AlertTriangle aria-hidden className="mt-0.5 size-4 shrink-0" /> {error}</span>
+          <Button variant="danger" size="md" onClick={retryQuote} className="shrink-0 gap-1.5 text-xs font-bold shadow-sm focus-visible:ring-rose-500">
+            <RotateCcw aria-hidden className="size-3.5" /> Thử lại
+          </Button>
+        </InlineAlert>
       )}
-    </section>
+    </CheckoutStepSection>
   );
 }

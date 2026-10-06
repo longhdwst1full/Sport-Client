@@ -3,13 +3,14 @@
 import Link from 'next/link';
 import { ArrowRight, Clock, Flame } from 'lucide-react';
 import { useCartActions } from '@/features/cart';
-import { FlashSaleDealCard } from './flash-sale-deal-card';
+import { Skeleton } from '@/foundation/components/feedback';
+import { FlashSaleDealCard, FlashSaleDealCardSkeleton } from './flash-sale-deal-card';
 import { useFlashSale } from '../hooks/use-flash-sale';
 import type { FlashSaleDealView } from '../model/flash-sale.mapper';
 
 export function FlashSaleSection() {
   const { addItem } = useCartActions();
-  const { campaign, countdown } = useFlashSale();
+  const { campaign, countdown, isPending } = useFlashSale();
 
   const handleQuickAdd = (item: FlashSaleDealView, e: React.MouseEvent) => {
     e.preventDefault();
@@ -30,21 +31,26 @@ export function FlashSaleSection() {
 
   const format2Digits = (num: number) => String(num).padStart(2, '0');
 
-  // Không có chiến dịch đang chạy (hoặc đang tải lần đầu) thì ẩn hẳn section,
-  // không dựng đếm ngược giả hay nháy skeleton rồi biến mất gây giật layout trên trang chủ.
+  // Lần tải đầu (kể cả HTML SSR, khi query chưa bật): giữ chỗ bằng skeleton cùng khung để lưới sản
+  // phẩm bên dưới không bị đẩy xuống khi flash sale về (CLS). Tải xong mà không có chiến dịch đang
+  // chạy, hoặc lỗi, thì ẩn hẳn — không dựng đếm ngược giả.
+  if (isPending && !campaign) return <FlashSaleSectionSkeleton />;
   if (!campaign || campaign.deals.length === 0) return null;
 
   return (
-    <section className="bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 py-16 text-white sm:py-20">
+    <section
+      className="bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 py-16 text-white sm:py-20"
+      aria-labelledby="flash-sale-heading"
+    >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header with Flame & Live Countdown */}
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between border-b border-slate-800/80 pb-8">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-rose-500/30 bg-rose-500/10 px-3.5 py-1 text-xs font-black uppercase tracking-widest text-rose-400">
-              <Flame className="size-4 animate-bounce text-rose-500" />
+            <div className="inline-flex items-center gap-2 rounded-full border border-amber-400/30 bg-amber-400/10 px-3.5 py-1 text-xs font-black uppercase tracking-widest text-amber-300">
+              <Flame className="size-4 text-amber-400 motion-safe:animate-bounce" aria-hidden="true" />
               Ưu đãi chớp nhoáng — Giờ vàng thể thao
             </div>
-            <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">
+            <h2 id="flash-sale-heading" className="mt-3 text-3xl font-black text-white sm:text-4xl">
               {campaign?.name ?? 'Flash Sale Thiết Bị Hôm Nay'}
             </h2>
             <p className="mt-2 text-sm text-slate-400 sm:text-base">
@@ -55,19 +61,23 @@ export function FlashSaleSection() {
           {/* Countdown Clock Box */}
           <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
             <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-400">
-              <Clock className="size-4 text-rose-400" />
+              <Clock className="size-4 text-amber-400" aria-hidden="true" />
               Kết thúc trong:
             </span>
-            <div className="flex items-center gap-1.5 font-mono text-sm sm:text-base font-black">
-              <span className="grid size-9 sm:size-10 place-items-center rounded-xl bg-rose-600/90 text-white shadow-md shadow-rose-600/20">
+            <div
+              className="flex items-center gap-1.5 font-mono text-sm sm:text-base font-black"
+              role="timer"
+              aria-label={`Còn ${countdown.hours} giờ ${countdown.minutes} phút`}
+            >
+              <span className="grid size-9 sm:size-10 place-items-center rounded-xl bg-brand-600 text-white shadow-md shadow-brand-600/20">
                 {format2Digits(countdown.hours)}
               </span>
-              <span className="text-slate-500 font-bold">:</span>
-              <span className="grid size-9 sm:size-10 place-items-center rounded-xl bg-rose-600/90 text-white shadow-md shadow-rose-600/20">
+              <span className="text-slate-500 font-bold" aria-hidden="true">:</span>
+              <span className="grid size-9 sm:size-10 place-items-center rounded-xl bg-brand-600 text-white shadow-md shadow-brand-600/20">
                 {format2Digits(countdown.minutes)}
               </span>
-              <span className="text-slate-500 font-bold">:</span>
-              <span className="grid size-9 sm:size-10 place-items-center rounded-xl bg-rose-600/90 text-white shadow-md shadow-rose-600/20">
+              <span className="text-slate-500 font-bold" aria-hidden="true">:</span>
+              <span className="grid size-9 sm:size-10 place-items-center rounded-xl bg-brand-600 text-white shadow-md shadow-brand-600/20">
                 {format2Digits(countdown.seconds)}
               </span>
             </div>
@@ -75,14 +85,14 @@ export function FlashSaleSection() {
         </div>
 
         {/* Product Cards Grid */}
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-10 grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
           {campaign.deals.map((deal) => (
             <FlashSaleDealCard key={deal.id} deal={deal} onQuickAdd={handleQuickAdd} />
           ))}
         </div>
 
         {/* Bottom Banner with All Deals CTA */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 rounded-3xl border border-rose-900/40 bg-gradient-to-r from-rose-950/40 via-slate-900/70 to-slate-900/90 p-6 sm:flex-row sm:px-8">
+        <div className="mt-12 flex flex-col items-center justify-between gap-4 rounded-3xl border border-brand-900/40 bg-gradient-to-r from-brand-950/50 via-slate-900/70 to-slate-900/90 p-6 sm:flex-row sm:px-8">
           <div className="text-center sm:text-left">
             <strong className="block text-base font-black text-white">
               Xem toàn bộ suất flash sale đang mở trong hôm nay
@@ -93,12 +103,40 @@ export function FlashSaleSection() {
           </div>
           <Link
             href="/flash-sale"
-            className="inline-flex shrink-0 items-center gap-2 rounded-full bg-rose-600 px-6 py-3 text-xs font-black text-white shadow-lg shadow-rose-600/20 transition hover:bg-rose-500"
+            className="inline-flex shrink-0 items-center gap-2 rounded-full bg-brand-600 px-6 py-3 text-xs font-black text-white shadow-lg shadow-brand-600/20 transition hover:bg-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
           >
             <span>Xem tất cả Deal Flash Sale</span>
-            <ArrowRight className="size-3.5" />
+            <ArrowRight className="size-3.5" aria-hidden="true" />
           </Link>
         </div>
+      </div>
+    </section>
+  );
+}
+
+/** Cùng khung với section thật (header + lưới 4 thẻ) để giữ chỗ trong lúc tải lần đầu. */
+function FlashSaleSectionSkeleton() {
+  return (
+    <section
+      className="bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 py-16 sm:py-20"
+      aria-busy="true"
+      aria-label="Đang tải Flash Sale"
+    >
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col gap-6 border-b border-slate-800/80 pb-8 md:flex-row md:items-end md:justify-between">
+          <div className="space-y-3">
+            <Skeleton className="h-6 w-56 rounded-full bg-slate-800" />
+            <Skeleton className="h-9 w-72 bg-slate-800 sm:h-10" />
+            <Skeleton className="h-4 w-64 bg-slate-800" />
+          </div>
+          <Skeleton className="h-10 w-60 bg-slate-800" />
+        </div>
+        <div className="mt-10 grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
+          {Array.from({ length: 4 }, (_, index) => (
+            <FlashSaleDealCardSkeleton key={index} />
+          ))}
+        </div>
+        <Skeleton className="mt-12 h-[124px] w-full rounded-3xl bg-slate-800/70 sm:h-[92px]" />
       </div>
     </section>
   );

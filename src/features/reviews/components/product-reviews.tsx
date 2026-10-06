@@ -2,7 +2,9 @@
 
 import { MessageCircle } from 'lucide-react';
 import { RatingStars } from '@/foundation/components/indicators';
+import { Skeleton } from '@/foundation/components/feedback';
 import { useProductReviews } from '../hooks/use-product-reviews';
+import { formatAverageRating } from '../model/review.mapper';
 
 /**
  * Khối trích dẫn đánh giá trên trang chủ.
@@ -14,7 +16,7 @@ import { useProductReviews } from '../hooks/use-product-reviews';
 export function ProductReviews({ productSlug }: { productSlug: string }) {
   const { reviews, averageRating, total, isPending } = useProductReviews(productSlug);
 
-  if (isPending) return <div className="h-64 animate-pulse rounded-[32px] bg-slate-900" />;
+  if (isPending) return <Skeleton className="h-64 rounded-[32px]" />;
 
   const highlight = reviews.find((review) => review.rating >= 4) ?? reviews[0];
   if (!highlight) return null;
@@ -22,17 +24,18 @@ export function ProductReviews({ productSlug }: { productSlug: string }) {
   return (
     <div className="grid gap-8 rounded-[32px] border border-slate-800 bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 p-8 text-white shadow-xl md:grid-cols-[.75fr_1.25fr] md:p-12">
       <div>
-        <div className="flex size-12 items-center justify-center rounded-2xl border border-emerald-500/20 bg-emerald-500/10 text-emerald-400">
-          <MessageCircle className="size-6" />
+        <div className="flex size-12 items-center justify-center rounded-2xl border border-brand-500/20 bg-brand-500/10 text-brand-400">
+          <MessageCircle aria-hidden className="size-6" />
         </div>
         <p className="mt-4 text-4xl font-black text-white sm:text-5xl">
-          {averageRating.toFixed(1)}
+          {formatAverageRating(averageRating)}
           <span className="text-xl font-bold text-slate-400">/5</span>
         </p>
         <RatingStars
           value={Math.round(averageRating)}
           inactiveClassName="text-slate-700"
           wrapperClassName="mt-2.5 flex gap-1 text-amber-400"
+          ariaLabel={`Trung bình ${formatAverageRating(averageRating)} trên 5 sao`}
         />
         <p className="mt-2 text-xs font-semibold text-slate-400">
           {total} đánh giá đã được duyệt
@@ -42,7 +45,7 @@ export function ProductReviews({ productSlug }: { productSlug: string }) {
         <p className="text-lg font-bold leading-relaxed text-slate-100 sm:text-xl">
           “{highlight.content}”
         </p>
-        <footer className="mt-4 text-xs font-semibold text-emerald-400">
+        <footer className="mt-4 text-xs font-semibold text-brand-400">
           {highlight.authorName}
           {highlight.verifiedPurchase ? ' · Đã xác minh mua hàng' : ''} · {highlight.dateLabel}
         </footer>

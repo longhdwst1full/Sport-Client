@@ -1,10 +1,13 @@
 import Link from 'next/link';
-import { AlertTriangle, CheckCircle2 } from 'lucide-react';
-import { Spinner } from '@/foundation/components/feedback';
-import type { CheckoutPaymentMethod, CheckoutQuoteDto } from '@/generated/api/checkout/checkout.schemas';
+import { AlertTriangle } from 'lucide-react';
+import type { CheckoutQuoteDto } from '@/generated/api/checkout/checkout.schemas';
+import { InlineAlert } from '@/foundation/components/feedback';
 import { STORE_POLICY_PAGES } from '@/shared/constants';
 
-/** Bước 4: đồng ý điều khoản, kiểm tra lại phí khi chờ tư vấn cước, khung lỗi và nút đặt hàng trên mobile. */
+/**
+ * Bước 4: đồng ý điều khoản, kiểm tra lại phí khi chờ tư vấn cước và khung lỗi.
+ * Nút đặt hàng mobile nằm ở thanh dính đáy trong `CheckoutOrderSummary` (một CTA duy nhất mỗi breakpoint).
+ */
 export function CheckoutConfirmSection({
   acceptedTerms,
   setAcceptedTerms,
@@ -12,8 +15,6 @@ export function CheckoutConfirmSection({
   refreshConsultedQuote,
   busy,
   error,
-  redirectingToVnpay,
-  paymentMethod,
 }: {
   acceptedTerms: boolean;
   setAcceptedTerms: (value: boolean) => void;
@@ -21,25 +22,23 @@ export function CheckoutConfirmSection({
   refreshConsultedQuote: () => void;
   busy: boolean;
   error: string;
-  redirectingToVnpay: boolean;
-  paymentMethod: CheckoutPaymentMethod;
 }) {
   return (
-    <section className="rounded-3xl border border-slate-200/90 bg-white p-6 shadow-sm">
+    <section className="rounded-3xl border border-slate-200/90 bg-white p-4 shadow-sm sm:p-6">
       <label className="flex cursor-pointer items-start gap-3 rounded-2xl bg-slate-50 p-4 text-xs sm:text-sm text-slate-700 border border-slate-200/60">
         <input
           type="checkbox"
           checked={acceptedTerms}
           onChange={(e) => setAcceptedTerms(e.target.checked)}
-          className="mt-0.5 size-4 accent-emerald-600 cursor-pointer rounded"
+          className="mt-0.5 size-5 shrink-0 accent-brand-600 cursor-pointer rounded"
         />
         <span className="leading-relaxed">
           Tôi đã đọc và đồng ý với{' '}
-          <Link href={STORE_POLICY_PAGES.TERMS.href} target="_blank" className="font-bold text-emerald-700 underline-offset-2 hover:underline">
+          <Link href={STORE_POLICY_PAGES.TERMS.href} target="_blank" className="font-bold text-brand-700 underline-offset-2 hover:underline">
             {STORE_POLICY_PAGES.TERMS.title.toLowerCase()}
           </Link>{' '}
           và{' '}
-          <Link href={STORE_POLICY_PAGES.RETURNS.href} target="_blank" className="font-bold text-emerald-700 underline-offset-2 hover:underline">
+          <Link href={STORE_POLICY_PAGES.RETURNS.href} target="_blank" className="font-bold text-brand-700 underline-offset-2 hover:underline">
             chính sách đổi trả & bảo hành
           </Link>{' '}
           của Bảo An Sport.
@@ -55,7 +54,7 @@ export function CheckoutConfirmSection({
             type="button"
             onClick={refreshConsultedQuote}
             disabled={busy}
-            className="shrink-0 rounded-xl bg-amber-600 px-4 py-2 text-xs font-black text-white hover:bg-amber-700 disabled:bg-slate-300"
+            className="min-h-11 shrink-0 rounded-xl bg-amber-600 px-4 py-2 text-xs font-black text-white hover:bg-amber-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 disabled:bg-slate-300 disabled:text-slate-600"
           >
             {busy ? 'Đang kiểm tra...' : 'Kiểm tra lại phí'}
           </button>
@@ -63,31 +62,12 @@ export function CheckoutConfirmSection({
       )}
 
       {error && (
-        <div role="alert" className="mt-4 flex items-center gap-2 rounded-2xl border border-rose-200 bg-rose-50 p-4 text-xs font-bold text-rose-700">
-          <AlertTriangle className="size-4 shrink-0 text-rose-600" />
+        <InlineAlert role="alert" className="mt-4 flex items-center gap-2 rounded-2xl border border-rose-200 bg-rose-50 p-4 text-xs font-bold text-rose-700">
+          <AlertTriangle aria-hidden className="size-4 shrink-0 text-rose-600" />
           <span>{error}</span>
-        </div>
+        </InlineAlert>
       )}
 
-      {/* Mobile Submit Button */}
-      <div className="mt-5 lg:hidden">
-        <button
-          type="submit"
-          disabled={busy || redirectingToVnpay}
-          className="flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-600 py-4 text-sm font-black text-white shadow-md shadow-emerald-600/20 transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-slate-300"
-        >
-          {busy ? <Spinner className="size-5 animate-spin" /> : <CheckCircle2 className="size-5" />}
-          <span>
-            {redirectingToVnpay
-              ? 'Đang chuyển sang VNPay...'
-              : busy
-              ? 'Đang xử lý...'
-              : paymentMethod === 'VNPAY'
-              ? 'Đặt hàng & Thanh toán VNPay'
-              : 'Đặt hàng'}
-          </span>
-        </button>
-      </div>
     </section>
   );
 }

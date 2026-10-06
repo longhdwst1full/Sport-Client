@@ -29,7 +29,13 @@ export function RatingStars({
   starAriaLabel?: (star: number) => string;
 }) {
   return (
-    <div className={wrapperClassName} aria-label={ariaLabel}>
+    <div
+      className={wrapperClassName}
+      // Chế độ hiển thị: cụm sao là một "hình" có nhãn (aria-label trên div không role bị bỏ qua).
+      // Chế độ chọn: là nhóm nút.
+      role={onChange ? 'group' : ariaLabel ? 'img' : undefined}
+      aria-label={ariaLabel}
+    >
       {[1, 2, 3, 4, 5].map((star) =>
         onChange ? (
           <button
@@ -39,10 +45,10 @@ export function RatingStars({
             className={starButtonClassName}
             aria-label={starAriaLabel?.(star)}
           >
-            <Star className={`${size} ${star <= value ? activeClassName : inactiveClassName}`} />
+            <Star aria-hidden className={`${size} ${star <= value ? activeClassName : inactiveClassName}`} />
           </button>
         ) : (
-          <Star key={star} className={`${size} ${star <= value ? activeClassName : inactiveClassName}`} />
+          <Star key={star} aria-hidden className={`${size} ${star <= value ? activeClassName : inactiveClassName}`} />
         ),
       )}
     </div>

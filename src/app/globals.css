@@ -157,13 +157,13 @@
 :root {
   color-scheme: light;
   /* DC design tokens: shared visual language with admin-client/dragon-web. */
-  --dc-primary-50: #eefff7;
-  --dc-primary-100: #cce2de;
-  --dc-primary-500: #00bf6f;
-  --dc-primary-600: #049157;
-  --dc-primary-700: #006c5b;
-  --dc-primary-800: #00443c;
-  --dc-primary-900: #003129;
+  --dc-primary-50: #fff1f1;
+  --dc-primary-100: #ffe0e0;
+  --dc-primary-500: #f23c40;
+  --dc-primary-600: #db1518;
+  --dc-primary-700: #b80f12;
+  --dc-primary-800: #980f13;
+  --dc-primary-900: #7e1316;
   --dc-info-500: #00bad1;
   --dc-warning-500: #ff9f43;
   --dc-error-500: #ff4c51;
@@ -192,8 +192,8 @@ body::before {
   content: '';
   pointer-events: none;
   background:
-    radial-gradient(circle at 15% 10%, rgba(0, 191, 111, 0.04), transparent 35rem),
-    radial-gradient(circle at 85% 30%, rgba(0, 186, 209, 0.04), transparent 35rem);
+    radial-gradient(circle at 15% 10%, rgba(219, 21, 24, 0.03), transparent 35rem),
+    radial-gradient(circle at 85% 30%, rgba(66, 65, 68, 0.03), transparent 35rem);
 }
 h1,
 h2,
@@ -218,6 +218,57 @@ html {
 }
 .text-balance {
   text-wrap: balance;
+}
+
+/* Vòng focus bàn phím mặc định (brand-500) cho mọi phần tử tương tác chưa tự khai báo ring.
+   Phần tử có `outline-none`/`outline-hidden` (utilities, khai báo sau) tự lo focus-within/ring riêng. */
+:focus-visible {
+  outline: 2px solid var(--dc-primary-500);
+  outline-offset: 2px;
+}
+
+@layer utilities {
+  /* Tailwind v4 alias; v3 không sinh class này. */
+  .outline-hidden {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+  }
+
+  /* Bộ con tối thiểu của tailwindcss-animate (không cài plugin): chỉ các biến thể đang dùng. */
+  .animate-in {
+    animation: dc-enter 200ms ease-out both;
+  }
+  .fade-in {
+    --dc-enter-opacity: 0;
+  }
+  .slide-in-from-top {
+    --dc-enter-y: -100%;
+  }
+  .slide-in-from-top-1 {
+    --dc-enter-y: -0.25rem;
+  }
+  .slide-in-from-top-4 {
+    --dc-enter-y: -1rem;
+  }
+  .slide-in-from-bottom {
+    --dc-enter-y: 100%;
+  }
+}
+
+/* Thanh đếm ngược của toast (shared/components/global-toast.tsx); thời lượng đặt inline theo toast. */
+.dc-toast-progress {
+  animation: dc-toast-progress linear forwards;
+}
+@keyframes dc-toast-progress {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0); }
+}
+
+@keyframes dc-enter {
+  from {
+    opacity: var(--dc-enter-opacity, 1);
+    transform: translate3d(0, var(--dc-enter-y, 0), 0);
+  }
 }
 
 /* Custom Sleek Scrollbar */

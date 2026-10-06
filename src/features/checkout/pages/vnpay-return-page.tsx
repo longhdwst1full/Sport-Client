@@ -1,12 +1,13 @@
 import Link from 'next/link';
 import { CheckCircle2, CircleAlert, XCircle } from 'lucide-react';
+import { buttonVariants } from '@/foundation/components/buttons';
 import type { VnpayReturnView } from '../model/checkout.mapper';
 
 const PRESENTATION = {
   SUCCESS: {
     icon: CheckCircle2,
-    tone: 'border-emerald-300 bg-emerald-50 text-emerald-900',
-    iconTone: 'text-emerald-600',
+    tone: 'border-success-300 bg-success-50 text-success-900',
+    iconTone: 'text-success-600',
     title: 'VNPay đã ghi nhận giao dịch',
   },
   FAILED: {
@@ -30,13 +31,13 @@ export function VnpayReturnPage({ result }: { result: VnpayReturnView }) {
   return (
       <div className="bg-stone-50/60 pb-20 pt-10">
         <main className="mx-auto max-w-2xl px-4 sm:px-6">
-          <section className={`rounded-3xl border p-8 shadow-sm ${presentation.tone}`}>
-            <Icon className={`size-12 ${presentation.iconTone}`} />
+          <section role="status" className={`rounded-3xl border p-5 shadow-sm sm:p-8 ${presentation.tone}`}>
+            <Icon aria-hidden className={`size-12 ${presentation.iconTone}`} />
             <h1 className="mt-4 text-2xl font-black">{presentation.title}</h1>
             <p className="mt-3 text-sm leading-6">{result.message}</p>
 
             {result.paymentRef && (
-              <p className="mt-4 text-xs font-semibold opacity-70">
+              <p className="mt-4 break-all text-xs font-semibold opacity-80">
                 Mã thanh toán: {result.paymentRef}
               </p>
             )}
@@ -55,13 +56,13 @@ export function VnpayReturnPage({ result }: { result: VnpayReturnView }) {
           <div className="mt-5 flex flex-wrap gap-3">
             <Link
               href="/orders"
-              className="rounded-full bg-emerald-600 px-6 py-3 text-sm font-black text-white transition hover:bg-emerald-700"
+              className={buttonVariants({ variant: 'primary', className: 'rounded-full px-6 font-black' })}
             >
               Xem đơn hàng của tôi
             </Link>
             <Link
               href="/"
-              className="rounded-full bg-slate-100 px-6 py-3 text-sm font-bold text-slate-800 transition hover:bg-slate-200"
+              className={buttonVariants({ variant: 'ghost', className: 'rounded-full bg-slate-100 px-6 font-bold text-slate-800 hover:bg-slate-200' })}
             >
               Về trang chủ
             </Link>

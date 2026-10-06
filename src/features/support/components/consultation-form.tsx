@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { CheckCircle2, Send } from 'lucide-react';
 import { STORE_CONFIG, STORE_CONTACT } from '@/shared/constants';
 
 export function ConsultationForm() {
+  const fieldId = useId();
   const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState({
     name: '',
@@ -43,13 +44,13 @@ export function ConsultationForm() {
   return (
     <div className="rounded-3xl border border-stone-200/80 bg-white p-6 shadow-sm sm:p-8">
       <h2 className="text-xl font-black text-ink">Đăng ký tư vấn thiết kế Home Gym</h2>
-      <p className="mt-1 text-xs text-stone-500">
+      <p className="mt-1 text-xs text-stone-600">
         Đội ngũ kỹ sư thể hình {STORE_CONFIG.name} sẽ liên hệ gửi bản vẽ 3D và báo giá tối ưu trong 30 phút.
       </p>
 
       {submitted ? (
-        <div className="mt-8 rounded-2xl bg-emerald-50 p-6 text-center">
-          <CheckCircle2 className="mx-auto size-12 text-emerald-600" />
+        <div role="status" className="mt-8 rounded-2xl bg-success-50 p-6 text-center">
+          <CheckCircle2 className="mx-auto size-12 text-success-600" aria-hidden />
           <h3 className="mt-3 text-lg font-bold text-ink">Đã mở email soạn sẵn</h3>
           <p className="mt-1 text-xs text-stone-600">
             Nội dung bạn vừa nhập đã được điền sẵn vào email gửi tới {STORE_CONTACT.email}.
@@ -59,7 +60,7 @@ export function ConsultationForm() {
             Không mở được email? Gọi trực tiếp{' '}
             <a
               href={`tel:${STORE_CONTACT.primaryHotline.replace(/\s/g, '')}`}
-              className="font-bold text-emerald-700 underline"
+              className="font-bold text-brand-700 underline rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
             >
               {STORE_CONTACT.primaryHotline}
             </a>
@@ -68,7 +69,7 @@ export function ConsultationForm() {
           <button
             type="button"
             onClick={() => setSubmitted(false)}
-            className="mt-5 rounded-full bg-ink px-6 py-2.5 text-xs font-bold text-white"
+            className="mt-5 min-h-11 rounded-full bg-ink px-6 py-2.5 text-xs font-bold text-white transition hover:bg-ink/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2"
           >
             Soạn yêu cầu khác
           </button>
@@ -76,47 +77,54 @@ export function ConsultationForm() {
       ) : (
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
           <div>
-            <label className="block text-xs font-bold uppercase text-stone-500">Họ và tên *</label>
+            <label htmlFor={`${fieldId}-name`} className="block text-xs font-bold uppercase text-stone-600">Họ và tên *</label>
             <input
               required
               value={form.name}
+              id={`${fieldId}-name`}
+              autoComplete="name"
               onChange={(e) => setForm({ ...form, name: e.target.value })}
               placeholder="Nguyễn Văn A"
-              className="mt-1.5 w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
+              className="mt-1.5 w-full rounded-xl border border-stone-200 px-4 py-3 text-base sm:text-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/30"
             />
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label className="block text-xs font-bold uppercase text-stone-500">Số điện thoại *</label>
+              <label htmlFor={`${fieldId}-phone`} className="block text-xs font-bold uppercase text-stone-600">Số điện thoại *</label>
               <input
                 required
                 type="tel"
+                autoComplete="tel"
                 value={form.phone}
+              id={`${fieldId}-phone`}
                 onChange={(e) => setForm({ ...form, phone: e.target.value })}
                 placeholder="0912 345 678"
-                className="mt-1.5 w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
+                className="mt-1.5 w-full rounded-xl border border-stone-200 px-4 py-3 text-base sm:text-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/30"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold uppercase text-stone-500">Email</label>
+              <label htmlFor={`${fieldId}-email`} className="block text-xs font-bold uppercase text-stone-600">Email</label>
               <input
                 type="email"
+                autoComplete="email"
                 value={form.email}
+              id={`${fieldId}-email`}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 placeholder="email@example.com"
-                className="mt-1.5 w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
+                className="mt-1.5 w-full rounded-xl border border-stone-200 px-4 py-3 text-base sm:text-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/30"
               />
             </div>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label className="block text-xs font-bold uppercase text-stone-500">Diện tích dự kiến</label>
+              <label htmlFor={`${fieldId}-spaceSize`} className="block text-xs font-bold uppercase text-stone-600">Diện tích dự kiến</label>
               <select
                 value={form.spaceSize}
+              id={`${fieldId}-spaceSize`}
                 onChange={(e) => setForm({ ...form, spaceSize: e.target.value })}
-                className="mt-1.5 w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
+                className="mt-1.5 w-full rounded-xl border border-stone-200 px-4 py-3 text-base sm:text-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/30"
               >
                 <option value="under-10m2">Dưới 10m² (Góc tập nhỏ)</option>
                 <option value="10-20m2">10m² - 20m² (Phòng ngủ / Ban công)</option>
@@ -126,11 +134,12 @@ export function ConsultationForm() {
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase text-stone-500">Mục tiêu tập luyện</label>
+              <label htmlFor={`${fieldId}-purpose`} className="block text-xs font-bold uppercase text-stone-600">Mục tiêu tập luyện</label>
               <select
                 value={form.purpose}
+              id={`${fieldId}-purpose`}
                 onChange={(e) => setForm({ ...form, purpose: e.target.value })}
-                className="mt-1.5 w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
+                className="mt-1.5 w-full rounded-xl border border-stone-200 px-4 py-3 text-base sm:text-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/30"
               >
                 <option value="home-gym">Tăng cơ & Giảm mỡ toàn thân</option>
                 <option value="cardio">Cardio & Giảm cân chạy bộ</option>
@@ -141,21 +150,22 @@ export function ConsultationForm() {
           </div>
 
           <div>
-            <label className="block text-xs font-bold uppercase text-stone-500">Ghi chú thêm</label>
+            <label htmlFor={`${fieldId}-note`} className="block text-xs font-bold uppercase text-stone-600">Ghi chú thêm</label>
             <textarea
               rows={3}
               value={form.note}
+              id={`${fieldId}-note`}
               onChange={(e) => setForm({ ...form, note: e.target.value })}
               placeholder="Mô tả ngân sách dự kiến hoặc yêu cầu đặc biệt..."
-              className="mt-1.5 w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
+              className="mt-1.5 w-full rounded-xl border border-stone-200 px-4 py-3 text-base sm:text-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/30"
             />
           </div>
 
           <button
             type="submit"
-            className="flex w-full items-center justify-center gap-2 rounded-full bg-emerald-500 px-6 py-4 font-black text-ink shadow-lg shadow-emerald-500/25 transition hover:bg-emerald-400"
+            className="flex w-full items-center justify-center gap-2 rounded-full bg-brand-600 px-6 py-4 font-black text-white shadow-lg shadow-brand-600/25 transition hover:bg-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2"
           >
-            <Send className="size-4" />
+            <Send className="size-4" aria-hidden />
             <span>Soạn email yêu cầu tư vấn</span>
           </button>
         </form>

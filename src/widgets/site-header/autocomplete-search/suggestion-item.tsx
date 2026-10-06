@@ -17,14 +17,14 @@ export function SuggestionItem({ product, isSelected, onSelect, onHover }: Sugge
       aria-selected={isSelected}
       onClick={onSelect}
       onMouseEnter={onHover}
-      className={`flex cursor-pointer items-center gap-3.5 rounded-2xl px-3.5 py-2.5 transition-all duration-200 ${
+      className={`flex cursor-pointer items-center gap-3.5 rounded-xl px-3.5 py-2.5 transition-colors duration-150 ${
         isSelected
-          ? 'bg-emerald-50/90 text-emerald-950 shadow-sm ring-1 ring-emerald-500/20'
+          ? 'bg-brand-50 text-slate-900 ring-1 ring-brand-500/20'
           : 'text-slate-800 hover:bg-slate-50'
       }`}
     >
       {/* Product Thumbnail */}
-      <div className="relative size-12 shrink-0 overflow-hidden rounded-xl border border-slate-200/80 bg-white p-1 shadow-sm">
+      <div className="relative size-12 shrink-0 overflow-hidden rounded-lg border border-slate-200 bg-white p-1">
         {product.imageUrl ? (
           <Image
             src={product.imageUrl}
@@ -35,7 +35,7 @@ export function SuggestionItem({ product, isSelected, onSelect, onHover }: Sugge
           />
         ) : (
           <div className="grid size-full place-items-center text-slate-300">
-            <Search className="size-4" />
+            <Search aria-hidden className="size-4" />
           </div>
         )}
       </div>
@@ -44,19 +44,19 @@ export function SuggestionItem({ product, isSelected, onSelect, onHover }: Sugge
       <div className="min-w-0 flex-1">
         <h4
           className={`text-xs font-bold leading-snug line-clamp-1 sm:text-[13px] transition ${
-            isSelected ? 'text-emerald-700' : 'text-slate-900'
+            isSelected ? 'text-brand-700' : 'text-slate-900'
           }`}
         >
           {product.name}
         </h4>
-        <div className="mt-1 flex items-center gap-2 text-[10px] font-semibold text-slate-400">
+        <div className="mt-1 flex items-center gap-2 text-xs font-medium text-slate-500">
           <span>{product.categoryLabel}</span>
         </div>
       </div>
 
       {/* Price on right */}
       <div className="shrink-0 text-right">
-        <strong className="block text-xs font-black text-emerald-700 sm:text-sm">
+        <strong className="block text-xs font-black text-brand-600 sm:text-sm">
           {product.priceLabel}
         </strong>
       </div>

@@ -2,9 +2,9 @@ import { Headphones, MessageCircle, Phone } from 'lucide-react';
 
 export function OrderSupportCard({ orderNo, onOpenSupport }: { orderNo: string; onOpenSupport: () => void }) {
   return (
-    <section className="rounded-3xl border border-emerald-100 bg-gradient-to-br from-emerald-50/60 via-white to-teal-50/40 p-6 shadow-card">
-      <div className="flex items-center gap-2.5 border-b border-emerald-100 pb-3">
-        <div className="grid size-9 place-items-center rounded-2xl bg-emerald-600 text-white shadow-sm">
+    <section className="rounded-3xl border border-brand-100 bg-gradient-to-br from-brand-50/60 via-white to-white p-6 shadow-card">
+      <div className="flex items-center gap-2.5 border-b border-brand-100 pb-3">
+        <div className="grid size-9 place-items-center rounded-2xl bg-brand-600 text-white shadow-sm">
           <Headphones className="size-4.5" />
         </div>
         <div>
@@ -16,13 +16,13 @@ export function OrderSupportCard({ orderNo, onOpenSupport }: { orderNo: string; 
       <div className="mt-4 space-y-2.5">
         <a
           href="tel:0862576222"
-          className="flex items-center justify-between rounded-xl border border-emerald-200/80 bg-white p-3 text-xs font-bold text-slate-800 transition hover:bg-emerald-50/50"
+          className="flex items-center justify-between rounded-xl border border-brand-200/80 bg-white p-3 text-xs font-bold text-slate-800 transition hover:bg-brand-50/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2"
         >
           <div className="flex items-center gap-2">
-            <Phone className="size-4 text-emerald-600" />
+            <Phone className="size-4 text-brand-600" />
             <span>Hotline tổng đài (miễn phí)</span>
           </div>
-          <span className="font-mono text-emerald-700 font-black">0862 576 222</span>
+          <span className="font-mono text-brand-700 font-black">0862 576 222</span>
         </a>
 
         <button

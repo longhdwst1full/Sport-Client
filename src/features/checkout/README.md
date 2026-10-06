@@ -1,6 +1,6 @@
 # Storefront checkout — maintenance note
 
-> **Document version:** 1.6.0
+> **Document version:** 1.7.0
 >
 > **Last updated:** 2026-09-29
 >
@@ -17,7 +17,8 @@
 - Nút đặt hàng chỉ nằm ở tóm tắt đơn của bước 3. Bấm thì `confirm` (giữ hàng 30 phút) rồi `place` với idempotency key giữ nguyên khi thử lại.
 - VNPay: đặt đơn xong đọc `instruction.redirectUrl` của thanh toán (`getAccountPayment` / `getGuestPayment` với token truy cập đơn đã lưu) và chuyển thẳng sang cổng. Không lấy được URL thì hiện trang đặt hàng thành công; khách thanh toán lại ở trang đơn.
 - Lệnh checkout (báo giá, xác nhận, đặt đơn, tải lại báo giá) dùng timeout 30 giây: báo giá đo được ~10,4 giây trên production, đúng bằng timeout 10 giây mặc định của fetcher.
-- Trang không tự có thẻ `<main>` vì `StorefrontLayout` đã có.
+- `StorefrontLayout` chỉ bọc `div`, nên `checkout-page` tự render `<main>` (một landmark duy nhất).
+- Mobile (< `lg`): CTA đặt hàng duy nhất là thanh dính đáy trong `CheckoutOrderSummary` (tổng + nút submit); desktop dùng nút trong thẻ tóm tắt. Loading dùng `CheckoutSkeleton` (route Suspense fallback + chờ hydrate giỏ).
 
 Chưa làm (cần Backend): gọi lại GHN khi đặt đơn và báo `SHIPPING_FEE_CHANGED`, nhận tại cửa hàng, timeline và mã vận đơn ở trang đơn, tự tạo vận đơn sau khi thanh toán.
 
@@ -91,6 +92,7 @@ Checkout chỉ được import `orders`, `address`, `site-config` (và `auth`, `
 
 | Version | Date | Change summary | Source |
 | --- | --- | --- | --- |
+| 1.7.0 | 2026-10-06 | Màu thành công dùng `success-*`; thanh CTA dính đáy mobile thay nút trong bước xác nhận; `CheckoutSkeleton` thay spinner; `<main>` landmark; input 16px trên mobile. | UI brand-red pass |
 | 1.6.0 | 2026-09-29 | Tách checkout-page thành 5 hook + 4 section, không đổi hành vi; cập nhật bảng Cấu trúc. | Client restructure (checkout split) |
 | 1.5.0 | 2026-09-27 | "Nhờ shop gửi" dùng `shippingArrangement: SHOP_ARRANGED` và đặt được đơn ngay; gate thêm `CONSULTATION_PENDING`. | D62 checkout shipping arrangement |
 | 1.4.0 | 2026-09-26 | Checkout 3 bước, sổ địa chỉ, tự chuyển VNPay, timeout 30 giây. | Đối chiếu đặc tả checkout/GHN/VNPay |

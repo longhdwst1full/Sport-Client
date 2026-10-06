@@ -2,34 +2,23 @@
 
 import { useMemo, useState, useEffect } from 'react';
 import { useListCatalogCategories } from '@/generated/api/catalog/catalog';
-import type { CatalogCategoryDto } from '@/generated/api/catalog/catalog.schemas';
 import { CACHE_POLICY } from '@/lib/query/query-cache-policy';
+import { toMegaMenuEntries, type MegaMenuEntry } from '../model/mega-menu.mapper';
 
-export interface MegaMenuEntry {
-  slug: string;
-  label: string;
-  href: string;
-  imageUrl: string | null;
-  productCount: number;
-  children: { slug: string; label: string; href: string; productCount: number }[];
-}
-
-/** Giới hạn để menu không đổ ra hàng chục mục khi catalog lớn dần. */
-const MAX_PARENTS = 8;
-const MAX_CHILDREN = 8;
-
-function toHref(slug: string): string {
-  return `/category/${slug}`;
-}
+export type { MegaMenuEntry } from '../model/mega-menu.mapper';
 
 /**
  * Menu danh mục dựng từ dữ liệu thật thay vì danh sách viết cứng.
- * API trả danh sách phẳng kèm `depth` và `parentSlug`, nên cây được ghép ở đây.
+ *
+ * `initialCategories` do layout server dựng sẵn (ISR) để link danh mục có trong HTML đầu tiên
+ * (SEO, không chờ hydrate). Có dữ liệu server thì không gọi lại API ở client; chỉ khi server lỗi
+ * (`undefined`) mới tải sau khi mount như trước.
  */
-export function useMegaMenuCategories(): {
+export function useMegaMenuCategories(initialCategories?: MegaMenuEntry[]): {
   categories: MegaMenuEntry[];
   isPending: boolean;
 } {
+  const hasInitial = initialCategories !== undefined;
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
     setIsMounted(true);
@@ -37,45 +26,13 @@ export function useMegaMenuCategories(): {
 
   const query = useListCatalogCategories({
     // Menu danh mục hiện trên mọi trang; đây là truy vấn lặp lại nhiều nhất của Storefront.
-    query: { enabled: isMounted, ...CACHE_POLICY.LOOKUP },
+    query: { enabled: isMounted && !hasInitial, ...CACHE_POLICY.LOOKUP },
   });
 
-  const categories = useMemo(() => {
-    const items: CatalogCategoryDto[] = query.data?.items ?? [];
-    const childrenByParent = new Map<string, CatalogCategoryDto[]>();
-    for (const item of items) {
-      if (!item.parentSlug) continue;
-      const bucket = childrenByParent.get(item.parentSlug) ?? [];
-      bucket.push(item);
-      childrenByParent.set(item.parentSlug, bucket);
-    }
+  const categories = useMemo(
+    () => (query.data ? toMegaMenuEntries(query.data.items) : (initialCategories ?? [])),
+    [query.data, initialCategories],
+  );
 
-    return items
-      .filter((item) => item.depth === 0)
-      // Danh mục rỗng cả nhánh thì không đưa lên menu: bấm vào chỉ thấy trang trống.
-      .filter(
-        (item) =>
-          item.productCount > 0 ||
-          (childrenByParent.get(item.slug) ?? []).some((child) => child.productCount > 0),
-      )
-      .slice(0, MAX_PARENTS)
-      .map((item) => ({
-        slug: item.slug,
-        label: item.name,
-        href: toHref(item.slug),
-        imageUrl: item.imageUrl ?? null,
-        productCount: item.productCount,
-        children: (childrenByParent.get(item.slug) ?? [])
-          .filter((child) => child.productCount > 0)
-          .slice(0, MAX_CHILDREN)
-          .map((child) => ({
-            slug: child.slug,
-            label: child.name,
-            href: toHref(child.slug),
-            productCount: child.productCount,
-          })),
-      }));
-  }, [query.data]);
-
-  return { categories, isPending: query.isPending };
+  return { categories, isPending: hasInitial ? false : query.isPending };
 }

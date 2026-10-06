@@ -85,6 +85,8 @@ export function useFlashSale(): {
   countdown: FlashSaleCountdown;
   isPending: boolean;
   isError: boolean;
+  /** Tải lại thủ công (nút "Thử lại" ở trạng thái lỗi). */
+  retry: () => Promise<unknown>;
 } {
   const { campaigns, serverTime, refetch, isPending, isError } = useFlashSaleCampaigns({ live: true });
   const clockOffsetRef = useRef(0);
@@ -120,5 +122,5 @@ export function useFlashSale(): {
     return () => clearInterval(timer);
   }, [endsAtMs, refetch]);
 
-  return { campaign, campaigns, countdown, isPending, isError };
+  return { campaign, campaigns, countdown, isPending, isError, retry: refetch };
 }

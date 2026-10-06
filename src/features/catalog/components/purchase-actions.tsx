@@ -1,6 +1,12 @@
+import type { Ref } from 'react';
 import { CheckCircle2, Phone, ShoppingBag, Zap } from 'lucide-react';
+import { Button } from '@/foundation/components/buttons';
 import { QuantityStepper } from '@/foundation/components/indicators';
 import { STORE_CONTACT } from '@/shared/constants';
+
+/** Viền đen đậm cho nút "Thêm vào giỏ" (khối mua chính + thanh dính đáy) thay cho viền xám của `outline`. */
+const PRIMARY_OUTLINE_CTA =
+  'rounded-full border-2 border-slate-900 font-bold hover:border-slate-900 hover:bg-slate-50 hover:text-slate-900';
 
 interface PurchaseActionsProps {
   quantity: number;
@@ -11,6 +17,8 @@ interface PurchaseActionsProps {
   isAddedToast: boolean;
   onAddToCart: () => void;
   onBuyNow: () => void;
+  /** Mốc của nhóm nút chính; thanh mua dính đáy (mobile) chỉ hiện khi mốc này ra khỏi màn hình. */
+  ctaRef?: Ref<HTMLDivElement>;
 }
 
 export function PurchaseActions({
@@ -22,6 +30,7 @@ export function PurchaseActions({
   isAddedToast,
   onAddToCart,
   onBuyNow,
+  ctaRef,
 }: PurchaseActionsProps) {
   return (
     <>
@@ -33,10 +42,10 @@ export function PurchaseActions({
           onDecrement={onDecrementQuantity}
           onIncrement={onIncrementQuantity}
           wrapperClassName="flex items-center rounded-full border border-stone-200 bg-stone-50 p-1"
-          decrementClassName={`grid size-8 place-items-center rounded-full bg-white text-ink shadow-sm transition hover:bg-stone-200 ${
+          decrementClassName={`grid size-10 place-items-center rounded-full bg-white text-ink shadow-sm transition hover:bg-stone-200 ${
             quantity <= 1 ? 'opacity-40 cursor-not-allowed' : ''
           }`}
-          incrementClassName="grid size-8 place-items-center rounded-full bg-white text-ink shadow-sm transition hover:bg-stone-200"
+          incrementClassName="grid size-10 place-items-center rounded-full bg-white text-ink shadow-sm transition hover:bg-stone-200"
           valueClassName="w-12 text-center text-sm font-extrabold text-ink"
         />
       </div>
@@ -52,7 +61,7 @@ export function PurchaseActions({
             Gọi{' '}
             <a
               href={`tel:${STORE_CONTACT.primaryHotlineRaw}`}
-              className="inline-flex items-center gap-1 font-extrabold text-emerald-700 underline-offset-2 hover:underline"
+              className="inline-flex items-center gap-1 rounded font-extrabold text-brand-700 underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
             >
               <Phone className="size-3" aria-hidden="true" />
               {STORE_CONTACT.primaryHotline}
@@ -64,34 +73,79 @@ export function PurchaseActions({
 
       {/* Toast Feedback */}
       {isAddedToast && (
-        <div className="flex items-center gap-2 rounded-2xl bg-emerald-600 px-4 py-2.5 text-xs font-bold text-white shadow-lg shadow-emerald-600/30 animate-fade-in">
-          <CheckCircle2 className="size-4 shrink-0" />
+        <div className="flex items-center gap-2 rounded-2xl bg-success-700 px-4 py-2.5 text-xs font-bold text-white shadow-lg shadow-success-700/30 animate-fade-in" role="status">
+          <CheckCircle2 aria-hidden className="size-4 shrink-0" />
           <span>Đã thêm sản phẩm vào giỏ hàng thành công!</span>
         </div>
       )}
 
       {/* CTA Buttons (Add to Cart + Buy Now) */}
-      <div className="grid gap-3 sm:grid-cols-2">
-        <button
-          type="button"
+      <div ref={ctaRef} className="grid gap-3 sm:grid-cols-2">
+        <Button
+          variant="outline"
+          size="lg"
           disabled={!canAdd}
           onClick={onAddToCart}
-          className="flex items-center justify-center gap-2 rounded-full border-2 border-slate-900 bg-white px-5 py-3.5 font-bold text-slate-900 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+          className={PRIMARY_OUTLINE_CTA}
         >
-          <ShoppingBag className="size-4" />
+          <ShoppingBag aria-hidden className="size-4" />
           <span>{canAdd ? 'Thêm vào giỏ' : outOfStock ? 'Tạm hết hàng' : 'Liên hệ báo giá'}</span>
-        </button>
+        </Button>
 
-        <button
-          type="button"
+        <Button
+          variant="primary"
+          size="lg"
           disabled={!canAdd}
           onClick={onBuyNow}
-          className="flex items-center justify-center gap-2 rounded-full bg-emerald-600 px-5 py-3.5 font-bold text-white shadow-lg shadow-emerald-600/25 transition hover:bg-emerald-500 hover:shadow-emerald-600/40 disabled:cursor-not-allowed disabled:opacity-50"
+          className="rounded-full font-bold shadow-lg shadow-brand-600/25 hover:shadow-brand-600/40"
         >
-          <Zap className="size-4 fill-white" />
+          <Zap aria-hidden className="size-4 fill-current" />
           <span>Mua ngay</span>
-        </button>
+        </Button>
       </div>
     </>
+  );
+}
+
+interface StickyBuyBarProps {
+  visible: boolean;
+  priceLabel: string;
+  canAdd: boolean;
+  outOfStock: boolean;
+  onAddToCart: () => void;
+  onBuyNow: () => void;
+}
+
+/**
+ * Thanh mua dính đáy cho mobile; dùng lại đúng handler của khối mua chính (không có logic giỏ riêng).
+ * `data-sticky-buy-bar` là mốc để widget nút liên hệ nổi tự ẩn trên PDP mobile, đừng đổi tên.
+ * Ẩn bằng `hidden` thay vì gỡ khỏi DOM để không đổi chiều cao trang khi cuộn.
+ */
+export function StickyBuyBar({ visible, priceLabel, canAdd, outOfStock, onAddToCart, onBuyNow }: StickyBuyBarProps) {
+  return (
+    <div
+      data-sticky-buy-bar
+      hidden={!visible}
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 px-4 py-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] backdrop-blur lg:hidden"
+    >
+      <div className="mx-auto flex max-w-7xl items-center gap-2">
+        <strong className="min-w-0 flex-1 truncate text-base font-bold text-brand-600">
+          {canAdd || outOfStock ? priceLabel : 'Liên hệ báo giá'}
+        </strong>
+        <Button
+          variant="outline"
+          disabled={!canAdd}
+          onClick={onAddToCart}
+          className={`${PRIMARY_OUTLINE_CTA} gap-1.5 border px-3 text-xs`}
+        >
+          <ShoppingBag aria-hidden className="size-4" />
+          <span>{canAdd ? 'Thêm vào giỏ' : outOfStock ? 'Tạm hết hàng' : 'Liên hệ'}</span>
+        </Button>
+        <Button variant="primary" disabled={!canAdd} onClick={onBuyNow} className="gap-1.5 rounded-full text-xs font-bold">
+          <Zap aria-hidden className="size-4 fill-current" />
+          <span>Mua ngay</span>
+        </Button>
+      </div>
+    </div>
   );
 }

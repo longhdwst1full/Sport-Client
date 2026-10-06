@@ -21,7 +21,7 @@ export function AssistantMessage({
   if (message.role === 'USER') {
     return (
       <li className="flex justify-end">
-        <p className="max-w-[85%] whitespace-pre-wrap break-words rounded-2xl rounded-br-md bg-emerald-600 px-3.5 py-2.5 text-sm text-white">
+        <p className="max-w-[85%] whitespace-pre-wrap break-words rounded-2xl rounded-br-md bg-brand-600 px-3.5 py-2.5 text-sm text-white">
           {message.content}
         </p>
       </li>
@@ -32,7 +32,7 @@ export function AssistantMessage({
   const alreadyRated = message.feedback !== null;
   return (
     <li className="flex gap-2">
-      <span className="mt-0.5 grid size-7 shrink-0 place-items-center rounded-full bg-emerald-50 text-emerald-700" aria-hidden>
+      <span className="mt-0.5 grid size-7 shrink-0 place-items-center rounded-full bg-brand-50 text-brand-700" aria-hidden>
         <Bot className="size-4" />
       </span>
       <div className="min-w-0 max-w-[85%] space-y-2">
@@ -51,8 +51,8 @@ export function AssistantMessage({
               onClick={() => onFeedback(message.id, ASSISTANT_FEEDBACK.HELPFUL)}
               aria-pressed={message.feedback === ASSISTANT_FEEDBACK.HELPFUL}
               aria-label="Câu trả lời hữu ích"
-              className={`rounded-lg p-1.5 transition disabled:cursor-default ${
-                message.feedback === ASSISTANT_FEEDBACK.HELPFUL ? 'bg-emerald-50 text-emerald-700' : 'text-slate-400 hover:bg-slate-100 hover:text-slate-700 disabled:opacity-40'
+              className={`grid size-9 place-items-center rounded-lg transition disabled:cursor-default focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 ${
+                message.feedback === ASSISTANT_FEEDBACK.HELPFUL ? 'bg-brand-50 text-brand-700' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700 disabled:opacity-40'
               }`}
             >
               <ThumbsUp className="size-3.5" aria-hidden />
@@ -63,8 +63,8 @@ export function AssistantMessage({
               onClick={() => onFeedback(message.id, ASSISTANT_FEEDBACK.NOT_HELPFUL)}
               aria-pressed={message.feedback === ASSISTANT_FEEDBACK.NOT_HELPFUL}
               aria-label="Câu trả lời chưa hữu ích"
-              className={`rounded-lg p-1.5 transition disabled:cursor-default ${
-                message.feedback === ASSISTANT_FEEDBACK.NOT_HELPFUL ? 'bg-rose-50 text-rose-700' : 'text-slate-400 hover:bg-slate-100 hover:text-slate-700 disabled:opacity-40'
+              className={`grid size-9 place-items-center rounded-lg transition disabled:cursor-default focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 ${
+                message.feedback === ASSISTANT_FEEDBACK.NOT_HELPFUL ? 'bg-rose-50 text-rose-700' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700 disabled:opacity-40'
               }`}
             >
               <ThumbsDown className="size-3.5" aria-hidden />

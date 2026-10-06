@@ -14,7 +14,7 @@ import {
 import { ProductReviewSection } from '@/features/reviews';
 import type { ProductDetailDto } from '@/generated/api/catalog/catalog.schemas';
 import { Breadcrumb } from '@/foundation/components/navigation';
-import { buildProductJsonLd, buildBreadcrumbJsonLd } from '../model/product-json-ld';
+import { toBreadcrumbJsonLd, toProductBreadcrumbItems, toProductJsonLd } from '../model/product-json-ld';
 import { serializeJsonLd } from '@/lib/seo/json-ld';
 
 interface ProductDetailPageProps {
@@ -57,8 +57,10 @@ export function ProductDetailPage({ product, slug, relatedCategorySlug }: Produc
   // Có biến thể mở bán mới khai `offers`; `minPrice` có thể thuộc biến thể đã ngừng bán.
   const hasPrice =
     hasOfferPrice(product.minPrice) && purchaseView.variants.some(({ sellable }) => sellable);
-  const productJsonLd = buildProductJsonLd(product, brand, hasPrice);
-  const breadcrumbJsonLd = buildBreadcrumbJsonLd(product);
+  const productJsonLd = toProductJsonLd(product, brand, hasPrice);
+  // Breadcrumb hiển thị và JSON-LD dùng chung một danh sách (qua danh mục chính) để không lệch nhau.
+  const breadcrumbItems = toProductBreadcrumbItems(product, relatedCategorySlug);
+  const breadcrumbJsonLd = toBreadcrumbJsonLd(breadcrumbItems);
 
   return (
     <>
@@ -70,14 +72,11 @@ export function ProductDetailPage({ product, slug, relatedCategorySlug }: Produc
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbJsonLd) }}
       />
-      <div className="bg-[var(--dc-canvas)] pb-24">
+      {/* `<main>` duy nhất của trang (layout chỉ render `div`); pb-28 trên mobile chừa chỗ cho thanh mua dính đáy. */}
+      <main className="bg-[var(--dc-canvas)] pb-28 lg:pb-24">
         <Breadcrumb
           className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8"
-          items={[
-            { label: 'Trang chủ', href: '/' },
-            { label: 'Sản phẩm', href: '/products' },
-            { label: product.name },
-          ]}
+          items={breadcrumbItems}
         />
         {/* Main Product Title Header */}
         <div className="mx-auto max-w-7xl px-4 pt-2 sm:px-6 lg:px-8">
@@ -86,7 +85,7 @@ export function ProductDetailPage({ product, slug, relatedCategorySlug }: Produc
           </h1>
           <div className="mt-2 flex flex-wrap items-center gap-3 text-xs font-semibold text-slate-500">
             {brand && (
-              <span className="rounded-full bg-emerald-50 px-3 py-1 font-bold text-emerald-700">
+              <span className="rounded-full bg-brand-50 px-3 py-1 font-bold text-brand-700">
                 {brand}
               </span>
             )}
@@ -102,7 +101,7 @@ export function ProductDetailPage({ product, slug, relatedCategorySlug }: Produc
         </div>
 
         {/* Main Product Stage */}
-        <main className="mx-auto mt-4 grid max-w-7xl gap-8 px-4 py-3 sm:px-6 lg:grid-cols-[1.12fr_0.88fr] lg:px-8">
+        <div className="mx-auto mt-4 grid max-w-7xl gap-8 px-4 py-3 sm:px-6 lg:grid-cols-[1.12fr_0.88fr] lg:px-8">
           {/* Left Column: Visual Showcase & Detailed Story */}
           <div className="space-y-8">
             {/* Product media is image-first. Heavy 3D rendering is intentionally excluded here. */}
@@ -150,11 +149,11 @@ export function ProductDetailPage({ product, slug, relatedCategorySlug }: Produc
             {/* Technical Specifications Table directly under price/purchase box */}
             <ProductSpecifications specs={TECH_SPECS} initialLimit={5} />
           </div>
-        </main>
+        </div>
 
         {/* Related Products ("Cùng loại"), Flash Sale & Category List */}
         <ProductRelatedSection currentSlug={product.slug} categorySlug={relatedCategorySlug} />
-      </div>
+      </main>
     </>
   );
 }

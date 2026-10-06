@@ -12,7 +12,7 @@ export function CategoryGrid({ items }: { items: CategoryCardView[] }) {
           <Link
             key={category.slug}
             href={`/category/${category.slug}`}
-            className="group flex flex-col overflow-hidden rounded-[32px] border border-stone-200/80 bg-white shadow-sm transition duration-300 hover:-translate-y-1.5 hover:border-emerald-400 hover:shadow-xl"
+            className="group flex flex-col overflow-hidden rounded-[32px] border border-stone-200/80 bg-white shadow-sm transition duration-300 hover:-translate-y-1.5 hover:border-brand-400 hover:shadow-xl"
           >
             <div className="relative aspect-[16/10] overflow-hidden bg-stone-100">
               {category.imageUrl ? (
@@ -30,16 +30,16 @@ export function CategoryGrid({ items }: { items: CategoryCardView[] }) {
               )}
               <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
               <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-white">
-                <span className="rounded-full bg-emerald-400 px-3 py-1 text-xs font-black text-ink">
+                <span className="rounded-full bg-brand-400 px-3 py-1 text-xs font-black text-ink">
                   {category.itemCountLabel}
                 </span>
-                <Icon className="size-6 text-emerald-300" />
+                <Icon className="size-6 text-brand-300" />
               </div>
             </div>
 
             <div className="flex flex-1 flex-col justify-between p-6">
               <div>
-                <h2 className="text-xl font-black text-ink group-hover:text-emerald-700">
+                <h2 className="text-xl font-black text-ink group-hover:text-brand-700">
                   {category.title}
                 </h2>
                 {category.description ? (
@@ -49,7 +49,7 @@ export function CategoryGrid({ items }: { items: CategoryCardView[] }) {
                 ) : null}
               </div>
 
-              <div className="mt-6 flex items-center justify-between border-t border-stone-100 pt-4 text-xs font-bold text-emerald-700">
+              <div className="mt-6 flex items-center justify-between border-t border-stone-100 pt-4 text-xs font-bold text-brand-700">
                 <span>Xem toàn bộ sản phẩm</span>
                 <ChevronRight className="size-4 transition group-hover:translate-x-1" />
               </div>

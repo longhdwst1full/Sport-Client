@@ -3,7 +3,7 @@ import { X } from 'lucide-react';
 
 /**
  * Removable filter chip. Callers keep their exact previous className for the
- * pill and for the remove button so tone (emerald vs slate, etc.) never
+ * pill and for the remove button so tone (brand vs slate, etc.) never
  * changes; this primitive only removes the duplicated label+remove-button
  * shape.
  */

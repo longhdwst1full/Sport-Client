@@ -2,12 +2,18 @@ import { cache } from 'react';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Breadcrumb } from '@/foundation/components/navigation';
-import { ProductShowcase } from '@/features/catalog';
+import {
+  ProductShowcase,
+  loadCatalogFirstPage,
+  toBreadcrumbJsonLd,
+  toCategorySeoDescription,
+} from '@/features/catalog';
 import { CategoryTopBanners, loadActiveBanners } from '@/features/content';
 import { listCatalogCategories } from '@/generated/api/catalog/catalog';
 import type { CatalogCategoryDto } from '@/generated/api/catalog/catalog.schemas';
 import { BannerPlacement } from '@/generated/api/content/content.schemas';
 import { buildPageMetadata } from '@/lib/seo/page-metadata';
+import { serializeJsonLd } from '@/lib/seo/json-ld';
 
 // ISR 2 phút: cây danh mục và số sản phẩm đổi trong ngày, không cần gọi API mỗi lượt xem.
 export const revalidate = 120;
@@ -42,7 +48,7 @@ export async function generateMetadata({
 
   return buildPageMetadata({
     title: category.name,
-    description: category.description ?? undefined,
+    description: toCategorySeoDescription(category.name, category.description),
     path: `/category/${category.slug}`,
   });
 }
@@ -62,25 +68,34 @@ export default async function CategoryDetailPage({
   const category = await loadCategory(slug);
   if (!category) notFound();
 
-  const [parent, topBanners] = await Promise.all([
+  const [parent, topBanners, firstPage] = await Promise.all([
     category.parentSlug ? loadCategory(category.parentSlug) : Promise.resolve(undefined),
     topBannersPromise,
+    // Trang 1 có trong HTML (ISR) để công cụ tìm kiếm thấy thẻ sản phẩm và link chi tiết.
+    loadCatalogFirstPage({ category: slug }),
   ]);
+
+  // Breadcrumb hiển thị và JSON-LD dùng chung danh sách để không lệch nhau.
+  const breadcrumbItems = [
+    { label: 'Trang chủ', href: '/' },
+    ...(parent ? [{ label: parent.name, href: `/category/${parent.slug}` }] : []),
+    { label: category.name, href: `/category/${category.slug}` },
+  ];
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(toBreadcrumbJsonLd(breadcrumbItems)) }}
+      />
       <div className="bg-stone-50/60 pb-20 pt-8">
         <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Breadcrumb
             className="mb-6"
-            items={[
-              { label: 'Trang chủ', href: '/' },
-              ...(parent ? [{ label: parent.name, href: `/category/${parent.slug}` }] : []),
-              { label: category.name },
-            ]}
+            items={breadcrumbItems}
           />
 
-          <div className="relative overflow-hidden rounded-[36px] bg-gradient-to-br from-[#0c1410] via-[#141f17] to-[#0a100d] p-8 text-white shadow-xl sm:p-12">
+          <div className="relative overflow-hidden rounded-[36px] bg-gradient-to-br from-slate-950 via-slate-900 to-brand-950 p-8 text-white shadow-xl sm:p-12">
             <div className="relative z-10 max-w-2xl">
               <h1 className="text-3xl font-black text-white sm:text-5xl">{category.name}</h1>
               {category.description && (
@@ -88,24 +103,28 @@ export default async function CategoryDetailPage({
                   {category.description}
                 </p>
               )}
-              <p className="mt-4 text-xs font-bold uppercase tracking-widest text-emerald-300">
+              <p className="mt-4 text-xs font-bold uppercase tracking-widest text-brand-300">
                 {category.productCount} sản phẩm
               </p>
             </div>
 
-            <div className="pointer-events-none absolute -right-20 -top-20 size-80 rounded-full bg-emerald-500/10 blur-[100px]" />
+            <div className="pointer-events-none absolute -right-20 -top-20 size-80 rounded-full bg-brand-500/10 blur-[100px]" />
           </div>
 
           <CategoryTopBanners banners={topBanners} />
 
           <div className="mt-12">
             <div className="mb-6 border-b border-stone-200/80 pb-4">
-              <span className="text-xs font-bold uppercase tracking-wider text-stone-400">
+              <span className="text-xs font-bold uppercase tracking-wider text-stone-500">
                 Sản phẩm thuộc {category.name}
               </span>
             </div>
 
-            <ProductShowcase categorySlug={slug} />
+            <ProductShowcase
+              categorySlug={slug}
+              initialPage={firstPage?.page}
+              initialPageFetchedAt={firstPage?.fetchedAt}
+            />
           </div>
         </main>
       </div>

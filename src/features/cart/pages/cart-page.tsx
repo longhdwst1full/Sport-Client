@@ -2,9 +2,11 @@
 
 import { useMemo, useState, useEffect } from 'react';
 import { useCartActions, useCartItems } from '../hooks/use-cart';
+import { useCartHydrated } from '../hooks/use-cart-hydrated';
+import { Button } from '@/foundation/components/buttons';
+import { Skeleton } from '@/foundation/components/feedback';
 import { Breadcrumb } from '@/foundation/components/navigation';
 import { useToast } from '@/shared/components/global-toast';
-import { SHIPPING_FEE } from '../model/cart.constants';
 import { CartEmpty } from '../components/cart-empty';
 import { CartSelectAllBar } from '../components/cart-select-all-bar';
 import { CartItemRow } from '../components/cart-item-row';
@@ -14,6 +16,8 @@ export function CartPage() {
   const { removeItem, clear, updateQuantity: setQuantity } = useCartActions();
   const { toast } = useToast();
   const items = useCartItems();
+  // Chưa đọc xong giỏ đã lưu thì chưa biết giỏ rỗng hay không: hiện khung chờ, không nháy "Giỏ hàng trống".
+  const hydrated = useCartHydrated();
 
   // Lựa chọn sản phẩm thanh toán trong giỏ hàng
   const [selectedVariantIds, setSelectedVariantIds] = useState<string[]>(() => items.map((i) => i.variantId));
@@ -51,7 +55,6 @@ export function CartPage() {
     () => selectedItems.reduce((sum, i) => sum + i.price * i.quantity, 0),
     [selectedItems]
   );
-  const total = selectedItems.length > 0 ? subtotal + SHIPPING_FEE : 0;
 
   const handleRemoveItem = (variantId: string, name: string) => {
     removeItem(variantId);
@@ -93,20 +96,31 @@ export function CartPage() {
 
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-black text-slate-900 sm:text-4xl">
-            Giỏ hàng của bạn <span className="text-slate-400 font-bold text-2xl sm:text-3xl">({items.length})</span>
+            Giỏ hàng của bạn{' '}
+            {hydrated && <span className="text-2xl font-bold text-slate-500 sm:text-3xl">({items.length})</span>}
           </h1>
-          {items.length > 0 && (
-            <button
-              type="button"
+          {hydrated && items.length > 0 && (
+            <Button
+              variant="ghost"
               onClick={handleClearCart}
-              className="text-xs font-bold text-red-500 hover:text-red-700 transition"
+              className="rounded px-2 text-xs font-bold text-rose-700 hover:bg-transparent hover:text-rose-800"
             >
               Xóa tất cả
-            </button>
+            </Button>
           )}
         </div>
 
-        {items.length === 0 ? (
+        {!hydrated ? (
+          <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_380px]" role="status" aria-label="Đang tải giỏ hàng">
+            <div className="space-y-4">
+              <Skeleton className="h-14 rounded-2xl" />
+              {Array.from({ length: 2 }, (_, i) => (
+                <Skeleton key={i} className="h-[7.5rem] rounded-2xl sm:h-[9.5rem]" />
+              ))}
+            </div>
+            <Skeleton className="h-80 rounded-3xl" />
+          </div>
+        ) : items.length === 0 ? (
           <CartEmpty />
         ) : (
           <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_380px]">
@@ -137,7 +151,6 @@ export function CartPage() {
             <CartSummary
               selectedCount={selectedItems.length}
               subtotal={subtotal}
-              total={total}
               checkoutHref={
                 selectedItems.length > 0
                   ? `/checkout?items=${selectedItems.map((i) => i.variantId).join(',')}`

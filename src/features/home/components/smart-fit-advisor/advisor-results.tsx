@@ -21,11 +21,11 @@ export function AdvisorResults({ recommendation, goalLabel, spaceLabel, budgetLa
   );
 
   return (
-    <div className="rounded-2xl border border-emerald-500/30 bg-slate-900/90 p-6 sm:p-8 backdrop-blur-sm">
+    <div className="rounded-2xl border border-slate-700 bg-slate-900/90 p-6 sm:p-8 backdrop-blur-sm">
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 border-b border-slate-800 pb-6">
         <div>
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/20 px-3 py-1 text-[11px] font-black uppercase tracking-wider text-emerald-400 mb-2">
-            <Sparkles className="size-3.5" />
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-brand-500/20 px-3 py-1 text-xs font-black uppercase tracking-wider text-brand-400 mb-2">
+            <Sparkles className="size-3.5" aria-hidden="true" />
             <span>CẤU HÌNH ĐƯỢC CHUYÊN GIA BẢO AN SPORT TỐI ƯU</span>
           </div>
           <h3 className="text-xl sm:text-2xl font-black text-white">
@@ -43,17 +43,18 @@ export function AdvisorResults({ recommendation, goalLabel, spaceLabel, budgetLa
             href={`https://zalo.me/${STORE_CONTACT.primaryHotlineRaw}?text=${zaloMessage}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-xl bg-emerald-500 px-5 py-2.5 text-xs font-black uppercase tracking-wider text-slate-950 hover:bg-emerald-400 transition shadow-lg shadow-emerald-500/20"
+            className="inline-flex items-center gap-2 rounded-xl bg-brand-600 px-5 py-2.5 text-xs font-black uppercase tracking-wider text-white hover:bg-brand-700 transition shadow-lg shadow-brand-600/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
           >
-            <Send className="size-3.5" />
+            <Send className="size-3.5" aria-hidden="true" />
             <span>Nhận báo giá Zalo</span>
+            <span className="sr-only"> (mở tab mới)</span>
           </a>
           <Link
             href={recommendation.catalogHref}
-            className="inline-flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-800 px-5 py-2.5 text-xs font-bold text-white hover:bg-slate-700 transition"
+            className="inline-flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-800 px-5 py-2.5 text-xs font-bold text-white hover:bg-slate-700 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
           >
             <span>Xem sản phẩm</span>
-            <ArrowRight className="size-3.5" />
+            <ArrowRight className="size-3.5" aria-hidden="true" />
           </Link>
         </div>
       </div>
@@ -65,10 +66,10 @@ export function AdvisorResults({ recommendation, goalLabel, spaceLabel, budgetLa
         <div className="grid gap-3 sm:grid-cols-3">
           {recommendation.items.map((item, idx) => (
             <div
-              key={idx}
+              key={item}
               className="flex items-center gap-3 rounded-xl border border-slate-800 bg-slate-950/70 p-4"
             >
-              <div className="grid size-7 shrink-0 place-items-center rounded-lg bg-emerald-500/20 text-xs font-black text-emerald-400">
+              <div className="grid size-7 shrink-0 place-items-center rounded-lg bg-brand-500/20 text-xs font-black text-brand-400">
                 {idx + 1}
               </div>
               <span className="text-xs font-bold text-slate-200">{item}</span>

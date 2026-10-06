@@ -1,56 +1,20 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { useRegisterCustomer } from '@/generated/api/auth/auth';
-import { useToast } from '@/shared/components/global-toast';
-import { getCustomerAuthError } from '../model/auth-error';
-import { saveCustomerAuthTokens } from '@/core/auth/customer-auth-token.store';
-import { syncCartAfterAuth, hydrateCart } from '@/features/cart';
-import { storefrontStore } from '@/app/store/store';
+import { usePostAuthHandlers } from './use-post-auth-handlers';
 
-/**
- * Owns the register mutation and its post-auth side effects, mirroring the login flow's
- * save-tokens -> success-toast -> merge-cart -> hydrate -> redirect order.
- */
+/** Owns the register mutation; post-auth side effects mirror the login flow via `usePostAuthHandlers`. */
 export function useRegister() {
-  const router = useRouter();
-  const { toast } = useToast();
   const [submitError, setSubmitError] = useState('');
 
-  const register = useRegisterCustomer({
-    mutation: {
-      onSuccess: async (tokens) => {
-        saveCustomerAuthTokens(tokens);
-        toast({
-          type: 'success',
-          title: 'Đăng ký thành công',
-          message: 'Chào mừng bạn gia nhập cộng đồng Bảo An Sport!',
-        });
-        const accountItems = await syncCartAfterAuth(storefrontStore.getState().cart.items);
-        if (accountItems) {
-          storefrontStore.dispatch(hydrateCart(accountItems));
-        } else {
-          // Gộp giỏ lỗi: giỏ trên máy được giữ nguyên, lần mở app sau sẽ gộp lại. Không chặn đăng nhập.
-          toast({
-            type: 'warning',
-            title: 'Chưa đồng bộ được giỏ hàng',
-            message: 'Giỏ hàng trên máy vẫn được giữ và sẽ được đồng bộ lại vào tài khoản sau.',
-          });
-        }
-        router.replace('/');
-      },
-      onError: (error) => {
-        const msg = getCustomerAuthError(error, 'Đăng ký tài khoản không thành công. Vui lòng thử lại.');
-        setSubmitError(msg);
-        toast({
-          type: 'error',
-          title: 'Đăng ký thất bại',
-          message: msg,
-        });
-      },
-    },
+  const mutation = usePostAuthHandlers({
+    success: { title: 'Đăng ký thành công', message: 'Chào mừng bạn gia nhập cộng đồng Bảo An Sport!' },
+    failureTitle: 'Đăng ký thất bại',
+    failureFallback: 'Đăng ký tài khoản không thành công. Vui lòng thử lại.',
+    setSubmitError,
   });
+  const register = useRegisterCustomer({ mutation });
 
   return { register, submitError, setSubmitError };
 }

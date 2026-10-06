@@ -7,13 +7,24 @@ import { useCategoryTabs } from './use-category-tabs';
 import { useDebounce } from '@/shared/hooks';
 import { CATALOG_PAGE_SIZE } from '../model/product.mapper';
 import { ProductListSort } from '@/generated/api/catalog/catalog.schemas';
-import { PRICE_RANGES, isSort } from '../model/catalog-filter.constants';
+import type { ProductListResponseDto } from '@/generated/api/catalog/catalog.schemas';
+import {
+  PRICE_RANGES,
+  parseCatalogUrlState,
+  type CatalogListFilters,
+} from '../model/catalog-filter.constants';
 
 /**
  * Owns the catalog listing's URL-synced filter state (category/price/sort/search)
  * plus the resulting product query, so the view component only renders.
  */
-export function useCatalogFilters() {
+export interface CatalogInitialPage {
+  page: ProductListResponseDto;
+  fetchedAt: number;
+  filters: CatalogListFilters;
+}
+
+export function useCatalogFilters(initial?: CatalogInitialPage) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -22,14 +33,9 @@ export function useCatalogFilters() {
   const { tabs, isPending: isTabsPending } = useCategoryTabs();
 
   // URL State Sync
-  const activeTabSlug = searchParams.get('category') || null;
-  const priceParam = searchParams.get('price');
-  const activePriceRange = PRICE_RANGES.some((range) => range.id === priceParam)
-    ? priceParam!
-    : 'all';
-  const sortParam = searchParams.get('sort');
-  const activeSort: ProductListSort = isSort(sortParam) ? sortParam : ProductListSort.NEWEST;
-  const urlSearch = searchParams.get('q') ?? '';
+  const { activeTabSlug, activePriceRange, activeSort, urlSearch, filters } = parseCatalogUrlState(
+    (key) => searchParams.get(key),
+  );
 
   const updateQuery = (changes: Record<string, string | null>) => {
     const next = new URLSearchParams(searchParams.toString());
@@ -56,24 +62,16 @@ export function useCatalogFilters() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedSearch]);
 
-  const selectedPriceRange = PRICE_RANGES.find((range) => range.id === activePriceRange);
-
   // Lọc danh mục chạy server-side (gồm cả nhánh con). Search cũng server-side.
-  const {
-    products,
-    total,
-    hasMore,
-    loadMore,
-    isPending,
-    isLoadingMore,
-    isLoadMoreError,
-    isError,
-    refetch,
-  } = useProductShowcase(activeTabSlug ?? undefined, urlSearch, {
+  const { products, ...listState } = useProductShowcase(filters.category, filters.search, {
     pageSize: CATALOG_PAGE_SIZE.SCOPED,
-    sort: activeSort === ProductListSort.NEWEST ? undefined : activeSort,
-    minPrice: selectedPriceRange?.min,
-    maxPrice: selectedPriceRange?.max,
+    keepPreviousResults: true,
+    sort: filters.sort,
+    minPrice: filters.minPrice,
+    maxPrice: filters.maxPrice,
+    initialPage: initial?.page,
+    initialPageFetchedAt: initial?.fetchedAt,
+    initialPageFilters: initial?.filters,
   });
 
   // CONTRACT: API danh sách sản phẩm chỉ nhận category/search/sort/minPrice/maxPrice. Lọc thương
@@ -107,9 +105,6 @@ export function useCatalogFilters() {
     router.replace(pathname, { scroll: false });
   };
 
-  // Remaining count for load more button
-  const remainingCount = Math.max(total - products.length, 0);
-
   return {
     tabs,
     isTabsPending,
@@ -123,19 +118,11 @@ export function useCatalogFilters() {
     searchQuery,
     setSearchQuery,
     displayedProducts,
-    total,
-    hasMore,
-    loadMore,
-    isPending,
-    isLoadingMore,
-    isLoadMoreError,
-    isError,
-    refetch,
+    ...listState,
     activeCategoryLabel,
     activePriceLabel,
     hasActiveFilters,
     activeFilterCount,
     handleResetFilters,
-    remainingCount,
   };
 }

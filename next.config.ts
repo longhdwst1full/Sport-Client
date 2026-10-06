@@ -89,6 +89,17 @@ const nextConfig: NextConfig = {
         ],
       },
       {
+        // SEO: `/pwa`, `/offline` là trang 'use client' nên không khai được `metadata.robots`; route
+        // handler `/api/*` không có HTML. Header thay cho thẻ meta noindex (robots.ts chỉ chặn crawl,
+        // URL bị link từ ngoài vẫn có thể vào index nếu thiếu noindex).
+        source: '/:page(pwa|offline)',
+        headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
+      },
+      {
+        source: '/api/:path*',
+        headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
+      },
+      {
         source: '/manifest.webmanifest',
         headers: [{ key: 'Cache-Control', value: 'public, max-age=0, must-revalidate' }],
       },

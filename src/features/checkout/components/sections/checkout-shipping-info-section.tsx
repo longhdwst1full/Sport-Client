@@ -2,7 +2,11 @@ import { LocateFixed, MapPin } from 'lucide-react';
 import { VietnamAddressSelector } from '@/features/address';
 import type { CustomerAddressDto } from '@/generated/api/customer/customer.schemas';
 import type { CheckoutForm } from '../../hooks/use-checkout-form';
-import { inputClass, optionClass } from './checkout-section.styles';
+import { Field, Textarea, TextInput } from '@/foundation/components/field-system';
+import { optionClass } from './checkout-section.styles';
+import { CheckoutStepSection } from './checkout-step-section';
+
+const FIELD_LABEL = 'block text-xs font-bold text-slate-700';
 
 /** Bước 1: người nhận, sổ địa chỉ (khách đã đăng nhập), địa chỉ hành chính, vị trí và ghi chú giao hàng. */
 export function CheckoutShippingInfoSection({
@@ -25,19 +29,7 @@ export function CheckoutShippingInfoSection({
   const { name, setName, phone, setPhone, email, setEmail, note, setNote, address, setAddress, coordinates, addressFormKey, selectedAddressId } = form;
 
   return (
-    <section className="rounded-3xl border border-slate-200/90 bg-white p-6 shadow-sm transition hover:border-slate-300">
-      <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
-        <span className="grid size-8 place-items-center rounded-xl bg-emerald-600 text-sm font-black text-white shadow-sm shadow-emerald-600/30">
-          1
-        </span>
-        <div>
-          <h2 className="flex items-center gap-2 text-base font-black text-slate-900 sm:text-lg">
-            <MapPin className="size-5 text-emerald-600" /> Thông tin giao hàng
-          </h2>
-          <p className="text-xs text-slate-500">Người nhận và địa chỉ nhận hàng tận nơi</p>
-        </div>
-      </div>
-
+    <CheckoutStepSection step={1} icon={MapPin} title="Thông tin giao hàng" description="Người nhận và địa chỉ nhận hàng tận nơi">
       {savedAddresses && savedAddresses.length > 0 && (
         <div className="mt-5 space-y-2.5" role="radiogroup" aria-label="Địa chỉ đã lưu">
           <span className="block text-xs font-bold uppercase tracking-wider text-slate-400">
@@ -60,7 +52,7 @@ export function CheckoutShippingInfoSection({
                 {[saved.addressLine, saved.ward, saved.district, saved.province].filter(Boolean).join(', ')}
               </span>
               {saved.isDefault && (
-                <span className="mt-1.5 inline-block rounded-full bg-emerald-100 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-emerald-700">
+                <span className="mt-1.5 inline-block rounded-full bg-brand-100 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-brand-700">
                   Mặc định
                 </span>
               )}
@@ -69,7 +61,7 @@ export function CheckoutShippingInfoSection({
           <button
             type="button"
             onClick={onDeliverToOtherAddress}
-            className="w-full rounded-2xl border border-dashed border-slate-300 p-3 text-xs font-bold text-emerald-700 hover:border-emerald-400 hover:bg-emerald-50/50 transition"
+            className="min-h-11 w-full rounded-2xl border border-dashed border-slate-300 p-3 text-xs font-bold text-brand-700 hover:border-brand-400 hover:bg-brand-50/50 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2"
           >
             + Giao tới địa chỉ khác
           </button>
@@ -77,38 +69,45 @@ export function CheckoutShippingInfoSection({
       )}
 
       <div className="mt-5 grid gap-4 sm:grid-cols-2">
-        <label className="text-xs font-bold text-slate-700">
-          Người nhận <span className="text-rose-600">*</span>
-          <input
-            value={name}
-            placeholder="Họ và tên người nhận"
-            onChange={(e) => { setName(e.target.value); invalidateQuote(); }}
-            autoComplete="name"
-            className={inputClass}
-          />
-        </label>
-        <label className="text-xs font-bold text-slate-700">
-          Số điện thoại <span className="text-rose-600">*</span>
-          <input
-            value={phone}
-            placeholder="Ví dụ: 0912345678"
-            inputMode="tel"
-            autoComplete="tel"
-            onChange={(e) => { setPhone(e.target.value); invalidateQuote(); }}
-            className={inputClass}
-          />
-        </label>
-        <label className="text-xs font-bold text-slate-700 sm:col-span-2">
-          Email (nhận mã đơn và thông báo trạng thái giao hàng)
-          <input
-            type="email"
-            placeholder="email@example.com"
-            value={email}
-            autoComplete="email"
-            onChange={(e) => { setEmail(e.target.value); invalidateQuote(); }}
-            className={inputClass}
-          />
-        </label>
+        <div>
+          <Field label={<>Người nhận <span className="text-rose-600">*</span></>} labelClassName={FIELD_LABEL}>
+            <TextInput
+              size="md"
+              value={name}
+              placeholder="Họ và tên người nhận"
+              onChange={(e) => { setName(e.target.value); invalidateQuote(); }}
+              autoComplete="name"
+              className="mt-1.5"
+            />
+          </Field>
+        </div>
+        <div>
+          <Field label={<>Số điện thoại <span className="text-rose-600">*</span></>} labelClassName={FIELD_LABEL}>
+            <TextInput
+              size="md"
+              value={phone}
+              placeholder="Ví dụ: 0912345678"
+              type="tel"
+              inputMode="tel"
+              autoComplete="tel"
+              onChange={(e) => { setPhone(e.target.value); invalidateQuote(); }}
+              className="mt-1.5"
+            />
+          </Field>
+        </div>
+        <div className="sm:col-span-2">
+          <Field label="Email (nhận mã đơn và thông báo trạng thái giao hàng)" labelClassName={FIELD_LABEL}>
+            <TextInput
+              size="md"
+              type="email"
+              placeholder="email@example.com"
+              value={email}
+              autoComplete="email"
+              onChange={(e) => { setEmail(e.target.value); invalidateQuote(); }}
+              className="mt-1.5"
+            />
+          </Field>
+        </div>
       </div>
 
       <div className="mt-5">
@@ -124,23 +123,29 @@ export function CheckoutShippingInfoSection({
         <button
           type="button"
           onClick={useCurrentLocation}
-          className="inline-flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50/50 px-3.5 py-2 text-xs font-bold text-emerald-800 transition hover:bg-emerald-100"
+          className={`inline-flex min-h-11 items-center gap-2 rounded-xl border px-3.5 py-2 text-left text-xs font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 ${
+            coordinates
+              ? 'border-success-200 bg-success-50 text-success-800 hover:bg-success-100'
+              : 'border-brand-200 bg-brand-50/50 text-brand-800 hover:bg-brand-100'
+          }`}
         >
-          <LocateFixed className="size-4 text-emerald-600" />
+          <LocateFixed aria-hidden className={`size-4 shrink-0 ${coordinates ? 'text-success-600' : 'text-brand-600'}`} />
           <span>{coordinates ? 'Đã lấy vị trí của bạn' : `Định vị vị trí hiện tại (Miễn phí nếu dưới ${freeRadiusKm} km)`}</span>
         </button>
       </div>
 
-      <label className="mt-4 block text-xs font-bold text-slate-700">
-        Ghi chú giao hàng (tùy chọn)
-        <textarea
-          rows={2}
-          value={note}
-          onChange={(e) => { setNote(e.target.value); invalidateQuote(); }}
-          className={inputClass}
-          placeholder="Gọi trước khi giao, giao giờ hành chính..."
-        />
-      </label>
-    </section>
+      <div className="mt-4">
+        <Field label="Ghi chú giao hàng (tùy chọn)" labelClassName={FIELD_LABEL}>
+          <Textarea
+            rows={2}
+            value={note}
+            onChange={(e) => { setNote(e.target.value); invalidateQuote(); }}
+            invalid={false} // Textarea chưa có `size`: cần `invalid` để thoát chế độ passthrough className
+            className="mt-1.5 min-h-16"
+            placeholder="Gọi trước khi giao, giao giờ hành chính..."
+          />
+        </Field>
+      </div>
+    </CheckoutStepSection>
   );
 }

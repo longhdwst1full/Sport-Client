@@ -60,3 +60,13 @@ export function toRatingBreakdown(reviews: readonly ReviewView[]): RatingBreakdo
     return { star, count, percent: total === 0 ? 0 : Math.round((count / total) * 100) };
   });
 }
+
+const averageRatingFormat = new Intl.NumberFormat('vi-VN', {
+  minimumFractionDigits: 1,
+  maximumFractionDigits: 1,
+});
+
+/** Điểm trung bình hiển thị một chữ số thập phân theo kiểu Việt Nam (4,5); dùng chung cho mọi khối đánh giá. */
+export function formatAverageRating(value: number): string {
+  return averageRatingFormat.format(Number.isFinite(value) ? value : 0);
+}

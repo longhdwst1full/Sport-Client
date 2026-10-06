@@ -6,6 +6,7 @@ import { ArrowRight } from 'lucide-react';
 import { GOAL_OPTIONS, SPACE_OPTIONS, BUDGET_OPTIONS } from '../../model/smart-fit.constants';
 import { AdvisorOptionStep } from './advisor-option-step';
 import { AdvisorResults } from './advisor-results';
+import { SMART_FIT_CARD_MIN_HEIGHT } from './smart-fit-advisor.layout';
 
 export function SmartFitAdvisor() {
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
@@ -57,12 +58,12 @@ export function SmartFitAdvisor() {
 
   return (
     <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
-      <div className="overflow-hidden rounded-[32px] border border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 p-6 sm:p-10 lg:p-12 text-white shadow-2xl">
+      <div className={`overflow-hidden rounded-[32px] border border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 p-6 sm:p-10 lg:p-12 text-white shadow-2xl ${SMART_FIT_CARD_MIN_HEIGHT}`}>
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 border-b border-slate-800/80 pb-8">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-1 text-xs font-black uppercase tracking-widest text-emerald-400">
-              <Trophy className="size-4 text-emerald-400" />
+            <div className="inline-flex items-center gap-2 rounded-full border border-brand-500/30 bg-brand-500/10 px-3.5 py-1 text-xs font-black uppercase tracking-widest text-brand-400">
+              <Trophy className="size-4 text-brand-400" aria-hidden="true" />
               BẢO AN SMART FIT ADVISOR
             </div>
             <h2 className="mt-3 text-2xl sm:text-3xl lg:text-4xl font-black text-white">
@@ -76,12 +77,12 @@ export function SmartFitAdvisor() {
           {step < 4 ? (
             <div className="flex items-center gap-2 text-xs font-bold text-slate-400">
               <span>Bước {step}/3</span>
-              <div className="flex gap-1.5">
+              <div className="flex gap-1.5" aria-hidden="true">
                 {[1, 2, 3].map((s) => (
                   <span
                     key={s}
                     className={`h-1.5 w-6 rounded-full transition-all ${
-                      s <= step ? 'bg-emerald-400' : 'bg-slate-800'
+                      s <= step ? 'bg-brand-400' : 'bg-slate-800'
                     }`}
                   />
                 ))}
@@ -91,9 +92,9 @@ export function SmartFitAdvisor() {
             <button
               type="button"
               onClick={handleReset}
-              className="inline-flex items-center gap-1.5 rounded-full border border-slate-700 bg-slate-800 px-4 py-2 text-xs font-bold text-slate-300 hover:bg-slate-700 transition"
+              className="inline-flex items-center gap-1.5 rounded-full border border-slate-700 bg-slate-800 px-4 py-2 text-xs font-bold text-slate-300 hover:bg-slate-700 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
             >
-              <RefreshCw className="size-3.5" />
+              <RefreshCw className="size-3.5" aria-hidden="true" />
               <span>Làm lại từ đầu</span>
             </button>
           )}
@@ -119,15 +120,15 @@ export function SmartFitAdvisor() {
                       <div
                         className={`grid size-11 place-items-center rounded-xl border ${
                           isSelected
-                            ? 'border-emerald-500/40 bg-emerald-500/20 text-emerald-400'
+                            ? 'border-brand-500/40 bg-brand-500/20 text-brand-400'
                             : 'border-slate-800 bg-slate-800/80 text-slate-300'
                         }`}
                       >
                         <Icon className="size-5" />
                       </div>
                       {isSelected && (
-                        <div className="grid size-6 place-items-center rounded-full bg-emerald-500 text-slate-950">
-                          <Check className="size-3.5 stroke-[3]" />
+                        <div className="grid size-6 place-items-center rounded-full bg-brand-600 text-white">
+                          <Check className="size-3.5 stroke-[3]" aria-hidden="true" />
                         </div>
                       )}
                     </div>
@@ -158,15 +159,15 @@ export function SmartFitAdvisor() {
                     <div
                       className={`grid size-11 place-items-center rounded-xl border ${
                         isSelected
-                          ? 'border-emerald-500/40 bg-emerald-500/20 text-emerald-400'
+                          ? 'border-brand-500/40 bg-brand-500/20 text-brand-400'
                           : 'border-slate-800 bg-slate-800/80 text-slate-300'
                       }`}
                     >
                       <Maximize2 className="size-5" />
                     </div>
                     {isSelected && (
-                      <div className="grid size-6 place-items-center rounded-full bg-emerald-500 text-slate-950">
-                        <Check className="size-3.5 stroke-[3]" />
+                      <div className="grid size-6 place-items-center rounded-full bg-brand-600 text-white">
+                        <Check className="size-3.5 stroke-[3]" aria-hidden="true" />
                       </div>
                     )}
                   </div>
@@ -193,16 +194,16 @@ export function SmartFitAdvisor() {
               renderCard={(b, isSelected) => (
                 <>
                   <div className="flex items-center justify-between mb-4">
-                    <span className="rounded-full bg-slate-800 px-2.5 py-0.5 text-[10px] font-bold text-slate-300">
+                    <span className="rounded-full bg-slate-800 px-2.5 py-0.5 text-xs font-bold text-slate-300">
                       {b.label}
                     </span>
                     {isSelected && (
-                      <div className="grid size-6 place-items-center rounded-full bg-emerald-500 text-slate-950">
-                        <Check className="size-3.5 stroke-[3]" />
+                      <div className="grid size-6 place-items-center rounded-full bg-brand-600 text-white">
+                        <Check className="size-3.5 stroke-[3]" aria-hidden="true" />
                       </div>
                     )}
                   </div>
-                  <strong className="block text-base sm:text-lg font-bold text-emerald-400 mb-1">
+                  <strong className="block text-base sm:text-lg font-bold text-brand-400 mb-1">
                     {b.label}
                   </strong>
                   <p className="text-xs text-slate-400 leading-snug">{b.desc}</p>

@@ -82,7 +82,11 @@ export function HeroBannerSlider({
   const hasCampaign = campaigns.some((campaign) => campaign.deals.length > 0);
 
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
+  // WCAG 2.2.2: tạm dừng khi rê chuột, khi focus bàn phím nằm trong slider, và có nút dừng/chạy riêng.
+  const [isHovered, setIsHovered] = useState(false);
+  const [hasFocusWithin, setHasFocusWithin] = useState(false);
+  const [userPaused, setUserPaused] = useState(false);
+  const isPaused = isHovered || hasFocusWithin || userPaused;
   const touchStartX = useRef<number | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
   // Dừng tự chuyển slide khi cuộn khỏi màn hình, ẩn tab hoặc người dùng chọn giảm chuyển động.
@@ -126,8 +130,12 @@ export function HeroBannerSlider({
       ref={sectionRef}
       className="px-4 pt-3 pb-6 sm:px-6 lg:px-8"
       aria-label="Khu vực banner chính"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onFocus={() => setHasFocusWithin(true)}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setHasFocusWithin(false);
+      }}
     >
       <div className="mx-auto max-w-7xl">
         {/* Responsive Grid: 8 cols slider + 4 cols promo side banners */}
@@ -140,6 +148,8 @@ export function HeroBannerSlider({
             onPrev={prevSlide}
             onNext={nextSlide}
             onSelect={setCurrentSlide}
+            autoplayPaused={userPaused}
+            onToggleAutoplay={() => setUserPaused((paused) => !paused)}
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
           />

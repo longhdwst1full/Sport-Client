@@ -13,7 +13,7 @@ import { NewsletterForm } from '@/widgets/newsletter-form/newsletter-form';
 function FooterBannerStrip({ banner }: { banner: BannerView }) {
   const hasText = Boolean(banner.title || banner.subtitle);
   const frame =
-    'group relative mx-auto block aspect-[16/9] max-w-7xl overflow-hidden rounded-[28px] bg-slate-900 shadow-md sm:aspect-[5/1]';
+    'group relative mx-auto block aspect-[16/9] max-w-7xl overflow-hidden rounded-2xl bg-slate-900 shadow-md sm:aspect-[5/1]';
   const body = (
     <>
       <BannerPicture
@@ -38,9 +38,9 @@ function FooterBannerStrip({ banner }: { banner: BannerView }) {
                 </p>
               )}
               {banner.targetUrl && (
-                <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-emerald-400 group-hover:underline sm:text-sm">
+                <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-brand-400 group-hover:underline sm:text-sm">
                   {banner.ctaText ?? BANNER_DEFAULT_CTA_TEXT}
-                  <ArrowRight className="size-4 transition group-hover:translate-x-1" />
+                  <ArrowRight aria-hidden className="size-4 transition group-hover:translate-x-1" />
                 </span>
               )}
             </div>
@@ -76,10 +76,10 @@ export async function FooterNewsletterBanner() {
   return (
     <>
       {footerBanner && <FooterBannerStrip banner={footerBanner} />}
-      <section className="bg-gradient-to-b from-slate-900 to-slate-950 px-6 py-10 sm:py-12 text-white border-t border-slate-800 lg:px-10">
+      <section className="bg-gradient-to-b from-slate-900 to-slate-950 px-4 py-10 sm:py-12 text-white border-t border-slate-800 lg:px-10">
         <div className="mx-auto max-w-3xl text-center">
-          <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
-            <Mail className="size-6" />
+          <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-brand-500/10 border border-brand-500/20 text-brand-400">
+            <Mail aria-hidden className="size-6" />
           </div>
           <h2 className="mt-5 text-2xl font-black sm:text-3xl text-white">
             Nhận ưu đãi độc quyền & kiến thức thể thao
@@ -91,7 +91,7 @@ export async function FooterNewsletterBanner() {
           <div className="mt-6">
             <NewsletterForm />
           </div>
-          <p className="mt-3 text-xs text-slate-500">
+          <p className="mt-3 text-xs text-slate-400">
             Chúng tôi cam kết bảo mật thông tin. Bạn có thể hủy nhận tin bất cứ lúc nào.
           </p>
         </div>

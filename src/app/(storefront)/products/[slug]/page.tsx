@@ -2,9 +2,11 @@ import { cache } from 'react';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { ProductDetailPage } from '@/features/catalog/pages/product-detail-page';
+import { toProductSeoDescription } from '@/features/catalog';
 import { getCatalogProduct, listCatalogCategories } from '@/generated/api/catalog/catalog';
 import { ApiError } from '@/lib/api/fetcher';
 import { buildPageMetadata } from '@/lib/seo/page-metadata';
+import { toOgImageUrl } from '@/lib/seo/og-image';
 
 // ISR 2 phút: trang public đọc nhiều, giá ở đây chỉ để tham khảo vì bước báo giá checkout
 // luôn tính lại. `revalidate = 0` trước đây bắt mọi lượt xem gọi API tới hai lần.
@@ -51,9 +53,9 @@ export async function generateMetadata({
   // Sản phẩm chưa có ảnh thì bỏ hẳn thẻ ảnh thay vì chèn ảnh của sản phẩm khác.
   return buildPageMetadata({
     title: product.name,
-    description: product.shortDescription ?? undefined,
+    description: toProductSeoDescription(product.name, product.shortDescription),
     path: `/products/${product.slug}`,
-    images: product.imageUrl ? [product.imageUrl] : undefined,
+    images: product.imageUrl ? [toOgImageUrl(product.imageUrl)] : undefined,
   });
 }
 

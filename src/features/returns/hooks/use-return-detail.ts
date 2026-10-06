@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCustomerAuth } from '@/features/auth';
 import {
@@ -8,6 +8,7 @@ import {
   useGetAccountReturn,
 } from '@/generated/api/returns/returns';
 import type { ReturnDetailDto } from '@/generated/api/returns/returns.schemas';
+import { useSignatureIdempotencyKey } from './use-signature-idempotency-key';
 import { canCustomerCancel, toReturnProgress } from '../model/return.mapper';
 
 /** Query chi tiết phiếu đổi trả + mutation huỷ (khách). Giữ nguyên idempotency theo chữ ký request. */
@@ -16,7 +17,7 @@ export function useReturnDetail(returnNo: string) {
   const { isAuthenticated, isLoaded } = useCustomerAuth();
   const [showCancel, setShowCancel] = useState(false);
   const [reason, setReason] = useState('');
-  const idempotencyRef = useRef<{ signature: string; key: string } | undefined>(undefined);
+  const idempotency = useSignatureIdempotencyKey();
   const query = useGetAccountReturn(returnNo, { query: { enabled: isLoaded && isAuthenticated, retry: false } });
   const detail = query.data;
 
@@ -26,13 +27,10 @@ export function useReturnDetail(returnNo: string) {
       if (!detail) throw new Error('Chưa tải được yêu cầu');
       const body = { expectedVersion: detail.version, reason: reason.trim() };
       const signature = JSON.stringify({ returnNo, ...body });
-      if (idempotencyRef.current?.signature !== signature) {
-        idempotencyRef.current = { signature, key: crypto.randomUUID() };
-      }
-      return cancelAccountReturn(returnNo, body, { headers: { 'idempotency-key': idempotencyRef.current.key } });
+      return cancelAccountReturn(returnNo, body, { headers: { 'idempotency-key': idempotency.keyFor(signature) } });
     },
     onSuccess: async (updated) => {
-      idempotencyRef.current = undefined;
+      idempotency.reset();
       queryClient.setQueryData(getGetAccountReturnQueryKey(returnNo), updated);
       // CACHE: trạng thái đổi làm đổi nhãn trên danh sách phiếu.
       await queryClient.invalidateQueries({ queryKey: getListAccountReturnsQueryKey() });

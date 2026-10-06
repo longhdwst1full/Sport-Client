@@ -2,9 +2,12 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { ArrowLeft, Loader2, MailCheck, Send } from 'lucide-react';
+import { ArrowLeft, MailCheck, Send } from 'lucide-react';
+import { Spinner } from '@/foundation/components/feedback';
 import { useRequestCustomerPasswordReset } from '@/generated/api/auth/auth';
+import { Button } from '@/foundation/components/buttons';
 import { Field, TextInput } from '@/foundation/components/field-system';
+import { AuthRecoveryMain, RECOVERY_LABEL_CLASS } from '../components/auth-field';
 import { STORE_CONFIG } from '@/shared/constants';
 
 /**
@@ -25,18 +28,18 @@ export function ForgotPasswordPage() {
   });
 
   return (
-    <main className="mx-auto flex min-h-[70vh] max-w-md flex-col justify-center px-4 py-12">
+    <AuthRecoveryMain>
       <Link
         href="/login"
-        className="inline-flex items-center gap-1.5 text-xs font-semibold text-stone-500 hover:text-emerald-700"
+        className="inline-flex min-h-11 items-center gap-1.5 self-start text-xs font-semibold text-stone-600 hover:text-brand-700 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
       >
-        <ArrowLeft className="size-4" />
+        <ArrowLeft className="size-4" aria-hidden />
         Quay lại đăng nhập
       </Link>
 
       {submitted ? (
-        <div className="mt-6 rounded-3xl border border-emerald-200 bg-emerald-50 p-6 text-center">
-          <MailCheck className="mx-auto size-10 text-emerald-600" />
+        <div role="status" className="mt-6 rounded-3xl border border-success-200 bg-success-50 p-6 text-center">
+          <MailCheck className="mx-auto size-10 text-success-600" aria-hidden />
           <h1 className="mt-3 text-lg font-black text-stone-900">Đã gửi yêu cầu</h1>
           <p className="mt-2 text-xs leading-relaxed text-stone-600">
             Nếu <strong>{email.trim()}</strong> có tài khoản tại {STORE_CONFIG.name}, chúng tôi vừa
@@ -49,7 +52,7 @@ export function ForgotPasswordPage() {
           <button
             type="button"
             onClick={() => setSubmitted(false)}
-            className="mt-5 text-xs font-bold text-emerald-700 hover:underline"
+            className="mt-5 rounded text-xs font-bold text-brand-700 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
           >
             Nhập email khác
           </button>
@@ -67,32 +70,36 @@ export function ForgotPasswordPage() {
             Nhập email đăng nhập của bạn. Chúng tôi sẽ gửi đường dẫn để đặt lại mật khẩu.
           </p>
 
-          <Field label="Email đăng nhập" labelClassName="mt-5 block text-xs font-bold uppercase tracking-wider text-stone-600">
+          <Field label="Email đăng nhập" labelClassName={`mt-5 ${RECOVERY_LABEL_CLASS}`}>
             <TextInput
               required
               type="email"
               autoComplete="email"
+              aria-label="Email đăng nhập"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               placeholder="ban@example.com"
-              className="mt-1.5 w-full rounded-xl border border-stone-200 px-4 py-2.5 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
+              size="md"
+              className="mt-1.5"
             />
           </Field>
 
-          <button
+          <Button
             type="submit"
+            size="md"
+            fullWidth
             disabled={request.isPending}
-            className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:bg-stone-300"
+            className="mt-5 font-bold"
           >
             {request.isPending ? (
-              <Loader2 className="size-4 animate-spin" />
+              <Spinner className="size-4 animate-spin" />
             ) : (
-              <Send className="size-4" />
+              <Send className="size-4" aria-hidden />
             )}
             Gửi đường dẫn đặt lại
-          </button>
+          </Button>
         </form>
       )}
-    </main>
+    </AuthRecoveryMain>
   );
 }

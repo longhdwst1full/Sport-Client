@@ -50,15 +50,15 @@ export async function generateMetadata({
 
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const post = await loadPolicy(slug);
+  // Hai lượt gọi độc lập: chạy song song. Danh sách "chính sách khác" lỗi thì bỏ qua khối đó.
+  const [post, others] = await Promise.all([
+    loadPolicy(slug),
+    listPublishedPosts({ postType: 'POLICY' }).then(
+      (list) => list.items,
+      () => [],
+    ),
+  ]);
   if (!post) notFound();
-
-  let others: Awaited<ReturnType<typeof listPublishedPosts>>['items'] = [];
-  try {
-    others = (await listPublishedPosts({ postType: 'POLICY' })).items;
-  } catch {
-    others = [];
-  }
 
   return (
     <PolicyDetailPage

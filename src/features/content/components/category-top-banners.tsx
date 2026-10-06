@@ -34,9 +34,9 @@ export function CategoryTopBanners({ banners }: { banners: BannerView[] }) {
                       </p>
                     )}
                     {banner.targetUrl && (
-                      <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-emerald-400 group-hover:underline sm:text-sm">
+                      <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-brand-400 group-hover:underline sm:text-sm">
                         {banner.ctaText ?? BANNER_DEFAULT_CTA_TEXT}
-                        <ArrowRight className="size-4 transition group-hover:translate-x-1" />
+                        <ArrowRight className="size-4 transition group-hover:translate-x-1" aria-hidden="true" />
                       </span>
                     )}
                   </div>
@@ -46,7 +46,7 @@ export function CategoryTopBanners({ banners }: { banners: BannerView[] }) {
           </>
         );
         const frame =
-          'group relative block aspect-[16/9] overflow-hidden rounded-[28px] bg-slate-900 shadow-md sm:aspect-[4/1]';
+          'group relative block aspect-[16/9] overflow-hidden rounded-[28px] bg-slate-900 shadow-md sm:aspect-[4/1] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2';
         return banner.targetUrl ? (
           <Link
             key={banner.id}

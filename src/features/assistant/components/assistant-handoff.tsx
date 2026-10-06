@@ -33,7 +33,7 @@ export function AssistantHandoff({
     <section aria-labelledby="assistant-handoff-title" className="border-t border-slate-200 bg-slate-50 p-3">
       <div className="flex items-center justify-between gap-2">
         <h3 id="assistant-handoff-title" className="text-xs font-black text-slate-900">{ASSISTANT_COPY.handoff}</h3>
-        <button type="button" onClick={onCancel} className="rounded-lg p-1 text-slate-400 hover:bg-slate-200 hover:text-slate-700" aria-label="Đóng chuyển nhân viên">
+        <button type="button" onClick={onCancel} className="grid size-9 place-items-center rounded-lg text-slate-500 hover:bg-slate-200 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500" aria-label="Đóng chuyển nhân viên">
           <X className="size-4" aria-hidden />
         </button>
       </div>
@@ -41,7 +41,7 @@ export function AssistantHandoff({
       {!isAuthenticated && (
         <div className="mt-2 space-y-2 text-xs text-slate-600">
           <p>{ASSISTANT_COPY.handoffLoginRequired}</p>
-          <Link href="/login" onClick={onNavigate} className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-1.5 font-bold text-white">
+          <Link href="/login" onClick={onNavigate} className="inline-flex min-h-9 items-center gap-1.5 rounded-lg bg-brand-600 px-3 py-1.5 font-bold text-white hover:bg-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2">
             <LogIn className="size-3.5" aria-hidden />
             Đăng nhập
           </Link>
@@ -74,14 +74,14 @@ export function AssistantHandoff({
             maxLength={HANDOFF_MESSAGE_MAX_LENGTH}
             rows={2}
             disabled={create.isPending}
-            className="w-full resize-none rounded-xl border border-slate-200 bg-white p-2 text-xs text-slate-800 focus:border-emerald-400 focus:outline-none focus:ring-1 focus:ring-emerald-400"
+            className="w-full resize-none rounded-xl border border-slate-200 bg-white p-2 text-base text-slate-800 focus:border-brand-500 sm:text-xs focus:outline-none focus:ring-2 focus:ring-brand-500/30"
           />
           {create.errorMessage && <p role="alert" className="text-[11px] font-semibold text-rose-700">{create.errorMessage}</p>}
           <div className="flex justify-end">
             <button
               type="submit"
               disabled={!trimmed || create.isPending}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 min-h-9 rounded-lg bg-brand-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-brand-700 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2"
             >
               {create.isPending ? <Spinner className="size-3.5 animate-spin" /> : <SendHorizontal className="size-3.5" aria-hidden />}
               Gửi cho nhân viên

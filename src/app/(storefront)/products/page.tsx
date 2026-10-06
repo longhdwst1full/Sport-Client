@@ -9,6 +9,11 @@ export const metadata = buildPageMetadata({
   path: '/products',
 });
 
-export default function Page() {
-  return <ProductsPage />;
+// Đọc `searchParams` để server render sẵn trang 1 theo đúng bộ lọc trên URL (SEO + không nháy skeleton).
+export default function Page({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  return <ProductsPage searchParams={searchParams} />;
 }

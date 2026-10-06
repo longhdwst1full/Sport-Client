@@ -10,7 +10,22 @@ export default {
       colors: {
         ink: '#0f172a', // Modern slate-900 instead of muddy dark green
         cream: '#f8fafc', // Modern crisp slate-50 instead of yellowish cream
+        // Đỏ thương hiệu lấy từ logo/baoansport.vn (#db1518). `brand` = màu hành động/nhận diện.
         brand: {
+          50: '#fff1f1',
+          100: '#ffe0e0',
+          200: '#ffc6c7',
+          300: '#ff9fa1',
+          400: '#fb6a6d',
+          500: '#f23c40',
+          600: '#db1518',
+          700: '#b80f12',
+          800: '#980f13',
+          900: '#7e1316',
+          950: '#450506',
+        },
+        // Trạng thái "thành công/hoàn tất/còn hàng" giữ xanh lục: không dùng đỏ thương hiệu cho nghĩa OK.
+        success: {
           50: '#ecfdf5',
           100: '#d1fae5',
           200: '#a7f3d0',
@@ -21,13 +36,25 @@ export default {
           700: '#047857',
           800: '#065f46',
           900: '#064e3b',
+          950: '#022c22',
         },
       },
+      // Một số class viết theo cú pháp Tailwind v4 (`size-4.5`, `shadow-xs`, `backdrop-blur-xs`) không có ở v3:
+      // khai thêm thang để chúng sinh CSS thay vì im lặng không có tác dụng.
+      spacing: {
+        4.5: '1.125rem',
+        10.5: '2.625rem',
+      },
+      backdropBlur: {
+        xs: '2px',
+      },
       boxShadow: {
+        '2xs': '0 1px rgba(15, 23, 42, 0.05)',
+        xs: '0 1px 2px 0 rgba(15, 23, 42, 0.05)',
         card: '0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.04)',
         'card-hover': '0 20px 35px -4px rgba(15, 23, 42, 0.10), 0 10px 15px -3px rgba(15, 23, 42, 0.05)',
         soft: '0 2px 15px -3px rgba(15, 23, 42, 0.07)',
-        glow: '0 0 25px -5px rgba(16, 185, 129, 0.35)',
+        glow: '0 0 25px -5px rgba(219, 21, 24, 0.35)',
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-out forwards',

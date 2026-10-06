@@ -1,37 +1,21 @@
+import type { ReactNode } from 'react';
 import { useToast } from '@/shared/components/global-toast';
+
+type SocialProvider = 'google' | 'zalo' | 'facebook';
 
 interface SocialLoginButtonsProps {
   dividerText: string;
-  toastTitles: { google: string; zalo: string; facebook: string };
-  toastMessages: { google: string; zalo: string; facebook: string };
+  toastTitles: Record<SocialProvider, string>;
+  toastMessages: Record<SocialProvider, string>;
 }
 
-/** Google/Zalo/Facebook button row with a divider whose copy differs between login and register. */
-export function SocialLoginButtons({ dividerText, toastTitles, toastMessages }: SocialLoginButtonsProps) {
-  const { toast } = useToast();
-
-  return (
-    <>
-      {/* Social Logins Divider */}
-      <div className="my-6 flex items-center gap-3">
-        <div className="h-px flex-1 bg-slate-200" />
-        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{dividerText}</span>
-        <div className="h-px flex-1 bg-slate-200" />
-      </div>
-
-      {/* Social Buttons */}
-      <div className="grid grid-cols-3 gap-2.5">
-        <button
-          type="button"
-          onClick={() =>
-            toast({
-              title: toastTitles.google,
-              message: toastMessages.google,
-            })
-          }
-          className="flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white py-2.5 text-xs font-bold text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50"
-        >
-          <svg className="size-4" viewBox="0 0 24 24">
+/** Nút nhà cung cấp mang màu thương hiệu riêng nên không dùng `Button` variant. */
+const SOCIAL_PROVIDERS: { key: SocialProvider; label: string; icon: ReactNode }[] = [
+  {
+    key: 'google',
+    label: 'Google',
+    icon: (
+      <svg className="size-4" viewBox="0 0 24 24" aria-hidden>
             <path
               fill="#4285F4"
               d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.65v3.03h3.88c2.27-2.09 3.66-5.17 3.66-9.12z"
@@ -49,40 +33,46 @@ export function SocialLoginButtons({ dividerText, toastTitles, toastMessages }: 
               d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.13c.95-2.83 3.6-4.93 6.72-4.93z"
             />
           </svg>
-          <span>Google</span>
-        </button>
+    ),
+  },
+  {
+    key: 'zalo',
+    label: 'Zalo',
+    icon: <span className="grid size-4 place-items-center rounded-full bg-[#0068FF] text-[10px] font-black text-white">Z</span>,
+  },
+  {
+    key: 'facebook',
+    label: 'Facebook',
+    icon: <span className="grid size-4 place-items-center rounded-full bg-[#1877F2] text-[10px] font-black text-white">f</span>,
+  },
+];
 
-        <button
-          type="button"
-          onClick={() =>
-            toast({
-              title: toastTitles.zalo,
-              message: toastMessages.zalo,
-            })
-          }
-          className="flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white py-2.5 text-xs font-bold text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50"
-        >
-          <span className="grid size-4 place-items-center rounded-full bg-[#0068FF] text-[10px] font-black text-white">
-            Z
-          </span>
-          <span>Zalo</span>
-        </button>
+/** Google/Zalo/Facebook button row with a divider whose copy differs between login and register. */
+export function SocialLoginButtons({ dividerText, toastTitles, toastMessages }: SocialLoginButtonsProps) {
+  const { toast } = useToast();
 
-        <button
-          type="button"
-          onClick={() =>
-            toast({
-              title: toastTitles.facebook,
-              message: toastMessages.facebook,
-            })
-          }
-          className="flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white py-2.5 text-xs font-bold text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50"
-        >
-          <span className="grid size-4 place-items-center rounded-full bg-[#1877F2] text-[10px] font-black text-white">
-            f
-          </span>
-          <span>Facebook</span>
-        </button>
+  return (
+    <>
+      {/* Social Logins Divider */}
+      <div className="my-6 flex items-center gap-3">
+        <div className="h-px flex-1 bg-slate-200" />
+        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">{dividerText}</span>
+        <div className="h-px flex-1 bg-slate-200" />
+      </div>
+
+      {/* Social Buttons */}
+      <div className="grid grid-cols-3 gap-2.5">
+        {SOCIAL_PROVIDERS.map(({ key, label, icon }) => (
+          <button
+            key={key}
+            type="button"
+            onClick={() => toast({ title: toastTitles[key], message: toastMessages[key] })}
+            className="flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white py-2.5 text-xs font-bold text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+          >
+            {icon}
+            <span>{label}</span>
+          </button>
+        ))}
       </div>
     </>
   );

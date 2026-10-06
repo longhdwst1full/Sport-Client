@@ -28,8 +28,8 @@ export const returnStatusTone: Record<ReturnStatus, string> = {
   APPROVED: 'bg-sky-50 text-sky-800',
   REJECTED: 'bg-rose-50 text-rose-800',
   RECEIVED: 'bg-violet-50 text-violet-800',
-  REFUNDED: 'bg-emerald-50 text-emerald-800',
-  CLOSED: 'bg-emerald-50 text-emerald-800',
+  REFUNDED: 'bg-success-50 text-success-800',
+  CLOSED: 'bg-success-50 text-success-800',
   CANCELLED: 'bg-slate-100 text-slate-600',
 };
 

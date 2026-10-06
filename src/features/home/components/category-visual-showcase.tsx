@@ -107,13 +107,18 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
       aria-label="Danh mục ngành hàng thể thao"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
+      // Bàn phím đang ở trong khối thì cũng dừng tự trượt (WCAG 2.2.2), không kéo focus khỏi tầm nhìn.
+      onFocus={() => setIsPaused(true)}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setIsPaused(false);
+      }}
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header with Navigation Controls */}
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
           <div>
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100/80 px-3 py-1 text-[11px] font-black uppercase tracking-wider text-emerald-800 mb-2">
-              <Layers className="size-3.5" />
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-brand-100/80 px-3 py-1 text-xs font-black uppercase tracking-wider text-brand-800 mb-2">
+              <Layers className="size-3.5" aria-hidden="true" />
               <span>DANH MỤC THIẾT BỊ BẢO AN SPORT</span>
             </div>
             <h2 className="text-2xl font-black tracking-tight text-slate-900 sm:text-3xl">
@@ -128,30 +133,30 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
           <div className="flex items-center gap-3 self-end sm:self-auto">
             <Link
               href="/category"
-              className="hidden md:inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-emerald-700 hover:text-emerald-800 transition mr-2"
+              className="hidden md:inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-brand-700 hover:text-brand-800 transition mr-2 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
             >
               <span>Xem tất cả danh mục</span>
-              <ArrowRight className="size-3.5" />
+              <ArrowRight className="size-3.5" aria-hidden="true" />
             </Link>
 
             <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={() => scroll('left')}
-                className="grid size-10 place-items-center rounded-full border border-slate-200 bg-white shadow-sm text-slate-700 hover:border-emerald-500 hover:bg-emerald-600 hover:text-white transition-all active:scale-95 disabled:opacity-40 disabled:pointer-events-none"
+                className="grid size-11 place-items-center rounded-full border border-slate-200 bg-white shadow-sm text-slate-700 hover:border-brand-500 hover:bg-brand-600 hover:text-white transition-all active:scale-95 disabled:opacity-40 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
                 aria-label="Trượt sang danh mục trước"
                 title="Trước"
               >
-                <ChevronLeft className="size-5" />
+                <ChevronLeft className="size-5" aria-hidden="true" />
               </button>
               <button
                 type="button"
                 onClick={() => scroll('right')}
-                className="grid size-10 place-items-center rounded-full border border-slate-200 bg-white shadow-sm text-slate-700 hover:border-emerald-500 hover:bg-emerald-600 hover:text-white transition-all active:scale-95 disabled:opacity-40 disabled:pointer-events-none"
+                className="grid size-11 place-items-center rounded-full border border-slate-200 bg-white shadow-sm text-slate-700 hover:border-brand-500 hover:bg-brand-600 hover:text-white transition-all active:scale-95 disabled:opacity-40 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
                 aria-label="Trượt sang danh mục tiếp theo"
                 title="Tiếp theo"
               >
-                <ChevronRight className="size-5" />
+                <ChevronRight className="size-5" aria-hidden="true" />
               </button>
             </div>
           </div>
@@ -183,7 +188,7 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
             onSelect={scrollToItem}
             wrapperClassName="mt-6 flex items-center justify-center gap-1.5"
             baseClassName="h-1.5 rounded-full transition-all duration-300"
-            activeClassName="w-6 bg-emerald-600"
+            activeClassName="w-6 bg-brand-600"
             inactiveClassName="w-1.5 bg-slate-200 hover:bg-slate-300"
             keyFor={(index) => items[index].id}
             ariaLabelFor={(index) => `Đi tới danh mục ${items[index].name}`}
@@ -194,10 +199,10 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
         <div className="mt-6 text-center md:hidden">
           <Link
             href="/category"
-            className="inline-flex items-center gap-1.5 rounded-full border border-emerald-600/30 bg-emerald-50 px-5 py-2 text-xs font-black uppercase tracking-wider text-emerald-700 transition hover:bg-emerald-600 hover:text-white"
+            className="inline-flex items-center gap-1.5 rounded-full border border-brand-600/30 bg-brand-50 px-5 py-2 text-xs font-black uppercase tracking-wider text-brand-700 transition hover:bg-brand-600 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
           >
             <span>Xem tất cả danh mục</span>
-            <ArrowRight className="size-3.5" />
+            <ArrowRight className="size-3.5" aria-hidden="true" />
           </Link>
         </div>
       </div>

@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import type { SelectedAddressData } from '@/features/address';
 import { useToast } from '@/shared/components/global-toast';
 import { useCustomerAddresses } from '../api/use-customer-addresses';
 import {
@@ -9,8 +8,11 @@ import {
   toCreateAddressPayload,
   toSelectorInitialData,
   toUpdateAddressPayload,
+  type AddressFormValues,
   type AddressView,
 } from '../model/address.mapper';
+
+const EMPTY_ADDRESS_FORM: AddressFormValues = { recipient: '', phone: '', isDefault: false, location: EMPTY_LOCATION };
 
 /**
  * Owns address-book CRUD wiring (create/update/delete/set-default) plus the add/edit modal's
@@ -30,33 +32,32 @@ export function useAddressBook(enabled: boolean, profileName: string, profilePho
 
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
   const [editingAddress, setEditingAddress] = useState<AddressView | null>(null);
-  const [addressFormName, setAddressFormName] = useState('');
-  const [addressFormPhone, setAddressFormPhone] = useState('');
-  const [addressFormIsDefault, setAddressFormIsDefault] = useState(false);
-  const [modalAddressData, setModalAddressData] = useState<SelectedAddressData>(EMPTY_LOCATION);
+  const [addressForm, setAddressForm] = useState<AddressFormValues>(EMPTY_ADDRESS_FORM);
+  const updateAddressForm = (patch: Partial<AddressFormValues>) =>
+    setAddressForm((current) => ({ ...current, ...patch }));
 
-  const { success } = useToast();
-  const showToast = (msg: string) => {
-    success('Thông báo', msg);
-  };
-
-  const { error: showError } = useToast();
+  const { success, error: showError } = useToast();
+  const showToast = (msg: string) => success('Thông báo', msg);
 
   const handleOpenAddAddress = () => {
     setEditingAddress(null);
-    setAddressFormName(profileName);
-    setAddressFormPhone(profilePhone);
-    setAddressFormIsDefault(addresses.length === 0);
-    setModalAddressData(EMPTY_LOCATION);
+    setAddressForm({
+      recipient: profileName,
+      phone: profilePhone,
+      isDefault: addresses.length === 0,
+      location: EMPTY_LOCATION,
+    });
     setIsAddressModalOpen(true);
   };
 
   const handleOpenEditAddress = (addr: AddressView) => {
     setEditingAddress(addr);
-    setAddressFormName(addr.recipient);
-    setAddressFormPhone(addr.phone);
-    setAddressFormIsDefault(addr.isDefault);
-    setModalAddressData(toSelectorInitialData(addr));
+    setAddressForm({
+      recipient: addr.recipient,
+      phone: addr.phone,
+      isDefault: addr.isDefault,
+      location: toSelectorInitialData(addr),
+    });
     setIsAddressModalOpen(true);
   };
 
@@ -67,17 +68,11 @@ export function useAddressBook(enabled: boolean, profileName: string, profilePho
 
   const handleSaveAddress = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!modalAddressData.streetAddress.trim() || modalAddressData.provinceCode == null) {
+    const values = addressForm;
+    if (!values.location.streetAddress.trim() || values.location.provinceCode == null) {
       showError('Thiếu thông tin', 'Vui lòng chọn Tỉnh/Thành và nhập số nhà, tên đường.');
       return;
     }
-
-    const values = {
-      recipient: addressFormName,
-      phone: addressFormPhone,
-      isDefault: addressFormIsDefault,
-      location: modalAddressData,
-    };
 
     try {
       if (editingAddress) {
@@ -130,14 +125,8 @@ export function useAddressBook(enabled: boolean, profileName: string, profilePho
     isAddressModalOpen,
     setIsAddressModalOpen,
     editingAddress,
-    addressFormName,
-    setAddressFormName,
-    addressFormPhone,
-    setAddressFormPhone,
-    addressFormIsDefault,
-    setAddressFormIsDefault,
-    modalAddressData,
-    setModalAddressData,
+    addressForm,
+    updateAddressForm,
     handleOpenAddAddress,
     handleOpenEditAddress,
     handleSaveAddress,

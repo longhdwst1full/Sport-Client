@@ -8,7 +8,7 @@ import { useToast } from '@/shared/components/global-toast';
 import { ProductPriceHeader } from './product-price-header';
 import { VariantSelector } from './variant-selector';
 import { BundleBreakdown } from './bundle-breakdown';
-import { PurchaseActions } from './purchase-actions';
+import { PurchaseActions, StickyBuyBar } from './purchase-actions';
 import { StorePolicyLinks } from './store-policy-links';
 
 const ADDED_TOAST_MS = 2500;
@@ -27,11 +27,25 @@ export function ProductPurchasePanel({ product }: { product: ProductPurchaseView
   const [quantity, setQuantity] = useState(1);
   const [isAddedToast, setIsAddedToast] = useState(false);
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const ctaRef = useRef<HTMLDivElement>(null);
+  const [showStickyBar, setShowStickyBar] = useState(false);
 
   useEffect(() => {
     router.prefetch('/checkout');
     router.prefetch('/cart');
   }, [router]);
+
+  // Thanh mua dính đáy chỉ hiện khi nhóm nút chính đã cuộn lên khỏi màn hình (không hiện khi
+  // nút chính còn ở dưới, tránh hai bộ nút cùng lúc lúc mới vào trang).
+  useEffect(() => {
+    const target = ctaRef.current;
+    if (!target || typeof IntersectionObserver === 'undefined') return;
+    const observer = new IntersectionObserver(([entry]) => {
+      setShowStickyBar(!entry.isIntersecting && entry.boundingClientRect.top < 0);
+    });
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, []);
 
   // Hẹn giờ ẩn toast phải huỷ khi rời trang, nếu không sẽ setState trên component đã gỡ.
   useEffect(() => () => clearTimeout(toastTimerRef.current), []);
@@ -44,19 +58,25 @@ export function ProductPurchasePanel({ product }: { product: ProductPurchaseView
   // Hết hàng vẫn hiện giá (có giá thật) nhưng khoá mua: không đưa hàng không có sẵn vào checkout.
   const outOfStock = selectedVariant?.inStock === false && selectedVariant.priceAmount !== null;
 
-  const handleAddToCart = () => {
-    if (!selectedVariant || !canAdd || price === null) return;
+  /** Đưa biến thể đang chọn vào giỏ; trả `false` khi không mua được để hai nút dừng sớm. */
+  const addSelectedToCart = () => {
+    if (!selectedVariant || !canAdd || price === null) return false;
     addItem({
-        productId: product.id,
-        variantId: selectedVariant.id,
-        sku: selectedVariant.sku,
-        productType: product.productTypeCode,
-        name: `${product.name} — ${selectedVariant.name}`,
-        slug: product.slug,
-        imageUrl: product.imageUrl ?? undefined,
-        price,
-        quantity,
-      });
+      productId: product.id,
+      variantId: selectedVariant.id,
+      sku: selectedVariant.sku,
+      productType: product.productTypeCode,
+      name: `${product.name} — ${selectedVariant.name}`,
+      slug: product.slug,
+      imageUrl: product.imageUrl ?? undefined,
+      price,
+      quantity,
+    });
+    return true;
+  };
+
+  const handleAddToCart = () => {
+    if (!addSelectedToCart() || !selectedVariant) return;
     setIsAddedToast(true);
     toastCart('Đã thêm vào giỏ hàng', `${product.name} (${selectedVariant.name}) x${quantity}`);
     clearTimeout(toastTimerRef.current);
@@ -64,18 +84,7 @@ export function ProductPurchasePanel({ product }: { product: ProductPurchaseView
   };
 
   const handleBuyNow = () => {
-    if (!selectedVariant || !canAdd || price === null) return;
-    addItem({
-        productId: product.id,
-        variantId: selectedVariant.id,
-        sku: selectedVariant.sku,
-        productType: product.productTypeCode,
-        name: `${product.name} — ${selectedVariant.name}`,
-        slug: product.slug,
-        imageUrl: product.imageUrl ?? undefined,
-        price,
-        quantity,
-      });
+    if (!addSelectedToCart() || !selectedVariant) return;
     router.push(`/checkout?buyNow=${selectedVariant.id}`);
   };
 
@@ -88,6 +97,7 @@ export function ProductPurchasePanel({ product }: { product: ProductPurchaseView
       <ProductPriceHeader
         canAdd={canAdd}
         outOfStock={outOfStock}
+        inStock={selectedVariant?.inStock === true}
         priceLabel={selectedVariant?.priceLabel}
       />
 
@@ -110,6 +120,16 @@ export function ProductPurchasePanel({ product }: { product: ProductPurchaseView
         canAdd={canAdd}
         outOfStock={outOfStock}
         isAddedToast={isAddedToast}
+        onAddToCart={handleAddToCart}
+        onBuyNow={handleBuyNow}
+        ctaRef={ctaRef}
+      />
+
+      <StickyBuyBar
+        visible={showStickyBar}
+        priceLabel={selectedVariant?.priceLabel ?? 'Liên hệ báo giá'}
+        canAdd={canAdd}
+        outOfStock={outOfStock}
         onAddToCart={handleAddToCart}
         onBuyNow={handleBuyNow}
       />

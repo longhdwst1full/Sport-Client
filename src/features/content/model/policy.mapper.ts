@@ -11,6 +11,8 @@ export interface PolicyDetailView extends PolicySummaryView {
   updatedLabel: string;
   /** Thân bài lưu dạng văn bản thuần; tách đoạn ở đây để component không đụng chuỗi thô. */
   paragraphs: string[];
+  /** ISO 8601 gốc từ API, chỉ dùng cho JSON-LD; hiển thị dùng `updatedLabel`. */
+  publishedAtIso: string;
 }
 
 const dateFormatter = new Intl.DateTimeFormat('vi-VN', {
@@ -37,5 +39,6 @@ export function toPolicyDetailView(dto: ContentPostDto): PolicyDetailView {
       .split(/\r?\n/)
       .map((line) => line.trim())
       .filter(Boolean),
+    publishedAtIso: dto.publishedAt,
   };
 }

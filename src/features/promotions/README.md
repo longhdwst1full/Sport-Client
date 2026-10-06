@@ -1,6 +1,6 @@
 # Storefront Promotions — maintenance note
 
-> **Document version:** 2.0.0
+> **Document version:** 2.1.0
 >
 > **Last updated:** 2026-09-13
 >
@@ -61,5 +61,6 @@ Không được đổi thông điệp UI thành "đã giữ suất" cho tới kh
 
 | Version | Date | Change summary |
 | --- | --- | --- |
+| 2.1.0 | 2026-10-06 | Khối flash sale trang chủ giữ chỗ bằng `FlashSaleDealCardSkeleton` khi tải lần đầu (chống CLS), ẩn khi không có chiến dịch; trang `/flash-sale` có nút "Thử lại" (`retry`); màu theo brand đỏ + amber. |
 | 2.0.0 | 2026-09-13 | Nối API thật, gỡ `flash-sale.mock.ts`, đếm ngược theo giờ server. |
 | 1.0.0 | 2026-09-13 | Tạo note, gắn nhãn non-production. |

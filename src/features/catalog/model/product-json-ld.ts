@@ -1,64 +1,71 @@
 import type { ProductDetailDto } from '@/generated/api/catalog/catalog.schemas';
-import { siteUrl } from '@/shared/constants';
+import { ProductMediaStatus } from '@/generated/api/catalog/catalog.schemas';
+import {
+  buildBreadcrumbListJsonLd,
+  buildProductJsonLd,
+  type BreadcrumbJsonLdItem,
+} from '@/lib/seo/json-ld';
 
-/**
- * Dữ liệu có cấu trúc gửi cho công cụ tìm kiếm phải đúng sự thật. Bản trước khai cứng
- * `aggregateRating` 4.9 với 128 đánh giá, luôn báo còn hàng và bịa giá 1.890.000 khi sản
- * phẩm chưa có bảng giá — không trường nào trong số đó có nguồn dữ liệu.
- */
-export function buildProductJsonLd(
-  product: ProductDetailDto,
-  brand: string | null,
-  hasPrice: boolean,
-) {
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'Product',
-    name: product.name,
-    image: product.imageUrl,
-    description: product.shortDescription,
-    sku: product.productNo || product.slug,
-    // Chưa có hãng thật thì không khai `brand`: gán tên cửa hàng làm hãng là sai dữ liệu có cấu trúc.
-    ...(brand ? { brand: { '@type': 'Brand', name: brand } } : {}),
-    // Chưa có giá thì không khai `offers`: khai giá 0 hoặc giá bịa đều sai lệch kết quả
-    // tìm kiếm. Điểm đánh giá và tồn kho hiện chưa có trong contract nên không khai.
-    ...(hasPrice
-      ? {
-          offers: {
-            '@type': 'Offer',
-            url: siteUrl(`/products/${product.slug}`),
-            priceCurrency: product.currency,
-            price: product.minPrice,
-            itemCondition: 'https://schema.org/NewCondition',
-          },
-        }
-      : {}),
-  };
+/** Mô tả SEO dự phòng khi Admin chưa nhập mô tả ngắn: cụ thể theo sản phẩm, không văn mẫu chung. */
+export function toProductSeoDescription(name: string, shortDescription?: string | null): string {
+  const text = shortDescription?.trim();
+  if (text) return text;
+  return `Mua ${name} chính hãng tại Bảo An Sport. Giá tốt, bảo hành chính hãng, giao hàng và lắp đặt toàn quốc.`;
 }
 
-export function buildBreadcrumbJsonLd(product: ProductDetailDto) {
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      {
-        '@type': 'ListItem',
-        position: 1,
-        name: 'Trang chủ',
-        item: siteUrl(),
-      },
-      {
-        '@type': 'ListItem',
-        position: 2,
-        name: 'Sản phẩm',
-        item: siteUrl('/products'),
-      },
-      {
-        '@type': 'ListItem',
-        position: 3,
-        name: product.name,
-        item: siteUrl(`/products/${product.slug}`),
-      },
-    ],
-  };
+export function toCategorySeoDescription(name: string, description?: string | null): string {
+  const text = description?.trim();
+  if (text) return text;
+  return `Mua ${name} chính hãng tại Bảo An Sport. Đa dạng mẫu mã, giá tốt, bảo hành chính hãng, giao hàng toàn quốc.`;
+}
+
+/**
+ * Breadcrumb trang chi tiết dùng chung cho UI và JSON-LD để hai bản không lệch nhau.
+ * Danh mục chính chỉ có link khi route tra được slug từ cây danh mục.
+ */
+export function toProductBreadcrumbItems(
+  product: Pick<ProductDetailDto, 'name' | 'slug' | 'primaryCategory'>,
+  categorySlug: string | undefined,
+): Array<{ label: string; href?: string }> {
+  return [
+    { label: 'Trang chủ', href: '/' },
+    { label: 'Sản phẩm', href: '/products' },
+    ...(product.primaryCategory
+      ? [{ label: product.primaryCategory, href: categorySlug ? `/category/${categorySlug}` : undefined }]
+      : []),
+    { label: product.name, href: `/products/${product.slug}` },
+  ];
+}
+
+export function toBreadcrumbJsonLd(items: ReadonlyArray<{ label: string; href?: string }>) {
+  return buildBreadcrumbListJsonLd(
+    items.map((item): BreadcrumbJsonLdItem => ({ name: item.label, path: item.href })),
+  );
+}
+
+/**
+ * Dữ liệu có cấu trúc gửi cho công cụ tìm kiếm phải đúng sự thật: chỉ khai giá khi có biến thể
+ * mở bán (`hasPrice`), tồn kho theo `inStock` của API, ảnh từ media ACTIVE thật (không dùng ảnh
+ * thay thế của dự án). Chưa có điểm đánh giá trong contract chi tiết nên không khai `aggregateRating`.
+ */
+export function toProductJsonLd(product: ProductDetailDto, brand: string | null, hasPrice: boolean) {
+  const images = (product.media ?? [])
+    .filter((item) => item.status === ProductMediaStatus.ACTIVE && item.secureUrl)
+    .sort((left, right) =>
+      left.isPrimary === right.isPrimary ? left.sortOrder - right.sortOrder : left.isPrimary ? -1 : 1,
+    )
+    .map((item) => item.secureUrl);
+  if (product.imageUrl && !images.includes(product.imageUrl)) images.push(product.imageUrl);
+
+  return buildProductJsonLd({
+    name: product.name,
+    path: `/products/${product.slug}`,
+    images,
+    description: product.shortDescription,
+    sku: product.productNo || product.slug,
+    brand,
+    price: hasPrice ? product.minPrice : null,
+    priceCurrency: product.currency,
+    inStock: product.inStock,
+  });
 }

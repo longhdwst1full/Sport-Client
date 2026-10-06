@@ -76,7 +76,8 @@ export function PwaRegistration() {
     <>
       {!isOnline && (
         <div
-          className="fixed inset-x-0 top-0 z-50 bg-amber-500 px-4 py-2 text-center text-sm font-bold text-ink"
+          // Góc dưới trái, chừa cột nút nổi bên phải: không che header sticky (top-0 z-50).
+          className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] left-4 right-20 z-[60] rounded-xl bg-amber-400 px-4 py-3 text-sm font-bold text-ink shadow-lg sm:right-auto sm:max-w-md"
           role="status"
         >
           Bạn đang ngoại tuyến. Nội dung đã mở vẫn xem được; đặt hàng và thanh toán cần kết nối

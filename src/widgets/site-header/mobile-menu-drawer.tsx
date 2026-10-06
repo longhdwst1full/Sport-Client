@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { ChevronDown, ChevronRight, Dumbbell, MapPin, Phone, ShoppingBag, UserRound } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { useDialogA11y } from '@/foundation/components/overlay/use-dialog-a11y';
-import { STORE_CONTACT } from '@/shared/constants';
+import { STORE_CONTACT, STORE_SHOWROOMS } from '@/shared/constants';
 import { AutocompleteSearch } from './autocomplete-search';
 import type { MegaMenuEntry } from '@/features/catalog';
 
@@ -35,14 +35,14 @@ export function MobileMenuDrawer({
     <div ref={containerRef} role="dialog" aria-label="Menu di động" tabIndex={-1} className="outline-none">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 top-[110px] z-40 bg-slate-950/60 backdrop-blur-sm lg:hidden animate-in fade-in duration-200"
+        className="fixed inset-0 z-40 bg-slate-950/60 lg:hidden animate-in fade-in"
         onClick={onClose}
         aria-hidden="true"
       />
 
       {/* Drawer Content */}
       <nav
-        className="relative z-50 border-t border-slate-200 bg-white shadow-2xl lg:hidden max-h-[calc(100vh-120px)] overflow-y-auto animate-in slide-in-from-top duration-200"
+        className="relative z-50 max-h-[calc(100dvh-7rem)] overflow-y-auto overscroll-contain border-t border-slate-200 bg-white shadow-xl animate-in fade-in slide-in-from-top-1 lg:hidden"
         aria-label="Điều hướng di động"
       >
         <div className="mx-auto max-w-7xl divide-y divide-slate-100">
@@ -53,38 +53,38 @@ export function MobileMenuDrawer({
 
           {/* Main Categories Accordion */}
           <div className="px-4 py-3 space-y-1">
-            <div className="px-3 py-1 text-[11px] font-black uppercase tracking-wider text-slate-400">
+            <div className="px-3 py-1 text-xs font-black uppercase tracking-wider text-slate-500">
               Điều hướng
             </div>
             <Link
               href="/"
-              className="flex items-center gap-3 px-3 py-2.5 text-sm font-bold text-slate-800 hover:bg-slate-50 hover:text-emerald-700 rounded-xl transition"
+              className="flex items-center gap-3 px-3 py-3 text-sm font-bold text-slate-800 hover:bg-slate-50 hover:text-brand-700 rounded-xl transition"
               onClick={onClose}
             >
               Trang chủ
             </Link>
             <Link
               href="/products"
-              className="flex items-center gap-3 px-3 py-2.5 text-sm font-bold text-slate-800 hover:bg-slate-50 hover:text-emerald-700 rounded-xl transition"
+              className="flex items-center gap-3 px-3 py-3 text-sm font-bold text-slate-800 hover:bg-slate-50 hover:text-brand-700 rounded-xl transition"
               onClick={onClose}
             >
               Tất cả sản phẩm
             </Link>
 
-            <div className="pt-2 px-3 py-1 text-[11px] font-black uppercase tracking-wider text-slate-400">
+            <div className="pt-2 px-3 py-1 text-xs font-black uppercase tracking-wider text-slate-500">
               Danh mục thiết bị chính hãng
             </div>
-            {megaMenuCategories.map((cat) => {
+            {megaMenuCategories.map((cat, catIdx) => {
               const isExpanded = expandedMobileCat === cat.label;
               return (
                 <div key={cat.label} className="rounded-xl border border-transparent overflow-hidden">
                   <div className="flex items-center justify-between rounded-xl hover:bg-slate-50 transition">
                     <Link
                       href={cat.href}
-                      className="flex flex-1 items-center gap-3 px-3 py-2.5 text-sm font-bold text-slate-800 hover:text-emerald-700"
+                      className="flex flex-1 items-center gap-3 px-3 py-3 text-sm font-bold text-slate-800 hover:text-brand-700"
                       onClick={onClose}
                     >
-                      <Dumbbell className="size-4.5 text-emerald-600 shrink-0" />
+                      <Dumbbell className="size-4.5 text-brand-600 shrink-0" />
                       <span>{cat.label}</span>
                     </Link>
                     {cat.children && cat.children.length > 0 && (
@@ -93,12 +93,14 @@ export function MobileMenuDrawer({
                         onClick={() =>
                           setExpandedMobileCat(isExpanded ? null : cat.label)
                         }
-                        className="p-2.5 text-slate-400 hover:text-slate-700"
-                        aria-label={`Mở rộng ${cat.label}`}
+                        className="grid size-11 place-items-center rounded-lg text-slate-500 hover:text-slate-800"
+                        aria-label={`${isExpanded ? 'Thu gọn' : 'Mở rộng'} ${cat.label}`}
+                        aria-expanded={isExpanded}
+                        aria-controls={`mobile-subcat-${catIdx}`}
                       >
                         <ChevronDown
                           className={`size-4 transition-transform duration-200 ${
-                            isExpanded ? 'rotate-180 text-emerald-600' : ''
+                            isExpanded ? 'rotate-180 text-brand-600' : ''
                           }`}
                         />
                       </button>
@@ -107,12 +109,15 @@ export function MobileMenuDrawer({
 
                   {/* Subcategories dropdown in drawer */}
                   {isExpanded && (
-                    <div className="ml-8 mr-2 my-1 space-y-1 border-l-2 border-emerald-500/40 pl-3 py-1 animate-in fade-in duration-150">
+                    <div
+                      id={`mobile-subcat-${catIdx}`}
+                      className="ml-8 mr-2 my-1 space-y-1 border-l-2 border-brand-200 pl-3 py-1 animate-in fade-in"
+                    >
                       {cat.children.map((child) => (
                         <Link
                           key={child.label}
                           href={child.href}
-                          className="flex items-center justify-between py-1.5 text-xs font-semibold text-slate-600 hover:text-emerald-700"
+                          className="flex items-center justify-between py-2.5 text-sm font-medium text-slate-600 hover:text-brand-700"
                           onClick={onClose}
                         >
                           <span>{child.label}</span>
@@ -121,7 +126,7 @@ export function MobileMenuDrawer({
                       ))}
                       <Link
                         href={cat.href}
-                        className="inline-block pt-1 text-xs font-extrabold text-emerald-700 hover:underline"
+                        className="inline-block py-2 text-sm font-extrabold text-brand-700 hover:underline"
                         onClick={onClose}
                       >
                         Xem tất cả {cat.label} →
@@ -138,15 +143,15 @@ export function MobileMenuDrawer({
             {hasFlashSaleCampaign && (
               <Link
                 href="/flash-sale"
-                className="flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-black text-rose-600 hover:bg-rose-50 transition"
+                className="flex items-center justify-between rounded-xl px-3 py-3 text-sm font-black text-brand-700 hover:bg-brand-50 transition"
                 onClick={onClose}
               >
                 <span className="flex items-center gap-2">
-                  <span className="size-2 rounded-full bg-rose-600 animate-ping" />
+                  <span aria-hidden className="size-2 rounded-full bg-brand-600" />
                   ⚡ Giờ Vàng Flash Sale
                   {flashSaleMaxDiscountPercent ? ` Giảm ${flashSaleMaxDiscountPercent}%` : ''}
                 </span>
-                <span className="rounded-full bg-rose-600 px-2 py-0.5 text-[10px] font-black uppercase text-white">
+                <span className="rounded-full bg-brand-600 px-2 py-0.5 text-[10px] font-black uppercase text-white">
                   SỐC
                 </span>
               </Link>
@@ -154,21 +159,20 @@ export function MobileMenuDrawer({
 
             <Link
               href="/products"
-              className="flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-bold text-slate-800 hover:bg-emerald-50 hover:text-emerald-700 transition"
+              className="flex items-center justify-between rounded-xl px-3 py-3 text-sm font-bold text-slate-800 hover:bg-brand-50 hover:text-brand-700 transition"
               onClick={onClose}
             >
               <span className="flex items-center gap-2.5">
-                <span className="size-2 rounded-full bg-rose-500 animate-pulse" />
                 Combo Home Gym Trọn Gói
               </span>
-              <span className="rounded-full bg-rose-500 px-2 py-0.5 text-[10px] font-black uppercase text-white shadow-sm">
+              <span className="rounded-full bg-amber-400 px-2 py-0.5 text-[10px] font-black uppercase text-slate-950">
                 Hot
               </span>
             </Link>
 
             <Link
               href="/news"
-              className="flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-bold text-slate-800 hover:bg-emerald-50 hover:text-emerald-700 transition"
+              className="flex items-center justify-between rounded-xl px-3 py-3 text-sm font-bold text-slate-800 hover:bg-brand-50 hover:text-brand-700 transition"
               onClick={onClose}
             >
               <span>Cẩm nang & Kinh nghiệm tập luyện</span>
@@ -177,11 +181,11 @@ export function MobileMenuDrawer({
 
             <Link
               href="/contact"
-              className="flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-bold text-slate-800 hover:bg-emerald-50 hover:text-emerald-700 transition"
+              className="flex items-center justify-between rounded-xl px-3 py-3 text-sm font-bold text-slate-800 hover:bg-brand-50 hover:text-brand-700 transition"
               onClick={onClose}
             >
               <span className="flex items-center gap-2">
-                <MapPin className="size-4 text-emerald-600" />
+                <MapPin className="size-4 text-brand-600" />
                 Hệ thống Showroom Bảo An Sport
               </span>
               <ChevronRight className="size-3.5 text-slate-400" />
@@ -190,24 +194,30 @@ export function MobileMenuDrawer({
           </div>
 
           {/* Showrooms & Hotlines info */}
-          <div className="px-5 py-3 text-xs text-slate-500 space-y-1.5 bg-slate-50/50">
-            <div className="font-bold text-slate-700">Showroom mở cửa 08:30 - 21:30 cả CN:</div>
-            <div>📍 <strong className="text-slate-800">Hà Nội:</strong> 234 Định Công, P. Định Công, Hoàng Mai</div>
-            <div>📍 <strong className="text-slate-800">TP.HCM:</strong> 34 Đường số 2, Cư xá Đài Ra Đa, Q.6</div>
+          <div className="space-y-1.5 bg-slate-50/50 px-5 py-3 text-xs text-slate-600">
+            <div className="font-bold text-slate-700">Showroom mở cửa {STORE_CONTACT.openingHours}</div>
+            {STORE_SHOWROOMS.map((showroom) => (
+              <div key={showroom.id} className="flex gap-1.5">
+                <MapPin aria-hidden className="mt-0.5 size-3.5 shrink-0 text-brand-600" />
+                <span>
+                  <strong className="text-slate-800">{showroom.city}:</strong> {showroom.address}
+                </span>
+              </div>
+            ))}
           </div>
 
           {/* Mobile Contact & Action Buttons */}
           <div className="flex flex-wrap gap-2.5 px-4 py-4 bg-slate-50">
             <a
               href={`tel:${STORE_CONTACT.primaryHotlineRaw}`}
-              className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-black text-white shadow-sm"
+              className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-3 text-sm font-black text-white"
             >
-              <Phone className="size-3.5 text-emerald-400" />
+              <Phone aria-hidden className="size-3.5 text-brand-400" />
               <span>{STORE_CONTACT.primaryHotline}</span>
             </a>
             <Link
               href="/cart"
-              className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-black text-white shadow-sm"
+              className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-brand-600 px-4 py-3 text-sm font-black text-white hover:bg-brand-700"
               onClick={onClose}
             >
               <ShoppingBag className="size-3.5" />
@@ -215,14 +225,14 @@ export function MobileMenuDrawer({
             </Link>
             <Link
               href={isLoggedIn ? '/profile' : '/login'}
-              className={`flex items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-xs font-bold shadow-sm transition ${
+              className={`flex items-center justify-center gap-1.5 rounded-xl px-4 py-3 text-sm font-bold transition ${
                 isLoggedIn
-                  ? 'border border-emerald-300 bg-emerald-50 text-emerald-800 font-extrabold'
+                  ? 'border border-slate-200 bg-white text-slate-800 font-extrabold'
                   : 'border border-slate-200 bg-white text-slate-700'
               }`}
               onClick={onClose}
             >
-              <UserRound className="size-3.5 text-emerald-600" />
+              <UserRound className="size-3.5 text-brand-600" />
               <span className="truncate">{isLoggedIn ? (customerName ? `Chào, ${customerName}` : 'Tài khoản') : 'Đăng nhập'}</span>
             </Link>
           </div>

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { AlertTriangle, XCircle } from 'lucide-react';
-import { Spinner, ErrorState } from '@/foundation/components/feedback';
+import { ErrorState } from '@/foundation/components/feedback';
 import {
   getGetAccountOrderQueryKey,
   getGetGuestOrderQueryKey,
@@ -13,6 +13,7 @@ import {
 import { OrderReturnCta } from '@/features/returns';
 import { ReviewFormDialog } from '@/features/reviews';
 import { OrderPaymentPanel } from '../components/order-payment-panel';
+import { OrderDetailSkeleton } from '../components/order-skeletons';
 import { OrderActionsBar } from '../components/order-detail/order-actions-bar';
 import { OrderCancelDialog } from '../components/order-detail/order-cancel-dialog';
 import { OrderDeliveryAddressCard } from '../components/order-detail/order-delivery-address-card';
@@ -68,12 +69,7 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
 
       <main className="mx-auto min-h-[65vh] max-w-6xl px-4 py-6 sm:px-6 lg:py-8">
         {!isLoaded || orderQuery.isLoading ? (
-          <div className="grid min-h-80 place-items-center">
-            <div className="flex flex-col items-center gap-3">
-              <Spinner className="size-10 animate-spin text-emerald-600" />
-              <span className="text-sm font-semibold text-slate-500">Đang tải thông tin đơn hàng...</span>
-            </div>
-          </div>
+          <OrderDetailSkeleton />
         ) : accessMode === 'none' ? (
           <ErrorState
             className="mx-auto max-w-xl rounded-3xl border border-amber-200 bg-amber-50/70 p-8 sm:p-10 text-center shadow-card"
@@ -85,10 +81,10 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
             description="Hãy mở đơn trên trình duyệt đã dùng để đặt hàng, tra cứu bằng email người nhận, hoặc đăng nhập tài khoản để xem toàn bộ lịch sử đơn."
             actions={
               <div className="mt-6 flex flex-wrap justify-center gap-3">
-                <Link href={lookupHref} className="rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-emerald-700">
+                <Link href={lookupHref} className="rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-brand-700">
                   Tra cứu bằng email
                 </Link>
-                <Link href="/login" className="rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-emerald-700">
+                <Link href="/login" className="rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-brand-700">
                   Đăng nhập
                 </Link>
                 <Link href="/" className="rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-bold text-slate-700 transition hover:bg-slate-50">

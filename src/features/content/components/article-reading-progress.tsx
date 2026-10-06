@@ -41,7 +41,7 @@ export function ArticleReadingProgress() {
       aria-hidden="true"
     >
       <div
-        className="h-full bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-600 transition-all duration-75 ease-out"
+        className="h-full bg-gradient-to-r from-brand-600 via-brand-500 to-amber-400 transition-all duration-75 ease-out"
         style={{ width: `${progress}%` }}
       />
     </div>

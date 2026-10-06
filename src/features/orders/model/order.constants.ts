@@ -1,5 +1,5 @@
 import { OrderFulfillmentStatus, OrderStatus } from '@/generated/api/orders/orders.schemas';
-import { PaymentMethod, PaymentStatus } from '@/generated/api/payments/payments.schemas';
+import { PaymentEvidenceStatus, PaymentMethod, PaymentStatus } from '@/generated/api/payments/payments.schemas';
 
 /** Mã trạng thái thanh toán. Re-export enum generated từ contract (`payments.schemas`). */
 export const PAYMENT_STATUS = PaymentStatus;
@@ -32,6 +32,18 @@ export const orderStatusLabels: Record<OrderStatus, string> = {
   CANCELLED: 'Đã hủy',
 };
 
+/** Màu nhãn trạng thái đơn trên nền sáng: chờ = amber, đang xử lý = sky, xong = success, huỷ = slate. */
+export const orderStatusTone: Record<OrderStatus, string> = {
+  PENDING_CONFIRMATION: 'bg-amber-50 text-amber-800 ring-amber-200',
+  CONFIRMED: 'bg-sky-50 text-sky-800 ring-sky-200',
+  PICKING: 'bg-sky-50 text-sky-800 ring-sky-200',
+  PACKED: 'bg-sky-50 text-sky-800 ring-sky-200',
+  SHIPPED: 'bg-brand-50 text-brand-800 ring-brand-200',
+  DELIVERED: 'bg-success-50 text-success-800 ring-success-200',
+  COMPLETED: 'bg-success-50 text-success-800 ring-success-200',
+  CANCELLED: 'bg-slate-100 text-slate-600 ring-slate-200',
+};
+
 export const paymentStatusLabels: Record<PaymentStatus, string> = {
   PENDING: 'Chờ thanh toán',
   AWAITING_CONFIRMATION: 'Chờ đối soát',
@@ -51,6 +63,22 @@ export const fulfillmentStatusLabels: Record<OrderFulfillmentStatus, string> = {
   FAILED: 'Giao hàng thất bại',
   RETURNED: 'Đã hoàn về kho',
   CANCELLED: 'Đã hủy',
+};
+
+export const paymentEvidenceStatusLabels: Record<PaymentEvidenceStatus, string> = {
+  PENDING_REVIEW: 'Chờ duyệt',
+  ACCEPTED: 'Đã chấp nhận',
+  REJECTED: 'Bị từ chối',
+  CANCELLED: 'Đã huỷ',
+};
+
+/**
+ * Nhà cung cấp thanh toán trong `PaymentInstructionDto.provider` (contract để `string`).
+ * Mã lạ rơi về chính mã đó khi hiển thị.
+ */
+export const paymentProviderLabels: Record<string, string> = {
+  INTERNAL_COD: 'Thu hộ khi nhận hàng (COD)',
+  VNPAY: 'Cổng thanh toán VNPay',
 };
 
 /**

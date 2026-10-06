@@ -8,14 +8,8 @@ import {
   ArrowUpRight,
   Clock,
   Calendar,
-  Sparkles,
-  BookOpen,
-  ChevronRight,
-  User,
-  Eye,
 } from 'lucide-react';
 import { useContentStories } from '../hooks/use-content-stories';
-import { STORE_CONFIG } from '@/shared/constants';
 import { Skeleton, SkeletonText } from '@/foundation/components/feedback';
 import { CONTENT_POST_TYPE_LABELS, type ContentPostView } from '../model/content-post.mapper';
 
@@ -25,7 +19,8 @@ const ALL_CATEGORY = 'ALL';
 const FEATURED_COUNT = 4;
 
 export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPostView[] }) {
-  const { stories: fetchedArticles, isPending } = useContentStories();
+  // Server (trang chủ, cùng chu kỳ ISR) đã gửi sẵn bài viết thì dùng luôn; chỉ tự tải khi không có.
+  const { stories: fetchedArticles, isPending } = useContentStories({ enabled: initialPosts.length === 0 });
   const allArticles = fetchedArticles.length > 0 ? fetchedArticles : initialPosts;
   const [activeCat, setActiveCat] = useState<string>(ALL_CATEGORY);
   const [expanded, setExpanded] = useState(false);
@@ -77,9 +72,10 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
               key={cat}
               type="button"
               onClick={() => setActiveCat(cat)}
-              className={`rounded-xl px-4 py-2 text-xs font-bold transition ${
+              aria-pressed={activeCat === cat}
+              className={`min-h-11 rounded-xl px-4 text-xs font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 ${
                 activeCat === cat
-                  ? 'bg-emerald-700 text-white shadow-sm'
+                  ? 'bg-brand-700 text-white shadow-sm'
                   : 'border border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50'
               }`}
             >
@@ -90,10 +86,10 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
 
         <Link
           href="/news"
-          className="inline-flex items-center gap-1.5 text-xs font-extrabold text-emerald-700 hover:underline"
+          className="inline-flex items-center gap-1.5 text-xs font-extrabold text-brand-700 hover:underline rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
         >
           <span>Xem tất cả bài viết</span>
-          <ArrowRight className="size-3.5" />
+          <ArrowRight className="size-3.5" aria-hidden="true" />
         </Link>
       </div>
 
@@ -102,7 +98,7 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
         {visibleArticles.map((post) => (
           <article
             key={post.id}
-            className="group grid overflow-hidden rounded-[28px] border border-slate-200/90 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-emerald-500/40 hover:shadow-xl md:grid-cols-[1fr_1.2fr]"
+            className="group grid overflow-hidden rounded-[28px] border border-slate-200/90 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-brand-500/40 hover:shadow-xl md:grid-cols-[1fr_1.2fr]"
           >
             {/* Image Thumbnail */}
             <div className="relative min-h-[220px] overflow-hidden bg-slate-100 sm:min-h-[240px]">
@@ -113,7 +109,7 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
                 sizes="(max-width: 768px) 100vw, 45vw"
                 className="object-cover transition duration-500 group-hover:scale-105"
               />
-              <div className="absolute left-3 top-3 rounded-full bg-slate-900/85 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-emerald-300 backdrop-blur-md">
+              <div className="absolute left-3 top-3 rounded-full bg-slate-900/85 px-3 py-1 text-xs font-black uppercase tracking-wider text-brand-300 backdrop-blur-md">
                 {post.categoryLabel}
               </div>
             </div>
@@ -122,21 +118,23 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
             <div className="flex flex-col justify-between p-6 sm:p-7">
               <div>
                 {/* Meta info: date, reading time */}
-                <div className="flex items-center gap-3 text-[11px] font-semibold text-slate-400">
+                <div className="flex items-center gap-3 text-xs font-semibold text-slate-400">
                   <span className="flex items-center gap-1">
-                    <Calendar className="size-3" />
+                    <Calendar className="size-3" aria-hidden="true" />
                     {post.publishedLabel}
                   </span>
-                  <span>·</span>
+                  <span aria-hidden="true">·</span>
                   <span className="flex items-center gap-1">
-                    <Clock className="size-3" />
+                    <Clock className="size-3" aria-hidden="true" />
                     {post.readTimeLabel}
                   </span>
                 </div>
 
                 {/* Title */}
-                <h3 className="mt-2.5 text-base font-black leading-snug text-slate-900 transition line-clamp-2 group-hover:text-emerald-700 sm:text-lg">
-                  <Link href={`/news/${post.slug}`}>{post.title}</Link>
+                <h3 className="mt-2.5 text-base font-black leading-snug text-slate-900 transition line-clamp-2 group-hover:text-brand-700 sm:text-lg">
+                  <Link href={`/news/${post.slug}`} className="rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2">
+                    {post.title}
+                  </Link>
                 </h3>
 
                 {/* Excerpt */}
@@ -148,21 +146,22 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
               {/* Author & Read More Link */}
               <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-3">
                 <div className="flex items-center gap-2">
-                  <div className="grid size-7 place-items-center rounded-full bg-emerald-100 text-xs font-bold text-emerald-800">
+                  <div className="grid size-7 place-items-center rounded-full bg-brand-100 text-xs font-bold text-brand-800" aria-hidden="true">
                     B
                   </div>
                   <div>
                     <span className="block text-xs font-bold text-slate-800">Bảo An Sport</span>
-                    <span className="block text-[10px] text-slate-400">Ban chuyên môn</span>
+                    <span className="block text-xs text-slate-400">Ban chuyên môn</span>
                   </div>
                 </div>
 
                 <Link
                   href={`/news/${post.slug}`}
-                  className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-bold text-emerald-700 transition hover:bg-emerald-50"
+                  className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-bold text-brand-700 transition hover:bg-brand-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+                  aria-label={`Đọc chi tiết: ${post.title}`}
                 >
                   <span>Chi tiết</span>
-                  <ArrowUpRight className="size-3.5" />
+                  <ArrowUpRight className="size-3.5" aria-hidden="true" />
                 </Link>
               </div>
             </div>
@@ -175,10 +174,10 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
           <button
             type="button"
             onClick={() => setExpanded(true)}
-            className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-bold text-slate-700 transition hover:border-emerald-400 hover:text-emerald-700"
+            className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-bold text-slate-700 transition hover:border-brand-400 hover:text-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
           >
             <span>Xem thêm</span>
-            <ArrowRight className="size-4" />
+            <ArrowRight className="size-4" aria-hidden="true" />
           </button>
         </div>
       )}
@@ -187,10 +186,10 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
         <div className="mt-6 flex justify-center">
           <Link
             href="/news"
-            className="inline-flex items-center gap-1.5 text-xs font-extrabold text-emerald-700 hover:underline"
+            className="inline-flex items-center gap-1.5 text-xs font-extrabold text-brand-700 hover:underline rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
           >
             <span>Đọc toàn bộ chuyên mục tin tức</span>
-            <ArrowRight className="size-3.5" />
+            <ArrowRight className="size-3.5" aria-hidden="true" />
           </Link>
         </div>
       )}

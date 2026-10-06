@@ -1,5 +1,9 @@
-import { NewsListPage } from '@/features/content';
+import { NEWS_PAGE_SIZE, NewsListPage, toNewsPostViews } from '@/features/content';
+import { listPublishedPosts } from '@/generated/api/content/content';
 import { buildPageMetadata } from '@/lib/seo/page-metadata';
+
+// ISR 5 phút như `/news/[slug]`; bài mới hiện ngay khi API gọi `POST /api/revalidate`.
+export const revalidate = 300;
 
 export const metadata = buildPageMetadata({
   title: 'Tin tức & Kiến thức thể thao',
@@ -8,6 +12,17 @@ export const metadata = buildPageMetadata({
   path: '/news',
 });
 
-export default function Page() {
-  return <NewsListPage />;
+/** Trang 1 lấy ở server để HTML có bài viết; lỗi thì để island client tự tải (không chặn trang). */
+async function loadFirstPage() {
+  try {
+    const page = await listPublishedPosts({ page: 1, limit: NEWS_PAGE_SIZE });
+    return { posts: toNewsPostViews(page.items), hasMore: page.meta.hasMore };
+  } catch {
+    return undefined;
+  }
+}
+
+export default async function Page() {
+  const firstPage = await loadFirstPage();
+  return <NewsListPage initialPosts={firstPage?.posts} initialHasMore={firstPage?.hasMore} />;
 }

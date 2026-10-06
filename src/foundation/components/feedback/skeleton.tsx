@@ -8,7 +8,7 @@ export function Skeleton({ className }: { className?: string }) {
   return (
     <div
       aria-hidden
-      className={twMerge('animate-pulse rounded-xl bg-stone-200/80', className)}
+      className={twMerge('animate-pulse rounded-xl bg-slate-200/80', className)}
     />
   );
 }

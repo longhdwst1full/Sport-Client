@@ -1,5 +1,51 @@
+import type { ReactNode } from 'react';
 import { Check, ChevronDown, ChevronUp, Copy, ExternalLink, PackageCheck, Truck } from 'lucide-react';
+import { buttonVariants } from '@/foundation/components/buttons';
 import type { OrderDetailView } from '../../model/order.mapper';
+
+export type OrderShippingInfoProps = {
+  view: OrderDetailView | undefined;
+  copiedTrackingNo: boolean;
+  onCopyTrackingNo: (code: string) => void;
+  showTimeline: boolean;
+  setShowTimeline: (value: boolean) => void;
+};
+
+/** Nút icon sao chép mã vận đơn (dùng ở header khối giao hàng và ô "Mã vận đơn"). */
+export function TrackingNoCopyButton({
+  trackingNo,
+  copied,
+  onCopy,
+  className,
+}: {
+  trackingNo: string;
+  copied: boolean;
+  onCopy: (code: string) => void;
+  className: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={() => onCopy(trackingNo)}
+      className={`grid size-9 place-items-center rounded-lg text-slate-500 transition hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 ${className}`}
+      title="Sao chép mã vận đơn"
+      aria-label={copied ? 'Đã sao chép mã vận đơn' : 'Sao chép mã vận đơn'}
+    >
+      {copied ? <Check className="size-3.5 text-success-600" /> : <Copy className="size-3.5" />}
+    </button>
+  );
+}
+
+/** Một ô thông tin vận chuyển: nhãn nhỏ in hoa, giá trị, dòng chú thích. */
+function ShipmentInfoTile({ label, hint, children }: { label: string; hint: ReactNode; children: ReactNode }) {
+  return (
+    <div className="rounded-xl bg-white p-3 border border-slate-200/80 shadow-xs">
+      <span className="block text-[11px] font-bold text-slate-400 uppercase">{label}</span>
+      {children}
+      <span className="mt-0.5 block truncate text-[11px] text-slate-500">{hint}</span>
+    </div>
+  );
+}
 
 /** Hãng, mã vận đơn, dự kiến giao, tình trạng bưu kiện và lịch sử cập nhật thu gọn được. */
 export function OrderShippingInfo({
@@ -8,18 +54,12 @@ export function OrderShippingInfo({
   onCopyTrackingNo,
   showTimeline,
   setShowTimeline,
-}: {
-  view: OrderDetailView | undefined;
-  copiedTrackingNo: boolean;
-  onCopyTrackingNo: (code: string) => void;
-  showTimeline: boolean;
-  setShowTimeline: (value: boolean) => void;
-}) {
+}: OrderShippingInfoProps) {
   return (
     <div className="mt-6 rounded-2xl border border-slate-200/90 bg-slate-50/70 p-4 sm:p-5">
-      <div className="flex items-center justify-between border-b border-slate-200/60 pb-3">
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-b border-slate-200/60 pb-3">
         <div className="flex items-center gap-2">
-          <Truck className="size-4 text-emerald-600" />
+          <Truck aria-hidden className="size-4 text-brand-600" />
           <span className="text-xs font-black uppercase tracking-wider text-slate-800">
             Thông tin vận chuyển thực tế
           </span>
@@ -29,64 +69,54 @@ export function OrderShippingInfo({
             href={view.shipment.trackingUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 hover:underline"
+            className="inline-flex min-h-11 items-center gap-1 text-xs font-bold text-brand-700 hover:underline"
           >
             <span>Tra cứu trên hệ thống hãng</span>
-            <ExternalLink className="size-3" />
+            <ExternalLink aria-hidden className="size-3" />
+            <span className="sr-only">(mở tab mới)</span>
           </a>
         )}
       </div>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="rounded-xl bg-white p-3 border border-slate-200/80 shadow-xs">
-          <span className="block text-[11px] font-bold text-slate-400 uppercase">Đơn vị vận chuyển</span>
+        <ShipmentInfoTile label="Đơn vị vận chuyển" hint="Đối tác giao nhận tiêu chuẩn">
           <strong className="mt-1 block text-sm font-bold text-slate-900">
             {view?.shipment?.carrierLabel || 'Chưa phân bổ'}
           </strong>
-          <span className="mt-0.5 block text-[11px] text-slate-500">Đối tác giao nhận tiêu chuẩn</span>
-        </div>
+        </ShipmentInfoTile>
 
-        <div className="rounded-xl bg-white p-3 border border-slate-200/80 shadow-xs">
-          <span className="block text-[11px] font-bold text-slate-400 uppercase">Mã vận đơn</span>
+        <ShipmentInfoTile
+          label="Mã vận đơn"
+          hint={view?.shipment?.hasTracking ? 'Đã tạo vận đơn điện tử' : 'Đang chuẩn bị bàn giao'}
+        >
           {view?.shipment?.trackingNo ? (
             <div className="mt-1 flex items-center gap-1.5">
               <strong className="font-mono text-sm font-black text-slate-900">
                 {view.shipment.trackingNo}
               </strong>
-              <button
-                type="button"
-                onClick={() => onCopyTrackingNo(view.shipment?.trackingNo ?? '')}
-                className="rounded p-1 text-slate-400 hover:text-slate-700 transition"
-                title="Sao chép"
-              >
-                {copiedTrackingNo ? <Check className="size-3.5 text-emerald-600" /> : <Copy className="size-3.5" />}
-              </button>
+              <TrackingNoCopyButton
+                trackingNo={view.shipment.trackingNo}
+                copied={copiedTrackingNo}
+                onCopy={onCopyTrackingNo}
+                className="-m-1.5 hover:bg-slate-100"
+              />
             </div>
           ) : (
             <strong className="mt-1 block text-sm font-semibold text-slate-500">Chưa có mã vận đơn</strong>
           )}
-          <span className="mt-0.5 block text-[11px] text-slate-500">
-            {view?.shipment?.hasTracking ? 'Đã tạo vận đơn điện tử' : 'Đang chuẩn bị bàn giao'}
-          </span>
-        </div>
+        </ShipmentInfoTile>
 
-        <div className="rounded-xl bg-white p-3 border border-slate-200/80 shadow-xs">
-          <span className="block text-[11px] font-bold text-slate-400 uppercase">Dự kiến giao hàng</span>
-          <strong className="mt-1 block text-sm font-bold text-emerald-700">
+        <ShipmentInfoTile label="Dự kiến giao hàng" hint="Trong giờ hành chính">
+          <strong className="mt-1 block text-sm font-bold text-brand-700">
             {view?.shipment?.estimatedDeliveryLabel}
           </strong>
-          <span className="mt-0.5 block text-[11px] text-slate-500">Trong giờ hành chính</span>
-        </div>
+        </ShipmentInfoTile>
 
-        <div className="rounded-xl bg-white p-3 border border-slate-200/80 shadow-xs">
-          <span className="block text-[11px] font-bold text-slate-400 uppercase">Tình trạng bưu kiện</span>
+        <ShipmentInfoTile label="Tình trạng bưu kiện" hint={`Kho xuất: ${view?.warehouseName ?? ''}`}>
           <strong className="mt-1 block text-sm font-bold text-slate-900 truncate">
             {view?.shipment?.statusText}
           </strong>
-          <span className="mt-0.5 block text-[11px] text-slate-500 truncate">
-            Kho xuất: {view?.warehouseName}
-          </span>
-        </div>
+        </ShipmentInfoTile>
       </div>
 
       {/* Tracking & Timeline Toggle */}
@@ -96,9 +126,10 @@ export function OrderShippingInfo({
             href={view.shipment.trackingUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-4 py-2 font-bold text-white shadow-sm transition hover:bg-emerald-700"
+            className={buttonVariants({ variant: 'primary', className: 'gap-1.5 px-4 text-xs shadow-sm' })}
           >
-            <Truck className="size-3.5" /> Theo dõi lộ trình trực tiếp <ExternalLink className="size-3" />
+            <Truck aria-hidden className="size-3.5" /> Theo dõi lộ trình trực tiếp <ExternalLink aria-hidden className="size-3" />
+            <span className="sr-only">(mở tab mới)</span>
           </a>
         ) : (
           <span className="text-slate-500 text-xs">
@@ -112,11 +143,12 @@ export function OrderShippingInfo({
           <button
             type="button"
             onClick={() => setShowTimeline(!showTimeline)}
-            className="inline-flex items-center gap-1.5 font-bold text-slate-700 hover:text-emerald-700 transition ml-auto"
+            aria-expanded={showTimeline}
+            className="inline-flex min-h-11 items-center gap-1.5 font-bold text-slate-700 hover:text-brand-700 transition ml-auto"
           >
-            <PackageCheck className="size-3.5 text-emerald-600" />
+            <PackageCheck aria-hidden className="size-3.5 text-brand-600" />
             Lịch sử cập nhật chi tiết ({view?.timeline.length})
-            {showTimeline ? <ChevronUp className="size-3.5" /> : <ChevronDown className="size-3.5" />}
+            {showTimeline ? <ChevronUp aria-hidden className="size-3.5" /> : <ChevronDown aria-hidden className="size-3.5" />}
           </button>
         )}
       </div>

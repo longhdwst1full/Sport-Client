@@ -1,11 +1,17 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { CheckCircle2, ShieldCheck } from 'lucide-react';
+import type { ReactNode } from 'react';
+import { Button } from '@/foundation/components/buttons';
 import { Spinner } from '@/foundation/components/feedback';
+import { DescriptionList, type DescriptionItem } from '@/foundation/components/structure';
 import type { CartItem } from '@/features/cart';
 import type { CheckoutQuoteView } from '../model/checkout.mapper';
 import { formatVnd } from '@/shared/format/money';
 import { PRODUCT_PLACEHOLDER_IMAGE } from '@/shared/constants';
+
+/** Nút đặt hàng (desktop + thanh dính mobile): bo lớn, chữ đậm, trạng thái khoá xám thay vì mờ. */
+const SUBMIT_CLASS = 'rounded-2xl text-sm font-black shadow-sm disabled:bg-slate-300 disabled:text-slate-600 disabled:opacity-100';
 
 interface CheckoutOrderSummaryProps {
   items: CartItem[];
@@ -41,76 +47,105 @@ export function CheckoutOrderSummary({
   // - `requiresShippingConsultation`: Backend ẩn phí/tổng vì còn chờ nhân viên chốt cước.
   const consultationPending = Boolean(quote?.requiresShippingConsultation);
   const shippingPending = shopArranged || consultationPending || Boolean(quote?.shippingFeePending);
+  const hasFinalTotal = !shippingPending && !quoting && Boolean(quote);
+  const mobileTotalLabel = hasFinalTotal && quote ? quote.grandTotalLabel : formatVnd(localSubtotal);
+  const submitIsDisabled = busy || !authLoaded || submitDisabled;
+  const shippingRow: { value: ReactNode; className?: string } = shippingPending
+    ? { value: 'Shop báo riêng', className: 'font-semibold text-amber-700' }
+    : quoting || !quote
+      ? {
+          value: (
+            <span className="inline-flex items-center gap-1">
+              {quoting ? <><Spinner className="size-3.5 animate-spin" /> Đang tính phí...</> : 'Chưa tính'}
+            </span>
+          ),
+          className: 'text-slate-500',
+        }
+      : quote.shippingTotalAmount === 0
+        ? { value: 'Miễn phí', className: 'font-semibold text-success-700' }
+        : { value: quote.shippingTotalLabel };
+  const totalRow: DescriptionItem | null = shippingPending
+    ? { label: 'Tiền hàng', value: formatVnd(localSubtotal) }
+    : !quoting && quote
+      ? { label: 'Khách thanh toán', value: quote.grandTotalLabel }
+      : null;
   return (
     <aside>
       <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm lg:sticky lg:top-28">
         <div className="flex items-center justify-between">
           <h2 className="font-black text-slate-900">Đơn hàng ({items.length})</h2>
-          <Link href="/cart" className="text-xs font-bold text-emerald-700">Chỉnh sửa</Link>
+          <Link href="/cart" className="-my-2 inline-flex min-h-11 items-center px-2 text-xs font-bold text-brand-700 hover:underline">Chỉnh sửa</Link>
         </div>
         <div className="mt-4 max-h-72 space-y-3 overflow-auto">
           {items.map((item) => (
             <div key={item.variantId} className="flex items-center gap-3">
-              <div className="relative size-12 overflow-hidden rounded-xl border bg-slate-50">
+              <div className="relative size-12 shrink-0 overflow-hidden rounded-xl border bg-slate-50">
                 <Image src={item.imageUrl || PRODUCT_PLACEHOLDER_IMAGE} alt={item.name} fill sizes="48px" className="object-contain p-1" />
               </div>
               <div className="min-w-0 flex-1">
                 <p className="truncate text-xs font-bold text-slate-900">{item.name}</p>
                 <p className="text-xs text-slate-500">{item.sku} · ×{item.quantity}</p>
               </div>
-              <strong className="text-xs">{formatVnd(item.price * item.quantity)}</strong>
+              <strong className="shrink-0 text-xs">{formatVnd(item.price * item.quantity)}</strong>
             </div>
           ))}
         </div>
-        <div className="mt-5 space-y-2 border-t pt-4 text-sm">
-          <div className="flex justify-between"><span>Tạm tính tham khảo</span><span>{formatVnd(localSubtotal)}</span></div>
-          {shippingPending ? (
-            <>
-              <div className="flex justify-between">
-                <span>Phí giao</span>
-                <span className="font-semibold text-amber-700">Shop báo riêng</span>
-              </div>
-              <div className="flex justify-between border-t pt-3 text-base font-black">
-                <span>Tiền hàng</span>
-                <span className="text-emerald-700">{formatVnd(localSubtotal)}</span>
-              </div>
-              <p className="rounded-xl bg-amber-50 p-3 text-xs leading-5 text-amber-900">
-                {consultationPending
-                  ? 'Đơn cần nhân viên tư vấn cước gửi xe. Shop sẽ liên hệ chốt phí rồi bạn bấm kiểm tra lại phí để đặt hàng.'
-                  : 'Bạn đặt hàng được ngay. Phí vận chuyển sẽ được shop gọi báo và thu riêng khi gửi hàng, chưa gồm trong số tiền trên.'}
-              </p>
-            </>
-          ) : quoting || !quote ? (
-            <div className="flex justify-between">
-              <span>Phí giao</span>
-              <span className="inline-flex items-center gap-1 text-slate-500">
-                {quoting ? <><Spinner className="size-3.5 animate-spin" /> Đang tính phí...</> : 'Chưa tính'}
-              </span>
-            </div>
-          ) : (
-            <>
-              <div className="flex justify-between">
-                <span>Phí giao</span>
-                <span>{quote.shippingTotalAmount === 0 ? 'Miễn phí' : quote.shippingTotalLabel}</span>
-              </div>
-              <div className="flex justify-between border-t pt-3 text-base font-black">
-                <span>Khách thanh toán</span>
-                <span className="text-emerald-700">{quote.grandTotalLabel}</span>
-              </div>
-            </>
+        <div className="mt-5 space-y-3 border-t pt-4 text-sm">
+          <DescriptionList
+            layout="inline"
+            labelClassName="text-slate-700"
+            valueClassName="font-normal text-slate-900"
+            items={[
+              { label: 'Tạm tính tham khảo', value: formatVnd(localSubtotal) },
+              { label: 'Phí giao', value: shippingRow.value, valueClassName: shippingRow.className },
+            ]}
+          />
+          {totalRow && (
+            <DescriptionList
+              layout="inline"
+              className="border-t pt-3 text-base font-black"
+              labelClassName="text-slate-900"
+              valueClassName="font-black text-brand-700"
+              items={[totalRow]}
+            />
+          )}
+          {shippingPending && (
+            <p className="rounded-xl bg-amber-50 p-3 text-xs leading-5 text-amber-900">
+              {consultationPending
+                ? 'Đơn cần nhân viên tư vấn cước gửi xe. Shop sẽ liên hệ chốt phí rồi bạn bấm kiểm tra lại phí để đặt hàng.'
+                : 'Bạn đặt hàng được ngay. Phí vận chuyển sẽ được shop gọi báo và thu riêng khi gửi hàng, chưa gồm trong số tiền trên.'}
+            </p>
           )}
         </div>
         {showSubmit && (
-          <button type="submit" disabled={busy || !authLoaded || submitDisabled} className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-600 py-3.5 text-sm font-black text-white disabled:cursor-not-allowed disabled:bg-slate-300">
-            {busy ? <Spinner className="size-5 animate-spin" /> : <CheckCircle2 className="size-5" />}
+          <Button type="submit" variant="primary" size="lg" fullWidth disabled={submitIsDisabled} className={`mt-6 hidden lg:flex ${SUBMIT_CLASS}`}>
+            {busy ? <Spinner className="size-5 animate-spin" /> : <CheckCircle2 aria-hidden className="size-5" />}
             {busy ? 'Đang xử lý...' : submitLabel}
-          </button>
+          </Button>
         )}
         <div className="mt-4 flex gap-2 text-xs leading-5 text-slate-500">
-          <ShieldCheck className="mt-0.5 size-4 shrink-0 text-emerald-600" />
+          <ShieldCheck aria-hidden className="mt-0.5 size-4 shrink-0 text-slate-400" />
           <span>Không lấy giá hoặc tồn từ dữ liệu lưu trên trình duyệt. Backend là nguồn quyết định cuối cùng.</span>
         </div>
       </div>
+
+      {/* Mobile: thanh tổng + nút đặt hàng dính đáy để khách không phải cuộn xuống cuối form. */}
+      {showSubmit && (
+        <div className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200 bg-white/95 px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3 shadow-[0_-8px_24px_-12px_rgba(15,23,42,0.25)] backdrop-blur lg:hidden">
+          <div className="mx-auto flex max-w-3xl items-center gap-3">
+            <div className="min-w-0 flex-1">
+              <span className="block text-[11px] font-semibold text-slate-500">
+                {hasFinalTotal ? 'Khách thanh toán' : shippingPending ? 'Tiền hàng (chưa gồm phí giao)' : 'Tạm tính (chưa gồm phí giao)'}
+              </span>
+              <strong className="block truncate text-lg font-black text-brand-700">{mobileTotalLabel}</strong>
+            </div>
+            <Button type="submit" variant="primary" size="lg" disabled={submitIsDisabled} className={`shrink-0 px-5 ${SUBMIT_CLASS}`}>
+              {busy ? <Spinner className="size-5 animate-spin" /> : null}
+              {busy ? 'Đang xử lý...' : submitLabel}
+            </Button>
+          </div>
+        </div>
+      )}
     </aside>
   );
 }

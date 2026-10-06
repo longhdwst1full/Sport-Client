@@ -29,7 +29,7 @@ const SHOPPING_LINKS: ReadonlyArray<{ href: string; label: string; icon: LucideI
 ];
 
 const navItemClass = (active: boolean) =>
-  `flex w-full items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-semibold transition ${
+  `flex w-full items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--dc-primary-600)] ${
     active
       ? 'bg-[var(--dc-primary-50)] text-[var(--dc-primary-700)]'
       : 'text-[var(--dc-text-secondary)] hover:bg-[var(--dc-canvas)] hover:text-[var(--dc-text-primary)]'
@@ -61,7 +61,7 @@ export function ProfileSidebar({ activeTab, onSelectTab, onLogout }: ProfileSide
             className={navItemClass(activeTab === id)}
           >
             <span className="flex items-center gap-3">
-              <Icon className="size-4.5" />
+              <Icon className="size-4.5" aria-hidden />
               {label}
             </span>
           </button>
@@ -73,19 +73,19 @@ export function ProfileSidebar({ activeTab, onSelectTab, onLogout }: ProfileSide
         {SHOPPING_LINKS.map(({ href, label, icon: Icon }) => (
           <Link key={href} href={href} className={navItemClass(false)}>
             <span className="flex items-center gap-3">
-              <Icon className="size-4.5" />
+              <Icon className="size-4.5" aria-hidden />
               {label}
             </span>
-            <ChevronRight className="size-4 opacity-40" />
+            <ChevronRight className="size-4 opacity-40" aria-hidden />
           </Link>
         ))}
 
         <button
           type="button"
           onClick={onLogout}
-          className="mt-2 flex w-full items-center gap-3 rounded-xl border-t border-[var(--dc-border)] px-3.5 pb-2.5 pt-4 text-sm font-semibold text-rose-600 transition hover:bg-rose-50"
+          className="mt-2 flex w-full items-center gap-3 rounded-xl border-t border-[var(--dc-border)] px-3.5 pb-2.5 pt-4 text-sm font-semibold text-rose-600 transition hover:bg-rose-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500"
         >
-          <LogOut className="size-4.5" />
+          <LogOut className="size-4.5" aria-hidden />
           Đăng xuất
         </button>
       </nav>
@@ -95,9 +95,9 @@ export function ProfileSidebar({ activeTab, onSelectTab, onLogout }: ProfileSide
         <p className="mt-1 text-xs text-[var(--dc-text-secondary)]">Gọi hotline, nhân viên hỗ trợ ngay.</p>
         <a
           href={`tel:${STORE_CONTACT.primaryHotlineRaw}`}
-          className="mt-3 inline-flex items-center gap-2 font-bold text-[var(--dc-primary-700)] hover:underline"
+          className="mt-3 inline-flex items-center gap-2 font-bold rounded text-[var(--dc-primary-700)] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--dc-primary-600)]"
         >
-          <Phone className="size-4" />
+          <Phone className="size-4" aria-hidden />
           {STORE_CONTACT.primaryHotline}
         </a>
       </div>
@@ -113,9 +113,9 @@ export function ProfileShoppingLinks() {
         <Link
           key={href}
           href={href}
-          className="flex flex-col items-center gap-1.5 rounded-2xl border border-[var(--dc-border)] bg-white px-2 py-3 text-center text-[11px] font-semibold text-[var(--dc-text-secondary)] transition hover:border-[var(--dc-primary-500)] hover:text-[var(--dc-primary-700)]"
+          className="flex flex-col items-center gap-1.5 rounded-2xl border border-[var(--dc-border)] bg-white px-2 py-3 text-center text-[11px] font-semibold text-[var(--dc-text-secondary)] transition hover:border-[var(--dc-primary-500)] hover:text-[var(--dc-primary-700)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--dc-primary-600)]"
         >
-          <Icon className="size-5" />
+          <Icon className="size-5" aria-hidden />
           {label}
         </Link>
       ))}

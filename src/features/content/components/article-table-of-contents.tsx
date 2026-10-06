@@ -22,17 +22,17 @@ export function ArticleTableOfContents({ headings }: { headings: TocHeading[] })
 
   return (
     <nav
-      className="my-8 rounded-2xl border border-emerald-100 bg-emerald-50/40 p-5 shadow-2xs backdrop-blur-xs sm:p-6"
+      className="my-8 rounded-2xl border border-brand-100 bg-brand-50/40 p-5 shadow-2xs backdrop-blur-xs sm:p-6"
       aria-label="Mục lục bài viết"
     >
-      <div className="flex items-center gap-2 border-b border-emerald-200/60 pb-3">
-        <ListOrdered className="size-4 text-emerald-700" />
-        <h3 className="text-xs font-black uppercase tracking-wider text-emerald-950">
+      <div className="flex items-center gap-2 border-b border-brand-200/60 pb-3">
+        <ListOrdered className="size-4 text-brand-700" aria-hidden="true" />
+        <h2 className="text-xs font-black uppercase tracking-wider text-brand-950">
           Mục lục bài viết
-        </h3>
+        </h2>
       </div>
       <ol className="mt-3.5 space-y-2 text-xs font-medium text-slate-700">
-        {headings.map((heading, i) => (
+        {headings.map((heading) => (
           <li
             key={heading.id}
             className={`${heading.level === 3 ? 'ml-4 list-[circle]' : 'list-decimal'} list-inside`}
@@ -40,7 +40,7 @@ export function ArticleTableOfContents({ headings }: { headings: TocHeading[] })
             <button
               type="button"
               onClick={() => scrollToHeading(heading.id)}
-              className="text-left text-slate-700 hover:text-emerald-700 hover:underline transition font-semibold"
+              className="rounded py-1 text-left text-slate-700 hover:text-brand-700 hover:underline transition font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
             >
               {heading.text}
             </button>

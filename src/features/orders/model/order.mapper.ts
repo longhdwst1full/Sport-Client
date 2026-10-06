@@ -1,7 +1,7 @@
 import type { OrderDetailDto, OrderSummaryDto } from '@/generated/api/orders/orders.schemas';
 import { vndMoney, formatVnd } from '@/shared/format/money';
 import { formatDateTime } from '@/shared/format/date-time';
-import { orderStatusLabels, paymentStatusLabels } from './order.constants';
+import { orderStatusLabels, orderStatusTone, paymentStatusLabels } from './order.constants';
 
 /** Nhãn tách khỏi mã để đổi chữ hiển thị không làm đổi so sánh nghiệp vụ. */
 export const paymentMethodLabels: Record<string, string> = {
@@ -72,6 +72,8 @@ export interface OrderDetailView {
   grandTotalLabel: string;
   subtotalLabel: string;
   shippingTotalLabel: string;
+  /** So sánh trên số tiền gốc, không so chuỗi đã định dạng. */
+  isShippingFree: boolean;
   discountTotalLabel: string;
   hasDiscount: boolean;
   itemCount: number;
@@ -225,6 +227,7 @@ export interface OrderListItemView {
   branchName: string;
   statusCode: string;
   statusLabel: string;
+  statusToneClass: string;
   paymentStatusLabel: string;
   recipientName: string;
   grandTotalLabel: string;
@@ -235,10 +238,11 @@ export function toOrderListItemView(order: OrderSummaryDto): OrderListItemView {
   return {
     id: order.id,
     orderNo: order.orderNo,
-    placedAtLabel: new Date(order.placedAt).toLocaleString('vi-VN'),
+    placedAtLabel: formatDateTime(order.placedAt),
     branchName: order.branchName,
     statusCode: order.status,
     statusLabel: orderStatusLabels[order.status] ?? order.status,
+    statusToneClass: orderStatusTone[order.status] ?? 'bg-slate-100 text-slate-700 ring-slate-200',
     paymentStatusLabel: paymentStatusLabels[order.paymentStatus] ?? order.paymentStatus,
     recipientName: order.recipient.name,
     grandTotalLabel: formatVnd(Number(order.grandTotal)),
@@ -333,6 +337,7 @@ export function toOrderDetailView(dto: OrderDetailDto): OrderDetailView {
     grandTotalLabel: money(dto.grandTotal),
     subtotalLabel: money(dto.subtotal),
     shippingTotalLabel: money(dto.shippingTotal),
+    isShippingFree: Number(dto.shippingTotal ?? 0) === 0,
     discountTotalLabel: money(dto.discountTotal),
     hasDiscount: Number(dto.discountTotal ?? 0) > 0,
     itemCount: dto.itemCount,

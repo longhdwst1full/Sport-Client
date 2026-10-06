@@ -1,4 +1,6 @@
 import { Plus } from 'lucide-react';
+import { Button } from '@/foundation/components/buttons';
+import { InlineAlert, Skeleton } from '@/foundation/components/feedback';
 import { AddressCard } from './address-card';
 import type { AddressView } from '../model/address.mapper';
 
@@ -33,35 +35,35 @@ export function AddressBookPanel({
           </p>
         </div>
 
-        <button
-          type="button"
+        <Button
           onClick={onAdd}
-          className="inline-flex items-center gap-2 rounded-2xl bg-emerald-600 px-4 py-2.5 text-xs font-bold text-white shadow-md shadow-emerald-600/20 transition hover:bg-emerald-500"
+          size="md"
+          className="h-auto rounded-2xl py-2.5 text-xs font-bold shadow-md shadow-brand-600/20"
         >
-          <Plus className="size-4" />
+          <Plus className="size-4" aria-hidden />
           <span>Thêm địa chỉ mới</span>
-        </button>
+        </Button>
       </div>
 
       {/* Address List */}
       {addressesLoading && addresses.length === 0 ? (
-        <div className="mt-6 space-y-4" aria-busy="true">
+        <div className="mt-6 space-y-4" aria-busy="true" aria-label="Đang tải sổ địa chỉ">
           {[0, 1].map((row) => (
             <div key={row} className="rounded-2xl border border-slate-200 p-5">
-              <div className="h-4 w-40 animate-pulse rounded bg-slate-200" />
-              <div className="mt-3 h-3 w-full animate-pulse rounded bg-slate-100" />
+              <Skeleton className="h-4 w-40 rounded" />
+              <Skeleton className="mt-3 h-3 w-full rounded bg-stone-100" />
             </div>
           ))}
         </div>
       ) : addressesError ? (
-        <div className="mt-6 rounded-2xl border border-rose-200 bg-rose-50 p-5 text-xs text-rose-700">
+        <InlineAlert role="alert" className="mt-6 rounded-2xl border border-rose-200 bg-rose-50 p-5 text-xs text-rose-700">
           <p className="font-bold">Không tải được sổ địa chỉ.</p>
-          <button type="button" onClick={onRetry} className="mt-2 font-bold underline">
+          <button type="button" onClick={onRetry} className="mt-2 font-bold underline rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500">
             Thử lại
           </button>
-        </div>
+        </InlineAlert>
       ) : addresses.length === 0 ? (
-        <div className="mt-6 rounded-2xl border border-dashed border-slate-300 p-8 text-center text-xs text-slate-500">
+        <div className="mt-6 rounded-2xl border border-dashed border-slate-300 p-8 text-center text-xs text-slate-600">
           Chưa có địa chỉ nhận hàng nào. Thêm địa chỉ để thanh toán nhanh hơn.
         </div>
       ) : (

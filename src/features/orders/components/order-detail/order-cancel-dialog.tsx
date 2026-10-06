@@ -1,10 +1,10 @@
 import { AlertTriangle, X } from 'lucide-react';
-import { useRef } from 'react';
-import { useDialogA11y } from '@/foundation/components/overlay/use-dialog-a11y';
 import { Button } from '@/foundation/components/buttons';
 import { Spinner } from '@/foundation/components/feedback';
+import { Field, Textarea } from '@/foundation/components/field-system';
 import type { useCancelOrder } from '../../hooks/use-cancel-order';
 import { errorMessage } from '../../model/order-detail-error';
+import { OrderDialogShell } from './order-dialog-shell';
 
 const CANCEL_REASONS = [
   'Đổi ý không muốn mua nữa',
@@ -28,40 +28,17 @@ export function OrderCancelDialog({
   cancel: ReturnType<typeof useCancelOrder>['cancel'];
   closeCancel: () => void;
 }) {
-  const dialogRef = useRef<HTMLDivElement | null>(null);
-  useDialogA11y(dialogRef, { onClose: closeCancel, disableClose: cancel.isPending, trapFocus: true });
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-fade-in">
-      <div
-        ref={dialogRef}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="order-cancel-dialog-title"
-        tabIndex={-1}
-        className="relative w-full max-w-lg rounded-3xl border border-slate-100 bg-white p-6 sm:p-7 shadow-2xl animate-fade-in-up outline-none"
-      >
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="grid size-11 place-items-center rounded-2xl bg-rose-100 text-rose-600">
-              <AlertTriangle className="size-5.5" />
-            </div>
-            <div>
-              <h2 id="order-cancel-dialog-title" className="text-base font-black text-slate-900">Xác nhận hủy đơn hàng</h2>
-              <p className="font-mono text-xs text-slate-500">#{orderNo}</p>
-            </div>
-          </div>
-          <button
-            type="button"
-            onClick={closeCancel}
-            disabled={cancel.isPending}
-            aria-label="Đóng"
-            className="rounded-xl p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition"
-          >
-            <X className="size-5" />
-          </button>
-        </div>
-
+    <OrderDialogShell
+      titleId="order-cancel-dialog-title"
+      title="Xác nhận hủy đơn hàng"
+      subtitle={<span className="font-mono">#{orderNo}</span>}
+      icon={AlertTriangle}
+      iconClassName="bg-rose-100 text-rose-600"
+      className="max-w-lg"
+      onClose={closeCancel}
+      closeDisabled={cancel.isPending}
+    >
         <div className="mt-4 rounded-2xl bg-rose-50/80 p-3.5 border border-rose-100 text-xs leading-relaxed text-rose-900">
           <strong className="block font-bold">Lưu ý quan trọng:</strong>
           Sau khi hủy, hệ thống sẽ tự động giải phóng toàn bộ sản phẩm đang giữ chỗ cho bạn. Nếu đơn đã thanh toán online, nhân viên sẽ liên hệ để hoàn tiền theo chính sách. Thao tác hủy không thể hoàn tác.
@@ -90,18 +67,21 @@ export function OrderCancelDialog({
         </div>
 
         <div className="mt-4">
-          <label htmlFor="customer-cancel-reason" className="block text-xs font-bold text-slate-800">
-            Chi tiết lý do hủy đơn <span className="text-rose-600">*</span>
-          </label>
-          <textarea
-            id="customer-cancel-reason"
-            value={reason}
-            onChange={(event) => setReason(event.target.value)}
-            maxLength={500}
-            rows={3}
-            placeholder="Vui lòng cho Bảo An Sport biết lý do bạn muốn hủy đơn (tối thiểu 3 ký tự)..."
-            className="mt-1.5 w-full rounded-2xl border border-slate-200 p-3 text-xs text-slate-800 placeholder:text-slate-400 focus:border-rose-400 focus:outline-none focus:ring-1 focus:ring-rose-400"
-          />
+          <Field
+            label={<>Chi tiết lý do hủy đơn <span className="text-rose-600">*</span></>}
+            labelClassName="block text-xs font-bold text-slate-800"
+          >
+            <Textarea
+              id="customer-cancel-reason"
+              value={reason}
+              onChange={(event) => setReason(event.target.value)}
+              maxLength={500}
+              rows={3}
+              placeholder="Vui lòng cho Bảo An Sport biết lý do bạn muốn hủy đơn (tối thiểu 3 ký tự)..."
+              invalid={false} // Textarea chưa có `size`: cần `invalid` để thoát chế độ passthrough className
+              className="mt-1.5"
+            />
+          </Field>
           <div className="mt-1 flex justify-between text-[11px] text-slate-400">
             <span>Tối thiểu 3 ký tự</span>
             <span>{reason.trim().length}/500</span>
@@ -115,25 +95,19 @@ export function OrderCancelDialog({
         )}
 
         <div className="mt-6 flex justify-end gap-3">
-          <Button
-            type="button"
-            disabled={cancel.isPending}
-            onClick={closeCancel}
-            className="rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-xs font-bold text-slate-700 transition hover:bg-slate-50"
-          >
+          <Button variant="outline" disabled={cancel.isPending} onClick={closeCancel} className="px-5 text-xs">
             Đóng
           </Button>
           <Button
-            type="button"
+            variant="danger"
             disabled={cancel.isPending || reason.trim().length < 3}
             onClick={() => cancel.mutate()}
-            className="flex items-center gap-1.5 rounded-xl bg-rose-600 px-5 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-rose-700 disabled:opacity-50"
+            className="gap-1.5 px-5 text-xs shadow-sm"
           >
             {cancel.isPending ? <Spinner className="size-4 animate-spin" /> : <X className="size-4" />}
             {cancel.isPending ? 'Đang hủy...' : 'Xác nhận hủy đơn'}
           </Button>
         </div>
-      </div>
-    </div>
+    </OrderDialogShell>
   );
 }

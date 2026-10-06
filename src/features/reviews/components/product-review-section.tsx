@@ -6,7 +6,7 @@ import { MessageCircle, ShieldCheck } from 'lucide-react';
 import { Skeleton, SkeletonText } from '@/foundation/components/feedback';
 import { RatingStars } from '@/foundation/components/indicators';
 import { useProductReviews } from '../hooks/use-product-reviews';
-import type { ReviewView } from '../model/review.mapper';
+import { formatAverageRating, type ReviewView } from '../model/review.mapper';
 
 export type { ReviewView };
 
@@ -74,7 +74,7 @@ export function ProductReviewSection({
             <div className="mt-8 grid gap-8 md:grid-cols-[240px_1fr]">
               <div className="text-center md:text-left">
                 <p className="text-5xl font-black text-ink">
-                  {averageRating.toFixed(1)}
+                  {formatAverageRating(averageRating)}
                   <span className="text-xl font-bold text-slate-400">/5</span>
                 </p>
                 <div className="mt-2 flex justify-center md:justify-start">
@@ -88,14 +88,14 @@ export function ProductReviewSection({
               <div className="space-y-2">
                 {breakdown.map((row) => (
                   <div key={row.star} className="flex items-center gap-3 text-xs font-semibold">
-                    <span className="w-10 shrink-0 text-slate-500">{row.star} sao</span>
+                    <span className="w-10 shrink-0 text-slate-600">{row.star} sao</span>
                     <div className="h-2 flex-1 overflow-hidden rounded-full bg-slate-100">
                       <div
                         className="h-full rounded-full bg-amber-400"
                         style={{ width: `${row.percent}%` }}
                       />
                     </div>
-                    <span className="w-8 shrink-0 text-right text-slate-400">{row.count}</span>
+                    <span className="w-8 shrink-0 text-right text-slate-500">{row.count}</span>
                   </div>
                 ))}
               </div>
@@ -115,10 +115,11 @@ export function ProductReviewSection({
                   key={filter.id}
                   type="button"
                   onClick={() => setActiveFilter(filter.id)}
-                  className={`rounded-xl px-3.5 py-1.5 text-xs font-bold transition ${
+                  aria-pressed={activeFilter === filter.id}
+                  className={`rounded-xl px-3.5 py-2 text-xs font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 ${
                     activeFilter === filter.id
-                      ? 'bg-emerald-700 text-white shadow-sm'
-                      : 'border border-slate-200 bg-white text-slate-600 hover:border-slate-300'
+                      ? 'bg-brand-700 text-white shadow-sm'
+                      : 'border border-slate-200 bg-white text-slate-700 hover:border-slate-300'
                   }`}
                 >
                   {filter.label}
@@ -136,17 +137,17 @@ export function ProductReviewSection({
                   <article key={review.id} className="border-b border-slate-100 pb-6 last:border-0">
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex items-center gap-3">
-                        <div className="grid size-9 shrink-0 place-items-center rounded-full bg-emerald-100 text-sm font-bold text-emerald-800">
+                        <div className="grid size-9 shrink-0 place-items-center rounded-full bg-brand-100 text-sm font-bold text-brand-800">
                           {review.authorName.charAt(0).toUpperCase()}
                         </div>
                         <div>
                           <p className="text-sm font-bold text-ink">{review.authorName}</p>
-                          <p className="text-[11px] text-slate-400">{review.dateLabel}</p>
+                          <p className="text-[11px] text-slate-500">{review.dateLabel}</p>
                         </div>
                       </div>
                       {review.verifiedPurchase && (
-                        <span className="flex shrink-0 items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-bold text-emerald-700">
-                          <ShieldCheck className="size-3.5" />
+                        <span className="flex shrink-0 items-center gap-1 rounded-full bg-success-50 px-2.5 py-1 text-[11px] font-bold text-success-800">
+                          <ShieldCheck aria-hidden className="size-3.5" />
                           Đã mua hàng
                         </span>
                       )}
@@ -161,7 +162,14 @@ export function ProductReviewSection({
                     {review.media.length > 0 && (
                       <div className="mt-3 flex flex-wrap gap-2">
                         {review.media.map((item) => (
-                          <a key={item.id} href={item.url} target="_blank" rel="noreferrer" className="relative size-20 overflow-hidden rounded-xl border border-slate-200">
+                          <a
+                            key={item.id}
+                            href={item.url}
+                            target="_blank"
+                            rel="noreferrer"
+                            aria-label={`Mở ảnh thực tế từ ${review.authorName} (tab mới)`}
+                            className="relative size-20 overflow-hidden rounded-xl border border-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+                          >
                             <Image src={item.thumbnailUrl} alt={`Ảnh thực tế từ ${review.authorName}`} fill sizes="80px" className="object-cover" />
                           </a>
                         ))}
@@ -170,10 +178,10 @@ export function ProductReviewSection({
 
                     {review.reply && (
                       <div className="mt-4 rounded-2xl border border-slate-100 bg-slate-50/80 p-4">
-                        <p className="flex items-center gap-1.5 text-xs font-bold text-emerald-700">
-                          <MessageCircle className="size-3.5" />
+                        <p className="flex items-center gap-1.5 text-xs font-bold text-brand-700">
+                          <MessageCircle aria-hidden className="size-3.5" />
                           {review.reply.authorName}
-                          <span className="font-normal text-slate-400">· {review.reply.dateLabel}</span>
+                          <span className="font-normal text-slate-500">· {review.reply.dateLabel}</span>
                         </p>
                         <p className="mt-1.5 text-xs leading-relaxed text-slate-600">
                           {review.reply.content}

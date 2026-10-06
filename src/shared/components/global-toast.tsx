@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useCallback, useEffect, useRef } from 'react';
+import React, { createContext, useContext, useState, useCallback } from 'react';
 import { CheckCircle2, AlertCircle, Info, AlertTriangle, X, ShoppingBag } from 'lucide-react';
 
 export type ToastType = 'success' | 'error' | 'info' | 'warning' | 'cart';
@@ -50,39 +50,25 @@ export function useToast(): ToastContextValue {
 }
 
 function ToastCard({ item, onDismiss }: { item: ToastItem; onDismiss: (id: string) => void }) {
-  const [progress, setProgress] = useState(100);
-
-  useEffect(() => {
-    if (item.duration <= 0) return;
-    const interval = 20;
-    const step = (interval / item.duration) * 100;
-    const timer = setInterval(() => {
-      setProgress((prev) => {
-        const next = prev - step;
-        return next <= 0 ? 0 : next;
-      });
-    }, interval);
-    return () => clearInterval(timer);
-  }, [item.duration]);
-
   const config = {
     success: {
-      border: 'border-emerald-500/30',
-      glow: 'shadow-emerald-950/40',
-      iconBg: 'bg-emerald-500/15 text-emerald-400 ring-1 ring-emerald-500/30',
+      border: 'border-success-500/30',
+      glow: 'shadow-success-950/40',
+      iconBg: 'bg-success-500/15 text-success-400 ring-1 ring-success-500/30',
       icon: <CheckCircle2 className="size-5" />,
-      barColor: 'bg-gradient-to-r from-emerald-500 to-teal-400',
+      barColor: 'bg-gradient-to-r from-success-500 to-success-400',
       badge: 'Thành công',
-      badgeClass: 'bg-emerald-950/60 text-emerald-300 border-emerald-500/30',
+      badgeClass: 'bg-success-950/60 text-success-300 border-success-500/30',
     },
+    // Thêm vào giỏ là kết quả tích cực: dùng xanh "thành công", không dùng đỏ thương hiệu (dễ đọc thành lỗi).
     cart: {
-      border: 'border-emerald-500/30',
-      glow: 'shadow-emerald-950/40',
-      iconBg: 'bg-emerald-500/15 text-emerald-400 ring-1 ring-emerald-500/30',
+      border: 'border-success-500/30',
+      glow: 'shadow-success-950/40',
+      iconBg: 'bg-success-500/15 text-success-400 ring-1 ring-success-500/30',
       icon: <ShoppingBag className="size-5" />,
-      barColor: 'bg-gradient-to-r from-emerald-500 to-teal-400',
+      barColor: 'bg-gradient-to-r from-success-500 to-success-400',
       badge: 'Giỏ hàng',
-      badgeClass: 'bg-emerald-950/60 text-emerald-300 border-emerald-500/30',
+      badgeClass: 'bg-success-950/60 text-success-300 border-success-500/30',
     },
     error: {
       border: 'border-rose-500/30',
@@ -117,7 +103,7 @@ function ToastCard({ item, onDismiss }: { item: ToastItem; onDismiss: (id: strin
     <div
       role="status"
       aria-live="polite"
-      className={`pointer-events-auto relative overflow-hidden rounded-2xl border bg-slate-950/95 p-4 text-white shadow-2xl backdrop-blur-xl transition-all duration-300 animate-in fade-in slide-in-from-top-4 ${config.border} ${config.glow}`}
+      className={`pointer-events-auto relative overflow-hidden rounded-xl border bg-slate-950/95 p-4 text-white shadow-2xl backdrop-blur-xl animate-in fade-in slide-in-from-top-4 ${config.border} ${config.glow}`}
     >
       <div className="flex items-start gap-3.5">
         <div className={`grid size-9 shrink-0 place-items-center rounded-xl ${config.iconBg}`}>
@@ -139,20 +125,22 @@ function ToastCard({ item, onDismiss }: { item: ToastItem; onDismiss: (id: strin
           )}
         </div>
         <button
+          type="button"
           onClick={() => onDismiss(item.id)}
-          className="shrink-0 -mr-1 -mt-1 rounded-lg p-1.5 text-slate-400 transition hover:bg-white/10 hover:text-white"
+          className="-mr-2 -mt-2 grid size-9 shrink-0 place-items-center rounded-lg text-slate-400 transition hover:bg-white/10 hover:text-white focus-visible:outline-white"
           aria-label="Đóng thông báo"
         >
-          <X className="size-4" />
+          <X aria-hidden className="size-4" />
         </button>
       </div>
 
       {/* Progress countdown bar */}
       {item.duration > 0 && (
         <div className="absolute inset-x-0 bottom-0 h-1 bg-white/5">
+          {/* CSS animation thay cho setInterval 20ms (tránh ~50 lần render/giây cho mỗi toast). */}
           <div
-            className={`h-full transition-all ease-linear ${config.barColor}`}
-            style={{ width: `${progress}%` }}
+            className={`dc-toast-progress h-full origin-left ${config.barColor}`}
+            style={{ animationDuration: `${item.duration}ms` }}
           />
         </div>
       )}

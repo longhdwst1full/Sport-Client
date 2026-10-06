@@ -1,5 +1,7 @@
 import { Check, Copy, MapPin, Phone, Store, User } from 'lucide-react';
 import type { OrderDetailView } from '../../model/order.mapper';
+import { Button } from '@/foundation/components/buttons';
+import { OrderDetailCard } from './order-detail-card';
 
 export function OrderDeliveryAddressCard({
   view,
@@ -11,27 +13,23 @@ export function OrderDeliveryAddressCard({
   onCopyAddress: () => void;
 }) {
   return (
-    <section className="rounded-3xl border border-slate-200/80 bg-white p-6 sm:p-7 shadow-card transition-shadow hover:shadow-card-hover">
-      <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-        <div className="flex items-center gap-2.5">
-          <div className="grid size-9 place-items-center rounded-2xl bg-emerald-100 text-emerald-700">
-            <MapPin className="size-4.5" />
-          </div>
-          <div>
-            <h2 className="text-base font-black text-slate-900">Địa chỉ giao hàng</h2>
-            <p className="text-xs text-slate-500">Thông tin nhận kiện hàng</p>
-          </div>
-        </div>
-        <button
-          type="button"
+    <OrderDetailCard
+      icon={MapPin}
+      title="Địa chỉ giao hàng"
+      description="Thông tin nhận kiện hàng"
+      action={
+        <Button
+          variant="outline"
+          size="sm"
           onClick={onCopyAddress}
-          className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-2.5 py-1 text-xs font-medium text-slate-600 hover:bg-slate-50 transition"
+          className="gap-1 rounded-lg border-slate-200 px-2.5 text-xs font-medium text-slate-600 hover:border-slate-200 hover:bg-slate-50 hover:text-slate-600"
           title="Sao chép toàn bộ thông tin người nhận"
+          aria-label={copiedAddress ? 'Đã sao chép thông tin người nhận' : 'Sao chép toàn bộ thông tin người nhận'}
         >
           {copiedAddress ? (
             <>
-              <Check className="size-3 text-emerald-600" />
-              <span className="text-emerald-700 font-bold">Đã chép</span>
+              <Check className="size-3 text-success-600" />
+              <span className="text-success-700 font-bold">Đã chép</span>
             </>
           ) : (
             <>
@@ -39,19 +37,19 @@ export function OrderDeliveryAddressCard({
               <span>Chép địa chỉ</span>
             </>
           )}
-        </button>
-      </div>
-
+        </Button>
+      }
+    >
       <div className="mt-4">
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-1.5 font-bold text-slate-900 text-sm sm:text-base">
-            <User className="size-4 text-emerald-600" />
+            <User className="size-4 text-brand-600" />
             <span>{view?.recipientName}</span>
           </div>
           <span className="text-slate-300">|</span>
           <a
             href={`tel:${view?.recipientPhone}`}
-            className="inline-flex items-center gap-1.5 text-sm font-bold text-emerald-700 hover:underline"
+            className="inline-flex items-center gap-1.5 text-sm font-bold text-brand-700 hover:underline"
             title="Bấm để gọi"
           >
             <Phone className="size-3.5" />
@@ -63,12 +61,12 @@ export function OrderDeliveryAddressCard({
         </p>
 
         <div className="mt-4 flex items-center gap-2 rounded-xl bg-slate-50 p-3 text-xs text-slate-600 border border-slate-100">
-          <Store className="size-4 text-emerald-600 shrink-0" />
+          <Store className="size-4 text-brand-600 shrink-0" />
           <span>
             Chuẩn bị và xuất phát từ: <strong className="text-slate-900">{view?.branchName}</strong>
           </span>
         </div>
       </div>
-    </section>
+    </OrderDetailCard>
   );
 }

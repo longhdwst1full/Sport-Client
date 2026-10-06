@@ -1,10 +1,10 @@
 # Storefront Content — maintenance note
 
-> **Document version:** 2.3.0
+> **Document version:** 2.5.0
 >
-> **Last updated:** 2026-10-03
+> **Last updated:** 2026-10-06
 >
-> **Change summary:** Ảnh bìa bài viết qua `CoverImage` (rỗng/lỗi → ảnh thay thế dùng chung); og:image bài viết dùng bản JPEG 1200×630 của Cloudinary (`lib/seo/og-image.ts`). Trước đó: Thêm banner CMS-02 (`listActiveBanners`): HOME_HERO/HOME_PROMO trên trang chủ, FOOTER trong layout, CATEGORY_TOP trên trang danh mục; không có banner thì giao diện giữ nguyên.
+> **Change summary:** JSON-LD `Article` + `BreadcrumbList` cho `/news/[slug]` và `/chinh-sach/[slug]` (dựng từ view model, `publishedAtIso` thêm vào mapper). Trước đó: Ảnh bìa bài viết qua `CoverImage` (rỗng/lỗi → ảnh thay thế dùng chung); og:image bài viết dùng bản JPEG 1200×630 của Cloudinary (`lib/seo/og-image.ts`). Trước đó: Thêm banner CMS-02 (`listActiveBanners`): HOME_HERO/HOME_PROMO trên trang chủ, FOOTER trong layout, CATEGORY_TOP trên trang danh mục; không có banner thì giao diện giữ nguyên.
 
 ## Phạm vi
 
@@ -15,7 +15,7 @@
 
 ## Server/client boundary
 
-`pages/news-list-page.tsx`, `components/content-stories.tsx`, `hooks/use-content-stories.ts` đều là client vì dùng TanStack Query + filter cục bộ.
+`pages/news-list-page.tsx` là server component (h1, breadcrumb; route `/news` lấy trang 1 ở server, ISR 300s) và chỉ bọc island client `components/news-list-feed.tsx` (bộ lọc + "Xem thêm" từ trang 2; server lỗi thì island tự tải trang 1). `components/content-stories.tsx` dùng `initialPosts` từ server, không gọi lại API khi đã có. `BannerPicture` dùng `<picture>` + `getImageProps` để chỉ tải một nguồn ảnh (mobile/desktop).
 
 ## Public entry
 
@@ -66,6 +66,10 @@ Chưa dùng: `getPublishedPost` (trang chi tiết `/news/[slug]`).
   hằng `CMS_COVER_IMAGE_HOSTS` bên API). Thêm host thì sửa cả hai nơi.
 - og:image `/news/[slug]`: `toOgImageUrl` chèn `f_jpg,w_1200,h_630,c_fill` cho URL Cloudinary; URL khác giữ nguyên.
 
+## Dữ liệu có cấu trúc (JSON-LD)
+
+`ArticleDetailPage`/`PolicyDetailPage` tự render `Article` + `BreadcrumbList` qua `lib/seo/json-ld.ts` (`serializeJsonLd` bắt buộc). Input lấy từ view model (`publishedAtIso`), không đọc DTO trong component. Nhãn breadcrumb JSON-LD phải khớp breadcrumb hiển thị. `/news` không phân trang qua URL ("Xem thêm" ở client) nên canonical giữ `/news`.
+
 ## State owner
 
 TanStack Query. Không mirror dữ liệu bài viết vào Redux hay `useState`.
@@ -80,6 +84,7 @@ TanStack Query. Không mirror dữ liệu bài viết vào Redux hay `useState`.
 
 | Version | Date | Change summary |
 | --- | --- | --- |
+| 2.4.0 | 2026-10-06 | `/news` server-first + island `NewsListFeed`; `ContentStories` bỏ fetch trùng; `BannerPicture` art direction một ảnh; `/chinh-sach` ném lỗi lúc chạy (giữ bản ISR tốt), `[slug]` gọi song song. |
 | 2.3.0 | 2026-10-03 | `CoverImage` fallback ảnh bìa, og:image JPEG 1200×630 cho Cloudinary. |
 | 2.2.0 | 2026-10-02 | Banner CMS-02: loader server, mapper, `BannerPicture`, `CategoryTopBanners`; fallback giữ nguyên UI khi không có banner. |
 | 2.1.0 | 2026-09-27 | ISR 300s + `/api/revalidate` cho trang bài viết/chính sách; ghi nhận phạm vi lọc client. |

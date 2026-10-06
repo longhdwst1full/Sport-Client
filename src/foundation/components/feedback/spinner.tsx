@@ -1,10 +1,11 @@
 import { LoaderCircle } from 'lucide-react';
+import { twMerge } from 'tailwind-merge';
 
 /**
- * Thin wrapper around the loading icon used across the app. Callers pass their
- * exact previous `className` (size + color) so visual output stays unchanged;
- * this primitive only centralizes which icon renders as "the spinner".
+ * Icon xoay "đang tải" dùng chung. Tự gắn `animate-spin` (caller cũ vẫn truyền `animate-spin`, twMerge gộp
+ * nên không trùng) và mặc định `aria-hidden`: trạng thái đọc cho trình đọc màn hình do nơi gọi đặt bằng
+ * `role="status"`/`aria-busy`/chữ đi kèm, không phải icon.
  */
-export function Spinner({ className }: { className?: string }) {
-  return <LoaderCircle className={className} />;
+export function Spinner({ className, 'aria-hidden': ariaHidden = true }: { className?: string; 'aria-hidden'?: boolean }) {
+  return <LoaderCircle aria-hidden={ariaHidden} className={twMerge('animate-spin', className)} />;
 }

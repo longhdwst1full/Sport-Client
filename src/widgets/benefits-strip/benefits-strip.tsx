@@ -21,16 +21,17 @@ const BENEFITS: Array<{ icon: LucideIcon; title: string; description: string }> 
 
 export function BenefitsStrip() {
   return (
-    <section id="benefits" className="border-y border-slate-200/80 bg-white py-6 shadow-sm">
-      <div className="mx-auto grid max-w-7xl gap-6 px-6 sm:grid-cols-2 lg:grid-cols-4 lg:px-8">
+    <section id="benefits" className="border-y border-slate-200 bg-white py-6">
+      <div className="mx-auto grid max-w-7xl gap-5 px-4 sm:grid-cols-2 sm:px-6 lg:grid-cols-4 lg:px-8">
         {BENEFITS.map(({ icon: Icon, title, description }) => (
           <div key={title} className="flex items-start gap-3.5 p-1">
-            <span className="grid size-11 shrink-0 place-items-center rounded-xl border border-emerald-100 bg-emerald-50 text-emerald-700 shadow-sm">
+            <span className="grid size-11 shrink-0 place-items-center rounded-full bg-brand-50 text-brand-600">
               <Icon className="size-5" aria-hidden="true" />
             </span>
             <div>
-              <h2 className="text-sm font-black text-slate-900">{title}</h2>
-              <p className="mt-0.5 text-xs leading-relaxed text-slate-500">{description}</p>
+              {/* Dải không có tiêu đề section: dùng <p> thay <h2> để không chen mục giả vào dàn heading trang chủ. */}
+              <p className="text-sm font-black text-slate-900">{title}</p>
+              <p className="mt-0.5 text-xs leading-relaxed text-slate-600">{description}</p>
             </div>
           </div>
         ))}

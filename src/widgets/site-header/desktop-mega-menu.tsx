@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { ChevronDown } from 'lucide-react';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useRef, useState, type FocusEvent, type KeyboardEvent, type MouseEvent, type PointerEvent } from 'react';
 import type { MegaMenuEntry } from '@/features/catalog';
 import { MegaMenuPanel } from './mega-menu-panel';
 import { OverflowCategoryMenu } from './overflow-category-menu';
@@ -13,6 +13,12 @@ interface DesktopMegaMenuProps {
   hasFlashSaleCampaign: boolean;
   flashSaleMaxDiscountPercent: number | null | undefined;
 }
+
+/** Link cấp 1 trên thanh điều hướng đỏ (brand-600): chữ trắng, nền đậm hơn khi hover/mở. */
+const NAV_ITEM_BASE =
+  'inline-flex items-center gap-1 whitespace-nowrap rounded-lg px-2.5 py-1.5 text-xs font-semibold text-white transition-colors duration-150 focus-visible:outline-white xl:gap-1.5 xl:px-3 xl:py-2 xl:text-sm';
+const NAV_ITEM_IDLE = 'hover:bg-brand-700';
+const NAV_ITEM_ACTIVE = 'bg-brand-800 font-bold';
 
 export function DesktopMegaMenu({
   megaMenuCategories,
@@ -31,26 +37,62 @@ export function DesktopMegaMenu({
     megaMenuTimeout.current = setTimeout(() => setActiveMegaMenu(null), 200);
   }, []);
 
+  // Màn cảm ứng ≥1024px (tablet ngang) không có hover: chạm lần đầu vào danh mục có mục con chỉ mở panel,
+  // chạm lần hai mới điều hướng. Ghi trạng thái ở pointerdown vì trình duyệt phát mouseenter giả lập (mở
+  // panel) trước click, nên lúc click không còn biết panel đã mở từ trước hay chưa.
+  const touchTap = useRef<{ label: string; wasOpen: boolean } | null>(null);
+  const handleTriggerPointerDown = useCallback(
+    (event: PointerEvent<HTMLAnchorElement>, label: string) => {
+      touchTap.current = event.pointerType === 'touch' ? { label, wasOpen: activeMegaMenu === label } : null;
+    },
+    [activeMegaMenu],
+  );
+  const handleTriggerClick = useCallback(
+    (event: MouseEvent<HTMLAnchorElement>, label: string) => {
+      const tap = touchTap.current;
+      touchTap.current = null;
+      if (!tap || tap.label !== label || tap.wasOpen) return;
+      event.preventDefault();
+      handleMegaMenuEnter(label);
+    },
+    [handleMegaMenuEnter],
+  );
+
+  const closeNow = useCallback(() => {
+    if (megaMenuTimeout.current) clearTimeout(megaMenuTimeout.current);
+    setActiveMegaMenu(null);
+  }, []);
+
+  // Bàn phím: focus vào mục mở panel, rời khỏi cả cụm (trigger + panel) thì đóng, Escape đóng.
+  const handleGroupBlur = useCallback(
+    (event: FocusEvent<HTMLElement>) => {
+      if (!event.currentTarget.contains(event.relatedTarget as Node | null)) closeNow();
+    },
+    [closeNow],
+  );
+  const handleGroupKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLElement>) => {
+      if (event.key !== 'Escape') return;
+      closeNow();
+      event.currentTarget.querySelector<HTMLElement>('a, button')?.focus();
+    },
+    [closeNow],
+  );
+
   return (
     <nav
       style={{ zIndex: 10 }}
-      className="relative hidden border-b border-slate-200/80 bg-white/95 backdrop-blur-md lg:block shadow-[0_1px_3px_0_rgba(0,0,0,0.03)]"
+      className="relative hidden bg-brand-600 shadow-sm lg:block"
       aria-label="Điều hướng chính"
     >
-      <div className="mx-auto flex h-[52px] max-w-7xl items-center justify-between px-3 sm:px-6 lg:px-8 gap-2">
+      <div className="mx-auto flex h-12 max-w-7xl items-center justify-between gap-2 px-4 sm:px-6 lg:px-8">
         {/* Main Category Dropdowns */}
-        <div className="flex items-center gap-1 xl:gap-1.5 shrink-0">
-          <Link
-            href="/"
-            className="inline-flex items-center whitespace-nowrap rounded-xl px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-emerald-50/80 hover:text-emerald-700 transition-all duration-150 xl:px-3.5 xl:py-2 xl:text-sm"
-          >
+        <div className="flex shrink-0 items-center gap-0.5 xl:gap-1">
+          <Link href="/" className={`${NAV_ITEM_BASE} ${NAV_ITEM_IDLE}`}>
             Trang chủ
           </Link>
 
-          <Link
-            href="/products"
-            className="inline-flex items-center whitespace-nowrap rounded-xl px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-emerald-50/80 hover:text-emerald-700 transition-all duration-150 xl:px-3.5 xl:py-2 xl:text-sm"
-          >
+          <Link href="/products" className={`${NAV_ITEM_BASE} ${NAV_ITEM_IDLE}`}>
             Sản phẩm
           </Link>
 
@@ -69,20 +111,22 @@ export function DesktopMegaMenu({
                 className={`relative ${visibilityClass}`}
                 onMouseEnter={() => hasSubmenu && handleMegaMenuEnter(cat.label)}
                 onMouseLeave={hasSubmenu ? handleMegaMenuLeave : undefined}
+                onFocus={hasSubmenu ? () => handleMegaMenuEnter(cat.label) : undefined}
+                onBlur={hasSubmenu ? handleGroupBlur : undefined}
+                onKeyDown={hasSubmenu ? handleGroupKeyDown : undefined}
               >
                 <Link
                   href={cat.href}
-                  className={`inline-flex items-center gap-1 xl:gap-1.5 whitespace-nowrap rounded-xl px-2.5 py-1.5 text-xs font-semibold transition-all duration-150 xl:px-3 xl:py-2 xl:text-sm ${
-                    isOpen
-                      ? 'bg-emerald-50 text-emerald-700 font-bold ring-1 ring-emerald-600/15'
-                      : 'text-slate-700 hover:bg-emerald-50/80 hover:text-emerald-700'
-                  }`}
+                  onPointerDown={hasSubmenu ? (event) => handleTriggerPointerDown(event, cat.label) : undefined}
+                  onClick={hasSubmenu ? (event) => handleTriggerClick(event, cat.label) : undefined}
+                  className={`${NAV_ITEM_BASE} ${isOpen ? NAV_ITEM_ACTIVE : NAV_ITEM_IDLE}`}
                 >
                   <span>{cat.label}</span>
                   {hasSubmenu && (
                     <ChevronDown
-                      className={`size-3.5 xl:size-4 text-slate-400 transition-transform duration-200 ${
-                        isOpen ? 'rotate-180 text-emerald-600' : 'group-hover:text-emerald-600'
+                      aria-hidden
+                      className={`size-3.5 text-white/80 transition-transform duration-200 xl:size-4 ${
+                        isOpen ? 'rotate-180' : ''
                       }`}
                     />
                   )}
@@ -104,8 +148,12 @@ export function DesktopMegaMenu({
           <OverflowCategoryMenu
             categories={megaMenuCategories}
             isOpen={activeMegaMenu === '__extra_categories'}
-            onMouseEnter={() => handleMegaMenuEnter('__extra_categories')}
+            onOpen={() => handleMegaMenuEnter('__extra_categories')}
             onMouseLeave={handleMegaMenuLeave}
+            onClose={closeNow}
+            triggerClassName={NAV_ITEM_BASE}
+            triggerIdleClassName={NAV_ITEM_IDLE}
+            triggerActiveClassName={NAV_ITEM_ACTIVE}
           />
         </div>
 

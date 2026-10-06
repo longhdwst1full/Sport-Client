@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import {
   fetchVietnamProvinces,
   fetchVietnamDistricts,
@@ -70,6 +70,16 @@ export function VietnamAddressSelector({
   const [loadingDistricts, setLoadingDistricts] = useState<boolean>(false);
   const [loadingWards, setLoadingWards] = useState<boolean>(false);
 
+  // Lỗi tải từng cấp + bộ đếm "thử lại": tăng bộ đếm để effect tương ứng gọi lại API
+  // (cache trong `vietnam-divisions` đã bỏ promise lỗi nên lần gọi sau là request mới).
+  const [provincesError, setProvincesError] = useState(false);
+  const [districtsError, setDistrictsError] = useState(false);
+  const [wardsError, setWardsError] = useState(false);
+  const [provincesAttempt, setProvincesAttempt] = useState(0);
+  const [districtsAttempt, setDistrictsAttempt] = useState(0);
+  const [wardsAttempt, setWardsAttempt] = useState(0);
+  const streetInputId = useId();
+
   useEffect(() => {
     onChangeRef.current = onChange;
   }, [onChange]);
@@ -78,21 +88,26 @@ export function VietnamAddressSelector({
   useEffect(() => {
     let isMounted = true;
     setLoadingProvinces(true);
+    setProvincesError(false);
     fetchVietnamProvinces()
       .then((data) => {
         if (isMounted) {
           setProvinces(data);
+          setProvincesError(data.length === 0);
           setLoadingProvinces(false);
         }
       })
       .catch(() => {
-        if (isMounted) setLoadingProvinces(false);
+        if (isMounted) {
+          setProvincesError(true);
+          setLoadingProvinces(false);
+        }
       });
 
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [provincesAttempt]);
 
   // When province changes, load districts
   useEffect(() => {
@@ -103,11 +118,13 @@ export function VietnamAddressSelector({
       setSelectedDistrictName('');
       setSelectedWardCode(null);
       setSelectedWardName('');
+      setDistrictsError(false);
       return;
     }
 
     let isMounted = true;
     setLoadingDistricts(true);
+    setDistrictsError(false);
     fetchVietnamDistricts(selectedProvinceCode)
       .then((data) => {
         if (isMounted) {
@@ -116,13 +133,17 @@ export function VietnamAddressSelector({
         }
       })
       .catch(() => {
-        if (isMounted) setLoadingDistricts(false);
+        if (isMounted) {
+          setDistricts([]);
+          setDistrictsError(true);
+          setLoadingDistricts(false);
+        }
       });
 
     return () => {
       isMounted = false;
     };
-  }, [selectedProvinceCode]);
+  }, [selectedProvinceCode, districtsAttempt]);
 
   // When district changes, load wards
   useEffect(() => {
@@ -130,11 +151,13 @@ export function VietnamAddressSelector({
       setWards([]);
       setSelectedWardCode(null);
       setSelectedWardName('');
+      setWardsError(false);
       return;
     }
 
     let isMounted = true;
     setLoadingWards(true);
+    setWardsError(false);
     fetchVietnamWards(selectedDistrictCode)
       .then((data) => {
         if (isMounted) {
@@ -143,13 +166,17 @@ export function VietnamAddressSelector({
         }
       })
       .catch(() => {
-        if (isMounted) setLoadingWards(false);
+        if (isMounted) {
+          setWards([]);
+          setWardsError(true);
+          setLoadingWards(false);
+        }
       });
 
     return () => {
       isMounted = false;
     };
-  }, [selectedDistrictCode]);
+  }, [selectedDistrictCode, wardsAttempt]);
 
   // Không phụ thuộc trực tiếp vào identity của onChange: các page thường truyền
   // callback inline, đưa callback đó vào dependency sẽ phát lại effect sau mỗi
@@ -227,6 +254,8 @@ export function VietnamAddressSelector({
           isLoading={loadingProvinces}
           emptyOptionLabel={loadingProvinces ? 'Đang tải tỉnh thành...' : 'Chọn Tỉnh/Thành phố'}
           options={provinces}
+          error={provincesError ? 'Không tải được danh sách tỉnh/thành.' : undefined}
+          onRetry={() => setProvincesAttempt((n) => n + 1)}
         />
 
         {/* Quận / Huyện */}
@@ -245,6 +274,8 @@ export function VietnamAddressSelector({
               : 'Chọn Quận/Huyện'
           }
           options={districts}
+          error={districtsError ? 'Không tải được danh sách quận/huyện.' : undefined}
+          onRetry={() => setDistrictsAttempt((n) => n + 1)}
         />
 
         {/* Phường / Xã */}
@@ -263,22 +294,26 @@ export function VietnamAddressSelector({
               : 'Chọn Phường/Xã'
           }
           options={wards}
+          error={wardsError ? 'Không tải được danh sách phường/xã.' : undefined}
+          onRetry={() => setWardsAttempt((n) => n + 1)}
         />
       </div>
 
       {/* Street Address Input */}
       <div>
-        <label className="block text-xs font-bold uppercase tracking-wider text-slate-600">
+        <label htmlFor={streetInputId} className="block text-xs font-bold uppercase tracking-wider text-slate-600">
           Số nhà, tên đường, tòa nhà {required && <span className="text-rose-500">*</span>}
         </label>
         <div className="relative mt-1.5">
           <input
+            id={streetInputId}
             type="text"
             required={required}
+            autoComplete="street-address"
             value={streetAddress}
             onChange={(e) => setStreetAddress(e.target.value)}
             placeholder="Ví dụ: Số 123 Đường Nguyễn Hữu Thọ, Tòa nhà Landmark..."
-            className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-medium text-slate-800 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 sm:text-sm"
+            className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-base font-medium text-slate-800 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/30 sm:text-sm"
           />
         </div>
       </div>

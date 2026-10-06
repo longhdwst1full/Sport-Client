@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Headset, SendHorizontal, UserRound } from 'lucide-react';
 import { Button } from '@/foundation/components/buttons';
-import { Spinner } from '@/foundation/components/feedback';
+import { Skeleton, SkeletonText, Spinner } from '@/foundation/components/feedback';
 import { formatDateTime } from '@/shared/format/date-time';
 import { SupportLoginPrompt } from '../components/support-login-prompt';
 import { SupportTicketStatusBadge } from '../components/support-ticket-status-badge';
@@ -34,15 +34,27 @@ export function AccountSupportTicketDetailPage({ ticketNo }: { ticketNo: string 
   return (
     <main className="mx-auto min-h-[60vh] max-w-4xl px-4 py-10 sm:px-6">
       <nav className="mb-6 flex items-center gap-2 text-xs font-semibold text-slate-500" aria-label="Breadcrumb">
-        <Link href="/profile" className="hover:text-emerald-700">Tài khoản</Link>
-        <span>/</span>
-        <Link href={SUPPORT_ROUTES.list} className="hover:text-emerald-700">Hỗ trợ của tôi</Link>
-        <span>/</span>
+        <Link href="/profile" className="hover:text-brand-700 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500">Tài khoản</Link>
+        <span aria-hidden>/</span>
+        <Link href={SUPPORT_ROUTES.list} className="hover:text-brand-700 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500">Hỗ trợ của tôi</Link>
+        <span aria-hidden>/</span>
         <span className="font-mono font-bold text-slate-900">{ticketNo}</span>
       </nav>
 
+      {!detail && <h1 className="sr-only">Yêu cầu hỗ trợ {ticketNo}</h1>}
       {(!isLoaded || (isAuthenticated && isLoading)) && (
-        <div className="grid min-h-72 place-items-center"><Spinner className="size-9 animate-spin text-emerald-600" /></div>
+        <div aria-busy="true" aria-label="Đang tải yêu cầu hỗ trợ">
+          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+            <Skeleton className="h-3 w-24 rounded" />
+            <Skeleton className="mt-2 h-6 w-48 rounded" />
+            <Skeleton className="mt-3 h-4 w-2/3 rounded" />
+            <SkeletonText lines={2} className="mt-5 border-t border-slate-100 pt-4" />
+          </div>
+          <div className="mt-6 space-y-3">
+            <Skeleton className="h-24 w-[85%] rounded-2xl" />
+            <Skeleton className="ml-auto h-20 w-[70%] rounded-2xl" />
+          </div>
+        </div>
       )}
       {isLoaded && !isAuthenticated && <SupportLoginPrompt title="Đăng nhập để xem yêu cầu hỗ trợ" />}
       {isAuthenticated && isError && (
@@ -54,7 +66,7 @@ export function AccountSupportTicketDetailPage({ ticketNo }: { ticketNo: string 
           <header className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div className="min-w-0">
-                <p className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-700">{SUPPORT_FIELD_LABELS.ticketNo}</p>
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand-700">{SUPPORT_FIELD_LABELS.ticketNo}</p>
                 <h1 className="mt-1 font-mono text-xl font-black text-slate-950">{detail.ticketNo}</h1>
                 <p className="mt-2 text-sm font-bold text-slate-800">{detail.subject}</p>
               </div>
@@ -65,7 +77,7 @@ export function AccountSupportTicketDetailPage({ ticketNo }: { ticketNo: string 
               <div><dt>{SUPPORT_FIELD_LABELS.updatedAt}</dt><dd className="font-bold text-slate-800">{formatDateTime(detail.updatedAt)}</dd></div>
             </dl>
             {detail.resolutionNote && (
-              <p className="mt-4 rounded-2xl bg-emerald-50 p-3 text-sm text-emerald-900">
+              <p className="mt-4 rounded-2xl bg-success-50 p-3 text-sm text-success-900">
                 <strong className="block text-xs font-bold uppercase tracking-wider">Kết quả xử lý</strong>
                 {detail.resolutionNote}
               </p>
@@ -82,11 +94,11 @@ export function AccountSupportTicketDetailPage({ ticketNo }: { ticketNo: string 
                   <li key={message.id} className={`flex ${isCustomer ? 'justify-end' : 'justify-start'}`}>
                     <article
                       className={`max-w-[85%] rounded-2xl border p-4 text-sm ${
-                        isCustomer ? 'border-emerald-200 bg-emerald-50 text-slate-900' : 'border-slate-200 bg-white text-slate-800'
+                        isCustomer ? 'border-brand-200 bg-brand-50 text-slate-900' : 'border-slate-200 bg-white text-slate-800'
                       }`}
                     >
                       <header className="flex items-center gap-2 text-xs font-bold text-slate-500">
-                        {isCustomer ? <UserRound className="size-3.5" aria-hidden /> : <Headset className="size-3.5 text-emerald-600" aria-hidden />}
+                        {isCustomer ? <UserRound className="size-3.5" aria-hidden /> : <Headset className="size-3.5 text-brand-600" aria-hidden />}
                         <span>{SUPPORT_AUTHOR_LABELS[message.author]}</span>
                         <span aria-hidden>·</span>
                         <time dateTime={message.createdAt}>{formatDateTime(message.createdAt)}</time>
@@ -116,9 +128,9 @@ export function AccountSupportTicketDetailPage({ ticketNo }: { ticketNo: string 
               disabled={!canReply || isReplying}
               aria-describedby="support-reply-hint"
               placeholder={canReply ? 'Nhập nội dung trả lời...' : 'Yêu cầu đã đóng, không thể trả lời.'}
-              className="mt-1.5 w-full rounded-2xl border border-slate-200 p-3 text-sm text-slate-800 placeholder:text-slate-400 focus:border-emerald-400 focus:outline-none focus:ring-1 focus:ring-emerald-400 disabled:bg-slate-50"
+              className="mt-1.5 w-full rounded-2xl border border-slate-200 p-3 text-base sm:text-sm text-slate-800 placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30 disabled:bg-slate-50"
             />
-            <div id="support-reply-hint" className="mt-1 flex justify-between text-[11px] text-slate-400">
+            <div id="support-reply-hint" className="mt-1 flex justify-between text-[11px] text-slate-500">
               <span>{canReply ? '' : 'Yêu cầu đã đóng. Vui lòng tạo yêu cầu mới nếu cần hỗ trợ thêm.'}</span>
               <span>{reply.length}/{SUPPORT_MESSAGE_MAX_LENGTH}</span>
             </div>
@@ -127,7 +139,7 @@ export function AccountSupportTicketDetailPage({ ticketNo }: { ticketNo: string 
               <Button
                 type="submit"
                 disabled={!canReply || isReplying || !reply.trim()}
-                className="flex items-center gap-1.5 rounded-xl bg-emerald-600 px-5 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-emerald-700 disabled:opacity-50"
+                className="flex items-center gap-1.5 rounded-xl bg-brand-600 px-5 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-brand-700 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2"
               >
                 {isReplying ? <Spinner className="size-4 animate-spin" /> : <SendHorizontal className="size-4" aria-hidden />}
                 {isReplying ? 'Đang gửi...' : 'Gửi trả lời'}

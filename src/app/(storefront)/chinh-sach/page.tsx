@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { PHASE_PRODUCTION_BUILD } from 'next/constants';
 import { PolicyListPage } from '@/features/content';
 import { toPolicySummaryView } from '@/features/content';
 import { listPublishedPosts } from '@/generated/api/content/content';
@@ -16,13 +17,17 @@ export const metadata: Metadata = buildPageMetadata({
 });
 
 export default async function Page() {
-  // API lỗi thì hiện danh sách rỗng, không dựng chính sách không có thật.
   let policies: Awaited<ReturnType<typeof listPublishedPosts>>['items'] = [];
+  let loadFailed = false;
   try {
     policies = (await listPublishedPosts({ postType: 'POLICY' })).items;
-  } catch {
-    policies = [];
+  } catch (error) {
+    // Lúc chạy: ném lỗi để ISR giữ bản tốt trước đó, không cache 5 phút một trang "chưa có chính
+    // sách" giả. Lúc build (API có thể chưa với tới) không làm hỏng build: dựng trạng thái lỗi,
+    // lượt revalidate đầu tiên sẽ thay bằng dữ liệu thật.
+    if (process.env.NEXT_PHASE !== PHASE_PRODUCTION_BUILD) throw error;
+    loadFailed = true;
   }
 
-  return <PolicyListPage policies={policies.map(toPolicySummaryView)} />;
+  return <PolicyListPage policies={policies.map(toPolicySummaryView)} loadFailed={loadFailed} />;
 }

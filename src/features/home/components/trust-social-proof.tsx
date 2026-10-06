@@ -9,11 +9,12 @@ export function TrustSocialProof() {
         <div className="grid gap-8 lg:grid-cols-[1.1fr_.9fr] lg:items-center">
           {/* Left Column: Proof points & Rating */}
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-1 text-xs font-black uppercase tracking-wider text-emerald-400">
-              <ShieldCheck className="size-4 text-emerald-400" />
+            <div className="inline-flex items-center gap-2 rounded-full border border-brand-500/30 bg-brand-500/10 px-3.5 py-1 text-xs font-black uppercase tracking-wider text-brand-400">
+              <ShieldCheck className="size-4 text-brand-400" />
               AN TÂM TUYỆT ĐỐI KHI ĐẦU TƯ THIẾT BỊ
             </div>
 
+            {/* TODO(data): số liệu chưa có nguồn xác nhận ("30.000+ khách hàng") — chờ chủ shop quyết định giữ/bỏ. */}
             <h2 className="mt-4 text-2xl sm:text-3xl lg:text-4xl font-black text-white leading-tight">
               Vì sao hơn 30.000+ khách hàng tin chọn Bảo An Sport?
             </h2>
@@ -22,6 +23,7 @@ export function TrustSocialProof() {
               Chúng tôi hiểu rằng thiết bị thể thao là khoản đầu tư cho sức khỏe lâu dài. Không chỉ cung cấp sản phẩm chính hãng, Bảo An Sport đồng hành cùng bạn từ khâu tư vấn không gian đến bảo trì định kỳ.
             </p>
 
+            {/* TODO(data): số liệu chưa có nguồn xác nhận ("4.9/5", "3.200+ đánh giá", "10+ năm") — không lấy từ API đánh giá. */}
             <div className="mt-6 flex flex-wrap items-center gap-6 sm:gap-8 border-y border-slate-800 py-6">
               <div>
                 <div className="flex items-center gap-1.5 text-amber-400">
@@ -32,14 +34,14 @@ export function TrustSocialProof() {
                 <span className="mt-1 block text-xs text-slate-400">3.200+ đánh giá xác thực</span>
               </div>
 
-              <div className="h-8 w-px bg-slate-800" />
+              <div className="h-8 w-px bg-slate-800" aria-hidden="true" />
 
               <div>
-                <span className="text-2xl font-black text-emerald-400">10+ Năm</span>
+                <span className="text-2xl font-black text-brand-400">10+ Năm</span>
                 <span className="mt-1 block text-xs text-slate-400">Kinh nghiệm phân phối</span>
               </div>
 
-              <div className="h-8 w-px bg-slate-800" />
+              <div className="h-8 w-px bg-slate-800" aria-hidden="true" />
 
               <div>
                 <span className="text-2xl font-black text-white">100%</span>
@@ -49,19 +51,19 @@ export function TrustSocialProof() {
 
             <div className="mt-6 grid gap-2.5 sm:grid-cols-2 text-xs font-semibold text-slate-300">
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="size-4 text-emerald-400 shrink-0" />
+                <CheckCircle2 className="size-4 text-success-400 shrink-0" />
                 <span>Miễn phí tư vấn setup theo diện tích</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="size-4 text-emerald-400 shrink-0" />
+                <CheckCircle2 className="size-4 text-success-400 shrink-0" />
                 <span>Giao hàng và hỗ trợ lắp đặt tận nơi</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="size-4 text-emerald-400 shrink-0" />
+                <CheckCircle2 className="size-4 text-success-400 shrink-0" />
                 <span>Đổi mới trong 7 ngày nếu lỗi kỹ thuật</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="size-4 text-emerald-400 shrink-0" />
+                <CheckCircle2 className="size-4 text-success-400 shrink-0" />
                 <span>Bảo hành khung sườn lên đến 5 năm</span>
               </div>
             </div>
@@ -71,10 +73,10 @@ export function TrustSocialProof() {
           <div className="flex flex-col gap-4 rounded-2xl border border-slate-800 bg-slate-900/80 p-6 sm:p-7 backdrop-blur-sm">
             <div className="flex items-center justify-between border-b border-slate-800 pb-4">
               <div className="flex items-center gap-2">
-                <MapPin className="size-5 text-emerald-400" />
+                <MapPin className="size-5 text-brand-400" />
                 <h3 className="text-base font-black text-white">Trải nghiệm máy tại Showroom</h3>
               </div>
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-bold text-emerald-400">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-500/10 px-2.5 py-0.5 text-xs font-bold text-brand-400">
                 <Clock className="size-3" />
                 8:30 - 21:30
               </span>
@@ -94,7 +96,7 @@ export function TrustSocialProof() {
                   </p>
                   <a
                     href={`tel:${showroom.phoneRaw}`}
-                    className="inline-flex items-center gap-1.5 font-bold text-emerald-400 hover:text-emerald-300"
+                    className="inline-flex items-center gap-1.5 font-bold text-brand-400 hover:text-brand-300 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
                   >
                     <Phone className="size-3" />
                     <span>Hotline: {showroom.phone}</span>
@@ -106,7 +108,7 @@ export function TrustSocialProof() {
             <div className="pt-2 flex items-center justify-between gap-3">
               <Link
                 href="/contact"
-                className="inline-flex flex-1 items-center justify-center rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-emerald-500 shadow-md shadow-emerald-950"
+                className="inline-flex flex-1 items-center justify-center rounded-xl bg-brand-600 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-brand-700 shadow-md shadow-brand-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
               >
                 Xem chi tiết chỉ đường
               </Link>
@@ -114,7 +116,7 @@ export function TrustSocialProof() {
                 href={STORE_CONTACT.zaloUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center rounded-xl border border-slate-700 bg-slate-800 px-4 py-2.5 text-xs font-bold text-slate-200 hover:bg-slate-700"
+                className="inline-flex items-center justify-center rounded-xl border border-slate-700 bg-slate-800 px-4 py-2.5 text-xs font-bold text-slate-200 hover:bg-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
               >
                 Chat Zalo tư vấn
               </a>

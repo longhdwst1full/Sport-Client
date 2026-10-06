@@ -31,6 +31,17 @@ export const CONTENT_POST_TYPE_LABELS: Record<string, string> = {
  */
 export const POLICY_POST_TYPE = 'POLICY';
 
+/**
+ * Số bài mỗi lượt tải của `/news` (server lấy trang 1, client "Xem thêm" các trang sau); khớp lưới
+ * 3 cột x 4 hàng. Đặt ở model, không ở hook `'use client'`, để route server import được giá trị thật.
+ */
+export const NEWS_PAGE_SIZE = 12;
+
+/** Bỏ trang chính sách (có route riêng) khỏi danh sách bài viết. */
+export function toNewsPostViews(items: ContentPostSummaryDto[]): ContentPostView[] {
+  return items.filter((post) => post.postType !== POLICY_POST_TYPE).map(toContentPostView);
+}
+
 const dateFormatter = new Intl.DateTimeFormat('vi-VN', {
   day: '2-digit',
   month: '2-digit',
@@ -73,6 +84,8 @@ export interface ArticleDetailView extends ContentPostView {
   blocks: ArticleBlock[];
   /** Ảnh bìa có thể trống với bài cũ; component tự quyết định có render khung ảnh không. */
   hasCover: boolean;
+  /** ISO 8601 gốc từ API, chỉ dùng cho dữ liệu có cấu trúc (JSON-LD); hiển thị dùng `publishedLabel`. */
+  publishedAtIso: string;
 }
 
 /**
@@ -108,5 +121,6 @@ export function toArticleDetailView(dto: ContentPostDto): ArticleDetailView {
     readTimeLabel: readTimeLabel(`${dto.excerpt} ${dto.body}`),
     blocks: toArticleBlocks(dto.body),
     hasCover: Boolean(dto.coverUrl),
+    publishedAtIso: dto.publishedAt,
   };
 }

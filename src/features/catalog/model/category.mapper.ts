@@ -59,7 +59,7 @@ export interface CategoryRailView {
 /** Gradient là trang trí thuần, gán theo vị trí để rail luôn đủ màu. */
 const railColors = [
   'from-amber-500/20 to-orange-500/10',
-  'from-emerald-500/20 to-teal-500/10',
+  'from-brand-500/20 to-brand-300/10',
   'from-sky-500/20 to-indigo-500/10',
   'from-rose-500/20 to-pink-500/10',
   'from-violet-500/20 to-purple-500/10',

@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   cancelAccountOrder,
@@ -10,6 +10,7 @@ import {
   getListAccountOrdersQueryKey,
 } from '@/generated/api/orders/orders';
 import type { OrderDetailDto } from '@/generated/api/orders/orders.schemas';
+import { useSignatureIdempotencyKey } from './use-signature-idempotency-key';
 
 /** Hộp thoại hủy đơn: lý do, trạng thái mở/đóng và lệnh hủy idempotent theo đường truy cập của khách. */
 export function useCancelOrder({
@@ -28,7 +29,7 @@ export function useCancelOrder({
   const queryClient = useQueryClient();
   const [reason, setReason] = useState('');
   const [showCancel, setShowCancel] = useState(false);
-  const idempotencyRef = useRef<{ signature: string; key: string } | undefined>(undefined);
+  const idempotency = useSignatureIdempotencyKey();
 
   const cancel = useMutation({
     mutationFn: async (): Promise<OrderDetailDto> => {
@@ -37,10 +38,7 @@ export function useCancelOrder({
       // IDEMPOTENCY: cùng đơn, cùng version và cùng lý do thì bấm lại dùng lại key cũ; đổi một trong ba
       // (hoặc đóng hộp thoại / hủy thành công) mới sinh key mới.
       const signature = `${order.id}:${order.version}:${normalizedReason}`;
-      if (idempotencyRef.current?.signature !== signature) {
-        idempotencyRef.current = { signature, key: crypto.randomUUID() };
-      }
-      const headers = { 'idempotency-key': idempotencyRef.current.key };
+      const headers = { 'idempotency-key': idempotency.keyFor(signature) };
       return isAuthenticated
         ? cancelAccountOrder(orderNo, { expectedVersion: order.version, reason: normalizedReason }, { headers })
         : cancelGuestOrder(orderNo, { expectedVersion: order.version, reason: normalizedReason }, { headers: { ...headers, 'x-cart-token': guestToken } });
@@ -52,7 +50,7 @@ export function useCancelOrder({
       if (isAuthenticated) {
         await queryClient.invalidateQueries({ queryKey: getListAccountOrdersQueryKey() });
       }
-      idempotencyRef.current = undefined;
+      idempotency.reset();
       cancel.reset();
       setShowCancel(false);
       setReason('');
@@ -63,7 +61,7 @@ export function useCancelOrder({
   const closeCancel = () => {
     if (cancel.isPending) return;
     cancel.reset();
-    idempotencyRef.current = undefined;
+    idempotency.reset();
     setReason('');
     setShowCancel(false);
   };

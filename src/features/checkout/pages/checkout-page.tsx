@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Spinner } from '@/foundation/components/feedback';
+import { CheckoutSkeleton } from '../components/checkout-skeleton';
 import { useCartActions } from '@/features/cart';
 import { useCustomerAuth } from '@/features/auth';
 import { useToast } from '@/shared/components/global-toast';
@@ -20,6 +20,7 @@ import { useCheckoutForm } from '../hooks/use-checkout-form';
 import { useAutoQuote, useCheckoutQuote } from '../hooks/use-checkout-quote';
 import { useCheckoutSavedAddresses } from '../hooks/use-checkout-saved-addresses';
 import { usePlaceOrder } from '../hooks/use-place-order';
+import { CheckoutPaymentMethod } from '@/generated/api/checkout/checkout.schemas';
 
 export function CheckoutPage() {
   // Bán kính giao miễn phí do Admin cấu hình; 10 km là giá trị mặc định của API khi chưa tải được.
@@ -68,12 +69,7 @@ export function CheckoutPage() {
 
   if (!cartHydrated) {
     return (
-        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-2.5 text-sm font-semibold text-slate-600">
-            <Spinner className="size-5 animate-spin text-emerald-600" />
-            <span>Đang tải thông tin thanh toán đơn hàng…</span>
-          </div>
-        </div>
+        <CheckoutSkeleton />
     );
   }
 
@@ -87,11 +83,12 @@ export function CheckoutPage() {
     return <CheckoutEmptyCart />;
   }
 
-  // Route group layout đã có <main>; lồng thêm <main> ở đây là sai landmark cho trình đọc màn hình.
+  // Layout storefront chỉ là `div` (xem `layouts/storefront-layout.tsx`), nên trang tự giữ landmark `<main>`.
+  // `pb-28` trên mobile chừa chỗ cho thanh đặt hàng dính đáy trong `CheckoutOrderSummary`.
   return (
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mb-8">
-          <Link href="/cart" className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 hover:underline">
+      <main className="mx-auto max-w-7xl px-4 pb-28 pt-6 sm:px-6 sm:pt-8 lg:px-8 lg:pb-8">
+        <div className="mb-6 sm:mb-8">
+          <Link href="/cart" className="-ml-1 inline-flex min-h-11 items-center gap-1.5 px-1 text-xs font-bold text-brand-700 hover:underline">
             ← Quay lại giỏ hàng
           </Link>
           <div className="mt-2 flex flex-wrap items-baseline justify-between gap-4">
@@ -106,7 +103,7 @@ export function CheckoutPage() {
           </div>
         </div>
 
-        <form onSubmit={submit} className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_400px] [&>*]:min-w-0">
+        <form onSubmit={submit} className="grid grid-cols-1 gap-6 sm:gap-8 lg:grid-cols-[minmax(0,1fr)_400px] [&>*]:min-w-0">
           <div className="min-w-0 space-y-6">
             <CheckoutShippingInfoSection
               form={form}
@@ -145,8 +142,6 @@ export function CheckoutPage() {
               refreshConsultedQuote={refreshConsultedQuote}
               busy={busy}
               error={error}
-              redirectingToVnpay={redirectingToVnpay}
-              paymentMethod={paymentMethod}
             />
           </div>
 
@@ -165,12 +160,12 @@ export function CheckoutPage() {
                 ? 'Đang chuyển sang VNPay...'
                 : busy
                 ? 'Đang xử lý...'
-                : paymentMethod === 'VNPAY'
+                : paymentMethod === CheckoutPaymentMethod.VNPAY
                 ? 'Đặt hàng & Thanh toán VNPay'
                 : 'Đặt hàng'
             }
           />
         </form>
-      </div>
+      </main>
   );
 }

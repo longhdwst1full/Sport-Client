@@ -16,6 +16,9 @@ import {
   ProfileSidebar,
   type ProfileTab,
 } from '../components/profile-sidebar';
+import { Button } from '@/foundation/components/buttons';
+import { Skeleton } from '@/foundation/components/feedback';
+import { IconList } from '@/foundation/components/structure';
 import { useAddressBook } from '../hooks/use-address-book';
 
 const TAB_COPY: Record<ProfileTab, { title: string; description: string }> = {
@@ -78,29 +81,7 @@ export function ProfilePage() {
   const profilePhone = profileQuery.data?.phone ?? '';
 
   // Address state — dữ liệu do API tài khoản sở hữu, form chỉ giữ input đang nhập.
-  const {
-    addresses,
-    addressesLoading,
-    addressesError,
-    refetchAddresses,
-    addressMutating,
-    isAddressModalOpen,
-    setIsAddressModalOpen,
-    editingAddress,
-    addressFormName,
-    setAddressFormName,
-    addressFormPhone,
-    setAddressFormPhone,
-    addressFormIsDefault,
-    setAddressFormIsDefault,
-    modalAddressData,
-    setModalAddressData,
-    handleOpenAddAddress,
-    handleOpenEditAddress,
-    handleSaveAddress,
-    handleDeleteAddress,
-    handleSetDefaultAddress,
-  } = useAddressBook(authLoaded && isAuthenticated, profileName, profilePhone);
+  const book = useAddressBook(authLoaded && isAuthenticated, profileName, profilePhone);
 
   const handleLogout = () => {
     logout();
@@ -114,10 +95,10 @@ export function ProfilePage() {
       <div className="pb-20 pt-6">
         <main className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <nav className="mb-5 flex items-center gap-2 text-xs font-semibold text-[var(--dc-text-secondary)]">
-            <Link href="/" className="hover:text-[var(--dc-primary-700)]">
+            <Link href="/" className="rounded hover:text-[var(--dc-primary-700)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--dc-primary-600)] focus-visible:ring-offset-2">
               Trang chủ
             </Link>
-            <span>/</span>
+            <span aria-hidden>/</span>
             <span className="font-bold text-[var(--dc-text-primary)]">Tài khoản</span>
           </nav>
 
@@ -132,24 +113,17 @@ export function ProfilePage() {
                 <div className="min-w-0 flex-1">
                   <p className="text-xs font-semibold text-white/70">Xin chào,</p>
                   <h1 className="truncate text-xl font-black sm:text-2xl">{profile.name}</h1>
-                  <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1.5 text-xs text-white/80 sm:text-sm">
-                    {profile.email && (
-                      <span className="inline-flex min-w-0 items-center gap-1.5">
-                        <Mail className="size-4 shrink-0" />
-                        <span className="truncate">{profile.email}</span>
-                      </span>
-                    )}
-                    {profile.phone && (
-                      <span className="inline-flex items-center gap-1.5">
-                        <Phone className="size-4" />
-                        {profile.phone}
-                      </span>
-                    )}
-                    <span className="inline-flex items-center gap-1.5">
-                      <CalendarDays className="size-4" />
-                      Thành viên từ {memberSince(profile.createdAt)}
-                    </span>
-                  </div>
+                  <IconList
+                    items={[
+                      ...(profile.email
+                        ? [{ key: 'email', icon: Mail, label: <span className="block truncate">{profile.email}</span> }]
+                        : []),
+                      ...(profile.phone ? [{ key: 'phone', icon: Phone, label: profile.phone }] : []),
+                      { key: 'since', icon: CalendarDays, label: `Thành viên từ ${memberSince(profile.createdAt)}` },
+                    ]}
+                    className="mt-2 flex flex-wrap gap-x-5 gap-y-1.5 text-xs text-white/80 sm:text-sm"
+                    itemClassName="min-w-0 gap-1.5 [&>span]:min-w-0"
+                  />
                 </div>
                 <div className="rounded-2xl bg-white/10 px-4 py-3 text-xs ring-1 ring-white/15">
                   <p className="text-white/70">Mã khách hàng</p>
@@ -158,23 +132,25 @@ export function ProfilePage() {
               </div>
             ) : profileQuery.isError ? (
               <div className="relative flex flex-wrap items-center justify-between gap-3">
+                <h1 className="sr-only">Tài khoản</h1>
                 <p className="text-sm font-semibold">Không tải được thông tin tài khoản.</p>
                 <button
                   type="button"
                   onClick={() => void profileQuery.refetch()}
-                  className="inline-flex items-center gap-2 rounded-xl bg-white/15 px-4 py-2 text-xs font-bold ring-1 ring-white/25 hover:bg-white/25"
+                  className="inline-flex items-center gap-2 rounded-xl bg-white/15 px-4 py-2 text-xs font-bold ring-1 ring-white/25 hover:bg-white/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
                 >
-                  <RefreshCw className="size-4" />
+                  <RefreshCw className="size-4" aria-hidden />
                   Thử lại
                 </button>
               </div>
             ) : (
-              <div className="relative flex items-center gap-5" aria-busy="true">
-                <div className="size-16 animate-pulse rounded-2xl bg-white/15 sm:size-20" />
+              <div className="relative flex items-center gap-5" aria-busy="true" aria-label="Đang tải thông tin tài khoản">
+                <h1 className="sr-only">Tài khoản</h1>
+                <Skeleton className="size-16 rounded-2xl bg-white/15 sm:size-20" />
                 <div className="flex-1 space-y-2">
-                  <div className="h-3 w-24 animate-pulse rounded bg-white/15" />
-                  <div className="h-6 w-56 animate-pulse rounded bg-white/20" />
-                  <div className="h-3 w-72 max-w-full animate-pulse rounded bg-white/15" />
+                  <Skeleton className="h-3 w-24 rounded bg-white/15" />
+                  <Skeleton className="h-6 w-56 rounded bg-white/20" />
+                  <Skeleton className="h-3 w-72 max-w-full rounded bg-white/15" />
                 </div>
               </div>
             )}
@@ -191,13 +167,13 @@ export function ProfilePage() {
                   role="tab"
                   aria-selected={activeTab === id}
                   onClick={() => selectTab(id)}
-                  className={`inline-flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-xs font-bold transition ${
+                  className={`inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full px-4 py-2 text-xs font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--dc-primary-600)] focus-visible:ring-offset-2 ${
                     activeTab === id
                       ? 'bg-[var(--dc-primary-700)] text-white shadow-sm'
                       : 'border border-[var(--dc-border)] bg-white text-[var(--dc-text-secondary)]'
                   }`}
                 >
-                  <Icon className="size-4" />
+                  <Icon className="size-4" aria-hidden />
                   {label}
                 </button>
               ))}
@@ -210,14 +186,14 @@ export function ProfilePage() {
             <section className="rounded-[28px] border border-[var(--dc-border)] bg-white p-5 shadow-sm sm:p-8">
               {activeTab === 'address' ? (
                 <AddressBookPanel
-                  addresses={addresses}
-                  addressesLoading={addressesLoading}
-                  addressesError={addressesError}
-                  onRetry={() => void refetchAddresses()}
-                  onAdd={handleOpenAddAddress}
-                  onEdit={handleOpenEditAddress}
-                  onDelete={handleDeleteAddress}
-                  onSetDefault={handleSetDefaultAddress}
+                  addresses={book.addresses}
+                  addressesLoading={book.addressesLoading}
+                  addressesError={book.addressesError}
+                  onRetry={() => void book.refetchAddresses()}
+                  onAdd={book.handleOpenAddAddress}
+                  onEdit={book.handleOpenEditAddress}
+                  onDelete={book.handleDeleteAddress}
+                  onSetDefault={book.handleSetDefaultAddress}
                 />
               ) : (
                 <>
@@ -229,11 +205,11 @@ export function ProfilePage() {
                     {activeTab === 'security' ? (
                       <ChangePasswordForm />
                     ) : profile ? (
-                      <ProfileInfoForm profile={profile} />
+                      <ProfileInfoForm key={profile.id} profile={profile} />
                     ) : (
                       <div className="space-y-4" aria-busy="true">
                         {[0, 1, 2].map((row) => (
-                          <div key={row} className="h-11 animate-pulse rounded-xl bg-[var(--dc-canvas)]" />
+                          <Skeleton key={row} className="h-11 rounded-xl bg-[var(--dc-canvas)]" />
                         ))}
                       </div>
                     )}
@@ -243,32 +219,27 @@ export function ProfilePage() {
             </section>
           </div>
 
-          <button
-            type="button"
+          <Button
+            variant="outline"
+            fullWidth
             onClick={handleLogout}
-            className="mt-6 w-full rounded-2xl border border-rose-200 bg-white py-3 text-sm font-bold text-rose-600 lg:hidden"
+            className="mt-6 h-auto rounded-2xl border-rose-200 py-3 font-bold text-rose-600 hover:border-rose-200 hover:bg-rose-50 hover:text-rose-600 focus-visible:ring-rose-500 lg:hidden"
           >
             Đăng xuất
-          </button>
+          </Button>
         </main>
 
         {/* ======================================================== */}
         {/* MODAL: ADD / EDIT ADDRESS WITH VIETNAM CASCADING SELECTOR */}
         {/* ======================================================== */}
-        {isAddressModalOpen && (
+        {book.isAddressModalOpen && (
           <AddressFormDialog
-            editingAddress={editingAddress}
-            addressFormName={addressFormName}
-            onAddressFormNameChange={setAddressFormName}
-            addressFormPhone={addressFormPhone}
-            onAddressFormPhoneChange={setAddressFormPhone}
-            addressFormIsDefault={addressFormIsDefault}
-            onAddressFormIsDefaultChange={setAddressFormIsDefault}
-            modalAddressData={modalAddressData}
-            onModalAddressDataChange={setModalAddressData}
-            addressMutating={addressMutating}
-            onClose={() => setIsAddressModalOpen(false)}
-            onSubmit={handleSaveAddress}
+            editingAddress={book.editingAddress}
+            form={book.addressForm}
+            onFormChange={book.updateAddressForm}
+            addressMutating={book.addressMutating}
+            onClose={() => book.setIsAddressModalOpen(false)}
+            onSubmit={book.handleSaveAddress}
           />
         )}
 

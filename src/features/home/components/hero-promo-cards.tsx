@@ -7,7 +7,7 @@ import { BANNER_DEFAULT_CTA_TEXT, BannerPicture, type BannerView } from '@/featu
 const MAX_PROMO_CARDS = 2;
 
 const CARD_CLASS =
-  'group relative overflow-hidden rounded-2xl border border-slate-200/90 bg-gradient-to-br from-slate-900 to-slate-950 shadow-md transition hover:-translate-y-0.5 hover:shadow-xl min-h-[180px] sm:min-h-[210px] lg:min-h-[230px]';
+  'group relative overflow-hidden rounded-2xl border border-slate-200/90 bg-gradient-to-br from-slate-900 to-slate-950 shadow-md transition hover:-translate-y-0.5 hover:shadow-xl min-h-[180px] sm:min-h-[210px] lg:min-h-[230px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2';
 
 function PromoBannerCard({ banner }: { banner: BannerView }) {
   const hasText = Boolean(banner.title || banner.subtitle);
@@ -27,15 +27,15 @@ function PromoBannerCard({ banner }: { banner: BannerView }) {
       {hasText && (
         <div className="absolute inset-0 flex flex-col justify-end p-5 text-white">
           {banner.title && (
-            <h3 className="mt-1 text-base font-black leading-snug sm:text-lg group-hover:text-emerald-300 transition">
+            <h3 className="mt-1 text-base font-black leading-snug sm:text-lg group-hover:text-brand-300 transition">
               {banner.title}
             </h3>
           )}
           {banner.subtitle && <p className="mt-0.5 text-xs text-slate-300 line-clamp-2">{banner.subtitle}</p>}
           {banner.targetUrl && (
-            <div className="mt-2.5 inline-flex items-center gap-1 text-xs font-bold text-emerald-400 group-hover:underline">
+            <div className="mt-2.5 inline-flex items-center gap-1 text-xs font-bold text-brand-400 group-hover:underline">
               <span>{banner.ctaText ?? BANNER_DEFAULT_CTA_TEXT}</span>
-              <ArrowRight className="size-3 transition group-hover:translate-x-1" />
+              <ArrowRight className="size-3 transition group-hover:translate-x-1" aria-hidden="true" />
             </div>
           )}
         </div>
@@ -71,7 +71,7 @@ export function HeroPromoCards({ banners = [] }: { banners?: BannerView[] }) {
       {/* Promo Card 1: Chính sách bảo hành (trang CMS thật) */}
       <Link
         href="/chinh-sach/chinh-sach-bao-hanh"
-        className="group relative overflow-hidden rounded-2xl border border-slate-200/90 bg-gradient-to-br from-slate-900 to-slate-950 shadow-md transition hover:-translate-y-0.5 hover:shadow-xl min-h-[180px] sm:min-h-[210px] lg:min-h-[230px]"
+        className="group relative overflow-hidden rounded-2xl border border-slate-200/90 bg-gradient-to-br from-slate-900 to-slate-950 shadow-md transition hover:-translate-y-0.5 hover:shadow-xl min-h-[180px] sm:min-h-[210px] lg:min-h-[230px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
       >
         {/* Background Cover */}
         <div className="relative size-full">
@@ -87,19 +87,19 @@ export function HeroPromoCards({ banners = [] }: { banners?: BannerView[] }) {
 
         {/* Text Info */}
         <div className="absolute inset-0 flex flex-col justify-end p-5 text-white">
-          <span className="inline-flex items-center gap-1 text-[11px] font-black uppercase tracking-wider text-emerald-400">
-            <ShieldCheck className="size-3.5" />
+          <span className="inline-flex items-center gap-1 text-xs font-black uppercase tracking-wider text-brand-400">
+            <ShieldCheck className="size-3.5" aria-hidden="true" />
             BẢO AN SPORT CHÍNH HÃNG
           </span>
-          <h3 className="mt-1 text-base font-black leading-snug sm:text-lg group-hover:text-emerald-300 transition">
+          <h3 className="mt-1 text-base font-black leading-snug sm:text-lg group-hover:text-brand-300 transition">
             Chính Sách Bảo Hành
           </h3>
           <p className="mt-0.5 text-xs text-slate-300 line-clamp-2">
             Điều kiện, thời hạn và cách gửi yêu cầu bảo hành
           </p>
-          <div className="mt-2.5 inline-flex items-center gap-1 text-xs font-bold text-emerald-400 group-hover:underline">
+          <div className="mt-2.5 inline-flex items-center gap-1 text-xs font-bold text-brand-400 group-hover:underline">
             <span>Tra cứu chính sách</span>
-            <ArrowRight className="size-3 transition group-hover:translate-x-1" />
+            <ArrowRight className="size-3 transition group-hover:translate-x-1" aria-hidden="true" />
           </div>
         </div>
       </Link>
@@ -107,7 +107,7 @@ export function HeroPromoCards({ banners = [] }: { banners?: BannerView[] }) {
       {/* Promo Card 2: Tạ Tay & Phụ Kiện */}
       <Link
         href="/category/dung-cu-tap-gym"
-        className="group relative overflow-hidden rounded-2xl border border-slate-200/90 bg-gradient-to-br from-slate-900 to-slate-950 shadow-md transition hover:-translate-y-0.5 hover:shadow-xl min-h-[180px] sm:min-h-[210px] lg:min-h-[230px]"
+        className="group relative overflow-hidden rounded-2xl border border-slate-200/90 bg-gradient-to-br from-slate-900 to-slate-950 shadow-md transition hover:-translate-y-0.5 hover:shadow-xl min-h-[180px] sm:min-h-[210px] lg:min-h-[230px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
       >
         {/* Background Cover */}
         <div className="relative size-full">
@@ -123,8 +123,8 @@ export function HeroPromoCards({ banners = [] }: { banners?: BannerView[] }) {
 
         {/* Text Info */}
         <div className="absolute inset-0 flex flex-col justify-end p-5 text-white">
-          <span className="inline-flex items-center gap-1 text-[11px] font-black uppercase tracking-wider text-amber-400">
-            <Flame className="size-3.5 fill-amber-400 text-amber-400" />
+          <span className="inline-flex items-center gap-1 text-xs font-black uppercase tracking-wider text-amber-400">
+            <Flame className="size-3.5 fill-amber-400 text-amber-400" aria-hidden="true" />
             {/* Thẻ này dẫn sang danh mục, không phải chương trình flash sale; gọi đúng tên
                 để không hứa một chương trình có thể đang không chạy. */}
             PHỤ KIỆN TẬP GYM
@@ -137,7 +137,7 @@ export function HeroPromoCards({ banners = [] }: { banners?: BannerView[] }) {
           </p>
           <div className="mt-2.5 inline-flex items-center gap-1 text-xs font-bold text-amber-400 group-hover:underline">
             <span>Xem danh mục</span>
-            <ArrowRight className="size-3 transition group-hover:translate-x-1" />
+            <ArrowRight className="size-3 transition group-hover:translate-x-1" aria-hidden="true" />
           </div>
         </div>
       </Link>

@@ -1,11 +1,14 @@
 'use client';
 
-import { useState } from 'react';
-import { KeyRound, Loader2 } from 'lucide-react';
+import { useId, useState } from 'react';
+import { KeyRound } from 'lucide-react';
 import { InlineAlert } from '@/foundation/components/feedback';
+import { Field, TextInput } from '@/foundation/components/field-system';
+import { PROFILE_LABEL_CLASS, ProfileSubmitButton } from './profile-form-field';
 import { useChangePassword } from '../hooks/use-change-password';
 
 export function ChangePasswordForm() {
+  const fieldId = useId();
   const [password, setPassword] = useState({ current: '', next: '', confirm: '' });
   const {
     mutation: changePassword,
@@ -31,82 +34,76 @@ export function ChangePasswordForm() {
       }}
     >
       <div className="flex items-center gap-2 text-sm font-black text-slate-900">
-        <KeyRound className="size-4 text-slate-400" />
+        <KeyRound className="size-4 text-brand-600" aria-hidden />
         Đổi mật khẩu
       </div>
 
       <div>
-        <label className="block text-xs font-bold uppercase tracking-wider text-slate-600">
-          Mật khẩu hiện tại
-        </label>
-        <input
-          required
-          type="password"
-          autoComplete="current-password"
-          value={password.current}
-          onChange={(event) => setPassword((c) => ({ ...c, current: event.target.value }))}
-          className="mt-1.5 w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
-        />
+        <Field label="Mật khẩu hiện tại" labelClassName={PROFILE_LABEL_CLASS}>
+          <TextInput
+            required
+            type="password"
+            autoComplete="current-password"
+            id={`${fieldId}-current`}
+            value={password.current}
+            onChange={(event) => setPassword((c) => ({ ...c, current: event.target.value }))}
+            size="md"
+            className="mt-1.5"
+          />
+        </Field>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
-          <label className="block text-xs font-bold uppercase tracking-wider text-slate-600">
-            Mật khẩu mới
-          </label>
-          <input
-            required
-            type="password"
-            minLength={8}
-            autoComplete="new-password"
-            value={password.next}
-            onChange={(event) => setPassword((c) => ({ ...c, next: event.target.value }))}
-            className="mt-1.5 w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
-          />
+          <Field label="Mật khẩu mới" labelClassName={PROFILE_LABEL_CLASS}>
+            <TextInput
+              required
+              type="password"
+              minLength={8}
+              autoComplete="new-password"
+              id={`${fieldId}-next`}
+              value={password.next}
+              onChange={(event) => setPassword((c) => ({ ...c, next: event.target.value }))}
+              size="md"
+              className="mt-1.5"
+            />
+          </Field>
         </div>
         <div>
-          <label className="block text-xs font-bold uppercase tracking-wider text-slate-600">
-            Nhập lại mật khẩu mới
-          </label>
-          <input
-            required
-            type="password"
-            minLength={8}
-            autoComplete="new-password"
-            value={password.confirm}
-            onChange={(event) => setPassword((c) => ({ ...c, confirm: event.target.value }))}
-            className="mt-1.5 w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"
-          />
+          <Field label="Nhập lại mật khẩu mới" labelClassName={PROFILE_LABEL_CLASS}>
+            <TextInput
+              required
+              type="password"
+              minLength={8}
+              autoComplete="new-password"
+              id={`${fieldId}-confirm`}
+              value={password.confirm}
+              onChange={(event) => setPassword((c) => ({ ...c, confirm: event.target.value }))}
+              size="md"
+              className="mt-1.5"
+            />
+          </Field>
         </div>
       </div>
 
-      <p className="text-[11px] leading-relaxed text-slate-500">
+      <p className="text-[11px] leading-relaxed text-slate-600">
         Đổi mật khẩu sẽ đăng xuất mọi thiết bị khác đang đăng nhập; thiết bị này vẫn giữ nguyên.
       </p>
 
       {passwordNotice && (
-        <InlineAlert as="p" className="rounded-xl bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-800">
+        <InlineAlert as="p" role="status" className="rounded-xl bg-success-50 px-3 py-2 text-xs font-semibold text-success-800">
           {passwordNotice}
         </InlineAlert>
       )}
       {passwordError && (
-        <InlineAlert as="p" className="rounded-xl bg-rose-50 px-3 py-2 text-xs font-semibold text-rose-700">
+        <InlineAlert as="p" role="alert" className="rounded-xl bg-rose-50 px-3 py-2 text-xs font-semibold text-rose-700">
           {passwordError}
         </InlineAlert>
       )}
 
-      <button
-        type="submit"
-        disabled={changePassword.isPending}
-        className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-xs font-bold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-300"
-      >
-        {changePassword.isPending ? (
-          <Loader2 className="size-4 animate-spin" />
-        ) : (
-          <KeyRound className="size-4" />
-        )}
+      <ProfileSubmitButton pending={changePassword.isPending} icon={<KeyRound className="size-4" aria-hidden />}>
         Đổi mật khẩu
-      </button>
+      </ProfileSubmitButton>
     </form>
   );
 }

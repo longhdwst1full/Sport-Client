@@ -1,141 +1,151 @@
+import type { ReactNode } from 'react';
 import { RotateCcw, Search } from 'lucide-react';
+import { Button } from '@/foundation/components/buttons';
+import { EmptyState, InlineAlert } from '@/foundation/components/feedback';
 import type { ProductShowcaseItem } from '../../model/product.mapper';
-import { ProductCard } from '../product-card';
+import { ProductCard, ProductCardSkeleton } from '../product-card';
 
 interface CatalogProductGridProps {
   isPending: boolean;
   isError: boolean;
+  /** Đang hiện kết quả của bộ lọc trước trong lúc chờ kết quả mới: giữ lưới, làm mờ. */
+  isShowingPreviousResults?: boolean;
   refetch: () => unknown;
   displayedProducts: ProductShowcaseItem[];
-  hasActiveFilters: boolean;
-  onResetFilters: () => void;
+  hasActiveFilters?: boolean;
+  onResetFilters?: () => void;
   onBuyNow: (product: ProductShowcaseItem, e: React.MouseEvent) => void;
   hasMore: boolean;
   isLoadingMore: boolean;
   isLoadMoreError: boolean;
   onLoadMore: () => void;
+  /** Lưới cột/khoảng cách riêng của nơi dùng (lưới trưng bày trang chủ rộng hơn, không có sidebar). */
+  gridClassName?: string;
+  errorTitle?: string;
+  /** Thay khối "không tìm thấy" mặc định (vd. lưới trưng bày không có bộ lọc để xoá). */
+  emptyState?: ReactNode;
 }
+
+const GRID_CLASS = 'grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 xl:grid-cols-4';
 
 export function CatalogProductGrid({
   isPending,
   isError,
+  isShowingPreviousResults = false,
   refetch,
   displayedProducts,
-  hasActiveFilters,
+  hasActiveFilters = false,
   onResetFilters,
   onBuyNow,
   hasMore,
   isLoadingMore,
   isLoadMoreError,
   onLoadMore,
+  gridClassName = GRID_CLASS,
+  errorTitle = 'Không thể tải danh sách sản phẩm lúc này.',
+  emptyState,
 }: CatalogProductGridProps) {
+  const hasProducts = displayedProducts.length > 0;
+
+  // RULE-SKEL-05: skeleton chỉ khi chưa có gì để hiện; có dữ liệu thì giữ lưới.
+  if (!hasProducts && isPending) {
+    return (
+      <div className={gridClassName} role="status" aria-label="Đang tải danh sách sản phẩm">
+        {Array.from({ length: 8 }, (_, index) => (
+          <ProductCardSkeleton key={index} />
+        ))}
+      </div>
+    );
+  }
+
+  const retryButton = (
+    <Button
+      variant="danger"
+      size="sm"
+      onClick={() => void refetch()}
+      className="rounded-full bg-rose-700 px-5 text-xs font-bold shadow-xs hover:bg-rose-800"
+    >
+      <RotateCcw aria-hidden className="size-3.5" /> Thử lại
+    </Button>
+  );
+
+  if (!hasProducts && isError) {
+    return (
+      <InlineAlert role="alert" className="rounded-3xl border border-rose-200 bg-rose-50/70 p-8 text-center text-rose-800">
+        <p className="font-bold">{errorTitle}</p>
+        <div className="mt-4">{retryButton}</div>
+      </InlineAlert>
+    );
+  }
+
+  if (!hasProducts) {
+    return (
+      emptyState ?? (
+        <EmptyState
+          className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-slate-300 bg-white px-4 py-16 text-center"
+          iconWrapClassName="mb-4 grid size-14 place-items-center rounded-2xl bg-brand-50 text-brand-600"
+          icon={<Search aria-hidden className="size-6" />}
+          titleAs="h3"
+          titleClassName="text-base font-black text-slate-900"
+          title="Không tìm thấy sản phẩm phù hợp"
+          descriptionClassName="mt-1 max-w-sm text-xs text-slate-600"
+          description="Rất tiếc không có thiết bị nào đáp ứng các bộ lọc hiện tại. Bạn vui lòng thử xóa bớt bộ lọc hoặc tìm kiếm từ khóa khác."
+          actions={
+            hasActiveFilters && onResetFilters ? (
+              <Button size="sm" onClick={onResetFilters} className="mt-5 gap-1.5 rounded-full px-5 text-xs font-bold shadow-sm">
+                <RotateCcw aria-hidden className="size-3.5" />
+                <span>Xóa tất cả bộ lọc</span>
+              </Button>
+            ) : null
+          }
+        />
+      )
+    );
+  }
+
   return (
     <>
-      {/* LOADING STATE SKELETON */}
-      {isPending && (
-        <div
-          className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
-          aria-label="Đang tải danh sách sản phẩm"
-        >
-          {Array.from({ length: 6 }, (_, index) => (
-            <div
-              key={index}
-              className="overflow-hidden rounded-[24px] border border-slate-100 bg-white p-4 shadow-xs"
-            >
-              <div className="aspect-[4/3] animate-pulse rounded-xl bg-slate-100" />
-              <div className="mt-4 space-y-2.5">
-                <div className="h-3 w-20 animate-pulse rounded bg-slate-100" />
-                <div className="h-4 w-3/4 animate-pulse rounded bg-slate-200" />
-                <div className="h-5 w-1/2 animate-pulse rounded bg-slate-100" />
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* ERROR STATE */}
+      {/* Làm mới thất bại nhưng vẫn còn dữ liệu cũ: giữ lưới, báo lỗi gọn phía trên. */}
       {isError && (
-        <div
-          className="rounded-3xl border border-rose-200 bg-rose-50/70 p-8 text-center text-rose-800"
+        <InlineAlert
           role="alert"
+          className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-rose-200 bg-rose-50/70 px-4 py-3 text-sm text-rose-800"
         >
-          <p className="font-bold">Không thể tải danh sách sản phẩm lúc này.</p>
-          <button
-            type="button"
-            onClick={() => void refetch()}
-            className="mt-4 inline-flex items-center gap-2 rounded-full bg-rose-700 px-5 py-2.5 text-xs font-bold text-white shadow-xs transition hover:bg-rose-800"
-          >
-            <RotateCcw className="size-3.5" /> Thử lại
-          </button>
-        </div>
+          <span className="font-semibold">Chưa cập nhật được danh sách mới nhất.</span>
+          {retryButton}
+        </InlineAlert>
       )}
 
-      {/* EMPTY STATE */}
-      {!isPending && !isError && displayedProducts.length === 0 && (
-        <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-slate-300 bg-white py-16 px-4 text-center">
-          <div className="grid size-14 place-items-center rounded-2xl bg-emerald-50 text-emerald-600 mb-4">
-            <Search className="size-6" />
-          </div>
-          <h3 className="text-base font-black text-slate-900">
-            Không tìm thấy sản phẩm phù hợp
-          </h3>
-          <p className="mt-1 max-w-sm text-xs text-slate-500">
-            Rất tiếc không có thiết bị nào đáp ứng các bộ lọc hiện tại. Bạn vui lòng thử xóa bớt bộ lọc hoặc tìm kiếm từ khóa khác.
-          </p>
-          {hasActiveFilters && (
-            <button
-              type="button"
-              onClick={onResetFilters}
-              className="mt-5 inline-flex items-center gap-1.5 rounded-full bg-emerald-600 px-5 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-emerald-700"
-            >
-              <RotateCcw className="size-3.5" />
-              <span>Xóa tất cả bộ lọc</span>
-            </button>
-          )}
-        </div>
-      )}
+      <div
+        className={`${gridClassName} transition-opacity ${isShowingPreviousResults ? 'opacity-60' : ''}`}
+        aria-busy={isShowingPreviousResults}
+      >
+        {displayedProducts.map((product) => (
+          <ProductCard key={product.id} product={product} onBuyNow={onBuyNow} />
+        ))}
+      </div>
 
-      {/* PRODUCT GRID */}
-      {!isPending && !isError && displayedProducts.length > 0 && (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {displayedProducts.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              onBuyNow={onBuyNow}
-            />
-          ))}
-        </div>
-      )}
-
-      {/* Load More Button */}
-      {!isPending && !isError && hasMore && (
-        <div className="mt-10 flex flex-col items-center gap-2">
+      {hasMore && !isShowingPreviousResults && (
+        <div className="mt-10 flex flex-col items-center gap-4">
           {isLoadingMore && (
-            <div
-              className="grid w-full gap-4 sm:grid-cols-2 lg:grid-cols-3"
-              aria-hidden="true"
-            >
-              {Array.from({ length: 3 }, (_, i) => (
-                <div
-                  key={i}
-                  className="aspect-[4/3] animate-pulse rounded-[24px] bg-slate-200/70"
-                />
+            <div className={`${gridClassName} w-full`} aria-hidden="true">
+              {Array.from({ length: 4 }, (_, i) => (
+                <ProductCardSkeleton key={i} />
               ))}
             </div>
           )}
-          <button
-            type="button"
+          <Button
+            variant="outline"
             onClick={onLoadMore}
             disabled={isLoadingMore}
-            className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-7 py-3 text-xs font-bold uppercase tracking-wider text-slate-700 shadow-xs transition hover:border-emerald-500 hover:bg-emerald-50 hover:text-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="rounded-full border-slate-200 px-7 text-xs font-bold uppercase tracking-wider text-slate-700 shadow-xs hover:border-brand-500 hover:bg-brand-50 disabled:opacity-60"
           >
             {isLoadingMore
               ? 'Đang tải…'
               : isLoadMoreError
                 ? 'Tải thêm chưa được — thử lại'
                 : 'Xem thêm'}
-          </button>
+          </Button>
         </div>
       )}
     </>

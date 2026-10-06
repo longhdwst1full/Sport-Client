@@ -1,19 +1,16 @@
 import { X } from 'lucide-react';
-import { useRef } from 'react';
+import { useId, useRef } from 'react';
 import { useDialogA11y } from '@/foundation/components/overlay/use-dialog-a11y';
-import { VietnamAddressSelector, type SelectedAddressData } from '@/features/address';
-import type { AddressView } from '../model/address.mapper';
+import { Button } from '@/foundation/components/buttons';
+import { Field, TextInput } from '@/foundation/components/field-system';
+import { VietnamAddressSelector } from '@/features/address';
+import type { AddressFormValues, AddressView } from '../model/address.mapper';
+import { PROFILE_LABEL_CLASS, PROFILE_SUBMIT_CLASS } from './profile-form-field';
 
 interface AddressFormDialogProps {
   editingAddress: AddressView | null;
-  addressFormName: string;
-  onAddressFormNameChange: (value: string) => void;
-  addressFormPhone: string;
-  onAddressFormPhoneChange: (value: string) => void;
-  addressFormIsDefault: boolean;
-  onAddressFormIsDefaultChange: (value: boolean) => void;
-  modalAddressData: SelectedAddressData;
-  onModalAddressDataChange: (data: SelectedAddressData) => void;
+  form: AddressFormValues;
+  onFormChange: (patch: Partial<AddressFormValues>) => void;
   addressMutating: boolean;
   onClose: () => void;
   onSubmit: (e: React.FormEvent) => void;
@@ -26,19 +23,14 @@ interface AddressFormDialogProps {
  */
 export function AddressFormDialog({
   editingAddress,
-  addressFormName,
-  onAddressFormNameChange,
-  addressFormPhone,
-  onAddressFormPhoneChange,
-  addressFormIsDefault,
-  onAddressFormIsDefaultChange,
-  modalAddressData,
-  onModalAddressDataChange,
+  form,
+  onFormChange,
   addressMutating,
   onClose,
   onSubmit,
 }: AddressFormDialogProps) {
   const dialogRef = useRef<HTMLDivElement | null>(null);
+  const fieldId = useId();
   useDialogA11y(dialogRef, { onClose, disableClose: addressMutating, trapFocus: true });
 
   return (
@@ -59,60 +51,64 @@ export function AddressFormDialog({
             type="button"
             onClick={onClose}
             aria-label="Đóng"
-            className="rounded-xl p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+            className="rounded-xl p-1 text-slate-500 hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
           >
-            <X className="size-5" />
+            <X className="size-5" aria-hidden />
           </button>
         </div>
 
         <form onSubmit={onSubmit} className="mt-5 space-y-4">
           <div className="grid gap-3 sm:grid-cols-2">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600">
-                Tên người nhận *
-              </label>
-              <input
-                type="text"
-                required
-                value={addressFormName}
-                onChange={(e) => onAddressFormNameChange(e.target.value)}
-                placeholder="Nguyễn Văn An"
-                className="mt-1.5 w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-xs font-medium text-slate-800 outline-none focus:border-emerald-500 sm:text-sm"
-              />
+              <Field label="Tên người nhận *" labelClassName={PROFILE_LABEL_CLASS}>
+                <TextInput
+                  id={`${fieldId}-recipient`}
+                  type="text"
+                  required
+                  autoComplete="name"
+                  value={form.recipient}
+                  onChange={(e) => onFormChange({ recipient: e.target.value })}
+                  placeholder="Nguyễn Văn An"
+                  size="md"
+                  className="mt-1.5 font-medium"
+                />
+              </Field>
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600">
-                Số điện thoại *
-              </label>
-              <input
-                type="tel"
-                required
-                value={addressFormPhone}
-                onChange={(e) => onAddressFormPhoneChange(e.target.value)}
-                placeholder="0912 345 678"
-                className="mt-1.5 w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-xs font-medium text-slate-800 outline-none focus:border-emerald-500 sm:text-sm"
-              />
+              <Field label="Số điện thoại *" labelClassName={PROFILE_LABEL_CLASS}>
+                <TextInput
+                  id={`${fieldId}-phone`}
+                  type="tel"
+                  required
+                  autoComplete="tel"
+                  value={form.phone}
+                  onChange={(e) => onFormChange({ phone: e.target.value })}
+                  placeholder="0912 345 678"
+                  size="md"
+                  className="mt-1.5 font-medium"
+                />
+              </Field>
             </div>
           </div>
 
           {/* Vietnam Cascading Address Selector Component */}
           <div className="border-y border-slate-100 py-4">
             <VietnamAddressSelector
-              initialData={modalAddressData}
-              onChange={onModalAddressDataChange}
+              initialData={form.location}
+              onChange={(location) => onFormChange({ location })}
               required
             />
           </div>
 
-          {/* Default toggle — contract chưa có nhãn loại địa chỉ nên bỏ phần chọn nhãn. */}
+          {/* Default toggle — contract chưa có nhãn loại địa chỉ nên bỏ phần chọn nhãn. Chưa có primitive Checkbox. */}
           <div className="flex flex-wrap items-center justify-end gap-4 pt-1">
             <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-slate-700">
               <input
                 type="checkbox"
-                checked={addressFormIsDefault}
-                onChange={(e) => onAddressFormIsDefaultChange(e.target.checked)}
-                className="size-4 rounded text-emerald-600"
+                checked={form.isDefault}
+                onChange={(e) => onFormChange({ isDefault: e.target.checked })}
+                className="size-4 rounded border-slate-300 text-brand-600 focus:ring-brand-500"
               />
               <span>Đặt làm địa chỉ mặc định</span>
             </label>
@@ -120,20 +116,17 @@ export function AddressFormDialog({
 
           {/* Modal Footer Buttons */}
           <div className="mt-6 flex justify-end gap-3 border-t border-slate-100 pt-4">
-            <button
-              type="button"
+            <Button
+              variant="outline"
+              size="md"
               onClick={onClose}
-              className="rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-bold text-slate-600 hover:bg-slate-50"
+              className="h-auto border-slate-200 py-2.5 text-xs font-bold text-slate-600 hover:border-slate-200 hover:bg-slate-50 hover:text-slate-600"
             >
               Hủy bỏ
-            </button>
-            <button
-              type="submit"
-              disabled={addressMutating}
-              className="rounded-xl bg-emerald-600 px-5 py-2.5 text-xs font-bold text-white shadow-md shadow-emerald-600/20 hover:bg-emerald-500 disabled:cursor-not-allowed disabled:bg-slate-300"
-            >
+            </Button>
+            <Button type="submit" size="md" disabled={addressMutating} className={PROFILE_SUBMIT_CLASS}>
               {addressMutating ? 'Đang lưu…' : 'Lưu địa chỉ'}
-            </button>
+            </Button>
           </div>
         </form>
       </div>

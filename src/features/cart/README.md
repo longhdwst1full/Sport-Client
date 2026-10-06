@@ -1,10 +1,10 @@
 # Storefront Cart — maintenance note
 
-> **Document version:** 2.0.0
+> **Document version:** 2.1.0
 >
-> **Last updated:** 2026-09-28
+> **Last updated:** 2026-10-06
 >
-> **Change summary:** Account cart đã là nguồn đồng bộ đa thiết bị; login/register merge guest rồi pull giỏ server.
+> **Change summary:** Ghi rõ giỏ chỉ hiển thị tạm tính; phí vận chuyển và tổng thanh toán do bước checkout báo giá.
 
 ## Phạm vi
 
@@ -57,6 +57,7 @@ Persist allowlist: `productId, variantId, sku, productType, name, price, quantit
 ## Cache / offline
 
 - Giỏ lưu local **không phải** đơn đã đặt hay chỗ đã giữ. Tên/giá chỉ là snapshot hiển thị; checkout tải lại dữ liệu thật (`04-offline-commerce-ux.md`).
+- `cart-summary` chỉ hiện **tạm tính** theo snapshot giá của các dòng đã chọn; phí vận chuyển ghi "tính ở bước thanh toán", không ước lượng ở giỏ. Phí ship, khuyến mãi và tổng phải trả do checkout quote (`features/checkout`) quyết định.
 - Token guest cart lưu chuỗi thô (không JSON-encode) — đổi format sẽ làm khách mất giỏ sau deploy.
 
 ## Checklist khi sửa
@@ -69,6 +70,7 @@ Persist allowlist: `productId, variantId, sku, productType, name, price, quantit
 
 | Version | Date | Change summary |
 | --- | --- | --- |
+| 2.1.0 | 2026-10-06 | Giỏ hiển thị tạm tính; phí vận chuyển/tổng thanh toán ở checkout. |
 | 2.0.0 | 2026-09-28 | Đồng bộ account cart đa thiết bị; merge guest rồi pull server cart sau auth. |
 | 1.1.0 | 2026-09-14 | Gộp guest cart vào account khi auth. |
 | 1.0.0 | 2026-09-13 | Tạo note, ghi nhận cart SDK chưa được nối. |

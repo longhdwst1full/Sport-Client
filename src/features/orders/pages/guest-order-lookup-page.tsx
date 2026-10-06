@@ -8,7 +8,7 @@ import { GUEST_LOOKUP_CODE_LENGTH, GUEST_LOOKUP_COPY } from '../model/guest-orde
 import { useGuestOrderLookup } from '../hooks/use-guest-order-lookup';
 
 const inputClass =
-  'mt-1.5 w-full rounded-2xl border border-slate-200 px-3 py-2.5 text-sm text-slate-800 focus:border-emerald-400 focus:outline-none focus:ring-1 focus:ring-emerald-400 disabled:bg-slate-50';
+  'mt-1.5 min-h-11 w-full rounded-2xl border border-slate-200 px-3 py-2.5 text-base text-slate-800 sm:text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30 disabled:bg-slate-50';
 
 /** `/orders/lookup`: khách vãng lai xem đơn bằng mã đơn + email + OTP, không cần trình duyệt đã đặt hàng. */
 export function GuestOrderLookupPage({ initialOrderNo = '' }: { initialOrderNo?: string }) {
@@ -16,13 +16,13 @@ export function GuestOrderLookupPage({ initialOrderNo = '' }: { initialOrderNo?:
 
   return (
     <main className="mx-auto min-h-[60vh] max-w-xl px-4 py-10 sm:px-6">
-      <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-700">Khách vãng lai</p>
-      <h1 className="mt-2 text-3xl font-black text-slate-950">{GUEST_LOOKUP_COPY.title}</h1>
+      <p className="text-xs font-black uppercase tracking-[0.22em] text-brand-700">Khách vãng lai</p>
+      <h1 className="mt-2 text-2xl font-black text-slate-950 sm:text-3xl">{GUEST_LOOKUP_COPY.title}</h1>
       <p className="mt-2 text-sm text-slate-600">{GUEST_LOOKUP_COPY.intro}</p>
 
       {lookup.step === 'request' ? (
         <form
-          className="mt-7 space-y-5 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"
+          className="mt-7 space-y-5 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6"
           onSubmit={(event) => {
             event.preventDefault();
             lookup.requestCode();
@@ -62,7 +62,7 @@ export function GuestOrderLookupPage({ initialOrderNo = '' }: { initialOrderNo?:
           <Button
             type="submit"
             disabled={!lookup.canRequest}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-emerald-700 disabled:opacity-50"
+            className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-brand-600 px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 disabled:opacity-50"
           >
             {lookup.isRequesting ? <Spinner className="size-4 animate-spin" /> : <MailCheck className="size-4" aria-hidden />}
             {lookup.secondsLeft > 0 ? `Gửi lại sau ${lookup.secondsLeft}s` : 'Gửi mã xác thực'}
@@ -70,16 +70,16 @@ export function GuestOrderLookupPage({ initialOrderNo = '' }: { initialOrderNo?:
         </form>
       ) : (
         <form
-          className="mt-7 space-y-5 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"
+          className="mt-7 space-y-5 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6"
           onSubmit={(event) => {
             event.preventDefault();
             lookup.verifyCode();
           }}
         >
-          <p role="status" className="rounded-2xl bg-emerald-50 p-3 text-sm text-emerald-900">{GUEST_LOOKUP_COPY.sent}</p>
+          <p role="status" className="rounded-2xl border border-success-200 bg-success-50 p-3 text-sm text-success-900">{GUEST_LOOKUP_COPY.sent}</p>
           <p className="text-xs text-slate-500">
             Đơn <span className="font-mono font-bold text-slate-800">{lookup.orderNo.trim().toUpperCase()}</span> ·{' '}
-            <button type="button" onClick={lookup.editDetails} className="font-bold text-emerald-700 underline">Sửa thông tin</button>
+            <button type="button" onClick={lookup.editDetails} className="inline-flex min-h-11 items-center font-bold text-brand-700 underline">Sửa thông tin</button>
           </p>
           <div>
             <label htmlFor="lookup-code" className="block text-xs font-bold text-slate-800">{GUEST_LOOKUP_COPY.codeLabel}</label>
@@ -93,7 +93,7 @@ export function GuestOrderLookupPage({ initialOrderNo = '' }: { initialOrderNo?:
               maxLength={GUEST_LOOKUP_CODE_LENGTH}
               required
               disabled={lookup.isVerifying || lookup.isLocked}
-              className={`${inputClass} text-center font-mono text-2xl tracking-[0.5em]`}
+              className={`${inputClass} text-center font-mono text-2xl tracking-[0.5em] sm:text-2xl`}
             />
           </div>
           {lookup.verifyErrorMessage && (
@@ -102,7 +102,7 @@ export function GuestOrderLookupPage({ initialOrderNo = '' }: { initialOrderNo?:
           <Button
             type="submit"
             disabled={!lookup.canVerify || lookup.isLocked}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-emerald-700 disabled:opacity-50"
+            className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-brand-600 px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 disabled:opacity-50"
           >
             {lookup.isVerifying ? <Spinner className="size-4 animate-spin" /> : <SearchCheck className="size-4" aria-hidden />}
             Xem đơn hàng
@@ -111,7 +111,7 @@ export function GuestOrderLookupPage({ initialOrderNo = '' }: { initialOrderNo?:
             {lookup.secondsLeft > 0 ? (
               <span aria-live="polite">Gửi lại mã sau {lookup.secondsLeft} giây</span>
             ) : (
-              <button type="button" onClick={lookup.requestCode} disabled={!lookup.canRequest} className="font-bold text-emerald-700 underline disabled:opacity-50">
+              <button type="button" onClick={lookup.requestCode} disabled={!lookup.canRequest} className="inline-flex min-h-11 items-center font-bold text-brand-700 underline disabled:opacity-50">
                 {lookup.isRequesting ? 'Đang gửi...' : 'Gửi lại mã'}
               </button>
             )}
@@ -123,7 +123,7 @@ export function GuestOrderLookupPage({ initialOrderNo = '' }: { initialOrderNo?:
       )}
 
       <p className="mt-6 text-center text-xs text-slate-500">
-        Có tài khoản? <Link href="/login" className="font-bold text-emerald-700">Đăng nhập</Link> để xem toàn bộ đơn hàng.
+        Có tài khoản? <Link href="/login" className="font-bold text-brand-700">Đăng nhập</Link> để xem toàn bộ đơn hàng.
       </p>
     </main>
   );

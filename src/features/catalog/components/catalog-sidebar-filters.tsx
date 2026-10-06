@@ -1,7 +1,8 @@
 'use client';
 
-import React from 'react';
 import { RotateCcw, Tag, Boxes } from 'lucide-react';
+import { Button } from '@/foundation/components/buttons';
+import { Skeleton } from '@/foundation/components/feedback';
 import type { CategoryTabView } from '../hooks/use-category-tabs';
 
 export interface PriceRangeOption {
@@ -42,63 +43,53 @@ export function CatalogSidebarFilters({
           Bộ lọc tìm kiếm
         </span>
         {hasActiveFilters && (
-          <button
-            type="button"
+          <Button
+            variant="ghost"
             onClick={onResetFilters}
-            className="inline-flex items-center gap-1 text-[11px] font-bold text-rose-600 hover:text-rose-700 transition"
+            className="h-auto gap-1 rounded px-0 text-[11px] font-bold text-rose-700 hover:bg-transparent hover:text-rose-800 sm:text-[11px]"
           >
-            <RotateCcw className="size-3" />
+            <RotateCcw aria-hidden className="size-3" />
             <span>Đặt lại</span>
-          </button>
+          </Button>
         )}
       </div>
 
       {/* Category Facet */}
       <div>
         <h3 className="mb-2.5 flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-slate-800">
-          <Boxes className="size-3.5 text-emerald-600" />
+          <Boxes aria-hidden className="size-3.5 text-brand-600" />
           <span>Danh mục sản phẩm</span>
         </h3>
         {isTabsPending ? (
           <div className="space-y-2">
             {Array.from({ length: 5 }, (_, i) => (
-              <div key={i} className="h-7 animate-pulse rounded-lg bg-slate-100" />
+              <Skeleton key={i} className="h-8 rounded-xl" />
             ))}
           </div>
         ) : (
           <div className="space-y-1">
-            <button
-              type="button"
-              onClick={() => onSelectCategory(null)}
-              className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-xs font-bold transition text-left ${
-                activeTabSlug === null
-                  ? 'bg-emerald-50 text-emerald-800 ring-1 ring-emerald-600/20'
-                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-              }`}
-            >
-              <span>Tất cả danh mục</span>
-            </button>
+            {/* `tabs[0]` là "Tất cả" (slug null) từ `useCategoryTabs`. */}
             {tabs.map((tab) => {
-              if (!tab.slug) return null;
               const isSelected = activeTabSlug === tab.slug;
               return (
                 <button
-                  key={tab.slug}
+                  key={tab.slug ?? 'all'}
                   type="button"
                   onClick={() => onSelectCategory(tab.slug)}
-                  className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-xs font-bold transition text-left ${
+                  aria-pressed={isSelected}
+                  className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-xs font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-1 ${
                     isSelected
-                      ? 'bg-emerald-50 text-emerald-800 ring-1 ring-emerald-600/20'
-                      : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                      ? 'bg-brand-50 text-brand-800 ring-1 ring-brand-600/30'
+                      : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
                   }`}
                 >
-                  <span className="truncate">{tab.label}</span>
+                  <span className="truncate">{tab.slug ? tab.label : 'Tất cả danh mục'}</span>
                   {typeof tab.productCount === 'number' && tab.productCount > 0 && (
                     <span
                       className={`ml-2 rounded-full px-2 py-0.5 text-[10px] font-bold ${
                         isSelected
-                          ? 'bg-emerald-600 text-white'
-                          : 'bg-slate-100 text-slate-500'
+                          ? 'bg-brand-600 text-white'
+                          : 'bg-slate-100 text-slate-600'
                       }`}
                     >
                       {tab.productCount}
@@ -114,10 +105,10 @@ export function CatalogSidebarFilters({
       {/* Price Range Facet */}
       <div className="border-t border-slate-100 pt-5">
         <h3 className="mb-2.5 flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-slate-800">
-          <Tag className="size-3.5 text-emerald-600" />
+          <Tag aria-hidden className="size-3.5 text-brand-600" />
           <span>Khoảng giá</span>
         </h3>
-        <div className="space-y-1.5">
+        <div className="space-y-1.5" role="radiogroup" aria-label="Khoảng giá">
           {priceRanges.map((range) => {
             const isSelected = activePriceRange === range.id;
             return (
@@ -125,8 +116,8 @@ export function CatalogSidebarFilters({
                 key={range.id}
                 className={`flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-xs font-semibold transition ${
                   isSelected
-                    ? 'bg-emerald-50/80 text-emerald-900 font-bold ring-1 ring-emerald-600/20'
-                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                    ? 'bg-brand-50/80 text-brand-900 font-bold ring-1 ring-brand-600/20'
+                    : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
                 }`}
               >
                 <div className="flex items-center gap-2.5">
@@ -136,7 +127,7 @@ export function CatalogSidebarFilters({
                     value={range.id}
                     checked={isSelected}
                     onChange={() => onSelectPriceRange(range.id)}
-                    className="size-4 text-emerald-600 focus:ring-emerald-500 border-slate-300"
+                    className="size-4 cursor-pointer border-slate-300 accent-brand-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-1"
                   />
                   <span>{range.label}</span>
                 </div>

@@ -77,7 +77,7 @@ export function EvidencePicker({ orderNo, value, onChange, onUploadingChange, di
             type="button"
             disabled={disabled}
             onClick={() => inputRef.current?.click()}
-            className="grid size-24 place-items-center rounded-xl border border-dashed border-slate-300 text-xs font-bold text-slate-500 hover:border-emerald-500 disabled:opacity-50"
+            className="grid size-24 place-items-center rounded-xl border border-dashed border-slate-300 text-xs font-bold text-slate-500 hover:border-brand-500 disabled:opacity-50"
           >
             {uploading > 0 ? <Spinner className="size-5 animate-spin" /> : <span className="grid place-items-center gap-1"><ImagePlus className="size-5" />Thêm ảnh</span>}
           </button>
@@ -91,7 +91,7 @@ export function EvidencePicker({ orderNo, value, onChange, onUploadingChange, di
         hidden
         onChange={(event) => pick(event.target.files)}
       />
-      {error && <p className="mt-2 text-sm font-semibold text-rose-700">{error}</p>}
+      {error && <p role="alert" className="mt-2 text-sm font-semibold text-rose-700">{error}</p>}
     </div>
   );
 }

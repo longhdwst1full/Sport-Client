@@ -1,39 +1,6 @@
-import type { ElementType, ReactNode } from 'react';
+import { StateBlock, type StateBlockProps } from './state-block';
 
-/**
- * Presentational error block (query failed / access denied style sections).
- * Same shape as `EmptyState`; kept separate because callers reliably need an
- * icon + heading + message + retry/back actions rather than a generic slot.
- */
-export function ErrorState({
-  as: ContainerTag = 'section',
-  className,
-  iconWrapClassName,
-  icon,
-  titleAs: TitleTag = 'h1',
-  titleClassName,
-  title,
-  descriptionClassName,
-  description,
-  actions,
-}: {
-  as?: ElementType;
-  className?: string;
-  iconWrapClassName?: string;
-  icon?: ReactNode;
-  titleAs?: ElementType;
-  titleClassName?: string;
-  title: ReactNode;
-  descriptionClassName?: string;
-  description?: ReactNode;
-  actions?: ReactNode;
-}) {
-  return (
-    <ContainerTag className={className}>
-      {icon ? <div className={iconWrapClassName}>{icon}</div> : null}
-      <TitleTag className={titleClassName}>{title}</TitleTag>
-      {description ? <p className={descriptionClassName}>{description}</p> : null}
-      {actions}
-    </ContainerTag>
-  );
+/** Khối lỗi (tải thất bại / không có quyền); mặc định `section` + `h1` vì thường thay cả trang. */
+export function ErrorState({ as = 'section', titleAs = 'h1', ...props }: StateBlockProps) {
+  return <StateBlock tone="error" as={as} titleAs={titleAs} {...props} />;
 }

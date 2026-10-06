@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { SendHorizontal } from 'lucide-react';
 import { useCustomerAuth } from '@/features/auth';
 import { Button } from '@/foundation/components/buttons';
-import { Spinner } from '@/foundation/components/feedback';
+import { Skeleton, Spinner } from '@/foundation/components/feedback';
 import { SupportLoginPrompt } from '../components/support-login-prompt';
 import {
   SUPPORT_FIELD_LABELS,
@@ -33,14 +33,21 @@ export function CreateSupportRequestPage() {
   return (
     <main className="mx-auto min-h-[60vh] max-w-3xl px-4 py-10 sm:px-6">
       <nav className="mb-6 flex items-center gap-2 text-xs font-semibold text-slate-500" aria-label="Breadcrumb">
-        <Link href="/profile" className="hover:text-emerald-700">Tài khoản</Link>
-        <span>/</span>
-        <Link href={SUPPORT_ROUTES.list} className="hover:text-emerald-700">Hỗ trợ của tôi</Link>
+        <Link href="/profile" className="hover:text-brand-700 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500">Tài khoản</Link>
+        <span aria-hidden>/</span>
+        <Link href={SUPPORT_ROUTES.list} className="hover:text-brand-700 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500">Hỗ trợ của tôi</Link>
       </nav>
       <h1 className="text-3xl font-black text-slate-950">Tạo yêu cầu hỗ trợ</h1>
       <p className="mt-2 text-sm text-slate-600">Mô tả vấn đề của bạn, nhân viên Bảo An Sport sẽ phản hồi trong mục Hỗ trợ của tôi.</p>
 
-      {!isLoaded && <div className="grid min-h-56 place-items-center"><Spinner className="size-8 animate-spin text-emerald-600" /></div>}
+      {!isLoaded && (
+        <div className="mt-7 space-y-5 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm" aria-busy="true" aria-label="Đang tải biểu mẫu">
+          <Skeleton className="h-3 w-20 rounded" />
+          <Skeleton className="h-11 w-full rounded-2xl" />
+          <Skeleton className="h-3 w-20 rounded" />
+          <Skeleton className="h-36 w-full rounded-2xl" />
+        </div>
+      )}
       {isLoaded && !isAuthenticated && (
         <div className="mt-7"><SupportLoginPrompt title="Đăng nhập để gửi yêu cầu hỗ trợ" /></div>
       )}
@@ -63,9 +70,9 @@ export function CreateSupportRequestPage() {
               maxLength={SUPPORT_SUBJECT_MAX_LENGTH}
               required
               disabled={create.isPending}
-              className="mt-1.5 w-full rounded-2xl border border-slate-200 px-3 py-2.5 text-sm text-slate-800 focus:border-emerald-400 focus:outline-none focus:ring-1 focus:ring-emerald-400"
+              className="mt-1.5 w-full rounded-2xl border border-slate-200 px-3 py-2.5 text-base sm:text-sm text-slate-800 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30"
             />
-            <div className="mt-1 text-right text-[11px] text-slate-400">{subject.length}/{SUPPORT_SUBJECT_MAX_LENGTH}</div>
+            <div className="mt-1 text-right text-[11px] text-slate-500">{subject.length}/{SUPPORT_SUBJECT_MAX_LENGTH}</div>
           </div>
           <div>
             <label htmlFor="support-message" className="block text-xs font-bold text-slate-800">
@@ -79,19 +86,19 @@ export function CreateSupportRequestPage() {
               rows={6}
               required
               disabled={create.isPending}
-              className="mt-1.5 w-full rounded-2xl border border-slate-200 p-3 text-sm text-slate-800 focus:border-emerald-400 focus:outline-none focus:ring-1 focus:ring-emerald-400"
+              className="mt-1.5 w-full rounded-2xl border border-slate-200 p-3 text-base sm:text-sm text-slate-800 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30"
             />
-            <div className="mt-1 text-right text-[11px] text-slate-400">{message.length}/{SUPPORT_MESSAGE_MAX_LENGTH}</div>
+            <div className="mt-1 text-right text-[11px] text-slate-500">{message.length}/{SUPPORT_MESSAGE_MAX_LENGTH}</div>
           </div>
           {create.errorMessage && (
             <p role="alert" className="rounded-2xl border border-rose-200 bg-rose-50 p-3 text-xs font-semibold text-rose-800">{create.errorMessage}</p>
           )}
           <div className="flex justify-end gap-3">
-            <Link href={SUPPORT_ROUTES.list} className="rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-xs font-bold text-slate-700">Huỷ</Link>
+            <Link href={SUPPORT_ROUTES.list} className="inline-flex min-h-11 items-center rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-xs font-bold text-slate-700 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500">Huỷ</Link>
             <Button
               type="submit"
               disabled={!canSubmit}
-              className="flex items-center gap-1.5 rounded-xl bg-emerald-600 px-5 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-emerald-700 disabled:opacity-50"
+              className="flex min-h-11 items-center gap-1.5 rounded-xl bg-brand-600 px-5 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-brand-700 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2"
             >
               {create.isPending ? <Spinner className="size-4 animate-spin" /> : <SendHorizontal className="size-4" aria-hidden />}
               {create.isPending ? 'Đang gửi...' : 'Gửi yêu cầu'}

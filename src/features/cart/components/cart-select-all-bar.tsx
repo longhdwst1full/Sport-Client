@@ -13,20 +13,19 @@ export function CartSelectAllBar({
 }: CartSelectAllBarProps) {
   return (
     <div className="flex items-center justify-between rounded-2xl border border-slate-200/90 bg-white px-4 py-3.5 shadow-xs">
-      <label className="flex items-center gap-3 cursor-pointer select-none">
+      <label className="flex min-h-11 cursor-pointer select-none items-center gap-3">
         <input
           type="checkbox"
           checked={isAllSelected}
           onChange={onToggleSelectAll}
-          className="size-4.5 rounded accent-emerald-600 cursor-pointer"
-          aria-label="Chọn tất cả sản phẩm"
+          className="size-5 cursor-pointer rounded accent-brand-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
         />
         <span className="text-sm font-bold text-slate-800">
           Chọn tất cả ({itemCount} sản phẩm)
         </span>
       </label>
-      <span className="text-xs font-semibold text-slate-500">
-        Đã chọn: <strong className="font-bold text-emerald-700">{selectedCount}</strong>/{itemCount}
+      <span className="text-xs font-semibold text-slate-600">
+        Đã chọn: <strong className="font-bold text-brand-700">{selectedCount}</strong>/{itemCount}
       </span>
     </div>
   );

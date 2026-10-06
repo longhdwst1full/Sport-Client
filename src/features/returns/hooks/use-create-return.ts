@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCustomerAuth } from '@/features/auth';
@@ -15,6 +15,7 @@ import {
   type CreateReturnFormState,
   type UploadedEvidence,
 } from '../model/return.mapper';
+import { useSignatureIdempotencyKey } from './use-signature-idempotency-key';
 
 /**
  * Form + eligibility query + mutation tạo yêu cầu trả hàng. Luật (hạn trả, số lượng, combo,
@@ -27,7 +28,7 @@ export function useCreateReturn(orderNo: string) {
   const [form, setForm] = useState<CreateReturnFormState>({ reasonCode: '', description: '', quantities: {} });
   const [images, setImages] = useState<UploadedEvidence[]>([]);
   const [uploading, setUploading] = useState(false);
-  const idempotencyRef = useRef<{ signature: string; key: string } | undefined>(undefined);
+  const idempotency = useSignatureIdempotencyKey();
   const eligibility = useGetAccountReturnEligibility(orderNo, { query: { enabled: isLoaded && isAuthenticated, retry: false } });
   const data = eligibility.data;
   const lines = data?.items ?? [];
@@ -40,13 +41,10 @@ export function useCreateReturn(orderNo: string) {
       const payload = toCreateReturnPayload(orderNo, lines, form, images);
       // Bấm lại (hoặc thử lại sau lỗi mạng) cùng nội dung thì giữ key để API trả đúng phiếu cũ.
       const signature = JSON.stringify(payload);
-      if (idempotencyRef.current?.signature !== signature) {
-        idempotencyRef.current = { signature, key: crypto.randomUUID() };
-      }
-      return createAccountReturn(payload, { headers: { 'idempotency-key': idempotencyRef.current.key } });
+      return createAccountReturn(payload, { headers: { 'idempotency-key': idempotency.keyFor(signature) } });
     },
     onSuccess: async (created) => {
-      idempotencyRef.current = undefined;
+      idempotency.reset();
       // CACHE: phiếu mới đổi danh sách phiếu và điều kiện trả của chính đơn này.
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: getListAccountReturnsQueryKey() }),

@@ -1,6 +1,6 @@
 import { CoverImage } from '../components/cover-image';
 import Link from 'next/link';
-import { ArrowLeft, CalendarDays, Clock, Share2 } from 'lucide-react';
+import { ArrowLeft, CalendarDays, Clock } from 'lucide-react';
 import { Breadcrumb } from '@/foundation/components/navigation';
 import type { ArticleDetailView, ContentPostView } from '../model/content-post.mapper';
 import { ArticleReadingProgress } from '../components/article-reading-progress';
@@ -8,6 +8,7 @@ import { ArticleTableOfContents } from '../components/article-table-of-contents'
 import { ArticleConsultationCta } from '../components/article-consultation-cta';
 import { ArticleRelatedPosts } from '../components/article-related-posts';
 import { createArticleHeadingId, extractTocHeadings } from '../model/article-toc';
+import { buildArticleJsonLd, buildBreadcrumbListJsonLd, serializeJsonLd } from '@/lib/seo/json-ld';
 
 export function ArticleDetailPage({
   article,
@@ -17,9 +18,25 @@ export function ArticleDetailPage({
   related: ContentPostView[];
 }) {
   const tocHeadings = extractTocHeadings(article.blocks);
+  const path = `/news/${article.slug}`;
+  // Cùng nhãn với breadcrumb hiển thị để dữ liệu có cấu trúc khớp nội dung trang.
+  const articleJsonLd = buildArticleJsonLd({
+    headline: article.title,
+    path,
+    description: article.excerpt,
+    images: article.hasCover ? [article.coverUrl] : [],
+    datePublished: article.publishedAtIso,
+  });
+  const breadcrumbJsonLd = buildBreadcrumbListJsonLd([
+    { name: 'Trang chủ', path: '/' },
+    { name: 'Cẩm nang & Tin tức', path: '/news' },
+    { name: article.title, path },
+  ]);
 
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(articleJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbJsonLd) }} />
       {/* Scroll Reading Progress Bar */}
       <ArticleReadingProgress />
 
@@ -38,16 +55,16 @@ export function ArticleDetailPage({
             {/* Meta Tags & Category Header */}
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-5">
               <div className="flex flex-wrap items-center gap-2.5 text-xs font-bold">
-                <span className="rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-black uppercase tracking-wider text-emerald-800 ring-1 ring-emerald-600/20">
+                <span className="rounded-full bg-brand-50 px-3 py-1 text-xs font-black uppercase tracking-wider text-brand-800 ring-1 ring-brand-600/20">
                   {article.categoryLabel}
                 </span>
                 <span className="flex items-center gap-1.5 text-slate-500">
-                  <CalendarDays className="size-3.5 text-slate-400" />
+                  <CalendarDays className="size-3.5 text-slate-400" aria-hidden="true" />
                   {article.publishedLabel}
                 </span>
-                <span className="text-slate-300">•</span>
+                <span className="text-slate-300" aria-hidden="true">•</span>
                 <span className="flex items-center gap-1.5 text-slate-500">
-                  <Clock className="size-3.5 text-slate-400" />
+                  <Clock className="size-3.5 text-slate-400" aria-hidden="true" />
                   {article.readTimeLabel}
                 </span>
               </div>
@@ -60,7 +77,7 @@ export function ArticleDetailPage({
 
             {/* Lead Excerpt Callout */}
             {article.excerpt && (
-              <div className="mt-6 rounded-2xl border-l-4 border-emerald-500 bg-emerald-50/50 p-4 sm:p-5 text-base sm:text-lg leading-relaxed font-medium text-slate-700">
+              <div className="mt-6 rounded-2xl border-l-4 border-brand-500 bg-brand-50/50 p-4 sm:p-5 text-base sm:text-lg leading-relaxed font-medium text-slate-700">
                 {article.excerpt}
               </div>
             )}
@@ -112,7 +129,7 @@ export function ArticleDetailPage({
                     <p key={index} className="mt-2.5 flex items-start gap-2.5 pl-1 leading-relaxed">
                       <span
                         aria-hidden
-                        className="mt-2.5 size-1.5 shrink-0 rounded-full bg-emerald-600"
+                        className="mt-2.5 size-1.5 shrink-0 rounded-full bg-brand-600"
                       />
                       <span>{block.text}</span>
                     </p>
@@ -134,9 +151,9 @@ export function ArticleDetailPage({
             <div className="mt-10 flex items-center justify-between border-t border-slate-100 pt-6">
               <Link
                 href="/news"
-                className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-2.5 text-xs font-bold text-slate-700 shadow-2xs transition hover:border-emerald-500 hover:bg-emerald-50 hover:text-emerald-700"
+                className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-2.5 text-xs font-bold text-slate-700 shadow-2xs transition hover:border-brand-500 hover:bg-brand-50 hover:text-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
               >
-                <ArrowLeft className="size-4" />
+                <ArrowLeft className="size-4" aria-hidden="true" />
                 <span>Xem tất cả bài viết</span>
               </Link>
             </div>

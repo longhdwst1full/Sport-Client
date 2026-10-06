@@ -48,3 +48,10 @@ describe('order milestones', () => {
   });
 });
 
+
+describe('order bill view', () => {
+  it('miễn phí giao hàng quyết định trên số tiền, không trên chuỗi đã định dạng', () => {
+    expect(toOrderDetailView(base).isShippingFree).toBe(true);
+    expect(toOrderDetailView({ ...base, shippingTotal: '30000' } as OrderDetailDto).isShippingFree).toBe(false);
+  });
+});

@@ -27,10 +27,10 @@ export function VariantSelector({ variants, selectedVariantId, onSelectVariant }
               key={variant.id}
               type="button"
               aria-pressed={isSelected}
-              className={`relative flex items-center justify-between gap-3 rounded-2xl border p-4 text-left transition ${
+              className={`relative flex items-center justify-between gap-3 rounded-2xl border p-4 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 ${
                 isSelected
-                  ? 'border-emerald-500 bg-emerald-50/50 shadow-sm ring-2 ring-emerald-500/20'
-                  : 'border-stone-200/80 bg-white hover:border-emerald-300 hover:bg-stone-50/50'
+                  ? 'border-brand-600 bg-brand-50/50 shadow-sm ring-2 ring-brand-500/20'
+                  : 'border-stone-200/80 bg-white hover:border-brand-300 hover:bg-stone-50/50'
               }`}
               onClick={() => onSelectVariant(variant.id)}
             >
@@ -38,11 +38,11 @@ export function VariantSelector({ variants, selectedVariantId, onSelectVariant }
                 <div
                   className={`grid size-5 shrink-0 place-items-center rounded-full border transition ${
                     isSelected
-                      ? 'border-emerald-600 bg-emerald-600 text-white'
+                      ? 'border-brand-600 bg-brand-600 text-white'
                       : 'border-stone-300 bg-white'
                   }`}
                 >
-                  {isSelected && <Check className="size-3 stroke-[3]" />}
+                  {isSelected && <Check aria-hidden className="size-3 stroke-[3]" />}
                 </div>
                 <div className="min-w-0">
                   <span className="block break-words font-bold text-ink">{variant.name}</span>

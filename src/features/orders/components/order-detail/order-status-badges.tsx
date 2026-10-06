@@ -1,9 +1,10 @@
 import { CheckCircle2, Clock3, Package, Truck, XCircle } from 'lucide-react';
 import { Badge } from '@/foundation/components/tabs-chips';
+import { ORDER_STATUS, PAYMENT_STATUS } from '../../model/order.constants';
 
 export function getOrderStatusBadge(statusCode: string, label: string) {
   switch (statusCode) {
-    case 'PENDING_CONFIRMATION':
+    case ORDER_STATUS.PENDING_CONFIRMATION:
       return (
         <Badge className="inline-flex items-center gap-2 rounded-2xl border border-amber-400/40 bg-amber-500/20 px-4 py-2 text-sm font-black text-amber-300 backdrop-blur-md shadow-sm">
           <span className="relative flex size-2.5">
@@ -13,31 +14,31 @@ export function getOrderStatusBadge(statusCode: string, label: string) {
           {label}
         </Badge>
       );
-    case 'CONFIRMED':
-    case 'PICKING':
-    case 'PACKED':
+    case ORDER_STATUS.CONFIRMED:
+    case ORDER_STATUS.PICKING:
+    case ORDER_STATUS.PACKED:
       return (
         <Badge className="inline-flex items-center gap-2 rounded-2xl border border-blue-400/40 bg-blue-500/25 px-4 py-2 text-sm font-black text-blue-200 backdrop-blur-md shadow-sm">
           <Package className="size-4" />
           {label}
         </Badge>
       );
-    case 'SHIPPED':
+    case ORDER_STATUS.SHIPPED:
       return (
-        <Badge className="inline-flex items-center gap-2 rounded-2xl border border-teal-400/40 bg-teal-500/25 px-4 py-2 text-sm font-black text-teal-200 backdrop-blur-md shadow-sm">
+        <Badge className="inline-flex items-center gap-2 rounded-2xl border border-sky-400/40 bg-sky-500/25 px-4 py-2 text-sm font-black text-sky-200 backdrop-blur-md shadow-sm">
           <Truck className="size-4" />
           {label}
         </Badge>
       );
-    case 'DELIVERED':
-    case 'COMPLETED':
+    case ORDER_STATUS.DELIVERED:
+    case ORDER_STATUS.COMPLETED:
       return (
-        <Badge className="inline-flex items-center gap-2 rounded-2xl border border-emerald-400/40 bg-emerald-500/25 px-4 py-2 text-sm font-black text-emerald-300 backdrop-blur-md shadow-sm">
+        <Badge className="inline-flex items-center gap-2 rounded-2xl border border-success-400/40 bg-success-500/25 px-4 py-2 text-sm font-black text-success-200 backdrop-blur-md shadow-sm">
           <CheckCircle2 className="size-4" />
           {label}
         </Badge>
       );
-    case 'CANCELLED':
+    case ORDER_STATUS.CANCELLED:
       return (
         <Badge className="inline-flex items-center gap-2 rounded-2xl border border-rose-400/40 bg-rose-500/25 px-4 py-2 text-sm font-black text-rose-300 backdrop-blur-md shadow-sm">
           <XCircle className="size-4" />
@@ -55,20 +56,20 @@ export function getOrderStatusBadge(statusCode: string, label: string) {
 
 export function getPaymentStatusBadge(statusCode: string, label: string) {
   switch (statusCode) {
-    case 'SUCCESS':
+    case PAYMENT_STATUS.SUCCESS:
       return (
-        <Badge className="inline-flex items-center gap-1 rounded-full bg-emerald-500/20 border border-emerald-400/30 px-2.5 py-0.5 text-xs font-bold text-emerald-300">
+        <Badge className="inline-flex items-center gap-1 rounded-full bg-success-500/20 border border-success-400/30 px-2.5 py-0.5 text-xs font-bold text-success-200">
           <CheckCircle2 className="size-3" /> {label}
         </Badge>
       );
-    case 'FAILED':
-    case 'CANCELLED':
+    case PAYMENT_STATUS.FAILED:
+    case PAYMENT_STATUS.CANCELLED:
       return (
         <Badge className="inline-flex items-center gap-1 rounded-full bg-rose-500/20 border border-rose-400/30 px-2.5 py-0.5 text-xs font-bold text-rose-300">
           <XCircle className="size-3" /> {label}
         </Badge>
       );
-    case 'PENDING':
+    case PAYMENT_STATUS.PENDING:
     default:
       return (
         <Badge className="inline-flex items-center gap-1 rounded-full bg-amber-500/20 border border-amber-400/30 px-2.5 py-0.5 text-xs font-bold text-amber-300">

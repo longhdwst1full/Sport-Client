@@ -1,10 +1,10 @@
 # Storefront Home — maintenance note
 
-> **Document version:** 2.0.0
+> **Document version:** 2.1.0
 >
-> **Last updated:** 2026-09-25
+> **Last updated:** 2026-10-06
 >
-> **Change summary:** Bỏ toàn bộ mock trang chủ: hero dựng từ bài viết + flash sale thật, thẻ bộ môn/lối tắt từ cây danh mục; gỡ popup voucher, planner, training guide, stats, brand partners.
+> **Change summary:** Trang chủ tự render `<main>`; sắp lại thứ tự section (hero → rail → flash sale → bán chạy → khối danh mục → tin cậy → tin tức); `SmartFitAdvisor` lazy-load qua `SmartFitAdvisorLazy` (`next/dynamic`, `ssr: false`, placeholder cùng `SMART_FIT_CARD_MIN_HEIGHT`). Trước đó: Bỏ toàn bộ mock trang chủ: hero dựng từ bài viết + flash sale thật, thẻ bộ môn/lối tắt từ cây danh mục; gỡ popup voucher, planner, training guide, stats, brand partners.
 
 ## Phạm vi
 
@@ -15,6 +15,8 @@
 ## Server/client boundary
 
 `pages/home-page.tsx` là **server component async** — tự lấy danh mục, bài viết và trang 1 sản phẩm rồi truyền xuống. Chỉ 2 component cần tương tác mới là client: `hero-banner-slider` (slide + flash sale theo giờ server) và `category-visual-showcase`.
+
+`smart-fit-advisor` chỉ được import qua `SmartFitAdvisorLazy` (barrel không xuất bản tĩnh): import tĩnh từ server component kéo cả wizard vào First Load JS của `/`. Đổi bố cục wizard thì đo lại `SMART_FIT_CARD_MIN_HEIGHT` để tránh CLS.
 
 Không được biến `home-page.tsx` thành `'use client'` để tiện quản lý loading (`RULE-SKEL-06`).
 

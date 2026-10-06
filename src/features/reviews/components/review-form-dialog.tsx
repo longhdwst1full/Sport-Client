@@ -90,7 +90,7 @@ export function ReviewFormDialog({
     >
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-700">Đánh giá đã mua hàng</p>
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-brand-700">Đánh giá đã mua hàng</p>
             <h2 id="review-dialog-title" className="mt-1 text-xl font-black text-slate-950">{productName}</h2>
             <p className="mt-1 text-sm text-slate-500">Đánh giá được hiển thị ngay sau khi gửi.</p>
           </div>
@@ -114,10 +114,10 @@ export function ReviewFormDialog({
           </fieldset>
 
           <label className="block text-sm font-bold text-slate-800">Tiêu đề <span className="text-rose-600">*</span>
-            <input value={title} onChange={(event) => setTitle(event.target.value)} maxLength={255} disabled={submitting} className="mt-2 w-full rounded-xl border border-slate-300 px-4 py-3 font-normal outline-none focus:border-emerald-500" placeholder="Ví dụ: Sản phẩm chắc chắn, dùng ổn định" />
+            <input value={title} onChange={(event) => setTitle(event.target.value)} maxLength={255} disabled={submitting} className="mt-2 w-full rounded-xl border border-slate-300 px-4 py-3 font-normal outline-none focus:border-brand-500" placeholder="Ví dụ: Sản phẩm chắc chắn, dùng ổn định" />
           </label>
           <label className="block text-sm font-bold text-slate-800">Nội dung <span className="text-rose-600">*</span>
-            <textarea value={content} onChange={(event) => setContent(event.target.value)} maxLength={5000} rows={5} disabled={submitting} className="mt-2 w-full resize-y rounded-xl border border-slate-300 px-4 py-3 font-normal outline-none focus:border-emerald-500" placeholder="Chia sẻ trải nghiệm thực tế về sản phẩm..." />
+            <textarea value={content} onChange={(event) => setContent(event.target.value)} maxLength={5000} rows={5} disabled={submitting} className="mt-2 w-full resize-y rounded-xl border border-slate-300 px-4 py-3 font-normal outline-none focus:border-brand-500" placeholder="Chia sẻ trải nghiệm thực tế về sản phẩm..." />
           </label>
 
           <div>
@@ -141,7 +141,7 @@ export function ReviewFormDialog({
           {error && <p role="alert" className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-800">{error}</p>}
           <div className="flex justify-end gap-3 border-t border-slate-100 pt-5">
             <button type="button" onClick={onClose} disabled={submitting} className="rounded-xl border border-slate-300 px-5 py-2.5 text-sm font-bold text-slate-700">Hủy</button>
-            <button type="submit" disabled={submitting || uploading} className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-bold text-white disabled:opacity-50">
+            <button type="submit" disabled={submitting || uploading} className="inline-flex items-center gap-2 rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-bold text-white disabled:opacity-50">
               {submitting && <Spinner className="size-4 animate-spin" />} Gửi đánh giá
             </button>
           </div>

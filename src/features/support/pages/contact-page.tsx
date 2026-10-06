@@ -6,7 +6,7 @@ import { ConsultationForm } from '../components/consultation-form';
 export function ContactPage() {
   return (
       <div className="bg-stone-50/60 pb-20 pt-8">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {/* Breadcrumbs */}
           <Breadcrumb
             className="mb-6"
@@ -18,10 +18,10 @@ export function ContactPage() {
 
           {/* Header */}
           <div className="mx-auto max-w-3xl text-center">
-            <span className="rounded-full bg-emerald-100 px-3.5 py-1 text-xs font-extrabold uppercase tracking-widest text-emerald-800">
+            <span className="inline-block rounded-full bg-brand-100 px-3.5 py-1 text-xs font-extrabold uppercase tracking-widest text-brand-800">
               Hệ thống phân phối toàn quốc
             </span>
-            <h1 className="mt-4 text-3xl font-black text-ink sm:text-5xl">
+            <h1 className="mt-4 text-2xl font-black text-ink sm:text-4xl lg:text-5xl">
               Ghé thăm showroom & Tư vấn chuyên sâu
             </h1>
             <p className="mt-3 text-base text-stone-600 sm:text-lg">
@@ -40,7 +40,7 @@ export function ContactPage() {
             {/* Consultation Request Form */}
             <ConsultationForm />
           </div>
-        </div>
+        </main>
       </div>
   );
 }

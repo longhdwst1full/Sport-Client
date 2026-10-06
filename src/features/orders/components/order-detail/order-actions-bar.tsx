@@ -1,5 +1,10 @@
 import Link from 'next/link';
 import { ArrowLeft, Headphones, Printer, RotateCcw, ShoppingBag, X } from 'lucide-react';
+import { Button, buttonVariants } from '@/foundation/components/buttons';
+import { ORDER_STATUS } from '../../model/order.constants';
+
+/** Nút trong thanh hành động: chữ nhỏ đậm, đệm ngang 16px. */
+const ACTION_CLASS = 'px-4 text-xs font-bold';
 
 /**
  * Hành động sau bán: mua tiếp, mua lại cả đơn (đơn hoàn tất), về danh sách đơn (tài khoản). Nút hủy chỉ
@@ -24,63 +29,55 @@ export function OrderActionsBar({
   onPrintReceipt?: () => void;
 }) {
   return (
-    <div className="rounded-3xl border border-slate-200/80 bg-white p-5 shadow-card">
+    <div className="rounded-3xl border border-slate-200/80 bg-white p-4 shadow-card sm:p-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap gap-2.5">
           <Link
             href="/products"
-            className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-emerald-700"
+            className={buttonVariants({ variant: 'primary', className: `${ACTION_CLASS} shadow-sm` })}
           >
-            <ShoppingBag className="size-3.5" /> Tiếp tục mua sắm
+            <ShoppingBag aria-hidden className="size-3.5" /> Tiếp tục mua sắm
           </Link>
 
-          {orderStatus === 'COMPLETED' && (
-            <button
-              type="button"
+          {orderStatus === ORDER_STATUS.COMPLETED && (
+            <Button
+              variant="outline"
               onClick={onReorderAll}
-              className="inline-flex items-center gap-2 rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-2.5 text-xs font-bold text-emerald-800 transition hover:bg-emerald-100"
+              className={`${ACTION_CLASS} border-brand-300 bg-brand-50 text-brand-800 hover:bg-brand-100`}
             >
-              <RotateCcw className="size-3.5 text-emerald-600" /> Mua lại cả đơn
-            </button>
+              <RotateCcw aria-hidden className="size-3.5 text-brand-600" /> Mua lại cả đơn
+            </Button>
           )}
 
-          {onPrintReceipt && orderStatus !== 'CANCELLED' && (
-            <button
-              type="button"
-              onClick={onPrintReceipt}
-              className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 shadow-sm transition hover:bg-slate-50"
-            >
-              <Printer className="size-3.5" /> In biên lai
-            </button>
+          {onPrintReceipt && orderStatus !== ORDER_STATUS.CANCELLED && (
+            <Button variant="outline" onClick={onPrintReceipt} className={`${ACTION_CLASS} shadow-sm`}>
+              <Printer aria-hidden className="size-3.5" /> In biên lai
+            </Button>
           )}
 
           {isAuthenticated && (
             <Link
               href="/orders"
-              className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 shadow-sm transition hover:bg-slate-50"
+              className={buttonVariants({ variant: 'outline', className: `${ACTION_CLASS} shadow-sm` })}
             >
-              <ArrowLeft className="size-3.5" /> Danh sách đơn
+              <ArrowLeft aria-hidden className="size-3.5" /> Danh sách đơn
             </Link>
           )}
         </div>
 
         <div className="flex items-center gap-2">
           {canCancel ? (
-            <button
-              type="button"
+            <Button
+              variant="outline"
               onClick={onOpenCancel}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-rose-200 bg-rose-50/70 px-4 py-2.5 text-xs font-bold text-rose-700 transition hover:bg-rose-100 hover:border-rose-300"
+              className={`${ACTION_CLASS} gap-1.5 border-rose-200 bg-rose-50/70 text-rose-700 hover:border-rose-300 hover:bg-rose-100 hover:text-rose-700`}
             >
-              <X className="size-3.5" /> Hủy đơn hàng
-            </button>
-          ) : orderStatus !== 'CANCELLED' ? (
-            <button
-              type="button"
-              onClick={onOpenSupport}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-xs font-bold text-slate-700 transition hover:bg-slate-100"
-            >
-              <Headphones className="size-3.5 text-emerald-600" /> Cần hỗ trợ về đơn này?
-            </button>
+              <X aria-hidden className="size-3.5" /> Hủy đơn hàng
+            </Button>
+          ) : orderStatus !== ORDER_STATUS.CANCELLED ? (
+            <Button variant="outline" onClick={onOpenSupport} className={`${ACTION_CLASS} gap-1.5 bg-slate-50 hover:bg-slate-100`}>
+              <Headphones aria-hidden className="size-3.5 text-brand-600" /> Cần hỗ trợ về đơn này?
+            </Button>
           ) : null}
         </div>
       </div>
