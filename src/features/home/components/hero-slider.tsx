@@ -144,7 +144,7 @@ export function HeroSlider({
                         tabIndex={isActive ? undefined : -1}
                         className={buttonVariants({
                           variant: 'primary',
-                          className: `h-auto px-5 py-2.5 text-xs font-black uppercase tracking-wide shadow-md shadow-brand-600/30 sm:px-6 sm:py-3 sm:text-sm ${HERO_FOCUS}`,
+                          className: `h-auto px-5 py-2.5 text-xs font-black uppercase tracking-wide shadow-md shadow-black/25 sm:px-6 sm:py-3 sm:text-sm ${HERO_FOCUS}`,
                         })}
                       >
                         <span>{slide.ctaText}</span>
@@ -187,7 +187,7 @@ export function HeroSlider({
               variant="ghost"
               size="icon"
               onClick={onClick}
-              className={`${HERO_ROUND_BUTTON} ${position} top-1/2 -translate-y-1/2 opacity-70 hover:bg-brand-600 group-hover:opacity-100 focus-visible:opacity-100`}
+              className={`${HERO_ROUND_BUTTON} ${position} top-1/2 -translate-y-1/2 opacity-70 hover:bg-white hover:text-slate-950 group-hover:opacity-100 focus-visible:opacity-100`}
               aria-label={label}
             >
               <Icon className="size-5" aria-hidden="true" />
@@ -201,7 +201,7 @@ export function HeroSlider({
             onSelect={onSelect}
             wrapperClassName="absolute bottom-4 left-6 z-20 flex items-center gap-2 sm:left-10"
             baseClassName="h-2 rounded-full transition-all duration-300"
-            activeClassName="w-7 bg-brand-400"
+            activeClassName="w-7 bg-white"
             inactiveClassName="w-2 bg-white/40 hover:bg-white/70"
             keyFor={(index) => slides[index].id}
             ariaLabelFor={(index) => `Chuyển tới slide ${index + 1}`}

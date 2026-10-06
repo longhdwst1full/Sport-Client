@@ -126,7 +126,7 @@ export async function HomePage() {
 
             <Link
               href="/category"
-              className="inline-flex items-center gap-2 rounded-full border border-brand-600/30 bg-brand-50 px-5 py-2.5 text-xs font-black uppercase tracking-wider text-brand-700 transition hover:bg-brand-600 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+              className="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-slate-800 shadow-2xs transition hover:border-slate-900 hover:text-slate-950 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2"
             >
               <span>Xem tất cả danh mục</span>
               <ArrowRight className="size-4" aria-hidden="true" />

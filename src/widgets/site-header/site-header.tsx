@@ -91,12 +91,12 @@ export function SiteHeader({ initialCategories }: SiteHeaderProps = {}) {
             className="group hidden items-center gap-2.5 rounded-xl px-2.5 py-1.5 transition hover:bg-slate-50 lg:flex"
             aria-label={`Gọi hotline tư vấn ${STORE_CONTACT.primaryHotline}`}
           >
-            <span className="grid size-10 place-items-center rounded-full border border-slate-200 bg-slate-50 text-slate-700 transition-all duration-200 group-hover:border-brand-600 group-hover:bg-brand-600 group-hover:text-white shadow-2xs">
+            <span className="grid size-10 place-items-center rounded-full border border-slate-200 bg-slate-50 text-slate-700 transition-all duration-200 group-hover:border-slate-900 group-hover:bg-slate-900 group-hover:text-white shadow-2xs">
               <Phone aria-hidden className="size-4" />
             </span>
             <span className="flex flex-col leading-tight">
               <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Hotline tư vấn</span>
-              <strong className="text-sm font-black text-brand-600 transition-colors group-hover:text-brand-700">{STORE_CONTACT.primaryHotline}</strong>
+              <strong className="text-sm font-black text-slate-900 transition-colors group-hover:text-black">{STORE_CONTACT.primaryHotline}</strong>
             </span>
           </a>
 

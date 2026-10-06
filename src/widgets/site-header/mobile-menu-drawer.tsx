@@ -220,14 +220,14 @@ export function MobileMenuDrawer({
           <div className="flex flex-wrap gap-2.5 px-4 py-4 bg-slate-50">
             <a
               href={`tel:${STORE_CONTACT.primaryHotlineRaw}`}
-              className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-3 text-sm font-black text-white"
+              className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-800 hover:bg-slate-100 transition"
             >
-              <Phone aria-hidden className="size-3.5 text-brand-400" />
+              <Phone aria-hidden className="size-3.5 text-slate-600" />
               <span>{STORE_CONTACT.primaryHotline}</span>
             </a>
             <Link
               href="/cart"
-              className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-brand-600 px-4 py-3 text-sm font-black text-white hover:bg-brand-700"
+              className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-3 text-sm font-black text-white hover:bg-black transition"
               onClick={onClose}
             >
               <ShoppingBag className="size-3.5" />
@@ -242,7 +242,7 @@ export function MobileMenuDrawer({
               }`}
               onClick={onClose}
             >
-              <UserRound className="size-3.5 text-brand-600" />
+              <UserRound className="size-3.5 text-slate-700" />
               <span className="truncate">{isLoggedIn ? (customerName ? `Chào, ${customerName}` : 'Tài khoản') : 'Đăng nhập'}</span>
             </Link>
           </div>

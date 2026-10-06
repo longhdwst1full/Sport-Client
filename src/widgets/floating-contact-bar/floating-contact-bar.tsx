@@ -57,7 +57,7 @@ export function FloatingContactBar() {
         {/* 24/7 Hotline Call Button */}
         <a
           href={`tel:${STORE_CONTACT.primaryHotlineRaw}`}
-          className="group relative flex items-center gap-2.5 rounded-full bg-gradient-to-tr from-brand-700 via-brand-600 to-brand-500 p-2.5 before:absolute before:-inset-1 before:rounded-full before:content-[''] sm:p-3 text-white shadow-xl shadow-brand-600/40 border-t border-white/25 transition-all duration-300 hover:scale-110 active:scale-95"
+          className="group relative flex items-center gap-2.5 rounded-full bg-emerald-600 p-2.5 before:absolute before:-inset-1 before:rounded-full before:content-[''] sm:p-3 text-white shadow-xl shadow-emerald-600/35 border-t border-white/25 transition-all duration-300 hover:bg-emerald-500 hover:scale-110 active:scale-95"
           aria-label={`Gọi hotline ${STORE_CONTACT.primaryHotline}`}
         >
           {/* Label Tooltip */}
@@ -70,7 +70,7 @@ export function FloatingContactBar() {
         {/* Showroom Locator */}
         <Link
           href="/contact"
-          className="group relative flex items-center gap-2.5 rounded-full bg-slate-900 p-2.5 before:absolute before:-inset-1 before:rounded-full before:content-[''] sm:p-3 text-brand-400 shadow-xl shadow-slate-900/40 transition-all duration-300 hover:bg-slate-800 hover:scale-110 active:scale-95"
+          className="group relative flex items-center gap-2.5 rounded-full bg-slate-900 p-2.5 before:absolute before:-inset-1 before:rounded-full before:content-[''] sm:p-3 text-white shadow-xl shadow-slate-900/40 transition-all duration-300 hover:bg-slate-800 hover:scale-110 active:scale-95"
           aria-label="Tìm Showroom gần nhất"
         >
           <span className="pointer-events-none absolute right-full mr-3 hidden whitespace-nowrap rounded-xl bg-slate-900/90 px-3 py-1.5 text-xs font-bold text-white opacity-0 shadow-lg backdrop-blur transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 sm:block">

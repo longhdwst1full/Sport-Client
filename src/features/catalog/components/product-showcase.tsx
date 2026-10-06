@@ -62,10 +62,10 @@ export function ProductShowcase({
                 type="button"
                 aria-pressed={isActive}
                 onClick={() => setActiveTabSlug(tab.slug)}
-                className={`rounded-full px-4 py-2 text-xs font-bold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 ${
+                className={`rounded-full px-4 py-2 text-xs font-bold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2 ${
                   isActive
-                    ? 'bg-brand-600 text-white shadow-md shadow-brand-600/20'
-                    : 'border border-slate-200 bg-white text-slate-700 hover:border-brand-300 hover:bg-slate-50'
+                    ? 'bg-slate-900 text-white shadow-sm shadow-slate-900/20'
+                    : 'border border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50'
                 }`}
               >
                 {tab.label}

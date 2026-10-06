@@ -124,7 +124,7 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
         {/* Section Header with Navigation Controls */}
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
           <div>
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-brand-100/80 px-3 py-1 text-xs font-black uppercase tracking-wider text-brand-800 mb-2">
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 border border-slate-200/80 px-3 py-1 text-xs font-bold uppercase tracking-wider text-slate-800 mb-2">
               <Layers className="size-3.5" aria-hidden="true" />
               <span>DANH MỤC THIẾT BỊ BẢO AN SPORT</span>
             </div>
@@ -211,7 +211,7 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
         <div className="mt-6 text-center md:hidden">
           <Link
             href="/category"
-            className="inline-flex items-center gap-1.5 rounded-full border border-brand-600/30 bg-brand-50 px-5 py-2 text-xs font-black uppercase tracking-wider text-brand-700 transition hover:bg-brand-600 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+            className="inline-flex items-center gap-1.5 rounded-full border border-slate-300 bg-white px-5 py-2 text-xs font-bold uppercase tracking-wider text-slate-800 shadow-2xs transition hover:border-slate-900 hover:text-slate-950 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2"
           >
             {VIEW_ALL_CONTENT}
           </Link>

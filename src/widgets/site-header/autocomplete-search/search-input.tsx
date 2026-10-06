@@ -34,9 +34,9 @@ export function SearchInput({
   return (
     <form
       onSubmit={onSubmit}
-      className="group relative flex items-center overflow-hidden rounded-full border border-slate-300 bg-slate-50/80 hover:border-slate-400 hover:bg-white transition-all duration-200 focus-within:border-brand-600 focus-within:bg-white focus-within:ring-4 focus-within:ring-brand-500/15 shadow-2xs"
+      className="group relative flex items-center overflow-hidden rounded-full border border-slate-300 bg-slate-50/80 hover:border-slate-400 hover:bg-white transition-all duration-200 focus-within:border-slate-800 focus-within:bg-white focus-within:ring-4 focus-within:ring-slate-900/10 shadow-2xs"
     >
-      <Search aria-hidden className="ml-4 size-4 shrink-0 text-slate-400 transition group-focus-within:text-brand-600" />
+      <Search aria-hidden className="ml-4 size-4 shrink-0 text-slate-400 transition group-focus-within:text-slate-800" />
 
       <TextInput
         ref={inputRef}
@@ -74,7 +74,7 @@ export function SearchInput({
       {/* Rounded Pill Submit Button */}
       <Button
         type="submit"
-        className="my-1 mr-1.5 inline-flex shrink-0 items-center gap-1.5 rounded-full bg-gradient-to-r from-brand-600 via-brand-600 to-brand-700 px-4 py-1.5 text-xs font-black uppercase tracking-wider text-white shadow-sm shadow-brand-600/25 transition-all duration-200 hover:from-brand-500 hover:to-brand-600 hover:shadow-md hover:shadow-brand-600/35 hover:-translate-y-0.5 active:scale-95 border-t border-white/20 sm:px-5 sm:py-2"
+        className="my-1 mr-1.5 inline-flex shrink-0 items-center gap-1.5 rounded-full bg-slate-900 px-4 py-1.5 text-xs font-bold tracking-tight text-white shadow-sm shadow-slate-900/20 transition-all duration-200 hover:bg-black hover:shadow-md hover:-translate-y-0.5 active:scale-95 border-t border-white/10 sm:px-5 sm:py-2"
       >
         <Search aria-hidden className="size-3.5 text-white" />
         <span>Tìm kiếm</span>

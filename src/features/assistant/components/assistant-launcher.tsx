@@ -41,7 +41,7 @@ export function AssistantLauncher() {
         // Mobile: nút dưới cùng của cột nút nổi (FloatingContactBar xếp ngay phía trên), có safe-area iOS.
         // Từ `sm`: nằm bên trái cột nút liên hệ (right-20) như cũ để không che nhau.
         variant="primary"
-        className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-3.5 z-50 h-auto min-h-11 min-w-11 rounded-full p-2.5 shadow-xl shadow-brand-700/35 border-t border-white/25 transition-all hover:scale-105 active:scale-95 sm:bottom-6 sm:right-20 sm:px-4 sm:py-3"
+        className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-3.5 z-50 h-auto min-h-11 min-w-11 rounded-full p-2.5 shadow-xl shadow-slate-950/30 border-t border-white/25 transition-all hover:scale-105 active:scale-95 sm:bottom-6 sm:right-20 sm:px-4 sm:py-3"
       >
         {open ? <X className="size-[18px] sm:size-5" aria-hidden /> : <Bot className="size-[18px] sm:size-5" aria-hidden />}
         <span className="hidden text-xs font-black sm:inline">{ASSISTANT_TITLE}</span>

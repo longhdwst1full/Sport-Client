@@ -103,7 +103,7 @@ export function FlashSaleSection() {
           </div>
           <Link
             href="/flash-sale"
-            className="inline-flex shrink-0 items-center gap-2 rounded-full bg-brand-600 px-6 py-3 text-xs font-black text-white shadow-lg shadow-brand-600/20 transition hover:bg-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+            className="inline-flex shrink-0 items-center gap-2 rounded-full bg-white px-6 py-3 text-xs font-black text-slate-900 shadow-md transition hover:bg-slate-100 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
           >
             <span>Xem tất cả Deal Flash Sale</span>
             <ArrowRight className="size-3.5" aria-hidden="true" />
