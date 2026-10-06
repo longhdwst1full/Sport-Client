@@ -11,7 +11,6 @@ export const LocalStorageKey = {
   GUEST_CART_TOKEN: 'dctd-storefront-guest-cart-token-v1',
   GUEST_ORDER_ACCESS: 'baoan_guest_order_access_v1',
   CART: 'dctd-storefront-cart-v2',
-  PROMO_MODAL_DISMISSED_UNTIL: 'baoan_promo_modal_dismissed_until',
   /** Hội thoại trợ lý của khách ẩn danh: `conversationId` + `sessionKey` do server cấp. */
   ASSISTANT_SESSION: 'dctd-storefront-assistant-session-v1',
 } as const;

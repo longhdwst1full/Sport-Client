@@ -2,6 +2,7 @@
 
 import { Bot, ThumbsDown, ThumbsUp } from 'lucide-react';
 import { ChatMessageFeedback } from '@/generated/api/assistant/assistant.schemas';
+import { Button } from '@/foundation/components/buttons';
 import type { AssistantFeedback, AssistantMessageView } from '../model/assistant.types';
 import { AssistantCardList } from './assistant-cards';
 
@@ -45,30 +46,32 @@ export function AssistantMessage({
           <p className="text-[11px] text-slate-500">Nguồn: {message.sources.map((source) => source.title).join(', ')}</p>
         )}
         <div className="flex items-center gap-1" role="group" aria-label="Đánh giá câu trả lời">
-            <button
-              type="button"
+            <Button
+              variant="ghost"
+              size="icon"
               disabled={feedbackDisabled || alreadyRated}
               onClick={() => onFeedback(message.id, ASSISTANT_FEEDBACK.HELPFUL)}
               aria-pressed={message.feedback === ASSISTANT_FEEDBACK.HELPFUL}
               aria-label="Câu trả lời hữu ích"
-              className={`grid size-9 place-items-center rounded-lg transition disabled:cursor-default focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 ${
-                message.feedback === ASSISTANT_FEEDBACK.HELPFUL ? 'bg-brand-50 text-brand-700' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700 disabled:opacity-40'
+              className={`size-9 rounded-lg disabled:cursor-default focus-visible:ring-offset-0 ${
+                message.feedback === ASSISTANT_FEEDBACK.HELPFUL ? 'bg-brand-50 text-brand-700 disabled:opacity-100' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700 disabled:opacity-40'
               }`}
             >
               <ThumbsUp className="size-3.5" aria-hidden />
-            </button>
-            <button
-              type="button"
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
               disabled={feedbackDisabled || alreadyRated}
               onClick={() => onFeedback(message.id, ASSISTANT_FEEDBACK.NOT_HELPFUL)}
               aria-pressed={message.feedback === ASSISTANT_FEEDBACK.NOT_HELPFUL}
               aria-label="Câu trả lời chưa hữu ích"
-              className={`grid size-9 place-items-center rounded-lg transition disabled:cursor-default focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 ${
-                message.feedback === ASSISTANT_FEEDBACK.NOT_HELPFUL ? 'bg-rose-50 text-rose-700' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700 disabled:opacity-40'
+              className={`size-9 rounded-lg disabled:cursor-default focus-visible:ring-offset-0 ${
+                message.feedback === ASSISTANT_FEEDBACK.NOT_HELPFUL ? 'bg-rose-50 text-rose-700 disabled:opacity-100' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700 disabled:opacity-40'
               }`}
             >
               <ThumbsDown className="size-3.5" aria-hidden />
-            </button>
+            </Button>
         </div>
       </div>
     </li>

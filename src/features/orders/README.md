@@ -1,10 +1,10 @@
 # Storefront Orders — maintenance note
 
-> **Document version:** 1.7.0
+> **Document version:** 1.8.0
 >
-> **Last updated:** 2026-09-30
+> **Last updated:** 2026-10-06
 >
-> **Change summary:** Tra cứu đơn khách vãng lai bằng OTP email (V1.1): trang `/orders/lookup`, grant ở sessionStorage, đường truy cập "lookup" chỉ xem; thống nhất một câu lỗi duy nhất cho mọi thất bại `verify` theo API đã hardening (`GUEST_LOOKUP_LOCKED` chỉ còn là nhánh dự phòng), map thêm `GUEST_LOOKUP_UNAVAILABLE`.
+> **Change summary:** Hook idempotency chuyển sang `src/shared/hooks`; upload minh chứng thanh toán dùng helper chung `src/lib/api/signed-media-upload.ts` và lỗi upload chuẩn hoá thành `ApiError` có câu tiếng Việt; phân trang dùng `PaginationControls` của shared.
 
 ## Phạm vi và ranh giới
 
@@ -37,7 +37,8 @@
 | --- | --- |
 | `pages/order-detail-page.tsx` | Chỉ ghép hook và component; giữ `showTimeline`/`showSupportModal` ở page để state không reset khi block bị unmount. |
 | `hooks/use-order-detail.ts` | Chọn Guest/Account, query detail, thu hồi guest token khi đơn kết thúc, `view`, `canCancel`. |
-| `hooks/use-cancel-order.ts` | Mutation hủy + ref idempotency theo chữ ký `id:version:reason`. |
+| `hooks/use-cancel-order.ts` | Mutation hủy + idempotency key theo chữ ký `id:version:reason` (`useSignatureIdempotencyKey` từ `@/shared/hooks`, dùng chung với Returns). |
+| `api/payment-evidence-upload.ts` | Chỉ xin chữ ký qua SDK payments (Account hoặc Guest `x-cart-token`) rồi gọi `uploadSignedMedia`. Upload ảnh ký sẵn dùng helper chung `src/lib/api/signed-media-upload.ts` (kiểm MIME/`maxBytes`, 9 field FormData, POST bằng `fetch` có `AbortSignal`); lỗi HTTP/mạng khi tải lên chuẩn hoá thành `ApiError(status, { message: 'Cloudinary không nhận được ảnh. Vui lòng thử lại.' })` (`status = 0` khi mất mạng), huỷ qua signal ném lại lỗi abort gốc. |
 | `hooks/use-reorder.ts`, `use-order-copy.ts`, `use-order-detail-toast.ts` | Mua lại; 3 cờ copy (`copiedTrackingNo` dùng chung cho hai nút copy mã vận đơn); toast cục bộ của trang. |
 | `components/order-detail/*` | Header, trạng thái, stepper mốc (bản desktop và mobile), vận chuyển, sản phẩm, hóa đơn, hành động, địa chỉ, hỗ trợ, dialog hủy (`CANCEL_REASONS`) và dialog hỗ trợ. |
 | `hooks/use-account-orders.ts`, `use-order-payment.ts` | Danh sách đơn có phân trang; trạng thái thanh toán + gửi bằng chứng chuyển khoản. |
@@ -63,6 +64,7 @@ Orders chỉ được import `returns`, `reviews` (và `auth`, `cart`) qua barre
 
 | Version | Date | Change summary | Source |
 | --- | --- | --- | --- |
+| 1.8.0 | 2026-10-06 | Hook idempotency về `src/shared/hooks`; upload minh chứng dùng `src/lib/api/signed-media-upload.ts`, lỗi upload là `ApiError` có message tiếng Việt (trước là message Axios tiếng Anh); `PaginationControls` dùng chung với Returns; chuyển UI sang primitive foundation. | feat/storefront-brand-ui-refresh (dedup) |
 | 1.7.0 | 2026-09-30 | Một câu lỗi duy nhất cho mọi thất bại `verify`; `GUEST_LOOKUP_LOCKED` thành nhánh dự phòng; map `GUEST_LOOKUP_UNAVAILABLE`. | feat/assistant-v1 (V1.1 guest lookup hardening) |
 | 1.6.0 | 2026-09-30 | Tra cứu đơn khách vãng lai bằng OTP email, grant sessionStorage, chế độ xem "lookup". | feat/assistant-v1 (V1.1 guest lookup) |
 | 1.5.0 | 2026-09-29 | Tách order-detail thành 5 hook + 15 component và đưa data danh sách/thanh toán vào hook, không đổi hành vi; thêm mục Cấu trúc. | Client restructure (order detail split) |

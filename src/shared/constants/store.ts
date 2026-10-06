@@ -3,32 +3,12 @@
  */
 
 // ==========================================
-// 1. ROUTE ENUMS
-// ==========================================
-export enum AppRoute {
-  HOME = '/',
-  PRODUCTS = '/products',
-  CATEGORY = '/category',
-  CART = '/cart',
-  CHECKOUT = '/checkout',
-  CONTACT = '/contact',
-  NEWS = '/news',
-  LOGIN = '/login',
-  REGISTER = '/register',
-  SEARCH = '/search',
-  FLASH_SALE = '/flash-sale',
-  ABOUT = '/#about',
-  BENEFITS = '/#benefits',
-}
-
-// ==========================================
 // 4. STORE BRAND CONFIGURATION
 // ==========================================
 export const STORE_CONFIG = {
   name: 'Bảo An Sport',
   legalName: 'Công ty TNHH Dụng Cụ Thể Thao Bảo An Việt Nam',
   shortName: 'Bảo An Sport',
-  domain: 'https://www.baoansprot.click',
   tagline: 'Dụng Cụ & Thiết Bị Thể Thao Chính Hãng Hàng Đầu',
   slogan: 'Đồng hành cùng sức khỏe & thể lực Việt',
   description:
@@ -128,25 +108,3 @@ export const STORE_POLICY_PAGES = {
   PAYMENT: { title: 'Phương thức thanh toán', href: '/chinh-sach/phuong-thuc-thanh-toan' },
   TERMS: { title: 'Điều khoản & quy định', href: '/chinh-sach/dieu-khoan-quy-dinh' },
 } as const;
-
-// ==========================================
-// 9. MEGA MENU CATEGORIES (HEADER NAVIGATION)
-// ==========================================
-
-// ==========================================
-// 11. FOOTER LINKS
-// ==========================================
-export const FOOTER_SHOP_LINKS = [
-  { label: 'Theo môn thể thao', href: AppRoute.CATEGORY },
-  { label: 'Tất cả sản phẩm', href: AppRoute.PRODUCTS },
-  { label: 'Kiến thức luyện tập', href: AppRoute.NEWS },
-  { label: 'Hệ thống Showroom', href: AppRoute.CONTACT },
-] as const;
-
-export const FOOTER_POLICY_LINKS = [
-  { label: 'Chính sách vận chuyển', href: AppRoute.BENEFITS },
-  { label: 'Chính sách đổi trả', href: AppRoute.BENEFITS },
-  { label: 'Chính sách bảo hành', href: AppRoute.BENEFITS },
-  { label: 'Câu hỏi thường gặp', href: AppRoute.ABOUT },
-  { label: 'Điều khoản sử dụng', href: AppRoute.ABOUT },
-] as const;

@@ -3,6 +3,8 @@ import { FileText, ChevronRight } from 'lucide-react';
 import { Breadcrumb } from '@/foundation/components/navigation';
 import type { PolicySummaryView } from '../model/policy.mapper';
 
+const STATUS_NOTE = 'mt-8 rounded-3xl border border-slate-200/80 bg-white p-8 text-center text-sm';
+
 export function PolicyListPage({
   policies,
   loadFailed = false,
@@ -33,11 +35,11 @@ export function PolicyListPage({
           </header>
 
           {loadFailed ? (
-            <p role="alert" className="mt-8 rounded-3xl border border-slate-200/80 bg-white p-8 text-center text-sm text-slate-600">
+            <p role="alert" className={`${STATUS_NOTE} text-slate-600`}>
               Không tải được danh sách chính sách. Vui lòng tải lại trang sau ít phút.
             </p>
           ) : policies.length === 0 ? (
-            <p className="mt-8 rounded-3xl border border-slate-200/80 bg-white p-8 text-center text-sm text-slate-500">
+            <p className={`${STATUS_NOTE} text-slate-500`}>
               Chưa có trang chính sách nào được đăng.
             </p>
           ) : (

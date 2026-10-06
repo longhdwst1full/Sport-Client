@@ -8,10 +8,23 @@ import {
   Layers,
   ArrowRight,
 } from 'lucide-react';
+import { Button } from '@/foundation/components/buttons';
 import { CarouselDots } from '@/foundation/components/indicators';
 import { CategoryRailItem } from './category-rail-item';
 import type { CategoryRailView } from '@/features/catalog';
 import { useAutoplayAllowed } from '@/shared/hooks';
+
+const SCROLL_CONTROLS = [
+  { direction: 'left', Icon: ChevronLeft, label: 'Trượt sang danh mục trước', title: 'Trước' },
+  { direction: 'right', Icon: ChevronRight, label: 'Trượt sang danh mục tiếp theo', title: 'Tiếp theo' },
+] as const;
+
+const VIEW_ALL_CONTENT = (
+  <>
+    <span>Xem tất cả danh mục</span>
+    <ArrowRight className="size-3.5" aria-hidden="true" />
+  </>
+);
 
 export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] }) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -135,29 +148,23 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
               href="/category"
               className="hidden md:inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-brand-700 hover:text-brand-800 transition mr-2 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
             >
-              <span>Xem tất cả danh mục</span>
-              <ArrowRight className="size-3.5" aria-hidden="true" />
+              {VIEW_ALL_CONTENT}
             </Link>
 
             <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => scroll('left')}
-                className="grid size-11 place-items-center rounded-full border border-slate-200 bg-white shadow-sm text-slate-700 hover:border-brand-500 hover:bg-brand-600 hover:text-white transition-all active:scale-95 disabled:opacity-40 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
-                aria-label="Trượt sang danh mục trước"
-                title="Trước"
-              >
-                <ChevronLeft className="size-5" aria-hidden="true" />
-              </button>
-              <button
-                type="button"
-                onClick={() => scroll('right')}
-                className="grid size-11 place-items-center rounded-full border border-slate-200 bg-white shadow-sm text-slate-700 hover:border-brand-500 hover:bg-brand-600 hover:text-white transition-all active:scale-95 disabled:opacity-40 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
-                aria-label="Trượt sang danh mục tiếp theo"
-                title="Tiếp theo"
-              >
-                <ChevronRight className="size-5" aria-hidden="true" />
-              </button>
+              {SCROLL_CONTROLS.map(({ direction, Icon, label, title }) => (
+                <Button
+                  key={direction}
+                  variant="outline"
+                  size="icon"
+                  onClick={() => scroll(direction)}
+                  className="rounded-full border-slate-200 text-slate-700 shadow-sm transition-all hover:border-brand-500 hover:bg-brand-600 hover:text-white active:scale-95 disabled:pointer-events-none disabled:opacity-40"
+                  aria-label={label}
+                  title={title}
+                >
+                  <Icon className="size-5" aria-hidden="true" />
+                </Button>
+              ))}
             </div>
           </div>
         </div>
@@ -201,8 +208,7 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
             href="/category"
             className="inline-flex items-center gap-1.5 rounded-full border border-brand-600/30 bg-brand-50 px-5 py-2 text-xs font-black uppercase tracking-wider text-brand-700 transition hover:bg-brand-600 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
           >
-            <span>Xem tất cả danh mục</span>
-            <ArrowRight className="size-3.5" aria-hidden="true" />
+            {VIEW_ALL_CONTENT}
           </Link>
         </div>
       </div>

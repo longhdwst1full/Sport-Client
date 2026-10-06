@@ -2,7 +2,11 @@
 
 import { useId, useState } from 'react';
 import { CheckCircle2, Send } from 'lucide-react';
+import { Button } from '@/foundation/components/buttons';
+import { Field, Select, Textarea, TextInput } from '@/foundation/components/field-system';
 import { STORE_CONFIG, STORE_CONTACT } from '@/shared/constants';
+
+const LABEL_CLASS = 'block text-xs font-bold uppercase text-stone-600';
 
 export function ConsultationForm() {
   const fieldId = useId();
@@ -66,108 +70,122 @@ export function ConsultationForm() {
             </a>
             .
           </p>
-          <button
-            type="button"
+          <Button
+            variant="secondary"
             onClick={() => setSubmitted(false)}
-            className="mt-5 min-h-11 rounded-full bg-ink px-6 py-2.5 text-xs font-bold text-white transition hover:bg-ink/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2"
+            className="mt-5 rounded-full bg-ink px-6 text-xs font-bold hover:bg-ink/90"
           >
             Soạn yêu cầu khác
-          </button>
+          </Button>
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
           <div>
-            <label htmlFor={`${fieldId}-name`} className="block text-xs font-bold uppercase text-stone-600">Họ và tên *</label>
-            <input
-              required
-              value={form.name}
-              id={`${fieldId}-name`}
-              autoComplete="name"
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-              placeholder="Nguyễn Văn A"
-              className="mt-1.5 w-full rounded-xl border border-stone-200 px-4 py-3 text-base sm:text-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/30"
-            />
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div>
-              <label htmlFor={`${fieldId}-phone`} className="block text-xs font-bold uppercase text-stone-600">Số điện thoại *</label>
-              <input
+            <Field label="Họ và tên *" labelClassName={LABEL_CLASS}>
+              <TextInput
+                size="lg"
                 required
-                type="tel"
-                autoComplete="tel"
-                value={form.phone}
-              id={`${fieldId}-phone`}
-                onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                placeholder="0912 345 678"
-                className="mt-1.5 w-full rounded-xl border border-stone-200 px-4 py-3 text-base sm:text-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/30"
+                value={form.name}
+                id={`${fieldId}-name`}
+                autoComplete="name"
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                placeholder="Nguyễn Văn A"
+                className="mt-1.5"
               />
+            </Field>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <Field label="Số điện thoại *" labelClassName={LABEL_CLASS}>
+                <TextInput
+                  size="lg"
+                  required
+                  type="tel"
+                  autoComplete="tel"
+                  value={form.phone}
+                  id={`${fieldId}-phone`}
+                  onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                  placeholder="0912 345 678"
+                  className="mt-1.5"
+                />
+              </Field>
             </div>
             <div>
-              <label htmlFor={`${fieldId}-email`} className="block text-xs font-bold uppercase text-stone-600">Email</label>
-              <input
-                type="email"
-                autoComplete="email"
-                value={form.email}
-              id={`${fieldId}-email`}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-                placeholder="email@example.com"
-                className="mt-1.5 w-full rounded-xl border border-stone-200 px-4 py-3 text-base sm:text-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/30"
-              />
+              <Field label="Email" labelClassName={LABEL_CLASS}>
+                <TextInput
+                  size="lg"
+                  type="email"
+                  autoComplete="email"
+                  value={form.email}
+                  id={`${fieldId}-email`}
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  placeholder="email@example.com"
+                  className="mt-1.5"
+                />
+              </Field>
             </div>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label htmlFor={`${fieldId}-spaceSize`} className="block text-xs font-bold uppercase text-stone-600">Diện tích dự kiến</label>
-              <select
-                value={form.spaceSize}
-              id={`${fieldId}-spaceSize`}
-                onChange={(e) => setForm({ ...form, spaceSize: e.target.value })}
-                className="mt-1.5 w-full rounded-xl border border-stone-200 px-4 py-3 text-base sm:text-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/30"
-              >
-                <option value="under-10m2">Dưới 10m² (Góc tập nhỏ)</option>
-                <option value="10-20m2">10m² - 20m² (Phòng ngủ / Ban công)</option>
-                <option value="20-50m2">20m² - 50m² (Tầng thượng / Sân thượng)</option>
-                <option value="over-50m2">Trên 50m² (Phòng Gym chuyên nghiệp)</option>
-              </select>
+              <Field label="Diện tích dự kiến" labelClassName={LABEL_CLASS}>
+                <Select
+                  size="lg"
+                  value={form.spaceSize}
+                  id={`${fieldId}-spaceSize`}
+                  onChange={(e) => setForm({ ...form, spaceSize: e.target.value })}
+                  wrapperClassName="mt-1.5"
+                >
+                  <option value="under-10m2">Dưới 10m² (Góc tập nhỏ)</option>
+                  <option value="10-20m2">10m² - 20m² (Phòng ngủ / Ban công)</option>
+                  <option value="20-50m2">20m² - 50m² (Tầng thượng / Sân thượng)</option>
+                  <option value="over-50m2">Trên 50m² (Phòng Gym chuyên nghiệp)</option>
+                </Select>
+              </Field>
             </div>
 
             <div>
-              <label htmlFor={`${fieldId}-purpose`} className="block text-xs font-bold uppercase text-stone-600">Mục tiêu tập luyện</label>
-              <select
-                value={form.purpose}
-              id={`${fieldId}-purpose`}
-                onChange={(e) => setForm({ ...form, purpose: e.target.value })}
-                className="mt-1.5 w-full rounded-xl border border-stone-200 px-4 py-3 text-base sm:text-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/30"
-              >
-                <option value="home-gym">Tăng cơ & Giảm mỡ toàn thân</option>
-                <option value="cardio">Cardio & Giảm cân chạy bộ</option>
-                <option value="rehab">Phục hồi chức năng & Yoga</option>
-                <option value="commercial">Mở phòng tập thể hình kinh doanh</option>
-              </select>
+              <Field label="Mục tiêu tập luyện" labelClassName={LABEL_CLASS}>
+                <Select
+                  size="lg"
+                  value={form.purpose}
+                  id={`${fieldId}-purpose`}
+                  onChange={(e) => setForm({ ...form, purpose: e.target.value })}
+                  wrapperClassName="mt-1.5"
+                >
+                  <option value="home-gym">Tăng cơ & Giảm mỡ toàn thân</option>
+                  <option value="cardio">Cardio & Giảm cân chạy bộ</option>
+                  <option value="rehab">Phục hồi chức năng & Yoga</option>
+                  <option value="commercial">Mở phòng tập thể hình kinh doanh</option>
+                </Select>
+              </Field>
             </div>
           </div>
 
           <div>
-            <label htmlFor={`${fieldId}-note`} className="block text-xs font-bold uppercase text-stone-600">Ghi chú thêm</label>
-            <textarea
-              rows={3}
-              value={form.note}
-              id={`${fieldId}-note`}
-              onChange={(e) => setForm({ ...form, note: e.target.value })}
-              placeholder="Mô tả ngân sách dự kiến hoặc yêu cầu đặc biệt..."
-              className="mt-1.5 w-full rounded-xl border border-stone-200 px-4 py-3 text-base sm:text-sm outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/30"
-            />
+            <Field label="Ghi chú thêm" labelClassName={LABEL_CLASS}>
+              <Textarea
+                styled
+                rows={3}
+                value={form.note}
+                id={`${fieldId}-note`}
+                onChange={(e) => setForm({ ...form, note: e.target.value })}
+                placeholder="Mô tả ngân sách dự kiến hoặc yêu cầu đặc biệt..."
+                className="mt-1.5"
+              />
+            </Field>
           </div>
 
-          <button
+          <Button
             type="submit"
-            className="flex w-full items-center justify-center gap-2 rounded-full bg-brand-600 px-6 py-4 font-black text-white shadow-lg shadow-brand-600/25 transition hover:bg-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2"
+            size="lg"
+            fullWidth
+            className="h-14 rounded-full font-black shadow-lg shadow-brand-600/25"
           >
             <Send className="size-4" aria-hidden />
             <span>Soạn email yêu cầu tư vấn</span>
-          </button>
+          </Button>
         </form>
       )}
     </div>

@@ -1,8 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { ChevronLeft, ChevronRight, RotateCcw } from 'lucide-react';
-import { InlineAlert } from '@/foundation/components/feedback';
+import { RotateCcw } from 'lucide-react';
+import { buttonVariants } from '@/foundation/components/buttons';
+import { EmptyState, InlineAlert } from '@/foundation/components/feedback';
+import { PaginationControls } from '@/shared/components/pagination-controls';
 import { ReturnListSkeleton } from '../components/return-skeletons';
 import { formatDateTime } from '@/shared/format/date-time';
 import {
@@ -40,10 +42,13 @@ export function AccountReturnsPage() {
           <ReturnListSkeleton />
         )}
         {isLoaded && !isAuthenticated && (
-          <section className="rounded-3xl border border-slate-200 bg-white p-6 text-center shadow-sm sm:p-10">
-            <h2 className="text-xl font-black">Đăng nhập để xem yêu cầu đổi trả</h2>
-            <Link href="/login" className="mt-5 inline-flex rounded-xl bg-brand-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-brand-700">Đăng nhập</Link>
-          </section>
+          <EmptyState
+            as="section"
+            className="rounded-3xl border border-slate-200 bg-white p-6 text-center shadow-sm sm:p-10"
+            titleClassName="text-xl font-black"
+            title="Đăng nhập để xem yêu cầu đổi trả"
+            actions={<Link href="/login" className={buttonVariants({ variant: 'primary', className: 'mt-5 px-5 font-bold' })}>Đăng nhập</Link>}
+          />
         )}
         {isAuthenticated && isError && (
           <InlineAlert role="alert" className="rounded-2xl border border-rose-200 bg-rose-50 p-5 text-sm text-rose-800">
@@ -51,11 +56,15 @@ export function AccountReturnsPage() {
           </InlineAlert>
         )}
         {isAuthenticated && hasData && items.length === 0 && (
-          <section className="rounded-3xl border border-dashed border-slate-300 bg-white p-6 text-center sm:p-10">
-            <RotateCcw aria-hidden className="mx-auto size-12 text-slate-400" />
-            <h2 className="mt-4 text-lg font-black">Chưa có yêu cầu đổi trả</h2>
-            <Link href="/orders" className="mt-4 inline-flex min-h-11 items-center text-sm font-bold text-brand-700 hover:underline">Xem đơn hàng</Link>
-          </section>
+          <EmptyState
+            as="section"
+            className="rounded-3xl border border-dashed border-slate-300 bg-white p-6 text-center sm:p-10"
+            iconWrapClassName="flex justify-center"
+            icon={<RotateCcw aria-hidden className="size-12 text-slate-400" />}
+            titleClassName="mt-4 text-lg font-black"
+            title="Chưa có yêu cầu đổi trả"
+            actions={<Link href="/orders" className={buttonVariants({ variant: 'link', className: 'mt-4 min-h-11 font-bold' })}>Xem đơn hàng</Link>}
+          />
         )}
         {isAuthenticated && (
           <div aria-busy={isFetching} className={`grid gap-4 transition-opacity ${isFetching && !isLoading ? 'opacity-60' : ''}`}>
@@ -81,11 +90,13 @@ export function AccountReturnsPage() {
           </div>
         )}
         {isAuthenticated && hasData && totalPages > 1 && (
-          <nav className="mt-7 flex items-center justify-center gap-3" aria-label="Phân trang yêu cầu đổi trả">
-            <button type="button" disabled={page === 1 || isFetching} onClick={() => setPage((value) => Math.max(1, value - 1))} className="grid size-11 place-items-center rounded-xl border border-slate-200 bg-white transition hover:bg-slate-50 disabled:opacity-40" aria-label="Trang trước"><ChevronLeft aria-hidden className="size-4" /></button>
-            <span className="text-sm font-bold text-slate-700">Trang {page} / {totalPages}</span>
-            <button type="button" disabled={page >= totalPages || isFetching} onClick={() => setPage((value) => value + 1)} className="grid size-11 place-items-center rounded-xl border border-slate-200 bg-white transition hover:bg-slate-50 disabled:opacity-40" aria-label="Trang sau"><ChevronRight aria-hidden className="size-4" /></button>
-          </nav>
+          <PaginationControls
+            page={page}
+            totalPages={totalPages}
+            onPageChange={setPage}
+            disabled={isFetching}
+            ariaLabel="Phân trang yêu cầu đổi trả"
+          />
         )}
       </main>
   );

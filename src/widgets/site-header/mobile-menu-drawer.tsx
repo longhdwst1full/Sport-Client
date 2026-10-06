@@ -1,7 +1,9 @@
 import Link from 'next/link';
 import { ChevronDown, ChevronRight, Dumbbell, MapPin, Phone, ShoppingBag, UserRound } from 'lucide-react';
 import { useRef, useState } from 'react';
+import { Button } from '@/foundation/components/buttons';
 import { useDialogA11y } from '@/foundation/components/overlay/use-dialog-a11y';
+import { IconList } from '@/foundation/components/structure';
 import { STORE_CONTACT, STORE_SHOWROOMS } from '@/shared/constants';
 import { AutocompleteSearch } from './autocomplete-search';
 import type { MegaMenuEntry } from '@/features/catalog';
@@ -88,22 +90,24 @@ export function MobileMenuDrawer({
                       <span>{cat.label}</span>
                     </Link>
                     {cat.children && cat.children.length > 0 && (
-                      <button
-                        type="button"
+                      <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={() =>
                           setExpandedMobileCat(isExpanded ? null : cat.label)
                         }
-                        className="grid size-11 place-items-center rounded-lg text-slate-500 hover:text-slate-800"
+                        className="rounded-lg text-slate-500 hover:bg-transparent hover:text-slate-800"
                         aria-label={`${isExpanded ? 'Thu gọn' : 'Mở rộng'} ${cat.label}`}
                         aria-expanded={isExpanded}
                         aria-controls={`mobile-subcat-${catIdx}`}
                       >
                         <ChevronDown
+                          aria-hidden
                           className={`size-4 transition-transform duration-200 ${
                             isExpanded ? 'rotate-180 text-brand-600' : ''
                           }`}
                         />
-                      </button>
+                      </Button>
                     )}
                   </div>
 
@@ -196,14 +200,20 @@ export function MobileMenuDrawer({
           {/* Showrooms & Hotlines info */}
           <div className="space-y-1.5 bg-slate-50/50 px-5 py-3 text-xs text-slate-600">
             <div className="font-bold text-slate-700">Showroom mở cửa {STORE_CONTACT.openingHours}</div>
-            {STORE_SHOWROOMS.map((showroom) => (
-              <div key={showroom.id} className="flex gap-1.5">
-                <MapPin aria-hidden className="mt-0.5 size-3.5 shrink-0 text-brand-600" />
-                <span>
-                  <strong className="text-slate-800">{showroom.city}:</strong> {showroom.address}
-                </span>
-              </div>
-            ))}
+            <IconList
+              className="gap-1.5"
+              itemClassName="items-start gap-1.5"
+              iconClassName="mt-0.5 size-3.5 text-brand-600"
+              items={STORE_SHOWROOMS.map((showroom) => ({
+                key: showroom.id,
+                icon: MapPin,
+                label: (
+                  <>
+                    <strong className="text-slate-800">{showroom.city}:</strong> {showroom.address}
+                  </>
+                ),
+              }))}
+            />
           </div>
 
           {/* Mobile Contact & Action Buttons */}

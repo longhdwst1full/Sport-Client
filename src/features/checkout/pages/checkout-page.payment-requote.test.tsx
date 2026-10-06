@@ -43,7 +43,9 @@ vi.mock('@tanstack/react-query', () => ({
   useQuery: () => ({ data: undefined }),
 }));
 
-vi.mock('@/features/address', () => ({
+// Giữ helper thuần thật (`EMPTY_SELECTED_ADDRESS`, `toSelectedAddressData`); chỉ giả query + selector.
+vi.mock('@/features/address', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@/features/address/model/selected-address')>()),
   useCustomerAddressList: () => ({ data: undefined }),
   VietnamAddressSelector: ({ onChange }: { onChange: (data: unknown) => void }) => (
     <button

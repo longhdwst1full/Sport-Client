@@ -4,7 +4,7 @@ import { useId, useState } from 'react';
 import { Save } from 'lucide-react';
 import type { CustomerProfileDto } from '@/generated/api/customer/customer.schemas';
 import { InlineAlert } from '@/foundation/components/feedback';
-import { Field, TextInput } from '@/foundation/components/field-system';
+import { Checkbox, Field, TextInput } from '@/foundation/components/field-system';
 import { PROFILE_LABEL_CLASS, ProfileSubmitButton } from './profile-form-field';
 import { useUpdateProfile } from '../hooks/use-update-profile';
 
@@ -92,15 +92,12 @@ export function ProfileInfoForm({ profile }: { profile: CustomerProfileDto }) {
         dùng thông tin mới để vào tài khoản.
       </p>
 
-      <label className="flex items-center gap-2 text-xs font-medium text-slate-600">
-        <input
-          type="checkbox"
-          checked={form.marketingConsent}
-          onChange={(event) => setForm((c) => ({ ...c, marketingConsent: event.target.checked }))}
-          className="size-4 rounded border-slate-300 text-brand-600 focus:ring-brand-500"
-        />
-        Nhận email về khuyến mãi và sản phẩm mới
-      </label>
+      <Checkbox
+        checked={form.marketingConsent}
+        onChange={(event) => setForm((c) => ({ ...c, marketingConsent: event.target.checked }))}
+        wrapperClassName="items-center gap-2 py-0"
+        label={<span className="text-xs font-medium text-slate-600">Nhận email về khuyến mãi và sản phẩm mới</span>}
+      />
 
       {profileNotice && (
         <InlineAlert as="p" role="status" className="rounded-xl bg-success-50 px-3 py-2 text-xs font-semibold text-success-800">

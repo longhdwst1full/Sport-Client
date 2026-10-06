@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ArrowLeft, CalendarDays } from 'lucide-react';
+import { buttonVariants } from '@/foundation/components/buttons';
 import { Breadcrumb } from '@/foundation/components/navigation';
 import type { PolicyDetailView, PolicySummaryView } from '../model/policy.mapper';
 import { buildArticleJsonLd, buildBreadcrumbListJsonLd, serializeJsonLd } from '@/lib/seo/json-ld';
@@ -56,7 +57,10 @@ export function PolicyDetailPage({
             <div className="mt-10 border-t border-slate-100 pt-6">
               <Link
                 href="/chinh-sach"
-                className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-5 py-2.5 text-xs font-bold text-ink transition hover:bg-brand-50 hover:text-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+                className={buttonVariants({
+                  variant: 'ghost',
+                  className: 'rounded-full bg-slate-100 px-5 text-xs font-bold text-ink hover:bg-brand-50 hover:text-brand-700',
+                })}
               >
                 <ArrowLeft className="size-4" aria-hidden="true" /> Tất cả chính sách
               </Link>

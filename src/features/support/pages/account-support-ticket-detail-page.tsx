@@ -3,7 +3,9 @@
 import Link from 'next/link';
 import { Headset, SendHorizontal, UserRound } from 'lucide-react';
 import { Button } from '@/foundation/components/buttons';
-import { Skeleton, SkeletonText, Spinner } from '@/foundation/components/feedback';
+import { InlineAlert, Skeleton, SkeletonText } from '@/foundation/components/feedback';
+import { Field, Textarea } from '@/foundation/components/field-system';
+import { DescriptionList } from '@/foundation/components/structure';
 import { formatDateTime } from '@/shared/format/date-time';
 import { SupportLoginPrompt } from '../components/support-login-prompt';
 import { SupportTicketStatusBadge } from '../components/support-ticket-status-badge';
@@ -58,7 +60,7 @@ export function AccountSupportTicketDetailPage({ ticketNo }: { ticketNo: string 
       )}
       {isLoaded && !isAuthenticated && <SupportLoginPrompt title="Đăng nhập để xem yêu cầu hỗ trợ" />}
       {isAuthenticated && isError && (
-        <section role="alert" className="rounded-3xl border border-rose-200 bg-rose-50 p-8 text-center text-rose-800">{errorMessage}</section>
+        <InlineAlert as="section" role="alert" className="rounded-3xl border border-rose-200 bg-rose-50 p-8 text-center text-rose-800">{errorMessage}</InlineAlert>
       )}
 
       {detail && (
@@ -72,10 +74,14 @@ export function AccountSupportTicketDetailPage({ ticketNo }: { ticketNo: string 
               </div>
               <SupportTicketStatusBadge status={detail.status} />
             </div>
-            <dl className="mt-4 grid gap-3 border-t border-slate-100 pt-4 text-xs text-slate-500 sm:grid-cols-2">
-              <div><dt>{SUPPORT_FIELD_LABELS.createdAt}</dt><dd className="font-bold text-slate-800">{formatDateTime(detail.createdAt)}</dd></div>
-              <div><dt>{SUPPORT_FIELD_LABELS.updatedAt}</dt><dd className="font-bold text-slate-800">{formatDateTime(detail.updatedAt)}</dd></div>
-            </dl>
+            <DescriptionList
+              className="mt-4 gap-3 border-t border-slate-100 pt-4 text-xs text-slate-500 sm:grid-cols-2"
+              valueClassName="font-bold text-slate-800"
+              items={[
+                { key: 'createdAt', label: SUPPORT_FIELD_LABELS.createdAt, value: formatDateTime(detail.createdAt) },
+                { key: 'updatedAt', label: SUPPORT_FIELD_LABELS.updatedAt, value: formatDateTime(detail.updatedAt) },
+              ]}
+            />
             {detail.resolutionNote && (
               <p className="mt-4 rounded-2xl bg-success-50 p-3 text-sm text-success-900">
                 <strong className="block text-xs font-bold uppercase tracking-wider">Kết quả xử lý</strong>
@@ -118,9 +124,10 @@ export function AccountSupportTicketDetailPage({ ticketNo }: { ticketNo: string 
               submitReply();
             }}
           >
-            <label htmlFor="support-reply" className="block text-xs font-bold text-slate-800">{SUPPORT_FIELD_LABELS.reply}</label>
-            <textarea
-              id="support-reply"
+            <Field label={SUPPORT_FIELD_LABELS.reply} labelClassName="block text-xs font-bold text-slate-800">
+              <Textarea
+                styled
+                id="support-reply"
               value={reply}
               onChange={(event) => setReply(event.target.value)}
               maxLength={SUPPORT_MESSAGE_MAX_LENGTH}
@@ -128,20 +135,23 @@ export function AccountSupportTicketDetailPage({ ticketNo }: { ticketNo: string 
               disabled={!canReply || isReplying}
               aria-describedby="support-reply-hint"
               placeholder={canReply ? 'Nhập nội dung trả lời...' : 'Yêu cầu đã đóng, không thể trả lời.'}
-              className="mt-1.5 w-full rounded-2xl border border-slate-200 p-3 text-base sm:text-sm text-slate-800 placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30 disabled:bg-slate-50"
-            />
+              className="mt-1.5"
+              />
+            </Field>
             <div id="support-reply-hint" className="mt-1 flex justify-between text-[11px] text-slate-500">
               <span>{canReply ? '' : 'Yêu cầu đã đóng. Vui lòng tạo yêu cầu mới nếu cần hỗ trợ thêm.'}</span>
               <span>{reply.length}/{SUPPORT_MESSAGE_MAX_LENGTH}</span>
             </div>
-            {replyErrorMessage && <p role="alert" className="mt-2 text-xs font-semibold text-rose-700">{replyErrorMessage}</p>}
+            {replyErrorMessage && <InlineAlert as="p" role="alert" className="mt-2 text-xs font-semibold text-rose-700">{replyErrorMessage}</InlineAlert>}
             <div className="mt-4 flex justify-end">
               <Button
                 type="submit"
-                disabled={!canReply || isReplying || !reply.trim()}
-                className="flex items-center gap-1.5 rounded-xl bg-brand-600 px-5 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-brand-700 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2"
+                size="md"
+                disabled={!canReply || !reply.trim()}
+                loading={isReplying}
+                className="gap-1.5 px-5 text-xs font-bold shadow-sm"
               >
-                {isReplying ? <Spinner className="size-4 animate-spin" /> : <SendHorizontal className="size-4" aria-hidden />}
+                {!isReplying && <SendHorizontal className="size-4" aria-hidden />}
                 {isReplying ? 'Đang gửi...' : 'Gửi trả lời'}
               </Button>
             </div>

@@ -1,12 +1,58 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
+import { Button } from '@/foundation/components/buttons';
 import { Check, Maximize2, RefreshCw, Sparkles, Trophy } from 'lucide-react';
 import { ArrowRight } from 'lucide-react';
 import { GOAL_OPTIONS, SPACE_OPTIONS, BUDGET_OPTIONS } from '../../model/smart-fit.constants';
-import { AdvisorOptionStep } from './advisor-option-step';
+import { ADVISOR_SECONDARY_BUTTON, AdvisorOptionStep } from './advisor-option-step';
 import { AdvisorResults } from './advisor-results';
 import { SMART_FIT_CARD_MIN_HEIGHT } from './smart-fit-advisor.layout';
+
+/** Ô icon đầu thẻ lựa chọn (bước mục tiêu/không gian), đổi màu theo trạng thái chọn. */
+function OptionIconTile({ isSelected, children }: { isSelected: boolean; children: ReactNode }) {
+  return (
+    <div
+      className={`grid size-11 place-items-center rounded-xl border ${
+        isSelected
+          ? 'border-brand-500/40 bg-brand-500/20 text-brand-400'
+          : 'border-slate-800 bg-slate-800/80 text-slate-300'
+      }`}
+    >
+      {children}
+    </div>
+  );
+}
+
+/** Nội dung chung của một thẻ lựa chọn: phần đầu + dấu tích khi chọn, nhãn và mô tả. */
+function OptionCardContent({
+  lead,
+  isSelected,
+  label,
+  desc,
+  labelClassName = 'text-sm sm:text-base text-white',
+}: {
+  lead: ReactNode;
+  isSelected: boolean;
+  label: string;
+  desc: string;
+  labelClassName?: string;
+}) {
+  return (
+    <>
+      <div className="flex items-center justify-between mb-4">
+        {lead}
+        {isSelected && (
+          <div className="grid size-6 place-items-center rounded-full bg-brand-600 text-white">
+            <Check className="size-3.5 stroke-[3]" aria-hidden="true" />
+          </div>
+        )}
+      </div>
+      <strong className={`block font-bold mb-1 ${labelClassName}`}>{label}</strong>
+      <p className="text-xs text-slate-400 leading-snug">{desc}</p>
+    </>
+  );
+}
 
 export function SmartFitAdvisor() {
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
@@ -89,14 +135,15 @@ export function SmartFitAdvisor() {
               </div>
             </div>
           ) : (
-            <button
-              type="button"
+            <Button
+              variant="secondary"
+              size="sm"
               onClick={handleReset}
-              className="inline-flex items-center gap-1.5 rounded-full border border-slate-700 bg-slate-800 px-4 py-2 text-xs font-bold text-slate-300 hover:bg-slate-700 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+              className={`gap-1.5 rounded-full px-4 ${ADVISOR_SECONDARY_BUTTON}`}
             >
               <RefreshCw className="size-3.5" aria-hidden="true" />
               <span>Làm lại từ đầu</span>
-            </button>
+            </Button>
           )}
         </div>
 
@@ -115,28 +162,16 @@ export function SmartFitAdvisor() {
               renderCard={(g, isSelected) => {
                 const Icon = g.icon;
                 return (
-                  <>
-                    <div className="flex items-center justify-between mb-4">
-                      <div
-                        className={`grid size-11 place-items-center rounded-xl border ${
-                          isSelected
-                            ? 'border-brand-500/40 bg-brand-500/20 text-brand-400'
-                            : 'border-slate-800 bg-slate-800/80 text-slate-300'
-                        }`}
-                      >
+                  <OptionCardContent
+                    isSelected={isSelected}
+                    label={g.label}
+                    desc={g.desc}
+                    lead={
+                      <OptionIconTile isSelected={isSelected}>
                         <Icon className="size-5" />
-                      </div>
-                      {isSelected && (
-                        <div className="grid size-6 place-items-center rounded-full bg-brand-600 text-white">
-                          <Check className="size-3.5 stroke-[3]" aria-hidden="true" />
-                        </div>
-                      )}
-                    </div>
-                    <strong className="block text-sm sm:text-base font-bold text-white mb-1">
-                      {g.label}
-                    </strong>
-                    <p className="text-xs text-slate-400 leading-snug">{g.desc}</p>
-                  </>
+                      </OptionIconTile>
+                    }
+                  />
                 );
               }}
             />
@@ -154,28 +189,16 @@ export function SmartFitAdvisor() {
               nextLabel="Tiếp tục: Chọn ngân sách"
               NextIcon={ArrowRight}
               renderCard={(s, isSelected) => (
-                <>
-                  <div className="flex items-center justify-between mb-4">
-                    <div
-                      className={`grid size-11 place-items-center rounded-xl border ${
-                        isSelected
-                          ? 'border-brand-500/40 bg-brand-500/20 text-brand-400'
-                          : 'border-slate-800 bg-slate-800/80 text-slate-300'
-                      }`}
-                    >
+                <OptionCardContent
+                  isSelected={isSelected}
+                  label={s.label}
+                  desc={s.desc}
+                  lead={
+                    <OptionIconTile isSelected={isSelected}>
                       <Maximize2 className="size-5" />
-                    </div>
-                    {isSelected && (
-                      <div className="grid size-6 place-items-center rounded-full bg-brand-600 text-white">
-                        <Check className="size-3.5 stroke-[3]" aria-hidden="true" />
-                      </div>
-                    )}
-                  </div>
-                  <strong className="block text-sm sm:text-base font-bold text-white mb-1">
-                    {s.label}
-                  </strong>
-                  <p className="text-xs text-slate-400 leading-snug">{s.desc}</p>
-                </>
+                    </OptionIconTile>
+                  }
+                />
               )}
             />
           )}
@@ -192,22 +215,17 @@ export function SmartFitAdvisor() {
               nextLabel="Xem cấu hình đề xuất"
               NextIcon={Sparkles}
               renderCard={(b, isSelected) => (
-                <>
-                  <div className="flex items-center justify-between mb-4">
+                <OptionCardContent
+                  isSelected={isSelected}
+                  label={b.label}
+                  desc={b.desc}
+                  labelClassName="text-base sm:text-lg text-brand-400"
+                  lead={
                     <span className="rounded-full bg-slate-800 px-2.5 py-0.5 text-xs font-bold text-slate-300">
                       {b.label}
                     </span>
-                    {isSelected && (
-                      <div className="grid size-6 place-items-center rounded-full bg-brand-600 text-white">
-                        <Check className="size-3.5 stroke-[3]" aria-hidden="true" />
-                      </div>
-                    )}
-                  </div>
-                  <strong className="block text-base sm:text-lg font-bold text-brand-400 mb-1">
-                    {b.label}
-                  </strong>
-                  <p className="text-xs text-slate-400 leading-snug">{b.desc}</p>
-                </>
+                  }
+                />
               )}
             />
           )}

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Home, LayoutGrid, Phone } from 'lucide-react';
+import { buttonVariants } from '@/foundation/components/buttons';
 import { STORE_CONTACT } from '@/shared/constants';
 
 /**
@@ -23,14 +24,14 @@ export function NotFoundContent() {
       <div className="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
         <Link
           href="/"
-          className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-brand-600 px-6 font-bold text-white transition-colors hover:bg-brand-700"
+          className={buttonVariants({ variant: 'primary', size: 'lg', className: 'font-bold' })}
         >
           <Home aria-hidden className="size-4" />
           Về trang chủ
         </Link>
         <Link
           href="/category"
-          className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-6 font-bold text-slate-800 transition-colors hover:border-brand-300 hover:text-brand-700"
+          className={buttonVariants({ variant: 'outline', size: 'lg', className: 'font-bold' })}
         >
           <LayoutGrid aria-hidden className="size-4" />
           Danh mục sản phẩm

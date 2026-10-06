@@ -1,3 +1,4 @@
+import { Button } from '@/foundation/components/buttons';
 import type { AddressView } from '../model/address.mapper';
 
 interface AddressCardProps {
@@ -8,9 +9,8 @@ interface AddressCardProps {
   onDelete: (id: string) => void;
 }
 
-/** Nút chữ (không phải CTA) — kiểu link nên không dùng `Button` variant. */
-const ACTION_BASE =
-  'inline-flex min-h-11 items-center px-1 font-bold sm:min-h-0 rounded focus-visible:outline-none focus-visible:ring-2';
+/** Nút chữ (không phải CTA): `Button variant="link"` + vùng chạm 44px trên mobile. */
+const ACTION_BASE = 'min-h-11 rounded px-1 font-bold sm:min-h-0 focus-visible:ring-offset-0';
 
 export function AddressCard({ addr, canDelete, onSetDefault, onEdit, onDelete }: AddressCardProps) {
   const actions = [
@@ -28,7 +28,7 @@ export function AddressCard({ addr, canDelete, onSetDefault, onEdit, onDelete }:
       label: 'Sửa',
       ariaLabel: `Sửa địa chỉ của ${addr.recipient}`,
       onClick: () => onEdit(addr),
-      className: 'text-slate-600 hover:text-slate-900 focus-visible:ring-brand-500',
+      className: 'text-slate-600 hover:text-slate-900 hover:no-underline focus-visible:ring-brand-500',
     },
     {
       key: 'delete',
@@ -64,15 +64,15 @@ export function AddressCard({ addr, canDelete, onSetDefault, onEdit, onDelete }:
           {actions
             .filter((action) => action.visible)
             .map((action) => (
-              <button
+              <Button
                 key={action.key}
-                type="button"
+                variant="link"
                 onClick={action.onClick}
                 aria-label={action.ariaLabel}
                 className={`${ACTION_BASE} ${action.className}`}
               >
                 {action.label}
-              </button>
+              </Button>
             ))}
         </div>
       </div>

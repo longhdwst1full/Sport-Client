@@ -60,14 +60,14 @@ export function OrderBillSummary({ view }: { view: OrderDetailView | undefined }
               visible: Boolean(view?.hasDiscount),
             },
             { label: 'Phí vận chuyển', value: view?.isShippingFree ? 'Miễn phí' : view?.shippingTotalLabel },
+            {
+              key: 'grand-total',
+              label: <span className="font-black text-slate-900">Tổng thanh toán</span>,
+              value: view?.grandTotalLabel,
+              itemClassName: 'border-t border-slate-200/80 pt-3 text-base',
+              valueClassName: 'text-xl sm:text-2xl font-black text-brand-700',
+            },
           ]}
-        />
-        <DescriptionList
-          layout="inline"
-          className="border-t border-slate-200/80 pt-3 text-base"
-          labelClassName="font-black text-slate-900"
-          valueClassName="text-xl sm:text-2xl font-black text-brand-700"
-          items={[{ label: 'Tổng thanh toán', value: view?.grandTotalLabel }]}
         />
 
         {/* Contextual payment instruction note */}

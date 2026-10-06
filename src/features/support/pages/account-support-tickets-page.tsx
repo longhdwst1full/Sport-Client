@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight, LifeBuoy } from 'lucide-react';
-import { Skeleton } from '@/foundation/components/feedback';
+import { Button } from '@/foundation/components/buttons';
+import { InlineAlert, Skeleton } from '@/foundation/components/feedback';
 import { formatDateTime } from '@/shared/format/date-time';
 import { SupportLoginPrompt } from '../components/support-login-prompt';
 import { SupportTicketStatusBadge } from '../components/support-ticket-status-badge';
@@ -57,7 +58,7 @@ export function AccountSupportTicketsPage() {
       )}
       {isLoaded && !isAuthenticated && <SupportLoginPrompt title="Đăng nhập để xem yêu cầu hỗ trợ" />}
       {isAuthenticated && isError && (
-        <div role="alert" className="rounded-2xl border border-rose-200 bg-rose-50 p-5 text-sm text-rose-800">{errorMessage}</div>
+        <InlineAlert role="alert" className="rounded-2xl border border-rose-200 bg-rose-50 p-5 text-sm text-rose-800">{errorMessage}</InlineAlert>
       )}
       {isAuthenticated && hasData && items.length === 0 && (
         <section className="rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center">
@@ -90,9 +91,9 @@ export function AccountSupportTicketsPage() {
       )}
       {isAuthenticated && hasData && totalPages > 1 && (
         <nav className="mt-7 flex items-center justify-center gap-3" aria-label="Phân trang yêu cầu hỗ trợ">
-          <button type="button" disabled={page === 1 || isFetching} onClick={() => setPage((value) => Math.max(1, value - 1))} className="grid size-11 place-items-center rounded-xl border border-slate-200 bg-white transition hover:bg-slate-50 disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500" aria-label="Trang trước"><ChevronLeft className="size-4" aria-hidden /></button>
+          <Button variant="outline" size="icon" disabled={page === 1 || isFetching} onClick={() => setPage((value) => Math.max(1, value - 1))} aria-label="Trang trước"><ChevronLeft className="size-4" aria-hidden /></Button>
           <span className="text-sm font-bold text-slate-700">Trang {page} / {totalPages}</span>
-          <button type="button" disabled={page >= totalPages || isFetching} onClick={() => setPage((value) => value + 1)} className="grid size-11 place-items-center rounded-xl border border-slate-200 bg-white transition hover:bg-slate-50 disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500" aria-label="Trang sau"><ChevronRight className="size-4" aria-hidden /></button>
+          <Button variant="outline" size="icon" disabled={page >= totalPages || isFetching} onClick={() => setPage((value) => value + 1)} aria-label="Trang sau"><ChevronRight className="size-4" aria-hidden /></Button>
         </nav>
       )}
     </main>

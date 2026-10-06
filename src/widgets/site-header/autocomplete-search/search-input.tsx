@@ -1,6 +1,8 @@
 import { Search, X } from 'lucide-react';
 import type { RefObject } from 'react';
 import type { ProductSuggestionView } from '@/features/catalog';
+import { Button } from '@/foundation/components/buttons';
+import { TextInput } from '@/foundation/components/field-system';
 
 interface SearchInputProps {
   inputRef: RefObject<HTMLInputElement | null>;
@@ -36,7 +38,7 @@ export function SearchInput({
     >
       <Search aria-hidden className="ml-4 size-4 shrink-0 text-slate-400 transition group-focus-within:text-brand-600" />
 
-      <input
+      <TextInput
         ref={inputRef}
         type="text"
         value={query}
@@ -60,24 +62,23 @@ export function SearchInput({
 
       {/* Clear Button */}
       {query && (
-        <button
-          type="button"
+        <Button
           onClick={onClear}
           className="mr-1 grid size-6 shrink-0 place-items-center rounded-full text-slate-500 transition hover:bg-slate-100 hover:text-slate-700"
           aria-label="Xóa từ khóa"
         >
-          <X className="size-3.5" />
-        </button>
+          <X aria-hidden className="size-3.5" />
+        </Button>
       )}
 
       {/* Rounded Pill Submit Button */}
-      <button
+      <Button
         type="submit"
         className="my-0.5 mr-0.5 inline-flex shrink-0 items-center gap-1.5 rounded-full bg-brand-600 px-4 py-1.5 text-xs font-black uppercase tracking-wider text-white transition-colors hover:bg-brand-700 active:bg-brand-800 sm:px-5 sm:py-2"
-              >
+      >
         <Search aria-hidden className="size-3.5 text-white" />
         <span>Tìm kiếm</span>
-      </button>
+      </Button>
     </form>
   );
 }

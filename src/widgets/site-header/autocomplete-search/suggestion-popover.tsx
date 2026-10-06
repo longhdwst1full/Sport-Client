@@ -2,7 +2,8 @@ import Link from 'next/link';
 import { ChevronRight, Search, Sparkles } from 'lucide-react';
 import type { RefObject } from 'react';
 import type { ProductSuggestionView } from '@/features/catalog';
-import { Skeleton } from '@/foundation/components/feedback/skeleton';
+import { Button } from '@/foundation/components/buttons';
+import { Skeleton } from '@/foundation/components/feedback';
 import { SuggestionItem } from './suggestion-item';
 
 const POPULAR_SUGGESTIONS = [
@@ -53,14 +54,13 @@ export function SuggestionPopover({
           </div>
           <div className="flex flex-wrap gap-1.5 mb-4">
             {POPULAR_SUGGESTIONS.map((term) => (
-              <button
+              <Button
                 key={term}
-                type="button"
                 onClick={() => onPickPopularTerm(term)}
                 className="rounded-full border border-slate-200 bg-slate-50/90 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:border-brand-500 hover:bg-brand-50 hover:text-brand-700"
               >
                 {term}
-              </button>
+              </Button>
             ))}
           </div>
 
@@ -141,14 +141,16 @@ export function SuggestionPopover({
 
           {/* Footer "Xem tất cả kết quả" action */}
           <div className="mt-1.5 border-t border-slate-100 pt-1.5">
-            <button
-              type="button"
+            <Button
+              variant="outline"
+              size="sm"
+              fullWidth
               onClick={onSearchSubmit}
-              className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 py-2.5 text-xs font-bold text-brand-700 transition hover:border-brand-200 hover:bg-brand-50 hover:text-brand-800"
+              className="h-auto gap-1.5 rounded-lg border-slate-200 bg-slate-50 py-2.5 text-xs font-bold text-brand-700 hover:border-brand-200 hover:bg-brand-50 hover:text-brand-800"
             >
               <span>Xem tất cả kết quả cho "{query.trim()}"</span>
-              <ChevronRight className="size-3.5" />
-            </button>
+              <ChevronRight aria-hidden className="size-3.5" />
+            </Button>
           </div>
         </div>
       ) : (
@@ -165,14 +167,13 @@ export function SuggestionPopover({
           </p>
           <div className="mt-3.5 flex flex-wrap items-center justify-center gap-1.5">
             {POPULAR_SUGGESTIONS.map((kw) => (
-              <button
+              <Button
                 key={kw}
-                type="button"
                 onClick={() => onPrefillTerm(kw)}
                 className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700 shadow-sm transition hover:border-brand-500 hover:bg-brand-50/50 hover:text-brand-700"
               >
                 {kw}
-              </button>
+              </Button>
             ))}
           </div>
         </div>

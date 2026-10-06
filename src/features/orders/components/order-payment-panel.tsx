@@ -211,7 +211,7 @@ export function OrderPaymentPanel({
                 rows={2}
                 maxLength={1000}
                 placeholder="Ví dụ: Đã chuyển khoản từ ngân hàng MB qua số..."
-                invalid={false} // Textarea chưa có `size`: cần `invalid` để thoát chế độ passthrough className
+                styled
                 className="mt-1.5 min-h-16"
               />
             </Field>

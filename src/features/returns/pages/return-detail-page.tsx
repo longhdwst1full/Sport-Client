@@ -3,7 +3,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { CheckCircle2, Circle, CircleDot } from 'lucide-react';
-import { InlineAlert } from '@/foundation/components/feedback';
+import { Button, buttonVariants } from '@/foundation/components/buttons';
+import { EmptyState, InlineAlert } from '@/foundation/components/feedback';
+import { Field, Textarea } from '@/foundation/components/field-system';
 import { OrderItemType, RefundStatus, ReturnStatus } from '@/generated/api/returns/returns.schemas';
 import { ReturnDetailSkeleton } from '../components/return-skeletons';
 import { formatDateTime } from '@/shared/format/date-time';
@@ -43,10 +45,14 @@ export function ReturnDetailPage({ returnNo }: { returnNo: string }) {
           <ReturnDetailSkeleton />
         )}
         {isLoaded && !isAuthenticated && (
-          <section className="rounded-3xl border border-slate-200 bg-white p-10 text-center shadow-sm">
-            <h1 className="text-xl font-black">Đăng nhập để xem yêu cầu đổi trả</h1>
-            <Link href="/login" className="mt-5 inline-flex rounded-xl bg-brand-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-brand-700">Đăng nhập</Link>
-          </section>
+          <EmptyState
+            as="section"
+            className="rounded-3xl border border-slate-200 bg-white p-10 text-center shadow-sm"
+            titleAs="h1"
+            titleClassName="text-xl font-black"
+            title="Đăng nhập để xem yêu cầu đổi trả"
+            actions={<Link href="/login" className={buttonVariants({ variant: 'primary', className: 'mt-5 px-5 font-bold' })}>Đăng nhập</Link>}
+          />
         )}
         {query.isError && (
           <InlineAlert as="section" role="alert" className="rounded-3xl border border-rose-200 bg-rose-50 p-8 text-center text-rose-800">
@@ -91,9 +97,9 @@ export function ReturnDetailPage({ returnNo }: { returnNo: string }) {
               </ol>
             )}
             {detail.status === ReturnStatus.APPROVED && (
-              <p className="mt-4 rounded-2xl border border-sky-200 bg-sky-50 p-4 text-sm text-sky-900">
+              <InlineAlert as="p" className="mt-4 rounded-2xl border border-sky-200 bg-sky-50 p-4 text-sm text-sky-900">
                 Yêu cầu đã được duyệt. Vui lòng gửi hoặc mang sản phẩm về cửa hàng; tiền được hoàn sau khi cửa hàng nhận và kiểm hàng.
-              </p>
+              </InlineAlert>
             )}
             {detail.decisionNote && (
               <p className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">Phản hồi của cửa hàng: {detail.decisionNote}</p>
@@ -168,29 +174,31 @@ export function ReturnDetailPage({ returnNo }: { returnNo: string }) {
             </div>
 
             <div className="mt-6 flex flex-wrap justify-between gap-3">
-              <Link href="/returns" className="inline-flex min-h-11 items-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2">Danh sách yêu cầu</Link>
+              <Link href="/returns" className={buttonVariants({ variant: 'outline', className: 'border-slate-200 font-bold text-slate-700' })}>Danh sách yêu cầu</Link>
               {canCancel(detail.status) && (
-                <button type="button" onClick={() => setShowCancel(true)} aria-expanded={showCancel} className="inline-flex min-h-11 items-center rounded-xl border border-rose-200 bg-white px-4 py-2.5 text-sm font-bold text-rose-700 transition hover:bg-rose-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:ring-offset-2">Huỷ yêu cầu</button>
+                <Button variant="dangerOutline" onClick={() => setShowCancel(true)} aria-expanded={showCancel} className="font-bold focus-visible:ring-rose-500">Huỷ yêu cầu</Button>
               )}
             </div>
             {showCancel && (
               <section className="mt-5 rounded-3xl border border-rose-200 bg-rose-50 p-4 sm:p-6">
-                <label htmlFor="return-cancel-reason" className="font-black text-rose-950">Lý do huỷ <span className="text-rose-600">*</span></label>
-                <textarea
+                <Field label={<>Lý do huỷ <span className="text-rose-600">*</span></>} labelClassName="font-black text-rose-950">
+                <Textarea
                   id="return-cancel-reason"
+                  styled
                   value={reason}
                   maxLength={500}
                   rows={3}
                   onChange={(event) => setReason(event.target.value)}
                   aria-describedby="return-cancel-reason-hint"
-                  className="mt-3 w-full rounded-xl border border-rose-200 bg-white p-3 text-base sm:text-sm focus:border-rose-400 focus:outline-none focus:ring-2 focus:ring-rose-200"
+                  className="mt-3 min-h-0 border-rose-200 focus-visible:border-rose-400 focus-visible:ring-rose-200"
                 />
-                {cancel.isError && <p role="alert" className="mt-2 text-sm font-semibold text-rose-700">{returnErrorMessage(cancel.error, 'Không huỷ được yêu cầu.')}</p>}
+                </Field>
+                {cancel.isError && <InlineAlert as="p" role="alert" className="mt-2 text-sm font-semibold text-rose-700">{returnErrorMessage(cancel.error, 'Không huỷ được yêu cầu.')}</InlineAlert>}
                 <div className="mt-4 flex flex-wrap gap-3">
-                  <button type="button" disabled={cancel.isPending || reason.trim().length < 5} onClick={() => cancel.mutate()} className="inline-flex min-h-11 items-center rounded-xl bg-rose-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-rose-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:ring-offset-2 disabled:opacity-50">
+                  <Button variant="danger" disabled={cancel.isPending || reason.trim().length < 5} onClick={() => cancel.mutate()} className="font-bold focus-visible:ring-rose-500">
                     {cancel.isPending ? 'Đang huỷ...' : 'Xác nhận huỷ'}
-                  </button>
-                  <button type="button" disabled={cancel.isPending} onClick={() => { cancel.reset(); setShowCancel(false); }} className="inline-flex min-h-11 items-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2">Đóng</button>
+                  </Button>
+                  <Button variant="outline" disabled={cancel.isPending} onClick={() => { cancel.reset(); setShowCancel(false); }} className="border-slate-200 font-bold text-slate-700">Đóng</Button>
                 </div>
                 <p id="return-cancel-reason-hint" className="mt-2 text-xs text-rose-800">Lý do ít nhất 5 ký tự.</p>
               </section>

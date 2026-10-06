@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { Button } from '@/foundation/components/buttons';
 import { useToast } from '@/shared/components/global-toast';
 
 type SocialProvider = 'google' | 'zalo' | 'facebook';
@@ -63,15 +64,15 @@ export function SocialLoginButtons({ dividerText, toastTitles, toastMessages }: 
       {/* Social Buttons */}
       <div className="grid grid-cols-3 gap-2.5">
         {SOCIAL_PROVIDERS.map(({ key, label, icon }) => (
-          <button
+          <Button
             key={key}
-            type="button"
+            variant="outline"
             onClick={() => toast({ title: toastTitles[key], message: toastMessages[key] })}
-            className="flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white py-2.5 text-xs font-bold text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+            className="border-slate-200 px-2 text-xs font-bold text-slate-700 shadow-sm hover:border-slate-300 hover:bg-slate-50 hover:text-slate-700 focus-visible:ring-offset-0"
           >
             {icon}
             <span>{label}</span>
-          </button>
+          </Button>
         ))}
       </div>
     </>

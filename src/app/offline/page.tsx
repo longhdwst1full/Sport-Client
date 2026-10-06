@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { CloudOff, Home, RotateCw } from 'lucide-react';
+import { Button, buttonVariants } from '@/foundation/components/buttons';
 
 export default function OfflinePage() {
   return (
@@ -16,10 +17,10 @@ export default function OfflinePage() {
           Đơn hàng, tài khoản, tồn kho và thanh toán cần kết nối mạng để đảm bảo dữ liệu luôn chính xác và riêng tư.
         </p>
         <div className="mt-7 flex flex-wrap justify-center gap-3">
-          <button type="button" onClick={() => window.location.reload()} className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-brand-600 px-5 text-sm font-black text-white transition-colors hover:bg-brand-700">
+          <Button variant="primary" size="lg" onClick={() => window.location.reload()} className="px-5 text-sm font-black">
             <RotateCw aria-hidden className="size-4" /> Thử kết nối lại
-          </button>
-          <Link href="/" className="inline-flex min-h-12 items-center gap-2 rounded-xl border border-slate-300 px-5 text-sm font-bold text-slate-800 transition-colors hover:border-brand-300 hover:text-brand-700">
+          </Button>
+          <Link href="/" className={buttonVariants({ variant: 'outline', size: 'lg', className: 'px-5 text-sm font-bold' })}>
             <Home aria-hidden className="size-4" /> Trang chủ đã lưu
           </Link>
         </div>

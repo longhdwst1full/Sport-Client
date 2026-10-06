@@ -1,6 +1,8 @@
 import { useId } from 'react';
-import { ChevronDown, RefreshCw } from 'lucide-react';
-import { Spinner } from '@/foundation/components/feedback';
+import { RefreshCw } from 'lucide-react';
+import { Button } from '@/foundation/components/buttons';
+import { InlineAlert, Spinner } from '@/foundation/components/feedback';
+import { Field, Select } from '@/foundation/components/field-system';
 
 interface DivisionOption {
   code: string;
@@ -38,52 +40,49 @@ export function DivisionSelect({
 
   return (
     <div>
-      <label htmlFor={selectId} className="block text-xs font-bold uppercase tracking-wider text-slate-600">
-        {label} {required && <span className="text-rose-500">*</span>}
-      </label>
-      <div className="relative mt-1.5">
-        <select
-          id={selectId}
-          value={value ?? ''}
-          onChange={onChange}
-          required={required}
-          disabled={disabled}
-          aria-invalid={error ? true : undefined}
-          aria-describedby={error ? errorId : undefined}
-          aria-busy={isLoading || undefined}
-          className={`w-full appearance-none rounded-xl border bg-white px-3.5 py-2.5 text-base font-semibold text-slate-800 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/30 disabled:bg-slate-50 disabled:text-slate-500 sm:text-sm ${
-            error ? 'border-rose-300' : 'border-slate-200'
-          }`}
-        >
-          <option value="">{emptyOptionLabel}</option>
-          {options.map((o) => (
-            <option key={o.code} value={o.code}>
-              {o.name}
-            </option>
-          ))}
-        </select>
-        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-slate-500">
-          {isLoading ? (
-            <Spinner className="size-4 animate-spin text-brand-600" />
-          ) : (
-            <ChevronDown className="size-4" aria-hidden />
+      <Field
+        label={<>{label} {required && <span className="text-rose-500">*</span>}</>}
+        labelClassName="block text-xs font-bold uppercase tracking-wider text-slate-600"
+        htmlFor={selectId}
+      >
+        <div className="relative mt-1.5">
+          <Select
+            size="md"
+            id={selectId}
+            value={value ?? ''}
+            onChange={onChange}
+            required={required}
+            disabled={disabled}
+            invalid={Boolean(error)}
+            aria-describedby={error ? errorId : undefined}
+            aria-busy={isLoading || undefined}
+            className="font-semibold text-slate-800"
+          >
+            <option value="">{emptyOptionLabel}</option>
+            {options.map((o) => (
+              <option key={o.code} value={o.code}>
+                {o.name}
+              </option>
+            ))}
+          </Select>
+          {/* Đang tải luôn kèm `disabled` (nền slate-50) → spinner phủ lên mũi tên của Select. */}
+          {isLoading && (
+            <span className="pointer-events-none absolute right-2 top-1/2 grid size-6 -translate-y-1/2 place-items-center bg-slate-50">
+              <Spinner className="size-4 animate-spin text-brand-600" />
+            </span>
           )}
         </div>
-      </div>
+      </Field>
       {error && (
-        <p id={errorId} role="alert" className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-medium text-rose-700">
-          <span>{error}</span>
+        <InlineAlert as="p" role="alert" className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-medium text-rose-700">
+          <span id={errorId}>{error}</span>
           {onRetry && (
-            <button
-              type="button"
-              onClick={onRetry}
-              className="inline-flex items-center gap-1 rounded font-bold text-brand-700 underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
-            >
+            <Button variant="link" onClick={onRetry} className="gap-1 rounded font-bold underline-offset-2">
               <RefreshCw className="size-3.5" aria-hidden />
               Thử lại
-            </button>
+            </Button>
           )}
-        </p>
+        </InlineAlert>
       )}
     </div>
   );

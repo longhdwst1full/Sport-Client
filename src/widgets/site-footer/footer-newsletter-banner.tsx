@@ -1,5 +1,4 @@
-import Link from 'next/link';
-import { ArrowRight, Mail } from 'lucide-react';
+import { Mail } from 'lucide-react';
 import {
   BANNER_DEFAULT_CTA_TEXT,
   BannerPicture,
@@ -7,61 +6,28 @@ import {
   loadActiveBanners,
   type BannerView,
 } from '@/features/content';
+import { PromoBanner } from '@/foundation/components/structure';
 import { NewsletterForm } from '@/widgets/newsletter-form/newsletter-form';
 
 /** Dải banner FOOTER ngay trên khối nhận tin; chỉ lấy banner đầu (API đã sắp theo `sortOrder`). */
 function FooterBannerStrip({ banner }: { banner: BannerView }) {
-  const hasText = Boolean(banner.title || banner.subtitle);
-  const frame =
-    'group relative mx-auto block aspect-[16/9] max-w-7xl overflow-hidden rounded-2xl bg-slate-900 shadow-md sm:aspect-[5/1]';
-  const body = (
-    <>
-      <BannerPicture
-        banner={banner}
-        alt=""
-        sizes="(max-width: 1280px) 100vw, 1280px"
-        className="object-cover object-center"
-      />
-      {hasText && (
-        <>
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-950/50 to-transparent" />
-          <div className="absolute inset-0 flex flex-col justify-center px-6 py-6 text-white sm:px-10">
-            <div className="max-w-xl">
-              {banner.title && (
-                <h2 className="line-clamp-2 text-xl font-black leading-tight sm:text-2xl">
-                  {banner.title}
-                </h2>
-              )}
-              {banner.subtitle && (
-                <p className="mt-2 line-clamp-2 text-xs text-slate-300 sm:text-sm">
-                  {banner.subtitle}
-                </p>
-              )}
-              {banner.targetUrl && (
-                <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-brand-400 group-hover:underline sm:text-sm">
-                  {banner.ctaText ?? BANNER_DEFAULT_CTA_TEXT}
-                  <ArrowRight aria-hidden className="size-4 transition group-hover:translate-x-1" />
-                </span>
-              )}
-            </div>
-          </div>
-        </>
-      )}
-    </>
-  );
   return (
     <div className="bg-slate-900 px-4 pt-10 sm:px-6 lg:px-8">
-      {banner.targetUrl ? (
-        <Link
-          href={banner.targetUrl}
-          className={frame}
-          aria-label={hasText ? undefined : (banner.ctaText ?? BANNER_DEFAULT_CTA_TEXT)}
-        >
-          {body}
-        </Link>
-      ) : (
-        <div className={frame}>{body}</div>
-      )}
+      <PromoBanner
+        href={banner.targetUrl}
+        title={banner.title}
+        subtitle={banner.subtitle}
+        ctaLabel={banner.ctaText ?? BANNER_DEFAULT_CTA_TEXT}
+        className="group relative mx-auto block aspect-[16/9] max-w-7xl overflow-hidden rounded-2xl bg-slate-900 shadow-md sm:aspect-[5/1]"
+        media={
+          <BannerPicture
+            banner={banner}
+            alt=""
+            sizes="(max-width: 1280px) 100vw, 1280px"
+            className="object-cover object-center"
+          />
+        }
+      />
     </div>
   );
 }

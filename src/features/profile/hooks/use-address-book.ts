@@ -1,10 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import { EMPTY_SELECTED_ADDRESS } from '@/features/address';
 import { useToast } from '@/shared/components/global-toast';
 import { useCustomerAddresses } from '../api/use-customer-addresses';
 import {
-  EMPTY_LOCATION,
   toCreateAddressPayload,
   toSelectorInitialData,
   toUpdateAddressPayload,
@@ -12,7 +12,7 @@ import {
   type AddressView,
 } from '../model/address.mapper';
 
-const EMPTY_ADDRESS_FORM: AddressFormValues = { recipient: '', phone: '', isDefault: false, location: EMPTY_LOCATION };
+const EMPTY_ADDRESS_FORM: AddressFormValues = { recipient: '', phone: '', isDefault: false, location: EMPTY_SELECTED_ADDRESS };
 
 /**
  * Owns address-book CRUD wiring (create/update/delete/set-default) plus the add/edit modal's
@@ -45,7 +45,7 @@ export function useAddressBook(enabled: boolean, profileName: string, profilePho
       recipient: profileName,
       phone: profilePhone,
       isDefault: addresses.length === 0,
-      location: EMPTY_LOCATION,
+      location: EMPTY_SELECTED_ADDRESS,
     });
     setIsAddressModalOpen(true);
   };

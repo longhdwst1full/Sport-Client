@@ -1,6 +1,7 @@
 import { CoverImage } from '../components/cover-image';
 import Link from 'next/link';
 import { ArrowLeft, CalendarDays, Clock } from 'lucide-react';
+import { buttonVariants } from '@/foundation/components/buttons';
 import { Breadcrumb } from '@/foundation/components/navigation';
 import type { ArticleDetailView, ContentPostView } from '../model/content-post.mapper';
 import { ArticleReadingProgress } from '../components/article-reading-progress';
@@ -151,7 +152,10 @@ export function ArticleDetailPage({
             <div className="mt-10 flex items-center justify-between border-t border-slate-100 pt-6">
               <Link
                 href="/news"
-                className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-2.5 text-xs font-bold text-slate-700 shadow-2xs transition hover:border-brand-500 hover:bg-brand-50 hover:text-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+                className={buttonVariants({
+                  variant: 'outline',
+                  className: 'rounded-full border-slate-200 px-5 text-xs font-bold text-slate-700 shadow-2xs hover:border-brand-500 hover:bg-brand-50',
+                })}
               >
                 <ArrowLeft className="size-4" aria-hidden="true" />
                 <span>Xem tất cả bài viết</span>

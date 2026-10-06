@@ -11,6 +11,8 @@ export type InputSize = keyof typeof INPUT_SIZE;
 export interface InputVariantOptions {
   size?: InputSize;
   invalid?: boolean;
+  /** Ép dùng style chuẩn kể cả khi caller truyền className (bỏ chế độ passthrough). */
+  styled?: boolean;
   className?: string;
 }
 
@@ -32,7 +34,7 @@ export function resolveInputClassName(
   options: InputVariantOptions,
   extra?: string,
 ): string | undefined {
-  const { size, invalid, className } = options;
-  if (size === undefined && invalid === undefined && className) return className;
+  const { size, invalid, styled, className } = options;
+  if (!styled && size === undefined && invalid === undefined && className) return className;
   return inputVariants({ size, invalid, className: extra ? twMerge(extra, className) : className });
 }

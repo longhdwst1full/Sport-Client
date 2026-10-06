@@ -3,10 +3,15 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { ShoppingBag } from 'lucide-react';
+import { Button } from '@/foundation/components/buttons';
 import { Skeleton } from '@/foundation/components/feedback';
 import { formatVnd } from '@/shared/format/money';
 import { PriceText } from '@/shared/components/price-text';
 import type { FlashSaleDealView } from '../model/flash-sale.mapper';
+
+/** Vòng focus cho nền tối của trang flash sale (dùng chung cho thẻ và trang). */
+export const FLASH_SALE_FOCUS_RING =
+  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900';
 
 export function FlashSaleDealCard({
   deal,
@@ -19,7 +24,7 @@ export function FlashSaleDealCard({
 
   return (
     <div className="group flex flex-col overflow-hidden rounded-2xl sm:rounded-[26px] border border-slate-800 bg-slate-900/90 shadow-xl transition-all duration-300 hover:-translate-y-1.5 hover:border-brand-500/50 hover:shadow-2xl hover:shadow-brand-600/10">
-      <Link href={`/products/${deal.slug}`} className="relative aspect-[4/3] overflow-hidden bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900" aria-label={`Xem chi tiết ${deal.name}`}>
+      <Link href={`/products/${deal.slug}`} className={`relative aspect-[4/3] overflow-hidden bg-slate-800 ${FLASH_SALE_FOCUS_RING}`} aria-label={`Xem chi tiết ${deal.name}`}>
         {deal.imageUrl ? (
           <Image
             src={deal.imageUrl}
@@ -47,7 +52,7 @@ export function FlashSaleDealCard({
 
       <div className="flex flex-1 flex-col p-3 sm:p-5">
         <h3 className="line-clamp-2 min-h-[44px] text-sm font-bold text-white transition group-hover:text-brand-300">
-          <Link href={`/products/${deal.slug}`} className="rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900">{deal.name}</Link>
+          <Link href={`/products/${deal.slug}`} className={`rounded ${FLASH_SALE_FOCUS_RING}`}>{deal.name}</Link>
         </h3>
 
         <div className="mt-3 flex flex-wrap items-baseline gap-x-2 sm:mt-4">
@@ -87,16 +92,17 @@ export function FlashSaleDealCard({
           </p>
         ) : null}
 
-        <button
-          type="button"
+        <Button
+          variant="secondary"
+          fullWidth
           disabled={soldOut}
           onClick={(event) => onQuickAdd(deal, event)}
-          className="mt-4 flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-slate-800 px-2 text-xs sm:mt-5 font-bold text-white transition hover:bg-brand-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 disabled:cursor-not-allowed disabled:bg-slate-800/50 disabled:text-slate-500 disabled:hover:bg-slate-800/50"
+          className={`mt-4 h-auto min-h-11 bg-slate-800 px-2 text-xs font-bold hover:bg-brand-600 disabled:bg-slate-800/50 disabled:text-slate-500 disabled:opacity-100 disabled:hover:bg-slate-800/50 sm:mt-5 ${FLASH_SALE_FOCUS_RING}`}
         >
           <ShoppingBag className="size-3.5" aria-hidden="true" />
           {soldOut ? 'Hết suất' : 'Thêm vào giỏ'}
           <span className="sr-only">: {deal.name}</span>
-        </button>
+        </Button>
       </div>
     </div>
   );

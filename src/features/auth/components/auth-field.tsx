@@ -1,55 +1,46 @@
 import type { ReactNode } from 'react';
-import { inputVariants } from '@/foundation/components/field-system';
+import { InlineAlert } from '@/foundation/components/feedback';
+import { Field } from '@/foundation/components/field-system';
 
-/** Phần riêng của ô nhập trang đăng nhập/đăng ký (nền xám nhạt, bo lớn, chừa chỗ icon trái), đè lên `TextInput size="lg"`. */
+/**
+ * Phần riêng của ô nhập trang đăng nhập/đăng ký (nền xám nhạt, bo lớn, chừa chỗ icon trái), đè lên
+ * `TextInput`/`PasswordInput` `size="lg"`.
+ */
 export const AUTH_INPUT_CLASS = 'rounded-2xl border-slate-200 bg-slate-50/60 pl-11 focus-visible:bg-white';
-
-/** `PasswordInput` nhận className thô nên dựng sẵn từ `inputVariants` + chừa chỗ nút ẩn/hiện. */
-export const authPasswordInputClassName = (invalid: boolean) =>
-  inputVariants({ size: 'lg', invalid, className: `${AUTH_INPUT_CLASS} pr-11` });
 
 export const AUTH_LEADING_ICON_CLASS = 'pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400';
 
-export const AUTH_PASSWORD_TOGGLE_CLASS =
-  'absolute right-3.5 top-1/2 -translate-y-1/2 rounded-lg p-1 text-slate-500 transition hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500';
-
-/** Nhãn (+ hành động phụ bên phải) → control → lỗi, dùng chung cho form đăng nhập/đăng ký. */
+/** Nhãn (+ hành động phụ bên phải qua `Field.labelAction`) → control → lỗi, dùng chung cho form đăng nhập/đăng ký. */
 export function AuthField({
   id,
   label,
-  aside,
+  labelAction,
   error,
   hint,
   children,
 }: {
   id: string;
   label: ReactNode;
-  aside?: ReactNode;
+  labelAction?: ReactNode;
   error?: string;
   /** Gợi ý hiển thị dưới dòng lỗi. */
   hint?: ReactNode;
   children: ReactNode;
 }) {
-  const labelNode = (
-    <label htmlFor={id} className="block text-xs font-bold uppercase tracking-wider text-slate-700">
-      {label}
-    </label>
-  );
   return (
     <div>
-      {aside ? (
-        <div className="flex items-center justify-between">
-          {labelNode}
-          {aside}
-        </div>
-      ) : (
-        labelNode
-      )}
-      {children}
+      <Field
+        label={label}
+        htmlFor={id}
+        labelAction={labelAction}
+        labelClassName="block text-xs font-bold uppercase tracking-wider text-slate-700"
+      >
+        {children}
+      </Field>
       {error && (
-        <span role="alert" className="mt-1.5 block text-xs font-medium text-rose-600">
+        <InlineAlert as="span" role="alert" className="mt-1.5 block text-xs font-medium text-rose-600">
           {error}
-        </span>
+        </InlineAlert>
       )}
       {hint}
     </div>

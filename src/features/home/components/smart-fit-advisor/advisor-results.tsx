@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { ArrowRight, Send, Sparkles } from 'lucide-react';
+import { buttonVariants } from '@/foundation/components/buttons';
 import { STORE_CONTACT } from '@/shared/constants';
+import { ADVISOR_FOCUS, ADVISOR_SECONDARY_BUTTON } from './advisor-option-step';
 
 interface Recommendation {
   title: string;
@@ -32,9 +34,15 @@ export function AdvisorResults({ recommendation, goalLabel, spaceLabel, budgetLa
             {recommendation.title}
           </h3>
           <div className="mt-2 flex flex-wrap gap-2 text-xs text-slate-400">
-            <span className="rounded-md bg-slate-800 px-2 py-0.5">Mục tiêu: {goalLabel}</span>
-            <span className="rounded-md bg-slate-800 px-2 py-0.5">Không gian: {spaceLabel}</span>
-            <span className="rounded-md bg-slate-800 px-2 py-0.5">Ngân sách: {budgetLabel}</span>
+            {[
+              `Mục tiêu: ${goalLabel}`,
+              `Không gian: ${spaceLabel}`,
+              `Ngân sách: ${budgetLabel}`,
+            ].map((summary) => (
+              <span key={summary} className="rounded-md bg-slate-800 px-2 py-0.5">
+                {summary}
+              </span>
+            ))}
           </div>
         </div>
 
@@ -43,7 +51,10 @@ export function AdvisorResults({ recommendation, goalLabel, spaceLabel, budgetLa
             href={`https://zalo.me/${STORE_CONTACT.primaryHotlineRaw}?text=${zaloMessage}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-xl bg-brand-600 px-5 py-2.5 text-xs font-black uppercase tracking-wider text-white hover:bg-brand-700 transition shadow-lg shadow-brand-600/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+            className={buttonVariants({
+              variant: 'primary',
+              className: `px-5 text-xs font-black uppercase tracking-wider shadow-lg shadow-brand-600/20 ${ADVISOR_FOCUS}`,
+            })}
           >
             <Send className="size-3.5" aria-hidden="true" />
             <span>Nhận báo giá Zalo</span>
@@ -51,7 +62,7 @@ export function AdvisorResults({ recommendation, goalLabel, spaceLabel, budgetLa
           </a>
           <Link
             href={recommendation.catalogHref}
-            className="inline-flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-800 px-5 py-2.5 text-xs font-bold text-white hover:bg-slate-700 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+            className={buttonVariants({ variant: 'secondary', className: `px-5 ${ADVISOR_SECONDARY_BUTTON} text-white` })}
           >
             <span>Xem sản phẩm</span>
             <ArrowRight className="size-3.5" aria-hidden="true" />

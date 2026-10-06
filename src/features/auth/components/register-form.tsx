@@ -3,16 +3,9 @@ import Link from 'next/link';
 import type { UseFormReturn } from 'react-hook-form';
 import { ArrowRight, Check, Lock, Mail, Phone, User } from 'lucide-react';
 import { Button } from '@/foundation/components/buttons';
-import { PasswordInput, TextInput } from '@/foundation/components/field-system';
+import { Checkbox, PasswordInput, TextInput } from '@/foundation/components/field-system';
 import type { RegisterCustomerDto } from '@/generated/api/auth/auth.schemas';
-import {
-  AUTH_INPUT_CLASS,
-  AUTH_LEADING_ICON_CLASS,
-  AUTH_PASSWORD_TOGGLE_CLASS,
-  AUTH_SUBMIT_CLASS,
-  AuthField,
-  authPasswordInputClassName,
-} from './auth-field';
+import { AUTH_INPUT_CLASS, AUTH_LEADING_ICON_CLASS, AUTH_SUBMIT_CLASS, AuthField } from './auth-field';
 
 interface RegisterFormProps {
   form: UseFormReturn<RegisterCustomerDto>;
@@ -114,26 +107,23 @@ export function RegisterForm({ form, isPending, acceptedTerms, onAcceptedTermsCh
         <PasswordInput
           {...form.register('password')}
           id={passwordId}
-          aria-invalid={errors.password ? true : undefined}
+          size="lg"
+          invalid={Boolean(errors.password)}
           autoComplete="new-password"
-          wrapperClassName="relative mt-2"
-          className={authPasswordInputClassName(Boolean(errors.password))}
+          wrapperClassName="mt-2"
+          className={AUTH_INPUT_CLASS}
           placeholder="Tối thiểu 8 ký tự"
           leadingIcon={<Lock className={AUTH_LEADING_ICON_CLASS} />}
-          toggleClassName={AUTH_PASSWORD_TOGGLE_CLASS}
         />
       </AuthField>
 
-      {/* Terms Agreement — chưa có primitive Checkbox trong foundation */}
       <div className="pt-2">
-        <label className="flex cursor-pointer items-start gap-2.5 text-xs font-medium text-slate-600">
-          <input
-            type="checkbox"
-            checked={acceptedTerms}
-            onChange={(e) => onAcceptedTermsChange(e.target.checked)}
-            className="mt-0.5 size-4 rounded-md border-slate-300 text-brand-600 focus:ring-brand-500"
-          />
-          <span>
+        <Checkbox
+          checked={acceptedTerms}
+          onChange={(e) => onAcceptedTermsChange(e.target.checked)}
+          wrapperClassName="gap-2.5 py-0"
+          label={
+          <span className="text-xs font-medium text-slate-600">
             Tôi đồng ý với{' '}
             <Link href="/terms" className={TERMS_LINK_CLASS}>
               Điều khoản dịch vụ
@@ -144,7 +134,8 @@ export function RegisterForm({ form, isPending, acceptedTerms, onAcceptedTermsCh
             </Link>{' '}
             của Bảo An Sport.
           </span>
-        </label>
+          }
+        />
       </div>
 
       <Button type="submit" size="lg" fullWidth disabled={isPending} className={AUTH_SUBMIT_CLASS}>

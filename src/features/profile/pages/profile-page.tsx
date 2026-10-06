@@ -134,14 +134,15 @@ export function ProfilePage() {
               <div className="relative flex flex-wrap items-center justify-between gap-3">
                 <h1 className="sr-only">Tài khoản</h1>
                 <p className="text-sm font-semibold">Không tải được thông tin tài khoản.</p>
-                <button
-                  type="button"
+                <Button
+                  variant="ghost"
+                  size="sm"
                   onClick={() => void profileQuery.refetch()}
-                  className="inline-flex items-center gap-2 rounded-xl bg-white/15 px-4 py-2 text-xs font-bold ring-1 ring-white/25 hover:bg-white/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                  className="bg-white/15 px-4 text-xs font-bold text-white ring-1 ring-white/25 hover:bg-white/25 focus-visible:ring-white focus-visible:ring-offset-0"
                 >
                   <RefreshCw className="size-4" aria-hidden />
                   Thử lại
-                </button>
+                </Button>
               </div>
             ) : (
               <div className="relative flex items-center gap-5" aria-busy="true" aria-label="Đang tải thông tin tài khoản">

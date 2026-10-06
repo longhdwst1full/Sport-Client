@@ -1,7 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
+import { Button } from '@/foundation/components/buttons';
+import { DescriptionList } from '@/foundation/components/structure';
 
 export interface ProductSpecItem {
   label: string;
@@ -24,6 +26,7 @@ export function ProductSpecifications({
   const hasMore = specs.length > initialLimit;
   const displayedSpecs = isExpanded ? specs : specs.slice(0, initialLimit);
   const remainingCount = specs.length - initialLimit;
+  const ToggleIcon = isExpanded ? ChevronUp : ChevronDown;
 
   return (
     <div className="rounded-[28px] border border-[var(--dc-border)] bg-white p-6 shadow-sm sm:p-8">
@@ -34,38 +37,26 @@ export function ProductSpecifications({
         </span>
       </div>
 
-      <div className="mt-6 divide-y divide-stone-100 rounded-2xl border border-stone-100 bg-stone-50/50">
-        {displayedSpecs.map(({ label, value }) => (
-          <div
-            key={label}
-            className="grid grid-cols-1 gap-1 px-4 py-3.5 text-xs sm:grid-cols-[1fr_1.3fr] sm:gap-4 sm:px-6 sm:text-sm"
-          >
-            <span className="font-bold text-stone-500">{label}</span>
-            <span className="font-semibold text-ink">{value}</span>
-          </div>
-        ))}
-      </div>
+      <DescriptionList
+        items={displayedSpecs.map(({ label, value }) => ({ key: label, label, value }))}
+        className="mt-6 gap-0 divide-y divide-stone-100 rounded-2xl border border-stone-100 bg-stone-50/50"
+        itemClassName="grid grid-cols-1 gap-1 px-4 py-3.5 text-xs sm:grid-cols-[1fr_1.3fr] sm:gap-4 sm:px-6 sm:text-sm"
+        labelClassName="font-bold text-stone-500"
+        valueClassName="font-semibold text-ink"
+      />
 
       {hasMore && (
         <div className="mt-5 flex justify-center">
-          <button
-            type="button"
+          <Button
+            variant="outline"
+            size="sm"
             onClick={() => setIsExpanded((prev) => !prev)}
             aria-expanded={isExpanded}
-            className="inline-flex items-center gap-2 rounded-full border border-stone-200 bg-white px-5 py-2.5 text-xs font-bold text-stone-700 shadow-sm transition hover:border-emerald-500 hover:bg-emerald-50/50 hover:text-emerald-700 active:scale-95"
+            className="rounded-full text-xs"
           >
-            {isExpanded ? (
-              <>
-                <span>Thu gọn thông số</span>
-                <ChevronUp className="size-4" />
-              </>
-            ) : (
-              <>
-                <span>Xem thêm thông số ({remainingCount} mục)</span>
-                <ChevronDown className="size-4" />
-              </>
-            )}
-          </button>
+            <span>{isExpanded ? 'Thu gọn thông số' : `Xem thêm thông số (${remainingCount} mục)`}</span>
+            <ToggleIcon aria-hidden className="size-4" />
+          </Button>
         </div>
       )}
     </div>

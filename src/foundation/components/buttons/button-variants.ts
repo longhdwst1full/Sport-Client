@@ -7,6 +7,13 @@ export const BUTTON_VARIANT = {
   ghost: 'text-slate-700 hover:bg-slate-100',
   danger: 'bg-rose-600 text-white hover:bg-rose-700',
   success: 'bg-success-600 text-white hover:bg-success-700',
+  warning: 'bg-amber-500 text-slate-950 hover:bg-amber-400',
+  /** Viền đỏ nhạt cho hành động huỷ/xoá không phải hành động chính. */
+  dangerOutline: 'border border-rose-200 bg-white text-rose-700 hover:border-rose-400 hover:bg-rose-50',
+  /** Nút trên nền tối (hero, banner). */
+  inverse: 'bg-white text-slate-900 hover:bg-slate-100',
+  /** Nút dạng chữ/link: không nền, không chiều cao cố định (size bị bỏ qua). */
+  link: 'h-auto px-0 text-brand-700 underline-offset-4 hover:underline',
 } as const;
 
 export const BUTTON_SIZE = {
@@ -36,5 +43,7 @@ const BUTTON_BASE =
  * tailwind-merge ghi đè sau cùng.
  */
 export function buttonVariants({ variant = 'primary', size = 'md', fullWidth = false, className }: ButtonVariantOptions = {}): string {
-  return twMerge(BUTTON_BASE, BUTTON_VARIANT[variant], BUTTON_SIZE[size], fullWidth && 'w-full', className);
+  // `link` không có khung nút nên bỏ class kích thước (chiều cao/padding) để nó nằm gọn trong dòng chữ.
+  const sizeClass = variant === 'link' ? '' : BUTTON_SIZE[size];
+  return twMerge(BUTTON_BASE, sizeClass, BUTTON_VARIANT[variant], fullWidth && 'w-full', className);
 }

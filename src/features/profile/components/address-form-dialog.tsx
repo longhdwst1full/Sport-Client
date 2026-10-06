@@ -2,7 +2,7 @@ import { X } from 'lucide-react';
 import { useId, useRef } from 'react';
 import { useDialogA11y } from '@/foundation/components/overlay/use-dialog-a11y';
 import { Button } from '@/foundation/components/buttons';
-import { Field, TextInput } from '@/foundation/components/field-system';
+import { Checkbox, Field, TextInput } from '@/foundation/components/field-system';
 import { VietnamAddressSelector } from '@/features/address';
 import type { AddressFormValues, AddressView } from '../model/address.mapper';
 import { PROFILE_LABEL_CLASS, PROFILE_SUBMIT_CLASS } from './profile-form-field';
@@ -47,14 +47,15 @@ export function AddressFormDialog({
           <h3 id="address-form-dialog-title" className="text-lg font-black text-slate-900">
             {editingAddress ? 'Chỉnh sửa địa chỉ' : 'Thêm địa chỉ nhận hàng mới'}
           </h3>
-          <button
-            type="button"
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={onClose}
             aria-label="Đóng"
-            className="rounded-xl p-1 text-slate-500 hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+            className="text-slate-500 hover:text-slate-700 focus-visible:ring-offset-0"
           >
             <X className="size-5" aria-hidden />
-          </button>
+          </Button>
         </div>
 
         <form onSubmit={onSubmit} className="mt-5 space-y-4">
@@ -101,17 +102,14 @@ export function AddressFormDialog({
             />
           </div>
 
-          {/* Default toggle — contract chưa có nhãn loại địa chỉ nên bỏ phần chọn nhãn. Chưa có primitive Checkbox. */}
+          {/* Default toggle — contract chưa có nhãn loại địa chỉ nên bỏ phần chọn nhãn. */}
           <div className="flex flex-wrap items-center justify-end gap-4 pt-1">
-            <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-slate-700">
-              <input
-                type="checkbox"
-                checked={form.isDefault}
-                onChange={(e) => onFormChange({ isDefault: e.target.checked })}
-                className="size-4 rounded border-slate-300 text-brand-600 focus:ring-brand-500"
-              />
-              <span>Đặt làm địa chỉ mặc định</span>
-            </label>
+            <Checkbox
+              checked={form.isDefault}
+              onChange={(e) => onFormChange({ isDefault: e.target.checked })}
+              wrapperClassName="items-center gap-2 py-0"
+              label={<span className="text-xs font-bold text-slate-700">Đặt làm địa chỉ mặc định</span>}
+            />
           </div>
 
           {/* Modal Footer Buttons */}

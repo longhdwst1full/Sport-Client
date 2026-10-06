@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useId, useRef, useState } from 'react';
+import { Field, TextInput } from '@/foundation/components/field-system';
 import {
   fetchVietnamProvinces,
   fetchVietnamDistricts,
@@ -9,19 +10,9 @@ import {
   type District,
   type Ward,
 } from '../api/vietnam-divisions';
+import type { SelectedAddressData } from '../model/selected-address';
 import { DivisionSelect } from './division-select';
 import { AddressPreview } from './address-preview';
-
-export interface SelectedAddressData {
-  provinceCode: string | null;
-  provinceName: string;
-  districtCode: string | null;
-  districtName: string;
-  wardCode: string | null;
-  wardName: string;
-  streetAddress: string;
-  fullAddress: string;
-}
 
 interface VietnamAddressSelectorProps {
   initialData?: Partial<SelectedAddressData>;
@@ -301,11 +292,12 @@ export function VietnamAddressSelector({
 
       {/* Street Address Input */}
       <div>
-        <label htmlFor={streetInputId} className="block text-xs font-bold uppercase tracking-wider text-slate-600">
-          Số nhà, tên đường, tòa nhà {required && <span className="text-rose-500">*</span>}
-        </label>
-        <div className="relative mt-1.5">
-          <input
+        <Field
+          label={<>Số nhà, tên đường, tòa nhà {required && <span className="text-rose-500">*</span>}</>}
+          labelClassName="block text-xs font-bold uppercase tracking-wider text-slate-600"
+        >
+          <TextInput
+            size="md"
             id={streetInputId}
             type="text"
             required={required}
@@ -313,9 +305,9 @@ export function VietnamAddressSelector({
             value={streetAddress}
             onChange={(e) => setStreetAddress(e.target.value)}
             placeholder="Ví dụ: Số 123 Đường Nguyễn Hữu Thọ, Tòa nhà Landmark..."
-            className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-base font-medium text-slate-800 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/30 sm:text-sm"
+            className="mt-1.5 font-medium text-slate-800"
           />
-        </div>
+        </Field>
       </div>
 
       {/* Live Preview of formatted address */}

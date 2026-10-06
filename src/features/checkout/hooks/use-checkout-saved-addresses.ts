@@ -2,8 +2,7 @@
 
 import { useEffect } from 'react';
 import type { CustomerAddressDto } from '@/generated/api/customer/customer.schemas';
-import { useCustomerAddressList } from '@/features/address';
-import { initialAddress, toSelectedAddress } from '../model/checkout-address';
+import { EMPTY_SELECTED_ADDRESS, toSelectedAddressData, useCustomerAddressList } from '@/features/address';
 import type { CheckoutForm } from './use-checkout-form';
 
 /**
@@ -35,7 +34,7 @@ export function useCheckoutSavedAddresses({
     setSelectedAddressId(saved.id);
     setName(saved.recipient);
     setPhone(saved.phone);
-    setAddress(toSelectedAddress(saved));
+    setAddress(toSelectedAddressData(saved));
     setAddressFormKey((key) => key + 1);
     invalidateQuote();
   };
@@ -44,7 +43,7 @@ export function useCheckoutSavedAddresses({
     setSelectedAddressId('');
     setName('');
     setPhone('');
-    setAddress(initialAddress);
+    setAddress(EMPTY_SELECTED_ADDRESS);
     setAddressFormKey((key) => key + 1);
     invalidateQuote();
   };

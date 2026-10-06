@@ -1,6 +1,6 @@
 # Storefront Auth — maintenance note
 
-> **Document version:** 1.3.0
+> **Document version:** 1.3.1
 >
 > **Last updated:** 2026-09-30
 >
@@ -60,6 +60,7 @@ Chưa dùng: `useLogoutCustomer`, `useRefreshCustomerToken`, `getCustomerCurrent
 
 | Version | Date | Change summary |
 | --- | --- | --- |
+| 1.3.1 | 2026-10-06 | UI: `AuthField` dùng `Field.labelAction` (prop `aside` → `labelAction`), `PasswordInput size/invalid` thay chuỗi class dựng sẵn (bỏ `authPasswordInputClassName`, `AUTH_PASSWORD_TOGGLE_CLASS`), checkbox → `Checkbox`. |
 | 1.3.0 | 2026-09-30 | Chuyển browser transport sang same-origin ở mọi môi trường; thêm regression test cho hostname production. |
 | 1.2.0 | 2026-09-26 | Ghi hành vi refresh mới: same-origin localhost, Web Lock chéo tab, chỉ xoá phiên khi refresh 401, 409 thử lại một lần, cookie là nguồn sự thật. |
 | 1.1.0 | 2026-09-21 | Đồng bộ `LoginDto.rememberMe`; giữ Storefront ở session-cookie mode. |

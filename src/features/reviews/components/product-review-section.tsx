@@ -3,7 +3,8 @@
 import Image from 'next/image';
 import { useMemo, useState } from 'react';
 import { MessageCircle, ShieldCheck } from 'lucide-react';
-import { Skeleton, SkeletonText } from '@/foundation/components/feedback';
+import { Button } from '@/foundation/components/buttons';
+import { EmptyState, ErrorState, Skeleton } from '@/foundation/components/feedback';
 import { RatingStars } from '@/foundation/components/indicators';
 import { useProductReviews } from '../hooks/use-product-reviews';
 import { formatAverageRating, type ReviewView } from '../model/review.mapper';
@@ -11,6 +12,20 @@ import { formatAverageRating, type ReviewView } from '../model/review.mapper';
 export type { ReviewView };
 
 type ReviewFilter = 'all' | '5' | '4' | 'verified';
+
+const REVIEW_FILTERS: Array<{ id: ReviewFilter; label: (total: number) => string }> = [
+  { id: 'all', label: (total) => `Tất cả (${total})` },
+  { id: '5', label: () => '5 sao' },
+  { id: '4', label: () => '4 sao' },
+  { id: 'verified', label: () => 'Đã xác minh mua hàng' },
+];
+
+/** Khung chú thích nét đứt dùng chung cho trạng thái lỗi/rỗng của khối đánh giá. */
+const NOTE_BLOCK = {
+  className: 'mt-8 rounded-2xl border border-dashed border-slate-300 p-8 text-center',
+  titleAs: 'p',
+  titleClassName: 'text-sm text-slate-500',
+} as const;
 
 function StarRow({ rating, className = 'size-4' }: { rating: number; className?: string }) {
   return (
@@ -62,13 +77,9 @@ export function ProductReviewSection({
             </div>
           </div>
         ) : isError ? (
-          <p className="mt-8 rounded-2xl border border-dashed border-slate-300 p-8 text-center text-sm text-slate-500">
-            Không tải được đánh giá. Vui lòng thử lại sau ít phút.
-          </p>
+          <ErrorState as="div" {...NOTE_BLOCK} title="Không tải được đánh giá. Vui lòng thử lại sau ít phút." />
         ) : total === 0 ? (
-          <p className="mt-8 rounded-2xl border border-dashed border-slate-300 p-8 text-center text-sm text-slate-500">
-            Sản phẩm chưa có đánh giá nào.
-          </p>
+          <EmptyState {...NOTE_BLOCK} title="Sản phẩm chưa có đánh giá nào." />
         ) : (
           <>
             <div className="mt-8 grid gap-8 md:grid-cols-[240px_1fr]">
@@ -103,28 +114,21 @@ export function ProductReviewSection({
 
             <div className="mt-8 flex flex-wrap items-center gap-2 border-b border-slate-100 pb-5">
               <span className="mr-1 text-xs font-bold text-slate-500">Lọc theo:</span>
-              {(
-                [
-                  { id: 'all', label: `Tất cả (${reviews.length})` },
-                  { id: '5', label: '5 sao' },
-                  { id: '4', label: '4 sao' },
-                  { id: 'verified', label: 'Đã xác minh mua hàng' },
-                ] as Array<{ id: ReviewFilter; label: string }>
-              ).map((filter) => (
-                <button
-                  key={filter.id}
-                  type="button"
-                  onClick={() => setActiveFilter(filter.id)}
-                  aria-pressed={activeFilter === filter.id}
-                  className={`rounded-xl px-3.5 py-2 text-xs font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 ${
-                    activeFilter === filter.id
-                      ? 'bg-brand-700 text-white shadow-sm'
-                      : 'border border-slate-200 bg-white text-slate-700 hover:border-slate-300'
-                  }`}
-                >
-                  {filter.label}
-                </button>
-              ))}
+              {REVIEW_FILTERS.map((filter) => {
+                const active = activeFilter === filter.id;
+                return (
+                  <Button
+                    key={filter.id}
+                    variant={active ? 'primary' : 'outline'}
+                    size="sm"
+                    onClick={() => setActiveFilter(filter.id)}
+                    aria-pressed={active}
+                    className={active ? 'bg-brand-700 text-xs shadow-sm' : 'border-slate-200 text-xs text-slate-700'}
+                  >
+                    {filter.label(reviews.length)}
+                  </Button>
+                );
+              })}
             </div>
 
             <div className="mt-6 space-y-6">

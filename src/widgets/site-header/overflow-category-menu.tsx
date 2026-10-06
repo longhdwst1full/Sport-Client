@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { ChevronDown } from 'lucide-react';
 import { useId, type FocusEvent, type KeyboardEvent } from 'react';
 import type { MegaMenuEntry } from '@/features/catalog';
+import { Button } from '@/foundation/components/buttons';
 
 interface OverflowCategoryMenuProps {
   categories: MegaMenuEntry[];
@@ -52,8 +53,7 @@ export function OverflowCategoryMenu({
       onBlur={handleBlur}
       onKeyDown={handleKeyDown}
     >
-      <button
-        type="button"
+      <Button
         onClick={isOpen ? onClose : onOpen}
         aria-expanded={isOpen}
         aria-controls={panelId}
@@ -66,7 +66,7 @@ export function OverflowCategoryMenu({
             isOpen ? 'rotate-180' : ''
           }`}
         />
-      </button>
+      </Button>
 
       {isOpen && (
         <div

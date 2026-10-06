@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Home, Phone, RotateCw, WifiOff, AlertTriangle } from 'lucide-react';
+import { Button, buttonVariants } from '@/foundation/components/buttons';
 import { STORE_CONTACT } from '@/shared/constants';
 
 /**
@@ -40,17 +41,13 @@ export function RouteErrorContent({ digest, onRetry }: { digest?: string; onRetr
       </p>
 
       <div className="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
-        <button
-          type="button"
-          onClick={onRetry}
-          className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-brand-600 px-6 font-bold text-white transition-colors hover:bg-brand-700"
-        >
+        <Button variant="primary" size="lg" onClick={onRetry} className="font-bold">
           <RotateCw aria-hidden className="size-4" />
           Thử lại
-        </button>
+        </Button>
         <Link
           href="/"
-          className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-6 font-bold text-slate-800 transition-colors hover:border-brand-300 hover:text-brand-700"
+          className={buttonVariants({ variant: 'outline', size: 'lg', className: 'font-bold' })}
         >
           <Home aria-hidden className="size-4" />
           Về trang chủ

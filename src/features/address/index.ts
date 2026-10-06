@@ -1,7 +1,12 @@
+export { VietnamAddressSelector } from './components/vietnam-address-selector';
 export {
-  VietnamAddressSelector,
+  EMPTY_SELECTED_ADDRESS,
+  joinAddressParts,
+  toDivisionCode,
+  toSelectedAddressData,
+  type SavedAddressParts,
   type SelectedAddressData,
-} from './components/vietnam-address-selector';
+} from './model/selected-address';
 export {
   fetchVietnamProvinces,
   fetchVietnamDistricts,

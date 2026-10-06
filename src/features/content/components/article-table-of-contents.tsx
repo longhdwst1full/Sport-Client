@@ -1,7 +1,7 @@
 'use client';
 
-import React from 'react';
 import { ListOrdered } from 'lucide-react';
+import { Button } from '@/foundation/components/buttons';
 import type { TocHeading } from '../model/article-toc';
 
 export function ArticleTableOfContents({ headings }: { headings: TocHeading[] }) {
@@ -37,13 +37,13 @@ export function ArticleTableOfContents({ headings }: { headings: TocHeading[] })
             key={heading.id}
             className={`${heading.level === 3 ? 'ml-4 list-[circle]' : 'list-decimal'} list-inside`}
           >
-            <button
-              type="button"
+            <Button
+              variant="link"
               onClick={() => scrollToHeading(heading.id)}
-              className="rounded py-1 text-left text-slate-700 hover:text-brand-700 hover:underline transition font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+              className="justify-start rounded py-1 text-left text-xs text-slate-700 hover:text-brand-700"
             >
               {heading.text}
-            </button>
+            </Button>
           </li>
         ))}
       </ol>

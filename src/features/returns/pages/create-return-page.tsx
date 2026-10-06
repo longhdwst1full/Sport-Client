@@ -2,7 +2,9 @@
 
 import Link from 'next/link';
 import { PackageX } from 'lucide-react';
-import { InlineAlert, Skeleton } from '@/foundation/components/feedback';
+import { Button, buttonVariants } from '@/foundation/components/buttons';
+import { EmptyState, InlineAlert, Skeleton } from '@/foundation/components/feedback';
+import { Checkbox, Field, Select, Textarea, TextInput } from '@/foundation/components/field-system';
 import { formatVnd } from '@/shared/format/money';
 import { formatDate } from '@/shared/format/date-time';
 import { EvidencePicker } from '../components/evidence-picker';
@@ -54,11 +56,15 @@ export function CreateReturnPage({ orderNo }: { orderNo: string }) {
           </div>
         )}
         {isLoaded && !isAuthenticated && (
-          <section className="mt-6 rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-sm">
-            <h2 className="text-lg font-black">Đăng nhập để yêu cầu trả hàng</h2>
-            <p className="mt-2 text-sm text-slate-600">Nếu đặt hàng không đăng nhập, vui lòng gọi hotline để nhân viên tạo yêu cầu giúp bạn.</p>
-            <Link href="/login" className="mt-5 inline-flex min-h-11 items-center rounded-xl bg-brand-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-brand-700">Đăng nhập</Link>
-          </section>
+          <EmptyState
+            as="section"
+            className="mt-6 rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-sm"
+            titleClassName="text-lg font-black"
+            title="Đăng nhập để yêu cầu trả hàng"
+            descriptionClassName="mt-2 text-sm text-slate-600"
+            description="Nếu đặt hàng không đăng nhập, vui lòng gọi hotline để nhân viên tạo yêu cầu giúp bạn."
+            actions={<Link href="/login" className={buttonVariants({ variant: 'primary', className: 'mt-5 px-5 font-bold' })}>Đăng nhập</Link>}
+          />
         )}
         {eligibility.isError && (
           <InlineAlert role="alert" className="mt-6 rounded-2xl border border-rose-200 bg-rose-50 p-5 text-sm text-rose-800">
@@ -107,20 +113,18 @@ export function CreateReturnPage({ orderNo }: { orderNo: string }) {
                       </div>
                       {!disabled && (line.isBundle ? (
                         // UX: combo là một khối — tick để trả toàn bộ phần còn lại, không cho nhập số lẻ.
-                        <label className="flex min-h-11 items-center gap-2 text-sm font-bold">
-                          <input
-                            type="checkbox"
-                            checked={quantity > 0}
-                            disabled={submit.isPending}
-                            onChange={(event) => setQuantity(line.orderItemId, event.target.checked ? line.returnableQuantity : 0)}
-                            className="size-5 accent-brand-600"
-                          />
-                          Trả {line.returnableQuantity} bộ
-                        </label>
+                        <Checkbox
+                          checked={quantity > 0}
+                          disabled={submit.isPending}
+                          onChange={(event) => setQuantity(line.orderItemId, event.target.checked ? line.returnableQuantity : 0)}
+                          wrapperClassName="items-center gap-2 py-0 font-bold"
+                          label={`Trả ${line.returnableQuantity} bộ`}
+                        />
                       ) : (
                         <label className="flex items-center gap-2 text-sm">
                           <span className="text-slate-500">{RETURN_FIELD_LABELS.requested}</span>
-                          <input
+                          <TextInput
+                            size="md"
                             type="number"
                             min={0}
                             max={line.returnableQuantity}
@@ -130,7 +134,7 @@ export function CreateReturnPage({ orderNo }: { orderNo: string }) {
                               const next = Math.trunc(Number(event.target.value) || 0);
                               setQuantity(line.orderItemId, Math.min(Math.max(next, 0), line.returnableQuantity));
                             }}
-                            className="min-h-11 w-20 rounded-lg border border-slate-200 px-2 py-1.5 text-right text-base sm:text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30"
+                            className="w-20 rounded-lg px-2 text-right"
                             aria-label={`Số lượng trả ${line.productName}`}
                           />
                           <span className="text-xs text-slate-500">/ {line.returnableQuantity}</span>
@@ -143,20 +147,27 @@ export function CreateReturnPage({ orderNo }: { orderNo: string }) {
             </section>
 
             <section className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
-              <label htmlFor="return-reason" className="text-lg font-black">{RETURN_FIELD_LABELS.reason} <span className="text-rose-600">*</span></label>
-              <select
+              <Field
+                htmlFor="return-reason"
+                labelClassName="text-lg font-black"
+                label={<>{RETURN_FIELD_LABELS.reason} <span className="text-rose-600">*</span></>}
+              >
+              <Select
                 id="return-reason"
+                size="md"
+                wrapperClassName="mt-3"
                 value={form.reasonCode}
                 disabled={submit.isPending}
                 onChange={(event) => setForm((current) => ({ ...current, reasonCode: event.target.value as CreateReturnFormState['reasonCode'] }))}
-                className="mt-3 min-h-11 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-base sm:text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30"
               >
                 <option value="" disabled>Chọn lý do</option>
                 {reasonOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
-              </select>
+              </Select>
+              </Field>
 
-              <label htmlFor="return-description" className="mt-5 block font-black">{RETURN_FIELD_LABELS.description}</label>
-              <textarea
+              <Field label={RETURN_FIELD_LABELS.description} labelClassName="mt-5 block font-black">
+              <Textarea
+                styled
                 id="return-description"
                 value={form.description}
                 maxLength={2000}
@@ -164,8 +175,9 @@ export function CreateReturnPage({ orderNo }: { orderNo: string }) {
                 disabled={submit.isPending}
                 onChange={(event) => setForm((current) => ({ ...current, description: event.target.value }))}
                 placeholder="Mô tả tình trạng sản phẩm (không bắt buộc)"
-                className="mt-2 w-full rounded-xl border border-slate-200 p-3 text-base sm:text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30"
+                className="mt-2 min-h-0"
               />
+              </Field>
 
               <p className="mt-5 font-black">{RETURN_FIELD_LABELS.evidence}</p>
               <p className="mb-3 text-xs text-slate-500">Không bắt buộc. Ảnh giúp cửa hàng duyệt nhanh hơn, nhất là khi hàng lỗi.</p>
@@ -179,15 +191,15 @@ export function CreateReturnPage({ orderNo }: { orderNo: string }) {
             </section>
 
             {submit.isError && (
-              <p role="alert" className="rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm font-semibold text-rose-800">
+              <InlineAlert as="p" role="alert" className="rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm font-semibold text-rose-800">
                 {returnErrorMessage(submit.error, 'Không gửi được yêu cầu. Vui lòng thử lại.')}
-              </p>
+              </InlineAlert>
             )}
             <div className="flex flex-col-reverse gap-3 sm:flex-row sm:flex-wrap sm:justify-between">
-              <Link href={`/orders/${encodeURIComponent(orderNo)}`} className="inline-flex min-h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2">Quay lại đơn</Link>
-              <button type="submit" disabled={!canSubmit} className="inline-flex min-h-11 items-center justify-center rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 disabled:opacity-50">
+              <Link href={`/orders/${encodeURIComponent(orderNo)}`} className={buttonVariants({ variant: 'outline', className: 'border-slate-200 font-bold text-slate-700' })}>Quay lại đơn</Link>
+              <Button type="submit" variant="primary" disabled={!canSubmit} className="px-5 font-bold">
                 {submit.isPending ? 'Đang gửi...' : uploading ? 'Đang tải ảnh...' : 'Gửi yêu cầu'}
-              </button>
+              </Button>
             </div>
           </form>
         )}

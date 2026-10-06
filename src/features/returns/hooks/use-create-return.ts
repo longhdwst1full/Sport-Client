@@ -15,7 +15,7 @@ import {
   type CreateReturnFormState,
   type UploadedEvidence,
 } from '../model/return.mapper';
-import { useSignatureIdempotencyKey } from './use-signature-idempotency-key';
+import { useSignatureIdempotencyKey } from '@/shared/hooks';
 
 /**
  * Form + eligibility query + mutation tạo yêu cầu trả hàng. Luật (hạn trả, số lượng, combo,

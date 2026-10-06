@@ -5,7 +5,9 @@ import Link from 'next/link';
 import { AlertTriangle, Bot, Headset, RotateCw, SendHorizontal, X } from 'lucide-react';
 import { GUEST_LOOKUP_ROUTE } from '@/features/orders';
 import { Modal } from '@/foundation/components/overlay';
-import { Skeleton, Spinner } from '@/foundation/components/feedback';
+import { Button } from '@/foundation/components/buttons';
+import { InlineAlert, Skeleton, Spinner } from '@/foundation/components/feedback';
+import { Field, Textarea } from '@/foundation/components/field-system';
 import { STORE_CONTACT } from '@/shared/constants';
 import type { AssistantChatState } from '../hooks/use-assistant-chat';
 import {
@@ -17,6 +19,9 @@ import {
 import { assistantErrorMessage, isAssistantQuotaExceeded } from '../model/assistant-error';
 import { AssistantHandoff } from './assistant-handoff';
 import { AssistantMessage } from './assistant-message';
+
+/** Nút dạng link nằm trong dòng thông báo: kế thừa màu chữ của dòng, luôn gạch chân. */
+const INLINE_LINK_BUTTON = 'gap-1 rounded font-bold text-inherit underline focus-visible:ring-offset-0';
 
 const TITLE_ID = 'assistant-chat-title';
 const FOCUSABLE = 'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])';
@@ -73,18 +78,26 @@ export function AssistantDialog({ chat, onClose }: { chat: AssistantChatState; o
             <h2 id={TITLE_ID} className="truncate text-sm font-black">{ASSISTANT_TITLE}</h2>
           </div>
           <div className="flex items-center gap-1">
-            <button
-              type="button"
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={() => setShowHandoff((value) => !value)}
               aria-expanded={showHandoff}
-              className="inline-flex min-h-11 items-center gap-1 rounded-lg bg-white/15 px-2.5 py-1 text-[11px] font-bold hover:bg-white/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white sm:min-h-8"
+              className="h-auto min-h-11 gap-1 rounded-lg bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white hover:bg-white/25 focus-visible:ring-white focus-visible:ring-offset-0 sm:min-h-8"
             >
               <Headset className="size-3.5" aria-hidden />
               {ASSISTANT_COPY.handoff}
-            </button>
-            <button type="button" onClick={onClose} className="grid size-11 place-items-center rounded-lg hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white sm:size-8" aria-label="Đóng trợ lý mua sắm">
+            </Button>
+            {/* Panel 380px: nút đóng thu về 32px trên desktop, giữ 44px trên mobile. */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onClose}
+              className="rounded-lg text-white hover:bg-white/15 focus-visible:ring-white focus-visible:ring-offset-0 sm:size-8"
+              aria-label="Đóng trợ lý mua sắm"
+            >
               <X className="size-4.5" aria-hidden />
-            </button>
+            </Button>
           </div>
         </header>
 
@@ -115,7 +128,7 @@ export function AssistantDialog({ chat, onClose }: { chat: AssistantChatState; o
             </li>
           )}
           {chat.historyError != null && (
-            <li role="alert" className="rounded-xl bg-rose-50 px-3 py-2 text-xs text-rose-800">{ASSISTANT_COPY.historyError}</li>
+            <InlineAlert as="li" role="alert" className="rounded-xl bg-rose-50 px-3 py-2 text-xs text-rose-800">{ASSISTANT_COPY.historyError}</InlineAlert>
           )}
           {chat.messages.map((message) => (
             <AssistantMessage
@@ -132,17 +145,17 @@ export function AssistantDialog({ chat, onClose }: { chat: AssistantChatState; o
                 {chat.pending.content}
               </p>
               {chat.pending.error != null && (
-                <div role="alert" className="flex flex-wrap items-center gap-2 text-[11px] text-rose-700">
+                <InlineAlert role="alert" className="flex flex-wrap items-center gap-2 text-[11px] text-rose-700">
                   <span>{assistantErrorMessage(chat.pending.error, undefined, { isAuthenticated: chat.isAuthenticated })}</span>
                   {!chat.isAuthenticated && isAssistantQuotaExceeded(chat.pending.error) && (
                     <Link href="/login" onClick={onClose} className="rounded font-bold underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500">Đăng nhập</Link>
                   )}
-                  <button type="button" onClick={() => void chat.send(chat.pending?.content ?? '')} className="inline-flex items-center gap-1 rounded font-bold underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500">
+                  <Button variant="link" onClick={() => void chat.send(chat.pending?.content ?? '')} className={INLINE_LINK_BUTTON}>
                     <RotateCw className="size-3" aria-hidden />
                     Thử lại
-                  </button>
-                  <button type="button" onClick={chat.discardPending} className="rounded font-bold underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500">Bỏ</button>
-                </div>
+                  </Button>
+                  <Button variant="link" onClick={chat.discardPending} className={INLINE_LINK_BUTTON}>Bỏ</Button>
+                </InlineAlert>
               )}
             </li>
           )}
@@ -153,9 +166,9 @@ export function AssistantDialog({ chat, onClose }: { chat: AssistantChatState; o
             </li>
           )}
           {chat.feedbackError != null && (
-            <li role="alert" className="text-center text-[11px] text-rose-700">
+            <InlineAlert as="li" role="alert" className="text-center text-[11px] text-rose-700">
               {assistantErrorMessage(chat.feedbackError, ASSISTANT_COPY.feedbackError)}
-            </li>
+            </InlineAlert>
           )}
           {chat.suggestOrderLookup && (
             <li className="flex flex-wrap items-center gap-2 rounded-xl bg-sky-50 px-3 py-2 text-xs text-sky-900">
@@ -169,7 +182,7 @@ export function AssistantDialog({ chat, onClose }: { chat: AssistantChatState; o
           {chat.handoffSuggested && !chat.isHandedOff && !showHandoff && (
             <li className="flex flex-wrap items-center gap-2 rounded-xl bg-amber-50 px-3 py-2 text-xs text-amber-900">
               <span>{ASSISTANT_COPY.handoffSuggested}</span>
-              <button type="button" onClick={() => setShowHandoff(true)} className="rounded font-bold underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500">{ASSISTANT_COPY.handoff}</button>
+              <Button variant="link" onClick={() => setShowHandoff(true)} className={INLINE_LINK_BUTTON}>{ASSISTANT_COPY.handoff}</Button>
             </li>
           )}
           <li ref={listEndRef} aria-hidden className="h-px" />
@@ -191,9 +204,10 @@ export function AssistantDialog({ chat, onClose }: { chat: AssistantChatState; o
             void submit();
           }}
         >
-          <label htmlFor="assistant-chat-input" className="sr-only">{ASSISTANT_COPY.inputLabel}</label>
+          <Field label={ASSISTANT_COPY.inputLabel} labelClassName="sr-only" htmlFor="assistant-chat-input">
           <div className="flex items-end gap-2">
-            <textarea
+            <Textarea
+              styled
               id="assistant-chat-input"
               value={draft}
               onChange={(event) => setDraft(event.target.value)}
@@ -208,17 +222,19 @@ export function AssistantDialog({ chat, onClose }: { chat: AssistantChatState; o
               disabled={inputDisabled}
               placeholder={ASSISTANT_COPY.inputPlaceholder}
               aria-describedby="assistant-chat-counter"
-              className="min-h-[44px] flex-1 resize-none rounded-2xl border border-slate-200 px-3 py-2 text-base text-slate-800 placeholder:text-slate-500 focus:border-brand-500 sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/30 disabled:bg-slate-50"
+              className="min-h-[44px] flex-1 resize-none rounded-2xl px-3 py-2 text-slate-800 placeholder:text-slate-500"
             />
-            <button
+            <Button
               type="submit"
+              size="icon"
               disabled={inputDisabled || !draft.trim()}
               aria-label="Gửi tin nhắn"
-              className="grid size-11 shrink-0 place-items-center rounded-2xl bg-brand-600 text-white transition hover:bg-brand-700 disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2"
+              className="shrink-0 rounded-2xl disabled:opacity-40"
             >
               {chat.isSending ? <Spinner className="size-4.5 animate-spin" /> : <SendHorizontal className="size-4.5" aria-hidden />}
-            </button>
+            </Button>
           </div>
+          </Field>
           <p id="assistant-chat-counter" className="mt-1 text-right text-[11px] text-slate-500">
             {draft.length}/{ASSISTANT_MESSAGE_MAX_LENGTH}
           </p>

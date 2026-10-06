@@ -3,12 +3,13 @@
 import Link from 'next/link';
 import { MailCheck, SearchCheck } from 'lucide-react';
 import { Button } from '@/foundation/components/buttons';
-import { Spinner } from '@/foundation/components/feedback';
+import { InlineAlert } from '@/foundation/components/feedback';
+import { Field, TextInput } from '@/foundation/components/field-system';
 import { GUEST_LOOKUP_CODE_LENGTH, GUEST_LOOKUP_COPY } from '../model/guest-order-lookup.constants';
 import { useGuestOrderLookup } from '../hooks/use-guest-order-lookup';
 
-const inputClass =
-  'mt-1.5 min-h-11 w-full rounded-2xl border border-slate-200 px-3 py-2.5 text-base text-slate-800 sm:text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30 disabled:bg-slate-50';
+const LABEL_CLASS = 'block text-xs font-bold text-slate-800';
+const ERROR_ALERT_CLASS = 'rounded-2xl border border-rose-200 bg-rose-50 p-3 text-xs font-semibold text-rose-800';
 
 /** `/orders/lookup`: khách vãng lai xem đơn bằng mã đơn + email + OTP, không cần trình duyệt đã đặt hàng. */
 export function GuestOrderLookupPage({ initialOrderNo = '' }: { initialOrderNo?: string }) {
@@ -29,9 +30,10 @@ export function GuestOrderLookupPage({ initialOrderNo = '' }: { initialOrderNo?:
           }}
         >
           <div>
-            <label htmlFor="lookup-order-no" className="block text-xs font-bold text-slate-800">Mã đơn hàng</label>
-            <input
+            <Field label="Mã đơn hàng" labelClassName={LABEL_CLASS}>
+            <TextInput
               id="lookup-order-no"
+              size="md"
               value={lookup.orderNo}
               onChange={(event) => lookup.setOrderNo(event.target.value)}
               maxLength={32}
@@ -39,13 +41,15 @@ export function GuestOrderLookupPage({ initialOrderNo = '' }: { initialOrderNo?:
               autoComplete="off"
               placeholder="VD: DH260929000123"
               disabled={lookup.isRequesting}
-              className={`${inputClass} font-mono uppercase`}
+              className="mt-1.5 font-mono uppercase"
             />
+            </Field>
           </div>
           <div>
-            <label htmlFor="lookup-email" className="block text-xs font-bold text-slate-800">Email người nhận</label>
-            <input
+            <Field label="Email người nhận" labelClassName={LABEL_CLASS}>
+            <TextInput
               id="lookup-email"
+              size="md"
               type="email"
               value={lookup.email}
               onChange={(event) => lookup.setEmail(event.target.value)}
@@ -53,18 +57,23 @@ export function GuestOrderLookupPage({ initialOrderNo = '' }: { initialOrderNo?:
               required
               autoComplete="email"
               disabled={lookup.isRequesting}
-              className={inputClass}
+              className="mt-1.5"
             />
+            </Field>
           </div>
           {lookup.requestErrorMessage && (
-            <p role="alert" className="rounded-2xl border border-rose-200 bg-rose-50 p-3 text-xs font-semibold text-rose-800">{lookup.requestErrorMessage}</p>
+            <InlineAlert as="p" role="alert" className={ERROR_ALERT_CLASS}>{lookup.requestErrorMessage}</InlineAlert>
           )}
           <Button
             type="submit"
             disabled={!lookup.canRequest}
-            className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-brand-600 px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 disabled:opacity-50"
+            variant="primary"
+            size="lg"
+            fullWidth
+            loading={lookup.isRequesting}
+            className="text-sm shadow-sm"
           >
-            {lookup.isRequesting ? <Spinner className="size-4 animate-spin" /> : <MailCheck className="size-4" aria-hidden />}
+            {!lookup.isRequesting && <MailCheck className="size-4" aria-hidden />}
             {lookup.secondsLeft > 0 ? `Gửi lại sau ${lookup.secondsLeft}s` : 'Gửi mã xác thực'}
           </Button>
         </form>
@@ -76,15 +85,16 @@ export function GuestOrderLookupPage({ initialOrderNo = '' }: { initialOrderNo?:
             lookup.verifyCode();
           }}
         >
-          <p role="status" className="rounded-2xl border border-success-200 bg-success-50 p-3 text-sm text-success-900">{GUEST_LOOKUP_COPY.sent}</p>
+          <InlineAlert as="p" role="status" className="rounded-2xl border border-success-200 bg-success-50 p-3 text-sm text-success-900">{GUEST_LOOKUP_COPY.sent}</InlineAlert>
           <p className="text-xs text-slate-500">
             Đơn <span className="font-mono font-bold text-slate-800">{lookup.orderNo.trim().toUpperCase()}</span> ·{' '}
-            <button type="button" onClick={lookup.editDetails} className="inline-flex min-h-11 items-center font-bold text-brand-700 underline">Sửa thông tin</button>
+            <Button variant="link" onClick={lookup.editDetails} className="min-h-11 font-bold underline">Sửa thông tin</Button>
           </p>
           <div>
-            <label htmlFor="lookup-code" className="block text-xs font-bold text-slate-800">{GUEST_LOOKUP_COPY.codeLabel}</label>
-            <input
+            <Field label={GUEST_LOOKUP_COPY.codeLabel} labelClassName={LABEL_CLASS}>
+            <TextInput
               id="lookup-code"
+              size="md"
               value={lookup.code}
               onChange={(event) => lookup.setCode(event.target.value)}
               inputMode="numeric"
@@ -93,31 +103,36 @@ export function GuestOrderLookupPage({ initialOrderNo = '' }: { initialOrderNo?:
               maxLength={GUEST_LOOKUP_CODE_LENGTH}
               required
               disabled={lookup.isVerifying || lookup.isLocked}
-              className={`${inputClass} text-center font-mono text-2xl tracking-[0.5em] sm:text-2xl`}
+              className="mt-1.5 text-center font-mono text-2xl tracking-[0.5em] sm:text-2xl"
             />
+            </Field>
           </div>
           {lookup.verifyErrorMessage && (
-            <p role="alert" className="rounded-2xl border border-rose-200 bg-rose-50 p-3 text-xs font-semibold text-rose-800">{lookup.verifyErrorMessage}</p>
+            <InlineAlert as="p" role="alert" className={ERROR_ALERT_CLASS}>{lookup.verifyErrorMessage}</InlineAlert>
           )}
           <Button
             type="submit"
             disabled={!lookup.canVerify || lookup.isLocked}
-            className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-brand-600 px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 disabled:opacity-50"
+            variant="primary"
+            size="lg"
+            fullWidth
+            loading={lookup.isVerifying}
+            className="text-sm shadow-sm"
           >
-            {lookup.isVerifying ? <Spinner className="size-4 animate-spin" /> : <SearchCheck className="size-4" aria-hidden />}
+            {!lookup.isVerifying && <SearchCheck className="size-4" aria-hidden />}
             Xem đơn hàng
           </Button>
           <div className="text-center text-xs text-slate-500">
             {lookup.secondsLeft > 0 ? (
               <span aria-live="polite">Gửi lại mã sau {lookup.secondsLeft} giây</span>
             ) : (
-              <button type="button" onClick={lookup.requestCode} disabled={!lookup.canRequest} className="inline-flex min-h-11 items-center font-bold text-brand-700 underline disabled:opacity-50">
+              <Button variant="link" onClick={lookup.requestCode} disabled={!lookup.canRequest} className="min-h-11 font-bold underline">
                 {lookup.isRequesting ? 'Đang gửi...' : 'Gửi lại mã'}
-              </button>
+              </Button>
             )}
           </div>
           {lookup.requestErrorMessage && (
-            <p role="alert" className="text-center text-xs font-semibold text-rose-700">{lookup.requestErrorMessage}</p>
+            <InlineAlert as="p" role="alert" className="text-center text-xs font-semibold text-rose-700">{lookup.requestErrorMessage}</InlineAlert>
           )}
         </form>
       )}

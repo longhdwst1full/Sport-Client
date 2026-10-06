@@ -4,7 +4,9 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { LogIn, SendHorizontal, X } from 'lucide-react';
 import { useCreateSupportRequest } from '@/features/support';
-import { Spinner } from '@/foundation/components/feedback';
+import { Button, buttonVariants } from '@/foundation/components/buttons';
+import { InlineAlert, Spinner } from '@/foundation/components/feedback';
+import { Field, Textarea } from '@/foundation/components/field-system';
 import { ASSISTANT_COPY, ASSISTANT_HANDOFF_SUBJECT } from '../model/assistant.constants';
 import { AssistantTicketCard } from './assistant-cards';
 
@@ -33,15 +35,22 @@ export function AssistantHandoff({
     <section aria-labelledby="assistant-handoff-title" className="border-t border-slate-200 bg-slate-50 p-3">
       <div className="flex items-center justify-between gap-2">
         <h3 id="assistant-handoff-title" className="text-xs font-black text-slate-900">{ASSISTANT_COPY.handoff}</h3>
-        <button type="button" onClick={onCancel} className="grid size-9 place-items-center rounded-lg text-slate-500 hover:bg-slate-200 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500" aria-label="Đóng chuyển nhân viên">
+        {/* 36px: khung handoff nằm trong panel 380px nên dùng nút gọn. */}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onCancel}
+          className="size-9 rounded-lg text-slate-500 hover:bg-slate-200 hover:text-slate-700 focus-visible:ring-offset-0"
+          aria-label="Đóng chuyển nhân viên"
+        >
           <X className="size-4" aria-hidden />
-        </button>
+        </Button>
       </div>
 
       {!isAuthenticated && (
         <div className="mt-2 space-y-2 text-xs text-slate-600">
           <p>{ASSISTANT_COPY.handoffLoginRequired}</p>
-          <Link href="/login" onClick={onNavigate} className="inline-flex min-h-9 items-center gap-1.5 rounded-lg bg-brand-600 px-3 py-1.5 font-bold text-white hover:bg-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2">
+          <Link href="/login" onClick={onNavigate} className={buttonVariants({ size: 'sm', className: 'gap-1.5 rounded-lg px-3 text-xs font-bold' })}>
             <LogIn className="size-3.5" aria-hidden />
             Đăng nhập
           </Link>
@@ -64,28 +73,29 @@ export function AssistantHandoff({
             create.submit({ subject: ASSISTANT_HANDOFF_SUBJECT, message: trimmed, conversationId });
           }}
         >
-          <label htmlFor="assistant-handoff-message" className="block text-[11px] font-bold text-slate-700">
-            Mô tả vấn đề cho nhân viên
-          </label>
-          <textarea
-            id="assistant-handoff-message"
-            value={message}
-            onChange={(event) => setMessage(event.target.value)}
-            maxLength={HANDOFF_MESSAGE_MAX_LENGTH}
-            rows={2}
-            disabled={create.isPending}
-            className="w-full resize-none rounded-xl border border-slate-200 bg-white p-2 text-base text-slate-800 focus:border-brand-500 sm:text-xs focus:outline-none focus:ring-2 focus:ring-brand-500/30"
-          />
-          {create.errorMessage && <p role="alert" className="text-[11px] font-semibold text-rose-700">{create.errorMessage}</p>}
+          <Field label="Mô tả vấn đề cho nhân viên" labelClassName="block text-[11px] font-bold text-slate-700">
+            <Textarea
+              styled
+              id="assistant-handoff-message"
+              value={message}
+              onChange={(event) => setMessage(event.target.value)}
+              maxLength={HANDOFF_MESSAGE_MAX_LENGTH}
+              rows={2}
+              disabled={create.isPending}
+              className="min-h-0 resize-none p-2 text-slate-800 sm:text-xs"
+            />
+          </Field>
+          {create.errorMessage && <InlineAlert as="p" role="alert" className="text-[11px] font-semibold text-rose-700">{create.errorMessage}</InlineAlert>}
           <div className="flex justify-end">
-            <button
+            <Button
               type="submit"
+              size="sm"
               disabled={!trimmed || create.isPending}
-              className="inline-flex items-center gap-1.5 min-h-9 rounded-lg bg-brand-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-brand-700 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2"
+              className="gap-1.5 rounded-lg px-3 text-xs font-bold"
             >
               {create.isPending ? <Spinner className="size-3.5 animate-spin" /> : <SendHorizontal className="size-3.5" aria-hidden />}
               Gửi cho nhân viên
-            </button>
+            </Button>
           </div>
         </form>
       )}

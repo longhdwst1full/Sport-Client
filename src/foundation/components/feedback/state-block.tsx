@@ -11,6 +11,8 @@ export type StateBlockProps = {
   descriptionClassName?: string;
   description?: ReactNode;
   actions?: ReactNode;
+  /** Vd. `alert` cho khối lỗi cần đọc ngay, `status` cho thông báo không khẩn. */
+  role?: 'alert' | 'status';
 };
 
 /**
@@ -29,10 +31,11 @@ export function StateBlock({
   descriptionClassName,
   description,
   actions,
+  role,
   tone,
 }: StateBlockProps & { tone: 'neutral' | 'error' }) {
   return (
-    <Tag className={className ?? 'mx-auto flex max-w-md flex-col items-center px-4 py-12 text-center'}>
+    <Tag role={role} className={className ?? 'mx-auto flex max-w-md flex-col items-center px-4 py-12 text-center'}>
       {icon ? (
         <div
           className={

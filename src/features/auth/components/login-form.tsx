@@ -2,17 +2,10 @@ import { useId } from 'react';
 import Link from 'next/link';
 import type { UseFormReturn } from 'react-hook-form';
 import { Button } from '@/foundation/components/buttons';
-import { PasswordInput, TextInput } from '@/foundation/components/field-system';
+import { Checkbox, PasswordInput, TextInput } from '@/foundation/components/field-system';
 import { ArrowRight, Lock, Mail } from 'lucide-react';
 import type { LoginDto } from '@/generated/api/auth/auth.schemas';
-import {
-  AUTH_LEADING_ICON_CLASS,
-  AUTH_PASSWORD_TOGGLE_CLASS,
-  AUTH_SUBMIT_CLASS,
-  AUTH_INPUT_CLASS,
-  AuthField,
-  authPasswordInputClassName,
-} from './auth-field';
+import { AUTH_INPUT_CLASS, AUTH_LEADING_ICON_CLASS, AUTH_SUBMIT_CLASS, AuthField } from './auth-field';
 
 interface LoginFormProps {
   form: UseFormReturn<LoginDto>;
@@ -47,7 +40,7 @@ export function LoginForm({ form, isPending, onSubmit }: LoginFormProps) {
         id={passwordId}
         label="Mật khẩu"
         error={errors.password?.message}
-        aside={
+        labelAction={
           <Link
             href="/forgot-password"
             className="text-xs font-bold text-brand-600 hover:text-brand-700 hover:underline rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
@@ -59,26 +52,22 @@ export function LoginForm({ form, isPending, onSubmit }: LoginFormProps) {
         <PasswordInput
           {...form.register('password')}
           id={passwordId}
-          aria-invalid={errors.password ? true : undefined}
+          size="lg"
+          invalid={Boolean(errors.password)}
           autoComplete="current-password"
-          wrapperClassName="relative mt-2"
-          className={authPasswordInputClassName(Boolean(errors.password))}
+          wrapperClassName="mt-2"
+          className={AUTH_INPUT_CLASS}
           placeholder="Nhập tối thiểu 8 ký tự"
           leadingIcon={<Lock className={AUTH_LEADING_ICON_CLASS} />}
-          toggleClassName={AUTH_PASSWORD_TOGGLE_CLASS}
         />
       </AuthField>
 
-      {/* Remember Me — chưa có primitive Checkbox trong foundation */}
       <div className="flex items-center justify-between pt-1">
-        <label className="flex cursor-pointer items-center gap-2.5 text-xs font-semibold text-slate-700">
-          <input
-            type="checkbox"
-            {...form.register('rememberMe')}
-            className="size-4 rounded-md border-slate-300 text-brand-600 focus:ring-brand-500"
-          />
-          <span>Ghi nhớ đăng nhập trên thiết bị này</span>
-        </label>
+        <Checkbox
+          {...form.register('rememberMe')}
+          label={<span className="text-xs font-semibold">Ghi nhớ đăng nhập trên thiết bị này</span>}
+          wrapperClassName="items-center gap-2.5 py-0"
+        />
       </div>
 
       <Button type="submit" size="lg" fullWidth disabled={isPending} className={AUTH_SUBMIT_CLASS}>

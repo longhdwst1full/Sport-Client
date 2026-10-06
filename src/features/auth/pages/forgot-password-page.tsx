@@ -49,13 +49,9 @@ export function ForgotPasswordPage() {
           <p className="mt-2 text-xs text-stone-500">
             Không thấy email? Kiểm tra hộp thư rác trước khi thử lại.
           </p>
-          <button
-            type="button"
-            onClick={() => setSubmitted(false)}
-            className="mt-5 rounded text-xs font-bold text-brand-700 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
-          >
+          <Button variant="link" onClick={() => setSubmitted(false)} className="mt-5 rounded text-xs font-bold">
             Nhập email khác
-          </button>
+          </Button>
         </div>
       ) : (
         <form

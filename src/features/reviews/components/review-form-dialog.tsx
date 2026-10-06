@@ -3,7 +3,9 @@
 import Image from 'next/image';
 import { FormEvent, useRef, useState } from 'react';
 import { ImagePlus, X } from 'lucide-react';
-import { Spinner } from '@/foundation/components/feedback';
+import { Button } from '@/foundation/components/buttons';
+import { InlineAlert, Spinner } from '@/foundation/components/feedback';
+import { Field, TextInput, Textarea } from '@/foundation/components/field-system';
 import { Modal } from '@/foundation/components/overlay';
 import { RatingStars } from '@/foundation/components/indicators';
 import { createAccountProductReview } from '@/generated/api/reviews/reviews';
@@ -11,6 +13,11 @@ import { apiErrorMessage } from '@/lib/api/error-message';
 import { uploadReviewMedia, type UploadedReviewMedia } from '../api/review-media-upload';
 
 const MAX_MEDIA = 5;
+const FIELD_LABEL = 'text-sm font-bold text-slate-800';
+
+function RequiredMark() {
+  return <span className="text-rose-600">*</span>;
+}
 
 function messageOf(error: unknown): string {
   return apiErrorMessage(
@@ -94,12 +101,12 @@ export function ReviewFormDialog({
             <h2 id="review-dialog-title" className="mt-1 text-xl font-black text-slate-950">{productName}</h2>
             <p className="mt-1 text-sm text-slate-500">Đánh giá được hiển thị ngay sau khi gửi.</p>
           </div>
-          <button type="button" onClick={onClose} disabled={submitting} className="grid size-9 place-items-center rounded-full bg-slate-100 text-slate-600" aria-label="Đóng"><X className="size-4" /></button>
+          <Button variant="ghost" size="icon" onClick={onClose} disabled={submitting} className="size-9 shrink-0 rounded-full bg-slate-100 text-slate-600" aria-label="Đóng"><X aria-hidden className="size-4" /></Button>
         </div>
 
         <form onSubmit={submit} className="mt-6 space-y-5">
           <fieldset>
-            <legend className="text-sm font-bold text-slate-800">Mức độ hài lòng <span className="text-rose-600">*</span></legend>
+            <legend className={FIELD_LABEL}>Mức độ hài lòng <RequiredMark /></legend>
             <RatingStars
               value={rating}
               onChange={setRating}
@@ -113,37 +120,41 @@ export function ReviewFormDialog({
             />
           </fieldset>
 
-          <label className="block text-sm font-bold text-slate-800">Tiêu đề <span className="text-rose-600">*</span>
-            <input value={title} onChange={(event) => setTitle(event.target.value)} maxLength={255} disabled={submitting} className="mt-2 w-full rounded-xl border border-slate-300 px-4 py-3 font-normal outline-none focus:border-brand-500" placeholder="Ví dụ: Sản phẩm chắc chắn, dùng ổn định" />
-          </label>
-          <label className="block text-sm font-bold text-slate-800">Nội dung <span className="text-rose-600">*</span>
-            <textarea value={content} onChange={(event) => setContent(event.target.value)} maxLength={5000} rows={5} disabled={submitting} className="mt-2 w-full resize-y rounded-xl border border-slate-300 px-4 py-3 font-normal outline-none focus:border-brand-500" placeholder="Chia sẻ trải nghiệm thực tế về sản phẩm..." />
-          </label>
+          <div>
+            <Field label={<>Tiêu đề <RequiredMark /></>} labelClassName={FIELD_LABEL}>
+              <TextInput value={title} onChange={(event) => setTitle(event.target.value)} maxLength={255} disabled={submitting} size="md" className="mt-2" placeholder="Ví dụ: Sản phẩm chắc chắn, dùng ổn định" />
+            </Field>
+          </div>
+          <div>
+            <Field label={<>Nội dung <RequiredMark /></>} labelClassName={FIELD_LABEL}>
+              <Textarea value={content} onChange={(event) => setContent(event.target.value)} maxLength={5000} rows={5} disabled={submitting} styled className="mt-2 resize-y" placeholder="Chia sẻ trải nghiệm thực tế về sản phẩm..." />
+            </Field>
+          </div>
 
           <div>
-            <p className="text-sm font-bold text-slate-800">Ảnh thực tế <span className="font-normal text-slate-400">(tùy chọn, tối đa 5)</span></p>
+            <p className={FIELD_LABEL}>Ảnh thực tế <span className="font-normal text-slate-400">(tùy chọn, tối đa 5)</span></p>
             <div className="mt-2 flex flex-wrap gap-3">
               {media.map((item) => (
                 <div key={item.mediaAssetId} className="relative size-20 overflow-hidden rounded-xl border border-slate-200">
                   <Image src={item.previewUrl} alt="Ảnh đánh giá đã tải" fill sizes="80px" unoptimized className="object-cover" />
-                  <button type="button" onClick={() => setMedia((current) => current.filter((candidate) => candidate.mediaAssetId !== item.mediaAssetId))} className="absolute right-1 top-1 grid size-6 place-items-center rounded-full bg-slate-950/70 text-white" aria-label="Bỏ ảnh"><X className="size-3.5" /></button>
+                  <Button onClick={() => setMedia((current) => current.filter((candidate) => candidate.mediaAssetId !== item.mediaAssetId))} className="absolute right-1 top-1 grid size-6 place-items-center rounded-full bg-slate-950/70 text-white" aria-label="Bỏ ảnh"><X aria-hidden className="size-3.5" /></Button>
                 </div>
               ))}
               {media.length < MAX_MEDIA && (
-                <button type="button" disabled={uploading || submitting} onClick={() => inputRef.current?.click()} className="grid size-20 place-items-center rounded-xl border border-dashed border-slate-300 text-xs font-bold text-slate-500 disabled:opacity-50">
-                  {uploading ? <Spinner className="size-5 animate-spin" /> : <span className="grid place-items-center gap-1"><ImagePlus className="size-5" />Thêm ảnh</span>}
-                </button>
+                <Button disabled={uploading || submitting} onClick={() => inputRef.current?.click()} className="grid size-20 place-items-center rounded-xl border border-dashed border-slate-300 text-xs font-bold text-slate-500 disabled:opacity-50">
+                  {uploading ? <Spinner className="size-5 animate-spin" /> : <span className="grid place-items-center gap-1"><ImagePlus aria-hidden className="size-5" />Thêm ảnh</span>}
+                </Button>
               )}
             </div>
             <input ref={inputRef} hidden multiple type="file" accept="image/jpeg,image/png,image/webp,image/avif" onChange={(event) => void pickImages(event.target.files)} />
           </div>
 
-          {error && <p role="alert" className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-800">{error}</p>}
+          {error && <InlineAlert as="p" role="alert" className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-800">{error}</InlineAlert>}
           <div className="flex justify-end gap-3 border-t border-slate-100 pt-5">
-            <button type="button" onClick={onClose} disabled={submitting} className="rounded-xl border border-slate-300 px-5 py-2.5 text-sm font-bold text-slate-700">Hủy</button>
-            <button type="submit" disabled={submitting || uploading} className="inline-flex items-center gap-2 rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-bold text-white disabled:opacity-50">
-              {submitting && <Spinner className="size-4 animate-spin" />} Gửi đánh giá
-            </button>
+            <Button variant="outline" onClick={onClose} disabled={submitting} className="px-5">Hủy</Button>
+            <Button type="submit" variant="primary" loading={submitting} disabled={uploading} className="px-5">
+              Gửi đánh giá
+            </Button>
           </div>
         </form>
     </Modal>

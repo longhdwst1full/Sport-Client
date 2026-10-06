@@ -1,5 +1,6 @@
 import type { ContentPostDto, ContentPostSummaryDto } from '@/generated/api/content/content.schemas';
-import { POLICY_POST_TYPE } from './content-post.mapper';
+import { formatDate } from '@/shared/format/date-time';
+import { POLICY_POST_TYPE, toBodyLines } from './content-post.mapper';
 
 export interface PolicySummaryView {
   slug: string;
@@ -15,12 +16,6 @@ export interface PolicyDetailView extends PolicySummaryView {
   publishedAtIso: string;
 }
 
-const dateFormatter = new Intl.DateTimeFormat('vi-VN', {
-  day: '2-digit',
-  month: '2-digit',
-  year: 'numeric',
-});
-
 export function isPolicyPost(dto: ContentPostDto): boolean {
   return dto.postType === POLICY_POST_TYPE;
 }
@@ -34,11 +29,8 @@ export function toPolicySummaryView(dto: ContentPostSummaryDto): PolicySummaryVi
 export function toPolicyDetailView(dto: ContentPostDto): PolicyDetailView {
   return {
     ...toPolicySummaryView(dto),
-    updatedLabel: dateFormatter.format(new Date(dto.publishedAt)),
-    paragraphs: dto.body
-      .split(/\r?\n/)
-      .map((line) => line.trim())
-      .filter(Boolean),
+    updatedLabel: formatDate(dto.publishedAt),
+    paragraphs: toBodyLines(dto.body),
     publishedAtIso: dto.publishedAt,
   };
 }

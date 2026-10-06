@@ -13,12 +13,15 @@ export function Field({
   label,
   labelClassName,
   htmlFor,
+  labelAction,
   children,
 }: {
   label: ReactNode;
   labelClassName?: string;
   /** id của control khi con không phải một element đơn (vd. bọc trong div). */
   htmlFor?: string;
+  /** Hành động phụ nằm cùng hàng với nhãn (vd. link "Quên mật khẩu?"). */
+  labelAction?: ReactNode;
   children: ReactNode;
 }) {
   const generatedId = useId();
@@ -26,11 +29,21 @@ export function Field({
   const controlId = htmlFor ?? child?.props.id ?? generatedId;
   const control = child && !htmlFor && !child.props.id ? cloneElement(child, { id: controlId }) : children;
 
+  const labelNode = (
+    <label htmlFor={controlId} className={labelClassName}>
+      {label}
+    </label>
+  );
   return (
     <>
-      <label htmlFor={controlId} className={labelClassName}>
-        {label}
-      </label>
+      {labelAction ? (
+        <div className="flex items-center justify-between gap-3">
+          {labelNode}
+          {labelAction}
+        </div>
+      ) : (
+        labelNode
+      )}
       {control}
     </>
   );

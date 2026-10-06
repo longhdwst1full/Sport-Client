@@ -1,6 +1,6 @@
 # Profile feature
 
-> **Version:** 2.1.0 · **Last updated:** 2026-09-25
+> **Version:** 2.1.1 · **Last updated:** 2026-10-06
 > **Change summary:** Gỡ tab tra cứu bảo hành cùng fixture `MOCK_WARRANTIES` và cờ `FEATURE_FLAGS.WARRANTY_LOOKUP`; chưa có API bảo hành.
 
 ## Cài đặt tài khoản
@@ -68,3 +68,10 @@ TanStack Query sở hữu sổ địa chỉ. `staleTime: 0`, `gcTime: 0` và que
 - [ ] Danh sách có đủ loading / empty / error.
 - [ ] Không thêm form ghi dữ liệu khi contract chưa có operation tương ứng — không hiển thị thông báo thành công cho thao tác không gọi API.
 - [ ] `yarn lint && yarn test && yarn build`.
+
+## Revision history
+
+| Version | Date | Change summary |
+| --- | --- | --- |
+| 2.1.1 | 2026-10-06 | `EMPTY_LOCATION`/`toCode`/`joinAddress` chuyển sang `@/features/address` (`EMPTY_SELECTED_ADDRESS`, `toSelectedAddressData`, `joinAddressParts`); `toSelectorInitialData` giờ gọi `toSelectedAddressData(…, { dropNamesWithoutCode: true })`. Checkbox/nút dùng primitive foundation. |
+| 2.1.0 | 2026-09-25 | Gỡ tab tra cứu bảo hành. |

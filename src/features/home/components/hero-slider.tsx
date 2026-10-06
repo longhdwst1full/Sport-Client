@@ -1,8 +1,14 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, ChevronLeft, ChevronRight, Flame, Pause, Play, Zap } from 'lucide-react';
+import { Button, buttonVariants } from '@/foundation/components/buttons';
 import { CarouselDots } from '@/foundation/components/indicators';
 import { BannerPicture } from '@/features/content';
+
+/** Vòng focus trắng trên nền tối của hero. */
+const HERO_FOCUS = 'focus-visible:ring-white focus-visible:ring-offset-slate-900';
+/** Nút tròn nổi trên ảnh (mũi tên, dừng/chạy): nền đen mờ, chữ trắng. */
+const HERO_ROUND_BUTTON = `absolute z-20 rounded-full bg-black/40 text-white backdrop-blur ${HERO_FOCUS}`;
 
 export interface HeroSlide {
   id: string;
@@ -136,7 +142,10 @@ export function HeroSlider({
                       <Link
                         href={slide.ctaLink}
                         tabIndex={isActive ? undefined : -1}
-                        className="inline-flex items-center gap-2 rounded-xl bg-brand-600 px-5 py-2.5 text-xs font-black uppercase tracking-wide text-white shadow-md shadow-brand-600/30 transition hover:bg-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 sm:px-6 sm:py-3 sm:text-sm"
+                        className={buttonVariants({
+                          variant: 'primary',
+                          className: `h-auto px-5 py-2.5 text-xs font-black uppercase tracking-wide shadow-md shadow-brand-600/30 sm:px-6 sm:py-3 sm:text-sm ${HERO_FOCUS}`,
+                        })}
                       >
                         <span>{slide.ctaText}</span>
                         <ArrowRight className="size-4" aria-hidden="true" />
@@ -147,7 +156,10 @@ export function HeroSlider({
                       <Link
                         href="/flash-sale"
                         tabIndex={isActive ? undefined : -1}
-                        className="inline-flex items-center gap-1.5 rounded-xl border border-white/20 bg-white/10 px-4 py-2.5 text-xs font-bold text-white backdrop-blur transition hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 sm:py-3 sm:text-sm"
+                        className={buttonVariants({
+                          variant: 'ghost',
+                          className: `h-auto gap-1.5 border border-white/20 bg-white/10 px-4 py-2.5 text-xs font-bold text-white backdrop-blur hover:bg-white/20 sm:py-3 sm:text-sm ${HERO_FOCUS}`,
+                        })}
                       >
                         <Flame className="size-4 text-amber-400" aria-hidden="true" />
                         <span>Flash Sale</span>
@@ -164,22 +176,23 @@ export function HeroSlider({
       {slideCount > 1 && (
         <>
           {/* Navigation Arrows */}
-          <button
-            type="button"
-            onClick={onPrev}
-            className="absolute left-3 top-1/2 z-20 grid size-11 -translate-y-1/2 place-items-center rounded-full bg-black/40 text-white backdrop-blur transition hover:bg-brand-600 sm:left-4 opacity-70 group-hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
-            aria-label="Slide trước"
-          >
-            <ChevronLeft className="size-5" aria-hidden="true" />
-          </button>
-          <button
-            type="button"
-            onClick={onNext}
-            className="absolute right-3 top-1/2 z-20 grid size-11 -translate-y-1/2 place-items-center rounded-full bg-black/40 text-white backdrop-blur transition hover:bg-brand-600 sm:right-4 opacity-70 group-hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
-            aria-label="Slide sau"
-          >
-            <ChevronRight className="size-5" aria-hidden="true" />
-          </button>
+          {(
+            [
+              { label: 'Slide trước', onClick: onPrev, Icon: ChevronLeft, position: 'left-3 sm:left-4' },
+              { label: 'Slide sau', onClick: onNext, Icon: ChevronRight, position: 'right-3 sm:right-4' },
+            ] as const
+          ).map(({ label, onClick, Icon, position }) => (
+            <Button
+              key={label}
+              variant="ghost"
+              size="icon"
+              onClick={onClick}
+              className={`${HERO_ROUND_BUTTON} ${position} top-1/2 -translate-y-1/2 opacity-70 hover:bg-brand-600 group-hover:opacity-100 focus-visible:opacity-100`}
+              aria-label={label}
+            >
+              <Icon className="size-5" aria-hidden="true" />
+            </Button>
+          ))}
 
           {/* Slide Indicators Dots */}
           <CarouselDots
@@ -193,14 +206,15 @@ export function HeroSlider({
             keyFor={(index) => slides[index].id}
             ariaLabelFor={(index) => `Chuyển tới slide ${index + 1}`}
           />
-          <button
-            type="button"
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={onToggleAutoplay}
             aria-label={autoplayPaused ? 'Tiếp tục tự chuyển slide' : 'Tạm dừng tự chuyển slide'}
-            className="absolute bottom-3 right-3 z-20 grid size-11 place-items-center rounded-full bg-black/40 text-white backdrop-blur transition hover:bg-black/60 sm:right-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+            className={`${HERO_ROUND_BUTTON} bottom-3 right-3 hover:bg-black/60 sm:right-4`}
           >
             {autoplayPaused ? <Play className="size-4" aria-hidden="true" /> : <Pause className="size-4" aria-hidden="true" />}
-          </button>
+          </Button>
         </>
       )}
     </div>

@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Calendar, ChevronRight, Clock, RefreshCw } from 'lucide-react';
-import { Skeleton, SkeletonText } from '@/foundation/components/feedback';
+import { Button } from '@/foundation/components/buttons';
+import { EmptyState, Skeleton, SkeletonText } from '@/foundation/components/feedback';
 import { CoverImage } from './cover-image';
 import { usePaginatedContentPosts } from '../hooks/use-paginated-content-posts';
 import { CONTENT_POST_TYPE_LABELS, type ContentPostView } from '../model/content-post.mapper';
@@ -45,19 +46,17 @@ export function NewsListFeed({
       {categories.length > 2 && (
         <div className="mt-8 flex flex-wrap gap-2" role="group" aria-label="Lọc theo loại bài viết">
           {categories.map((cat) => (
-            <button
+            <Button
               key={cat}
-              type="button"
+              variant={selectedCat === cat ? 'secondary' : 'outline'}
               onClick={() => setSelectedCat(cat)}
               aria-pressed={selectedCat === cat}
-              className={`min-h-11 rounded-full px-5 text-xs font-bold transition ${FOCUS_RING} ${
-                selectedCat === cat
-                  ? 'bg-slate-900 text-white shadow-sm'
-                  : 'border border-slate-200 bg-white text-slate-600 hover:border-brand-400 hover:text-brand-700'
+              className={`rounded-full px-5 text-xs font-bold ${FOCUS_RING} ${
+                selectedCat === cat ? 'bg-slate-900 shadow-sm' : 'border-slate-200 text-slate-600 hover:border-brand-400'
               }`}
             >
               {cat === ALL_CATEGORY ? 'Tất cả' : (CONTENT_POST_TYPE_LABELS[cat] ?? cat)}
-            </button>
+            </Button>
           ))}
         </div>
       )}
@@ -130,20 +129,20 @@ export function NewsListFeed({
         <div role="alert" className="mt-12 rounded-[28px] border border-dashed border-slate-300 bg-white p-8 text-center sm:p-12">
           <h3 className="text-lg font-black text-ink">Không tải được bài viết</h3>
           <p className="mt-2 text-sm text-slate-500">Vui lòng thử lại sau ít phút.</p>
-          <button
-            type="button"
-            onClick={retry}
-            className={`mt-6 inline-flex min-h-11 items-center gap-2 rounded-full bg-brand-600 px-6 text-sm font-bold text-white transition hover:bg-brand-700 ${FOCUS_RING}`}
-          >
+          <Button variant="primary" onClick={retry} className={`mt-6 rounded-full px-6 font-bold ${FOCUS_RING}`}>
             <RefreshCw className="size-4" aria-hidden="true" />
             Thử lại
-          </button>
+          </Button>
         </div>
       ) : filtered.length === 0 ? (
-        <div className="mt-12 rounded-[28px] border border-dashed border-slate-300 bg-white p-8 text-center sm:p-12">
-          <h3 className="text-lg font-black text-ink">Chưa có bài viết trong mục này</h3>
-          <p className="mt-2 text-sm text-slate-500">Nội dung đang được cập nhật.</p>
-        </div>
+        <EmptyState
+          className="mt-12 rounded-[28px] border border-dashed border-slate-300 bg-white p-8 text-center sm:p-12"
+          titleAs="h3"
+          titleClassName="text-lg font-black text-ink"
+          title="Chưa có bài viết trong mục này"
+          descriptionClassName="mt-2 text-sm text-slate-500"
+          description="Nội dung đang được cập nhật."
+        />
       ) : gridItems.length > 0 ? (
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
           {gridItems.map((item) => (
@@ -203,13 +202,9 @@ export function NewsListFeed({
       {isError && articles.length > 0 && (
         <p role="alert" className="mt-8 text-center text-sm text-slate-600">
           Không tải được thêm bài viết.{' '}
-          <button
-            type="button"
-            onClick={retry}
-            className={`min-h-11 rounded font-bold text-brand-700 underline ${FOCUS_RING}`}
-          >
+          <Button variant="link" onClick={retry} className={`min-h-11 rounded font-bold underline ${FOCUS_RING}`}>
             Thử lại
-          </button>
+          </Button>
         </p>
       )}
 
@@ -217,14 +212,14 @@ export function NewsListFeed({
           không lọc theo loại bài — lọc theo danh mục vẫn chạy trên các bài đã tải. */}
       {!isPending && !isError && selectedCat === ALL_CATEGORY && hasMore && (
         <div className="mt-12 flex justify-center">
-          <button
-            type="button"
+          <Button
+            variant="outline"
             onClick={loadMore}
             disabled={isLoadingMore}
-            className={`min-h-11 rounded-full border border-slate-200 bg-white px-8 text-sm font-bold text-slate-700 shadow-sm transition hover:border-brand-400 hover:text-brand-700 disabled:cursor-not-allowed disabled:opacity-60 ${FOCUS_RING}`}
+            className={`rounded-full border-slate-200 px-8 font-bold text-slate-700 shadow-sm hover:border-brand-400 disabled:opacity-60 ${FOCUS_RING}`}
           >
             {isLoadingMore ? 'Đang tải…' : 'Xem thêm'}
-          </button>
+          </Button>
         </div>
       )}
     </>

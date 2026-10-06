@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { Check, ChevronDown, ChevronUp, Copy, ExternalLink, PackageCheck, Truck } from 'lucide-react';
-import { buttonVariants } from '@/foundation/components/buttons';
+import { Button, buttonVariants } from '@/foundation/components/buttons';
 import type { OrderDetailView } from '../../model/order.mapper';
 
 export type OrderShippingInfoProps = {
@@ -24,15 +24,16 @@ export function TrackingNoCopyButton({
   className: string;
 }) {
   return (
-    <button
-      type="button"
+    <Button
+      variant="ghost"
+      size="icon"
       onClick={() => onCopy(trackingNo)}
-      className={`grid size-9 place-items-center rounded-lg text-slate-500 transition hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 ${className}`}
+      className={`size-9 rounded-lg text-slate-500 hover:bg-transparent hover:text-slate-700 focus-visible:ring-offset-0 ${className}`}
       title="Sao chép mã vận đơn"
       aria-label={copied ? 'Đã sao chép mã vận đơn' : 'Sao chép mã vận đơn'}
     >
-      {copied ? <Check className="size-3.5 text-success-600" /> : <Copy className="size-3.5" />}
-    </button>
+      {copied ? <Check aria-hidden className="size-3.5 text-success-600" /> : <Copy aria-hidden className="size-3.5" />}
+    </Button>
   );
 }
 
@@ -140,16 +141,16 @@ export function OrderShippingInfo({
         )}
 
         {(view?.timeline ?? []).length > 0 && (
-          <button
-            type="button"
+          <Button
+            variant="link"
             onClick={() => setShowTimeline(!showTimeline)}
             aria-expanded={showTimeline}
-            className="inline-flex min-h-11 items-center gap-1.5 font-bold text-slate-700 hover:text-brand-700 transition ml-auto"
+            className="ml-auto min-h-11 gap-1.5 font-bold text-slate-700 hover:text-brand-700 hover:no-underline"
           >
             <PackageCheck aria-hidden className="size-3.5 text-brand-600" />
             Lịch sử cập nhật chi tiết ({view?.timeline.length})
             {showTimeline ? <ChevronUp aria-hidden className="size-3.5" /> : <ChevronDown aria-hidden className="size-3.5" />}
-          </button>
+          </Button>
         )}
       </div>
 

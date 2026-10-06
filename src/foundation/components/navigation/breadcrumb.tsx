@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
 
-export interface BreadcrumbItem {
+interface BreadcrumbItem {
   label: string;
   /** Bỏ trống ở mục cuối: trang hiện tại không tự liên kết tới chính nó. */
   href?: string;
@@ -14,7 +14,7 @@ export interface BreadcrumbItem {
  * danh mục hay bài viết là gì (`13-foundation-components.md`).
  */
 /** `inverted` dành cho trang nền tối; mặc định là nền sáng. */
-export type BreadcrumbTone = 'default' | 'inverted';
+type BreadcrumbTone = 'default' | 'inverted';
 
 const TONE_CLASSES: Record<BreadcrumbTone, { root: string; link: string; current: string }> = {
   default: {

@@ -1,6 +1,22 @@
 import Link from 'next/link';
 import { Award, CheckCircle2, Clock, MapPin, Phone, ShieldCheck, Star } from 'lucide-react';
+import { buttonVariants } from '@/foundation/components/buttons';
+import { IconList } from '@/foundation/components/structure';
 import { STORE_CONTACT, STORE_SHOWROOMS } from '@/shared/constants';
+
+const DARK_FOCUS = 'focus-visible:ring-white focus-visible:ring-offset-slate-900';
+
+const COMMITMENTS = [
+  'Miễn phí tư vấn setup theo diện tích',
+  'Giao hàng và hỗ trợ lắp đặt tận nơi',
+  'Đổi mới trong 7 ngày nếu lỗi kỹ thuật',
+  'Bảo hành khung sườn lên đến 5 năm',
+].map((label) => ({ icon: CheckCircle2, label }));
+
+const FACTS = [
+  { value: '10+ Năm', valueClassName: 'text-brand-400', caption: 'Kinh nghiệm phân phối' },
+  { value: '100%', valueClassName: 'text-white', caption: 'Chính hãng có VAT' },
+];
 
 export function TrustSocialProof() {
   return (
@@ -34,39 +50,23 @@ export function TrustSocialProof() {
                 <span className="mt-1 block text-xs text-slate-400">3.200+ đánh giá xác thực</span>
               </div>
 
-              <div className="h-8 w-px bg-slate-800" aria-hidden="true" />
-
-              <div>
-                <span className="text-2xl font-black text-brand-400">10+ Năm</span>
-                <span className="mt-1 block text-xs text-slate-400">Kinh nghiệm phân phối</span>
-              </div>
-
-              <div className="h-8 w-px bg-slate-800" aria-hidden="true" />
-
-              <div>
-                <span className="text-2xl font-black text-white">100%</span>
-                <span className="mt-1 block text-xs text-slate-400">Chính hãng có VAT</span>
-              </div>
+              {FACTS.map((fact) => (
+                <div key={fact.caption} className="contents">
+                  <div className="h-8 w-px bg-slate-800" aria-hidden="true" />
+                  <div>
+                    <span className={`text-2xl font-black ${fact.valueClassName}`}>{fact.value}</span>
+                    <span className="mt-1 block text-xs text-slate-400">{fact.caption}</span>
+                  </div>
+                </div>
+              ))}
             </div>
 
-            <div className="mt-6 grid gap-2.5 sm:grid-cols-2 text-xs font-semibold text-slate-300">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="size-4 text-success-400 shrink-0" />
-                <span>Miễn phí tư vấn setup theo diện tích</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="size-4 text-success-400 shrink-0" />
-                <span>Giao hàng và hỗ trợ lắp đặt tận nơi</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="size-4 text-success-400 shrink-0" />
-                <span>Đổi mới trong 7 ngày nếu lỗi kỹ thuật</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="size-4 text-success-400 shrink-0" />
-                <span>Bảo hành khung sườn lên đến 5 năm</span>
-              </div>
-            </div>
+            <IconList
+              items={COMMITMENTS}
+              columns={2}
+              className="mt-6 grid-cols-1 gap-2.5 text-xs font-semibold text-slate-300 sm:grid-cols-2"
+              iconClassName="text-success-400"
+            />
           </div>
 
           {/* Right Column: Showroom System */}
@@ -108,7 +108,10 @@ export function TrustSocialProof() {
             <div className="pt-2 flex items-center justify-between gap-3">
               <Link
                 href="/contact"
-                className="inline-flex flex-1 items-center justify-center rounded-xl bg-brand-600 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-brand-700 shadow-md shadow-brand-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+                className={buttonVariants({
+                  variant: 'primary',
+                  className: `flex-1 text-xs font-bold shadow-md shadow-brand-950 ${DARK_FOCUS}`,
+                })}
               >
                 Xem chi tiết chỉ đường
               </Link>
@@ -116,7 +119,10 @@ export function TrustSocialProof() {
                 href={STORE_CONTACT.zaloUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center rounded-xl border border-slate-700 bg-slate-800 px-4 py-2.5 text-xs font-bold text-slate-200 hover:bg-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+                className={buttonVariants({
+                  variant: 'secondary',
+                  className: `border border-slate-700 bg-slate-800 text-xs font-bold text-slate-200 hover:bg-slate-700 ${DARK_FOCUS}`,
+                })}
               >
                 Chat Zalo tư vấn
               </a>

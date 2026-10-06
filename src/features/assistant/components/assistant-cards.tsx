@@ -6,6 +6,7 @@ import { ImageOff, Package, ShoppingCart, Ticket, Truck } from 'lucide-react';
 import { SUPPORT_ROUTES, SupportTicketStatusBadge, type SupportTicketStatus } from '@/features/support';
 import { formatDateTime } from '@/shared/format/date-time';
 import { formatVnd } from '@/shared/format/money';
+import { Button } from '@/foundation/components/buttons';
 import { DescriptionList } from '@/foundation/components/structure';
 import { useAssistantQuickAdd } from '../hooks/use-assistant-quick-add';
 import { ASSISTANT_COPY } from '../model/assistant.constants';
@@ -61,15 +62,15 @@ function ProductCard({
             {ASSISTANT_COPY.viewProduct}
           </Link>
           {card.quickAdd && (
-            <button
-              type="button"
+            <Button
+              size="sm"
               onClick={() => quickAdd.add(card)}
-              className="inline-flex min-h-9 items-center gap-1 rounded-lg bg-brand-600 px-2.5 py-1 text-[11px] font-bold text-white hover:bg-brand-700 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2"
+              className="gap-1 rounded-lg px-2.5 text-[11px] font-bold"
               aria-label={`${ASSISTANT_COPY.addToCart}: ${card.name}`}
             >
               <ShoppingCart className="size-3.5" aria-hidden />
               {ASSISTANT_COPY.addToCart}
-            </button>
+            </Button>
           )}
         </div>
       </div>

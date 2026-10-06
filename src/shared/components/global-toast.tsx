@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useCallback } from 'react';
 import { CheckCircle2, AlertCircle, Info, AlertTriangle, X, ShoppingBag } from 'lucide-react';
+import { Button } from '@/foundation/components/buttons';
 
 export type ToastType = 'success' | 'error' | 'info' | 'warning' | 'cart';
 
@@ -124,14 +125,15 @@ function ToastCard({ item, onDismiss }: { item: ToastItem; onDismiss: (id: strin
             </p>
           )}
         </div>
-        <button
-          type="button"
+        <Button
+          variant="ghost"
+          size="icon"
           onClick={() => onDismiss(item.id)}
-          className="-mr-2 -mt-2 grid size-9 shrink-0 place-items-center rounded-lg text-slate-400 transition hover:bg-white/10 hover:text-white focus-visible:outline-white"
+          className="-mr-2 -mt-2 size-9 shrink-0 rounded-lg text-slate-400 hover:bg-white/10 hover:text-white focus-visible:ring-white focus-visible:ring-offset-slate-950"
           aria-label="Đóng thông báo"
         >
           <X aria-hidden className="size-4" />
-        </button>
+        </Button>
       </div>
 
       {/* Progress countdown bar */}

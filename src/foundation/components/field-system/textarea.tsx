@@ -3,11 +3,13 @@ import { resolveInputClassName } from './input-variants';
 
 export interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   invalid?: boolean;
+  /** Dùng style chuẩn và chỉ thêm `className` (Textarea không có `size` để bật style). */
+  styled?: boolean;
 }
 
 /** Ô nhập nhiều dòng; cùng style `inputVariants`, chiều cao tự do (`min-h-24`). Tương thích ngược như `TextInput`. */
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function Textarea(
-  { invalid, className, ...props },
+  { invalid, styled, className, ...props },
   ref,
 ) {
   return (
@@ -15,7 +17,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
       ref={ref}
       aria-invalid={invalid || undefined}
       {...props}
-      className={resolveInputClassName({ invalid, className }, 'h-auto min-h-24 py-2.5')}
+      className={resolveInputClassName({ invalid, styled, className }, 'h-auto min-h-24 py-2.5')}
     />
   );
 });

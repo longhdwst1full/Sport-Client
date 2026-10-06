@@ -54,7 +54,7 @@ Order mới ở `PENDING_CONFIRMATION`, chưa ghi nhận doanh thu và chưa đ�
 | `hooks/use-place-order.ts` | Confirm + place order, chuyển VNPay, `placedOrder`. |
 | `components/sections/*` | Section bước: thông tin giao hàng, phương thức giao, thanh toán, xác nhận; class dùng chung ở `checkout-section.styles.ts`. |
 | `components/checkout-empty-cart.tsx`, `checkout-order-summary.tsx`, `checkout-success.tsx` | Cart trống, tóm tắt đơn + CTA, trạng thái đặt hàng thành công. |
-| `model/checkout-address.ts` | `initialAddress`, `toSelectedAddress`. |
+| `@/features/address` | `EMPTY_SELECTED_ADDRESS`, `toSelectedAddressData` (đã chuyển từ `model/checkout-address.ts`). |
 | `api/checkout.workflow.ts` | Ghép generated Cart/Checkout/Order operations cho Guest và Account. |
 | `index.ts` | Public export duy nhất cho route và feature khác. |
 

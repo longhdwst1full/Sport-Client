@@ -3,7 +3,7 @@ import type {
   CustomerAddressDto,
   UpdateCustomerAddressDto,
 } from '@/generated/api/customer/customer.schemas';
-import type { SelectedAddressData } from '@/features/address';
+import { joinAddressParts, toSelectedAddressData, type SelectedAddressData } from '@/features/address';
 
 /**
  * View model cho sổ địa chỉ. Chỉ chứa field có thật trong `CustomerAddressDto`;
@@ -28,10 +28,6 @@ export interface AddressView {
   fullAddress: string;
 }
 
-function joinAddress(parts: Array<string | null | undefined>): string {
-  return parts.map((part) => part?.trim()).filter(Boolean).join(', ');
-}
-
 export function toAddressView(dto: CustomerAddressDto): AddressView {
   const ward = dto.ward ?? '';
   const district = dto.district ?? '';
@@ -51,7 +47,7 @@ export function toAddressView(dto: CustomerAddressDto): AddressView {
     provinceCode: dto.provinceCode,
     isDefault: dto.isDefault,
     version: dto.version,
-    fullAddress: joinAddress([dto.addressLine, ward, district, province]),
+    fullAddress: joinAddressParts([dto.addressLine, ward, district, province]),
   };
 }
 
@@ -93,42 +89,10 @@ export function toUpdateAddressPayload(
   return { ...toCreateAddressPayload(values), expectedVersion };
 }
 
-export const EMPTY_LOCATION: SelectedAddressData = {
-  provinceCode: null,
-  provinceName: '',
-  districtCode: null,
-  districtName: '',
-  wardCode: null,
-  wardName: '',
-  streetAddress: '',
-  fullAddress: '',
-};
-
-/** Mã của hãng vận chuyển giữ nguyên chuỗi (mã phường GHN có thể chứa chữ, vd. `1B2729`). */
-function toCode(value: string): string | null {
-  return value.trim() || null;
-}
-
 /**
- * Khôi phục đủ ba cấp cho selector khi sửa địa chỉ cũ.
- *
- * Địa chỉ lưu trước khi contract có `district_code`/`ward_code` sẽ không có mã: hai ô cấp dưới để
- * trống và người dùng chọn lại. Điền tên mà thiếu mã còn tệ hơn — nhìn như đã chọn xong nhưng lưu
- * lại vẫn không tạo được vận đơn.
+ * Khôi phục đủ ba cấp cho selector khi sửa địa chỉ cũ (`toSelectedAddressData` của `@/features/address`).
+ * Địa chỉ cũ thiếu mã quận/phường thì để trống hai ô cấp dưới để người dùng chọn lại.
  */
 export function toSelectorInitialData(address: AddressView): SelectedAddressData {
-  const districtCode = toCode(address.districtCode);
-  const wardCode = toCode(address.wardCode);
-
-  return {
-    ...EMPTY_LOCATION,
-    provinceCode: toCode(address.provinceCode),
-    provinceName: address.province,
-    districtCode,
-    districtName: districtCode === null ? '' : address.district,
-    wardCode,
-    wardName: wardCode === null ? '' : address.ward,
-    streetAddress: address.addressLine,
-    fullAddress: address.fullAddress,
-  };
+  return toSelectedAddressData(address, { dropNamesWithoutCode: true });
 }

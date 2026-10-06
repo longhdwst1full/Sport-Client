@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { AlertTriangle, XCircle } from 'lucide-react';
+import { Button, buttonVariants } from '@/foundation/components/buttons';
 import { ErrorState } from '@/foundation/components/feedback';
 import {
   getGetAccountOrderQueryKey,
@@ -35,6 +36,10 @@ import { errorMessage } from '../model/order-detail-error';
 import { GUEST_LOOKUP_COPY, GUEST_LOOKUP_ROUTE } from '../model/guest-order-lookup.constants';
 import { guestLookupErrorMessage } from '../model/guest-order-lookup-error';
 import { formatDateTime } from '@/shared/format/date-time';
+
+const PRIMARY_ACTION = buttonVariants({ variant: 'primary', className: 'px-5 font-bold shadow-sm' });
+const DANGER_ACTION = buttonVariants({ variant: 'danger', className: 'px-5 font-bold shadow-sm' });
+const HOME_ACTION = buttonVariants({ variant: 'outline', className: 'px-5 font-bold text-slate-700' });
 
 export function OrderDetailPage({ orderNo }: { orderNo: string }) {
   // Hook tải đơn gọi trước hook hủy đơn: effect thu hồi mã truy cập vãng lai giữ nguyên thứ tự chạy cũ.
@@ -81,13 +86,13 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
             description="Hãy mở đơn trên trình duyệt đã dùng để đặt hàng, tra cứu bằng email người nhận, hoặc đăng nhập tài khoản để xem toàn bộ lịch sử đơn."
             actions={
               <div className="mt-6 flex flex-wrap justify-center gap-3">
-                <Link href={lookupHref} className="rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-brand-700">
+                <Link href={lookupHref} className={PRIMARY_ACTION}>
                   Tra cứu bằng email
                 </Link>
-                <Link href="/login" className="rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-brand-700">
+                <Link href="/login" className={PRIMARY_ACTION}>
                   Đăng nhập
                 </Link>
-                <Link href="/" className="rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-bold text-slate-700 transition hover:bg-slate-50">
+                <Link href="/" className={HOME_ACTION}>
                   Về trang chủ
                 </Link>
               </div>
@@ -109,19 +114,15 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
             actions={
               <div className="mt-6 flex flex-wrap justify-center gap-3">
                 {lookupExpired ? (
-                  <Link href={lookupHref} className="rounded-xl bg-rose-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-rose-700">
+                  <Link href={lookupHref} className={DANGER_ACTION}>
                     Xác thực lại bằng email
                   </Link>
                 ) : (
-                <button
-                  type="button"
-                  onClick={() => orderQuery.refetch()}
-                  className="rounded-xl bg-rose-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-rose-700"
-                >
-                  Thử lại
-                </button>
+                  <Button variant="danger" onClick={() => orderQuery.refetch()} className="px-5 font-bold shadow-sm">
+                    Thử lại
+                  </Button>
                 )}
-                <Link href="/" className="rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-bold text-slate-700 transition hover:bg-slate-50">
+                <Link href="/" className={HOME_ACTION}>
                   Về trang chủ
                 </Link>
               </div>

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import { EMPTY_LOCATION, toCreateAddressPayload, toSelectorInitialData, type AddressView } from './address.mapper';
+import { EMPTY_SELECTED_ADDRESS } from '@/features/address';
+import { toCreateAddressPayload, toSelectorInitialData, type AddressView } from './address.mapper';
 
 // Mã phường GHN ở Hà Nội có chữ (vd. `1B2729`); ép sang số sẽ thành NaN và form không bao giờ hợp lệ.
 const hanoiAddress: AddressView = {
@@ -40,7 +41,7 @@ describe('address mapper', () => {
       districtCode: '3303',
       wardCode: '1B2729',
     });
-    expect(toCreateAddressPayload({ recipient: 'An', phone: '0912345678', isDefault: false, location: EMPTY_LOCATION }))
+    expect(toCreateAddressPayload({ recipient: 'An', phone: '0912345678', isDefault: false, location: EMPTY_SELECTED_ADDRESS }))
       .toMatchObject({ provinceCode: '', wardCode: undefined });
   });
 });

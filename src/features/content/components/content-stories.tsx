@@ -10,7 +10,8 @@ import {
   Calendar,
 } from 'lucide-react';
 import { useContentStories } from '../hooks/use-content-stories';
-import { Skeleton, SkeletonText } from '@/foundation/components/feedback';
+import { Button } from '@/foundation/components/buttons';
+import { Skeleton } from '@/foundation/components/feedback';
 import { CONTENT_POST_TYPE_LABELS, type ContentPostView } from '../model/content-post.mapper';
 
 const ALL_CATEGORY = 'ALL';
@@ -68,19 +69,19 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex flex-wrap items-center gap-2">
           {categories.map((cat) => (
-            <button
+            <Button
               key={cat}
-              type="button"
+              variant={activeCat === cat ? 'primary' : 'outline'}
               onClick={() => setActiveCat(cat)}
               aria-pressed={activeCat === cat}
-              className={`min-h-11 rounded-xl px-4 text-xs font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 ${
+              className={`text-xs font-bold ${
                 activeCat === cat
-                  ? 'bg-brand-700 text-white shadow-sm'
-                  : 'border border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50'
+                  ? 'bg-brand-700 shadow-sm'
+                  : 'border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-600'
               }`}
             >
               {cat === ALL_CATEGORY ? 'Tất cả' : (CONTENT_POST_TYPE_LABELS[cat] ?? cat)}
-            </button>
+            </Button>
           ))}
         </div>
 
@@ -171,14 +172,15 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
 
       {hiddenCount > 0 && (
         <div className="mt-8 flex justify-center">
-          <button
-            type="button"
+          <Button
+            variant="outline"
+            size="lg"
             onClick={() => setExpanded(true)}
-            className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-bold text-slate-700 transition hover:border-brand-400 hover:text-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+            className="rounded-full border-slate-200 text-sm font-bold text-slate-700 hover:border-brand-400"
           >
             <span>Xem thêm</span>
             <ArrowRight className="size-4" aria-hidden="true" />
-          </button>
+          </Button>
         </div>
       )}
 

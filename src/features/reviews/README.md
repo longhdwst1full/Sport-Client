@@ -1,10 +1,10 @@
 # Storefront Reviews — maintenance note
 
-> **Document version:** 3.0.0
+> **Document version:** 3.1.0
 >
-> **Last updated:** 2026-09-28
+> **Last updated:** 2026-10-06
 >
-> **Change summary:** Bổ sung gửi đánh giá thật từ đơn hoàn tất, upload ảnh và trạng thái chờ Admin duyệt.
+> **Change summary:** Upload ảnh đánh giá dùng helper chung `src/lib/api/signed-media-upload.ts`; lỗi upload chuẩn hoá thành `ApiError` (cùng câu tiếng Việt như trước).
 
 ## Phạm vi
 
@@ -47,6 +47,7 @@ Form hiện tại gửi dữ liệu thật tới API. Sau khi gửi thành công
 
 - Form chỉ xuất hiện với khách đã đăng nhập và đơn `COMPLETED`.
 - Ảnh được upload/finalize trước, sau đó request tạo review gửi danh sách `mediaAssetIds`.
+- `api/review-media-upload.ts` chỉ xin chữ ký/finalize qua SDK reviews. Upload ảnh ký sẵn dùng helper chung `src/lib/api/signed-media-upload.ts` (kiểm MIME/`maxBytes`, 9 field FormData, POST bằng `fetch` có `AbortSignal`); lỗi HTTP/mạng khi tải lên chuẩn hoá thành `ApiError(status, { message: 'Cloudinary không nhận được ảnh. Vui lòng thử lại.' })` (`status = 0` khi mất mạng), huỷ qua signal ném lại lỗi abort gốc.
 - Review mới nhận `PENDING` và không xuất hiện công khai cho tới khi Admin duyệt.
 - API xác minh ownership của customer/order item, trạng thái đơn và unique `order_item_id`; điều kiện UI không phải security boundary.
 
@@ -66,6 +67,7 @@ Chỉ render nội dung đã duyệt; phân biệt đánh giá có xác thực m
 
 | Version | Date | Change summary |
 | --- | --- | --- |
+| 3.1.0 | 2026-10-06 | Upload qua `src/lib/api/signed-media-upload.ts`; lỗi Cloudinary là `ApiError` với cùng message tiếng Việt (trước là `Error`). |
 | 3.0.0 | 2026-09-28 | Gửi review từ order item đã hoàn tất, tối đa 5 ảnh và workflow PENDING. |
 | 2.0.0 | 2026-09-13 | Đọc review thật từ API và gỡ form giả. |
 | 1.0.0 | 2026-09-13 | Tạo note, ghi nhận thiếu POST review và thiếu model Prisma. |

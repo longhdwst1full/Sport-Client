@@ -10,7 +10,7 @@ import {
   getListAccountOrdersQueryKey,
 } from '@/generated/api/orders/orders';
 import type { OrderDetailDto } from '@/generated/api/orders/orders.schemas';
-import { useSignatureIdempotencyKey } from './use-signature-idempotency-key';
+import { useSignatureIdempotencyKey } from '@/shared/hooks';
 
 /** Hộp thoại hủy đơn: lý do, trạng thái mở/đóng và lệnh hủy idempotent theo đường truy cập của khách. */
 export function useCancelOrder({

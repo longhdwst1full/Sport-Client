@@ -2,11 +2,17 @@
 
 import Link from 'next/link';
 import { ArrowRight, Clock, Flame, RefreshCw } from 'lucide-react';
+import { Button, buttonVariants } from '@/foundation/components/buttons';
+import { EmptyState } from '@/foundation/components/feedback';
 import { Breadcrumb } from '@/foundation/components/navigation';
 import { useCartActions } from '@/features/cart';
-import { FlashSaleDealCard, FlashSaleDealCardSkeleton } from '../components/flash-sale-deal-card';
+import { FLASH_SALE_FOCUS_RING, FlashSaleDealCard, FlashSaleDealCardSkeleton } from '../components/flash-sale-deal-card';
 import { useFlashSale } from '../hooks/use-flash-sale';
 import type { FlashSaleDealView } from '../model/flash-sale.mapper';
+
+const PILL = `rounded-full px-5 ${FLASH_SALE_FOCUS_RING}`;
+const PRODUCTS_HREF = '/products';
+const PRODUCTS_LABEL = 'Xem tất cả sản phẩm';
 
 function pad(value: number): string {
   return String(value).padStart(2, '0');
@@ -89,36 +95,35 @@ export function FlashSalePage() {
                 Vui lòng thử lại sau ít phút hoặc xem toàn bộ sản phẩm đang bán.
               </p>
               <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-                <button
-                  type="button"
-                  onClick={() => void retry()}
-                  className="inline-flex items-center gap-2 rounded-full bg-brand-600 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
-                >
+                <Button variant="primary" onClick={() => void retry()} className={PILL}>
                   <RefreshCw className="size-4" aria-hidden="true" />
                   Thử lại
-                </button>
+                </Button>
                 <Link
-                  href="/products"
-                  className="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-800 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+                  href={PRODUCTS_HREF}
+                  className={buttonVariants({
+                    variant: 'secondary',
+                    className: `border border-slate-700 bg-slate-800 hover:bg-slate-700 ${PILL}`,
+                  })}
                 >
-                  Xem tất cả sản phẩm
+                  {PRODUCTS_LABEL}
                 </Link>
               </div>
             </div>
           ) : campaigns.length === 0 ? (
-            <div className="mt-10 rounded-3xl border border-slate-800 bg-slate-900/60 p-12 text-center">
-              <h2 className="text-lg font-black">Hiện chưa có chương trình nào đang chạy</h2>
-              <p className="mt-2 text-sm text-slate-400">
-                Các khung giờ vàng sẽ được thông báo trước khi mở bán.
-              </p>
-              <Link
-                href="/products"
-                className="mt-6 inline-flex items-center gap-2 rounded-full bg-brand-600 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
-              >
-                Xem tất cả sản phẩm
-                <ArrowRight className="size-4" aria-hidden="true" />
-              </Link>
-            </div>
+            <EmptyState
+              className="mt-10 rounded-3xl border border-slate-800 bg-slate-900/60 p-12 text-center"
+              titleClassName="text-lg font-black"
+              title="Hiện chưa có chương trình nào đang chạy"
+              descriptionClassName="mt-2 text-sm text-slate-400"
+              description="Các khung giờ vàng sẽ được thông báo trước khi mở bán."
+              actions={
+                <Link href={PRODUCTS_HREF} className={buttonVariants({ variant: 'primary', className: `mt-6 ${PILL}` })}>
+                  {PRODUCTS_LABEL}
+                  <ArrowRight className="size-4" aria-hidden="true" />
+                </Link>
+              }
+            />
           ) : (
             campaigns.map((campaign) => (
               <section key={campaign.code} className="mt-12">

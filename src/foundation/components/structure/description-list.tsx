@@ -8,6 +8,8 @@ export type DescriptionItem = {
   value: ReactNode;
   /** Class riêng cho `<dd>` (vd. màu giá). */
   valueClassName?: string;
+  /** Class riêng cho cả dòng (vd. `border-t pt-2` cho dòng tổng, class in ấn). */
+  itemClassName?: string;
   /** `false` thì bỏ qua dòng — tiện cho trường tuỳ chọn thay vì `cond && ...` rải trong JSX. */
   visible?: boolean;
 };
@@ -54,7 +56,7 @@ export function DescriptionList({
         .map((item, index) => (
           <div
             key={item.key ?? (typeof item.label === 'string' ? item.label : index)}
-            className={twMerge(style.item, itemClassName)}
+            className={twMerge(style.item, itemClassName, item.itemClassName)}
           >
             <dt className={twMerge(style.label, labelClassName)}>{item.label}</dt>
             <dd className={twMerge(style.value, valueClassName, item.valueClassName)}>{item.value}</dd>

@@ -1,8 +1,8 @@
 # Returns (Storefront)
 
-> **Version:** 1.0.0
-> **Updated:** 2026-09-24
-> **Summary:** Khách đăng nhập tạo yêu cầu trả hàng từ đơn đã giao, theo dõi tiến độ và huỷ khi cửa hàng chưa nhận hàng.
+> **Version:** 1.1.0
+> **Updated:** 2026-10-06
+> **Summary:** Hook idempotency chuyển sang `src/shared/hooks`; upload ảnh minh chứng dùng helper chung `src/lib/api/signed-media-upload.ts`, lỗi upload chuẩn hoá thành `ApiError` có câu tiếng Việt.
 
 ## Phạm vi và route
 
@@ -32,10 +32,11 @@ hotline (D55). Trang tài khoản có mục "Yêu cầu đổi trả". Cả ba r
 
 ## State và cache
 
-- Server state: TanStack Query. Form: state cục bộ của trang. Idempotency-Key giữ khi gửi lại cùng nội dung, sinh mới khi nội dung đổi.
+- Server state: TanStack Query. Form: state cục bộ của trang. Idempotency-Key giữ khi gửi lại cùng nội dung, sinh mới khi nội dung đổi (`useSignatureIdempotencyKey` từ `@/shared/hooks`).
 - Tạo phiếu: invalidate danh sách phiếu và eligibility của đơn, rồi chuyển sang trang chi tiết. Huỷ: cập nhật chi tiết từ response,
   invalidate danh sách.
 - Ảnh tải thẳng lên Cloudinary bằng chữ ký của đơn (`api/return-evidence-upload.ts`); huỷ form thì ảnh không gắn vào phiếu nào.
+- Upload ảnh ký sẵn dùng helper chung `src/lib/api/signed-media-upload.ts` (kiểm MIME/`maxBytes`, 9 field FormData, POST bằng `fetch` có `AbortSignal`); lỗi HTTP/mạng khi tải lên chuẩn hoá thành `ApiError(status, { message: 'Cloudinary không nhận được ảnh. Vui lòng thử lại.' })` (`status = 0` khi mất mạng), huỷ qua signal ném lại lỗi abort gốc. `EvidencePicker` đọc lỗi qua `apiErrorMessage`.
 
 ## Test
 
@@ -46,4 +47,5 @@ hotline (D55). Trang tài khoản có mục "Yêu cầu đổi trả". Cả ba r
 
 | Version | Date | Change summary |
 | --- | --- | --- |
+| 1.1.0 | 2026-10-06 | Hook idempotency về `src/shared/hooks`; upload qua `src/lib/api/signed-media-upload.ts` (lỗi upload là `ApiError` tiếng Việt thay cho message Axios); `PaginationControls` dùng chung; chuyển UI sang primitive foundation. |
 | 1.0.0 | 2026-09-24 | Tạo feature Returns Storefront V1. |

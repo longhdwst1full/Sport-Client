@@ -58,9 +58,9 @@ export function AddressBookPanel({
       ) : addressesError ? (
         <InlineAlert role="alert" className="mt-6 rounded-2xl border border-rose-200 bg-rose-50 p-5 text-xs text-rose-700">
           <p className="font-bold">Không tải được sổ địa chỉ.</p>
-          <button type="button" onClick={onRetry} className="mt-2 font-bold underline rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500">
+          <Button variant="link" onClick={onRetry} className="mt-2 rounded font-bold text-inherit underline focus-visible:ring-rose-500 focus-visible:ring-offset-0">
             Thử lại
-          </button>
+          </Button>
         </InlineAlert>
       ) : addresses.length === 0 ? (
         <div className="mt-6 rounded-2xl border border-dashed border-slate-300 p-8 text-center text-xs text-slate-600">

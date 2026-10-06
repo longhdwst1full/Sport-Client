@@ -1,8 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { ChevronLeft, ChevronRight, PackageSearch } from 'lucide-react';
-import { InlineAlert } from '@/foundation/components/feedback';
+import { PackageSearch } from 'lucide-react';
+import { buttonVariants } from '@/foundation/components/buttons';
+import { EmptyState, InlineAlert } from '@/foundation/components/feedback';
+import { PaginationControls } from '@/shared/components/pagination-controls';
 import { OrderListSkeleton } from '../components/order-skeletons';
 import { useAccountOrders } from '../hooks/use-account-orders';
 import { GUEST_LOOKUP_ROUTE } from '../model/guest-order-lookup.constants';
@@ -32,30 +34,41 @@ export function AccountOrdersPage() {
             <h1 className="mt-2 text-2xl font-black text-slate-950 sm:text-3xl">Đơn hàng của tôi</h1>
             <p className="mt-2 text-sm text-slate-600">Theo dõi trạng thái thanh toán, xử lý và giao hàng từ dữ liệu thực.</p>
           </div>
-          <Link href="/products" className="inline-flex min-h-11 items-center rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-brand-700">Tiếp tục mua sắm</Link>
+          <Link href="/products" className={buttonVariants({ variant: 'primary', className: 'font-bold' })}>Tiếp tục mua sắm</Link>
         </div>
 
         {!isLoaded && <OrderListSkeleton />}
         {isLoaded && !isAuthenticated && (
-          <section className="rounded-3xl border border-slate-200 bg-white p-6 text-center shadow-sm sm:p-10">
-            <PackageSearch aria-hidden className="mx-auto size-12 text-slate-400" />
-            <h2 className="mt-4 text-xl font-black">Đăng nhập để xem toàn bộ đơn hàng</h2>
-            <p className="mt-2 text-sm text-slate-600">Khách mua không đăng nhập có thể mở đơn trực tiếp từ trang đặt hàng thành công.</p>
-            <div className="mt-5 flex flex-wrap justify-center gap-3">
-              <Link href="/login" className="inline-flex rounded-xl bg-brand-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-brand-700">Đăng nhập</Link>
-              <Link href={GUEST_LOOKUP_ROUTE} className="inline-flex min-h-11 items-center rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 transition hover:bg-slate-50">Tra cứu đơn bằng email</Link>
-            </div>
-          </section>
+          <EmptyState
+            as="section"
+            className="rounded-3xl border border-slate-200 bg-white p-6 text-center shadow-sm sm:p-10"
+            iconWrapClassName="flex justify-center"
+            icon={<PackageSearch aria-hidden className="size-12 text-slate-400" />}
+            titleClassName="mt-4 text-xl font-black"
+            title="Đăng nhập để xem toàn bộ đơn hàng"
+            descriptionClassName="mt-2 text-sm text-slate-600"
+            description="Khách mua không đăng nhập có thể mở đơn trực tiếp từ trang đặt hàng thành công."
+            actions={
+              <div className="mt-5 flex flex-wrap justify-center gap-3">
+                <Link href="/login" className={buttonVariants({ variant: 'primary', className: 'px-5 font-bold' })}>Đăng nhập</Link>
+                <Link href={GUEST_LOOKUP_ROUTE} className={buttonVariants({ variant: 'outline', className: 'border-slate-200 px-5 font-bold text-slate-700' })}>Tra cứu đơn bằng email</Link>
+              </div>
+            }
+          />
         )}
         {isAuthenticated && isLoading && <OrderListSkeleton />}
         {isAuthenticated && isError && (
           <InlineAlert role="alert" className="rounded-2xl border border-rose-200 bg-rose-50 p-5 text-sm text-rose-800">{errorMessage}</InlineAlert>
         )}
         {isAuthenticated && items.length === 0 && hasData && (
-          <section className="rounded-3xl border border-dashed border-slate-300 bg-white p-6 text-center sm:p-10">
-            <PackageSearch aria-hidden className="mx-auto size-12 text-slate-400" />
-            <h2 className="mt-4 text-lg font-black">Chưa có đơn hàng</h2>
-          </section>
+          <EmptyState
+            as="section"
+            className="rounded-3xl border border-dashed border-slate-300 bg-white p-6 text-center sm:p-10"
+            iconWrapClassName="flex justify-center"
+            icon={<PackageSearch aria-hidden className="size-12 text-slate-400" />}
+            titleClassName="mt-4 text-lg font-black"
+            title="Chưa có đơn hàng"
+          />
         )}
         {isAuthenticated && <div aria-busy={isFetching} className={`grid gap-4 transition-opacity ${isFetching && !isLoading ? 'opacity-60' : ''}`}>
           {items.map((order) => (
@@ -76,11 +89,13 @@ export function AccountOrdersPage() {
           ))}
         </div>}
         {isAuthenticated && hasData && total > limit && (
-          <nav className="mt-7 flex items-center justify-center gap-3" aria-label="Phân trang đơn hàng">
-            <button type="button" disabled={page === 1 || isFetching} onClick={() => setPage((value) => Math.max(1, value - 1))} className="grid size-11 place-items-center rounded-xl border border-slate-200 bg-white transition hover:bg-slate-50 disabled:opacity-40" aria-label="Trang trước"><ChevronLeft aria-hidden className="size-4" /></button>
-            <span className="text-sm font-bold text-slate-700">Trang {page} / {totalPages}</span>
-            <button type="button" disabled={page >= totalPages || isFetching} onClick={() => setPage((value) => value + 1)} className="grid size-11 place-items-center rounded-xl border border-slate-200 bg-white transition hover:bg-slate-50 disabled:opacity-40" aria-label="Trang sau"><ChevronRight aria-hidden className="size-4" /></button>
-          </nav>
+          <PaginationControls
+            page={page}
+            totalPages={totalPages}
+            onPageChange={setPage}
+            disabled={isFetching}
+            ariaLabel="Phân trang đơn hàng"
+          />
         )}
       </main>
   );

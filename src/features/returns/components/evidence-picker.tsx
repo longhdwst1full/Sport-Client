@@ -3,7 +3,9 @@
 import Image from 'next/image';
 import { useRef, useState } from 'react';
 import { ImagePlus, X } from 'lucide-react';
-import { Spinner } from '@/foundation/components/feedback';
+import { Button } from '@/foundation/components/buttons';
+import { InlineAlert, Spinner } from '@/foundation/components/feedback';
+import { apiErrorMessage } from '@/lib/api/error-message';
 import { uploadReturnEvidence } from '../api/return-evidence-upload';
 import type { UploadedEvidence } from '../model/return.mapper';
 import { MAX_EVIDENCE_IMAGES } from '../model/return.constants';
@@ -48,7 +50,7 @@ export function EvidencePicker({ orderNo, value, onChange, onUploadingChange, di
           latest.current = next;
           onChange(next);
         })
-        .catch((cause: unknown) => setError(cause instanceof Error ? cause.message : 'Tải ảnh thất bại.'))
+        .catch((cause: unknown) => setError(apiErrorMessage(cause, cause instanceof Error ? cause.message : 'Tải ảnh thất bại.')))
         .finally(() => track(-1));
     }
     if (inputRef.current) inputRef.current.value = '';
@@ -61,26 +63,24 @@ export function EvidencePicker({ orderNo, value, onChange, onUploadingChange, di
           <div key={image.publicId} className="relative size-24 overflow-hidden rounded-xl border border-slate-200">
             {/* SECURITY: ảnh minh chứng của khách: `unoptimized` để không đi qua bộ tối ưu ảnh dùng chung của Next (cache server) và cache ảnh của service worker. */}
             <Image src={image.previewUrl} alt="Ảnh minh chứng đã tải" fill sizes="96px" unoptimized className="object-cover" />
-            <button
-              type="button"
+            <Button
               disabled={disabled}
               onClick={() => onChange(value.filter((item) => item.publicId !== image.publicId))}
               className="absolute right-1 top-1 grid size-6 place-items-center rounded-full bg-slate-900/70 text-white"
               aria-label="Bỏ ảnh"
             >
-              <X className="size-3.5" />
-            </button>
+              <X aria-hidden className="size-3.5" />
+            </Button>
           </div>
         ))}
         {value.length + uploading < MAX_EVIDENCE_IMAGES && (
-          <button
-            type="button"
+          <Button
             disabled={disabled}
             onClick={() => inputRef.current?.click()}
             className="grid size-24 place-items-center rounded-xl border border-dashed border-slate-300 text-xs font-bold text-slate-500 hover:border-brand-500 disabled:opacity-50"
           >
-            {uploading > 0 ? <Spinner className="size-5 animate-spin" /> : <span className="grid place-items-center gap-1"><ImagePlus className="size-5" />Thêm ảnh</span>}
-          </button>
+            {uploading > 0 ? <Spinner className="size-5" /> : <span className="grid place-items-center gap-1"><ImagePlus aria-hidden className="size-5" />Thêm ảnh</span>}
+          </Button>
         )}
       </div>
       <input
@@ -91,7 +91,7 @@ export function EvidencePicker({ orderNo, value, onChange, onUploadingChange, di
         hidden
         onChange={(event) => pick(event.target.files)}
       />
-      {error && <p role="alert" className="mt-2 text-sm font-semibold text-rose-700">{error}</p>}
+      {error && <InlineAlert as="p" role="alert" className="mt-2 text-sm font-semibold text-rose-700">{error}</InlineAlert>}
     </div>
   );
 }

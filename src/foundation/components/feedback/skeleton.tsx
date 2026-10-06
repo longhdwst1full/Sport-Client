@@ -25,7 +25,3 @@ export function SkeletonText({ lines = 3, className }: { lines?: number; classNa
     </div>
   );
 }
-
-export function SkeletonCircle({ className }: { className?: string }) {
-  return <Skeleton className={twMerge('rounded-full', className)} />;
-}

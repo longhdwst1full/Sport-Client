@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Phone, MessageSquare, MapPin, ArrowUp, X } from 'lucide-react';
+import { Button } from '@/foundation/components/buttons';
 import { STORE_CONTACT } from '@/shared/constants';
 
 /**
@@ -81,14 +82,13 @@ export function FloatingContactBar() {
 
       {/* Back to Top Button */}
       {showBackToTop && (
-        <button
-          type="button"
+        <Button
           onClick={scrollToTop}
           className="pointer-events-auto group relative flex items-center justify-center rounded-full border border-slate-200 bg-white p-2 text-slate-700 before:absolute before:-inset-1.5 before:rounded-full before:content-[''] shadow-lg transition-all duration-300 hover:border-brand-400 hover:bg-brand-50 hover:text-brand-700 hover:scale-105 active:scale-95 sm:p-2.5"
           aria-label="Cuộn lên đầu trang"
         >
           <ArrowUp aria-hidden className="size-4 sm:size-4.5 transition-transform duration-200 group-hover:-translate-y-0.5" />
-        </button>
+        </Button>
       )}
     </div>
   );

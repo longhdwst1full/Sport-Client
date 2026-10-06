@@ -1,4 +1,5 @@
 import type { ContentPostDto, ContentPostSummaryDto } from '@/generated/api/content/content.schemas';
+import { formatDate } from '@/shared/format/date-time';
 
 export interface ContentPostView {
   id: string;
@@ -42,12 +43,6 @@ export function toNewsPostViews(items: ContentPostSummaryDto[]): ContentPostView
   return items.filter((post) => post.postType !== POLICY_POST_TYPE).map(toContentPostView);
 }
 
-const dateFormatter = new Intl.DateTimeFormat('vi-VN', {
-  day: '2-digit',
-  month: '2-digit',
-  year: 'numeric',
-});
-
 /** Ước lượng thời gian đọc từ độ dài văn bản đưa vào, không phải con số cố định. */
 function readTimeLabel(text: string): string {
   const words = text.trim().split(/\s+/).length;
@@ -69,7 +64,7 @@ export function toContentPostView(dto: ContentPostSummaryDto): ContentPostView {
     coverUrl: dto.coverUrl,
     postType: dto.postType,
     categoryLabel: CONTENT_POST_TYPE_LABELS[dto.postType] ?? dto.postType,
-    publishedLabel: dateFormatter.format(new Date(dto.publishedAt)),
+    publishedLabel: formatDate(dto.publishedAt),
     readTimeLabel: readTimeLabel(dto.excerpt),
   };
 }
@@ -93,31 +88,28 @@ export interface ArticleDetailView extends ContentPostView {
  * '### ' tiêu đề con, '- ' gạch đầu dòng. Giữ ở đây để đổi cách lưu trữ về sau chỉ
  * phải sửa một chỗ, và để trang không phải biết quy ước này.
  */
-export function toArticleBlocks(body: string): ArticleBlock[] {
+/** Tách thân bài văn bản thuần thành các dòng không rỗng (dùng chung cho bài viết và chính sách). */
+export function toBodyLines(body: string): string[] {
   return body
     .split(/\r?\n/)
     .map((line) => line.trim())
-    .filter(Boolean)
-    .map((line): ArticleBlock => {
-      if (line.startsWith('### ')) return { kind: 'heading', level: 3, text: line.slice(4) };
-      if (line.startsWith('## ')) return { kind: 'heading', level: 2, text: line.slice(3) };
-      if (line.startsWith('- ')) return { kind: 'bullet', text: line.slice(2) };
-      return { kind: 'paragraph', text: line };
-    });
+    .filter(Boolean);
+}
+
+export function toArticleBlocks(body: string): ArticleBlock[] {
+  return toBodyLines(body).map((line): ArticleBlock => {
+    if (line.startsWith('### ')) return { kind: 'heading', level: 3, text: line.slice(4) };
+    if (line.startsWith('## ')) return { kind: 'heading', level: 2, text: line.slice(3) };
+    if (line.startsWith('- ')) return { kind: 'bullet', text: line.slice(2) };
+    return { kind: 'paragraph', text: line };
+  });
 }
 
 export function toArticleDetailView(dto: ContentPostDto): ArticleDetailView {
   return {
-    id: dto.id,
-    slug: dto.slug,
-    title: dto.title,
-    excerpt: dto.excerpt,
-    coverUrl: dto.coverUrl,
-    postType: dto.postType,
-    categoryLabel: CONTENT_POST_TYPE_LABELS[dto.postType] ?? dto.postType,
-    publishedLabel: dateFormatter.format(new Date(dto.publishedAt)),
-    // Trang chi tiết có `body` đầy đủ (ContentPostDto) nên vẫn tính thời gian đọc như cũ,
-    // khác với `toContentPostView` ở trên vốn chỉ nhận được summary không có `body`.
+    ...toContentPostView(dto),
+    // Trang chi tiết có `body` đầy đủ (ContentPostDto) nên tính thời gian đọc theo cả thân bài,
+    // khác với `toContentPostView` vốn chỉ nhận được summary không có `body`.
     readTimeLabel: readTimeLabel(`${dto.excerpt} ${dto.body}`),
     blocks: toArticleBlocks(dto.body),
     hasCover: Boolean(dto.coverUrl),

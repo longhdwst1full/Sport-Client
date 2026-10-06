@@ -1,8 +1,8 @@
 # Storefront Support — maintenance note
 
-> **Document version:** 3.1.0
+> **Document version:** 3.1.1
 >
-> **Last updated:** 2026-09-30
+> **Last updated:** 2026-10-06
 >
 > **Change summary:** Nhắn thêm trên phiếu (`addAccountSupportTicketMessage`) gửi `Idempotency-Key` bắt buộc theo mẫu dùng lại khoá khi cùng nội dung + version; map `SUPPORT_IDEMPOTENCY_KEY_INVALID`/`SUPPORT_IDEMPOTENCY_CONFLICT`.
 
@@ -64,6 +64,7 @@ Hotline/địa chỉ/giờ mở cửa lấy từ `@/shared/constants` (`STORE_CO
 
 | Version | Date | Change summary |
 | --- | --- | --- |
+| 3.1.1 | 2026-10-06 | UI: form tư vấn, tạo/chi tiết/danh sách phiếu dùng primitive foundation (`Field`, `TextInput`, `Select`, `Textarea`, `Button`, `InlineAlert`, `DescriptionList`); không đổi hành vi. |
 | 3.1.0 | 2026-09-30 | Idempotency-Key cho nhắn thêm trên phiếu; map lỗi idempotency. |
 | 3.0.1 | 2026-09-29 | Map thêm `SUPPORT_BRANCH_INVALID`. |
 | 3.0.0 | 2026-09-29 | Thêm phiếu hỗ trợ của khách trên contract `support`; hook tạo phiếu dùng cho handoff của trợ lý. |

@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { Menu, Search, ShoppingBag, UserRound, X } from 'lucide-react';
+import { Button } from '@/foundation/components/buttons';
 
 interface HeaderActionsProps {
   searchOpen: boolean;
@@ -25,14 +26,15 @@ export function HeaderActions({
   return (
     <div className="flex shrink-0 items-center gap-2 sm:gap-2.5">
       {/* Mobile Search Toggle */}
-      <button
-        type="button"
+      <Button
+        variant="outline"
+        size="icon"
         onClick={onToggleSearch}
-        className="grid size-11 place-items-center rounded-xl border border-slate-200 bg-white text-slate-700 transition hover:bg-slate-100 lg:hidden"
+        className="border-slate-200 text-slate-700 transition hover:border-slate-200 hover:bg-slate-100 hover:text-slate-700 lg:hidden"
         aria-label="Tìm sản phẩm"
       >
         <Search aria-hidden className="size-4.5" />
-      </button>
+      </Button>
 
       {/* Chuông thông báo đã gỡ: chưa có API thông báo khách hàng, bản trước hiển thị
           danh sách thông báo mẫu viết cứng như thể là thông báo thật của khách. */}
@@ -82,15 +84,16 @@ export function HeaderActions({
       </Link>
 
       {/* Mobile Menu Toggle */}
-      <button
-        type="button"
-        className="grid size-11 place-items-center rounded-xl border border-slate-200 bg-white text-slate-700 transition hover:bg-slate-100 lg:hidden"
+      <Button
+        variant="outline"
+        size="icon"
+        className="border-slate-200 text-slate-700 transition hover:border-slate-200 hover:bg-slate-100 hover:text-slate-700 lg:hidden"
         aria-label={mobileMenuOpen ? 'Đóng menu' : 'Mở menu'}
         aria-expanded={mobileMenuOpen}
         onClick={onToggleMobileMenu}
       >
-        {mobileMenuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
-      </button>
+        {mobileMenuOpen ? <X aria-hidden className="size-5" /> : <Menu aria-hidden className="size-5" />}
+      </Button>
     </div>
   );
 }

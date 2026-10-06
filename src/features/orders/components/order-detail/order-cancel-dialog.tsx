@@ -78,7 +78,7 @@ export function OrderCancelDialog({
               maxLength={500}
               rows={3}
               placeholder="Vui lòng cho Bảo An Sport biết lý do bạn muốn hủy đơn (tối thiểu 3 ký tự)..."
-              invalid={false} // Textarea chưa có `size`: cần `invalid` để thoát chế độ passthrough className
+              styled
               className="mt-1.5"
             />
           </Field>

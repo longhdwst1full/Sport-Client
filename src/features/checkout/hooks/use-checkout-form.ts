@@ -1,9 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import type { SelectedAddressData } from '@/features/address';
+import { EMPTY_SELECTED_ADDRESS, type SelectedAddressData } from '@/features/address';
 import type { CheckoutPaymentMethod } from '@/generated/api/checkout/checkout.schemas';
-import { initialAddress } from '../model/checkout-address';
 
 /** Trạng thái form nhận hàng + lựa chọn giao/thanh toán, và payload báo giá dựng từ đúng các giá trị đó. */
 export function useCheckoutForm() {
@@ -11,7 +10,7 @@ export function useCheckoutForm() {
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [note, setNote] = useState('');
-  const [address, setAddress] = useState<SelectedAddressData>(initialAddress);
+  const [address, setAddress] = useState<SelectedAddressData>(EMPTY_SELECTED_ADDRESS);
   const [coordinates, setCoordinates] = useState<{ latitude: number; longitude: number }>();
   const [paymentMethod, setPaymentMethod] = useState<CheckoutPaymentMethod>('COD');
   /**

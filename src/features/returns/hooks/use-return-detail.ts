@@ -8,7 +8,7 @@ import {
   useGetAccountReturn,
 } from '@/generated/api/returns/returns';
 import type { ReturnDetailDto } from '@/generated/api/returns/returns.schemas';
-import { useSignatureIdempotencyKey } from './use-signature-idempotency-key';
+import { useSignatureIdempotencyKey } from '@/shared/hooks';
 import { canCustomerCancel, toReturnProgress } from '../model/return.mapper';
 
 /** Query chi tiết phiếu đổi trả + mutation huỷ (khách). Giữ nguyên idempotency theo chữ ký request. */

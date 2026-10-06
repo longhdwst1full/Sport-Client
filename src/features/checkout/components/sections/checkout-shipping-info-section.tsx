@@ -2,6 +2,7 @@ import { LocateFixed, MapPin } from 'lucide-react';
 import { VietnamAddressSelector } from '@/features/address';
 import type { CustomerAddressDto } from '@/generated/api/customer/customer.schemas';
 import type { CheckoutForm } from '../../hooks/use-checkout-form';
+import { Button } from '@/foundation/components/buttons';
 import { Field, Textarea, TextInput } from '@/foundation/components/field-system';
 import { optionClass } from './checkout-section.styles';
 import { CheckoutStepSection } from './checkout-step-section';
@@ -58,13 +59,14 @@ export function CheckoutShippingInfoSection({
               )}
             </button>
           ))}
-          <button
-            type="button"
+          <Button
+            variant="outline"
+            fullWidth
             onClick={onDeliverToOtherAddress}
-            className="min-h-11 w-full rounded-2xl border border-dashed border-slate-300 p-3 text-xs font-bold text-brand-700 hover:border-brand-400 hover:bg-brand-50/50 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2"
+            className="rounded-2xl border-dashed p-3 text-xs font-bold text-brand-700 hover:border-brand-400 hover:bg-brand-50/50"
           >
             + Giao tới địa chỉ khác
-          </button>
+          </Button>
         </div>
       )}
 
@@ -140,7 +142,7 @@ export function CheckoutShippingInfoSection({
             rows={2}
             value={note}
             onChange={(e) => { setNote(e.target.value); invalidateQuote(); }}
-            invalid={false} // Textarea chưa có `size`: cần `invalid` để thoát chế độ passthrough className
+            styled
             className="mt-1.5 min-h-16"
             placeholder="Gọi trước khi giao, giao giờ hành chính..."
           />
