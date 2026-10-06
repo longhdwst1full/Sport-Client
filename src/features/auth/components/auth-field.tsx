@@ -6,7 +6,7 @@ import { Field } from '@/foundation/components/field-system';
  * Phần riêng của ô nhập trang đăng nhập/đăng ký (nền xám nhạt, bo lớn, chừa chỗ icon trái), đè lên
  * `TextInput`/`PasswordInput` `size="lg"`.
  */
-export const AUTH_INPUT_CLASS = 'rounded-2xl border-slate-200 bg-slate-50/60 pl-11 focus-visible:bg-white';
+export const AUTH_INPUT_CLASS = 'rounded-xl border-slate-200 bg-slate-50/60 pl-10.5 text-xs sm:text-sm focus-visible:bg-white';
 
 export const AUTH_LEADING_ICON_CLASS = 'pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400';
 
@@ -38,7 +38,7 @@ export function AuthField({
         {children}
       </Field>
       {error && (
-        <InlineAlert as="span" role="alert" className="mt-1.5 block text-xs font-medium text-rose-600">
+        <InlineAlert as="span" role="alert" className="mt-1 block text-xs font-medium text-rose-600">
           {error}
         </InlineAlert>
       )}
@@ -49,7 +49,7 @@ export function AuthField({
 
 /** Phần riêng của nút gửi form auth, đè lên `Button size="lg" fullWidth`. */
 export const AUTH_SUBMIT_CLASS =
-  'mt-6 h-auto rounded-2xl py-4 font-black shadow-lg shadow-brand-600/25 hover:shadow-brand-600/40 active:scale-[0.99] disabled:opacity-60';
+  'mt-4 sm:mt-5 h-11 sm:h-12 rounded-xl sm:rounded-2xl py-2.5 sm:py-3 font-black text-xs sm:text-sm shadow-md shadow-brand-600/20 hover:shadow-brand-600/30 active:scale-[0.99] disabled:opacity-60';
 
 /** Nhãn ô nhập của các trang khôi phục mật khẩu (quên / đặt lại). */
 export const RECOVERY_LABEL_CLASS = 'block text-xs font-bold uppercase tracking-wider text-stone-600';

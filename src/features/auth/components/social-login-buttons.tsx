@@ -55,20 +55,20 @@ export function SocialLoginButtons({ dividerText, toastTitles, toastMessages }: 
   return (
     <>
       {/* Social Logins Divider */}
-      <div className="my-6 flex items-center gap-3">
+      <div className="my-3.5 sm:my-4 flex items-center gap-3">
         <div className="h-px flex-1 bg-slate-200" />
         <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">{dividerText}</span>
         <div className="h-px flex-1 bg-slate-200" />
       </div>
 
       {/* Social Buttons */}
-      <div className="grid grid-cols-3 gap-2.5">
+      <div className="grid grid-cols-3 gap-2">
         {SOCIAL_PROVIDERS.map(({ key, label, icon }) => (
           <Button
             key={key}
             variant="outline"
             onClick={() => toast({ title: toastTitles[key], message: toastMessages[key] })}
-            className="border-slate-200 px-2 text-xs font-bold text-slate-700 shadow-sm hover:border-slate-300 hover:bg-slate-50 hover:text-slate-700 focus-visible:ring-offset-0"
+            className="h-9 sm:h-10 border-slate-200 px-2 text-xs font-bold text-slate-700 shadow-2xs hover:border-slate-300 hover:bg-slate-50 hover:text-slate-700 focus-visible:ring-offset-0"
           >
             {icon}
             <span>{label}</span>

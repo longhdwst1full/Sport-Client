@@ -26,26 +26,26 @@ export function AuthPageShell({
   children: ReactNode;
 }) {
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-900 selection:bg-brand-500 selection:text-white">
-      <div className="grid min-h-screen lg:grid-cols-12">
+    <main className="min-h-screen lg:h-screen lg:max-h-screen lg:overflow-hidden bg-slate-50 text-slate-900 selection:bg-brand-500 selection:text-white">
+      <div className="grid min-h-screen lg:h-full lg:max-h-screen lg:grid-cols-12">
         <AuthBrandPanel variant={variant} />
 
-        <div className="flex flex-col justify-center px-4 py-10 sm:px-8 md:px-12 lg:col-span-6 xl:col-span-5 bg-white lg:bg-slate-50/70">
-          <div className="mx-auto w-full max-w-md">
+        <div className="flex flex-col justify-center px-4 py-6 sm:px-6 md:px-10 lg:col-span-6 xl:col-span-5 bg-white lg:bg-slate-50/70 lg:h-full lg:overflow-y-auto">
+          <div className="mx-auto w-full max-w-md my-auto">
             <AuthMobileHeader />
 
-            <div className="rounded-3xl bg-white sm:border sm:border-slate-200/80 sm:p-8 sm:shadow-xl sm:shadow-slate-200/50">
+            <div className="rounded-2xl sm:rounded-3xl bg-white sm:border sm:border-slate-200/80 p-5 sm:p-6 lg:p-6.5 sm:shadow-xl sm:shadow-slate-200/50">
               <AuthModeSwitcher variant={variant} />
 
-              <div className="mt-6">
-                <h1 className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">{title}</h1>
-                <p className="mt-1.5 text-xs text-slate-500 leading-relaxed">{subtitle}</p>
+              <div className="mt-4 sm:mt-5">
+                <h1 className="text-xl font-black tracking-tight text-slate-950 sm:text-2xl">{title}</h1>
+                <p className="mt-1 text-xs text-slate-500 leading-relaxed line-clamp-2">{subtitle}</p>
               </div>
 
               {submitError && (
                 <InlineAlert
                   role="alert"
-                  className="mt-5 rounded-2xl border border-rose-200 bg-rose-50/80 p-3.5 text-xs font-semibold text-rose-700 animate-in fade-in"
+                  className="mt-3.5 rounded-xl border border-rose-200 bg-rose-50/80 p-3 text-xs font-semibold text-rose-700 animate-in fade-in"
                 >
                   {submitError}
                 </InlineAlert>
@@ -55,9 +55,9 @@ export function AuthPageShell({
 
               <SocialLoginButtons {...social} />
 
-              <div className="mt-6 flex items-center justify-center gap-2 text-xs text-slate-500">
-                <ShieldCheck className="size-4 text-success-600" aria-hidden />
-                <span>Hệ thống bảo vệ tài khoản và thông tin cá nhân an toàn</span>
+              <div className="mt-4 flex items-center justify-center gap-1.5 text-[11px] text-slate-400">
+                <ShieldCheck className="size-3.5 text-success-600" aria-hidden />
+                <span>Bảo mật thông tin tài khoản đạt chuẩn SSL 256-bit</span>
               </div>
             </div>
           </div>

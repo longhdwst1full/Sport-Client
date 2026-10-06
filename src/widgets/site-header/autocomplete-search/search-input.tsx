@@ -34,7 +34,7 @@ export function SearchInput({
   return (
     <form
       onSubmit={onSubmit}
-      className="group relative flex items-center overflow-hidden rounded-full border-2 border-brand-600 bg-white transition-shadow duration-200 focus-within:ring-4 focus-within:ring-brand-500/20"
+      className="group relative flex items-center overflow-hidden rounded-full border border-slate-300 bg-slate-50/80 hover:border-slate-400 hover:bg-white transition-all duration-200 focus-within:border-brand-600 focus-within:bg-white focus-within:ring-4 focus-within:ring-brand-500/15 shadow-2xs"
     >
       <Search aria-hidden className="ml-4 size-4 shrink-0 text-slate-400 transition group-focus-within:text-brand-600" />
 
@@ -74,7 +74,7 @@ export function SearchInput({
       {/* Rounded Pill Submit Button */}
       <Button
         type="submit"
-        className="my-0.5 mr-0.5 inline-flex shrink-0 items-center gap-1.5 rounded-full bg-brand-600 px-4 py-1.5 text-xs font-black uppercase tracking-wider text-white transition-colors hover:bg-brand-700 active:bg-brand-800 sm:px-5 sm:py-2"
+        className="my-1 mr-1 inline-flex shrink-0 items-center gap-1.5 rounded-full bg-brand-600 px-4 py-1.5 text-xs font-black uppercase tracking-wider text-white shadow-xs transition-all hover:bg-brand-700 active:scale-95 sm:px-5 sm:py-2"
       >
         <Search aria-hidden className="size-3.5 text-white" />
         <span>Tìm kiếm</span>

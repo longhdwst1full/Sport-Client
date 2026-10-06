@@ -54,7 +54,7 @@ export function RegisterForm({ form, isPending, acceptedTerms, onAcceptedTermsCh
   const passwordId = `${fieldId}-password`;
 
   return (
-    <form className="mt-6 space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+    <form className="mt-3.5 space-y-2.5 sm:space-y-3" onSubmit={form.handleSubmit(onSubmit)}>
       {TEXT_FIELDS.map(({ name, label, required, type, autoComplete, placeholder, icon: Icon }) => {
         const id = `${fieldId}-${name}`;
         return (
@@ -72,7 +72,7 @@ export function RegisterForm({ form, isPending, acceptedTerms, onAcceptedTermsCh
             }
             error={errors[name]?.message}
           >
-            <div className="relative mt-2">
+            <div className="relative mt-1">
               <TextInput
                 {...form.register(name)}
                 id={id}
@@ -98,7 +98,7 @@ export function RegisterForm({ form, isPending, acceptedTerms, onAcceptedTermsCh
         }
         error={errors.password?.message}
         hint={
-          <div className="mt-2 flex items-center gap-3 text-[11px] text-slate-500">
+          <div className="mt-1 flex items-center gap-3 text-[11px] text-slate-500">
             <PasswordHint met={hasMinLen} label="8+ ký tự" />
             <PasswordHint met={hasNumberOrSpecial} label="Số hoặc ký tự đặc biệt" />
           </div>
@@ -110,14 +110,14 @@ export function RegisterForm({ form, isPending, acceptedTerms, onAcceptedTermsCh
           size="lg"
           invalid={Boolean(errors.password)}
           autoComplete="new-password"
-          wrapperClassName="mt-2"
+          wrapperClassName="mt-1"
           className={AUTH_INPUT_CLASS}
           placeholder="Tối thiểu 8 ký tự"
           leadingIcon={<Lock className={AUTH_LEADING_ICON_CLASS} />}
         />
       </AuthField>
 
-      <div className="pt-2">
+      <div className="pt-0.5">
         <Checkbox
           checked={acceptedTerms}
           onChange={(e) => onAcceptedTermsChange(e.target.checked)}

@@ -13,9 +13,24 @@ import { FooterLinkColumn, type FooterLinkItem } from './footer-link-column';
 import { ShowroomCard, type ShowroomCardData } from './showroom-card';
 
 const SOCIAL_LINKS = [
-  { icon: Facebook, href: STORE_CONTACT.facebookUrl, label: 'Facebook' },
-  { icon: Youtube, href: STORE_CONTACT.youtubeUrl, label: 'YouTube' },
-  { icon: MessageCircle, href: STORE_CONTACT.zaloUrl, label: 'Zalo' },
+  {
+    icon: Facebook,
+    href: STORE_CONTACT.facebookUrl,
+    label: 'Facebook',
+    className: 'bg-[#1877F2]/10 border-[#1877F2]/30 text-[#1877F2] hover:bg-[#1877F2] hover:text-white hover:border-[#1877F2] hover:shadow-lg hover:shadow-[#1877F2]/30',
+  },
+  {
+    icon: Youtube,
+    href: STORE_CONTACT.youtubeUrl,
+    label: 'YouTube',
+    className: 'bg-[#FF0000]/10 border-[#FF0000]/30 text-[#FF0000] hover:bg-[#FF0000] hover:text-white hover:border-[#FF0000] hover:shadow-lg hover:shadow-[#FF0000]/30',
+  },
+  {
+    icon: MessageCircle,
+    href: STORE_CONTACT.zaloUrl,
+    label: 'Zalo',
+    className: 'bg-[#0068FF]/10 border-[#0068FF]/30 text-[#0068FF] hover:bg-[#0068FF] hover:text-white hover:border-[#0068FF] hover:shadow-lg hover:shadow-[#0068FF]/30',
+  },
 ];
 
 /** Dự phòng khi layout không lấy được danh mục từ API. */
@@ -77,9 +92,14 @@ export function SiteFooter({ categories }: { categories?: readonly FooterCategor
   return (
     <footer
       id="about"
-      className="border-t border-slate-800/80 bg-slate-950 px-4 py-10 sm:py-12 text-white sm:px-6 lg:px-10"
+      className="relative overflow-hidden border-t border-slate-800/80 bg-gradient-to-b from-slate-950 via-[#0a0f1d] to-[#04060b] px-4 py-12 sm:py-16 text-white sm:px-6 lg:px-10"
     >
-      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1.1fr] [&>*]:min-w-0">
+      {/* Subtle top ambient lighting */}
+      <div className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 h-px w-3/4 max-w-4xl bg-gradient-to-r from-transparent via-brand-500/25 to-transparent" />
+      <div className="pointer-events-none absolute -top-40 left-1/4 size-96 rounded-full bg-brand-500/5 blur-[120px]" />
+      <div className="pointer-events-none absolute -bottom-40 right-1/4 size-96 rounded-full bg-blue-500/5 blur-[120px]" />
+
+      <div className="relative mx-auto grid max-w-7xl grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1.1fr] [&>*]:min-w-0">
         <div className="space-y-4">
           <div className="inline-flex rounded-xl bg-white px-3 py-2 shadow-md">
             <div className="relative h-9 w-44">
@@ -131,16 +151,16 @@ export function SiteFooter({ categories }: { categories?: readonly FooterCategor
           </div>
 
           <div className="flex gap-2.5 pt-2">
-            {SOCIAL_LINKS.map(({ icon: Icon, href, label }) => (
+            {SOCIAL_LINKS.map(({ icon: Icon, href, label, className }) => (
               <a
                 key={label}
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`${label} (mở tab mới)`}
-                className="grid size-11 place-items-center rounded-lg border border-slate-800 bg-slate-900 text-slate-300 transition hover:border-brand-600 hover:bg-brand-600 hover:text-white focus-visible:outline-white"
+                className={`grid size-11 place-items-center rounded-xl border backdrop-blur-xs transition-all duration-200 focus-visible:outline-white ${className}`}
               >
-                <Icon aria-hidden className="size-4" />
+                <Icon aria-hidden className="size-5" />
               </a>
             ))}
           </div>

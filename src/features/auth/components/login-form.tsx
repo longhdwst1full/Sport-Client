@@ -20,9 +20,9 @@ export function LoginForm({ form, isPending, onSubmit }: LoginFormProps) {
   const { errors } = form.formState;
 
   return (
-    <form className="mt-6 space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+    <form className="mt-4 space-y-3 sm:space-y-3.5" onSubmit={form.handleSubmit(onSubmit)}>
       <AuthField id={identifierId} label="Email hoặc Số điện thoại" error={errors.identifier?.message}>
-        <div className="relative mt-2">
+        <div className="relative mt-1.5">
           <TextInput
             {...form.register('identifier')}
             id={identifierId}
@@ -55,7 +55,7 @@ export function LoginForm({ form, isPending, onSubmit }: LoginFormProps) {
           size="lg"
           invalid={Boolean(errors.password)}
           autoComplete="current-password"
-          wrapperClassName="mt-2"
+          wrapperClassName="mt-1.5"
           className={AUTH_INPUT_CLASS}
           placeholder="Nhập tối thiểu 8 ký tự"
           leadingIcon={<Lock className={AUTH_LEADING_ICON_CLASS} />}

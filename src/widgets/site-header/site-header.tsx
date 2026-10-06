@@ -88,15 +88,15 @@ export function SiteHeader({ initialCategories }: SiteHeaderProps = {}) {
           {/* Hotline — Desktop */}
           <a
             href={`tel:${STORE_CONTACT.primaryHotlineRaw}`}
-            className="group hidden items-center gap-2.5 rounded-xl px-2 py-1.5 transition hover:bg-slate-50 lg:flex"
+            className="group hidden items-center gap-2.5 rounded-xl px-2.5 py-1.5 transition hover:bg-slate-50 lg:flex"
             aria-label={`Gọi hotline tư vấn ${STORE_CONTACT.primaryHotline}`}
           >
-            <span className="grid size-10 place-items-center rounded-full border-2 border-brand-600 text-brand-600 transition group-hover:bg-brand-600 group-hover:text-white">
+            <span className="grid size-10 place-items-center rounded-full border border-slate-200 bg-slate-50 text-slate-700 transition-all duration-200 group-hover:border-brand-600 group-hover:bg-brand-600 group-hover:text-white shadow-2xs">
               <Phone aria-hidden className="size-4" />
             </span>
             <span className="flex flex-col leading-tight">
-              <span className="text-xs font-semibold text-slate-500">Hotline tư vấn</span>
-              <strong className="text-sm font-black text-brand-600">{STORE_CONTACT.primaryHotline}</strong>
+              <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Hotline tư vấn</span>
+              <strong className="text-sm font-black text-brand-600 transition-colors group-hover:text-brand-700">{STORE_CONTACT.primaryHotline}</strong>
             </span>
           </a>
 

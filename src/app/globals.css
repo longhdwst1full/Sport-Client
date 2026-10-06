@@ -157,21 +157,21 @@
 :root {
   color-scheme: light;
   /* DC design tokens: shared visual language with admin-client/dragon-web. */
-  --dc-primary-50: #fff1f1;
-  --dc-primary-100: #ffe0e0;
-  --dc-primary-500: #f23c40;
-  --dc-primary-600: #db1518;
-  --dc-primary-700: #b80f12;
-  --dc-primary-800: #980f13;
-  --dc-primary-900: #7e1316;
-  --dc-info-500: #00bad1;
-  --dc-warning-500: #ff9f43;
-  --dc-error-500: #ff4c51;
-  --dc-text-primary: #434050;
-  --dc-text-secondary: #6d6b77;
-  --dc-border: #dddde3;
+  --dc-primary-50: #fff5f5;
+  --dc-primary-100: #fee2e2;
+  --dc-primary-500: #e03131;
+  --dc-primary-600: #cf222e;
+  --dc-primary-700: #b01c26;
+  --dc-primary-800: #8f1820;
+  --dc-primary-900: #72151b;
+  --dc-info-500: #0ea5e9;
+  --dc-warning-500: #f59e0b;
+  --dc-error-500: #ef4444;
+  --dc-text-primary: #0f172a;
+  --dc-text-secondary: #64748b;
+  --dc-border: #e2e8f0;
   --dc-surface: #ffffff;
-  --dc-canvas: #f8f7fa;
+  --dc-canvas: #f8fafc;
 }
 * {
   box-sizing: border-box;
@@ -192,8 +192,8 @@ body::before {
   content: '';
   pointer-events: none;
   background:
-    radial-gradient(circle at 15% 10%, rgba(219, 21, 24, 0.03), transparent 35rem),
-    radial-gradient(circle at 85% 30%, rgba(66, 65, 68, 0.03), transparent 35rem);
+    radial-gradient(circle at 15% 10%, rgba(220, 38, 38, 0.02), transparent 35rem),
+    radial-gradient(circle at 85% 30%, rgba(15, 23, 42, 0.02), transparent 35rem);
 }
 h1,
 h2,
@@ -213,7 +213,7 @@ html {
   scroll-behavior: smooth;
 }
 ::selection {
-  background: var(--dc-primary-500);
+  background: var(--dc-primary-600);
   color: #ffffff;
 }
 .text-balance {
@@ -223,7 +223,7 @@ html {
 /* Vòng focus bàn phím mặc định (brand-500) cho mọi phần tử tương tác chưa tự khai báo ring.
    Phần tử có `outline-none`/`outline-hidden` (utilities, khai báo sau) tự lo focus-within/ring riêng. */
 :focus-visible {
-  outline: 2px solid var(--dc-primary-500);
+  outline: 2px solid var(--dc-primary-600);
   outline-offset: 2px;
 }
 

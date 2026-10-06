@@ -9,7 +9,6 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { Button } from '@/foundation/components/buttons';
-import { CarouselDots } from '@/foundation/components/indicators';
 import { CategoryRailItem } from './category-rail-item';
 import type { CategoryRailView } from '@/features/catalog';
 import { useAutoplayAllowed } from '@/shared/hooks';
@@ -188,18 +187,21 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
             ))}
           </div>
 
-          {/* Slider Pagination Dots Indicator */}
-          <CarouselDots
-            count={items.length}
-            activeIndex={activeIndex}
-            onSelect={scrollToItem}
-            wrapperClassName="mt-6 flex items-center justify-center gap-1.5"
-            baseClassName="h-1.5 rounded-full transition-all duration-300"
-            activeClassName="w-6 bg-brand-600"
-            inactiveClassName="w-1.5 bg-slate-200 hover:bg-slate-300"
-            keyFor={(index) => items[index].id}
-            ariaLabelFor={(index) => `Đi tới danh mục ${items[index].name}`}
-          />
+          {/* Sleek Scroll Progress Bar & Counter */}
+          <div className="mt-6 flex items-center justify-center gap-3">
+            <div className="relative h-1.5 w-36 sm:w-48 overflow-hidden rounded-full bg-slate-200/90">
+              <div
+                className="h-full rounded-full bg-brand-600 transition-all duration-300 ease-out"
+                style={{
+                  width: `${Math.max(20, Math.round(100 / Math.max(items.length, 1)))}%`,
+                  transform: `translateX(${items.length > 1 ? (activeIndex / (items.length - 1)) * (items.length > 5 ? 300 : 150) : 0}%)`,
+                }}
+              />
+            </div>
+            <span className="text-[11px] font-bold text-slate-400 select-none">
+              {activeIndex + 1}/{items.length}
+            </span>
+          </div>
         </div>
 
         {/* Mobile View All Link */}

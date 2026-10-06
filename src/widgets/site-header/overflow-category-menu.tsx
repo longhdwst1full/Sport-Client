@@ -57,13 +57,13 @@ export function OverflowCategoryMenu({
         onClick={isOpen ? onClose : onOpen}
         aria-expanded={isOpen}
         aria-controls={panelId}
-        className={`${triggerClassName} ${isOpen ? triggerActiveClassName : triggerIdleClassName}`}
+        className={`group ${triggerClassName} ${isOpen ? triggerActiveClassName : triggerIdleClassName}`}
       >
         <span>Danh mục khác</span>
         <ChevronDown
           aria-hidden
-          className={`size-3.5 text-white/80 transition-transform duration-200 xl:size-4 ${
-            isOpen ? 'rotate-180' : ''
+          className={`size-3.5 text-slate-400 transition-transform duration-200 group-hover:text-brand-600 xl:size-4 ${
+            isOpen ? 'rotate-180 text-brand-600' : ''
           }`}
         />
       </Button>

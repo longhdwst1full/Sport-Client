@@ -14,11 +14,11 @@ interface DesktopMegaMenuProps {
   flashSaleMaxDiscountPercent: number | null | undefined;
 }
 
-/** Link cấp 1 trên thanh điều hướng đỏ (brand-600): chữ trắng, nền đậm hơn khi hover/mở. */
+/** Link cấp 1 trên thanh điều hướng thương hiệu: nền trắng sáng, chữ đậm nét, hover/active êm dịu. */
 const NAV_ITEM_BASE =
-  'inline-flex items-center gap-1 whitespace-nowrap rounded-lg px-2.5 py-1.5 text-xs font-semibold text-white transition-colors duration-150 focus-visible:outline-white xl:gap-1.5 xl:px-3 xl:py-2 xl:text-sm';
-const NAV_ITEM_IDLE = 'hover:bg-brand-700';
-const NAV_ITEM_ACTIVE = 'bg-brand-800 font-bold';
+  'inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg px-2.5 py-1.5 text-xs font-semibold transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 xl:px-3 xl:py-1.5 xl:text-sm';
+const NAV_ITEM_IDLE = 'text-slate-700 hover:bg-slate-100 hover:text-brand-600';
+const NAV_ITEM_ACTIVE = 'bg-brand-50 text-brand-600 font-bold';
 
 export function DesktopMegaMenu({
   megaMenuCategories,
@@ -82,12 +82,12 @@ export function DesktopMegaMenu({
   return (
     <nav
       style={{ zIndex: 10 }}
-      className="relative hidden bg-brand-600 shadow-sm lg:block"
+      className="relative hidden bg-white border-b border-slate-200/80 shadow-2xs lg:block"
       aria-label="Điều hướng chính"
     >
-      <div className="mx-auto flex h-12 max-w-7xl items-center justify-between gap-2 px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-11 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
         {/* Main Category Dropdowns */}
-        <div className="flex shrink-0 items-center gap-0.5 xl:gap-1">
+        <div className="flex shrink-0 items-center gap-1 xl:gap-1.5">
           <Link href="/" className={`${NAV_ITEM_BASE} ${NAV_ITEM_IDLE}`}>
             Trang chủ
           </Link>
@@ -119,14 +119,14 @@ export function DesktopMegaMenu({
                   href={cat.href}
                   onPointerDown={hasSubmenu ? (event) => handleTriggerPointerDown(event, cat.label) : undefined}
                   onClick={hasSubmenu ? (event) => handleTriggerClick(event, cat.label) : undefined}
-                  className={`${NAV_ITEM_BASE} ${isOpen ? NAV_ITEM_ACTIVE : NAV_ITEM_IDLE}`}
+                  className={`${NAV_ITEM_BASE} group ${isOpen ? NAV_ITEM_ACTIVE : NAV_ITEM_IDLE}`}
                 >
                   <span>{cat.label}</span>
                   {hasSubmenu && (
                     <ChevronDown
                       aria-hidden
-                      className={`size-3.5 text-white/80 transition-transform duration-200 xl:size-4 ${
-                        isOpen ? 'rotate-180' : ''
+                      className={`size-3.5 text-slate-400 transition-transform duration-200 group-hover:text-brand-600 xl:size-4 ${
+                        isOpen ? 'rotate-180 text-brand-600' : ''
                       }`}
                     />
                   )}
