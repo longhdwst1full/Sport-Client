@@ -5,9 +5,8 @@ interface HeaderQuickLinksProps {
   flashSaleMaxDiscountPercent: number | null | undefined;
 }
 
-/** Link phụ trên thanh điều hướng: chữ slate-700, hover nhẹ nhàng. */
 const QUICK_LINK =
-  'inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg px-2.5 py-1.5 text-xs font-semibold text-slate-700 transition-all hover:bg-slate-100 hover:text-brand-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 xl:px-3 xl:py-1.5 xl:text-sm';
+  'inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg px-2.5 py-1.5 text-xs font-semibold text-slate-700 transition-all hover:bg-slate-100 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 xl:px-3 xl:py-1.5 xl:text-sm';
 
 export function HeaderQuickLinks({
   hasFlashSaleCampaign,

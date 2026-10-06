@@ -57,11 +57,11 @@ export interface BudgetNavigationProps {
 export function BudgetNavigation({ quickLinks = [] }: BudgetNavigationProps) {
   return (
     <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 sm:py-14" aria-label="Tìm kiếm theo ngân sách">
-      <div className="rounded-3xl border border-slate-200/90 bg-gradient-to-b from-white via-slate-50/60 to-slate-100/40 p-6 sm:p-8 md:p-10 shadow-sm shadow-slate-100">
+      <div className="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 md:p-10 shadow-sm">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div className="flex items-center gap-3.5">
-            <div className="grid size-11 place-items-center rounded-2xl bg-brand-50 border border-brand-200/80 text-brand-600 shadow-xs">
+            <div className="grid size-11 place-items-center rounded-2xl bg-slate-100 border border-slate-200 text-slate-800 shadow-2xs">
               <Banknote className="size-5" aria-hidden="true" />
             </div>
             <div>
@@ -75,20 +75,20 @@ export function BudgetNavigation({ quickLinks = [] }: BudgetNavigationProps) {
           </div>
           <Link
             href="/products"
-            className="group inline-flex items-center gap-1.5 text-xs font-bold text-brand-700 hover:text-brand-800 transition rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+            className="group inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-slate-950 transition rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2"
           >
             <span>Xem tất cả mức giá</span>
             <ChevronRight className="size-4 transition-transform group-hover:translate-x-1" />
           </Link>
         </div>
 
-        {/* 4 Budget Cards */}
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {/* 4 Budget Cards Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
           {BUDGET_TIERS.map((tier) => (
             <Link
               key={tier.id}
               href={tier.href}
-              className={`group flex flex-col justify-between rounded-2xl border border-slate-200/90 bg-white p-5.5 transition-all duration-200 hover:-translate-y-1 ${tier.accentBorder} hover:shadow-lg hover:shadow-slate-200/60 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2`}
+              className={`group flex flex-col justify-between rounded-2xl border border-slate-200 bg-slate-50/60 p-5 sm:p-6 transition-all duration-200 hover:-translate-y-1 hover:bg-white hover:border-slate-300 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2`}
             >
               <div>
                 <div className="flex items-center justify-between gap-2 mb-3">
@@ -97,7 +97,7 @@ export function BudgetNavigation({ quickLinks = [] }: BudgetNavigationProps) {
                     {tier.tag}
                   </span>
                 </div>
-                <strong className="block text-xl font-black text-slate-900 group-hover:text-brand-600 transition-colors">
+                <strong className="block text-xl font-black text-slate-900 group-hover:text-slate-950 transition-colors">
                   {tier.label}
                 </strong>
                 <p className="mt-1.5 text-xs text-slate-500 leading-relaxed line-clamp-2">
@@ -105,9 +105,9 @@ export function BudgetNavigation({ quickLinks = [] }: BudgetNavigationProps) {
                 </p>
               </div>
 
-              <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-3.5 text-xs font-bold text-slate-600 group-hover:text-brand-600 transition-colors">
+              <div className="mt-5 flex items-center justify-between border-t border-slate-200/70 pt-3.5 text-xs font-bold text-slate-600 group-hover:text-slate-950 transition-colors">
                 <span>Xem danh sách</span>
-                <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1 text-slate-400 group-hover:text-brand-600" />
+                <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1 text-slate-400 group-hover:text-slate-900" />
               </div>
             </Link>
           ))}
@@ -115,27 +115,27 @@ export function BudgetNavigation({ quickLinks = [] }: BudgetNavigationProps) {
 
         {/* Seamlessly Integrated Popular Category Quick Links */}
         {quickLinks.length > 0 && (
-          <div className="mt-8 pt-6 border-t border-slate-200/80">
+          <div className="mt-8 pt-6 border-t border-slate-200">
             <div className="flex items-center justify-between gap-3 mb-3">
               <span className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700">
-                <Sparkles className="size-3.5 text-brand-600" />
+                <Sparkles className="size-3.5 text-slate-600" />
                 <span>Nhóm sản phẩm được tìm kiếm nhiều:</span>
               </span>
               <Link
                 href="/category"
-                className="group inline-flex items-center gap-1 text-xs font-bold text-brand-700 hover:text-brand-800 transition rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+                className="group inline-flex items-center gap-1 text-xs font-bold text-slate-700 hover:text-slate-950 transition rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2"
               >
                 <span>Xem tất cả danh mục</span>
                 <ChevronRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
               </Link>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
               {quickLinks.map((category) => (
                 <Link
                   key={category.slug}
                   href={`/category/${category.slug}`}
-                  className="rounded-full border border-slate-200/90 bg-white px-3.5 py-1.5 text-xs font-medium text-slate-700 shadow-2xs transition-all hover:border-brand-400 hover:bg-brand-50/70 hover:text-brand-700 hover:shadow-xs active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+                  className="rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-xs font-medium text-slate-700 shadow-2xs transition-all hover:border-slate-400 hover:bg-slate-50 hover:text-slate-900 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2"
                 >
                   {category.name}
                 </Link>

@@ -13,11 +13,6 @@ import { CategoryRailItem } from './category-rail-item';
 import type { CategoryRailView } from '@/features/catalog';
 import { useAutoplayAllowed } from '@/shared/hooks';
 
-const SCROLL_CONTROLS = [
-  { direction: 'left', Icon: ChevronLeft, label: 'Trượt sang danh mục trước', title: 'Trước' },
-  { direction: 'right', Icon: ChevronRight, label: 'Trượt sang danh mục tiếp theo', title: 'Tiếp theo' },
-] as const;
-
 const VIEW_ALL_CONTENT = (
   <>
     <span>Xem tất cả danh mục</span>
@@ -141,44 +136,50 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
             </p>
           </div>
 
-          {/* Navigation Controls: Circular Slide Buttons & View All */}
+          {/* Navigation Controls: View All */}
           <div className="flex items-center gap-3 self-end sm:self-auto">
             <Link
               href="/category"
-              className="hidden md:inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-brand-700 hover:text-brand-800 transition mr-2 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+              className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-slate-700 hover:text-slate-950 transition rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2"
             >
               {VIEW_ALL_CONTENT}
             </Link>
-
-            <div className="flex items-center gap-2">
-              {SCROLL_CONTROLS.map(({ direction, Icon, label, title }) => (
-                <Button
-                  key={direction}
-                  variant="outline"
-                  size="icon"
-                  onClick={() => scroll(direction)}
-                  className="rounded-full border-slate-200 text-slate-700 shadow-sm transition-all hover:border-brand-500 hover:bg-brand-600 hover:text-white active:scale-95 disabled:pointer-events-none disabled:opacity-40"
-                  aria-label={label}
-                  title={title}
-                >
-                  <Icon className="size-5" aria-hidden="true" />
-                </Button>
-              ))}
-            </div>
           </div>
         </div>
 
         {/* Motion Slider Track with Rounded Border Styling */}
         <div className="relative group/slider">
+          {/* Floating Left & Right Slider Navigation Arrows */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => scroll('left')}
+            className="absolute -left-3 sm:-left-5 top-1/2 -translate-y-1/2 z-20 size-11 rounded-full border border-slate-200 bg-white/95 text-slate-800 shadow-md backdrop-blur-sm transition-all duration-200 hover:border-slate-900 hover:bg-slate-900 hover:text-white active:scale-95 disabled:pointer-events-none disabled:opacity-0 focus-visible:ring-2 focus-visible:ring-slate-900"
+            aria-label="Danh mục trước"
+            title="Cuộn sang trái"
+          >
+            <ChevronLeft className="size-5" aria-hidden="true" />
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => scroll('right')}
+            className="absolute -right-3 sm:-right-5 top-1/2 -translate-y-1/2 z-20 size-11 rounded-full border border-slate-200 bg-white/95 text-slate-800 shadow-md backdrop-blur-sm transition-all duration-200 hover:border-slate-900 hover:bg-slate-900 hover:text-white active:scale-95 disabled:pointer-events-none disabled:opacity-0 focus-visible:ring-2 focus-visible:ring-slate-900"
+            aria-label="Danh mục tiếp theo"
+            title="Cuộn sang phải"
+          >
+            <ChevronRight className="size-5" aria-hidden="true" />
+          </Button>
+
           {/* Subtle Fade Edges */}
           <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-8 bg-gradient-to-r from-slate-50/80 to-transparent sm:w-12" />
           <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-8 bg-gradient-to-l from-slate-50/80 to-transparent sm:w-12" />
 
           {/* Horizontal Sliding Container */}
-          {/* Không padding trái: snap-start với px-1 tự cuộn 4px lúc tải, Chrome coi là scroll và bỏ LCP (Lighthouse NO_LCP). */}
           <div
             ref={scrollContainerRef}
-            className="flex gap-4 sm:gap-5 overflow-x-auto scroll-smooth snap-x snap-mandatory py-4 pr-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+            className="flex gap-4 sm:gap-5 overflow-x-auto scroll-smooth snap-x snap-mandatory py-4 px-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
             role="region"
             aria-label="Thanh trượt danh mục ngành hàng"
           >
@@ -187,20 +188,22 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
             ))}
           </div>
 
-          {/* Sleek Scroll Progress Bar & Counter */}
-          <div className="mt-6 flex items-center justify-center gap-3">
-            <div className="relative h-1.5 w-36 sm:w-48 overflow-hidden rounded-full bg-slate-200/90">
-              <div
-                className="h-full rounded-full bg-brand-600 transition-all duration-300 ease-out"
-                style={{
-                  width: `${Math.max(20, Math.round(100 / Math.max(items.length, 1)))}%`,
-                  transform: `translateX(${items.length > 1 ? (activeIndex / (items.length - 1)) * (items.length > 5 ? 300 : 150) : 0}%)`,
-                }}
-              />
+          {/* Sleek Minimalist Indicator Pill */}
+          <div className="mt-7 flex items-center justify-center">
+            <div className="inline-flex items-center gap-3 rounded-full border border-slate-200/90 bg-white px-4 py-1.5 shadow-2xs">
+              <div className="relative h-1.5 w-28 sm:w-40 overflow-hidden rounded-full bg-slate-100">
+                <div
+                  className="h-full rounded-full bg-slate-900 transition-all duration-300 ease-out"
+                  style={{
+                    width: `${Math.max(20, Math.round(100 / Math.max(items.length, 1)))}%`,
+                    transform: `translateX(${items.length > 1 ? (activeIndex / (items.length - 1)) * (items.length > 5 ? 300 : 150) : 0}%)`,
+                  }}
+                />
+              </div>
+              <span className="text-xs font-bold tracking-wider text-slate-600 select-none">
+                {String(activeIndex + 1).padStart(2, '0')}&nbsp;/&nbsp;{String(items.length).padStart(2, '0')}
+              </span>
             </div>
-            <span className="text-[11px] font-bold text-slate-400 select-none">
-              {activeIndex + 1}/{items.length}
-            </span>
           </div>
         </div>
 

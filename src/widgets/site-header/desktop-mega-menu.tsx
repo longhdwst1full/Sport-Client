@@ -16,9 +16,9 @@ interface DesktopMegaMenuProps {
 
 /** Link cấp 1 trên thanh điều hướng thương hiệu: nền trắng sáng, chữ đậm nét, hover/active êm dịu. */
 const NAV_ITEM_BASE =
-  'inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg px-2.5 py-1.5 text-xs font-semibold transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 xl:px-3 xl:py-1.5 xl:text-sm';
-const NAV_ITEM_IDLE = 'text-slate-700 hover:bg-slate-100 hover:text-brand-600';
-const NAV_ITEM_ACTIVE = 'bg-brand-50 text-brand-600 font-bold';
+  'inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg px-2.5 py-1.5 text-xs font-semibold transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 xl:px-3 xl:py-1.5 xl:text-sm';
+const NAV_ITEM_IDLE = 'text-slate-700 hover:bg-slate-100 hover:text-slate-950';
+const NAV_ITEM_ACTIVE = 'bg-slate-100 text-slate-950 font-bold';
 
 export function DesktopMegaMenu({
   megaMenuCategories,
@@ -85,9 +85,9 @@ export function DesktopMegaMenu({
       className="relative hidden bg-white border-b border-slate-200/80 shadow-2xs lg:block"
       aria-label="Điều hướng chính"
     >
-      <div className="mx-auto flex h-11 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
-        {/* Main Category Dropdowns */}
-        <div className="flex shrink-0 items-center gap-1 xl:gap-1.5">
+      <div className="mx-auto flex h-11 max-w-7xl items-center justify-center gap-1 xl:gap-1.5 px-4 sm:px-6 lg:px-8 relative">
+        {/* Main Centered Nav Row */}
+        <div className="flex items-center gap-1 xl:gap-1.5">
           <Link href="/" className={`${NAV_ITEM_BASE} ${NAV_ITEM_IDLE}`}>
             Trang chủ
           </Link>
@@ -125,8 +125,8 @@ export function DesktopMegaMenu({
                   {hasSubmenu && (
                     <ChevronDown
                       aria-hidden
-                      className={`size-3.5 text-slate-400 transition-transform duration-200 group-hover:text-brand-600 xl:size-4 ${
-                        isOpen ? 'rotate-180 text-brand-600' : ''
+                      className={`size-3.5 text-slate-400 transition-transform duration-200 group-hover:text-slate-800 xl:size-4 ${
+                        isOpen ? 'rotate-180 text-slate-900' : ''
                       }`}
                     />
                   )}
@@ -156,6 +156,9 @@ export function DesktopMegaMenu({
             triggerActiveClassName={NAV_ITEM_ACTIVE}
           />
         </div>
+
+        {/* Subtle Separator */}
+        <div className="hidden xl:block h-4 w-px bg-slate-200 mx-1" aria-hidden="true" />
 
         {/* Quick Features & Highlights */}
         <HeaderQuickLinks

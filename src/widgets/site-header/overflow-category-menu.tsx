@@ -62,8 +62,8 @@ export function OverflowCategoryMenu({
         <span>Danh mục khác</span>
         <ChevronDown
           aria-hidden
-          className={`size-3.5 text-slate-400 transition-transform duration-200 group-hover:text-brand-600 xl:size-4 ${
-            isOpen ? 'rotate-180 text-brand-600' : ''
+          className={`size-3.5 text-slate-400 transition-transform duration-200 group-hover:text-slate-800 xl:size-4 ${
+            isOpen ? 'rotate-180 text-slate-900' : ''
           }`}
         />
       </Button>
