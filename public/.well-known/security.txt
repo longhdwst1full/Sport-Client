@@ -1,0 +1,5 @@
+# Báo cáo lỗ hổng bảo mật cho Bảo An Sport. Vui lòng không công khai trước khi chúng tôi xử lý.
+Contact: mailto:support@baoansport.vn
+Expires: 2027-10-07T00:00:00.000Z
+Preferred-Languages: vi, en
+Canonical: https://www.baoansprot.click/.well-known/security.txt

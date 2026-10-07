@@ -18,8 +18,10 @@ const contentSecurityPolicyReportOnly = [
   "style-src 'self' 'unsafe-inline'",
   `img-src 'self' data: blob: ${IMAGE_HOSTS.join(' ')}`,
   "font-src 'self' data:",
-  // Trình duyệt gọi API cùng origin qua rewrite /api/v1.
-  "connect-src 'self'",
+  // Trình duyệt gọi API cùng origin qua rewrite /api/v1; ảnh bằng chứng/review upload thẳng lên
+  // Cloudinary bằng chữ ký từ API (`lib/api/signed-media-upload.ts`) — thiếu host này thì khi
+  // chuyển sang enforce, mọi upload ảnh sẽ bị chặn.
+  "connect-src 'self' https://api.cloudinary.com",
   // Video YouTube trong mô tả sản phẩm (đã sanitize).
   'frame-src https://www.youtube.com https://www.youtube-nocookie.com',
   "worker-src 'self'",
@@ -75,8 +77,14 @@ const nextConfig: NextConfig = {
           // geolocation=(self): checkout dùng navigator.geolocation để lấy vị trí giao hàng.
           { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=(self), payment=(), usb=()' },
           { key: 'Cross-Origin-Opener-Policy', value: 'same-origin' },
-          // Không preload: preload khó gỡ, cân nhắc sau khi chắc chắn mọi subdomain đều HTTPS.
-          { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains' },
+          // Site khác không được nhúng tài nguyên của storefront. KHÔNG bật COEP `require-corp`: nó chặn
+          // ảnh Cloudinary/baoansport.vn/Unsplash và iframe YouTube nếu nguồn không trả CORP, trong khi
+          // site không dùng tính năng cần cross-origin isolation (SharedArrayBuffer).
+          { key: 'Cross-Origin-Resource-Policy', value: 'same-origin' },
+          // `preload` chỉ có hiệu lực khi domain được gửi lên hstspreload.org — bước đó khó gỡ và buộc MỌI
+          // subdomain phải HTTPS, nên chỉ đăng ký sau khi đã rà toàn bộ subdomain. `*.vercel.app` nằm
+          // trong TLD `.app` vốn đã preload sẵn.
+          { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
           { key: 'Content-Security-Policy-Report-Only', value: contentSecurityPolicyReportOnly },
         ],
       },

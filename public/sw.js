@@ -159,6 +159,8 @@ function reply(event, payload) {
 }
 
 self.addEventListener('message', (event) => {
+  // SECURITY: lệnh ở đây xoá cache/kích hoạt worker mới — chỉ nhận từ trang cùng origin.
+  if (event.origin !== self.location.origin) return;
   const type = event.data?.type;
   if (type === 'SKIP_WAITING') {
     self.skipWaiting();
