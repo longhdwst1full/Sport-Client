@@ -49,7 +49,9 @@ test.describe('PWA — manifest, offline và reset', () => {
     // Checkout là network-only: offline phải nhận trang /offline tĩnh từ worker, không render
     // form đặt hàng từ cache.
     await page.goto('/checkout');
-    await expect(page.getByRole('heading', { level: 1, name: 'Bạn đang ngoại tuyến' })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { level: 1, name: /bạn đang (ngoại tuyến|mất kết nối mạng)/i }),
+    ).toBeVisible();
     await expect(page.getByRole('button', { name: /đặt hàng/i })).toHaveCount(0);
   });
 
@@ -60,7 +62,7 @@ test.describe('PWA — manifest, offline và reset', () => {
       await caches.open('other-app-e2e');
     });
 
-    await page.getByRole('button', { name: 'Reset cache và service worker' }).click();
+    await page.getByRole('button', { name: /xóa bộ nhớ đệm|reset cache/i }).click();
     await expect(page.getByRole('heading', { name: 'Trạng thái PWA' })).toBeVisible();
     // Reset chủ động reload trang. Đọc hai điều kiện trong cùng execution context
     // và retry khi context cũ vừa bị huỷ để tránh flaky giữa hai lần poll.

@@ -401,6 +401,27 @@ html {
   scrollbar-width: none;
 }
 
+/* Floating contact dynamic ring animation */
+@keyframes phone-ring {
+  0%, 100% {
+    transform: rotate(0deg) scale(1);
+  }
+  4%, 12%, 20% {
+    transform: rotate(-14deg) scale(1.1);
+  }
+  8%, 16%, 24% {
+    transform: rotate(14deg) scale(1.1);
+  }
+  28% {
+    transform: rotate(0deg) scale(1);
+  }
+}
+
+.animate-phone-ring {
+  animation: phone-ring 3.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite;
+  transform-origin: center;
+}
+
 
 /* Biên lai nội bộ (D16, features/orders): ẩn trên màn hình, chỉ hiện khi body có class in biên lai. */
 .print-receipt-root { display: none; }

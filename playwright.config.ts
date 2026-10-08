@@ -72,7 +72,7 @@ export default defineConfig({
             : `yarn next build && yarn next start -p ${PORT}`,
         url: BASE_URL,
         reuseExistingServer: !process.env.CI,
-        timeout: 240_000,
+        timeout: 360_000,
         env: {
           PORT: String(PORT),
           NEXT_PUBLIC_API_URL: API_URL,

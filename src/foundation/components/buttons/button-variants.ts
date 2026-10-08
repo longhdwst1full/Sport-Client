@@ -2,23 +2,29 @@ import { twMerge } from 'tailwind-merge';
 
 export const BUTTON_VARIANT = {
   primary:
-    'bg-slate-900 text-white shadow-sm shadow-slate-900/20 hover:bg-black hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] border-t border-white/10 transition-all',
+    'bg-gradient-to-r from-red-600 via-rose-600 to-red-700 text-white shadow-md shadow-red-600/25 hover:from-red-500 hover:via-rose-500 hover:to-red-600 hover:shadow-lg hover:shadow-red-600/35 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] border-t border-white/25 transition-all duration-200',
   secondary:
-    'bg-slate-100 text-slate-900 shadow-2xs hover:bg-slate-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] border border-slate-200/80 transition-all',
+    'bg-slate-100/90 text-slate-900 shadow-2xs hover:bg-slate-200 hover:text-slate-950 hover:shadow-sm hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] border border-slate-200/90 transition-all duration-200',
   outline:
-    'border border-slate-300 bg-white text-slate-800 shadow-2xs hover:border-slate-900 hover:text-slate-950 hover:bg-slate-50 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all',
-  ghost: 'text-slate-700 hover:bg-slate-100 hover:text-slate-900 active:scale-[0.98] transition-all',
+    'border border-slate-300 bg-white text-slate-800 shadow-2xs hover:border-red-600 hover:text-red-600 hover:bg-red-50/50 hover:shadow-sm hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all duration-200',
+  ghost: 'text-slate-700 hover:bg-red-50/50 hover:text-red-600 active:scale-[0.98] transition-all duration-200',
   danger:
-    'bg-rose-600 text-white shadow-md shadow-rose-600/25 hover:bg-rose-700 hover:shadow-lg hover:shadow-rose-600/35 hover:-translate-y-0.5 active:scale-[0.98] border-t border-white/20 transition-all',
+    'bg-gradient-to-r from-rose-600 via-red-600 to-rose-700 text-white shadow-md shadow-rose-600/25 hover:from-rose-500 hover:to-red-600 hover:shadow-lg hover:shadow-rose-600/35 hover:-translate-y-0.5 active:scale-[0.98] border-t border-white/20 transition-all duration-200',
   success:
-    'bg-success-600 text-white shadow-md shadow-success-600/25 hover:bg-success-700 hover:shadow-lg hover:shadow-success-600/35 hover:-translate-y-0.5 active:scale-[0.98] border-t border-white/20 transition-all',
-  warning: 'bg-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/20 hover:bg-amber-400 hover:-translate-y-0.5 active:scale-[0.98] transition-all',
+    'bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 text-white shadow-md shadow-emerald-600/25 hover:from-emerald-500 hover:to-teal-600 hover:shadow-lg hover:shadow-emerald-600/35 hover:-translate-y-0.5 active:scale-[0.98] border-t border-white/20 transition-all duration-200',
+  warning:
+    'bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 text-slate-950 font-black shadow-md shadow-amber-500/25 hover:from-amber-300 hover:to-orange-400 hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98] border-t border-white/30 transition-all duration-200',
   /** Viền đỏ nhạt cho hành động huỷ/xoá không phải hành động chính. */
-  dangerOutline: 'border border-rose-200 bg-white text-rose-700 hover:border-rose-400 hover:bg-rose-50 active:scale-[0.98] transition-all',
+  dangerOutline:
+    'border border-rose-200 bg-white text-rose-700 hover:border-rose-400 hover:bg-rose-50 hover:text-rose-800 active:scale-[0.98] transition-all duration-200',
+  /** Nút tối màu Onyx thể thao sang trọng */
+  dark:
+    'bg-gradient-to-r from-slate-900 via-slate-800 to-slate-950 text-white shadow-md shadow-slate-900/20 hover:from-slate-800 hover:to-black hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98] border-t border-white/15 transition-all duration-200',
   /** Nút trên nền tối (hero, banner). */
-  inverse: 'bg-white text-slate-900 shadow-md shadow-black/10 hover:bg-slate-50 hover:-translate-y-0.5 active:scale-[0.98] transition-all',
+  inverse:
+    'bg-white text-slate-900 shadow-md shadow-black/10 hover:bg-slate-50 hover:text-red-600 hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98] border border-slate-200/50 transition-all duration-200',
   /** Nút dạng chữ/link: không nền, không chiều cao cố định (size bị bỏ qua). */
-  link: 'h-auto px-0 text-slate-900 underline-offset-4 hover:underline hover:text-black',
+  link: 'h-auto px-0 text-red-600 font-bold underline-offset-4 hover:underline hover:text-red-700 transition-all duration-200',
 } as const;
 
 export const BUTTON_SIZE = {

@@ -71,6 +71,7 @@ export function CartItemRow({
             onClick={onRemove}
             className="shrink-0 rounded-lg text-stone-500 hover:bg-rose-50 hover:text-rose-700"
             aria-label={`Xóa ${item.name} khỏi giỏ hàng`}
+            data-testid="remove-cart-item"
           >
             <Trash2 aria-hidden className="size-4" />
           </Button>

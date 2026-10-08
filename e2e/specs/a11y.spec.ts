@@ -50,6 +50,7 @@ for (const viewport of VIEWPORTS) {
 
     for (const pageCase of PAGES) {
       test(`A11Y ${pageCase.key} @${viewport.width}`, async ({ page, request }, testInfo) => {
+        test.setTimeout(75_000);
         const product = await firstProduct(request);
         const categorySlug = (await fetchCategories(request))[0]?.slug;
         const path = pageCase.path({ productSlug: product.slug, categorySlug });

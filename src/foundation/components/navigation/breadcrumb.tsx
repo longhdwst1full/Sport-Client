@@ -43,7 +43,8 @@ export function Breadcrumb({
 
   return (
     <nav
-      aria-label="Đường dẫn trang"
+      aria-label="Breadcrumb"
+      data-testid="storefront-breadcrumb"
       className={`text-xs font-semibold ${toneClasses.root} ${className}`.trim()}
     >
       <ol className="flex flex-wrap items-center gap-2">

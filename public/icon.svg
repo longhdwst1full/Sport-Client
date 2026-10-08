@@ -1,7 +1,30 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="112" fill="#12824b"/>
-  <g fill="none" stroke="#fff" stroke-linecap="round" stroke-width="42">
-    <path d="M98 256h316"/>
-    <path d="M128 194v124M180 166v180M332 166v180M384 194v124"/>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ef4444"/>
+      <stop offset="40%" stop-color="#dc2626"/>
+      <stop offset="100%" stop-color="#991b1b"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <!-- Background with Athletic Ruby Gradient -->
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <rect width="512" height="256" rx="112" fill="url(#glow)"/>
+  
+  <!-- Athletic Dumbbell Emblem in Pure White with Bold Power Styling -->
+  <g fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Center Bar -->
+    <path d="M96 256h320" stroke-width="44"/>
+    <!-- Dumbbell Outer Plates -->
+    <path d="M124 190v132M388 190v132" stroke-width="40"/>
+    <!-- Dumbbell Inner Heavy Plates -->
+    <path d="M178 156v200M334 156v200" stroke-width="44"/>
+    <!-- Center Grip Ring -->
+    <path d="M240 236h32v40h-32z" fill="#ffffff" stroke-width="12"/>
   </g>
+  <!-- Small Star / Energy Sparkle -->
+  <circle cx="256" cy="116" r="16" fill="#fef08a"/>
 </svg>

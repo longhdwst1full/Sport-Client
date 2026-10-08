@@ -42,15 +42,19 @@ export async function FooterNewsletterBanner() {
   return (
     <>
       {footerBanner && <FooterBannerStrip banner={footerBanner} />}
-      <section className="bg-gradient-to-b from-slate-900 to-slate-950 px-4 py-10 sm:py-12 text-white border-t border-slate-800 lg:px-10">
-        <div className="mx-auto max-w-3xl text-center">
-          <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-slate-900/10 border border-slate-900/20 text-slate-300">
-            <Mail aria-hidden className="size-6" />
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#0c1222] via-[#090e1a] to-[#060912] px-4 py-12 sm:py-16 text-white border-t border-slate-800/80 lg:px-10">
+        {/* Subtle Top Red Ambient Glow */}
+        <div className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 h-px w-3/4 max-w-4xl bg-gradient-to-r from-transparent via-red-500/35 to-transparent" />
+        <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 size-80 rounded-full bg-red-600/10 blur-[100px]" />
+
+        <div className="relative z-10 mx-auto max-w-3xl text-center">
+          <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-red-500/20 to-rose-600/10 border border-red-500/30 text-red-400 shadow-lg shadow-red-500/10">
+            <Mail aria-hidden className="size-6 text-red-400" />
           </div>
           <h2 className="mt-5 text-2xl font-black sm:text-3xl text-white">
             Nhận ưu đãi độc quyền & kiến thức thể thao
           </h2>
-          <p className="mt-2.5 text-sm text-slate-400 sm:text-base">
+          <p className="mt-2.5 text-sm text-slate-300 sm:text-base">
             Đăng ký email để nhận thông tin sản phẩm mới, combo thiết bị giảm giá và bài viết hướng
             dẫn tập luyện từ HLV.
           </p>

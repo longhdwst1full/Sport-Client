@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
 import Link from 'next/link';
-import { AlertTriangle, Bot, Headset, RotateCw, SendHorizontal, X } from 'lucide-react';
+import { AlertTriangle, Bot, RotateCw, SendHorizontal, X } from 'lucide-react';
 import { GUEST_LOOKUP_ROUTE } from '@/features/orders';
 import { Modal } from '@/foundation/components/overlay';
 import { Button } from '@/foundation/components/buttons';
@@ -78,16 +78,6 @@ export function AssistantDialog({ chat, onClose }: { chat: AssistantChatState; o
             <h2 id={TITLE_ID} className="truncate text-sm font-black">{ASSISTANT_TITLE}</h2>
           </div>
           <div className="flex items-center gap-1">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowHandoff((value) => !value)}
-              aria-expanded={showHandoff}
-              className="h-auto min-h-11 gap-1 rounded-lg bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white hover:bg-white/25 focus-visible:ring-white focus-visible:ring-offset-0 sm:min-h-8"
-            >
-              <Headset className="size-3.5" aria-hidden />
-              {ASSISTANT_COPY.handoff}
-            </Button>
             {/* Panel 380px: nút đóng thu về 32px trên desktop, giữ 44px trên mobile. */}
             <Button
               variant="ghost"

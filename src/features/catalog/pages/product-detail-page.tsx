@@ -16,6 +16,7 @@ import type { ProductDetailDto } from '@/generated/api/catalog/catalog.schemas';
 import { Breadcrumb } from '@/foundation/components/navigation';
 import { toBreadcrumbJsonLd, toProductBreadcrumbItems, toProductJsonLd } from '../model/product-json-ld';
 import { serializeJsonLd } from '@/lib/seo/json-ld';
+import { ProductDescriptionCollapsible } from '../components/product-description-collapsible';
 
 interface ProductDetailPageProps {
   product: ProductDetailDto;
@@ -120,23 +121,11 @@ export function ProductDetailPage({ product, slug, relatedCategorySlug }: Produc
               <ProductImageGallery images={gallery} productName={product.name} />
             </div>
 
-            {/* Product Story / Description — chỉ hiện nội dung API trả về, không có văn mẫu dự phòng. */}
-            {(shortDescription || showLongDescription) && (
-              <div className="rounded-[28px] border border-[var(--dc-border)] bg-white p-6 shadow-sm sm:p-8">
-                <h2 className="text-xl font-black text-ink sm:text-2xl">Mô tả sản phẩm</h2>
-                {shortDescription && (
-                  <p className="mt-4 text-base leading-relaxed text-stone-600 sm:text-lg">
-                    {shortDescription}
-                  </p>
-                )}
-                {showLongDescription && (
-                  <div
-                    className="mt-4 break-words text-sm leading-relaxed text-stone-600 sm:text-base [&_a]:text-[var(--dc-primary-700)] [&_a]:underline [&_h2]:mt-6 [&_h2]:text-lg [&_h2]:font-bold [&_h2]:text-ink [&_h3]:mt-4 [&_h3]:font-bold [&_h3]:text-ink [&_iframe]:my-4 [&_iframe]:aspect-video [&_iframe]:h-auto [&_iframe]:w-full [&_iframe]:max-w-full [&_iframe]:rounded-2xl [&_img]:my-4 [&_img]:h-auto [&_img]:max-w-full [&_img]:rounded-2xl [&_li]:mt-1 [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:mt-3 [&_table]:my-4 [&_table]:w-full [&_table]:border-collapse [&_td]:border [&_td]:border-[var(--dc-border)] [&_td]:p-2 [&_th]:border [&_th]:border-[var(--dc-border)] [&_th]:p-2 [&_ul]:list-disc [&_ul]:pl-5"
-                    dangerouslySetInnerHTML={{ __html: longDescriptionHtml ?? '' }}
-                  />
-                )}
-              </div>
-            )}
+            {/* Product Story / Description — collapsible với nút Xem thêm / Thu gọn */}
+            <ProductDescriptionCollapsible
+              shortDescription={shortDescription}
+              longDescriptionHtml={showLongDescription ? longDescriptionHtml : null}
+            />
 
             {/* Customer Rating & Reviews Summary */}
             <ProductReviewSection productName={product.name} productSlug={slug} />

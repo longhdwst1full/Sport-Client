@@ -82,11 +82,6 @@ export function HeroBannerSlider({
   const hasCampaign = campaigns.some((campaign) => campaign.deals.length > 0);
 
   const [currentSlide, setCurrentSlide] = useState(0);
-  // WCAG 2.2.2: tạm dừng khi rê chuột, khi focus bàn phím nằm trong slider, và có nút dừng/chạy riêng.
-  const [isHovered, setIsHovered] = useState(false);
-  const [hasFocusWithin, setHasFocusWithin] = useState(false);
-  const [userPaused, setUserPaused] = useState(false);
-  const isPaused = isHovered || hasFocusWithin || userPaused;
   const touchStartX = useRef<number | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
   // Dừng tự chuyển slide khi cuộn khỏi màn hình, ẩn tab hoặc người dùng chọn giảm chuyển động.
@@ -103,14 +98,14 @@ export function HeroBannerSlider({
     setCurrentSlide((prev) => (prev - 1 + slideCount) % slideCount);
   }, [slideCount]);
 
-  // Auto-play interval
+  // Auto-play interval chạy tự động định kỳ 5 giây
   useEffect(() => {
-    if (isPaused || !autoplay || slideCount < 2) return;
+    if (!autoplay || slideCount < 2) return;
     const timer = setInterval(() => {
       nextSlide();
     }, 5000);
     return () => clearInterval(timer);
-  }, [isPaused, autoplay, nextSlide, slideCount]);
+  }, [autoplay, nextSlide, slideCount]);
 
   // Touch swipe support
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -130,12 +125,6 @@ export function HeroBannerSlider({
       ref={sectionRef}
       className="px-4 pt-3 pb-6 sm:px-6 lg:px-8"
       aria-label="Khu vực banner chính"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      onFocus={() => setHasFocusWithin(true)}
-      onBlur={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setHasFocusWithin(false);
-      }}
     >
       <div className="mx-auto max-w-7xl">
         {/* Responsive Grid: 8 cols slider + 4 cols promo side banners */}
@@ -148,8 +137,6 @@ export function HeroBannerSlider({
             onPrev={prevSlide}
             onNext={nextSlide}
             onSelect={setCurrentSlide}
-            autoplayPaused={userPaused}
-            onToggleAutoplay={() => setUserPaused((paused) => !paused)}
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
           />

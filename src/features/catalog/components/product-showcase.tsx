@@ -38,8 +38,8 @@ export function ProductShowcase({
 
   return (
     <div className="space-y-8">
-      {/* Interactive Category Filter Pills (Only show on homepage when not constrained by categorySlug prop) */}
-      {!categorySlug && (
+      {/* Interactive Category Filter Pills (chỉ hiển thị ở trang chủ khi không có categorySlug và không có searchQuery) */}
+      {!categorySlug && !searchQuery && (
         <div className="flex flex-wrap items-center gap-2 pb-2">
           {tabs.map((tab) => {
             const isActive = activeTabSlug === tab.slug;
@@ -51,7 +51,7 @@ export function ProductShowcase({
                 onClick={() => setActiveTabSlug(tab.slug)}
                 className={`rounded-full px-4 py-2 text-xs font-bold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2 ${
                   isActive
-                    ? 'bg-slate-900 text-white shadow-sm shadow-slate-900/20'
+                    ? 'bg-gradient-to-r from-red-600 to-rose-600 text-white shadow-md shadow-red-500/20'
                     : 'border border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50'
                 }`}
               >
@@ -62,13 +62,36 @@ export function ProductShowcase({
         </div>
       )}
 
-      {/* Products Grid: tab pills luôn render để đổi tab không mất focus/nhảy layout. */}
+      {/* Products Grid */}
       <CatalogProductGrid
         gridClassName={GRID_CLASS}
         errorTitle="Không thể tải sản phẩm lúc này."
         emptyState={
-          <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center text-slate-600">
-            Chưa có sản phẩm phù hợp.
+          <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-8 sm:p-12 text-center text-slate-600">
+            <p className="text-base font-bold text-slate-900">
+              {searchQuery ? `Không tìm thấy sản phẩm nào khớp với từ khóa "${searchQuery}"` : 'Chưa có sản phẩm phù hợp.'}
+            </p>
+            <p className="mt-2 text-xs sm:text-sm text-slate-500 max-w-md mx-auto">
+              {searchQuery
+                ? 'Vui lòng kiểm tra lại chính tả hoặc khám phá các danh mục thiết bị thể thao phổ biến dưới đây.'
+                : 'Vui lòng chọn danh mục khác hoặc quay lại sau.'}
+            </p>
+            {searchQuery && (
+              <div className="mt-6 flex flex-wrap justify-center gap-2">
+                <Link href="/products" className={buttonVariants({ variant: 'primary', size: 'sm', className: 'rounded-full font-bold shadow-sm' })}>
+                  Xem tất cả sản phẩm
+                </Link>
+                <Link href="/category/may-chay-bo" className={buttonVariants({ variant: 'outline', size: 'sm', className: 'rounded-full font-bold' })}>
+                  Máy chạy bộ
+                </Link>
+                <Link href="/category/xe-dap-tap" className={buttonVariants({ variant: 'outline', size: 'sm', className: 'rounded-full font-bold' })}>
+                  Xe đạp tập
+                </Link>
+                <Link href="/category/ghe-tap-ta" className={buttonVariants({ variant: 'outline', size: 'sm', className: 'rounded-full font-bold' })}>
+                  Ghế tập tạ
+                </Link>
+              </div>
+            )}
           </div>
         }
         {...list}

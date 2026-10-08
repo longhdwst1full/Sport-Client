@@ -48,11 +48,13 @@ export function NewsListFeed({
           {categories.map((cat) => (
             <Button
               key={cat}
-              variant={selectedCat === cat ? 'secondary' : 'outline'}
+              variant={selectedCat === cat ? 'primary' : 'outline'}
               onClick={() => setSelectedCat(cat)}
               aria-pressed={selectedCat === cat}
               className={`rounded-full px-5 text-xs font-bold ${FOCUS_RING} ${
-                selectedCat === cat ? 'bg-slate-900 shadow-sm' : 'border-slate-200 text-slate-600 hover:border-slate-400'
+                selectedCat === cat
+                  ? 'shadow-md shadow-red-500/20'
+                  : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50'
               }`}
             >
               {cat === ALL_CATEGORY ? 'Tất cả' : (CONTENT_POST_TYPE_LABELS[cat] ?? cat)}
@@ -183,13 +185,15 @@ export function NewsListFeed({
                 </p>
 
                 <div className="mt-auto flex items-center justify-between border-t border-slate-100 pt-3">
-                  <span className="text-xs font-bold text-slate-500">Bảo An Sport</span>
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                    {item.categoryLabel}
+                  </span>
                   <Link
                     href={`/news/${item.slug}`}
                     aria-label={`Chi tiết: ${item.title}`}
-                    className={`inline-flex min-h-11 items-center gap-1 rounded px-1 text-xs font-bold text-slate-900 ${FOCUS_RING}`}
+                    className={`inline-flex min-h-11 items-center gap-1 rounded px-1 text-xs font-bold text-red-600 transition hover:text-red-700 ${FOCUS_RING}`}
                   >
-                    Chi tiết <ChevronRight className="size-3.5" aria-hidden="true" />
+                    Đọc tiếp <ChevronRight className="size-3.5 transition group-hover:translate-x-0.5" aria-hidden="true" />
                   </Link>
                 </div>
               </div>

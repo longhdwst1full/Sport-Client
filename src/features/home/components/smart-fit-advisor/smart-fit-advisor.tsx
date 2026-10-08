@@ -104,12 +104,18 @@ export function SmartFitAdvisor() {
 
   return (
     <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
-      <div className={`overflow-hidden rounded-[32px] border border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 p-6 sm:p-10 lg:p-12 text-white shadow-2xl ${SMART_FIT_CARD_MIN_HEIGHT}`}>
+      <div className={`relative overflow-hidden rounded-[32px] border border-slate-800/80 bg-gradient-to-br from-[#0c1222] via-[#0f172a] to-[#1e1b2e] p-6 sm:p-10 lg:p-12 text-white shadow-2xl ${SMART_FIT_CARD_MIN_HEIGHT}`}>
+        {/* Subtle Sports Ambient Lighting */}
+        <div className="pointer-events-none absolute -right-20 -top-20 size-80 rounded-full bg-red-600/12 blur-[100px]" />
+        <div className="pointer-events-none absolute -bottom-20 -left-20 size-80 rounded-full bg-indigo-600/10 blur-[100px]" />
+
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 border-b border-slate-800/80 pb-8">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-end md:justify-between gap-6 border-b border-slate-800/80 pb-8">
           <div>
-            <p className="text-xs font-black uppercase tracking-[.2em] text-slate-300">Smart Fit Advisor</p>
-            <h2 className="mt-2 text-2xl sm:text-3xl lg:text-4xl font-black text-white">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-red-500/15 border border-red-500/25 px-3 py-1 text-xs font-black uppercase tracking-wider text-red-400">
+              Smart Fit Advisor
+            </span>
+            <h2 className="mt-3 text-2xl sm:text-3xl lg:text-4xl font-black text-white">
               Không Chỉ Bán Thiết Bị. Chúng Tôi Giúp Bạn Chọn Đúng.
             </h2>
             <p className="mt-2 text-xs sm:text-sm text-slate-300 max-w-2xl">

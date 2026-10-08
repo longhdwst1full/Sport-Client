@@ -46,13 +46,13 @@ test.describe('CAT — Danh sách sản phẩm /products', () => {
     await expect(catalog.productLinks().first()).toBeVisible();
   });
 
-  test('CAT-05: sắp xếp giá tăng dần đổi thứ tự hiển thị', async ({ page }) => {
+  test('CAT-05: sắp xếp giá đổi thứ tự hiển thị', async ({ page }) => {
     const catalog = new CatalogPage(page);
     await catalog.openAll();
     await expect(catalog.productLinks().first()).toBeVisible({ timeout: 15_000 });
     const before = await catalog.productLinks().first().getAttribute('href');
 
-    await catalog.sortSelect().selectOption({ label: 'Giá: Thấp đến Cao' });
+    await catalog.sortSelect().selectOption({ label: 'Giá: Cao đến Thấp' });
 
     await expect
       .poll(async () => catalog.productLinks().first().getAttribute('href'), { timeout: 15_000 })

@@ -58,8 +58,10 @@ export function CartSummary({
         className={buttonVariants({
           size: 'lg',
           fullWidth: true,
-          className: `mt-6 rounded-full font-bold shadow-lg ${
-            selectedCount > 0 ? 'shadow-slate-900/20' : 'cursor-not-allowed bg-slate-400 shadow-none hover:bg-slate-400'
+          className: `mt-6 rounded-full font-bold ${
+            selectedCount > 0
+              ? 'shadow-lg shadow-red-600/30'
+              : 'cursor-not-allowed bg-slate-300 shadow-none hover:bg-slate-300 from-slate-300 to-slate-300'
           }`,
         })}
       >

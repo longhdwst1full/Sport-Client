@@ -67,7 +67,11 @@ export function FloatingContactBar() {
           <span className={FLOAT_TOOLTIP}>
             Hotline: {STORE_CONTACT.primaryHotline}
           </span>
-          <Phone aria-hidden className="size-5 text-success-600" />
+          <span className="absolute -right-0.5 -top-0.5 flex size-2.5">
+            <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+            <span className="relative inline-flex size-2.5 rounded-full bg-emerald-500" />
+          </span>
+          <Phone aria-hidden className="size-5 text-emerald-600 animate-phone-ring" />
         </a>
 
         {/* Showroom Locator */}

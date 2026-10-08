@@ -6,9 +6,11 @@ interface BudgetTier {
   label: string;
   sublabel: string;
   tag: string;
-  /** Chỉ một mức được nhấn mạnh; các mức khác dùng nhãn trung tính. */
   highlight?: boolean;
   href: string;
+  gradient: string;
+  tagClass: string;
+  textColor: string;
 }
 
 const BUDGET_TIERS: BudgetTier[] = [
@@ -18,6 +20,9 @@ const BUDGET_TIERS: BudgetTier[] = [
     sublabel: 'Dây kháng lực, con lăn, găng tay & phụ kiện tập',
     tag: 'Tiết kiệm',
     href: '/products?maxPrice=500000',
+    gradient: 'from-emerald-50/80 via-teal-50/30 to-white hover:border-emerald-300 hover:shadow-emerald-500/5',
+    tagClass: 'border-emerald-200/80 bg-emerald-50 text-emerald-800',
+    textColor: 'group-hover:text-emerald-700',
   },
   {
     id: '500k-2m',
@@ -25,6 +30,9 @@ const BUDGET_TIERS: BudgetTier[] = [
     sublabel: 'Tạ tay, đòn tạ, xà đơn, thảm tập yoga cao cấp',
     tag: 'Tập tại nhà',
     href: '/products?minPrice=500000&maxPrice=2000000',
+    gradient: 'from-sky-50/80 via-blue-50/30 to-white hover:border-sky-300 hover:shadow-sky-500/5',
+    tagClass: 'border-sky-200/80 bg-sky-50 text-sky-800',
+    textColor: 'group-hover:text-sky-700',
   },
   {
     id: '2m-5m',
@@ -33,6 +41,9 @@ const BUDGET_TIERS: BudgetTier[] = [
     tag: 'Bán chạy nhất',
     highlight: true,
     href: '/products?minPrice=2000000&maxPrice=5000000',
+    gradient: 'from-rose-50/90 via-amber-50/40 to-white border-rose-300/80 hover:border-rose-400 shadow-sm shadow-rose-500/5',
+    tagClass: 'border-rose-200 bg-rose-50 text-rose-800 font-bold',
+    textColor: 'group-hover:text-rose-700',
   },
   {
     id: 'over-5m',
@@ -40,6 +51,9 @@ const BUDGET_TIERS: BudgetTier[] = [
     sublabel: 'Máy chạy bộ điện, giàn tạ khối, xe đạp thể lực',
     tag: 'Chuyên nghiệp',
     href: '/products?minPrice=5000000',
+    gradient: 'from-purple-50/80 via-violet-50/30 to-white hover:border-purple-300 hover:shadow-purple-500/5',
+    tagClass: 'border-purple-200/80 bg-purple-50 text-purple-800',
+    textColor: 'group-hover:text-purple-700',
   },
 ];
 
@@ -77,16 +91,16 @@ export function BudgetNavigation({ quickLinks = [] }: BudgetNavigationProps) {
             <Link
               key={tier.id}
               href={tier.href}
-              className={`group flex flex-col justify-between rounded-2xl border border-slate-200 bg-slate-50/60 p-3.5 sm:p-6 transition-all duration-200 hover:-translate-y-1 hover:bg-white hover:border-slate-300 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2`}
+              className={`group flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-gradient-to-br ${tier.gradient} p-3.5 sm:p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2`}
             >
               <div>
                 <div className="flex items-center justify-between gap-2 mb-2 sm:mb-3">
-                  <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-bold tracking-wide ${tier.highlight ? 'border-amber-200/80 bg-amber-50 text-amber-800' : 'border-slate-200 bg-slate-100 text-slate-700'}`}>
+                  <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-bold tracking-wide shadow-2xs ${tier.tagClass}`}>
                     <Tag className="size-3" aria-hidden="true" />
                     {tier.tag}
                   </span>
                 </div>
-                <strong className="block text-base sm:text-xl font-black text-slate-900 group-hover:text-slate-950 transition-colors">
+                <strong className={`block text-base sm:text-xl font-black text-slate-900 ${tier.textColor} transition-colors`}>
                   {tier.label}
                 </strong>
                 <p className="mt-1.5 text-xs text-slate-500 leading-relaxed line-clamp-2 max-sm:hidden">

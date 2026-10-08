@@ -146,20 +146,20 @@ export async function HomePage() {
                 <Link
                   key={slug}
                   href={`/category/${slug}`}
-                  className="group flex flex-col justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-slate-900 transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2 sm:min-h-[160px] sm:p-6"
+                  className="group flex flex-col justify-between gap-3 rounded-2xl border border-slate-200/80 bg-gradient-to-br from-white via-slate-50/50 to-red-50/20 p-4 text-slate-900 transition-all duration-300 hover:-translate-y-1 hover:border-red-200 hover:shadow-lg hover:shadow-red-500/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2 sm:min-h-[160px] sm:p-6"
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <div className="grid size-10 place-items-center rounded-xl bg-slate-100 text-slate-800 sm:size-12">
+                    <div className="grid size-10 place-items-center rounded-xl bg-gradient-to-br from-red-500/10 to-rose-500/20 text-red-600 border border-red-500/15 transition-transform duration-300 group-hover:scale-110 sm:size-12">
                       <Icon className="size-5 sm:size-6" aria-hidden="true" />
                     </div>
-                    <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-slate-600 sm:text-xs">
+                    <span className="rounded-full bg-white/90 border border-slate-200/70 px-2.5 py-0.5 text-[11px] font-bold text-slate-600 shadow-2xs sm:text-xs">
                       {itemCountLabel}
                     </span>
                   </div>
 
                   <div>
-                    <h3 className="text-sm font-black leading-snug sm:text-xl">{title}</h3>
-                    <span className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 group-hover:text-slate-900">
+                    <h3 className="text-sm font-black leading-snug sm:text-xl text-slate-900 group-hover:text-red-700 transition-colors">{title}</h3>
+                    <span className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold text-red-600 transition group-hover:text-red-700">
                       Khám phá ngay <MoveUpRight className="size-3.5 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
                     </span>
                   </div>

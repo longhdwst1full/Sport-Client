@@ -49,8 +49,8 @@ export function ArticleRelatedPosts({ related }: { related: ContentPostView[] })
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />
               ) : (
-                <div className="grid size-full place-items-center bg-slate-100 text-slate-400 text-xs">
-                  Bảo An Sport
+                <div className="grid size-full place-items-center bg-slate-100 text-slate-300 text-xs">
+                  <span className="font-bold tracking-widest uppercase text-[11px]">Bảo An Sport</span>
                 </div>
               )}
               <span className="absolute left-3 top-3 rounded-full bg-white/95 px-2.5 py-0.5 text-xs font-black uppercase text-slate-950 shadow-2xs backdrop-blur-xs">

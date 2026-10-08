@@ -1,51 +1,59 @@
 import Link from 'next/link';
-import { Home, LayoutGrid, Phone } from 'lucide-react';
+import { Home, LayoutGrid, Phone, SearchX } from 'lucide-react';
 import { buttonVariants } from '@/foundation/components/buttons';
 import { STORE_CONTACT } from '@/shared/constants';
 
 /**
- * Nội dung 404 dùng chung cho `app/not-found.tsx` (ngoài vỏ storefront) và
- * `app/(storefront)/not-found.tsx` (trong vỏ header/footer). Chỉ một `<h1>`; nơi gọi lo `<main>`.
+ * Nội dung trang không tìm thấy (404) đã được làm mới theo yêu cầu:
+ * Bỏ số "404" to cứng nhắc, thay bằng icon trạng thái và thông báo thân thiện, hiện đại.
  */
 export function NotFoundContent() {
   return (
-    <div className="mx-auto max-w-2xl text-center">
-      <p aria-hidden className="select-none text-7xl font-black tracking-tighter text-slate-900 sm:text-8xl">
-        404
-      </p>
-      <h1 className="mt-4 text-balance text-2xl font-black tracking-tight text-slate-900 sm:text-4xl">
+    <div className="mx-auto max-w-xl text-center py-8 sm:py-12">
+      {/* Friendly Athletic Status Icon */}
+      <div className="mx-auto mb-6 flex size-20 items-center justify-center rounded-3xl bg-gradient-to-br from-red-50 to-rose-100/60 border border-red-200/80 text-brand-600 shadow-md shadow-red-500/10">
+        <SearchX className="size-10 text-red-600" aria-hidden="true" />
+      </div>
+
+      <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-slate-600">
+        Liên kết không khả dụng
+      </span>
+
+      <h1 className="mt-3 text-balance text-2xl font-black tracking-tight text-slate-900 sm:text-4xl">
         Không tìm thấy trang bạn yêu cầu
       </h1>
-      <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-slate-600 sm:text-base">
-        Đường dẫn có thể đã bị đổi hoặc không còn tồn tại. Bạn có thể quay về trang chủ hoặc xem
-        danh mục sản phẩm.
+
+      <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-slate-600 sm:text-base">
+        Đường dẫn có thể đã được thay đổi hoặc sản phẩm/bài viết không còn tồn tại trên hệ thống. Bạn có thể quay về trang chủ hoặc khám phá các danh mục thể thao bên dưới.
       </p>
 
+      {/* Action Buttons */}
       <div className="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
         <Link
           href="/"
-          className={buttonVariants({ variant: 'primary', size: 'lg', className: 'font-bold' })}
+          className={buttonVariants({ variant: 'primary', size: 'lg', className: 'font-bold shadow-md shadow-red-600/20' })}
         >
           <Home aria-hidden className="size-4" />
           Về trang chủ
         </Link>
         <Link
           href="/category"
-          className={buttonVariants({ variant: 'outline', size: 'lg', className: 'font-bold' })}
+          className={buttonVariants({ variant: 'outline', size: 'lg', className: 'font-bold border-slate-300' })}
         >
           <LayoutGrid aria-hidden className="size-4" />
-          Danh mục sản phẩm
+          Khám phá danh mục
         </Link>
       </div>
 
-      <p className="mt-8 text-sm text-slate-600">
-        Cần hỗ trợ tìm sản phẩm?{' '}
+      {/* Support Helpline */}
+      <p className="mt-8 text-xs sm:text-sm text-slate-500">
+        Cần hỗ trợ tìm kiếm thiết bị?{' '}
         <a
           href={`tel:${STORE_CONTACT.primaryHotlineRaw}`}
-          className="inline-flex min-h-11 items-center gap-1.5 font-bold text-slate-900 hover:underline"
+          className="inline-flex items-center gap-1.5 font-bold text-red-600 hover:text-red-700 hover:underline"
         >
-          <Phone aria-hidden className="size-4" />
-          {STORE_CONTACT.primaryHotline}
+          <Phone aria-hidden className="size-3.5" />
+          Hotline: {STORE_CONTACT.primaryHotline}
         </a>
       </p>
     </div>

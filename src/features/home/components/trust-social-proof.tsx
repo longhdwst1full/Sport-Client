@@ -21,14 +21,20 @@ const FACTS = [
 export function TrustSocialProof() {
   return (
     <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
-      <div className="rounded-3xl border border-slate-200/80 bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 text-white p-5 sm:p-10 lg:p-12 shadow-xl">
-        <div className="grid gap-8 lg:grid-cols-[1.1fr_.9fr] lg:items-center">
+      <div className="relative overflow-hidden rounded-[32px] border border-slate-800/80 bg-gradient-to-br from-[#0c1222] via-[#0f172a] to-[#1e1b2e] text-white p-6 sm:p-10 lg:p-12 shadow-2xl">
+        {/* Subtle Sports Ambient Lighting */}
+        <div className="pointer-events-none absolute -left-20 -top-20 size-72 rounded-full bg-red-600/15 blur-[90px]" />
+        <div className="pointer-events-none absolute -bottom-20 -right-20 size-80 rounded-full bg-blue-600/10 blur-[100px]" />
+
+        <div className="relative z-10 grid gap-8 lg:grid-cols-[1.1fr_.9fr] lg:items-center">
           {/* Left Column: Proof points & Rating */}
           <div>
-            <p className="text-xs font-black uppercase tracking-[.2em] text-slate-300">An tâm khi đầu tư thiết bị</p>
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-red-500/15 border border-red-500/25 px-3 py-1 text-xs font-black uppercase tracking-wider text-red-400">
+              An tâm khi đầu tư thiết bị
+            </span>
 
             {/* TODO(data): số liệu chưa có nguồn xác nhận ("30.000+ khách hàng") — chờ chủ shop quyết định giữ/bỏ. */}
-            <h2 className="mt-2 text-2xl sm:text-3xl lg:text-4xl font-black text-white leading-tight">
+            <h2 className="mt-3 text-2xl sm:text-3xl lg:text-4xl font-black text-white leading-tight">
               Vì sao hơn 30.000+ khách hàng tin chọn Bảo An Sport?
             </h2>
 

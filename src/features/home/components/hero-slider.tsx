@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, ChevronLeft, ChevronRight, Flame, Pause, Play, Zap } from 'lucide-react';
+import { ArrowRight, ChevronLeft, ChevronRight, Flame, Zap } from 'lucide-react';
 import { Button, buttonVariants } from '@/foundation/components/buttons';
 import { CarouselDots } from '@/foundation/components/indicators';
 import { BannerPicture } from '@/features/content';
@@ -33,9 +33,9 @@ interface HeroSliderProps {
   onPrev: () => void;
   onNext: () => void;
   onSelect: (index: number) => void;
-  /** Người dùng đã bấm dừng tự chuyển slide. */
-  autoplayPaused: boolean;
-  onToggleAutoplay: () => void;
+  /** Người dùng đã bấm dừng tự chuyển slide (tùy chọn) */
+  autoplayPaused?: boolean;
+  onToggleAutoplay?: () => void;
   onTouchStart: (e: React.TouchEvent) => void;
   onTouchEnd: (e: React.TouchEvent) => void;
 }
@@ -84,7 +84,7 @@ export function HeroSlider({
                     alt=""
                     priority={index === 0}
                     sizes="(max-width: 1024px) 100vw, 66vw"
-                    className="object-cover object-center"
+                    className="object-cover object-center transition duration-500 group-hover:scale-105"
                   />
                 ) : (
                   <Image
@@ -93,7 +93,7 @@ export function HeroSlider({
                     fill
                     priority={index === 0}
                     sizes="(max-width: 1024px) 100vw, 66vw"
-                    className="object-cover object-center"
+                    className="object-cover object-center transition duration-500 group-hover:scale-105"
                   />
                 )}
                 {/* Gradient Overlay for high text readability */}
@@ -200,22 +200,13 @@ export function HeroSlider({
             count={slides.length}
             activeIndex={activeIndex}
             onSelect={onSelect}
-            wrapperClassName="absolute bottom-4 left-6 z-20 flex items-center gap-2 sm:left-10"
-            baseClassName="h-2 rounded-full transition-all duration-300"
-            activeClassName="w-7 bg-white"
-            inactiveClassName="w-2 bg-white/40 hover:bg-white/70"
+            wrapperClassName="absolute bottom-4 left-6 z-20 flex items-center gap-1 rounded-full bg-black/35 px-2 py-0.5 backdrop-blur-xs sm:left-10"
+            baseClassName="h-1.5 rounded-full transition-all duration-300"
+            activeClassName="w-6 bg-white"
+            inactiveClassName="w-1.5 bg-white/40 hover:bg-white/80"
             keyFor={(index) => slides[index].id}
             ariaLabelFor={(index) => `Chuyển tới slide ${index + 1}`}
           />
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onToggleAutoplay}
-            aria-label={autoplayPaused ? 'Tiếp tục tự chuyển slide' : 'Tạm dừng tự chuyển slide'}
-            className={`${HERO_ROUND_BUTTON} bottom-3 right-3 hover:bg-black/60 sm:right-4`}
-          >
-            {autoplayPaused ? <Play className="size-4" aria-hidden="true" /> : <Pause className="size-4" aria-hidden="true" />}
-          </Button>
         </>
       )}
     </div>
