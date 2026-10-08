@@ -115,3 +115,7 @@ export const GUEST_ACCESS_RETIRED_ORDER_STATUSES = [
 export function statusIn(statuses: readonly string[], value: string): boolean {
   return statuses.includes(value);
 }
+
+/** Câu mặc định khi API không trả thông điệp cho lỗi tải/thao tác đơn hàng. */
+export const ORDER_LOAD_ERROR_MESSAGE =
+  'Không tải được đơn hàng. Vui lòng kiểm tra tài khoản hoặc đường dẫn truy cập.';

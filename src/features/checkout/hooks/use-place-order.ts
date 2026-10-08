@@ -1,17 +1,12 @@
 'use client';
 
 import { useState, type FormEvent } from 'react';
-import type { CartItem } from '@/features/cart';
 import { paymentRequest, readGuestOrderAccessToken } from '@/features/orders';
 import type { OrderDetailDto } from '@/generated/api/orders/orders.schemas';
 import { getAccountPayment, getGuestPayment } from '@/generated/api/payments/payments';
-import type { useToast } from '@/shared/components/global-toast';
 import { confirmCheckout, placeOrder } from '../api/checkout.workflow';
 import { resolveCheckoutQuoteGate } from '../model/checkout-quote-gate';
-import type { CheckoutForm } from './use-checkout-form';
-import type { CheckoutQuoteState } from './use-checkout-quote';
-
-type Toast = ReturnType<typeof useToast>['toast'];
+import type { CheckoutFlowDeps, Toast } from './use-checkout-quote';
 
 /** Xác nhận báo giá + đặt đơn (dùng lại khóa idempotency của báo giá hiện hành) và chuyển sang VNPay nếu cần. */
 export function usePlaceOrder({
@@ -22,15 +17,7 @@ export function usePlaceOrder({
   isAuthenticated,
   removeItem,
   toast,
-}: {
-  form: CheckoutForm;
-  checkoutQuote: CheckoutQuoteState;
-  effectiveItems: CartItem[];
-  isLoaded: boolean;
-  isAuthenticated: boolean;
-  removeItem: (variantId: string) => void;
-  toast: Toast;
-}) {
+}: CheckoutFlowDeps & { removeItem: (variantId: string) => void; toast: Toast }) {
   const [placedOrder, setPlacedOrder] = useState<OrderDetailDto>();
   const [redirectingToVnpay, setRedirectingToVnpay] = useState(false);
 
@@ -49,6 +36,12 @@ export function usePlaceOrder({
     handleCheckoutError,
   } = checkoutQuote;
   const addressValid = readyToQuote;
+
+  /** Chặn đặt đơn: hiện lý do ở khung lỗi và toast cảnh báo. */
+  const block = (title: string, msg: string) => {
+    setError(msg);
+    toast({ type: 'warning', title, message: msg });
+  };
 
   /** VNPay: đặt đơn xong chuyển thẳng sang cổng; lỗi thì để khách thanh toán lại ở trang đơn. */
   const redirectToVnpay = async (order: OrderDetailDto & { guestAccessPersisted?: boolean }) => {
@@ -77,9 +70,7 @@ export function usePlaceOrder({
     setError('');
 
     if (!addressValid) {
-      const msg = 'Vui lòng điền họ tên, số điện thoại và chọn đầy đủ địa chỉ giao hàng (Tỉnh, Huyện, Phường/Xã).';
-      setError(msg);
-      toast({ type: 'warning', title: 'Thiếu thông tin nhận hàng', message: msg });
+      block('Thiếu thông tin nhận hàng', 'Vui lòng điền họ tên, số điện thoại và chọn đầy đủ địa chỉ giao hàng (Tỉnh, Huyện, Phường/Xã).');
       return;
     }
 
@@ -106,16 +97,12 @@ export function usePlaceOrder({
 
     // Chỉ báo giá chờ nhân viên chốt cước mới chặn; "Nhờ shop gửi" (shippingFeePending) đặt được ngay.
     if (gate.kind === 'CONSULTATION_PENDING') {
-      const msg = 'Đơn hàng cần nhân viên tư vấn cước gửi xe riêng. Vui lòng bấm kiểm tra lại phí sau khi đã thống nhất.';
-      setError(msg);
-      toast({ type: 'warning', title: 'Cần tư vấn cước vận chuyển', message: msg });
+      block('Cần tư vấn cước vận chuyển', 'Đơn hàng cần nhân viên tư vấn cước gửi xe riêng. Vui lòng bấm kiểm tra lại phí sau khi đã thống nhất.');
       return;
     }
 
     if (!acceptedTerms) {
-      const msg = 'Vui lòng đánh dấu đồng ý với Điều khoản dịch vụ và Chính sách đổi trả trước khi đặt hàng.';
-      setError(msg);
-      toast({ type: 'warning', title: 'Chưa đồng ý điều khoản', message: msg });
+      block('Chưa đồng ý điều khoản', 'Vui lòng đánh dấu đồng ý với Điều khoản dịch vụ và Chính sách đổi trả trước khi đặt hàng.');
       return;
     }
     setBusy(true);

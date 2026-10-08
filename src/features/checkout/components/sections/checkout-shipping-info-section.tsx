@@ -4,8 +4,7 @@ import type { CustomerAddressDto } from '@/generated/api/customer/customer.schem
 import type { CheckoutForm } from '../../hooks/use-checkout-form';
 import { Button } from '@/foundation/components/buttons';
 import { Field, Textarea, TextInput } from '@/foundation/components/field-system';
-import { optionClass } from './checkout-section.styles';
-import { CheckoutStepSection } from './checkout-step-section';
+import { CheckoutStepSection, optionClass } from './checkout-step-section';
 
 const FIELD_LABEL = 'block text-xs font-bold text-slate-700';
 

@@ -1,7 +1,6 @@
 import { CreditCard } from 'lucide-react';
 import { CheckoutPaymentMethod } from '@/generated/api/checkout/checkout.schemas';
-import { optionClass } from './checkout-section.styles';
-import { CheckoutStepSection } from './checkout-step-section';
+import { CheckoutStepSection, optionClass } from './checkout-step-section';
 
 /** Bước 3: COD hoặc VNPay; đổi phương thức phải bỏ báo giá cũ để báo giá lại theo phương thức mới. */
 export function CheckoutPaymentMethodSection({

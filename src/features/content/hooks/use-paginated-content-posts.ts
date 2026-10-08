@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useIsMounted } from '@/shared/hooks';
 import { useListPublishedPosts } from '@/generated/api/content/content';
 import { CACHE_POLICY } from '@/lib/query/query-cache-policy';
 import {
@@ -30,10 +31,7 @@ export function usePaginatedContentPosts({
   retry: () => void;
 } {
   const hasInitial = initialPosts !== undefined;
-  const [isMounted, setIsMounted] = useState(false);
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  const isMounted = useIsMounted();
 
   const [page, setPage] = useState(1);
   const [accumulated, setAccumulated] = useState<ContentPostView[]>(initialPosts ?? []);

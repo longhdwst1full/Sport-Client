@@ -19,7 +19,7 @@ import {
   returnStatusLabels,
   returnStatusTone,
 } from '../model/return.constants';
-import { returnErrorMessage } from '../model/return-error';
+import { apiErrorMessage } from '@/lib/api/error-message';
 import { useReturnDetail } from '../hooks/use-return-detail';
 
 const money = (value: string | number) => formatVnd(Number(value));
@@ -56,7 +56,7 @@ export function ReturnDetailPage({ returnNo }: { returnNo: string }) {
         )}
         {query.isError && (
           <InlineAlert as="section" role="alert" className="rounded-3xl border border-rose-200 bg-rose-50 p-8 text-center text-rose-800">
-            {returnErrorMessage(query.error, 'Không tìm thấy yêu cầu đổi trả.')}
+            {apiErrorMessage(query.error, 'Không tìm thấy yêu cầu đổi trả.', { includeClientErrors: true })}
           </InlineAlert>
         )}
 
@@ -193,7 +193,7 @@ export function ReturnDetailPage({ returnNo }: { returnNo: string }) {
                   className="mt-3 min-h-0 border-rose-200 focus-visible:border-rose-400 focus-visible:ring-rose-200"
                 />
                 </Field>
-                {cancel.isError && <InlineAlert as="p" role="alert" className="mt-2 text-sm font-semibold text-rose-700">{returnErrorMessage(cancel.error, 'Không huỷ được yêu cầu.')}</InlineAlert>}
+                {cancel.isError && <InlineAlert as="p" role="alert" className="mt-2 text-sm font-semibold text-rose-700">{apiErrorMessage(cancel.error, 'Không huỷ được yêu cầu.', { includeClientErrors: true })}</InlineAlert>}
                 <div className="mt-4 flex flex-wrap gap-3">
                   <Button variant="danger" disabled={cancel.isPending || reason.trim().length < 5} onClick={() => cancel.mutate()} className="font-bold focus-visible:ring-rose-500">
                     {cancel.isPending ? 'Đang huỷ...' : 'Xác nhận huỷ'}

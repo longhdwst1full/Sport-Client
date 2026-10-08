@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
+import { useIsMounted } from '@/shared/hooks';
 import { useListPublishedPosts } from '@/generated/api/content/content';
 import { CACHE_POLICY } from '@/lib/query/query-cache-policy';
 import {
@@ -17,10 +18,7 @@ export function useContentStories({ enabled = true }: { enabled?: boolean } = {}
   isPending: boolean;
   isError: boolean;
 } {
-  const [isMounted, setIsMounted] = useState(false);
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  const isMounted = useIsMounted();
 
   const query = useListPublishedPosts(undefined, {
     // Bài viết nội dung đổi trong ngày là cùng; khách đi qua lại trang chủ không cần gọi lại mỗi lần.

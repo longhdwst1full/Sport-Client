@@ -20,7 +20,7 @@ export type StateBlockProps = {
  * Caller truyền class nào thì dùng đúng class đó (giữ markup cũ khi chuyển đổi); bỏ trống thì
  * dùng style mặc định của tone để chỗ mới không phải viết lại cả chuỗi class.
  */
-export function StateBlock({
+function StateBlock({
   as: Tag = 'div',
   className,
   iconWrapClassName,
@@ -58,4 +58,14 @@ export function StateBlock({
       )}
     </Tag>
   );
+}
+
+/** Khối "chưa có gì ở đây". */
+export function EmptyState(props: StateBlockProps) {
+  return <StateBlock tone="neutral" {...props} />;
+}
+
+/** Khối lỗi (tải thất bại / không có quyền); mặc định `section` + `h1` vì thường thay cả trang. */
+export function ErrorState({ as = 'section', titleAs = 'h1', ...props }: StateBlockProps) {
+  return <StateBlock tone="error" as={as} titleAs={titleAs} {...props} />;
 }

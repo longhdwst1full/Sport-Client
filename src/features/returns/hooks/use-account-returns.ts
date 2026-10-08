@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useCustomerAuth } from '@/features/auth';
 import { useListAccountReturns } from '@/generated/api/returns/returns';
 import { RETURN_PAGE_SIZE } from '../model/return.constants';
-import { returnErrorMessage } from '../model/return-error';
+import { apiErrorMessage } from '@/lib/api/error-message';
 
 /** Query + phân trang danh sách phiếu đổi trả của tài khoản. */
 export function useAccountReturns() {
@@ -21,7 +21,7 @@ export function useAccountReturns() {
     isAuthenticated,
     isLoading: returns.isLoading,
     isError: returns.isError,
-    errorMessage: returns.isError ? returnErrorMessage(returns.error, 'Không tải được danh sách yêu cầu đổi trả.') : null,
+    errorMessage: returns.isError ? apiErrorMessage(returns.error, 'Không tải được danh sách yêu cầu đổi trả.', { includeClientErrors: true }) : null,
     isFetching: returns.isFetching,
     items: returns.data?.items ?? [],
     hasData: Boolean(returns.data),

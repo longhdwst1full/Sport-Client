@@ -5,7 +5,7 @@ import { syncCartAfterAuth, hydrateCart } from '@/features/cart';
 import { storefrontStore } from '@/app/store/store';
 import { saveCustomerAuthTokens } from '@/core/auth/customer-auth-token.store';
 import { useToast } from '@/shared/components/global-toast';
-import { getCustomerAuthError } from '../model/auth-error';
+import { apiErrorMessage } from '@/lib/api/error-message';
 
 type CustomerAuthTokens = Parameters<typeof saveCustomerAuthTokens>[0];
 
@@ -47,7 +47,7 @@ export function usePostAuthHandlers({
       router.replace('/');
     },
     onError: (error: unknown) => {
-      const message = getCustomerAuthError(error, failureFallback);
+      const message = apiErrorMessage(error, failureFallback, { preferDetails: true });
       setSubmitError(message);
       toast({ type: 'error', title: failureTitle, message });
     },

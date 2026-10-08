@@ -3,7 +3,7 @@
 import { X, SlidersHorizontal, RotateCcw } from 'lucide-react';
 import { Drawer } from '@/foundation/components/overlay';
 import { Button } from '@/foundation/components/buttons';
-import type { CatalogSidebarFiltersProps } from './catalog-sidebar-filters';
+import { CatalogFilterGroups, type CatalogSidebarFiltersProps } from './catalog-sidebar-filters';
 
 export interface CatalogMobileFilterDrawerProps extends Omit<CatalogSidebarFiltersProps, 'isTabsPending'> {
   isOpen: boolean;
@@ -14,15 +14,10 @@ export interface CatalogMobileFilterDrawerProps extends Omit<CatalogSidebarFilte
 export function CatalogMobileFilterDrawer({
   isOpen,
   onClose,
-  tabs,
-  activeTabSlug,
-  onSelectCategory,
-  priceRanges,
-  activePriceRange,
-  onSelectPriceRange,
   hasActiveFilters,
   onResetFilters,
   totalProductsCount,
+  ...groups
 }: CatalogMobileFilterDrawerProps) {
   if (!isOpen) return null;
 
@@ -52,55 +47,7 @@ export function CatalogMobileFilterDrawer({
 
         {/* Filter Content */}
         <div className="flex-1 overflow-y-auto py-4 space-y-6">
-          {/* Category */}
-          <div>
-            <h4 className="text-xs font-black uppercase text-slate-700 mb-2">Danh mục</h4>
-            <div className="flex flex-wrap gap-2">
-              {tabs.map((tab) => {
-                const isSelected = activeTabSlug === tab.slug;
-                return (
-                  <button
-                    key={tab.slug ?? 'all'}
-                    type="button"
-                    onClick={() => onSelectCategory(tab.slug)}
-                    aria-pressed={isSelected}
-                    className={`rounded-full px-3.5 py-2 text-xs font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-1 ${
-                      isSelected
-                        ? 'bg-slate-900 text-white'
-                        : 'border border-slate-200 bg-slate-50 text-slate-700'
-                    }`}
-                  >
-                    {tab.label}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Price Range */}
-          <div>
-            <h4 className="text-xs font-black uppercase text-slate-700 mb-2">Khoảng giá</h4>
-            <div className="grid grid-cols-2 gap-2">
-              {priceRanges.map((range) => {
-                const isSelected = activePriceRange === range.id;
-                return (
-                  <button
-                    key={range.id}
-                    type="button"
-                    onClick={() => onSelectPriceRange(range.id)}
-                    aria-pressed={isSelected}
-                    className={`rounded-xl border p-2.5 text-center text-xs font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-1 ${
-                      isSelected
-                        ? 'border-slate-900 bg-slate-50 text-slate-950'
-                        : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
-                    }`}
-                  >
-                    {range.label}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+          <CatalogFilterGroups variant="sheet" {...groups} />
         </div>
 
         {/* Footer Actions */}

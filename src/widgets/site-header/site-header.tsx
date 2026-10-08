@@ -14,7 +14,7 @@ import { HeaderActions } from './header-actions';
 import { DesktopMegaMenu } from './desktop-mega-menu';
 import { useCustomerAuth } from '@/features/auth';
 import { useFlashSaleAvailability } from '@/features/promotions';
-import { preloadOnIdle } from '@/shared/hooks';
+import { preloadOnIdle, useIsMounted } from '@/shared/hooks';
 
 // Drawer chỉ hiện sau khi bấm nút menu nên không cần trong bundle đầu trang; chunk được tải sẵn
 // lúc trình duyệt rảnh nên lần bấm đầu vẫn mở ngay như trước.
@@ -35,12 +35,9 @@ export function SiteHeader({ initialCategories }: SiteHeaderProps = {}) {
   const [searchOpen, setSearchOpen] = useState(false);
   const { categories: megaMenuCategories } = useMegaMenuCategories(initialCategories);
   const flashSale = useFlashSaleAvailability();
-  const [isMounted, setIsMounted] = useState(false);
+  const isMounted = useIsMounted();
 
-  useEffect(() => {
-    setIsMounted(true);
-    return preloadOnIdle(loadMobileMenuDrawer);
-  }, []);
+  useEffect(() => preloadOnIdle(loadMobileMenuDrawer), []);
 
   const cartItems = useCartItems();
   const rawCartQuantity = cartItems.reduce((total, item) => total + item.quantity, 0);

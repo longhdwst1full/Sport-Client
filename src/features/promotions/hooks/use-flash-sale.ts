@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useIsMounted } from '@/shared/hooks';
 import { useListPublicFlashSales } from '@/generated/api/promotions/promotions';
 import {
   toFlashSaleCampaignView,
@@ -44,10 +45,7 @@ export function useFlashSaleCampaigns({ live = false }: { live?: boolean } = {})
   isPending: boolean;
   isError: boolean;
 } {
-  const [isMounted, setIsMounted] = useState(false);
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  const isMounted = useIsMounted();
 
   const query = useListPublicFlashSales({
     // `live`: nơi hiển thị suất/đồng hồ (khối và trang flash sale) vẫn cập nhật khi khách quay lại tab.

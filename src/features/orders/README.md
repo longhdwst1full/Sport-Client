@@ -39,7 +39,7 @@
 | `hooks/use-order-detail.ts` | Chọn Guest/Account, query detail, thu hồi guest token khi đơn kết thúc, `view`, `canCancel`. |
 | `hooks/use-cancel-order.ts` | Mutation hủy + idempotency key theo chữ ký `id:version:reason` (`useSignatureIdempotencyKey` từ `@/shared/hooks`, dùng chung với Returns). |
 | `api/payment-evidence-upload.ts` | Chỉ xin chữ ký qua SDK payments (Account hoặc Guest `x-cart-token`) rồi gọi `uploadSignedMedia`. Upload ảnh ký sẵn dùng helper chung `src/lib/api/signed-media-upload.ts` (kiểm MIME/`maxBytes`, 9 field FormData, POST bằng `fetch` có `AbortSignal`); lỗi HTTP/mạng khi tải lên chuẩn hoá thành `ApiError(status, { message: 'Cloudinary không nhận được ảnh. Vui lòng thử lại.' })` (`status = 0` khi mất mạng), huỷ qua signal ném lại lỗi abort gốc. |
-| `hooks/use-reorder.ts`, `use-order-copy.ts`, `use-order-detail-toast.ts` | Mua lại; 3 cờ copy (`copiedTrackingNo` dùng chung cho hai nút copy mã vận đơn); toast cục bộ của trang. |
+| `hooks/use-reorder.ts`, `use-order-copy.ts` | Mua lại; 3 cờ copy (`copiedTrackingNo` dùng chung cho hai nút copy mã vận đơn); thông báo dùng `useToast` toàn cục. |
 | `components/order-detail/*` | Header, trạng thái, stepper mốc (bản desktop và mobile), vận chuyển, sản phẩm, hóa đơn, hành động, địa chỉ, hỗ trợ, dialog hủy (`CANCEL_REASONS`) và dialog hỗ trợ. |
 | `hooks/use-account-orders.ts`, `use-order-payment.ts` | Danh sách đơn có phân trang; trạng thái thanh toán + gửi bằng chứng chuyển khoản. |
 | `model/order-detail-error.ts` | Map lỗi truy cập đơn sang thông báo. |

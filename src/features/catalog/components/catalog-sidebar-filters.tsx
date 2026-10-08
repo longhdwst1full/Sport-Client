@@ -24,17 +24,7 @@ export interface CatalogSidebarFiltersProps {
   isTabsPending?: boolean;
 }
 
-export function CatalogSidebarFilters({
-  tabs,
-  activeTabSlug,
-  onSelectCategory,
-  priceRanges,
-  activePriceRange,
-  onSelectPriceRange,
-  hasActiveFilters,
-  onResetFilters,
-  isTabsPending = false,
-}: CatalogSidebarFiltersProps) {
+export function CatalogSidebarFilters({ hasActiveFilters, onResetFilters, ...groups }: CatalogSidebarFiltersProps) {
   return (
     <aside className="space-y-6">
       {/* Header filter title & Reset */}
@@ -54,12 +44,126 @@ export function CatalogSidebarFilters({
         )}
       </div>
 
+      <CatalogFilterGroups variant="sidebar" {...groups} />
+    </aside>
+  );
+}
+
+const FOCUS_RING =
+  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-1';
+const SIDEBAR_HEADING =
+  'mb-2.5 flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-slate-800';
+const SHEET_HEADING = 'text-xs font-black uppercase text-slate-700 mb-2';
+
+/**
+ * Nhóm "Danh mục" + "Khoảng giá" dùng chung cho sidebar desktop và drawer mobile; `variant` chỉ đổi
+ * cách trình bày (sidebar: danh sách + radio, sheet: pill + lưới nút), logic chọn giống hệt nhau.
+ */
+export function CatalogFilterGroups({
+  variant,
+  tabs,
+  activeTabSlug,
+  onSelectCategory,
+  priceRanges,
+  activePriceRange,
+  onSelectPriceRange,
+  isTabsPending = false,
+}: Omit<CatalogSidebarFiltersProps, 'hasActiveFilters' | 'onResetFilters'> & { variant: 'sidebar' | 'sheet' }) {
+  const isSidebar = variant === 'sidebar';
+
+  // `tabs[0]` là "Tất cả" (slug null) từ `useCategoryTabs`.
+  const categoryButtons = tabs.map((tab) => {
+    const isSelected = activeTabSlug === tab.slug;
+    return (
+      <button
+        key={tab.slug ?? 'all'}
+        type="button"
+        onClick={() => onSelectCategory(tab.slug)}
+        aria-pressed={isSelected}
+        className={
+          isSidebar
+            ? `flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-xs font-bold transition ${FOCUS_RING} ${
+                isSelected
+                  ? 'bg-slate-50 text-slate-950 ring-1 ring-slate-900/30'
+                  : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
+              }`
+            : `rounded-full px-3.5 py-2 text-xs font-bold transition ${FOCUS_RING} ${
+                isSelected ? 'bg-slate-900 text-white' : 'border border-slate-200 bg-slate-50 text-slate-700'
+              }`
+        }
+      >
+        {isSidebar ? (
+          <>
+            <span className="truncate">{tab.slug ? tab.label : 'Tất cả danh mục'}</span>
+            {typeof tab.productCount === 'number' && tab.productCount > 0 && (
+              <span
+                className={`ml-2 rounded-full px-2 py-0.5 text-[10px] font-bold ${
+                  isSelected ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600'
+                }`}
+              >
+                {tab.productCount}
+              </span>
+            )}
+          </>
+        ) : (
+          tab.label
+        )}
+      </button>
+    );
+  });
+
+  const priceOptions = priceRanges.map((range) => {
+    const isSelected = activePriceRange === range.id;
+    return isSidebar ? (
+      <label
+        key={range.id}
+        className={`flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-xs font-semibold transition ${
+          isSelected
+            ? 'bg-slate-50/80 text-slate-950 font-bold ring-1 ring-slate-900/20'
+            : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
+        }`}
+      >
+        <div className="flex items-center gap-2.5">
+          <input
+            type="radio"
+            name="priceRange"
+            value={range.id}
+            checked={isSelected}
+            onChange={() => onSelectPriceRange(range.id)}
+            className={`size-4 cursor-pointer border-slate-300 accent-slate-900 ${FOCUS_RING}`}
+          />
+          <span>{range.label}</span>
+        </div>
+      </label>
+    ) : (
+      <button
+        key={range.id}
+        type="button"
+        onClick={() => onSelectPriceRange(range.id)}
+        aria-pressed={isSelected}
+        className={`rounded-xl border p-2.5 text-center text-xs font-bold transition ${FOCUS_RING} ${
+          isSelected
+            ? 'border-slate-900 bg-slate-50 text-slate-950'
+            : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
+        }`}
+      >
+        {range.label}
+      </button>
+    );
+  });
+
+  return (
+    <>
       {/* Category Facet */}
       <div>
-        <h3 className="mb-2.5 flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-slate-800">
-          <Boxes aria-hidden className="size-3.5 text-slate-900" />
-          <span>Danh mục sản phẩm</span>
-        </h3>
+        {isSidebar ? (
+          <h3 className={SIDEBAR_HEADING}>
+            <Boxes aria-hidden className="size-3.5 text-slate-900" />
+            <span>Danh mục sản phẩm</span>
+          </h3>
+        ) : (
+          <h4 className={SHEET_HEADING}>Danh mục</h4>
+        )}
         {isTabsPending ? (
           <div className="space-y-2">
             {Array.from({ length: 5 }, (_, i) => (
@@ -67,76 +171,28 @@ export function CatalogSidebarFilters({
             ))}
           </div>
         ) : (
-          <div className="space-y-1">
-            {/* `tabs[0]` là "Tất cả" (slug null) từ `useCategoryTabs`. */}
-            {tabs.map((tab) => {
-              const isSelected = activeTabSlug === tab.slug;
-              return (
-                <button
-                  key={tab.slug ?? 'all'}
-                  type="button"
-                  onClick={() => onSelectCategory(tab.slug)}
-                  aria-pressed={isSelected}
-                  className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-xs font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-1 ${
-                    isSelected
-                      ? 'bg-slate-50 text-slate-950 ring-1 ring-slate-900/30'
-                      : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
-                  }`}
-                >
-                  <span className="truncate">{tab.slug ? tab.label : 'Tất cả danh mục'}</span>
-                  {typeof tab.productCount === 'number' && tab.productCount > 0 && (
-                    <span
-                      className={`ml-2 rounded-full px-2 py-0.5 text-[10px] font-bold ${
-                        isSelected
-                          ? 'bg-slate-900 text-white'
-                          : 'bg-slate-100 text-slate-600'
-                      }`}
-                    >
-                      {tab.productCount}
-                    </span>
-                  )}
-                </button>
-              );
-            })}
-          </div>
+          <div className={isSidebar ? 'space-y-1' : 'flex flex-wrap gap-2'}>{categoryButtons}</div>
         )}
       </div>
 
       {/* Price Range Facet */}
-      <div className="border-t border-slate-100 pt-5">
-        <h3 className="mb-2.5 flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-slate-800">
-          <Tag aria-hidden className="size-3.5 text-slate-900" />
-          <span>Khoảng giá</span>
-        </h3>
-        <div className="space-y-1.5" role="radiogroup" aria-label="Khoảng giá">
-          {priceRanges.map((range) => {
-            const isSelected = activePriceRange === range.id;
-            return (
-              <label
-                key={range.id}
-                className={`flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-xs font-semibold transition ${
-                  isSelected
-                    ? 'bg-slate-50/80 text-slate-950 font-bold ring-1 ring-slate-900/20'
-                    : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
-                }`}
-              >
-                <div className="flex items-center gap-2.5">
-                  <input
-                    type="radio"
-                    name="priceRange"
-                    value={range.id}
-                    checked={isSelected}
-                    onChange={() => onSelectPriceRange(range.id)}
-                    className="size-4 cursor-pointer border-slate-300 accent-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-1"
-                  />
-                  <span>{range.label}</span>
-                </div>
-              </label>
-            );
-          })}
-        </div>
+      <div className={isSidebar ? 'border-t border-slate-100 pt-5' : undefined}>
+        {isSidebar ? (
+          <h3 className={SIDEBAR_HEADING}>
+            <Tag aria-hidden className="size-3.5 text-slate-900" />
+            <span>Khoảng giá</span>
+          </h3>
+        ) : (
+          <h4 className={SHEET_HEADING}>Khoảng giá</h4>
+        )}
+        {isSidebar ? (
+          <div className="space-y-1.5" role="radiogroup" aria-label="Khoảng giá">
+            {priceOptions}
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-2">{priceOptions}</div>
+        )}
       </div>
-
-    </aside>
+    </>
   );
 }

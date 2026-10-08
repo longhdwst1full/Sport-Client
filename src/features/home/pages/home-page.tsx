@@ -19,7 +19,7 @@ import { HeroBannerSlider } from '../components/hero-banner-slider';
 import { QuickGoalNavigation } from '../components/quick-goal-navigation';
 import { BudgetNavigation } from '../components/budget-navigation';
 import { TrustSocialProof } from '../components/trust-social-proof';
-import { SmartFitAdvisorLazy } from '../components/smart-fit-advisor';
+import { SmartFitAdvisorLazy } from '../components/smart-fit-advisor/smart-fit-advisor-lazy';
 import { CategoryVisualShowcase } from '../components/category-visual-showcase';
 import { FlashSaleSection } from '@/features/promotions';
 import { STORE_CONFIG } from '@/shared/constants';

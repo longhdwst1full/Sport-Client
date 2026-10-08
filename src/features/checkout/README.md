@@ -52,7 +52,7 @@ Order mới ở `PENDING_CONFIRMATION`, chưa ghi nhận doanh thu và chưa đ�
 | `hooks/use-checkout-quote.ts` | `useCheckoutQuote` giữ quote/context, 2 ref idempotency, `quoteSeq`, invalidate/retry/refresh; `useAutoQuote` chạy effect debounce 700 ms. Tách hai hook để effect auto-quote vẫn chạy sau effect điền sẵn địa chỉ như trước. |
 | `hooks/use-checkout-saved-addresses.ts` | Query sổ địa chỉ (`['account-addresses']`) và điền sẵn địa chỉ mặc định. |
 | `hooks/use-place-order.ts` | Confirm + place order, chuyển VNPay, `placedOrder`. |
-| `components/sections/*` | Section bước: thông tin giao hàng, phương thức giao, thanh toán, xác nhận; class dùng chung ở `checkout-section.styles.ts`. |
+| `components/sections/*` | Section bước: thông tin giao hàng, phương thức giao, thanh toán, xác nhận; class `optionClass` dùng chung ở `checkout-step-section.tsx`. |
 | `components/checkout-empty-cart.tsx`, `checkout-order-summary.tsx`, `checkout-success.tsx` | Cart trống, tóm tắt đơn + CTA, trạng thái đặt hàng thành công. |
 | `@/features/address` | `EMPTY_SELECTED_ADDRESS`, `toSelectedAddressData` (đã chuyển từ `model/checkout-address.ts`). |
 | `api/checkout.workflow.ts` | Ghép generated Cart/Checkout/Order operations cho Guest và Account. |

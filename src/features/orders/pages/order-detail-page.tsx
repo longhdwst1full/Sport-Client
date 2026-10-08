@@ -19,7 +19,6 @@ import { OrderActionsBar } from '../components/order-detail/order-actions-bar';
 import { OrderCancelDialog } from '../components/order-detail/order-cancel-dialog';
 import { OrderDeliveryAddressCard } from '../components/order-detail/order-delivery-address-card';
 import { OrderDetailHeader } from '../components/order-detail/order-detail-header';
-import { OrderDetailToast } from '../components/order-detail/order-detail-toast';
 import { OrderProductsCard } from '../components/order-detail/order-products-card';
 import { OrderShipmentSection } from '../components/order-detail/order-shipment-section';
 import { OrderStatusHero } from '../components/order-detail/order-status-hero';
@@ -30,9 +29,10 @@ import { printOrderReceipt } from '../model/print-receipt';
 import { useCancelOrder } from '../hooks/use-cancel-order';
 import { useOrderCopy } from '../hooks/use-order-copy';
 import { useOrderDetail } from '../hooks/use-order-detail';
-import { useOrderDetailToast } from '../hooks/use-order-detail-toast';
+import { useToast } from '@/shared/components/global-toast';
 import { useReorder } from '../hooks/use-reorder';
-import { errorMessage } from '../model/order-detail-error';
+import { apiErrorMessage } from '@/lib/api/error-message';
+import { ORDER_LOAD_ERROR_MESSAGE } from '../model/order.constants';
 import { GUEST_LOOKUP_COPY, GUEST_LOOKUP_ROUTE } from '../model/guest-order-lookup.constants';
 import { guestLookupErrorMessage } from '../model/guest-order-lookup-error';
 import { formatDateTime } from '@/shared/format/date-time';
@@ -47,7 +47,8 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
     useOrderDetail(orderNo);
   const lookupHref = `${GUEST_LOOKUP_ROUTE}?orderNo=${encodeURIComponent(orderNo)}`;
   const queryClient = useQueryClient();
-  const { toastMessage, triggerToast } = useOrderDetailToast();
+  const toast = useToast();
+  const triggerToast = (message: string) => toast.success(message);
   const [showSupportModal, setShowSupportModal] = useState(false);
   const [showTimeline, setShowTimeline] = useState(false);
   const [reviewingItem, setReviewingItem] = useState<{ id: string; productName: string }>();
@@ -68,9 +69,6 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
   return (
     <>
       {/* Toast Notification */}
-      {toastMessage && (
-        <OrderDetailToast message={toastMessage} />
-      )}
 
       <main className="mx-auto min-h-[65vh] max-w-6xl px-4 py-6 sm:px-6 lg:py-8">
         {!isLoaded || orderQuery.isLoading ? (
@@ -108,8 +106,8 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
             descriptionClassName="mx-auto mt-2 max-w-md text-sm leading-relaxed text-rose-800"
             description={
               accessMode === 'lookup'
-                ? guestLookupErrorMessage(orderQuery.error, errorMessage(orderQuery.error))
-                : errorMessage(orderQuery.error)
+                ? guestLookupErrorMessage(orderQuery.error, apiErrorMessage(orderQuery.error, ORDER_LOAD_ERROR_MESSAGE))
+                : apiErrorMessage(orderQuery.error, ORDER_LOAD_ERROR_MESSAGE)
             }
             actions={
               <div className="mt-6 flex flex-wrap justify-center gap-3">

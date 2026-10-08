@@ -15,7 +15,7 @@ import {
   returnEligibilityReasonLabels,
   returnReasonLabels,
 } from '../model/return.constants';
-import { returnErrorMessage } from '../model/return-error';
+import { apiErrorMessage } from '@/lib/api/error-message';
 import { useCreateReturn } from '../hooks/use-create-return';
 
 const reasonOptions = Object.entries(returnReasonLabels) as [CreateReturnFormState['reasonCode'], string][];
@@ -68,7 +68,7 @@ export function CreateReturnPage({ orderNo }: { orderNo: string }) {
         )}
         {eligibility.isError && (
           <InlineAlert role="alert" className="mt-6 rounded-2xl border border-rose-200 bg-rose-50 p-5 text-sm text-rose-800">
-            {returnErrorMessage(eligibility.error, 'Không tải được thông tin đơn hàng.')}
+            {apiErrorMessage(eligibility.error, 'Không tải được thông tin đơn hàng.', { includeClientErrors: true })}
           </InlineAlert>
         )}
 
@@ -192,7 +192,7 @@ export function CreateReturnPage({ orderNo }: { orderNo: string }) {
 
             {submit.isError && (
               <InlineAlert as="p" role="alert" className="rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm font-semibold text-rose-800">
-                {returnErrorMessage(submit.error, 'Không gửi được yêu cầu. Vui lòng thử lại.')}
+                {apiErrorMessage(submit.error, 'Không gửi được yêu cầu. Vui lòng thử lại.', { includeClientErrors: true })}
               </InlineAlert>
             )}
             <div className="flex flex-col-reverse gap-3 sm:flex-row sm:flex-wrap sm:justify-between">

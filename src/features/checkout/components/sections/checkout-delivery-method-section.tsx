@@ -3,8 +3,7 @@ import { Button } from '@/foundation/components/buttons';
 import { InlineAlert, Spinner } from '@/foundation/components/feedback';
 import type { CheckoutQuoteDto } from '@/generated/api/checkout/checkout.schemas';
 import type { CheckoutQuoteView } from '../../model/checkout.mapper';
-import { optionClass } from './checkout-section.styles';
-import { CheckoutStepSection } from './checkout-step-section';
+import { CheckoutStepSection, optionClass } from './checkout-step-section';
 
 /** Bước 2: giao tiêu chuẩn (kèm kết quả báo giá tự động) hoặc nhờ shop gửi chành; lỗi báo giá có nút thử lại. */
 export function CheckoutDeliveryMethodSection({

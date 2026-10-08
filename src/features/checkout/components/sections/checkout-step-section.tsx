@@ -1,5 +1,9 @@
 import type { ComponentType, ReactNode, SVGProps } from 'react';
 
+/** Thẻ lựa chọn (địa chỉ, phương thức giao/thanh toán) dùng chung cho các section. */
+export const optionClass = (selected: boolean) =>
+  `rounded-2xl border p-4 text-left transition ${selected ? 'border-slate-900 bg-slate-50 ring-1 ring-slate-900' : 'border-slate-200 hover:border-slate-300'} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2`;
+
 /** Khung chung cho các bước 1–3 của checkout: thẻ trắng + số bước + tiêu đề có icon + mô tả ngắn. */
 export function CheckoutStepSection({
   step,

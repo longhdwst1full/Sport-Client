@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
+import { useIsMounted } from '@/shared/hooks';
 import { useListPublishedPosts } from '@/generated/api/content/content';
 import { toContentPostView, type ContentPostView } from '../model/content-post.mapper';
 import { CACHE_POLICY } from '@/lib/query/query-cache-policy';
@@ -11,10 +12,7 @@ export function usePolicyPages(): {
   isPending: boolean;
   isError: boolean;
 } {
-  const [isMounted, setIsMounted] = useState(false);
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  const isMounted = useIsMounted();
 
   const query = useListPublishedPosts(
     { postType: 'POLICY' },

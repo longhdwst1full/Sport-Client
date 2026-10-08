@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useListCatalogCategories } from '@/generated/api/catalog/catalog';
 import { CACHE_POLICY } from '@/lib/query/query-cache-policy';
+import { useIsMounted } from '@/shared/hooks';
 
 export interface CategoryTabView {
   /** Slug thật của danh mục, dùng để lọc ở Backend. `null` nghĩa là "Tất cả". */
@@ -15,10 +16,7 @@ export interface CategoryTabView {
 const MAX_TABS = 8;
 
 export function useCategoryTabs(): { tabs: CategoryTabView[]; isPending: boolean } {
-  const [isMounted, setIsMounted] = useState(false);
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  const isMounted = useIsMounted();
 
   const query = useListCatalogCategories({
     query: { enabled: isMounted, ...CACHE_POLICY.LOOKUP },

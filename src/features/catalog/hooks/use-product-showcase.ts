@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { keepPreviousData, useInfiniteQuery } from '@tanstack/react-query';
 import {
   getListCatalogProductsQueryKey,
@@ -8,6 +8,7 @@ import {
 } from '@/generated/api/catalog/catalog';
 import type { ProductListResponseDto, ProductListSort } from '@/generated/api/catalog/catalog.schemas';
 import { CACHE_POLICY } from '@/lib/query/query-cache-policy';
+import { useIsMounted } from '@/shared/hooks';
 import { isSameCatalogFilters, type CatalogListFilters } from '../model/catalog-filter.constants';
 import {
   CATALOG_PAGE_SIZE,
@@ -79,10 +80,7 @@ export function useProductShowcase(
     CATALOG_PAGE_SIZE.MAX,
   );
 
-  const [isMounted, setIsMounted] = useState(false);
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  const isMounted = useIsMounted();
 
   // CONTRACT: tải thêm theo `page`, giữ `limit` cố định. Bản trước nới `limit` thêm một
   // trang mỗi lần bấm, nên tới lượt thứ 5 ở trang danh mục (limit 120) API trả 400 và

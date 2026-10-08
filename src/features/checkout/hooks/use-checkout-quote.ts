@@ -11,7 +11,16 @@ import { prepareCheckout, reloadCheckout, type CheckoutContext } from '../api/ch
 import { toCheckoutQuoteView } from '../model/checkout.mapper';
 import type { CheckoutForm } from './use-checkout-form';
 
-type Toast = ReturnType<typeof useToast>['toast'];
+export type Toast = ReturnType<typeof useToast>['toast'];
+
+/** Đầu vào chung của `useAutoQuote` và `usePlaceOrder` (cùng phụ thuộc form + báo giá + giỏ). */
+export interface CheckoutFlowDeps {
+  form: CheckoutForm;
+  checkoutQuote: CheckoutQuoteState;
+  effectiveItems: CartItem[];
+  isLoaded: boolean;
+  isAuthenticated: boolean;
+}
 
 /** Tiền tố mã lỗi suất flash của API (`FLASH_SALE_*`, kể cả `FLASH_SALE_QUOTA_HOLD_EXPIRED`). */
 const FLASH_SALE_ERROR_PREFIX = 'FLASH_SALE_';
@@ -147,14 +156,7 @@ export function useAutoQuote({
   isLoaded,
   isAuthenticated,
   placedOrder,
-}: {
-  form: CheckoutForm;
-  checkoutQuote: CheckoutQuoteState;
-  effectiveItems: CartItem[];
-  isLoaded: boolean;
-  isAuthenticated: boolean;
-  placedOrder: OrderDetailDto | undefined;
-}) {
+}: CheckoutFlowDeps & { placedOrder: OrderDetailDto | undefined }) {
   const { readyToQuote, name, phone, email, note, address, coordinates, paymentMethod, shopArranged, buildInput } = form;
   const { quote, quoteSeq, setAutoQuoting, setError, setQuote, setContext, handleCheckoutError } = checkoutQuote;
   useEffect(() => {

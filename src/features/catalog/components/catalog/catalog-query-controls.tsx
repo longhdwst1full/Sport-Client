@@ -1,9 +1,17 @@
-import { Search, X } from 'lucide-react';
+import { Search, SlidersHorizontal, X } from 'lucide-react';
 import { twMerge } from 'tailwind-merge';
 import { Button } from '@/foundation/components/buttons';
 import { Field, Select, TextInput } from '@/foundation/components/field-system';
 import type { ProductListSort } from '@/generated/api/catalog/catalog.schemas';
 import { SORT_OPTIONS } from '../../model/catalog-filter.constants';
+
+/** Trạng thái tìm/sắp xếp `useCatalogFilters` trả về, dùng chung cho thanh desktop và mobile. */
+export interface CatalogQueryState {
+  searchQuery: string;
+  onSearchQueryChange: (value: string) => void;
+  activeSort: ProductListSort;
+  onSortChange: (sort: ProductListSort) => void;
+}
 
 /**
  * Ô tìm + nút xoá từ khoá và ô sắp xếp dùng chung cho thanh desktop (`CatalogSearchSortBar`) và thanh
@@ -86,5 +94,93 @@ export function CatalogSortSelect({
         ))}
       </Select>
     </Field>
+  );
+}
+
+export function CatalogSearchSortBar({
+  searchQuery,
+  onSearchQueryChange,
+  displayedCount,
+  total,
+  activeSort,
+  onSortChange,
+}: CatalogQueryState & { displayedCount: number; total: number }) {
+  return (
+    <div className="hidden lg:flex items-center justify-between gap-4 mb-4 rounded-2xl border border-slate-200/80 bg-white p-3 shadow-xs">
+      <CatalogSearchField
+        value={searchQuery}
+        onChange={onSearchQueryChange}
+        testId="catalog-search-input"
+        className="max-w-md flex-1"
+        iconClassName="left-3.5"
+        inputClassName="h-9 bg-slate-50/70 pl-10 pr-9 focus-visible:bg-white"
+        clearClassName="right-1.5 size-7 hover:bg-slate-200"
+      />
+
+      <div className="flex items-center gap-3">
+        <span className="text-xs font-medium text-slate-600" aria-live="polite">
+          Tìm thấy <strong className="text-slate-900 font-bold">{displayedCount}</strong> / {total} sản phẩm
+        </span>
+        <div className="h-4 w-px bg-slate-200" />
+        <div className="flex items-center gap-1.5">
+          <CatalogSortSelect
+            id="catalog-sort-desktop"
+            testId="catalog-sort-select"
+            value={activeSort}
+            onChange={onSortChange}
+            labelClassName="text-xs font-semibold text-slate-600"
+            className="shadow-2xs"
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function CatalogMobileControlBar({
+  searchQuery,
+  onSearchQueryChange,
+  onOpenFilters,
+  activeFilterCount,
+  activeSort,
+  onSortChange,
+}: CatalogQueryState & { onOpenFilters: () => void; activeFilterCount: number }) {
+  return (
+    <div className="mb-6 flex flex-col gap-3 lg:hidden">
+      <CatalogSearchField
+        value={searchQuery}
+        onChange={onSearchQueryChange}
+        iconClassName="left-4"
+        inputClassName="rounded-2xl pl-11 pr-10 shadow-xs"
+        clearClassName="right-1"
+      />
+
+      <div className="flex items-center justify-between gap-2">
+        <Button
+          variant="outline"
+          onClick={onOpenFilters}
+          className="h-10 border-slate-200 text-xs font-bold text-slate-700 shadow-xs hover:border-slate-900 hover:text-slate-700"
+          aria-label={activeFilterCount > 0 ? `Bộ lọc, đang áp dụng ${activeFilterCount}` : 'Bộ lọc'}
+        >
+          <SlidersHorizontal aria-hidden className="size-3.5 text-slate-900" />
+          <span>Bộ lọc</span>
+          {activeFilterCount > 0 && (
+            <span className="grid size-5 place-items-center rounded-full bg-slate-900 text-[10px] font-black text-white">
+              {activeFilterCount}
+            </span>
+          )}
+        </Button>
+
+        <div className="flex items-center gap-2">
+          <CatalogSortSelect
+            id="catalog-sort-mobile"
+            value={activeSort}
+            onChange={onSortChange}
+            labelClassName="text-[11px] font-bold text-slate-600"
+            className="h-10 shadow-xs"
+          />
+        </div>
+      </div>
+    </div>
   );
 }

@@ -7,7 +7,6 @@ import { buttonVariants } from '@/foundation/components/buttons';
 import { useCategoryTabs } from '../hooks/use-category-tabs';
 import { useProductShowcase } from '../hooks/use-product-showcase';
 import type { ProductListResponseDto } from '@/generated/api/catalog/catalog.schemas';
-import { useCardBuyNow } from '../hooks/use-card-buy-now';
 import { CatalogProductGrid } from './catalog/catalog-product-grid';
 
 const GRID_CLASS = 'grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3 lg:grid-cols-4';
@@ -29,25 +28,13 @@ export function ProductShowcase({
   const [activeTabSlug, setActiveTabSlug] = useState<string | null>(null);
   // Trang danh mục và trang tìm kiếm đã có phạm vi riêng, tab chỉ dùng ở lưới trưng bày.
   const effectiveCategory = categorySlug ?? activeTabSlug ?? undefined;
-  const {
-    products,
-    total,
-    hasMore,
-    loadMore,
-    isPending,
-    isLoadingMore,
-    isLoadMoreError,
-    isError,
-    isShowingPreviousResults,
-    refetch,
-  } = useProductShowcase(effectiveCategory, searchQuery, {
+  const { total, ...list } = useProductShowcase(effectiveCategory, searchQuery, {
     initialPage,
     initialPageFetchedAt,
     // Trang 1 server lấy luôn theo đúng phạm vi của khối (danh mục của trang, không tab/từ khoá).
     initialPageFilters: { category: categorySlug },
     keepPreviousResults: true,
   });
-  const handleBuyNow = useCardBuyNow();
 
   return (
     <div className="space-y-8">
@@ -84,16 +71,7 @@ export function ProductShowcase({
             Chưa có sản phẩm phù hợp.
           </div>
         }
-        isPending={isPending}
-        isError={isError}
-        isShowingPreviousResults={isShowingPreviousResults}
-        refetch={() => void refetch()}
-        displayedProducts={products}
-        onBuyNow={handleBuyNow}
-        hasMore={hasMore}
-        isLoadingMore={isLoadingMore}
-        isLoadMoreError={isLoadMoreError}
-        onLoadMore={loadMore}
+        {...list}
       />
 
       {/* Catalog View All Banner */}

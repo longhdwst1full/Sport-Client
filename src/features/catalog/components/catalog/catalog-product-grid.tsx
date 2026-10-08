@@ -1,24 +1,27 @@
+'use client';
+
 import type { ReactNode } from 'react';
 import { RotateCcw, Search } from 'lucide-react';
 import { Button } from '@/foundation/components/buttons';
 import { EmptyState, InlineAlert } from '@/foundation/components/feedback';
 import type { ProductShowcaseItem } from '../../model/product.mapper';
+import { useCardBuyNow } from '../../hooks/use-card-buy-now';
 import { ProductCard, ProductCardSkeleton } from '../product-card';
 
+/** Props trạng thái trùng tên với kết quả `useProductShowcase` để nơi gọi spread thẳng. */
 interface CatalogProductGridProps {
   isPending: boolean;
   isError: boolean;
   /** Đang hiện kết quả của bộ lọc trước trong lúc chờ kết quả mới: giữ lưới, làm mờ. */
   isShowingPreviousResults?: boolean;
-  refetch: () => unknown;
-  displayedProducts: ProductShowcaseItem[];
+  refetch: () => void;
+  products: ProductShowcaseItem[];
   hasActiveFilters?: boolean;
   onResetFilters?: () => void;
-  onBuyNow: (product: ProductShowcaseItem, e: React.MouseEvent) => void;
   hasMore: boolean;
   isLoadingMore: boolean;
   isLoadMoreError: boolean;
-  onLoadMore: () => void;
+  loadMore: () => void;
   /** Lưới cột/khoảng cách riêng của nơi dùng (lưới trưng bày trang chủ rộng hơn, không có sidebar). */
   gridClassName?: string;
   errorTitle?: string;
@@ -33,19 +36,19 @@ export function CatalogProductGrid({
   isError,
   isShowingPreviousResults = false,
   refetch,
-  displayedProducts,
+  products,
   hasActiveFilters = false,
   onResetFilters,
-  onBuyNow,
   hasMore,
   isLoadingMore,
   isLoadMoreError,
-  onLoadMore,
+  loadMore,
   gridClassName = GRID_CLASS,
   errorTitle = 'Không thể tải danh sách sản phẩm lúc này.',
   emptyState,
 }: CatalogProductGridProps) {
-  const hasProducts = displayedProducts.length > 0;
+  const onBuyNow = useCardBuyNow();
+  const hasProducts = products.length > 0;
 
   // RULE-SKEL-05: skeleton chỉ khi chưa có gì để hiện; có dữ liệu thì giữ lưới.
   if (!hasProducts && isPending) {
@@ -62,7 +65,7 @@ export function CatalogProductGrid({
     <Button
       variant="danger"
       size="sm"
-      onClick={() => void refetch()}
+      onClick={refetch}
       className="rounded-full bg-rose-700 px-5 text-xs font-bold shadow-xs hover:bg-rose-800"
     >
       <RotateCcw aria-hidden className="size-3.5" /> Thử lại
@@ -120,7 +123,7 @@ export function CatalogProductGrid({
         className={`${gridClassName} transition-opacity ${isShowingPreviousResults ? 'opacity-60' : ''}`}
         aria-busy={isShowingPreviousResults}
       >
-        {displayedProducts.map((product) => (
+        {products.map((product) => (
           <ProductCard key={product.id} product={product} onBuyNow={onBuyNow} />
         ))}
       </div>
@@ -136,7 +139,7 @@ export function CatalogProductGrid({
           )}
           <Button
             variant="outline"
-            onClick={onLoadMore}
+            onClick={loadMore}
             disabled={isLoadingMore}
             className="rounded-full border-slate-200 px-7 text-xs font-bold uppercase tracking-wider text-slate-700 shadow-xs hover:border-slate-900 hover:bg-slate-50 disabled:opacity-60"
           >

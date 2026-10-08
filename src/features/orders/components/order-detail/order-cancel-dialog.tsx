@@ -3,7 +3,8 @@ import { Button } from '@/foundation/components/buttons';
 import { Spinner } from '@/foundation/components/feedback';
 import { Field, Textarea } from '@/foundation/components/field-system';
 import type { useCancelOrder } from '../../hooks/use-cancel-order';
-import { errorMessage } from '../../model/order-detail-error';
+import { apiErrorMessage } from '@/lib/api/error-message';
+import { ORDER_LOAD_ERROR_MESSAGE } from '../../model/order.constants';
 import { OrderDialogShell } from './order-dialog-shell';
 
 const CANCEL_REASONS = [
@@ -90,7 +91,7 @@ export function OrderCancelDialog({
 
         {cancel.isError && (
           <p className="mt-2 text-xs font-semibold text-rose-700">
-            {errorMessage(cancel.error)}
+            {apiErrorMessage(cancel.error, ORDER_LOAD_ERROR_MESSAGE)}
           </p>
         )}
 

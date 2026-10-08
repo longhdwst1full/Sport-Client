@@ -1,21 +1,28 @@
 import { ApiError } from './fetcher';
 
+export interface ApiErrorMessageOptions {
+  /** Ưu tiên `details[0].message` (lỗi validate từng trường) trước `message` chung. */
+  preferDetails?: boolean;
+  /** Lỗi không phải `ApiError` (vd. validate file phía client ném `Error`) thì hiện `error.message`. */
+  includeClientErrors?: boolean;
+}
+
 /**
- * Rút `message` từ `ApiError.payload` (dạng `{ message: string }` do backend trả về);
- * dùng `fallback` khi lỗi không phải `ApiError`, payload không có `message` dạng string,
- * hoặc lỗi không rõ nguồn gốc. Gom một chỗ thay cho ~7 bản `messageOf`/`errorMessage`
- * lặp lại logic giống hệt nhau ở từng feature.
+ * Rút thông điệp tiếng Việt từ `ApiError.payload` (`{ message, details? }` của backend); dùng `fallback`
+ * khi không có. Một chỗ duy nhất cho mọi feature — trước đây auth/returns/orders mỗi nơi tự viết một bản.
  */
-export function apiErrorMessage(error: unknown, fallback: string): string {
-  if (
-    error instanceof ApiError &&
-    error.payload &&
-    typeof error.payload === 'object' &&
-    'message' in error.payload
-  ) {
-    const message = (error.payload as { message?: unknown }).message;
-    if (typeof message === 'string') return message;
+export function apiErrorMessage(error: unknown, fallback: string, options: ApiErrorMessageOptions = {}): string {
+  if (error instanceof ApiError) {
+    const payload = (error.payload && typeof error.payload === 'object' ? error.payload : {}) as {
+      message?: unknown;
+      details?: Array<{ message?: unknown }>;
+    };
+    const detail = options.preferDetails ? payload.details?.[0]?.message : undefined;
+    if (typeof detail === 'string' && detail.trim()) return detail;
+    if (typeof payload.message === 'string' && payload.message.trim()) return payload.message;
+    return fallback;
   }
+  if (options.includeClientErrors && error instanceof Error && error.message) return error.message;
   return fallback;
 }
 

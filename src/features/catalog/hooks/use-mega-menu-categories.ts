@@ -1,8 +1,9 @@
 'use client';
 
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo } from 'react';
 import { useListCatalogCategories } from '@/generated/api/catalog/catalog';
 import { CACHE_POLICY } from '@/lib/query/query-cache-policy';
+import { useIsMounted } from '@/shared/hooks';
 import { toMegaMenuEntries, type MegaMenuEntry } from '../model/mega-menu.mapper';
 
 export type { MegaMenuEntry } from '../model/mega-menu.mapper';
@@ -19,10 +20,7 @@ export function useMegaMenuCategories(initialCategories?: MegaMenuEntry[]): {
   isPending: boolean;
 } {
   const hasInitial = initialCategories !== undefined;
-  const [isMounted, setIsMounted] = useState(false);
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  const isMounted = useIsMounted();
 
   const query = useListCatalogCategories({
     // Menu danh mục hiện trên mọi trang; đây là truy vấn lặp lại nhiều nhất của Storefront.

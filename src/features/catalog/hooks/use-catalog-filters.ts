@@ -13,6 +13,9 @@ import {
   parseCatalogUrlState,
   type CatalogListFilters,
 } from '../model/catalog-filter.constants';
+import type { CatalogSidebarFiltersProps } from '../components/catalog-sidebar-filters';
+import type { CatalogActiveChipsProps } from '../components/catalog-active-chips';
+import type { CatalogQueryState } from '../components/catalog/catalog-query-controls';
 
 /**
  * Owns the catalog listing's URL-synced filter state (category/price/sort/search)
@@ -63,7 +66,10 @@ export function useCatalogFilters(initial?: CatalogInitialPage) {
   }, [debouncedSearch]);
 
   // Lọc danh mục chạy server-side (gồm cả nhánh con). Search cũng server-side.
-  const { products, ...listState } = useProductShowcase(filters.category, filters.search, {
+  // CONTRACT: API danh sách sản phẩm chỉ nhận category/search/sort/minPrice/maxPrice. Lọc thương
+  // hiệu và "còn hàng" từng chạy trên client trên đúng một trang đã tải, nên cho kết quả sai (bỏ sót
+  // sản phẩm ở trang sau, đếm "tìm thấy" lệch tổng). Gỡ cho đến khi API có tham số `brand`/`inStock`.
+  const list = useProductShowcase(filters.category, filters.search, {
     pageSize: CATALOG_PAGE_SIZE.SCOPED,
     keepPreviousResults: true,
     sort: filters.sort,
@@ -73,11 +79,6 @@ export function useCatalogFilters(initial?: CatalogInitialPage) {
     initialPageFetchedAt: initial?.fetchedAt,
     initialPageFilters: initial?.filters,
   });
-
-  // CONTRACT: API danh sách sản phẩm chỉ nhận category/search/sort/minPrice/maxPrice. Lọc thương
-  // hiệu và "còn hàng" từng chạy trên client trên đúng một trang đã tải, nên cho kết quả sai (bỏ sót
-  // sản phẩm ở trang sau, đếm "tìm thấy" lệch tổng). Gỡ cho đến khi API có tham số `brand`/`inStock`.
-  const displayedProducts = products;
 
   const activeCategoryLabel = useMemo(() => {
     if (!activeTabSlug) return null;
@@ -105,24 +106,36 @@ export function useCatalogFilters(initial?: CatalogInitialPage) {
     router.replace(pathname, { scroll: false });
   };
 
+  // Trả theo nhóm props của từng component để view chỉ spread, không liệt kê lại từng trường.
   return {
-    tabs,
     isTabsPending,
-    activeTabSlug,
-    setActiveTabSlug,
-    activePriceRange,
-    setActivePriceRange,
-    activeSort,
-    setActiveSort,
-    urlSearch,
-    searchQuery,
-    setSearchQuery,
-    displayedProducts,
-    ...listState,
-    activeCategoryLabel,
-    activePriceLabel,
-    hasActiveFilters,
     activeFilterCount,
-    handleResetFilters,
+    list,
+    /** Sidebar desktop và drawer mobile dùng chung một bộ props lọc. */
+    filterProps: {
+      tabs,
+      activeTabSlug,
+      onSelectCategory: setActiveTabSlug,
+      priceRanges: PRICE_RANGES,
+      activePriceRange,
+      onSelectPriceRange: setActivePriceRange,
+      hasActiveFilters,
+      onResetFilters: handleResetFilters,
+    } satisfies CatalogSidebarFiltersProps,
+    queryProps: {
+      searchQuery,
+      onSearchQueryChange: setSearchQuery,
+      activeSort,
+      onSortChange: setActiveSort,
+    } satisfies CatalogQueryState,
+    chipsProps: {
+      categoryLabel: activeCategoryLabel,
+      onClearCategory: () => setActiveTabSlug(null),
+      priceLabel: activePriceLabel,
+      onClearPrice: () => setActivePriceRange('all'),
+      searchQuery: urlSearch || null,
+      onClearSearch: () => setSearchQuery(''),
+      onClearAll: handleResetFilters,
+    } satisfies CatalogActiveChipsProps,
   };
 }
