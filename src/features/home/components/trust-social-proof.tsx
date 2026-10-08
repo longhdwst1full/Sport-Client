@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Award, CheckCircle2, Clock, MapPin, Phone, ShieldCheck, Star } from 'lucide-react';
+import { Award, CheckCircle2, Clock, MapPin, Phone, Star } from 'lucide-react';
 import { buttonVariants } from '@/foundation/components/buttons';
 import { IconList } from '@/foundation/components/structure';
 import { STORE_CONTACT, STORE_SHOWROOMS } from '@/shared/constants';
@@ -20,18 +20,15 @@ const FACTS = [
 
 export function TrustSocialProof() {
   return (
-    <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-      <div className="rounded-3xl border border-slate-200/80 bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 text-white p-8 sm:p-12 shadow-xl">
+    <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+      <div className="rounded-3xl border border-slate-200/80 bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 text-white p-5 sm:p-10 lg:p-12 shadow-xl">
         <div className="grid gap-8 lg:grid-cols-[1.1fr_.9fr] lg:items-center">
           {/* Left Column: Proof points & Rating */}
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-slate-900/30 bg-slate-900/10 px-3.5 py-1 text-xs font-black uppercase tracking-wider text-slate-300">
-              <ShieldCheck className="size-4 text-slate-300" />
-              AN TÂM TUYỆT ĐỐI KHI ĐẦU TƯ THIẾT BỊ
-            </div>
+            <p className="text-xs font-black uppercase tracking-[.2em] text-slate-300">An tâm khi đầu tư thiết bị</p>
 
             {/* TODO(data): số liệu chưa có nguồn xác nhận ("30.000+ khách hàng") — chờ chủ shop quyết định giữ/bỏ. */}
-            <h2 className="mt-4 text-2xl sm:text-3xl lg:text-4xl font-black text-white leading-tight">
+            <h2 className="mt-2 text-2xl sm:text-3xl lg:text-4xl font-black text-white leading-tight">
               Vì sao hơn 30.000+ khách hàng tin chọn Bảo An Sport?
             </h2>
 

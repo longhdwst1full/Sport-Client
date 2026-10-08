@@ -41,8 +41,8 @@ export function DivisionSelect({
   return (
     <div>
       <Field
-        label={<>{label} {required && <span className="text-rose-500">*</span>}</>}
-        labelClassName="block text-xs font-bold uppercase tracking-wider text-slate-600"
+        label={<>{label} {required && <span className="text-rose-600">*</span>}</>}
+        labelClassName="block text-xs font-bold text-slate-700"
         htmlFor={selectId}
       >
         <div className="relative mt-1.5">

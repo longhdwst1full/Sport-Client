@@ -5,7 +5,6 @@ import Link from 'next/link';
 import {
   ChevronLeft,
   ChevronRight,
-  Layers,
   ArrowRight,
 } from 'lucide-react';
 import { Button } from '@/foundation/components/buttons';
@@ -110,7 +109,7 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
     <section
       ref={sectionRef}
       id="categories"
-      className="py-12 bg-gradient-to-b from-slate-50/80 via-white to-slate-50/60 border-y border-slate-200/80"
+      className="py-8 sm:py-12 bg-gradient-to-b from-slate-50/80 via-white to-slate-50/60 border-y border-slate-200/80"
       aria-label="Danh mục ngành hàng thể thao"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
@@ -122,13 +121,10 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header with Navigation Controls */}
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-4 sm:mb-6">
           <div>
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 border border-slate-200/80 px-3 py-1 text-xs font-bold uppercase tracking-wider text-slate-800 mb-2">
-              <Layers className="size-3.5" aria-hidden="true" />
-              <span>DANH MỤC THIẾT BỊ BẢO AN SPORT</span>
-            </div>
-            <h2 className="text-2xl font-black tracking-tight text-slate-900 sm:text-3xl">
+            <p className="text-xs font-black uppercase tracking-[.2em] text-slate-900">Danh mục thiết bị</p>
+            <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-900 sm:text-3xl lg:text-4xl">
               Sản Phẩm Theo Danh Mục Ngành Hàng
             </h2>
             <p className="mt-1 text-xs text-slate-500 sm:text-sm">
@@ -140,7 +136,7 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
           <div className="flex items-center gap-3 self-end sm:self-auto">
             <Link
               href="/category"
-              className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-slate-700 hover:text-slate-950 transition rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2"
+              className="inline-flex items-center gap-1.5 text-sm font-bold text-slate-700 hover:text-slate-950 hover:underline transition rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2"
             >
               {VIEW_ALL_CONTENT}
             </Link>
@@ -189,7 +185,7 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
           </div>
 
           {/* Sleek Minimalist Indicator Pill */}
-          <div className="mt-7 flex items-center justify-center">
+          <div className="mt-4 flex items-center justify-center">
             <div className="inline-flex items-center gap-3 rounded-full border border-slate-200/90 bg-white px-4 py-1.5 shadow-2xs">
               <div className="relative h-1.5 w-28 sm:w-40 overflow-hidden rounded-full bg-slate-100">
                 <div
@@ -205,16 +201,6 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
               </span>
             </div>
           </div>
-        </div>
-
-        {/* Mobile View All Link */}
-        <div className="mt-6 text-center md:hidden">
-          <Link
-            href="/category"
-            className="inline-flex items-center gap-1.5 rounded-full border border-slate-300 bg-white px-5 py-2 text-xs font-bold uppercase tracking-wider text-slate-800 shadow-2xs transition hover:border-slate-900 hover:text-slate-950 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2"
-          >
-            {VIEW_ALL_CONTENT}
-          </Link>
         </div>
       </div>
     </section>

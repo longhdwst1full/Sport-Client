@@ -3,12 +3,13 @@ import Link from 'next/link';
 import { CheckCircle2, ShieldCheck } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Button } from '@/foundation/components/buttons';
+import { Checkbox } from '@/foundation/components/field-system';
 import { Spinner } from '@/foundation/components/feedback';
 import { DescriptionList, type DescriptionItem } from '@/foundation/components/structure';
 import type { CartItem } from '@/features/cart';
 import type { CheckoutQuoteView } from '../model/checkout.mapper';
 import { formatVnd } from '@/shared/format/money';
-import { PRODUCT_PLACEHOLDER_IMAGE } from '@/shared/constants';
+import { PRODUCT_PLACEHOLDER_IMAGE, STORE_POLICY_PAGES } from '@/shared/constants';
 
 /** Nút đặt hàng (desktop + thanh dính mobile): bo lớn, chữ đậm, trạng thái khoá xám thay vì mờ. */
 const SUBMIT_CLASS = 'rounded-2xl text-sm font-black shadow-sm disabled:bg-slate-300 disabled:text-slate-600 disabled:opacity-100';
@@ -27,6 +28,9 @@ interface CheckoutOrderSummaryProps {
   showSubmit?: boolean;
   submitDisabled?: boolean;
   submitLabel?: string;
+  /** Ô đồng ý điều khoản nằm ngay trên nút đặt hàng; việc chặn khi chưa tick vẫn do `usePlaceOrder` lo. */
+  acceptedTerms?: boolean;
+  setAcceptedTerms?: (value: boolean) => void;
 }
 
 export function CheckoutOrderSummary({
@@ -40,6 +44,8 @@ export function CheckoutOrderSummary({
   showSubmit = false,
   submitDisabled = false,
   submitLabel = 'Đặt hàng',
+  acceptedTerms = false,
+  setAcceptedTerms,
 }: CheckoutOrderSummaryProps) {
   // CONTRACT: hai trạng thái khác nhau cùng "chưa có số phí".
   // - SHOP_ARRANGED (`shippingFeePending`): báo giá QUOTED, shippingTotal = 0 nhưng KHÔNG miễn phí —
@@ -71,7 +77,7 @@ export function CheckoutOrderSummary({
       : null;
   return (
     <aside>
-      <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm lg:sticky lg:top-28">
+      <div className="rounded-3xl border border-slate-200/90 bg-white p-4 shadow-sm sm:p-6 lg:sticky lg:top-28">
         <div className="flex items-center justify-between">
           <h2 className="font-black text-slate-900">Đơn hàng ({items.length})</h2>
           <Link href="/cart" className="-my-2 inline-flex min-h-11 items-center px-2 text-xs font-bold text-slate-900 hover:underline">Chỉnh sửa</Link>
@@ -117,15 +123,35 @@ export function CheckoutOrderSummary({
             </p>
           )}
         </div>
+        {showSubmit && setAcceptedTerms && (
+          <Checkbox
+            checked={acceptedTerms}
+            onChange={(e) => setAcceptedTerms(e.target.checked)}
+            wrapperClassName="mt-5 rounded-2xl border border-slate-200/60 bg-slate-50 p-3"
+            label={
+              <span className="text-xs leading-relaxed">
+                Tôi đã đọc và đồng ý với{' '}
+                <Link href={STORE_POLICY_PAGES.TERMS.href} target="_blank" className="font-bold text-slate-900 underline-offset-2 hover:underline">
+                  {STORE_POLICY_PAGES.TERMS.title.toLowerCase()}
+                </Link>{' '}
+                và{' '}
+                <Link href={STORE_POLICY_PAGES.RETURNS.href} target="_blank" className="font-bold text-slate-900 underline-offset-2 hover:underline">
+                  chính sách đổi trả & bảo hành
+                </Link>{' '}
+                của Bảo An Sport.
+              </span>
+            }
+          />
+        )}
         {showSubmit && (
-          <Button type="submit" variant="primary" size="lg" fullWidth disabled={submitIsDisabled} className={`mt-6 hidden lg:flex ${SUBMIT_CLASS}`}>
+          <Button type="submit" variant="primary" size="lg" fullWidth disabled={submitIsDisabled} className={`mt-4 hidden lg:flex ${SUBMIT_CLASS}`}>
             {busy ? <Spinner className="size-5 animate-spin" /> : <CheckCircle2 aria-hidden className="size-5" />}
             {busy ? 'Đang xử lý...' : submitLabel}
           </Button>
         )}
         <div className="mt-4 flex gap-2 text-xs leading-5 text-slate-500">
           <ShieldCheck aria-hidden className="mt-0.5 size-4 shrink-0 text-slate-400" />
-          <span>Không lấy giá hoặc tồn từ dữ liệu lưu trên trình duyệt. Backend là nguồn quyết định cuối cùng.</span>
+          <span>Giá, tồn kho và phí giao được xác nhận lại khi bạn đặt hàng.</span>
         </div>
       </div>
 
@@ -138,6 +164,9 @@ export function CheckoutOrderSummary({
                 {hasFinalTotal ? 'Khách thanh toán' : shippingPending ? 'Tiền hàng (chưa gồm phí giao)' : 'Tạm tính (chưa gồm phí giao)'}
               </span>
               <strong className="block truncate text-lg font-black text-slate-900">{mobileTotalLabel}</strong>
+              {setAcceptedTerms && !acceptedTerms && (
+                <span className="block text-[11px] font-semibold text-amber-700">Đánh dấu đồng ý điều khoản để đặt hàng</span>
+              )}
             </div>
             <Button type="submit" variant="primary" size="lg" disabled={submitIsDisabled} className={`shrink-0 px-5 ${SUBMIT_CLASS}`}>
               {busy ? <Spinner className="size-5 animate-spin" /> : null}

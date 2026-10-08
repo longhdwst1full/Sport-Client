@@ -1,7 +1,7 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import { RotateCcw, Search } from 'lucide-react';
+import { ChevronDown, RotateCcw, Search } from 'lucide-react';
 import { Button } from '@/foundation/components/buttons';
 import { EmptyState, InlineAlert } from '@/foundation/components/feedback';
 import type { ProductShowcaseItem } from '../../model/product.mapper';
@@ -141,13 +141,14 @@ export function CatalogProductGrid({
             variant="outline"
             onClick={loadMore}
             disabled={isLoadingMore}
-            className="rounded-full border-slate-200 px-7 text-xs font-bold uppercase tracking-wider text-slate-700 shadow-xs hover:border-slate-900 hover:bg-slate-50 disabled:opacity-60"
+            className="rounded-full px-6 disabled:opacity-60"
           >
             {isLoadingMore
               ? 'Đang tải…'
               : isLoadMoreError
                 ? 'Tải thêm chưa được — thử lại'
                 : 'Xem thêm'}
+            {!isLoadingMore && <ChevronDown className="size-4" aria-hidden="true" />}
           </Button>
         </div>
       )}

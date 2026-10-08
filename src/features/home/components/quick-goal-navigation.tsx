@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Building2, Dumbbell, Flame, Home, MoveUpRight, Sparkles } from 'lucide-react';
+import { Building2, Dumbbell, Flame, Home, MoveUpRight } from 'lucide-react';
 
 interface GoalItem {
   id: string;
@@ -61,15 +61,12 @@ const GOALS: GoalItem[] = [
 
 export function QuickGoalNavigation() {
   return (
-    <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
-      <div className="rounded-3xl border border-slate-200/80 bg-gradient-to-b from-white via-slate-50/50 to-white p-6 sm:p-8 shadow-xs">
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6 sm:mb-8">
+    <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+      <div className="rounded-3xl border border-slate-200/80 bg-gradient-to-b from-white via-slate-50/50 to-white p-4 sm:p-8 shadow-xs">
+        <div className="mb-5 sm:mb-8">
           <div>
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-slate-100/80 px-3 py-1 text-xs font-black uppercase tracking-wider text-slate-950 mb-2">
-              <Sparkles className="size-3.5" aria-hidden="true" />
-              <span>ĐỊNH HƯỚNG TẬP LUYỆN</span>
-            </div>
-            <h2 className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-slate-900">
+            <p className="text-xs font-black uppercase tracking-[.2em] text-slate-900">Định hướng tập luyện</p>
+            <h2 className="mt-2 text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-slate-900">
               Bạn đang tìm thiết bị cho mục tiêu nào?
             </h2>
             <p className="mt-1 text-xs sm:text-sm text-slate-500">
@@ -78,36 +75,37 @@ export function QuickGoalNavigation() {
           </div>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {/* Mobile 2 cột gọn (ẩn mô tả, nhãn) thay vì 4 thẻ cao xếp dọc. */}
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
           {GOALS.map((goal) => {
             const Icon = goal.icon;
             return (
               <Link
                 key={goal.id}
                 href={goal.href}
-                className={`group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200 bg-white bg-gradient-to-br p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2 ${goal.gradient}`}
+                className={`group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200 bg-white bg-gradient-to-br p-3.5 sm:p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2 ${goal.gradient}`}
               >
                 <div>
-                  <div className="flex items-center justify-between gap-2 mb-4">
+                  <div className="flex items-center justify-between gap-2 mb-3 sm:mb-4">
                     <div
-                      className={`grid size-12 place-items-center rounded-xl border text-lg ${goal.iconColor}`}
+                      className={`grid size-10 sm:size-12 place-items-center rounded-xl border text-lg ${goal.iconColor}`}
                     >
-                      <Icon className="size-6" aria-hidden="true" />
+                      <Icon className="size-5 sm:size-6" aria-hidden="true" />
                     </div>
-                    <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-600">
+                    <span className="hidden rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-600 sm:inline">
                       {goal.badge}
                     </span>
                   </div>
 
-                  <h3 className="text-base sm:text-lg font-black text-slate-900 group-hover:text-slate-900 transition">
+                  <h3 className="text-sm sm:text-lg font-black leading-snug text-slate-900">
                     {goal.title}
                   </h3>
-                  <p className="mt-1.5 text-xs text-slate-500 leading-relaxed">
+                  <p className="mt-1.5 text-xs text-slate-500 leading-relaxed max-sm:hidden">
                     {goal.subtitle}
                   </p>
                 </div>
 
-                <div className="mt-5 flex items-center gap-1.5 text-xs font-black text-slate-800 group-hover:text-slate-900 transition">
+                <div className="mt-3 sm:mt-5 flex items-center gap-1.5 text-xs font-black text-slate-800 group-hover:text-slate-900 transition">
                   <span>Khám phá ngay</span>
                   <MoveUpRight className="size-3.5 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
                 </div>

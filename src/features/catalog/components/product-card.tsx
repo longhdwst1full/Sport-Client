@@ -90,11 +90,11 @@ export const ProductCard = memo(function ProductCard({
 
             {onBuyNow && (
               <Button
-                variant="primary"
+                variant="outline"
                 fullWidth
                 onClick={(e) => onBuyNow(product, e)}
                 disabled={!product.hasPrice || product.inStock === false}
-                className="relative z-10 mt-2.5 h-10 gap-1.5 rounded-xl px-3 text-xs font-black sm:text-sm disabled:bg-slate-100 disabled:text-slate-400 disabled:shadow-none disabled:border-0"
+                className="relative z-10 mt-2 gap-1.5 px-3 text-xs hover:translate-y-0 sm:text-sm disabled:border-slate-200 disabled:bg-slate-50 disabled:text-slate-400 disabled:shadow-none"
                 title={
                   product.inStock === false
                     ? 'Sản phẩm tạm hết hàng'
@@ -106,7 +106,7 @@ export const ProductCard = memo(function ProductCard({
                 }
                 aria-label={`Mua ngay ${product.name}`}
               >
-                <Zap aria-hidden className="size-3.5 fill-current" />
+                <Zap aria-hidden className="size-3.5" />
                 <span>{product.inStock === false ? 'Tạm hết hàng' : 'Mua ngay'}</span>
               </Button>
             )}
@@ -137,7 +137,7 @@ export function ProductCardSkeleton({ withAction = true }: { withAction?: boolea
         <div className="mt-auto pt-2">
           <Skeleton className="h-6 w-28 rounded" />
           <div className="mt-0.5 h-5" />
-          {withAction && <Skeleton className="mt-2 h-11 w-full rounded-lg" />}
+          {withAction && <Skeleton className="mt-2 h-11 w-full rounded-xl" />}
         </div>
       </div>
     </div>

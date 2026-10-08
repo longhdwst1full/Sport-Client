@@ -2,7 +2,7 @@
 
 import { useState, type ReactNode } from 'react';
 import { Button } from '@/foundation/components/buttons';
-import { Check, Maximize2, RefreshCw, Sparkles, Trophy } from 'lucide-react';
+import { Check, Maximize2, RefreshCw, Sparkles } from 'lucide-react';
 import { ArrowRight } from 'lucide-react';
 import { GOAL_OPTIONS, SPACE_OPTIONS, BUDGET_OPTIONS } from '../../model/smart-fit.constants';
 import { ADVISOR_SECONDARY_BUTTON, AdvisorOptionStep } from './advisor-option-step';
@@ -103,16 +103,13 @@ export function SmartFitAdvisor() {
   const recommendation = getRecommendation();
 
   return (
-    <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
+    <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
       <div className={`overflow-hidden rounded-[32px] border border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 p-6 sm:p-10 lg:p-12 text-white shadow-2xl ${SMART_FIT_CARD_MIN_HEIGHT}`}>
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 border-b border-slate-800/80 pb-8">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-slate-900/30 bg-slate-900/10 px-3.5 py-1 text-xs font-black uppercase tracking-widest text-slate-300">
-              <Trophy className="size-4 text-slate-300" aria-hidden="true" />
-              BẢO AN SMART FIT ADVISOR
-            </div>
-            <h2 className="mt-3 text-2xl sm:text-3xl lg:text-4xl font-black text-white">
+            <p className="text-xs font-black uppercase tracking-[.2em] text-slate-300">Smart Fit Advisor</p>
+            <h2 className="mt-2 text-2xl sm:text-3xl lg:text-4xl font-black text-white">
               Không Chỉ Bán Thiết Bị. Chúng Tôi Giúp Bạn Chọn Đúng.
             </h2>
             <p className="mt-2 text-xs sm:text-sm text-slate-300 max-w-2xl">

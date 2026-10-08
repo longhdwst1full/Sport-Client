@@ -136,8 +136,6 @@ export function CheckoutPage() {
             />
 
             <CheckoutConfirmSection
-              acceptedTerms={form.acceptedTerms}
-              setAcceptedTerms={form.setAcceptedTerms}
               quote={quote}
               refreshConsultedQuote={refreshConsultedQuote}
               busy={busy}
@@ -154,6 +152,8 @@ export function CheckoutPage() {
             authLoaded={isLoaded}
             shopArranged={shopArranged}
             showSubmit={true}
+            acceptedTerms={form.acceptedTerms}
+            setAcceptedTerms={form.setAcceptedTerms}
             submitDisabled={busy || redirectingToVnpay}
             submitLabel={
               redirectingToVnpay

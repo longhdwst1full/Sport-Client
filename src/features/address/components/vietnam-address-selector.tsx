@@ -293,8 +293,8 @@ export function VietnamAddressSelector({
       {/* Street Address Input */}
       <div>
         <Field
-          label={<>Số nhà, tên đường, tòa nhà {required && <span className="text-rose-500">*</span>}</>}
-          labelClassName="block text-xs font-bold uppercase tracking-wider text-slate-600"
+          label={<>Số nhà, tên đường, tòa nhà {required && <span className="text-rose-600">*</span>}</>}
+          labelClassName="block text-xs font-bold text-slate-700"
         >
           <TextInput
             size="md"

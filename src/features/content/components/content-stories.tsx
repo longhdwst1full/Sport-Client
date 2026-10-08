@@ -8,6 +8,7 @@ import {
   ArrowUpRight,
   Clock,
   Calendar,
+  ChevronDown,
 } from 'lucide-react';
 import { useContentStories } from '../hooks/use-content-stories';
 import { Button } from '@/foundation/components/buttons';
@@ -48,8 +49,8 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
       <div className="grid gap-6 sm:grid-cols-2">
         {Array.from({ length: 2 }, (_, index) => (
           <div key={index} className="grid overflow-hidden rounded-[28px] border border-slate-200/90 bg-white md:grid-cols-[1fr_1.2fr]">
-            <Skeleton className="min-h-[220px] bg-slate-100" />
-            <div className="space-y-3 p-6">
+            <Skeleton className="aspect-[16/9] bg-slate-100 md:aspect-auto md:min-h-[220px]" />
+            <div className="space-y-3 p-5 sm:p-6">
               <Skeleton className="h-4 w-24 bg-slate-100" />
               <Skeleton className="h-6 w-3/4 bg-slate-100" />
               <Skeleton className="h-12 w-full bg-slate-100" />
@@ -102,7 +103,8 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
             className="group grid overflow-hidden rounded-[28px] border border-slate-200/90 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-slate-900/40 hover:shadow-xl md:grid-cols-[1fr_1.2fr]"
           >
             {/* Image Thumbnail */}
-            <div className="relative min-h-[220px] overflow-hidden bg-slate-100 sm:min-h-[240px]">
+            {/* Ảnh mobile theo tỷ lệ 16:9 (không còn khối 220px cao); ảnh thiếu/lỗi do `CoverImage` thay bằng placeholder. */}
+            <div className="relative aspect-[16/9] overflow-hidden bg-slate-50 md:aspect-auto md:min-h-[220px]">
               <CoverImage
                 src={post.coverUrl}
                 alt={post.title}
@@ -116,7 +118,7 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
             </div>
 
             {/* Content Details */}
-            <div className="flex flex-col justify-between p-6 sm:p-7">
+            <div className="flex flex-col justify-between p-5 sm:p-6">
               <div>
                 {/* Meta info: date, reading time */}
                 <div className="flex items-center gap-3 text-xs font-semibold text-slate-400">
@@ -144,18 +146,8 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
                 </p>
               </div>
 
-              {/* Author & Read More Link */}
-              <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-3">
-                <div className="flex items-center gap-2">
-                  <div className="grid size-7 place-items-center rounded-full bg-slate-100 text-xs font-bold text-slate-950" aria-hidden="true">
-                    B
-                  </div>
-                  <div>
-                    <span className="block text-xs font-bold text-slate-800">Bảo An Sport</span>
-                    <span className="block text-xs text-slate-400">Ban chuyên môn</span>
-                  </div>
-                </div>
-
+              {/* Bỏ dòng tác giả lặp "Bảo An Sport / Ban chuyên môn" ở mọi thẻ: API không có tác giả thật. */}
+              <div className="mt-4 flex justify-end">
                 <Link
                   href={`/news/${post.slug}`}
                   className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-bold text-slate-900 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2"
@@ -172,14 +164,9 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
 
       {hiddenCount > 0 && (
         <div className="mt-8 flex justify-center">
-          <Button
-            variant="outline"
-            size="lg"
-            onClick={() => setExpanded(true)}
-            className="rounded-full border-slate-200 text-sm font-bold text-slate-700 hover:border-slate-400"
-          >
+          <Button variant="outline" onClick={() => setExpanded(true)} className="rounded-full px-6">
             <span>Xem thêm</span>
-            <ArrowRight className="size-4" aria-hidden="true" />
+            <ChevronDown className="size-4" aria-hidden="true" />
           </Button>
         </div>
       )}

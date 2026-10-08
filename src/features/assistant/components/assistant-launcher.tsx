@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from 'react';
 import dynamic from 'next/dynamic';
+import { usePathname } from 'next/navigation';
 import { Bot, X } from 'lucide-react';
 import { Button } from '@/foundation/components/buttons';
 import { Spinner } from '@/foundation/components/feedback';
@@ -21,7 +22,15 @@ const AssistantPanelHost = dynamic(() => import('./assistant-panel-host').then((
   ),
 });
 
+/**
+ * Trang có thanh hành động dính đáy trên mobile (chi tiết sản phẩm, checkout): nút nổi z-50 đè lên nút
+ * mua/đặt hàng nên ẩn dưới `lg` — cùng quy tắc `MOBILE_HIDDEN_ROUTES` của FloatingContactBar.
+ */
+const MOBILE_HIDDEN_ROUTES: readonly RegExp[] = [/^\/products\/[^/]+\/?$/, /^\/checkout(\/|$)/];
+
 export function AssistantLauncher() {
+  const pathname = usePathname();
+  const hideOnMobile = MOBILE_HIDDEN_ROUTES.some((pattern) => pattern.test(pathname ?? ''));
   const [open, setOpen] = useState(false);
   // Chỉ tải chunk panel sau lần bấm đầu tiên; sau đó giữ mount để không mất hội thoại khi đóng/mở.
   const [requested, setRequested] = useState(false);
@@ -42,7 +51,7 @@ export function AssistantLauncher() {
         // (tên nằm ở aria-label + tooltip) để không thành viên thuốc dài đè lên nội dung bên phải trang.
         title={ASSISTANT_TITLE}
         variant="primary"
-        className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-3.5 z-50 size-11 rounded-full p-0 shadow-lg shadow-slate-900/25 sm:bottom-6 sm:right-5"
+        className={`fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-3.5 z-50 size-11 rounded-full p-0 shadow-lg shadow-slate-900/25 sm:bottom-6 sm:right-5 ${hideOnMobile ? 'hidden lg:inline-flex' : ''}`}
       >
         {open ? <X className="size-5" aria-hidden /> : <Bot className="size-5" aria-hidden />}
       </Button>

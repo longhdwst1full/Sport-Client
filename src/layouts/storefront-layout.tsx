@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { SiteHeader, type MegaMenuEntry } from '@/widgets/site-header/site-header';
 import { SiteFooter } from '@/widgets/site-footer/site-footer';
 import { FooterNewsletterBanner } from '@/widgets/site-footer/footer-newsletter-banner';
+import { NewsletterRouteGate } from '@/widgets/site-footer/newsletter-route-gate';
 import { FloatingContactBar } from '@/widgets/floating-contact-bar/floating-contact-bar';
 import { AssistantChat } from '@/widgets/assistant-chat/assistant-chat';
 
@@ -28,7 +29,9 @@ export function StorefrontLayout({
       <div id={CONTENT_ANCHOR_ID} tabIndex={-1} className="outline-none">
         {children}
       </div>
-      <FooterNewsletterBanner />
+      <NewsletterRouteGate>
+        <FooterNewsletterBanner />
+      </NewsletterRouteGate>
       <SiteFooter categories={categories} />
       <FloatingContactBar />
       <AssistantChat />

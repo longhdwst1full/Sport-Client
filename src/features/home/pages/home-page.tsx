@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, MoveUpRight, Sparkles } from 'lucide-react';
+import { MoveUpRight } from 'lucide-react';
 import { BenefitsStrip } from '@/widgets/benefits-strip/benefits-strip';
 import { SectionHeading } from '@/foundation/components/structure/section-heading';
 import { ProductShowcase, toCategoryCardView, toCategoryRailView } from '@/features/catalog';
@@ -27,6 +27,11 @@ import { STORE_CONFIG } from '@/shared/constants';
 /** Số thẻ "theo bộ môn" và số lối tắt nhóm sản phẩm; chọn theo `productCount` thật. */
 const SPORT_CARD_COUNT = 4;
 const QUICK_LINK_COUNT = 8;
+
+/** Khoảng đệm dọc chung cho mọi khối trang chủ (không cộng thêm margin) để nhịp trang đều. */
+const SECTION_CLASS = 'mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 sm:py-10';
+/** Nhãn nhỏ trên tiêu đề khối, cùng kiểu `SectionHeading`. */
+const EYEBROW_CLASS = 'text-xs font-black uppercase tracking-[.2em] text-slate-900';
 
 async function loadCategories(): Promise<CatalogCategoryDto[]> {
   try {
@@ -109,28 +114,17 @@ export async function HomePage() {
         <FlashSaleSection />
 
         {/* 4. Sản phẩm nổi bật & bán chạy. */}
-        <section id="products" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
-            <div>
-              <div className="inline-flex items-center gap-1.5 rounded-full bg-slate-100/80 px-3 py-1 text-xs font-black uppercase tracking-wider text-slate-950 mb-2">
-                <Sparkles className="size-3.5" aria-hidden="true" />
-                <span>TUYỂN CHỌN THIẾT BỊ BÁN CHẠY NHẤT</span>
-              </div>
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-slate-900">
-                Sản Phẩm Nổi Bật & Bán Chạy
-              </h2>
-              <p className="mt-1 text-xs sm:text-sm text-slate-500 max-w-2xl">
-                Khám phá trang thiết bị thể lực, cardio, bóng bàn, bóng rổ và võ thuật chính hãng được đông đảo khách hàng và huấn luyện viên tin chọn
-              </p>
-            </div>
-
-            <Link
-              href="/category"
-              className="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-slate-800 shadow-2xs transition hover:border-slate-900 hover:text-slate-950 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2"
-            >
-              <span>Xem tất cả danh mục</span>
-              <ArrowRight className="size-4" aria-hidden="true" />
-            </Link>
+        {/* Một lối "xem tất cả" cho khối này: banner cuối lưới (sang /products); bỏ link danh mục ở đầu khối
+            vì rail danh mục ngay phía trên đã có. */}
+        <section id="products" className={SECTION_CLASS}>
+          <div className="mb-6">
+            <p className={EYEBROW_CLASS}>Thiết bị bán chạy</p>
+            <h2 className="mt-2 text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-slate-900">
+              Sản Phẩm Nổi Bật & Bán Chạy
+            </h2>
+            <p className="mt-1 text-xs sm:text-sm text-slate-500 max-w-2xl">
+              Khám phá trang thiết bị thể lực, cardio, bóng bàn, bóng rổ và võ thuật chính hãng được đông đảo khách hàng và huấn luyện viên tin chọn
+            </p>
           </div>
 
           <ProductShowcase
@@ -144,29 +138,28 @@ export async function HomePage() {
         <QuickGoalNavigation />
 
         {sportCards.length > 0 && (
-          <section id="shop-by-sport" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-20 border-t border-slate-100">
+          <section id="shop-by-sport" className={SECTION_CLASS}>
             <SectionHeading eyebrow="Tìm nhanh theo bộ môn" title="Bạn muốn tập luyện bộ môn nào?" />
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {/* Thẻ sáng (không còn 4 khối tối liền nhau trước trust/smart-fit); mobile 2 cột gọn. */}
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
               {sportCards.map(({ slug, title, itemCountLabel, icon: Icon }) => (
                 <Link
                   key={slug}
                   href={`/category/${slug}`}
-                  className="group flex min-h-[190px] flex-col justify-between rounded-[24px] bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 p-6 text-white transition hover:-translate-y-1 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2"
+                  className="group flex flex-col justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-slate-900 transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2 sm:min-h-[160px] sm:p-6"
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="grid size-12 place-items-center rounded-2xl bg-slate-900/10 border border-slate-900/20 text-slate-300">
-                      <Icon className="size-6" aria-hidden="true" />
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="grid size-10 place-items-center rounded-xl bg-slate-100 text-slate-800 sm:size-12">
+                      <Icon className="size-5 sm:size-6" aria-hidden="true" />
                     </div>
-                    <span className="rounded-full bg-slate-800/80 px-2.5 py-0.5 text-xs font-bold text-slate-300">
+                    <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-slate-600 sm:text-xs">
                       {itemCountLabel}
                     </span>
                   </div>
 
                   <div>
-                    <h3 className="text-xl sm:text-2xl font-black text-white group-hover:text-slate-300 transition">
-                      {title}
-                    </h3>
-                    <span className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-slate-300">
+                    <h3 className="text-sm font-black leading-snug sm:text-xl">{title}</h3>
+                    <span className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 group-hover:text-slate-900">
                       Khám phá ngay <MoveUpRight className="size-3.5 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
                     </span>
                   </div>
@@ -185,7 +178,7 @@ export async function HomePage() {
 
         {/* Đánh giá sản phẩm — `ProductReviews` trả null khi chưa có đánh giá; `empty:hidden` để
             section rỗng không còn chiếm 128–160px padding trước footer. */}
-        <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-14 empty:hidden">
+        <section className={`${SECTION_CLASS} empty:hidden`}>
           {featuredProductSlug ? <ProductReviews productSlug={featuredProductSlug} /> : null}
         </section>
 
@@ -197,7 +190,7 @@ export async function HomePage() {
 
         {/* 8. Tin tức — chỉ hiển thị khi có bài viết thật. */}
         {heroPosts.length > 0 && (
-          <section id="stories" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-10 sm:pb-12">
+          <section id="stories" className={SECTION_CLASS}>
             <SectionHeading eyebrow="Kiến thức luyện tập" title="Bài viết mới" />
             <ContentStories initialPosts={heroPosts} />
           </section>

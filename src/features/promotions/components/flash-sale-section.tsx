@@ -4,13 +4,13 @@ import Link from 'next/link';
 import { ArrowRight, Clock, Flame } from 'lucide-react';
 import { useCartActions } from '@/features/cart';
 import { Skeleton } from '@/foundation/components/feedback';
-import { FlashSaleDealCard, FlashSaleDealCardSkeleton } from './flash-sale-deal-card';
+import { FlashSaleDealCard } from './flash-sale-deal-card';
 import { useFlashSale } from '../hooks/use-flash-sale';
 import type { FlashSaleDealView } from '../model/flash-sale.mapper';
 
 export function FlashSaleSection() {
   const { addItem } = useCartActions();
-  const { campaign, countdown, isPending } = useFlashSale();
+  const { campaign, countdown } = useFlashSale();
 
   const handleQuickAdd = (item: FlashSaleDealView, e: React.MouseEvent) => {
     e.preventDefault();
@@ -31,10 +31,8 @@ export function FlashSaleSection() {
 
   const format2Digits = (num: number) => String(num).padStart(2, '0');
 
-  // Lần tải đầu (kể cả HTML SSR, khi query chưa bật): giữ chỗ bằng skeleton cùng khung để lưới sản
-  // phẩm bên dưới không bị đẩy xuống khi flash sale về (CLS). Tải xong mà không có chiến dịch đang
-  // chạy, hoặc lỗi, thì ẩn hẳn — không dựng đếm ngược giả.
-  if (isPending && !campaign) return <FlashSaleSectionSkeleton />;
+  // Không giữ chỗ bằng skeleton: phần lớn thời gian KHÔNG có chiến dịch, khi đó một skeleton ~1000px
+  // rồi biến mất là cú dịch layout lớn nhất trang. Chỉ hiện khi đã có chiến dịch đang chạy.
   if (!campaign || campaign.deals.length === 0) return null;
 
   return (
@@ -115,29 +113,3 @@ export function FlashSaleSection() {
 }
 
 /** Cùng khung với section thật (header + lưới 4 thẻ) để giữ chỗ trong lúc tải lần đầu. */
-function FlashSaleSectionSkeleton() {
-  return (
-    <section
-      className="bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 py-16 sm:py-20"
-      aria-busy="true"
-      aria-label="Đang tải Flash Sale"
-    >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col gap-6 border-b border-slate-800/80 pb-8 md:flex-row md:items-end md:justify-between">
-          <div className="space-y-3">
-            <Skeleton className="h-6 w-56 rounded-full bg-slate-800" />
-            <Skeleton className="h-9 w-72 bg-slate-800 sm:h-10" />
-            <Skeleton className="h-4 w-64 bg-slate-800" />
-          </div>
-          <Skeleton className="h-10 w-60 bg-slate-800" />
-        </div>
-        <div className="mt-10 grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
-          {Array.from({ length: 4 }, (_, index) => (
-            <FlashSaleDealCardSkeleton key={index} />
-          ))}
-        </div>
-        <Skeleton className="mt-12 h-[124px] w-full rounded-3xl bg-slate-800/70 sm:h-[92px]" />
-      </div>
-    </section>
-  );
-}
