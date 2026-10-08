@@ -59,7 +59,7 @@ export function CartSummary({
           size: 'lg',
           fullWidth: true,
           className: `mt-6 rounded-full font-bold shadow-lg ${
-            selectedCount > 0 ? 'shadow-brand-600/20' : 'cursor-not-allowed bg-slate-400 shadow-none hover:bg-slate-400'
+            selectedCount > 0 ? 'shadow-slate-900/20' : 'cursor-not-allowed bg-slate-400 shadow-none hover:bg-slate-400'
           }`,
         })}
       >
@@ -67,7 +67,7 @@ export function CartSummary({
       </Link>
       <Link
         href="/products"
-        className="mt-3 block rounded py-2 text-center text-xs font-semibold text-slate-600 transition hover:text-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600"
+        className="mt-3 block rounded py-2 text-center text-xs font-semibold text-slate-600 transition hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900"
       >
         ← Tiếp tục mua sắm
       </Link>
@@ -77,7 +77,7 @@ export function CartSummary({
         items={TRUST_COMMITMENTS}
         className="mt-6 gap-3 border-t border-slate-100 pt-5 text-xs text-slate-600"
         itemClassName="gap-2.5"
-        iconClassName="text-brand-600"
+        iconClassName="text-slate-900"
       />
     </aside>
   );

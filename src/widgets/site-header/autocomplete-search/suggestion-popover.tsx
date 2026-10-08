@@ -49,7 +49,7 @@ export function SuggestionPopover({
       {!query.trim() ? (
         <div>
           <div className="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider text-slate-500 mb-2.5">
-            <Sparkles className="size-3.5 text-brand-600" />
+            <Sparkles className="size-3.5 text-slate-900" />
             <span>Từ khóa tìm kiếm phổ biến</span>
           </div>
           <div className="flex flex-wrap gap-1.5 mb-4">
@@ -57,7 +57,7 @@ export function SuggestionPopover({
               <Button
                 key={term}
                 onClick={() => onPickPopularTerm(term)}
-                className="rounded-full border border-slate-200 bg-slate-50/90 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:border-brand-500 hover:bg-brand-50 hover:text-brand-700"
+                className="rounded-full border border-slate-200 bg-slate-50/90 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:border-slate-900 hover:bg-slate-50 hover:text-slate-900"
               >
                 {term}
               </Button>
@@ -72,7 +72,7 @@ export function SuggestionPopover({
               <Link
                 href="/category"
                 onClick={onDismissForNav}
-                className="flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50/60 p-2.5 font-bold text-slate-700 hover:border-brand-300 hover:bg-brand-50/50 hover:text-brand-700 transition"
+                className="flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50/60 p-2.5 font-bold text-slate-700 hover:border-slate-300 hover:bg-slate-50/50 hover:text-slate-900 transition"
               >
                 <span>🏋️ Dụng cụ Gym</span>
                 <ChevronRight className="size-3.5 text-slate-400" />
@@ -80,7 +80,7 @@ export function SuggestionPopover({
               <Link
                 href="/category"
                 onClick={onDismissForNav}
-                className="flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50/60 p-2.5 font-bold text-slate-700 hover:border-brand-300 hover:bg-brand-50/50 hover:text-brand-700 transition"
+                className="flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50/60 p-2.5 font-bold text-slate-700 hover:border-slate-300 hover:bg-slate-50/50 hover:text-slate-900 transition"
               >
                 <span>🏃 Máy chạy & Cardio</span>
                 <ChevronRight className="size-3.5 text-slate-400" />
@@ -115,7 +115,7 @@ export function SuggestionPopover({
           {/* Header hint */}
           <div className="flex items-center justify-between rounded-lg bg-slate-50 px-4 py-2 text-[11px] font-extrabold uppercase tracking-wider text-slate-700">
             <span className="inline-flex items-center gap-1.5">
-              <Sparkles className="size-3 text-brand-600" />
+              <Sparkles className="size-3 text-slate-900" />
               GỢI Ý SẢN PHẨM ({results.length})
             </span>
             <span className="text-[10px] font-medium text-slate-500">↑↓ di chuyển • Enter chọn</span>
@@ -146,7 +146,7 @@ export function SuggestionPopover({
               size="sm"
               fullWidth
               onClick={onSearchSubmit}
-              className="h-auto gap-1.5 rounded-lg border-slate-200 bg-slate-50 py-2.5 text-xs font-bold text-brand-700 hover:border-brand-200 hover:bg-brand-50 hover:text-brand-800"
+              className="h-auto gap-1.5 rounded-lg border-slate-200 bg-slate-50 py-2.5 text-xs font-bold text-slate-900 hover:border-slate-200 hover:bg-slate-50 hover:text-slate-950"
             >
               <span>Xem tất cả kết quả cho "{query.trim()}"</span>
               <ChevronRight aria-hidden className="size-3.5" />
@@ -170,7 +170,7 @@ export function SuggestionPopover({
               <Button
                 key={kw}
                 onClick={() => onPrefillTerm(kw)}
-                className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700 shadow-sm transition hover:border-brand-500 hover:bg-brand-50/50 hover:text-brand-700"
+                className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700 shadow-sm transition hover:border-slate-900 hover:bg-slate-50/50 hover:text-slate-900"
               >
                 {kw}
               </Button>

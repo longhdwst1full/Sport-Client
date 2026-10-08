@@ -57,7 +57,7 @@ export function CatalogSidebarFilters({
       {/* Category Facet */}
       <div>
         <h3 className="mb-2.5 flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-slate-800">
-          <Boxes aria-hidden className="size-3.5 text-brand-600" />
+          <Boxes aria-hidden className="size-3.5 text-slate-900" />
           <span>Danh mục sản phẩm</span>
         </h3>
         {isTabsPending ? (
@@ -77,9 +77,9 @@ export function CatalogSidebarFilters({
                   type="button"
                   onClick={() => onSelectCategory(tab.slug)}
                   aria-pressed={isSelected}
-                  className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-xs font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-1 ${
+                  className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-xs font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-1 ${
                     isSelected
-                      ? 'bg-brand-50 text-brand-800 ring-1 ring-brand-600/30'
+                      ? 'bg-slate-50 text-slate-950 ring-1 ring-slate-900/30'
                       : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
                   }`}
                 >
@@ -88,7 +88,7 @@ export function CatalogSidebarFilters({
                     <span
                       className={`ml-2 rounded-full px-2 py-0.5 text-[10px] font-bold ${
                         isSelected
-                          ? 'bg-brand-600 text-white'
+                          ? 'bg-slate-900 text-white'
                           : 'bg-slate-100 text-slate-600'
                       }`}
                     >
@@ -105,7 +105,7 @@ export function CatalogSidebarFilters({
       {/* Price Range Facet */}
       <div className="border-t border-slate-100 pt-5">
         <h3 className="mb-2.5 flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-slate-800">
-          <Tag aria-hidden className="size-3.5 text-brand-600" />
+          <Tag aria-hidden className="size-3.5 text-slate-900" />
           <span>Khoảng giá</span>
         </h3>
         <div className="space-y-1.5" role="radiogroup" aria-label="Khoảng giá">
@@ -116,7 +116,7 @@ export function CatalogSidebarFilters({
                 key={range.id}
                 className={`flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-xs font-semibold transition ${
                   isSelected
-                    ? 'bg-brand-50/80 text-brand-900 font-bold ring-1 ring-brand-600/20'
+                    ? 'bg-slate-50/80 text-slate-950 font-bold ring-1 ring-slate-900/20'
                     : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
                 }`}
               >
@@ -127,7 +127,7 @@ export function CatalogSidebarFilters({
                     value={range.id}
                     checked={isSelected}
                     onChange={() => onSelectPriceRange(range.id)}
-                    className="size-4 cursor-pointer border-slate-300 accent-brand-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-1"
+                    className="size-4 cursor-pointer border-slate-300 accent-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-1"
                   />
                   <span>{range.label}</span>
                 </div>

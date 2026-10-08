@@ -40,7 +40,7 @@ export function CheckoutPaymentMethodSection({
           >
             <div className="flex items-center justify-between gap-2">
               <strong className="text-sm font-bold text-slate-900">{label}</strong>
-              <span aria-hidden className="grid size-7 shrink-0 place-items-center rounded-lg bg-brand-100 font-extrabold text-[11px] text-brand-800">
+              <span aria-hidden className="grid size-7 shrink-0 place-items-center rounded-lg bg-slate-100 font-extrabold text-[11px] text-slate-950">
                 {badge}
               </span>
             </div>

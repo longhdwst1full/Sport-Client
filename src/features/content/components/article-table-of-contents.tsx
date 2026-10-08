@@ -22,12 +22,12 @@ export function ArticleTableOfContents({ headings }: { headings: TocHeading[] })
 
   return (
     <nav
-      className="my-8 rounded-2xl border border-brand-100 bg-brand-50/40 p-5 shadow-2xs backdrop-blur-xs sm:p-6"
+      className="my-8 rounded-2xl border border-slate-200 bg-slate-50/40 p-5 shadow-2xs backdrop-blur-xs sm:p-6"
       aria-label="Mục lục bài viết"
     >
-      <div className="flex items-center gap-2 border-b border-brand-200/60 pb-3">
-        <ListOrdered className="size-4 text-brand-700" aria-hidden="true" />
-        <h2 className="text-xs font-black uppercase tracking-wider text-brand-950">
+      <div className="flex items-center gap-2 border-b border-slate-200/60 pb-3">
+        <ListOrdered className="size-4 text-slate-900" aria-hidden="true" />
+        <h2 className="text-xs font-black uppercase tracking-wider text-slate-950">
           Mục lục bài viết
         </h2>
       </div>
@@ -40,7 +40,7 @@ export function ArticleTableOfContents({ headings }: { headings: TocHeading[] })
             <Button
               variant="link"
               onClick={() => scrollToHeading(heading.id)}
-              className="justify-start rounded py-1 text-left text-xs text-slate-700 hover:text-brand-700"
+              className="justify-start rounded py-1 text-left text-xs text-slate-700 hover:text-slate-900"
             >
               {heading.text}
             </Button>

@@ -24,8 +24,8 @@ const GOALS: GoalItem[] = [
     subtitle: 'Máy chạy, xe đạp, ghế tập & tạ tay gọn gàng',
     badge: 'Phổ biến nhất',
     href: '/products?category=may-tap-the-duc',
-    gradient: 'from-brand-500/10 via-brand-500/5 to-transparent hover:border-brand-500/40',
-    iconColor: 'bg-brand-500/10 text-brand-600 border-brand-500/20',
+    gradient: 'from-slate-800/10 via-slate-800/5 to-transparent hover:border-slate-900/40',
+    iconColor: 'bg-slate-900/10 text-slate-900 border-slate-900/20',
   },
   {
     id: 'strength',
@@ -65,7 +65,7 @@ export function QuickGoalNavigation() {
       <div className="rounded-3xl border border-slate-200/80 bg-gradient-to-b from-white via-slate-50/50 to-white p-6 sm:p-8 shadow-xs">
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6 sm:mb-8">
           <div>
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-brand-100/80 px-3 py-1 text-xs font-black uppercase tracking-wider text-brand-800 mb-2">
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-slate-100/80 px-3 py-1 text-xs font-black uppercase tracking-wider text-slate-950 mb-2">
               <Sparkles className="size-3.5" aria-hidden="true" />
               <span>ĐỊNH HƯỚNG TẬP LUYỆN</span>
             </div>
@@ -85,7 +85,7 @@ export function QuickGoalNavigation() {
               <Link
                 key={goal.id}
                 href={goal.href}
-                className={`group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200 bg-white bg-gradient-to-br p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 ${goal.gradient}`}
+                className={`group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200 bg-white bg-gradient-to-br p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2 ${goal.gradient}`}
               >
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-4">
@@ -99,7 +99,7 @@ export function QuickGoalNavigation() {
                     </span>
                   </div>
 
-                  <h3 className="text-base sm:text-lg font-black text-slate-900 group-hover:text-brand-700 transition">
+                  <h3 className="text-base sm:text-lg font-black text-slate-900 group-hover:text-slate-900 transition">
                     {goal.title}
                   </h3>
                   <p className="mt-1.5 text-xs text-slate-500 leading-relaxed">
@@ -107,7 +107,7 @@ export function QuickGoalNavigation() {
                   </p>
                 </div>
 
-                <div className="mt-5 flex items-center gap-1.5 text-xs font-black text-slate-800 group-hover:text-brand-600 transition">
+                <div className="mt-5 flex items-center gap-1.5 text-xs font-black text-slate-800 group-hover:text-slate-900 transition">
                   <span>Khám phá ngay</span>
                   <MoveUpRight className="size-3.5 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
                 </div>

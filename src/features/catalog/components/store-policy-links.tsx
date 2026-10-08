@@ -22,9 +22,9 @@ export function StorePolicyLinks() {
         <Link
           key={href}
           href={href}
-          className="flex items-center gap-2.5 rounded-xl px-2 py-1.5 font-bold text-ink transition hover:bg-stone-50 hover:text-brand-700"
+          className="flex items-center gap-2.5 rounded-xl px-2 py-1.5 font-bold text-ink transition hover:bg-stone-50 hover:text-slate-900"
         >
-          <Icon className="size-4 shrink-0 text-brand-600" aria-hidden="true" />
+          <Icon className="size-4 shrink-0 text-slate-900" aria-hidden="true" />
           <span>{title}</span>
         </Link>
       ))}

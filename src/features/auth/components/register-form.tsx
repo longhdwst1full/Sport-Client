@@ -34,7 +34,7 @@ const TEXT_FIELDS: {
 const RequiredMark = () => <span className="text-rose-500">*</span>;
 
 const TERMS_LINK_CLASS =
-  'font-bold text-brand-700 hover:underline rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500';
+  'font-bold text-slate-900 hover:underline rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900';
 
 function PasswordHint({ met, label }: { met: boolean; label: string }) {
   return (

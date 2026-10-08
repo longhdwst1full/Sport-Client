@@ -60,7 +60,7 @@ export function OrderShippingInfo({
     <div className="mt-6 rounded-2xl border border-slate-200/90 bg-slate-50/70 p-4 sm:p-5">
       <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-b border-slate-200/60 pb-3">
         <div className="flex items-center gap-2">
-          <Truck aria-hidden className="size-4 text-brand-600" />
+          <Truck aria-hidden className="size-4 text-slate-900" />
           <span className="text-xs font-black uppercase tracking-wider text-slate-800">
             Thông tin vận chuyển thực tế
           </span>
@@ -70,7 +70,7 @@ export function OrderShippingInfo({
             href={view.shipment.trackingUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex min-h-11 items-center gap-1 text-xs font-bold text-brand-700 hover:underline"
+            className="inline-flex min-h-11 items-center gap-1 text-xs font-bold text-slate-900 hover:underline"
           >
             <span>Tra cứu trên hệ thống hãng</span>
             <ExternalLink aria-hidden className="size-3" />
@@ -108,7 +108,7 @@ export function OrderShippingInfo({
         </ShipmentInfoTile>
 
         <ShipmentInfoTile label="Dự kiến giao hàng" hint="Trong giờ hành chính">
-          <strong className="mt-1 block text-sm font-bold text-brand-700">
+          <strong className="mt-1 block text-sm font-bold text-slate-900">
             {view?.shipment?.estimatedDeliveryLabel}
           </strong>
         </ShipmentInfoTile>
@@ -145,9 +145,9 @@ export function OrderShippingInfo({
             variant="link"
             onClick={() => setShowTimeline(!showTimeline)}
             aria-expanded={showTimeline}
-            className="ml-auto min-h-11 gap-1.5 font-bold text-slate-700 hover:text-brand-700 hover:no-underline"
+            className="ml-auto min-h-11 gap-1.5 font-bold text-slate-700 hover:text-slate-900 hover:no-underline"
           >
-            <PackageCheck aria-hidden className="size-3.5 text-brand-600" />
+            <PackageCheck aria-hidden className="size-3.5 text-slate-900" />
             Lịch sử cập nhật chi tiết ({view?.timeline.length})
             {showTimeline ? <ChevronUp aria-hidden className="size-3.5" /> : <ChevronDown aria-hidden className="size-3.5" />}
           </Button>

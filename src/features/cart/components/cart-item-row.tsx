@@ -31,7 +31,7 @@ export function CartItemRow({
         type="checkbox"
         checked={isSelected}
         onChange={onToggleSelect}
-        className="size-5 shrink-0 cursor-pointer rounded accent-brand-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+        className="size-5 shrink-0 cursor-pointer rounded accent-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2"
         aria-label={`Chọn sản phẩm ${item.name}`}
       />
 
@@ -59,7 +59,7 @@ export function CartItemRow({
             <h3 className="mt-1 truncate text-sm font-bold sm:text-base">
               <Link
                 href={`/products/${item.slug ?? item.productId}`}
-                className="rounded-sm transition hover:text-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+                className="rounded-sm transition hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2"
               >
                 {item.name}
               </Link>

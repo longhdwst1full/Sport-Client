@@ -76,7 +76,7 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
               aria-pressed={activeCat === cat}
               className={`text-xs font-bold ${
                 activeCat === cat
-                  ? 'bg-brand-700 shadow-sm'
+                  ? 'bg-slate-800 shadow-sm'
                   : 'border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-600'
               }`}
             >
@@ -87,7 +87,7 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
 
         <Link
           href="/news"
-          className="inline-flex items-center gap-1.5 text-xs font-extrabold text-brand-700 hover:underline rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+          className="inline-flex items-center gap-1.5 text-xs font-extrabold text-slate-900 hover:underline rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2"
         >
           <span>Xem tất cả bài viết</span>
           <ArrowRight className="size-3.5" aria-hidden="true" />
@@ -99,7 +99,7 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
         {visibleArticles.map((post) => (
           <article
             key={post.id}
-            className="group grid overflow-hidden rounded-[28px] border border-slate-200/90 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-brand-500/40 hover:shadow-xl md:grid-cols-[1fr_1.2fr]"
+            className="group grid overflow-hidden rounded-[28px] border border-slate-200/90 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-slate-900/40 hover:shadow-xl md:grid-cols-[1fr_1.2fr]"
           >
             {/* Image Thumbnail */}
             <div className="relative min-h-[220px] overflow-hidden bg-slate-100 sm:min-h-[240px]">
@@ -110,7 +110,7 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
                 sizes="(max-width: 768px) 100vw, 45vw"
                 className="object-cover transition duration-500 group-hover:scale-105"
               />
-              <div className="absolute left-3 top-3 rounded-full bg-slate-900/85 px-3 py-1 text-xs font-black uppercase tracking-wider text-brand-300 backdrop-blur-md">
+              <div className="absolute left-3 top-3 rounded-full bg-slate-900/85 px-3 py-1 text-xs font-black uppercase tracking-wider text-slate-300 backdrop-blur-md">
                 {post.categoryLabel}
               </div>
             </div>
@@ -132,8 +132,8 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
                 </div>
 
                 {/* Title */}
-                <h3 className="mt-2.5 text-base font-black leading-snug text-slate-900 transition line-clamp-2 group-hover:text-brand-700 sm:text-lg">
-                  <Link href={`/news/${post.slug}`} className="rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2">
+                <h3 className="mt-2.5 text-base font-black leading-snug text-slate-900 transition line-clamp-2 group-hover:text-slate-900 sm:text-lg">
+                  <Link href={`/news/${post.slug}`} className="rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2">
                     {post.title}
                   </Link>
                 </h3>
@@ -147,7 +147,7 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
               {/* Author & Read More Link */}
               <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-3">
                 <div className="flex items-center gap-2">
-                  <div className="grid size-7 place-items-center rounded-full bg-brand-100 text-xs font-bold text-brand-800" aria-hidden="true">
+                  <div className="grid size-7 place-items-center rounded-full bg-slate-100 text-xs font-bold text-slate-950" aria-hidden="true">
                     B
                   </div>
                   <div>
@@ -158,7 +158,7 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
 
                 <Link
                   href={`/news/${post.slug}`}
-                  className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-bold text-brand-700 transition hover:bg-brand-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+                  className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-bold text-slate-900 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2"
                   aria-label={`Đọc chi tiết: ${post.title}`}
                 >
                   <span>Chi tiết</span>
@@ -176,7 +176,7 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
             variant="outline"
             size="lg"
             onClick={() => setExpanded(true)}
-            className="rounded-full border-slate-200 text-sm font-bold text-slate-700 hover:border-brand-400"
+            className="rounded-full border-slate-200 text-sm font-bold text-slate-700 hover:border-slate-400"
           >
             <span>Xem thêm</span>
             <ArrowRight className="size-4" aria-hidden="true" />
@@ -188,7 +188,7 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
         <div className="mt-6 flex justify-center">
           <Link
             href="/news"
-            className="inline-flex items-center gap-1.5 text-xs font-extrabold text-brand-700 hover:underline rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+            className="inline-flex items-center gap-1.5 text-xs font-extrabold text-slate-900 hover:underline rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2"
           >
             <span>Đọc toàn bộ chuyên mục tin tức</span>
             <ArrowRight className="size-3.5" aria-hidden="true" />

@@ -20,15 +20,15 @@ export function OrderStatusHero({
   onCopyOrderNo: (code: string) => void;
 }) {
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-slate-800/80 bg-gradient-to-br from-slate-950 via-slate-900 to-brand-950 p-6 sm:p-8 text-white shadow-xl">
-      <div className="pointer-events-none absolute -right-16 -top-16 size-80 rounded-full bg-brand-500/15 blur-3xl" />
-      <div className="pointer-events-none absolute -left-16 -bottom-16 size-64 rounded-full bg-brand-700/10 blur-2xl" />
+    <div className="relative overflow-hidden rounded-3xl border border-slate-800/80 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-6 sm:p-8 text-white shadow-xl">
+      <div className="pointer-events-none absolute -right-16 -top-16 size-80 rounded-full bg-slate-900/15 blur-3xl" />
+      <div className="pointer-events-none absolute -left-16 -bottom-16 size-64 rounded-full bg-slate-800/10 blur-2xl" />
 
       <div className="relative flex flex-col md:flex-row md:items-start justify-between gap-5">
         <div className="flex-1 min-w-0">
           <div className="flex flex-wrap items-center gap-2.5">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-500/15 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-brand-300 border border-brand-500/25">
-              <span className="size-1.5 rounded-full bg-brand-400" />
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-900/15 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-slate-300 border border-slate-900/25">
+              <span className="size-1.5 rounded-full bg-slate-700" />
               Đơn hàng trực tuyến
             </span>
             <div className="flex items-center gap-2">
@@ -109,10 +109,10 @@ export function OrderStatusHero({
 
         <div className={METRIC_CARD_CLASS}>
           <span className={METRIC_LABEL_CLASS}>Tổng thanh toán</span>
-          <strong className="mt-1 block text-2xl font-black text-brand-400 tracking-tight">
+          <strong className="mt-1 block text-2xl font-black text-slate-300 tracking-tight">
             {view?.grandTotalLabel}
           </strong>
-          <div className="mt-0.5 flex items-center justify-between text-[11px] text-brand-300/80">
+          <div className="mt-0.5 flex items-center justify-between text-[11px] text-slate-300/80">
             <span>{view?.itemCount} món sản phẩm</span>
             {view?.paymentMethodCode === PAYMENT_METHOD.COD && (
               <span className="font-semibold text-amber-300">(Trả khi nhận)</span>

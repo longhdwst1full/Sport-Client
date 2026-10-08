@@ -22,7 +22,7 @@ export function OrderDetailCard({
     <section className={`rounded-3xl border border-slate-200/80 bg-white p-6 sm:p-7 shadow-card transition-shadow hover:shadow-card-hover ${className}`}>
       <div className={`border-b border-slate-100 pb-4 ${headerClassName}`}>
         <div className="flex items-center gap-2.5">
-          <div className="grid size-9 place-items-center rounded-2xl bg-brand-100 text-brand-700">
+          <div className="grid size-9 place-items-center rounded-2xl bg-slate-100 text-slate-900">
             <Icon aria-hidden className="size-4.5" />
           </div>
           <div>

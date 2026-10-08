@@ -48,18 +48,18 @@ export function PolicyListPage({
                 <li key={policy.slug}>
                   <Link
                     href={`/chinh-sach/${policy.slug}`}
-                    className="group flex h-full flex-col rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition hover:border-brand-300 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+                    className="group flex h-full flex-col rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition hover:border-slate-300 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2"
                   >
-                    <span className="grid size-10 place-items-center rounded-xl bg-brand-50 text-brand-700">
+                    <span className="grid size-10 place-items-center rounded-xl bg-slate-50 text-slate-900">
                       <FileText className="size-5" aria-hidden="true" />
                     </span>
-                    <h2 className="mt-4 text-base font-bold text-ink group-hover:text-brand-700">
+                    <h2 className="mt-4 text-base font-bold text-ink group-hover:text-slate-900">
                       {policy.title}
                     </h2>
                     <p className="mt-2 line-clamp-3 flex-1 text-sm leading-relaxed text-slate-600">
                       {policy.excerpt}
                     </p>
-                    <span className="mt-4 inline-flex items-center gap-1 text-xs font-bold text-brand-700">
+                    <span className="mt-4 inline-flex items-center gap-1 text-xs font-bold text-slate-900">
                       Xem chi tiết <ChevronRight className="size-3.5" aria-hidden="true" />
                     </span>
                   </Link>

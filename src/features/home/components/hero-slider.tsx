@@ -56,7 +56,7 @@ export function HeroSlider({
 
   return (
     <div
-      className="relative overflow-hidden rounded-2xl border border-slate-200/90 bg-gradient-to-br from-slate-950 via-slate-900 to-brand-950 shadow-lg lg:col-span-8 group min-h-[380px] sm:min-h-[440px] lg:min-h-[480px]"
+      className="relative overflow-hidden rounded-2xl border border-slate-200/90 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 shadow-lg lg:col-span-8 group min-h-[380px] sm:min-h-[440px] lg:min-h-[480px]"
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
     >
@@ -118,7 +118,7 @@ export function HeroSlider({
               <div className="absolute inset-0 flex flex-col justify-center px-6 py-8 sm:px-10 lg:px-12">
                 <div className="max-w-xl">
                   {slide.badge && (
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-600 px-3 py-1 text-xs font-black uppercase tracking-wider text-white shadow-sm">
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-white backdrop-blur">
                       <Zap className="size-3.5 fill-white" aria-hidden="true" />
                       {slide.badge}
                     </span>
@@ -142,9 +142,10 @@ export function HeroSlider({
                       <Link
                         href={slide.ctaLink}
                         tabIndex={isActive ? undefined : -1}
+                        // Nút trắng trên ảnh tối: nút than (primary) gần như chìm vào lớp phủ đen của slide.
                         className={buttonVariants({
-                          variant: 'primary',
-                          className: `h-auto px-5 py-2.5 text-xs font-black uppercase tracking-wide shadow-md shadow-black/25 sm:px-6 sm:py-3 sm:text-sm ${HERO_FOCUS}`,
+                          variant: 'inverse',
+                          className: `h-auto px-5 py-2.5 text-xs font-bold uppercase tracking-wide sm:px-6 sm:py-3 sm:text-sm ${HERO_FOCUS}`,
                         })}
                       >
                         <span>{slide.ctaText}</span>
@@ -187,7 +188,7 @@ export function HeroSlider({
               variant="ghost"
               size="icon"
               onClick={onClick}
-              className={`${HERO_ROUND_BUTTON} ${position} top-1/2 -translate-y-1/2 opacity-70 hover:bg-white hover:text-slate-950 group-hover:opacity-100 focus-visible:opacity-100`}
+              className={`${HERO_ROUND_BUTTON} ${position} top-1/2 hidden -translate-y-1/2 opacity-70 sm:grid hover:bg-white hover:text-slate-950 group-hover:opacity-100 focus-visible:opacity-100`}
               aria-label={label}
             >
               <Icon className="size-5" aria-hidden="true" />

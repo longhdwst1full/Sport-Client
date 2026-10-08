@@ -10,8 +10,8 @@ export function BundleBreakdown({ components }: BundleBreakdownProps) {
   if (components.length === 0) return null;
 
   return (
-    <div className="rounded-2xl border border-brand-200/60 bg-brand-50/40 p-4">
-      <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-brand-800">
+    <div className="rounded-2xl border border-slate-200/60 bg-slate-50/40 p-4">
+      <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-950">
         <CheckCircle2 aria-hidden className="size-4 text-success-600" />
         <span>Combo này bao gồm các linh kiện:</span>
       </div>
@@ -20,7 +20,7 @@ export function BundleBreakdown({ components }: BundleBreakdownProps) {
         className="mt-2.5 gap-y-1.5 text-xs text-stone-700"
         itemClassName="items-center"
         labelClassName="font-semibold text-stone-700"
-        valueClassName="rounded bg-white px-2 py-0.5 text-[11px] font-bold text-brand-700 shadow-sm"
+        valueClassName="rounded bg-white px-2 py-0.5 text-[11px] font-bold text-slate-900 shadow-sm"
         items={components.map((component) => ({
           key: component.componentVariantId,
           label: component.componentName,

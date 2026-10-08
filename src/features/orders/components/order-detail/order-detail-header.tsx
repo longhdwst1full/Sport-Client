@@ -15,11 +15,11 @@ export function OrderDetailHeader({
   return (
     <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
       <nav aria-label="Breadcrumb" className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-xs font-medium text-slate-500">
-        <Link href="/" className="inline-flex min-h-8 items-center hover:text-brand-700 transition">Trang chủ</Link>
+        <Link href="/" className="inline-flex min-h-8 items-center hover:text-slate-900 transition">Trang chủ</Link>
         <ChevronRight aria-hidden className="size-3 text-slate-400" />
         {isAuthenticated ? (
           <>
-            <Link href="/orders" className="inline-flex min-h-8 items-center hover:text-brand-700 transition">Đơn hàng của tôi</Link>
+            <Link href="/orders" className="inline-flex min-h-8 items-center hover:text-slate-900 transition">Đơn hàng của tôi</Link>
             <ChevronRight aria-hidden className="size-3 text-slate-400" />
           </>
         ) : null}
@@ -40,9 +40,9 @@ export function OrderDetailHeader({
         <Button
           variant="outline"
           onClick={onOpenSupport}
-          className="gap-1.5 border-brand-200 bg-brand-50/70 px-3.5 text-xs font-bold text-brand-800 hover:bg-brand-100"
+          className="gap-1.5 border-slate-200 bg-slate-50/70 px-3.5 text-xs font-bold text-slate-950 hover:bg-slate-100"
         >
-          <Headphones aria-hidden className="size-3.5 text-brand-600" /> Cần hỗ trợ?
+          <Headphones aria-hidden className="size-3.5 text-slate-900" /> Cần hỗ trợ?
         </Button>
       </div>
     </div>

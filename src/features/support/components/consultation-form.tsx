@@ -64,7 +64,7 @@ export function ConsultationForm() {
             Không mở được email? Gọi trực tiếp{' '}
             <a
               href={`tel:${STORE_CONTACT.primaryHotline.replace(/\s/g, '')}`}
-              className="font-bold text-brand-700 underline rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+              className="font-bold text-slate-900 underline rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
             >
               {STORE_CONTACT.primaryHotline}
             </a>
@@ -181,7 +181,7 @@ export function ConsultationForm() {
             type="submit"
             size="lg"
             fullWidth
-            className="h-14 rounded-full font-black shadow-lg shadow-brand-600/25"
+            className="h-14 rounded-full font-black shadow-lg shadow-slate-900/25"
           >
             <Send className="size-4" aria-hidden />
             <span>Soạn email yêu cầu tư vấn</span>

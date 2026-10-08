@@ -51,7 +51,7 @@ export function ProductImageGallery({
                 key={delta}
                 type="button"
                 onClick={() => step(delta)}
-                className={`absolute ${side} top-1/2 grid size-11 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-slate-700 shadow transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2`}
+                className={`absolute ${side} top-1/2 grid size-11 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-slate-700 shadow transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2`}
                 aria-label={label}
               >
                 <Icon aria-hidden className="size-5" />
@@ -74,10 +74,10 @@ export function ProductImageGallery({
                   onClick={() => setActiveIndex(index)}
                   aria-label={`Xem ảnh ${index + 1} của ${productName}`}
                   aria-current={selected ? 'true' : undefined}
-                  className={`relative block aspect-square w-full overflow-hidden rounded-xl border-2 bg-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 ${
+                  className={`relative block aspect-square w-full overflow-hidden rounded-xl border-2 bg-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2 ${
                     selected
-                      ? 'border-brand-600'
-                      : 'border-[var(--dc-border)] hover:border-brand-300'
+                      ? 'border-slate-900'
+                      : 'border-[var(--dc-border)] hover:border-slate-300'
                   }`}
                 >
                   <Image

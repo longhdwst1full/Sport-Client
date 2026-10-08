@@ -97,7 +97,7 @@ export function FlashSaleDealCard({
           fullWidth
           disabled={soldOut}
           onClick={(event) => onQuickAdd(deal, event)}
-          className={`mt-4 h-auto min-h-11 bg-slate-800 px-2 text-xs font-bold hover:bg-brand-600 disabled:bg-slate-800/50 disabled:text-slate-500 disabled:opacity-100 disabled:hover:bg-slate-800/50 sm:mt-5 ${FLASH_SALE_FOCUS_RING}`}
+          className={`mt-4 h-auto min-h-11 bg-slate-800 px-2 text-xs font-bold hover:bg-slate-900 disabled:bg-slate-800/50 disabled:text-slate-500 disabled:opacity-100 disabled:hover:bg-slate-800/50 sm:mt-5 ${FLASH_SALE_FOCUS_RING}`}
         >
           <ShoppingBag className="size-3.5" aria-hidden="true" />
           {soldOut ? 'Hết suất' : 'Thêm vào giỏ'}

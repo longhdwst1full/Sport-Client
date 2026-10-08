@@ -44,7 +44,7 @@ export async function FooterNewsletterBanner() {
       {footerBanner && <FooterBannerStrip banner={footerBanner} />}
       <section className="bg-gradient-to-b from-slate-900 to-slate-950 px-4 py-10 sm:py-12 text-white border-t border-slate-800 lg:px-10">
         <div className="mx-auto max-w-3xl text-center">
-          <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-brand-500/10 border border-brand-500/20 text-brand-400">
+          <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-slate-900/10 border border-slate-900/20 text-slate-300">
             <Mail aria-hidden className="size-6" />
           </div>
           <h2 className="mt-5 text-2xl font-black sm:text-3xl text-white">

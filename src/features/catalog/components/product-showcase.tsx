@@ -99,7 +99,7 @@ export function ProductShowcase({
       {/* Catalog View All Banner */}
       <div className="flex flex-col items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:flex-row sm:px-8">
         <div className="text-center sm:text-left">
-          <span className="text-xs font-black uppercase tracking-wider text-brand-700">Danh mục chính hãng</span>
+          <span className="text-xs font-black uppercase tracking-wider text-slate-900">Danh mục chính hãng</span>
           <p className="text-sm font-bold text-slate-800">
             {total > 0
               ? `${total} mẫu thiết bị thể dục thể thao đang bán`

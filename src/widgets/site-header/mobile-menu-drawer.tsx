@@ -60,14 +60,14 @@ export function MobileMenuDrawer({
             </div>
             <Link
               href="/"
-              className="flex items-center gap-3 px-3 py-3 text-sm font-bold text-slate-800 hover:bg-slate-50 hover:text-brand-700 rounded-xl transition"
+              className="flex items-center gap-3 px-3 py-3 text-sm font-bold text-slate-800 hover:bg-slate-50 hover:text-slate-900 rounded-xl transition"
               onClick={onClose}
             >
               Trang chủ
             </Link>
             <Link
               href="/products"
-              className="flex items-center gap-3 px-3 py-3 text-sm font-bold text-slate-800 hover:bg-slate-50 hover:text-brand-700 rounded-xl transition"
+              className="flex items-center gap-3 px-3 py-3 text-sm font-bold text-slate-800 hover:bg-slate-50 hover:text-slate-900 rounded-xl transition"
               onClick={onClose}
             >
               Tất cả sản phẩm
@@ -83,10 +83,10 @@ export function MobileMenuDrawer({
                   <div className="flex items-center justify-between rounded-xl hover:bg-slate-50 transition">
                     <Link
                       href={cat.href}
-                      className="flex flex-1 items-center gap-3 px-3 py-3 text-sm font-bold text-slate-800 hover:text-brand-700"
+                      className="flex flex-1 items-center gap-3 px-3 py-3 text-sm font-bold text-slate-800 hover:text-slate-900"
                       onClick={onClose}
                     >
-                      <Dumbbell className="size-4.5 text-brand-600 shrink-0" />
+                      <Dumbbell className="size-4.5 text-slate-900 shrink-0" />
                       <span>{cat.label}</span>
                     </Link>
                     {cat.children && cat.children.length > 0 && (
@@ -104,7 +104,7 @@ export function MobileMenuDrawer({
                         <ChevronDown
                           aria-hidden
                           className={`size-4 transition-transform duration-200 ${
-                            isExpanded ? 'rotate-180 text-brand-600' : ''
+                            isExpanded ? 'rotate-180 text-slate-900' : ''
                           }`}
                         />
                       </Button>
@@ -115,13 +115,13 @@ export function MobileMenuDrawer({
                   {isExpanded && (
                     <div
                       id={`mobile-subcat-${catIdx}`}
-                      className="ml-8 mr-2 my-1 space-y-1 border-l-2 border-brand-200 pl-3 py-1 animate-in fade-in"
+                      className="ml-8 mr-2 my-1 space-y-1 border-l-2 border-slate-200 pl-3 py-1 animate-in fade-in"
                     >
                       {cat.children.map((child) => (
                         <Link
                           key={child.label}
                           href={child.href}
-                          className="flex items-center justify-between py-2.5 text-sm font-medium text-slate-600 hover:text-brand-700"
+                          className="flex items-center justify-between py-2.5 text-sm font-medium text-slate-600 hover:text-slate-900"
                           onClick={onClose}
                         >
                           <span>{child.label}</span>
@@ -130,7 +130,7 @@ export function MobileMenuDrawer({
                       ))}
                       <Link
                         href={cat.href}
-                        className="inline-block py-2 text-sm font-extrabold text-brand-700 hover:underline"
+                        className="inline-block py-2 text-sm font-extrabold text-slate-900 hover:underline"
                         onClick={onClose}
                       >
                         Xem tất cả {cat.label} →
@@ -147,15 +147,15 @@ export function MobileMenuDrawer({
             {hasFlashSaleCampaign && (
               <Link
                 href="/flash-sale"
-                className="flex items-center justify-between rounded-xl px-3 py-3 text-sm font-black text-brand-700 hover:bg-brand-50 transition"
+                className="flex items-center justify-between rounded-xl px-3 py-3 text-sm font-black text-slate-900 hover:bg-slate-50 transition"
                 onClick={onClose}
               >
                 <span className="flex items-center gap-2">
-                  <span aria-hidden className="size-2 rounded-full bg-brand-600" />
+                  <span aria-hidden className="size-2 rounded-full bg-slate-900" />
                   ⚡ Giờ Vàng Flash Sale
                   {flashSaleMaxDiscountPercent ? ` Giảm ${flashSaleMaxDiscountPercent}%` : ''}
                 </span>
-                <span className="rounded-full bg-brand-600 px-2 py-0.5 text-[10px] font-black uppercase text-white">
+                <span className="rounded-full bg-slate-900 px-2 py-0.5 text-[10px] font-black uppercase text-white">
                   SỐC
                 </span>
               </Link>
@@ -163,7 +163,7 @@ export function MobileMenuDrawer({
 
             <Link
               href="/products"
-              className="flex items-center justify-between rounded-xl px-3 py-3 text-sm font-bold text-slate-800 hover:bg-brand-50 hover:text-brand-700 transition"
+              className="flex items-center justify-between rounded-xl px-3 py-3 text-sm font-bold text-slate-800 hover:bg-slate-50 hover:text-slate-900 transition"
               onClick={onClose}
             >
               <span className="flex items-center gap-2.5">
@@ -176,7 +176,7 @@ export function MobileMenuDrawer({
 
             <Link
               href="/news"
-              className="flex items-center justify-between rounded-xl px-3 py-3 text-sm font-bold text-slate-800 hover:bg-brand-50 hover:text-brand-700 transition"
+              className="flex items-center justify-between rounded-xl px-3 py-3 text-sm font-bold text-slate-800 hover:bg-slate-50 hover:text-slate-900 transition"
               onClick={onClose}
             >
               <span>Cẩm nang & Kinh nghiệm tập luyện</span>
@@ -185,11 +185,11 @@ export function MobileMenuDrawer({
 
             <Link
               href="/contact"
-              className="flex items-center justify-between rounded-xl px-3 py-3 text-sm font-bold text-slate-800 hover:bg-brand-50 hover:text-brand-700 transition"
+              className="flex items-center justify-between rounded-xl px-3 py-3 text-sm font-bold text-slate-800 hover:bg-slate-50 hover:text-slate-900 transition"
               onClick={onClose}
             >
               <span className="flex items-center gap-2">
-                <MapPin className="size-4 text-brand-600" />
+                <MapPin className="size-4 text-slate-900" />
                 Hệ thống Showroom Bảo An Sport
               </span>
               <ChevronRight className="size-3.5 text-slate-400" />
@@ -203,7 +203,7 @@ export function MobileMenuDrawer({
             <IconList
               className="gap-1.5"
               itemClassName="items-start gap-1.5"
-              iconClassName="mt-0.5 size-3.5 text-brand-600"
+              iconClassName="mt-0.5 size-3.5 text-slate-900"
               items={STORE_SHOWROOMS.map((showroom) => ({
                 key: showroom.id,
                 icon: MapPin,

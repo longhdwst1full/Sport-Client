@@ -83,7 +83,7 @@ export function CatalogProductGrid({
       emptyState ?? (
         <EmptyState
           className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-slate-300 bg-white px-4 py-16 text-center"
-          iconWrapClassName="mb-4 grid size-14 place-items-center rounded-2xl bg-brand-50 text-brand-600"
+          iconWrapClassName="mb-4 grid size-14 place-items-center rounded-2xl bg-slate-50 text-slate-900"
           icon={<Search aria-hidden className="size-6" />}
           titleAs="h3"
           titleClassName="text-base font-black text-slate-900"
@@ -138,7 +138,7 @@ export function CatalogProductGrid({
             variant="outline"
             onClick={onLoadMore}
             disabled={isLoadingMore}
-            className="rounded-full border-slate-200 px-7 text-xs font-bold uppercase tracking-wider text-slate-700 shadow-xs hover:border-brand-500 hover:bg-brand-50 disabled:opacity-60"
+            className="rounded-full border-slate-200 px-7 text-xs font-bold uppercase tracking-wider text-slate-700 shadow-xs hover:border-slate-900 hover:bg-slate-50 disabled:opacity-60"
           >
             {isLoadingMore
               ? 'Đang tải…'

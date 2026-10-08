@@ -15,7 +15,7 @@ export function CartEmpty() {
   return (
     <EmptyState
       className="mt-12 rounded-3xl border border-dashed border-slate-300 bg-white p-8 text-center sm:p-16 shadow-sm"
-      iconWrapClassName="mx-auto grid size-20 place-items-center rounded-3xl bg-brand-50 text-brand-600 shadow-inner"
+      iconWrapClassName="mx-auto grid size-20 place-items-center rounded-3xl bg-slate-50 text-slate-900 shadow-inner"
       icon={<ShoppingBag aria-hidden className="size-10" />}
       titleClassName="mt-6 text-2xl font-black text-slate-900"
       title="Giỏ hàng trống"
@@ -26,7 +26,7 @@ export function CartEmpty() {
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link
               href="/products"
-              className={buttonVariants({ size: 'lg', className: 'rounded-full px-7 font-bold shadow-lg shadow-brand-600/20' })}
+              className={buttonVariants({ size: 'lg', className: 'rounded-full px-7 font-bold shadow-lg shadow-slate-900/20' })}
             >
               <ArrowLeft aria-hidden className="size-4" /> Tiếp tục mua sắm
             </Link>
@@ -42,7 +42,7 @@ export function CartEmpty() {
                 <Link
                   key={cat.name}
                   href={cat.href}
-                  className="rounded-full border border-slate-200 bg-slate-50 px-3.5 py-2 text-xs font-bold text-slate-700 transition hover:border-brand-500 hover:bg-brand-50 hover:text-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+                  className="rounded-full border border-slate-200 bg-slate-50 px-3.5 py-2 text-xs font-bold text-slate-700 transition hover:border-slate-900 hover:bg-slate-50 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2"
                 >
                   {cat.name}
                 </Link>

@@ -38,7 +38,7 @@ export const orderStatusTone: Record<OrderStatus, string> = {
   CONFIRMED: 'bg-sky-50 text-sky-800 ring-sky-200',
   PICKING: 'bg-sky-50 text-sky-800 ring-sky-200',
   PACKED: 'bg-sky-50 text-sky-800 ring-sky-200',
-  SHIPPED: 'bg-brand-50 text-brand-800 ring-brand-200',
+  SHIPPED: 'bg-slate-50 text-slate-950 ring-slate-200',
   DELIVERED: 'bg-success-50 text-success-800 ring-success-200',
   COMPLETED: 'bg-success-50 text-success-800 ring-success-200',
   CANCELLED: 'bg-slate-100 text-slate-600 ring-slate-200',

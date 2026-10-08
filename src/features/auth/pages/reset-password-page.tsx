@@ -46,7 +46,7 @@ export function ResetPasswordPage() {
           </p>
           <Link
             href="/forgot-password"
-            className="mt-5 inline-block rounded text-xs font-bold text-brand-700 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+            className="mt-5 inline-block rounded text-xs font-bold text-slate-900 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900"
           >
             Gửi lại email đặt lại mật khẩu
           </Link>

@@ -46,8 +46,8 @@ export function ProductRelatedSection({
     <section className="mx-auto mt-16 max-w-7xl px-4 pt-12 border-t border-slate-200/90 sm:px-6 lg:px-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between pb-6 border-b border-slate-100">
         <div>
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-brand-50 px-3 py-1 text-xs font-bold text-brand-700">
-            <Sparkles aria-hidden className="size-3.5 text-brand-600" />
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-slate-50 px-3 py-1 text-xs font-bold text-slate-900">
+            <Sparkles aria-hidden className="size-3.5 text-slate-900" />
             Gợi ý dành cho bạn
           </div>
           <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-900 sm:text-3xl">
@@ -64,7 +64,7 @@ export function ProductRelatedSection({
           className={buttonVariants({
             variant: 'outline',
             className:
-              'shrink-0 gap-1.5 self-start rounded-full border-slate-200 text-xs font-bold text-slate-700 shadow-2xs hover:border-brand-500 hover:bg-brand-50 sm:self-auto',
+              'shrink-0 gap-1.5 self-start rounded-full border-slate-200 text-xs font-bold text-slate-700 shadow-2xs hover:border-slate-900 hover:bg-slate-50 sm:self-auto',
           })}
         >
           Xem tất cả <ArrowRight aria-hidden className="size-3.5" />

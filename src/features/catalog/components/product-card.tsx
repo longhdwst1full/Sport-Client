@@ -30,7 +30,7 @@ export const ProductCard = memo(function ProductCard({
         {/* Thumbnail Link */}
         <Link
           href={`/products/${product.slug}`}
-          className="relative block aspect-square overflow-hidden bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand-600"
+          className="relative block aspect-square overflow-hidden bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-slate-900"
           tabIndex={-1}
           aria-hidden="true"
         >
@@ -43,18 +43,13 @@ export const ProductCard = memo(function ProductCard({
             className="object-contain p-2"
           />
 
-          {/* Badge overlay */}
-          <div className="pointer-events-none absolute left-2 right-2 top-2 flex items-start justify-between gap-1.5 sm:left-3 sm:right-3 sm:top-3">
-            {product.productType === 'BUNDLE' ? (
-              <span className="rounded-full bg-brand-600 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-white shadow-2xs">
-                Combo trọn bộ
-              </span>
-            ) : (
-              <span className="max-w-full truncate rounded-full border border-slate-100 bg-white/95 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-slate-800 shadow-2xs backdrop-blur-xs">
-                {product.badge}
-              </span>
-            )}
-          </div>
+          {/* Chỉ gắn nhãn Combo: tên danh mục đã có ở dòng "thương hiệu · danh mục" bên dưới, lặp lại trên ảnh
+              chỉ che sản phẩm. */}
+          {product.productType === 'BUNDLE' && (
+            <span className="pointer-events-none absolute left-2 top-2 rounded-md bg-slate-900 px-2 py-0.5 text-[11px] font-bold text-white sm:left-3 sm:top-3">
+              Combo trọn bộ
+            </span>
+          )}
         </Link>
 
         {/* Content details: giá trên, nút mua full-width dưới để lưới 2 cột 360px vẫn đủ chỗ. */}
@@ -67,7 +62,7 @@ export const ProductCard = memo(function ProductCard({
           <h3 className="mt-1 line-clamp-2 min-h-[2.5rem] text-sm font-medium leading-5 text-slate-900">
             <Link
               href={`/products/${product.slug}`}
-              className="rounded-sm hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+              className="rounded-sm hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2"
             >
               {product.name}
             </Link>

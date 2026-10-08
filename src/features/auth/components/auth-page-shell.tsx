@@ -26,7 +26,7 @@ export function AuthPageShell({
   children: ReactNode;
 }) {
   return (
-    <main className="min-h-screen lg:h-screen lg:max-h-screen lg:overflow-hidden bg-slate-50 text-slate-900 selection:bg-brand-500 selection:text-white">
+    <main className="min-h-screen lg:h-screen lg:max-h-screen lg:overflow-hidden bg-slate-50 text-slate-900 selection:bg-slate-900 selection:text-white">
       <div className="grid min-h-screen lg:h-full lg:max-h-screen lg:grid-cols-12">
         <AuthBrandPanel variant={variant} />
 

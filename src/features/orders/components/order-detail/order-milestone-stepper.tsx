@@ -36,9 +36,9 @@ export function OrderMilestoneStepper({ milestones }: { milestones: OrderMilesto
                     </span>
                   ) : isCurrent ? (
                     <span className="relative flex size-9 items-center justify-center">
-                      <span className="absolute size-full animate-ping rounded-full bg-brand-400 opacity-60" />
-                      <span className="relative grid size-9 place-items-center rounded-full border-2 border-brand-600 bg-white text-brand-600 shadow-sm ring-4 ring-brand-50">
-                        <span className="size-3 rounded-full bg-brand-600" />
+                      <span className="absolute size-full animate-ping rounded-full bg-slate-700 opacity-60" />
+                      <span className="relative grid size-9 place-items-center rounded-full border-2 border-slate-900 bg-white text-slate-900 shadow-sm ring-4 ring-slate-200">
+                        <span className="size-3 rounded-full bg-slate-900" />
                       </span>
                     </span>
                   ) : isFailed ? (
@@ -55,14 +55,14 @@ export function OrderMilestoneStepper({ milestones }: { milestones: OrderMilesto
                 {/* Step Label, Subtitle & Date */}
                 <div className="mt-3 w-full">
                   {isCurrent && (
-                    <span className="mb-1 inline-block rounded-md bg-brand-100 px-2 py-0.5 text-[10px] font-black uppercase text-brand-800">
+                    <span className="mb-1 inline-block rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-black uppercase text-slate-950">
                       Hiện tại
                     </span>
                   )}
                   <strong
                     className={`block text-xs leading-snug ${
                       isCurrent
-                        ? 'font-black text-brand-800 text-sm'
+                        ? 'font-black text-slate-950 text-sm'
                         : isDone
                         ? 'font-bold text-slate-900'
                         : isFailed
@@ -114,9 +114,9 @@ export function OrderMilestoneStepper({ milestones }: { milestones: OrderMilesto
                     </span>
                   ) : isCurrent ? (
                     <span className="relative flex size-7 items-center justify-center">
-                      <span className="absolute size-full animate-ping rounded-full bg-brand-400 opacity-60" />
-                      <span className="relative grid size-7 place-items-center rounded-full border-2 border-brand-600 bg-white text-brand-600 shadow-sm">
-                        <span className="size-2.5 rounded-full bg-brand-600" />
+                      <span className="absolute size-full animate-ping rounded-full bg-slate-700 opacity-60" />
+                      <span className="relative grid size-7 place-items-center rounded-full border-2 border-slate-900 bg-white text-slate-900 shadow-sm">
+                        <span className="size-2.5 rounded-full bg-slate-900" />
                       </span>
                     </span>
                   ) : isFailed ? (
@@ -135,7 +135,7 @@ export function OrderMilestoneStepper({ milestones }: { milestones: OrderMilesto
                     <strong
                       className={`text-sm ${
                         isCurrent
-                          ? 'font-black text-brand-800'
+                          ? 'font-black text-slate-950'
                           : isDone
                           ? 'font-bold text-slate-900'
                           : isFailed
@@ -146,7 +146,7 @@ export function OrderMilestoneStepper({ milestones }: { milestones: OrderMilesto
                       {milestone.label}
                     </strong>
                     {isCurrent && (
-                      <span className="rounded bg-brand-100 px-1.5 py-0.5 text-[10px] font-bold text-brand-800">
+                      <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold text-slate-950">
                         Hiện tại
                       </span>
                     )}

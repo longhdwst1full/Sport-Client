@@ -78,7 +78,7 @@ export function OrderItemsList({
                     variant="outline"
                     size="sm"
                     onClick={() => onReview({ id: item.id, productName: item.productName })}
-                    className={`${ITEM_ACTION_CLASS} border-brand-200 text-brand-700 hover:bg-brand-50`}
+                    className={`${ITEM_ACTION_CLASS} border-slate-200 text-slate-900 hover:bg-slate-50`}
                   >
                     <MessageSquarePlus aria-hidden className="size-3.5" /> Đánh giá
                   </Button>

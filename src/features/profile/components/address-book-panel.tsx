@@ -38,7 +38,7 @@ export function AddressBookPanel({
         <Button
           onClick={onAdd}
           size="md"
-          className="h-auto rounded-2xl py-2.5 text-xs font-bold shadow-md shadow-brand-600/20"
+          className="h-auto rounded-2xl py-2.5 text-xs font-bold shadow-md shadow-slate-900/20"
         >
           <Plus className="size-4" aria-hidden />
           <span>Thêm địa chỉ mới</span>

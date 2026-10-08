@@ -17,7 +17,7 @@ export function GuestOrderLookupPage({ initialOrderNo = '' }: { initialOrderNo?:
 
   return (
     <main className="mx-auto min-h-[60vh] max-w-xl px-4 py-10 sm:px-6">
-      <p className="text-xs font-black uppercase tracking-[0.22em] text-brand-700">Khách vãng lai</p>
+      <p className="text-xs font-black uppercase tracking-[0.22em] text-slate-900">Khách vãng lai</p>
       <h1 className="mt-2 text-2xl font-black text-slate-950 sm:text-3xl">{GUEST_LOOKUP_COPY.title}</h1>
       <p className="mt-2 text-sm text-slate-600">{GUEST_LOOKUP_COPY.intro}</p>
 
@@ -138,7 +138,7 @@ export function GuestOrderLookupPage({ initialOrderNo = '' }: { initialOrderNo?:
       )}
 
       <p className="mt-6 text-center text-xs text-slate-500">
-        Có tài khoản? <Link href="/login" className="font-bold text-brand-700">Đăng nhập</Link> để xem toàn bộ đơn hàng.
+        Có tài khoản? <Link href="/login" className="font-bold text-slate-900">Đăng nhập</Link> để xem toàn bộ đơn hàng.
       </p>
     </main>
   );

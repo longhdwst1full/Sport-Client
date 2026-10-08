@@ -11,7 +11,7 @@ import { CONTENT_POST_TYPE_LABELS, type ContentPostView } from '../model/content
 
 const ALL_CATEGORY = 'ALL';
 const FOCUS_RING =
-  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2';
+  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2';
 
 /**
  * Island client của `/news`: bộ lọc loại bài + "Xem thêm". Trang 1 do server render và truyền vào
@@ -52,7 +52,7 @@ export function NewsListFeed({
               onClick={() => setSelectedCat(cat)}
               aria-pressed={selectedCat === cat}
               className={`rounded-full px-5 text-xs font-bold ${FOCUS_RING} ${
-                selectedCat === cat ? 'bg-slate-900 shadow-sm' : 'border-slate-200 text-slate-600 hover:border-brand-400'
+                selectedCat === cat ? 'bg-slate-900 shadow-sm' : 'border-slate-200 text-slate-600 hover:border-slate-400'
               }`}
             >
               {cat === ALL_CATEGORY ? 'Tất cả' : (CONTENT_POST_TYPE_LABELS[cat] ?? cat)}
@@ -76,8 +76,8 @@ export function NewsListFeed({
           </div>
           <div className="flex flex-col justify-between p-6 sm:p-10 lg:p-12">
             <div>
-              <div className="flex flex-wrap items-center gap-3 text-xs font-bold text-brand-700">
-                <span className="rounded-full bg-brand-50 px-2.5 py-0.5 uppercase tracking-wider">
+              <div className="flex flex-wrap items-center gap-3 text-xs font-bold text-slate-900">
+                <span className="rounded-full bg-slate-50 px-2.5 py-0.5 uppercase tracking-wider">
                   {featured.categoryLabel}
                 </span>
                 <span className="flex items-center gap-1 text-slate-500">
@@ -86,7 +86,7 @@ export function NewsListFeed({
               </div>
 
               <h2 className="mt-4 text-2xl font-black leading-tight text-ink sm:text-3xl">
-                <Link href={`/news/${featured.slug}`} className={`rounded hover:text-brand-700 ${FOCUS_RING}`}>
+                <Link href={`/news/${featured.slug}`} className={`rounded hover:text-slate-900 ${FOCUS_RING}`}>
                   {featured.title}
                 </Link>
               </h2>
@@ -100,7 +100,7 @@ export function NewsListFeed({
               <span className="text-xs font-bold text-slate-500">{featured.publishedLabel}</span>
               <Link
                 href={`/news/${featured.slug}`}
-                className={`inline-flex min-h-11 items-center gap-2 rounded text-sm font-black text-brand-700 hover:text-brand-800 ${FOCUS_RING}`}
+                className={`inline-flex min-h-11 items-center gap-2 rounded text-sm font-black text-slate-900 hover:text-slate-950 ${FOCUS_RING}`}
               >
                 <span>Đọc toàn bộ bài viết</span>
                 <ArrowRight className="size-4" aria-hidden="true" />
@@ -172,7 +172,7 @@ export function NewsListFeed({
                   <span>{item.readTimeLabel}</span>
                 </div>
 
-                <h3 className="mt-3 text-lg font-black leading-snug text-ink transition group-hover:text-brand-700">
+                <h3 className="mt-3 text-lg font-black leading-snug text-ink transition group-hover:text-slate-900">
                   <Link href={`/news/${item.slug}`} className={`rounded ${FOCUS_RING}`}>
                     {item.title}
                   </Link>
@@ -187,7 +187,7 @@ export function NewsListFeed({
                   <Link
                     href={`/news/${item.slug}`}
                     aria-label={`Chi tiết: ${item.title}`}
-                    className={`inline-flex min-h-11 items-center gap-1 rounded px-1 text-xs font-bold text-brand-700 ${FOCUS_RING}`}
+                    className={`inline-flex min-h-11 items-center gap-1 rounded px-1 text-xs font-bold text-slate-900 ${FOCUS_RING}`}
                   >
                     Chi tiết <ChevronRight className="size-3.5" aria-hidden="true" />
                   </Link>
@@ -216,7 +216,7 @@ export function NewsListFeed({
             variant="outline"
             onClick={loadMore}
             disabled={isLoadingMore}
-            className={`rounded-full border-slate-200 px-8 font-bold text-slate-700 shadow-sm hover:border-brand-400 disabled:opacity-60 ${FOCUS_RING}`}
+            className={`rounded-full border-slate-200 px-8 font-bold text-slate-700 shadow-sm hover:border-slate-400 disabled:opacity-60 ${FOCUS_RING}`}
           >
             {isLoadingMore ? 'Đang tải…' : 'Xem thêm'}
           </Button>

@@ -27,10 +27,10 @@ export function VariantSelector({ variants, selectedVariantId, onSelectVariant }
               key={variant.id}
               type="button"
               aria-pressed={isSelected}
-              className={`relative flex items-center justify-between gap-3 rounded-2xl border p-4 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 ${
+              className={`relative flex items-center justify-between gap-3 rounded-2xl border p-4 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2 ${
                 isSelected
-                  ? 'border-brand-600 bg-brand-50/50 shadow-sm ring-2 ring-brand-500/20'
-                  : 'border-stone-200/80 bg-white hover:border-brand-300 hover:bg-stone-50/50'
+                  ? 'border-slate-900 bg-slate-50/50 shadow-sm ring-2 ring-slate-900/20'
+                  : 'border-stone-200/80 bg-white hover:border-slate-300 hover:bg-stone-50/50'
               }`}
               onClick={() => onSelectVariant(variant.id)}
             >
@@ -38,7 +38,7 @@ export function VariantSelector({ variants, selectedVariantId, onSelectVariant }
                 <div
                   className={`grid size-5 shrink-0 place-items-center rounded-full border transition ${
                     isSelected
-                      ? 'border-brand-600 bg-brand-600 text-white'
+                      ? 'border-slate-900 bg-slate-900 text-white'
                       : 'border-stone-300 bg-white'
                   }`}
                 >

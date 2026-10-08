@@ -65,7 +65,7 @@ export function OrderBillSummary({ view }: { view: OrderDetailView | undefined }
               label: <span className="font-black text-slate-900">Tổng thanh toán</span>,
               value: view?.grandTotalLabel,
               itemClassName: 'border-t border-slate-200/80 pt-3 text-base',
-              valueClassName: 'text-xl sm:text-2xl font-black text-brand-700',
+              valueClassName: 'text-xl sm:text-2xl font-black text-slate-900',
             },
           ]}
         />

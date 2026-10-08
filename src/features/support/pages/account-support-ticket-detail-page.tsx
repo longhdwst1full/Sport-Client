@@ -36,9 +36,9 @@ export function AccountSupportTicketDetailPage({ ticketNo }: { ticketNo: string 
   return (
     <main className="mx-auto min-h-[60vh] max-w-4xl px-4 py-10 sm:px-6">
       <nav className="mb-6 flex items-center gap-2 text-xs font-semibold text-slate-500" aria-label="Breadcrumb">
-        <Link href="/profile" className="hover:text-brand-700 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500">Tài khoản</Link>
+        <Link href="/profile" className="hover:text-slate-900 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900">Tài khoản</Link>
         <span aria-hidden>/</span>
-        <Link href={SUPPORT_ROUTES.list} className="hover:text-brand-700 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500">Hỗ trợ của tôi</Link>
+        <Link href={SUPPORT_ROUTES.list} className="hover:text-slate-900 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900">Hỗ trợ của tôi</Link>
         <span aria-hidden>/</span>
         <span className="font-mono font-bold text-slate-900">{ticketNo}</span>
       </nav>
@@ -68,7 +68,7 @@ export function AccountSupportTicketDetailPage({ ticketNo }: { ticketNo: string 
           <header className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div className="min-w-0">
-                <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand-700">{SUPPORT_FIELD_LABELS.ticketNo}</p>
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-900">{SUPPORT_FIELD_LABELS.ticketNo}</p>
                 <h1 className="mt-1 font-mono text-xl font-black text-slate-950">{detail.ticketNo}</h1>
                 <p className="mt-2 text-sm font-bold text-slate-800">{detail.subject}</p>
               </div>
@@ -100,11 +100,11 @@ export function AccountSupportTicketDetailPage({ ticketNo }: { ticketNo: string 
                   <li key={message.id} className={`flex ${isCustomer ? 'justify-end' : 'justify-start'}`}>
                     <article
                       className={`max-w-[85%] rounded-2xl border p-4 text-sm ${
-                        isCustomer ? 'border-brand-200 bg-brand-50 text-slate-900' : 'border-slate-200 bg-white text-slate-800'
+                        isCustomer ? 'border-slate-200 bg-slate-50 text-slate-900' : 'border-slate-200 bg-white text-slate-800'
                       }`}
                     >
                       <header className="flex items-center gap-2 text-xs font-bold text-slate-500">
-                        {isCustomer ? <UserRound className="size-3.5" aria-hidden /> : <Headset className="size-3.5 text-brand-600" aria-hidden />}
+                        {isCustomer ? <UserRound className="size-3.5" aria-hidden /> : <Headset className="size-3.5 text-slate-900" aria-hidden />}
                         <span>{SUPPORT_AUTHOR_LABELS[message.author]}</span>
                         <span aria-hidden>·</span>
                         <time dateTime={message.createdAt}>{formatDateTime(message.createdAt)}</time>

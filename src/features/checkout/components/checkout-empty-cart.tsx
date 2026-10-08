@@ -8,7 +8,7 @@ export function CheckoutEmptyCart() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
       <div className="mb-8">
-        <Link href="/cart" className="text-sm font-bold text-brand-700 hover:underline">
+        <Link href="/cart" className="text-sm font-bold text-slate-900 hover:underline">
           ← Quay lại giỏ hàng
         </Link>
         <h1 className="mt-2 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
@@ -33,11 +33,11 @@ export function CheckoutEmptyCart() {
             </span>
             <div className="mt-3 grid gap-2.5 sm:grid-cols-2 text-xs font-semibold text-slate-700">
               <div className="flex items-center gap-2 rounded-xl bg-white p-3 border border-slate-200">
-                <span className="grid size-6 place-items-center rounded bg-brand-100 text-brand-700 font-extrabold text-[10px]">COD</span>
+                <span className="grid size-6 place-items-center rounded bg-slate-100 text-slate-900 font-extrabold text-[10px]">COD</span>
                 <span>Thanh toán khi nhận hàng (COD)</span>
               </div>
               <div className="flex items-center gap-2 rounded-xl bg-white p-3 border border-slate-200">
-                <CreditCard className="size-4 text-brand-600" />
+                <CreditCard className="size-4 text-slate-900" />
                 <span>Chuyển khoản VietQR / VNPay</span>
               </div>
             </div>
@@ -46,7 +46,7 @@ export function CheckoutEmptyCart() {
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link
               href="/products"
-              className={buttonVariants({ variant: 'primary', className: 'rounded-full px-6 font-bold shadow-md shadow-brand-600/20' })}
+              className={buttonVariants({ variant: 'primary', className: 'rounded-full px-6 font-bold shadow-md shadow-slate-900/20' })}
             >
               <span>Tiếp tục mua sắm</span>
             </Link>

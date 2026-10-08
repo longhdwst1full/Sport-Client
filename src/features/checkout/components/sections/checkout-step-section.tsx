@@ -17,12 +17,12 @@ export function CheckoutStepSection({
   return (
     <section className="rounded-3xl border border-slate-200/90 bg-white p-4 shadow-sm sm:p-6 transition hover:border-slate-300">
       <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
-        <span className="grid size-8 place-items-center rounded-xl bg-brand-600 text-sm font-black text-white shadow-sm shadow-brand-600/30">
+        <span className="grid size-8 place-items-center rounded-xl bg-slate-900 text-sm font-black text-white shadow-sm shadow-slate-900/30">
           {step}
         </span>
         <div>
           <h2 className="flex items-center gap-2 text-base font-black text-slate-900 sm:text-lg">
-            <Icon aria-hidden className="size-5 text-brand-600" /> {title}
+            <Icon aria-hidden className="size-5 text-slate-900" /> {title}
           </h2>
           <p className="text-xs text-slate-500">{description}</p>
         </div>

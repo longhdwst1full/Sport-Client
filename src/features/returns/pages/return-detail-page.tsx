@@ -62,10 +62,10 @@ export function ReturnDetailPage({ returnNo }: { returnNo: string }) {
 
         {detail && (
           <>
-            <div className="rounded-[30px] bg-gradient-to-br from-slate-950 via-slate-900 to-brand-950 p-5 text-white shadow-xl sm:p-7">
+            <div className="rounded-[30px] bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-5 text-white shadow-xl sm:p-7">
               <div className="flex flex-wrap items-start justify-between gap-5">
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand-300">{RETURN_FIELD_LABELS.returnNo}</p>
+                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-300">{RETURN_FIELD_LABELS.returnNo}</p>
                   <h1 className="mt-2 break-all font-mono text-xl font-black sm:text-2xl">{detail.returnNo}</h1>
                   <p className="mt-2 text-sm text-slate-300">
                     {RETURN_FIELD_LABELS.orderNo}{' '}
@@ -79,7 +79,7 @@ export function ReturnDetailPage({ returnNo }: { returnNo: string }) {
                 <div><span className="text-xs text-slate-400">{RETURN_FIELD_LABELS.reason}</span><strong className="block">{returnReasonLabels[detail.reasonCode]}</strong></div>
                 <div>
                   <span className="text-xs text-slate-400">{detail.refundCap ? 'Số tiền được hoàn' : RETURN_FIELD_LABELS.estimatedRefund}</span>
-                  <strong className="block text-brand-300">{money(detail.estimatedRefundAmount)}</strong>
+                  <strong className="block text-slate-300">{money(detail.estimatedRefundAmount)}</strong>
                 </div>
                 <div><span className="text-xs text-slate-400">{RETURN_FIELD_LABELS.refunded}</span><strong className="block">{money(detail.refundedAmount)}</strong></div>
               </div>

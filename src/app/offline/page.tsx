@@ -11,7 +11,7 @@ export default function OfflinePage() {
         <div className="mx-auto grid size-20 place-items-center rounded-2xl bg-amber-100 text-amber-700">
           <CloudOff aria-hidden className="size-10" />
         </div>
-        <p className="mt-6 text-xs font-black uppercase tracking-[0.2em] text-brand-700">Bảo An Sport</p>
+        <p className="mt-6 text-xs font-black uppercase tracking-[0.2em] text-slate-900">Bảo An Sport</p>
         <h1 className="mt-3 text-3xl font-black">Bạn đang ngoại tuyến</h1>
         <p className="mt-4 text-sm leading-6 text-slate-600">
           Đơn hàng, tài khoản, tồn kho và thanh toán cần kết nối mạng để đảm bảo dữ liệu luôn chính xác và riêng tư.

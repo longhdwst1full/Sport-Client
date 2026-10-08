@@ -18,7 +18,7 @@ export function ContactPage() {
 
           {/* Header */}
           <div className="mx-auto max-w-3xl text-center">
-            <span className="inline-block rounded-full bg-brand-100 px-3.5 py-1 text-xs font-extrabold uppercase tracking-widest text-brand-800">
+            <span className="inline-block rounded-full bg-slate-100 px-3.5 py-1 text-xs font-extrabold uppercase tracking-widest text-slate-950">
               Hệ thống phân phối toàn quốc
             </span>
             <h1 className="mt-4 text-2xl font-black text-ink sm:text-4xl lg:text-5xl">

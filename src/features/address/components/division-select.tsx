@@ -68,7 +68,7 @@ export function DivisionSelect({
           {/* Đang tải luôn kèm `disabled` (nền slate-50) → spinner phủ lên mũi tên của Select. */}
           {isLoading && (
             <span className="pointer-events-none absolute right-2 top-1/2 grid size-6 -translate-y-1/2 place-items-center bg-slate-50">
-              <Spinner className="size-4 animate-spin text-brand-600" />
+              <Spinner className="size-4 animate-spin text-slate-900" />
             </span>
           )}
         </div>

@@ -84,13 +84,13 @@ function PanelCallout({ variant }: AuthBrandPanelProps): ReactNode {
         <p className="text-xs italic text-slate-300 leading-relaxed">
           &ldquo;Trang bị tập luyện của Bảo An Sport chắc chắn, khung thép dày, máy chạy rất đầm và êm. Dịch vụ bảo hành tận nơi cực kỳ an tâm.&rdquo;
         </p>
-        <div className="mt-2 text-[11px] font-bold text-brand-300">— HLV. Tuấn Anh (HLV Thể Hình & Marathoner)</div>
+        <div className="mt-2 text-[11px] font-bold text-slate-300">— HLV. Tuấn Anh (HLV Thể Hình & Marathoner)</div>
       </>
     );
   }
   return (
     <>
-      <div className="flex items-center gap-2 text-brand-400 font-bold text-xs mb-1.5">
+      <div className="flex items-center gap-2 text-slate-300 font-bold text-xs mb-1.5">
         <ShieldCheck className="size-4" />
         <span>Cam kết chất lượng dịch vụ</span>
       </div>
@@ -122,13 +122,13 @@ export function AuthBrandPanel({ variant }: AuthBrandPanelProps) {
         {/* Rich gradient layers */}
         <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/75 to-slate-900/40" />
         <div className="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-transparent to-transparent" />
-        <div className="pointer-events-none absolute -left-20 -top-20 size-96 rounded-full bg-brand-500/20 blur-[130px]" />
-        <div className="pointer-events-none absolute -bottom-20 right-10 size-96 rounded-full bg-brand-800/20 blur-[140px]" />
+        <div className="pointer-events-none absolute -left-20 -top-20 size-96 rounded-full bg-slate-900/20 blur-[130px]" />
+        <div className="pointer-events-none absolute -bottom-20 right-10 size-96 rounded-full bg-slate-950/20 blur-[140px]" />
       </div>
 
       {/* Top Bar: Brand Logo & Return Link */}
       <div className="relative z-10 flex items-center justify-between">
-        <Link href="/" aria-label="Bảo An Sport — Trang chủ" className="group inline-flex items-center gap-3 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950">
+        <Link href="/" aria-label="Bảo An Sport — Trang chủ" className="group inline-flex items-center gap-3 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950">
           <div className="relative h-9 w-40 transition-transform group-hover:scale-105">
             <Image
               src="/images/logo.png"
@@ -142,7 +142,7 @@ export function AuthBrandPanel({ variant }: AuthBrandPanelProps) {
 
         <Link
           href="/"
-          className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-xs font-bold text-slate-300 backdrop-blur-md transition hover:bg-white/15 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
+          className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-xs font-bold text-slate-300 backdrop-blur-md transition hover:bg-white/15 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900"
         >
           <ArrowLeft className="size-3.5" aria-hidden />
           <span>Trang chủ</span>
@@ -151,14 +151,14 @@ export function AuthBrandPanel({ variant }: AuthBrandPanelProps) {
 
       {/* Center: Editorial Showcase */}
       <div className="relative z-10 my-auto py-3 xl:py-5">
-        <div className="inline-flex items-center gap-1.5 rounded-full border border-brand-400/30 bg-brand-950/60 px-3.5 py-1 text-xs font-extrabold text-brand-300 backdrop-blur-md">
-          <Sparkles className="size-3.5 text-brand-400" />
+        <div className="inline-flex items-center gap-1.5 rounded-full border border-slate-400/30 bg-slate-950/60 px-3.5 py-1 text-xs font-extrabold text-slate-300 backdrop-blur-md">
+          <Sparkles className="size-3.5 text-slate-300" />
           <span>{content.badge}</span>
         </div>
 
         <h2 className="mt-3 text-2xl font-black leading-tight text-white xl:text-3xl">
           {content.headline} <br className="hidden xl:inline" />
-          <span className="bg-gradient-to-r from-brand-400 via-brand-300 to-brand-100 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-slate-300 via-slate-300 to-slate-50 bg-clip-text text-transparent">
             {content.highlight}
           </span>
         </h2>
@@ -172,13 +172,13 @@ export function AuthBrandPanel({ variant }: AuthBrandPanelProps) {
               key={metric.label}
               className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-center backdrop-blur-md transition hover:bg-white/10"
             >
-              <div className="text-xl font-black text-brand-400 xl:text-2xl">{metric.value}</div>
+              <div className="text-xl font-black text-slate-300 xl:text-2xl">{metric.value}</div>
               <div className="mt-0.5 text-[11px] font-bold text-slate-300">{metric.label}</div>
             </div>
           ))}
         </div>
 
-        <div className="mt-3.5 rounded-xl border border-brand-500/20 bg-slate-900/60 p-3 backdrop-blur-md">
+        <div className="mt-3.5 rounded-xl border border-slate-900/20 bg-slate-900/60 p-3 backdrop-blur-md">
           <PanelCallout variant={variant} />
         </div>
       </div>
@@ -188,7 +188,7 @@ export function AuthBrandPanel({ variant }: AuthBrandPanelProps) {
         items={content.perks}
         columns={2}
         className="relative z-10 gap-2 border-t border-white/10 pt-4 text-xs text-slate-300"
-        iconClassName="text-brand-400"
+        iconClassName="text-slate-300"
       />
     </div>
   );

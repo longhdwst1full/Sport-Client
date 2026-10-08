@@ -13,7 +13,7 @@ export function FooterLinkColumn({ title, links }: { title: string; links: Foote
         {links.map((link) => (
           <li key={link.href}>
             <Link
-              className="inline-flex min-h-10 items-center rounded transition hover:text-brand-400 focus-visible:outline-white"
+              className="inline-flex min-h-10 items-center rounded transition hover:text-slate-300 focus-visible:outline-white"
               href={link.href}
             >
               {link.label}

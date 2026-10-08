@@ -56,7 +56,7 @@ export function ArticleDetailPage({
             {/* Meta Tags & Category Header */}
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-5">
               <div className="flex flex-wrap items-center gap-2.5 text-xs font-bold">
-                <span className="rounded-full bg-brand-50 px-3 py-1 text-xs font-black uppercase tracking-wider text-brand-800 ring-1 ring-brand-600/20">
+                <span className="rounded-full bg-slate-50 px-3 py-1 text-xs font-black uppercase tracking-wider text-slate-950 ring-1 ring-slate-900/20">
                   {article.categoryLabel}
                 </span>
                 <span className="flex items-center gap-1.5 text-slate-500">
@@ -78,7 +78,7 @@ export function ArticleDetailPage({
 
             {/* Lead Excerpt Callout */}
             {article.excerpt && (
-              <div className="mt-6 rounded-2xl border-l-4 border-brand-500 bg-brand-50/50 p-4 sm:p-5 text-base sm:text-lg leading-relaxed font-medium text-slate-700">
+              <div className="mt-6 rounded-2xl border-l-4 border-slate-900 bg-slate-50/50 p-4 sm:p-5 text-base sm:text-lg leading-relaxed font-medium text-slate-700">
                 {article.excerpt}
               </div>
             )}
@@ -130,7 +130,7 @@ export function ArticleDetailPage({
                     <p key={index} className="mt-2.5 flex items-start gap-2.5 pl-1 leading-relaxed">
                       <span
                         aria-hidden
-                        className="mt-2.5 size-1.5 shrink-0 rounded-full bg-brand-600"
+                        className="mt-2.5 size-1.5 shrink-0 rounded-full bg-slate-900"
                       />
                       <span>{block.text}</span>
                     </p>
@@ -154,7 +154,7 @@ export function ArticleDetailPage({
                 href="/news"
                 className={buttonVariants({
                   variant: 'outline',
-                  className: 'rounded-full border-slate-200 px-5 text-xs font-bold text-slate-700 shadow-2xs hover:border-brand-500 hover:bg-brand-50',
+                  className: 'rounded-full border-slate-200 px-5 text-xs font-bold text-slate-700 shadow-2xs hover:border-slate-900 hover:bg-slate-50',
                 })}
               >
                 <ArrowLeft className="size-4" aria-hidden="true" />

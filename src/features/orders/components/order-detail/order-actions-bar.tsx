@@ -43,9 +43,9 @@ export function OrderActionsBar({
             <Button
               variant="outline"
               onClick={onReorderAll}
-              className={`${ACTION_CLASS} border-brand-300 bg-brand-50 text-brand-800 hover:bg-brand-100`}
+              className={`${ACTION_CLASS} border-slate-300 bg-slate-50 text-slate-950 hover:bg-slate-100`}
             >
-              <RotateCcw aria-hidden className="size-3.5 text-brand-600" /> Mua lại cả đơn
+              <RotateCcw aria-hidden className="size-3.5 text-slate-900" /> Mua lại cả đơn
             </Button>
           )}
 
@@ -76,7 +76,7 @@ export function OrderActionsBar({
             </Button>
           ) : orderStatus !== ORDER_STATUS.CANCELLED ? (
             <Button variant="outline" onClick={onOpenSupport} className={`${ACTION_CLASS} gap-1.5 bg-slate-50 hover:bg-slate-100`}>
-              <Headphones aria-hidden className="size-3.5 text-brand-600" /> Cần hỗ trợ về đơn này?
+              <Headphones aria-hidden className="size-3.5 text-slate-900" /> Cần hỗ trợ về đơn này?
             </Button>
           ) : null}
         </div>

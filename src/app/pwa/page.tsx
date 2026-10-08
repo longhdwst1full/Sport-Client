@@ -16,7 +16,7 @@ export default function PwaDiagnosticsPage() {
 
   return (
     <main className="mx-auto min-h-screen max-w-2xl px-4 py-12 sm:px-6 sm:py-16">
-      <p className="text-xs font-bold uppercase tracking-[.2em] text-brand-700">Chẩn đoán ứng dụng</p>
+      <p className="text-xs font-bold uppercase tracking-[.2em] text-slate-900">Chẩn đoán ứng dụng</p>
       <h1 className="mt-3 text-3xl font-extrabold text-slate-900 sm:text-4xl">Trạng thái PWA</h1>
       <DescriptionList
         layout="inline"

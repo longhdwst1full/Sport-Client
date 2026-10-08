@@ -26,7 +26,7 @@ export function AdvisorResults({ recommendation, goalLabel, spaceLabel, budgetLa
     <div className="rounded-2xl border border-slate-700 bg-slate-900/90 p-6 sm:p-8 backdrop-blur-sm">
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 border-b border-slate-800 pb-6">
         <div>
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-brand-500/20 px-3 py-1 text-xs font-black uppercase tracking-wider text-brand-400 mb-2">
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-slate-900/20 px-3 py-1 text-xs font-black uppercase tracking-wider text-slate-300 mb-2">
             <Sparkles className="size-3.5" aria-hidden="true" />
             <span>CẤU HÌNH ĐƯỢC CHUYÊN GIA BẢO AN SPORT TỐI ƯU</span>
           </div>
@@ -53,7 +53,7 @@ export function AdvisorResults({ recommendation, goalLabel, spaceLabel, budgetLa
             rel="noopener noreferrer"
             className={buttonVariants({
               variant: 'primary',
-              className: `px-5 text-xs font-black uppercase tracking-wider shadow-lg shadow-brand-600/20 ${ADVISOR_FOCUS}`,
+              className: `px-5 text-xs font-black uppercase tracking-wider shadow-lg shadow-slate-900/20 ${ADVISOR_FOCUS}`,
             })}
           >
             <Send className="size-3.5" aria-hidden="true" />
@@ -80,7 +80,7 @@ export function AdvisorResults({ recommendation, goalLabel, spaceLabel, budgetLa
               key={item}
               className="flex items-center gap-3 rounded-xl border border-slate-800 bg-slate-950/70 p-4"
             >
-              <div className="grid size-7 shrink-0 place-items-center rounded-lg bg-brand-500/20 text-xs font-black text-brand-400">
+              <div className="grid size-7 shrink-0 place-items-center rounded-lg bg-slate-900/20 text-xs font-black text-slate-300">
                 {idx + 1}
               </div>
               <span className="text-xs font-bold text-slate-200">{item}</span>

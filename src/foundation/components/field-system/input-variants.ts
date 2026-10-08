@@ -18,7 +18,7 @@ export interface InputVariantOptions {
 
 // `text-base` trên mobile để iOS không tự zoom khi focus ô nhập (< 16px).
 const INPUT_BASE =
-  'block w-full rounded-xl border border-slate-300 bg-white px-3.5 text-base text-slate-900 transition-colors placeholder:text-slate-400 focus-visible:border-brand-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/30 disabled:bg-slate-50 disabled:text-slate-500 sm:text-sm';
+  'block w-full rounded-xl border border-slate-300 bg-white px-3.5 text-base text-slate-900 transition-colors placeholder:text-slate-400 focus-visible:border-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/30 disabled:bg-slate-50 disabled:text-slate-500 sm:text-sm';
 const INPUT_INVALID = 'border-rose-500 focus-visible:border-rose-500 focus-visible:ring-rose-500/30';
 
 /** Chuỗi class ô nhập của design system (input/textarea/select). `size` mặc định `md`. */

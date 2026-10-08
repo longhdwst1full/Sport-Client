@@ -36,9 +36,9 @@ export function CreateSupportRequestPage() {
   return (
     <main className="mx-auto min-h-[60vh] max-w-3xl px-4 py-10 sm:px-6">
       <nav className="mb-6 flex items-center gap-2 text-xs font-semibold text-slate-500" aria-label="Breadcrumb">
-        <Link href="/profile" className="hover:text-brand-700 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500">Tài khoản</Link>
+        <Link href="/profile" className="hover:text-slate-900 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900">Tài khoản</Link>
         <span aria-hidden>/</span>
-        <Link href={SUPPORT_ROUTES.list} className="hover:text-brand-700 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500">Hỗ trợ của tôi</Link>
+        <Link href={SUPPORT_ROUTES.list} className="hover:text-slate-900 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900">Hỗ trợ của tôi</Link>
       </nav>
       <h1 className="text-3xl font-black text-slate-950">Tạo yêu cầu hỗ trợ</h1>
       <p className="mt-2 text-sm text-slate-600">Mô tả vấn đề của bạn, nhân viên Bảo An Sport sẽ phản hồi trong mục Hỗ trợ của tôi.</p>

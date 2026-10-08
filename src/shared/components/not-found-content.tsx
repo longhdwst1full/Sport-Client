@@ -10,7 +10,7 @@ import { STORE_CONTACT } from '@/shared/constants';
 export function NotFoundContent() {
   return (
     <div className="mx-auto max-w-2xl text-center">
-      <p aria-hidden className="select-none text-7xl font-black tracking-tighter text-brand-600 sm:text-8xl">
+      <p aria-hidden className="select-none text-7xl font-black tracking-tighter text-slate-900 sm:text-8xl">
         404
       </p>
       <h1 className="mt-4 text-balance text-2xl font-black tracking-tight text-slate-900 sm:text-4xl">
@@ -42,7 +42,7 @@ export function NotFoundContent() {
         Cần hỗ trợ tìm sản phẩm?{' '}
         <a
           href={`tel:${STORE_CONTACT.primaryHotlineRaw}`}
-          className="inline-flex min-h-11 items-center gap-1.5 font-bold text-brand-700 hover:underline"
+          className="inline-flex min-h-11 items-center gap-1.5 font-bold text-slate-900 hover:underline"
         >
           <Phone aria-hidden className="size-4" />
           {STORE_CONTACT.primaryHotline}

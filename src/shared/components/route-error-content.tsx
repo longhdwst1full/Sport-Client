@@ -28,7 +28,7 @@ export function RouteErrorContent({ digest, onRetry }: { digest?: string; onRetr
 
   return (
     <div className="mx-auto max-w-2xl text-center">
-      <div className="mx-auto grid size-16 place-items-center rounded-2xl bg-brand-50 text-brand-600">
+      <div className="mx-auto grid size-16 place-items-center rounded-2xl bg-slate-50 text-slate-900">
         <Icon aria-hidden className="size-8" />
       </div>
       <h1 className="mt-5 text-balance text-2xl font-black tracking-tight text-slate-900 sm:text-4xl">
@@ -58,7 +58,7 @@ export function RouteErrorContent({ digest, onRetry }: { digest?: string; onRetr
         Hỗ trợ ({STORE_CONTACT.openingHours}):{' '}
         <a
           href={`tel:${STORE_CONTACT.primaryHotlineRaw}`}
-          className="inline-flex min-h-11 items-center gap-1.5 font-bold text-brand-700 hover:underline"
+          className="inline-flex min-h-11 items-center gap-1.5 font-bold text-slate-900 hover:underline"
         >
           <Phone aria-hidden className="size-4" />
           {STORE_CONTACT.primaryHotline}

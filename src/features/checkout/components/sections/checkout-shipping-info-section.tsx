@@ -53,7 +53,7 @@ export function CheckoutShippingInfoSection({
                 {[saved.addressLine, saved.ward, saved.district, saved.province].filter(Boolean).join(', ')}
               </span>
               {saved.isDefault && (
-                <span className="mt-1.5 inline-block rounded-full bg-brand-100 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-brand-700">
+                <span className="mt-1.5 inline-block rounded-full bg-slate-100 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-slate-900">
                   Mặc định
                 </span>
               )}
@@ -63,7 +63,7 @@ export function CheckoutShippingInfoSection({
             variant="outline"
             fullWidth
             onClick={onDeliverToOtherAddress}
-            className="rounded-2xl border-dashed p-3 text-xs font-bold text-brand-700 hover:border-brand-400 hover:bg-brand-50/50"
+            className="rounded-2xl border-dashed p-3 text-xs font-bold text-slate-900 hover:border-slate-400 hover:bg-slate-50/50"
           >
             + Giao tới địa chỉ khác
           </Button>
@@ -125,13 +125,13 @@ export function CheckoutShippingInfoSection({
         <button
           type="button"
           onClick={useCurrentLocation}
-          className={`inline-flex min-h-11 items-center gap-2 rounded-xl border px-3.5 py-2 text-left text-xs font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 ${
+          className={`inline-flex min-h-11 items-center gap-2 rounded-xl border px-3.5 py-2 text-left text-xs font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2 ${
             coordinates
               ? 'border-success-200 bg-success-50 text-success-800 hover:bg-success-100'
-              : 'border-brand-200 bg-brand-50/50 text-brand-800 hover:bg-brand-100'
+              : 'border-slate-200 bg-slate-50/50 text-slate-950 hover:bg-slate-100'
           }`}
         >
-          <LocateFixed aria-hidden className={`size-4 shrink-0 ${coordinates ? 'text-success-600' : 'text-brand-600'}`} />
+          <LocateFixed aria-hidden className={`size-4 shrink-0 ${coordinates ? 'text-success-600' : 'text-slate-900'}`} />
           <span>{coordinates ? 'Đã lấy vị trí của bạn' : `Định vị vị trí hiện tại (Miễn phí nếu dưới ${freeRadiusKm} km)`}</span>
         </button>
       </div>

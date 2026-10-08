@@ -24,7 +24,7 @@ export function ProductReviews({ productSlug }: { productSlug: string }) {
   return (
     <div className="grid gap-8 rounded-[32px] border border-slate-800 bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 p-8 text-white shadow-xl md:grid-cols-[.75fr_1.25fr] md:p-12">
       <div>
-        <div className="flex size-12 items-center justify-center rounded-2xl border border-brand-500/20 bg-brand-500/10 text-brand-400">
+        <div className="flex size-12 items-center justify-center rounded-2xl border border-slate-900/20 bg-slate-900/10 text-slate-300">
           <MessageCircle aria-hidden className="size-6" />
         </div>
         <p className="mt-4 text-4xl font-black text-white sm:text-5xl">
@@ -45,7 +45,7 @@ export function ProductReviews({ productSlug }: { productSlug: string }) {
         <p className="text-lg font-bold leading-relaxed text-slate-100 sm:text-xl">
           “{highlight.content}”
         </p>
-        <footer className="mt-4 text-xs font-semibold text-brand-400">
+        <footer className="mt-4 text-xs font-semibold text-slate-300">
           {highlight.authorName}
           {highlight.verifiedPurchase ? ' · Đã xác minh mua hàng' : ''} · {highlight.dateLabel}
         </footer>

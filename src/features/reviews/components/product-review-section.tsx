@@ -123,7 +123,7 @@ export function ProductReviewSection({
                     size="sm"
                     onClick={() => setActiveFilter(filter.id)}
                     aria-pressed={active}
-                    className={active ? 'bg-brand-700 text-xs shadow-sm' : 'border-slate-200 text-xs text-slate-700'}
+                    className={active ? 'bg-slate-800 text-xs shadow-sm' : 'border-slate-200 text-xs text-slate-700'}
                   >
                     {filter.label(reviews.length)}
                   </Button>
@@ -141,7 +141,7 @@ export function ProductReviewSection({
                   <article key={review.id} className="border-b border-slate-100 pb-6 last:border-0">
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex items-center gap-3">
-                        <div className="grid size-9 shrink-0 place-items-center rounded-full bg-brand-100 text-sm font-bold text-brand-800">
+                        <div className="grid size-9 shrink-0 place-items-center rounded-full bg-slate-100 text-sm font-bold text-slate-950">
                           {review.authorName.charAt(0).toUpperCase()}
                         </div>
                         <div>
@@ -172,7 +172,7 @@ export function ProductReviewSection({
                             target="_blank"
                             rel="noreferrer"
                             aria-label={`Mở ảnh thực tế từ ${review.authorName} (tab mới)`}
-                            className="relative size-20 overflow-hidden rounded-xl border border-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+                            className="relative size-20 overflow-hidden rounded-xl border border-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2"
                           >
                             <Image src={item.thumbnailUrl} alt={`Ảnh thực tế từ ${review.authorName}`} fill sizes="80px" className="object-cover" />
                           </a>
@@ -182,7 +182,7 @@ export function ProductReviewSection({
 
                     {review.reply && (
                       <div className="mt-4 rounded-2xl border border-slate-100 bg-slate-50/80 p-4">
-                        <p className="flex items-center gap-1.5 text-xs font-bold text-brand-700">
+                        <p className="flex items-center gap-1.5 text-xs font-bold text-slate-900">
                           <MessageCircle aria-hidden className="size-3.5" />
                           {review.reply.authorName}
                           <span className="font-normal text-slate-500">· {review.reply.dateLabel}</span>

@@ -12,7 +12,7 @@ const MODES: { mode: AuthMode; href: string; label: string }[] = [
 ];
 
 const TAB_BASE =
-  'flex min-h-9 sm:min-h-10 flex-1 items-center justify-center rounded-xl py-2 text-center text-xs transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500';
+  'flex min-h-9 sm:min-h-10 flex-1 items-center justify-center rounded-xl py-2 text-center text-xs transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900';
 const TAB_ACTIVE = `${TAB_BASE} bg-white font-black text-slate-900 shadow-sm`;
 const TAB_IDLE = `${TAB_BASE} font-bold text-slate-500 hover:text-slate-900`;
 

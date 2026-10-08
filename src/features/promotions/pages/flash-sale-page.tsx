@@ -72,7 +72,7 @@ export function FlashSalePage() {
                   {[countdown.hours, countdown.minutes, countdown.seconds].map((value, index) => (
                     <span key={index} className="contents">
                       {index > 0 ? <span className="font-bold text-slate-500" aria-hidden="true">:</span> : null}
-                      <span className="grid size-9 place-items-center rounded-xl bg-brand-600 text-white shadow-md shadow-brand-600/20 sm:size-10">
+                      <span className="grid size-9 place-items-center rounded-xl bg-slate-900 text-white shadow-md shadow-slate-900/20 sm:size-10">
                         {pad(value)}
                       </span>
                     </span>

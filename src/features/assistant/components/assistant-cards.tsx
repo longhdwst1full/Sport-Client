@@ -57,7 +57,7 @@ function ProductCard({
             href={`/products/${encodeURIComponent(card.slug)}`}
             onClick={onNavigate}
             aria-label={`${ASSISTANT_COPY.viewProduct}: ${card.name}`}
-            className="inline-flex min-h-9 items-center rounded-lg border border-slate-200 px-2.5 py-1 text-[11px] font-bold text-slate-700 hover:border-brand-300 hover:text-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+            className="inline-flex min-h-9 items-center rounded-lg border border-slate-200 px-2.5 py-1 text-[11px] font-bold text-slate-700 hover:border-slate-300 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900"
           >
             {ASSISTANT_COPY.viewProduct}
           </Link>
@@ -83,10 +83,10 @@ function OrderCard({ card, onNavigate }: { card: AssistantOrderCardView; onNavig
     <Link
       href={`/orders/${encodeURIComponent(card.orderNo)}`}
       onClick={onNavigate}
-      className="block rounded-2xl border border-slate-200 bg-white p-3 text-xs hover:border-brand-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+      className="block rounded-2xl border border-slate-200 bg-white p-3 text-xs hover:border-slate-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900"
     >
       <div className="flex items-center justify-between gap-2">
-        <span className="flex items-center gap-1.5 font-mono font-black text-brand-700">
+        <span className="flex items-center gap-1.5 font-mono font-black text-slate-900">
           <Package className="size-3.5" aria-hidden />
           {card.orderNo}
         </span>
@@ -103,7 +103,7 @@ function OrderCard({ card, onNavigate }: { card: AssistantOrderCardView; onNavig
           {
             label: 'Tổng tiền',
             value: card.grandTotal !== null ? formatVnd(card.grandTotal) : null,
-            valueClassName: 'text-brand-700',
+            valueClassName: 'text-slate-900',
             visible: card.grandTotal !== null,
           },
         ]}
@@ -129,9 +129,9 @@ export function AssistantTicketCard({
     <Link
       href={SUPPORT_ROUTES.detail(card.ticketNo)}
       onClick={onNavigate}
-      className="flex items-center justify-between gap-2 rounded-2xl border border-slate-200 bg-white p-3 text-xs hover:border-brand-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+      className="flex items-center justify-between gap-2 rounded-2xl border border-slate-200 bg-white p-3 text-xs hover:border-slate-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900"
     >
-      <span className="flex items-center gap-1.5 font-mono font-black text-brand-700">
+      <span className="flex items-center gap-1.5 font-mono font-black text-slate-900">
         <Ticket className="size-3.5" aria-hidden />
         {card.ticketNo}
       </span>

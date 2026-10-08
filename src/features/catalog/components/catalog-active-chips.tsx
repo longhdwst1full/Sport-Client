@@ -5,7 +5,7 @@ import { Button } from '@/foundation/components/buttons';
 import { Chip } from '@/foundation/components/tabs-chips';
 
 const CHIP_TONE = {
-  brand: { chip: 'bg-brand-50 text-brand-800 ring-1 ring-brand-600/20', remove: 'hover:bg-brand-200/60' },
+  brand: { chip: 'bg-slate-50 text-slate-950 ring-1 ring-slate-900/20', remove: 'hover:bg-slate-200/60' },
   neutral: { chip: 'bg-slate-100 text-slate-800 ring-1 ring-slate-300/60', remove: 'hover:bg-slate-200' },
 } as const;
 
@@ -60,7 +60,7 @@ export function CatalogActiveChips({
           className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${CHIP_TONE[chip.tone].chip}`}
           onRemove={chip.onRemove}
           removeAriaLabel={chip.removeAriaLabel}
-          removeClassName={`rounded-full p-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-1 ${CHIP_TONE[chip.tone].remove}`}
+          removeClassName={`rounded-full p-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-1 ${CHIP_TONE[chip.tone].remove}`}
         >
           <span>{chip.label}</span>
         </Chip>

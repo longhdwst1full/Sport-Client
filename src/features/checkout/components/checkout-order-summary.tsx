@@ -74,7 +74,7 @@ export function CheckoutOrderSummary({
       <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm lg:sticky lg:top-28">
         <div className="flex items-center justify-between">
           <h2 className="font-black text-slate-900">Đơn hàng ({items.length})</h2>
-          <Link href="/cart" className="-my-2 inline-flex min-h-11 items-center px-2 text-xs font-bold text-brand-700 hover:underline">Chỉnh sửa</Link>
+          <Link href="/cart" className="-my-2 inline-flex min-h-11 items-center px-2 text-xs font-bold text-slate-900 hover:underline">Chỉnh sửa</Link>
         </div>
         <div className="mt-4 max-h-72 space-y-3 overflow-auto">
           {items.map((item) => (
@@ -105,7 +105,7 @@ export function CheckoutOrderSummary({
               layout="inline"
               className="border-t pt-3 text-base font-black"
               labelClassName="text-slate-900"
-              valueClassName="font-black text-brand-700"
+              valueClassName="font-black text-slate-900"
               items={[totalRow]}
             />
           )}
@@ -137,7 +137,7 @@ export function CheckoutOrderSummary({
               <span className="block text-[11px] font-semibold text-slate-500">
                 {hasFinalTotal ? 'Khách thanh toán' : shippingPending ? 'Tiền hàng (chưa gồm phí giao)' : 'Tạm tính (chưa gồm phí giao)'}
               </span>
-              <strong className="block truncate text-lg font-black text-brand-700">{mobileTotalLabel}</strong>
+              <strong className="block truncate text-lg font-black text-slate-900">{mobileTotalLabel}</strong>
             </div>
             <Button type="submit" variant="primary" size="lg" disabled={submitIsDisabled} className={`shrink-0 px-5 ${SUBMIT_CLASS}`}>
               {busy ? <Spinner className="size-5 animate-spin" /> : null}

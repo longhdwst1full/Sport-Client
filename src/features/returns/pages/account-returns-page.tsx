@@ -33,7 +33,7 @@ export function AccountReturnsPage() {
   return (
       <main className="mx-auto min-h-[60vh] max-w-6xl px-4 py-10 sm:px-6">
         <div className="mb-7">
-          <p className="text-xs font-black uppercase tracking-[0.22em] text-brand-700">Tài khoản</p>
+          <p className="text-xs font-black uppercase tracking-[0.22em] text-slate-900">Tài khoản</p>
           <h1 className="mt-2 text-2xl font-black text-slate-950 sm:text-3xl">Yêu cầu đổi trả</h1>
           <p className="mt-2 text-sm text-slate-600">Tạo yêu cầu từ trang chi tiết của đơn đã giao; theo dõi tiến độ tại đây.</p>
         </div>
@@ -72,11 +72,11 @@ export function AccountReturnsPage() {
               <Link
                 key={item.id}
                 href={`/returns/${encodeURIComponent(item.returnNo)}`}
-                className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-md"
+                className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md"
               >
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div>
-                    <div className="font-mono text-sm font-black text-brand-700">{item.returnNo}</div>
+                    <div className="font-mono text-sm font-black text-slate-900">{item.returnNo}</div>
                     <div className="mt-1 text-xs text-slate-500">{RETURN_FIELD_LABELS.orderNo} {item.orderNo} · {formatDateTime(item.createdAt)}</div>
                   </div>
                   <span className={`rounded-full px-3 py-1 text-xs font-bold ${returnStatusTone[item.status]}`}>{returnStatusLabels[item.status]}</span>

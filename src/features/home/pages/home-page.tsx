@@ -112,7 +112,7 @@ export async function HomePage() {
         <section id="products" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
             <div>
-              <div className="inline-flex items-center gap-1.5 rounded-full bg-brand-100/80 px-3 py-1 text-xs font-black uppercase tracking-wider text-brand-800 mb-2">
+              <div className="inline-flex items-center gap-1.5 rounded-full bg-slate-100/80 px-3 py-1 text-xs font-black uppercase tracking-wider text-slate-950 mb-2">
                 <Sparkles className="size-3.5" aria-hidden="true" />
                 <span>TUYỂN CHỌN THIẾT BỊ BÁN CHẠY NHẤT</span>
               </div>
@@ -151,10 +151,10 @@ export async function HomePage() {
                 <Link
                   key={slug}
                   href={`/category/${slug}`}
-                  className="group flex min-h-[190px] flex-col justify-between rounded-[24px] bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 p-6 text-white transition hover:-translate-y-1 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+                  className="group flex min-h-[190px] flex-col justify-between rounded-[24px] bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 p-6 text-white transition hover:-translate-y-1 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2"
                 >
                   <div className="flex items-center justify-between">
-                    <div className="grid size-12 place-items-center rounded-2xl bg-brand-500/10 border border-brand-500/20 text-brand-400">
+                    <div className="grid size-12 place-items-center rounded-2xl bg-slate-900/10 border border-slate-900/20 text-slate-300">
                       <Icon className="size-6" aria-hidden="true" />
                     </div>
                     <span className="rounded-full bg-slate-800/80 px-2.5 py-0.5 text-xs font-bold text-slate-300">
@@ -163,10 +163,10 @@ export async function HomePage() {
                   </div>
 
                   <div>
-                    <h3 className="text-xl sm:text-2xl font-black text-white group-hover:text-brand-300 transition">
+                    <h3 className="text-xl sm:text-2xl font-black text-white group-hover:text-slate-300 transition">
                       {title}
                     </h3>
-                    <span className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-brand-400">
+                    <span className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-slate-300">
                       Khám phá ngay <MoveUpRight className="size-3.5 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
                     </span>
                   </div>

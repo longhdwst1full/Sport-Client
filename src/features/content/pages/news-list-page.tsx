@@ -26,7 +26,7 @@ export function NewsListPage({
         />
 
         <div className="max-w-2xl">
-          <span className="rounded-full bg-brand-50 px-3.5 py-1 text-xs font-extrabold uppercase tracking-widest text-brand-700">
+          <span className="rounded-full bg-slate-50 px-3.5 py-1 text-xs font-extrabold uppercase tracking-widest text-slate-900">
             Bảo An Sport Journal
           </span>
           <h1 className="mt-3 text-3xl font-black text-ink sm:text-5xl">

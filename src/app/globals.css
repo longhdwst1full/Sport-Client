@@ -157,13 +157,13 @@
 :root {
   color-scheme: light;
   /* DC design tokens: shared visual language with admin-client/dragon-web. */
-  --dc-primary-50: #fff5f5;
-  --dc-primary-100: #fee2e2;
-  --dc-primary-500: #e03131;
-  --dc-primary-600: #cf222e;
-  --dc-primary-700: #b01c26;
-  --dc-primary-800: #8f1820;
-  --dc-primary-900: #72151b;
+  --dc-primary-50: #f8fafc;
+  --dc-primary-100: #f1f5f9;
+  --dc-primary-500: #334155;
+  --dc-primary-600: #0f172a;
+  --dc-primary-700: #0f172a;
+  --dc-primary-800: #020617;
+  --dc-primary-900: #020617;
   --dc-info-500: #0ea5e9;
   --dc-warning-500: #f59e0b;
   --dc-error-500: #ef4444;
@@ -213,7 +213,7 @@ html {
   scroll-behavior: smooth;
 }
 ::selection {
-  background: var(--dc-primary-600);
+  background: #0f172a;
   color: #ffffff;
 }
 .text-balance {
@@ -223,7 +223,7 @@ html {
 /* Vòng focus bàn phím mặc định (brand-500) cho mọi phần tử tương tác chưa tự khai báo ring.
    Phần tử có `outline-none`/`outline-hidden` (utilities, khai báo sau) tự lo focus-within/ring riêng. */
 :focus-visible {
-  outline: 2px solid var(--dc-primary-600);
+  outline: 2px solid #0f172a;
   outline-offset: 2px;
 }
 

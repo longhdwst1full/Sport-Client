@@ -20,7 +20,7 @@ export function AddressCard({ addr, canDelete, onSetDefault, onEdit, onDelete }:
       label: 'Đặt làm mặc định',
       ariaLabel: `Đặt địa chỉ của ${addr.recipient} làm mặc định`,
       onClick: () => onSetDefault(addr),
-      className: 'text-brand-700 hover:underline focus-visible:ring-brand-500',
+      className: 'text-slate-900 hover:underline focus-visible:ring-slate-900',
     },
     {
       key: 'edit',
@@ -28,7 +28,7 @@ export function AddressCard({ addr, canDelete, onSetDefault, onEdit, onDelete }:
       label: 'Sửa',
       ariaLabel: `Sửa địa chỉ của ${addr.recipient}`,
       onClick: () => onEdit(addr),
-      className: 'text-slate-600 hover:text-slate-900 hover:no-underline focus-visible:ring-brand-500',
+      className: 'text-slate-600 hover:text-slate-900 hover:no-underline focus-visible:ring-slate-900',
     },
     {
       key: 'delete',
@@ -44,7 +44,7 @@ export function AddressCard({ addr, canDelete, onSetDefault, onEdit, onDelete }:
     <div
       className={`relative rounded-2xl border p-5 transition ${
         addr.isDefault
-          ? 'border-2 border-brand-500/60 bg-brand-50/20 shadow-sm'
+          ? 'border-2 border-slate-900/60 bg-slate-50/20 shadow-sm'
           : 'border-slate-200 hover:border-slate-300'
       }`}
     >
@@ -53,7 +53,7 @@ export function AddressCard({ addr, canDelete, onSetDefault, onEdit, onDelete }:
           <strong className="text-sm font-bold text-slate-900">{addr.recipient}</strong>
           <span className="text-xs text-slate-500">· {addr.phone}</span>
           {addr.isDefault && (
-            <span className="rounded-full bg-brand-600 px-2.5 py-0.5 text-[10px] font-black uppercase text-white">
+            <span className="rounded-full bg-slate-900 px-2.5 py-0.5 text-[10px] font-black uppercase text-white">
               Mặc định
             </span>
           )}

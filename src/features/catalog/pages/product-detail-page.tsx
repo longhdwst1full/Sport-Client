@@ -85,7 +85,7 @@ export function ProductDetailPage({ product, slug, relatedCategorySlug }: Produc
           </h1>
           <div className="mt-2 flex flex-wrap items-center gap-3 text-xs font-semibold text-slate-500">
             {brand && (
-              <span className="rounded-full bg-brand-50 px-3 py-1 font-bold text-brand-700">
+              <span className="rounded-full bg-slate-50 px-3 py-1 font-bold text-slate-900">
                 {brand}
               </span>
             )}

@@ -19,10 +19,10 @@ export function CategoryRailItem({ category }: { category: CategoryRailView }) {
   return (
     <Link
       href={category.href}
-      className="group relative flex flex-col items-center justify-between p-4 sm:p-5 w-[160px] sm:w-[190px] md:w-[200px] shrink-0 snap-start rounded-3xl border border-slate-200/90 bg-white shadow-sm transition-all duration-300 hover:-translate-y-2 hover:border-brand-400 hover:shadow-xl hover:shadow-brand-500/10 text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+      className="group relative flex flex-col items-center justify-between p-4 sm:p-5 w-[160px] sm:w-[190px] md:w-[200px] shrink-0 snap-start rounded-3xl border border-slate-200/90 bg-white shadow-sm transition-all duration-300 hover:-translate-y-2 hover:border-slate-400 hover:shadow-xl hover:shadow-slate-900/10 text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2"
     >
       {/* Ultra-Rounded Circular Image Avatar (Border Tròn Đi) */}
-      <div className="relative mt-2 size-24 sm:size-28 rounded-full bg-gradient-to-b from-slate-50 to-brand-50/40 p-2.5 border-2 border-slate-200/80 group-hover:border-brand-500 group-hover:ring-4 group-hover:ring-brand-500/15 shadow-inner transition-all duration-300 overflow-hidden">
+      <div className="relative mt-2 size-24 sm:size-28 rounded-full bg-gradient-to-b from-slate-50 to-slate-50/40 p-2.5 border-2 border-slate-200/80 group-hover:border-slate-900 group-hover:ring-4 group-hover:ring-slate-900/15 shadow-inner transition-all duration-300 overflow-hidden">
         {category.imageUrl ? (
           <Image
             src={category.imageUrl}
@@ -32,7 +32,7 @@ export function CategoryRailItem({ category }: { category: CategoryRailView }) {
             className="object-contain p-2 transition-transform duration-500 group-hover:scale-110"
           />
         ) : (
-          <div className="absolute inset-0 grid place-items-center bg-brand-50/60 text-brand-600 transition-transform duration-300 group-hover:scale-110">
+          <div className="absolute inset-0 grid place-items-center bg-slate-50/60 text-slate-900 transition-transform duration-300 group-hover:scale-110">
             {(() => {
               const Icon = getCategoryIcon(category.name);
               return <Icon className="size-10 stroke-[1.75]" aria-hidden="true" />;
@@ -43,10 +43,10 @@ export function CategoryRailItem({ category }: { category: CategoryRailView }) {
 
       {/* Category Name & Count with Rounded Tag */}
       <div className="mt-4 w-full">
-        <h3 className="text-xs sm:text-sm font-bold text-slate-800 transition-colors group-hover:text-brand-700 line-clamp-1 leading-snug">
+        <h3 className="text-xs sm:text-sm font-bold text-slate-800 transition-colors group-hover:text-slate-900 line-clamp-1 leading-snug">
           {category.name}
         </h3>
-        <div className="mt-2 inline-flex items-center rounded-full bg-slate-100 group-hover:bg-brand-50 group-hover:text-brand-700 px-2.5 py-0.5 text-xs font-semibold text-slate-500 transition-colors">
+        <div className="mt-2 inline-flex items-center rounded-full bg-slate-100 group-hover:bg-slate-50 group-hover:text-slate-900 px-2.5 py-0.5 text-xs font-semibold text-slate-500 transition-colors">
           {category.count}
         </div>
       </div>

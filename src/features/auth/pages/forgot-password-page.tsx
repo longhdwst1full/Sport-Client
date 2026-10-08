@@ -31,7 +31,7 @@ export function ForgotPasswordPage() {
     <AuthRecoveryMain>
       <Link
         href="/login"
-        className="inline-flex min-h-11 items-center gap-1.5 self-start text-xs font-semibold text-stone-600 hover:text-brand-700 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+        className="inline-flex min-h-11 items-center gap-1.5 self-start text-xs font-semibold text-stone-600 hover:text-slate-900 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900"
       >
         <ArrowLeft className="size-4" aria-hidden />
         Quay lại đăng nhập

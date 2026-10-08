@@ -44,7 +44,7 @@ export function CheckoutDeliveryMethodSection({
         >
           <div className="flex items-center justify-between gap-2">
             <strong className="text-sm font-bold text-slate-900">Giao hàng tiêu chuẩn</strong>
-            <span className="rounded-full bg-brand-100 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-brand-800">
+            <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-slate-950">
               Khuyên dùng
             </span>
           </div>
@@ -56,14 +56,14 @@ export function CheckoutDeliveryMethodSection({
             <div className="mt-3.5 border-t border-slate-100 pt-3 text-xs" aria-live="polite">
               {quotePending ? (
                 <span className="inline-flex items-center gap-1.5 font-bold text-slate-500">
-                  <Spinner className="size-3.5 animate-spin text-brand-600" /> Đang tính phí vận chuyển...
+                  <Spinner className="size-3.5 animate-spin text-slate-900" /> Đang tính phí vận chuyển...
                 </span>
               ) : quoteView ? (
                 <div className="space-y-1">
                   <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
                     <span
                       className={`text-sm font-black ${
-                        !quoteView.shippingFeePending && quoteView.shippingTotalAmount === 0 ? 'text-success-700' : 'text-brand-700'
+                        !quoteView.shippingFeePending && quoteView.shippingTotalAmount === 0 ? 'text-success-700' : 'text-slate-900'
                       }`}
                     >
                       {quoteView.shippingFeePending

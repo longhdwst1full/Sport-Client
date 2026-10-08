@@ -16,7 +16,7 @@ export function NewsletterForm() {
   return (
     <div className="mx-auto max-w-md">
       <form
-        className="flex items-center gap-2 rounded-2xl border border-white/20 bg-white/10 p-1.5 backdrop-blur-md shadow-lg transition-all focus-within:border-brand-400 focus-within:ring-2 focus-within:ring-brand-400/30"
+        className="flex items-center gap-2 rounded-2xl border border-white/20 bg-white/10 p-1.5 backdrop-blur-md shadow-lg transition-all focus-within:border-slate-400 focus-within:ring-2 focus-within:ring-slate-900/30"
         onSubmit={(e) => {
           e.preventDefault();
           setSubmitted(true);

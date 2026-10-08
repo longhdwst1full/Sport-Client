@@ -25,7 +25,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
       id={inputId}
       type="checkbox"
       className={twMerge(
-        'size-5 shrink-0 cursor-pointer rounded border-slate-300 accent-brand-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed',
+        'size-5 shrink-0 cursor-pointer rounded border-slate-300 accent-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2 disabled:cursor-not-allowed',
         className,
       )}
       {...props}

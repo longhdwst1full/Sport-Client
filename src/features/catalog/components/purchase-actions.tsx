@@ -5,8 +5,7 @@ import { QuantityStepper } from '@/foundation/components/indicators';
 import { STORE_CONTACT } from '@/shared/constants';
 
 /** Viền đen đậm cho nút "Thêm vào giỏ" (khối mua chính + thanh dính đáy) thay cho viền xám của `outline`. */
-const PRIMARY_OUTLINE_CTA =
-  'rounded-full border-2 border-slate-900 font-bold hover:border-slate-900 hover:bg-slate-50 hover:text-slate-900';
+const PRIMARY_OUTLINE_CTA = 'font-bold';
 
 interface PurchaseActionsProps {
   quantity: number;
@@ -61,7 +60,7 @@ export function PurchaseActions({
             Gọi{' '}
             <a
               href={`tel:${STORE_CONTACT.primaryHotlineRaw}`}
-              className="inline-flex items-center gap-1 rounded font-extrabold text-brand-700 underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+              className="inline-flex items-center gap-1 rounded font-extrabold text-slate-900 underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2"
             >
               <Phone className="size-3" aria-hidden="true" />
               {STORE_CONTACT.primaryHotline}
@@ -97,7 +96,7 @@ export function PurchaseActions({
           size="lg"
           disabled={!canAdd}
           onClick={onBuyNow}
-          className="rounded-full font-bold shadow-lg shadow-brand-600/25 hover:shadow-brand-600/40"
+          className="font-bold"
         >
           <Zap aria-hidden className="size-4 fill-current" />
           <span>Mua ngay</span>
@@ -141,7 +140,7 @@ export function StickyBuyBar({ visible, priceLabel, canAdd, outOfStock, onAddToC
           <ShoppingBag aria-hidden className="size-4" />
           <span>{canAdd ? 'Thêm vào giỏ' : outOfStock ? 'Tạm hết hàng' : 'Liên hệ'}</span>
         </Button>
-        <Button variant="primary" disabled={!canAdd} onClick={onBuyNow} className="gap-1.5 rounded-full text-xs font-bold">
+        <Button variant="primary" disabled={!canAdd} onClick={onBuyNow} className="gap-1.5 text-xs font-bold">
           <Zap aria-hidden className="size-4 fill-current" />
           <span>Mua ngay</span>
         </Button>

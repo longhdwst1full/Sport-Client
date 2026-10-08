@@ -92,7 +92,7 @@ export function FlashSaleSection() {
         </div>
 
         {/* Bottom Banner with All Deals CTA */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 rounded-3xl border border-brand-900/40 bg-gradient-to-r from-brand-950/50 via-slate-900/70 to-slate-900/90 p-6 sm:flex-row sm:px-8">
+        <div className="mt-12 flex flex-col items-center justify-between gap-4 rounded-3xl border border-brand-900/40 bg-gradient-to-r from-slate-950/50 via-slate-900/70 to-slate-900/90 p-6 sm:flex-row sm:px-8">
           <div className="text-center sm:text-left">
             <strong className="block text-base font-black text-white">
               Xem toàn bộ suất flash sale đang mở trong hôm nay

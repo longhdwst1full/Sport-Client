@@ -95,8 +95,8 @@ export function SiteFooter({ categories }: { categories?: readonly FooterCategor
       className="relative overflow-hidden border-t border-slate-800/80 bg-gradient-to-b from-slate-950 via-[#0a0f1d] to-[#04060b] px-4 py-12 sm:py-16 text-white sm:px-6 lg:px-10"
     >
       {/* Subtle top ambient lighting */}
-      <div className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 h-px w-3/4 max-w-4xl bg-gradient-to-r from-transparent via-brand-500/25 to-transparent" />
-      <div className="pointer-events-none absolute -top-40 left-1/4 size-96 rounded-full bg-brand-500/5 blur-[120px]" />
+      <div className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 h-px w-3/4 max-w-4xl bg-gradient-to-r from-transparent via-slate-800/25 to-transparent" />
+      <div className="pointer-events-none absolute -top-40 left-1/4 size-96 rounded-full bg-slate-900/5 blur-[120px]" />
       <div className="pointer-events-none absolute -bottom-40 right-1/4 size-96 rounded-full bg-blue-500/5 blur-[120px]" />
 
       <div className="relative mx-auto grid max-w-7xl grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1.1fr] [&>*]:min-w-0">
@@ -120,7 +120,7 @@ export function SiteFooter({ categories }: { categories?: readonly FooterCategor
           <div className="rounded-xl border border-slate-800/90 bg-slate-900/60 p-4 text-xs text-slate-300 space-y-1.5">
             <div className="font-bold text-slate-200 text-xs sm:text-[13px]">Thông tin đăng ký doanh nghiệp:</div>
             <p className="text-xs sm:text-[12.5px] leading-relaxed text-slate-400">
-              Giấy chứng nhận ĐKKD số <span className="font-bold text-brand-400">01M8027099</span> do phòng Tài chính - Kế hoạch quận Hoàng Mai, TP. Hà Nội cấp ngày 01/03/2021.
+              Giấy chứng nhận ĐKKD số <span className="font-bold text-slate-300">01M8027099</span> do phòng Tài chính - Kế hoạch quận Hoàng Mai, TP. Hà Nội cấp ngày 01/03/2021.
             </p>
           </div>
 
@@ -142,7 +142,7 @@ export function SiteFooter({ categories }: { categories?: readonly FooterCategor
                 />
               </div>
               <div className="text-xs text-slate-300 leading-tight">
-                <span className="block font-bold text-slate-200 group-hover:text-brand-400">
+                <span className="block font-bold text-slate-200 group-hover:text-slate-300">
                   Bộ Công Thương
                 </span>
                 <span className="text-slate-400">Đã thông báo website TMĐT</span>
@@ -180,10 +180,10 @@ export function SiteFooter({ categories }: { categories?: readonly FooterCategor
 
             <div className="pt-1 space-y-1.5 text-sm text-slate-300">
               <a
-                className="inline-flex min-h-11 items-center gap-2 break-all transition hover:text-brand-400"
+                className="inline-flex min-h-11 items-center gap-2 break-all transition hover:text-slate-300"
                 href={`mailto:${STORE_CONTACT.email}`}
               >
-                <Mail aria-hidden className="size-4 shrink-0 text-brand-400" />
+                <Mail aria-hidden className="size-4 shrink-0 text-slate-300" />
                 Email: {STORE_CONTACT.email}
               </a>
               <p className="text-xs text-slate-400">Mở cửa: {STORE_CONTACT.openingHours}</p>
@@ -197,7 +197,7 @@ export function SiteFooter({ categories }: { categories?: readonly FooterCategor
           <div className="flex flex-wrap items-center gap-6 text-sm font-medium text-slate-300">
             {TRUST_BADGES.map(({ icon: Icon, label }) => (
               <span key={label} className="inline-flex items-center gap-2">
-                <Icon aria-hidden className="size-4.5 text-brand-400" />
+                <Icon aria-hidden className="size-4.5 text-slate-300" />
                 {label}
               </span>
             ))}

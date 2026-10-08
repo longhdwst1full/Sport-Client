@@ -49,7 +49,7 @@ export function AuthField({
 
 /** Phần riêng của nút gửi form auth, đè lên `Button size="lg" fullWidth`. */
 export const AUTH_SUBMIT_CLASS =
-  'mt-4 sm:mt-5 h-11 sm:h-12 rounded-xl sm:rounded-2xl py-2.5 sm:py-3 font-black text-xs sm:text-sm shadow-md shadow-brand-600/20 hover:shadow-brand-600/30 active:scale-[0.99] disabled:opacity-60';
+  'mt-4 sm:mt-5 h-11 sm:h-12 rounded-xl sm:rounded-2xl py-2.5 sm:py-3 font-black text-xs sm:text-sm shadow-md shadow-slate-900/20 hover:shadow-slate-900/30 active:scale-[0.99] disabled:opacity-60';
 
 /** Nhãn ô nhập của các trang khôi phục mật khẩu (quên / đặt lại). */
 export const RECOVERY_LABEL_CLASS = 'block text-xs font-bold uppercase tracking-wider text-stone-600';

@@ -15,7 +15,7 @@ const AssistantPanelHost = dynamic(() => import('./assistant-panel-host').then((
   ssr: false,
   loading: () => (
     <div role="status" className="fixed bottom-20 right-5 z-[60] grid size-12 place-items-center rounded-2xl bg-white shadow-xl">
-      <Spinner className="size-5 animate-spin text-brand-600" />
+      <Spinner className="size-5 animate-spin text-slate-900" />
       <span className="sr-only">Đang mở trợ lý mua sắm</span>
     </div>
   ),
@@ -38,13 +38,13 @@ export function AssistantLauncher() {
         aria-expanded={open}
         aria-controls={open ? ASSISTANT_DIALOG_ID : undefined}
         aria-label={open ? 'Đóng trợ lý mua sắm' : 'Mở trợ lý mua sắm'}
-        // Mobile: nút dưới cùng của cột nút nổi (FloatingContactBar xếp ngay phía trên), có safe-area iOS.
-        // Từ `sm`: nằm bên trái cột nút liên hệ (right-20) như cũ để không che nhau.
+        // Nút dưới cùng của cột nút nổi (FloatingContactBar xếp ngay phía trên), có safe-area iOS. Chỉ icon
+        // (tên nằm ở aria-label + tooltip) để không thành viên thuốc dài đè lên nội dung bên phải trang.
+        title={ASSISTANT_TITLE}
         variant="primary"
-        className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-3.5 z-50 h-auto min-h-11 min-w-11 rounded-full p-2.5 shadow-xl shadow-slate-950/30 border-t border-white/25 transition-all hover:scale-105 active:scale-95 sm:bottom-6 sm:right-20 sm:px-4 sm:py-3"
+        className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-3.5 z-50 size-11 rounded-full p-0 shadow-lg shadow-slate-900/25 sm:bottom-6 sm:right-5"
       >
-        {open ? <X className="size-[18px] sm:size-5" aria-hidden /> : <Bot className="size-[18px] sm:size-5" aria-hidden />}
-        <span className="hidden text-xs font-black sm:inline">{ASSISTANT_TITLE}</span>
+        {open ? <X className="size-5" aria-hidden /> : <Bot className="size-5" aria-hidden />}
       </Button>
       {requested && <AssistantPanelHost open={open} onClose={close} />}
     </>

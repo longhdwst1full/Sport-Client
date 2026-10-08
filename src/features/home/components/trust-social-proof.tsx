@@ -14,7 +14,7 @@ const COMMITMENTS = [
 ].map((label) => ({ icon: CheckCircle2, label }));
 
 const FACTS = [
-  { value: '10+ Năm', valueClassName: 'text-brand-400', caption: 'Kinh nghiệm phân phối' },
+  { value: '10+ Năm', valueClassName: 'text-white', caption: 'Kinh nghiệm phân phối' },
   { value: '100%', valueClassName: 'text-white', caption: 'Chính hãng có VAT' },
 ];
 
@@ -25,8 +25,8 @@ export function TrustSocialProof() {
         <div className="grid gap-8 lg:grid-cols-[1.1fr_.9fr] lg:items-center">
           {/* Left Column: Proof points & Rating */}
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-brand-500/30 bg-brand-500/10 px-3.5 py-1 text-xs font-black uppercase tracking-wider text-brand-400">
-              <ShieldCheck className="size-4 text-brand-400" />
+            <div className="inline-flex items-center gap-2 rounded-full border border-slate-900/30 bg-slate-900/10 px-3.5 py-1 text-xs font-black uppercase tracking-wider text-slate-300">
+              <ShieldCheck className="size-4 text-slate-300" />
               AN TÂM TUYỆT ĐỐI KHI ĐẦU TƯ THIẾT BỊ
             </div>
 
@@ -73,10 +73,10 @@ export function TrustSocialProof() {
           <div className="flex flex-col gap-4 rounded-2xl border border-slate-800 bg-slate-900/80 p-6 sm:p-7 backdrop-blur-sm">
             <div className="flex items-center justify-between border-b border-slate-800 pb-4">
               <div className="flex items-center gap-2">
-                <MapPin className="size-5 text-brand-400" />
+                <MapPin className="size-5 text-slate-300" />
                 <h3 className="text-base font-black text-white">Trải nghiệm máy tại Showroom</h3>
               </div>
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-500/10 px-2.5 py-0.5 text-xs font-bold text-brand-400">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-900/10 px-2.5 py-0.5 text-xs font-bold text-slate-300">
                 <Clock className="size-3" />
                 8:30 - 21:30
               </span>
@@ -96,7 +96,7 @@ export function TrustSocialProof() {
                   </p>
                   <a
                     href={`tel:${showroom.phoneRaw}`}
-                    className="inline-flex items-center gap-1.5 font-bold text-brand-400 hover:text-brand-300 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+                    className="inline-flex items-center gap-1.5 font-bold text-slate-300 hover:text-slate-300 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
                   >
                     <Phone className="size-3" />
                     <span>Hotline: {showroom.phone}</span>
@@ -110,7 +110,7 @@ export function TrustSocialProof() {
                 href="/contact"
                 className={buttonVariants({
                   variant: 'primary',
-                  className: `flex-1 text-xs font-bold shadow-md shadow-brand-950 ${DARK_FOCUS}`,
+                  className: `flex-1 text-xs font-bold shadow-md shadow-slate-900 ${DARK_FOCUS}`,
                 })}
               >
                 Xem chi tiết chỉ đường

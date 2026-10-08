@@ -34,11 +34,11 @@ export function CheckoutConfirmSection({
         label={
           <span className="text-xs leading-relaxed sm:text-sm">
             Tôi đã đọc và đồng ý với{' '}
-            <Link href={STORE_POLICY_PAGES.TERMS.href} target="_blank" className="font-bold text-brand-700 underline-offset-2 hover:underline">
+            <Link href={STORE_POLICY_PAGES.TERMS.href} target="_blank" className="font-bold text-slate-900 underline-offset-2 hover:underline">
               {STORE_POLICY_PAGES.TERMS.title.toLowerCase()}
             </Link>{' '}
             và{' '}
-            <Link href={STORE_POLICY_PAGES.RETURNS.href} target="_blank" className="font-bold text-brand-700 underline-offset-2 hover:underline">
+            <Link href={STORE_POLICY_PAGES.RETURNS.href} target="_blank" className="font-bold text-slate-900 underline-offset-2 hover:underline">
               chính sách đổi trả & bảo hành
             </Link>{' '}
             của Bảo An Sport.

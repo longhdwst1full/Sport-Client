@@ -88,7 +88,7 @@ export function CheckoutPage() {
   return (
       <main className="mx-auto max-w-7xl px-4 pb-28 pt-6 sm:px-6 sm:pt-8 lg:px-8 lg:pb-8">
         <div className="mb-6 sm:mb-8">
-          <Link href="/cart" className="-ml-1 inline-flex min-h-11 items-center gap-1.5 px-1 text-xs font-bold text-brand-700 hover:underline">
+          <Link href="/cart" className="-ml-1 inline-flex min-h-11 items-center gap-1.5 px-1 text-xs font-bold text-slate-900 hover:underline">
             ← Quay lại giỏ hàng
           </Link>
           <div className="mt-2 flex flex-wrap items-baseline justify-between gap-4">

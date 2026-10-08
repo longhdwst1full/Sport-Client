@@ -6,7 +6,7 @@ import { Spinner } from '@/foundation/components/feedback';
 export const PROFILE_LABEL_CLASS = 'block text-xs font-bold uppercase tracking-wider text-slate-600';
 
 /** Phần riêng của nút lưu form tài khoản, đè lên `Button size="md"`. */
-export const PROFILE_SUBMIT_CLASS = 'h-auto px-5 py-2.5 text-xs font-bold shadow-md shadow-brand-600/20';
+export const PROFILE_SUBMIT_CLASS = 'h-auto px-5 py-2.5 text-xs font-bold shadow-md shadow-slate-900/20';
 
 /** Nút lưu: đang gửi thì Spinner thay icon, nhãn giữ nguyên. */
 export function ProfileSubmitButton({ pending, icon, children }: { pending: boolean; icon: ReactNode; children: ReactNode }) {

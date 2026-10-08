@@ -3,7 +3,7 @@ import { BANNER_DEFAULT_CTA_TEXT, type BannerView } from '../model/banner.mapper
 import { BannerPicture } from './banner-picture';
 
 const FRAME =
-  'group relative block aspect-[16/9] overflow-hidden rounded-[28px] bg-slate-900 shadow-md sm:aspect-[4/1] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2';
+  'group relative block aspect-[16/9] overflow-hidden rounded-[28px] bg-slate-900 shadow-md sm:aspect-[4/1] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2';
 
 /** Banner CATEGORY_TOP phía trên lưới sản phẩm; không có banner thì không render gì. */
 export function CategoryTopBanners({ banners }: { banners: BannerView[] }) {

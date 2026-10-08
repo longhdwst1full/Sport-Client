@@ -43,11 +43,11 @@ export function HeaderActions({
       {isLoggedIn ? (
         <Link
           href="/profile"
-          className="hidden items-center gap-2 rounded-xl border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-bold text-slate-800 transition hover:border-brand-300 hover:bg-brand-50/60 sm:flex"
+          className="hidden items-center gap-2 rounded-xl border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-bold text-slate-800 transition hover:border-slate-300 hover:bg-slate-50/60 sm:flex"
           aria-label="Tài khoản cá nhân"
           title="Tài khoản cá nhân"
         >
-          <div className="grid size-7 shrink-0 place-items-center rounded-lg bg-brand-600 text-[11px] font-black text-white">
+          <div className="grid size-7 shrink-0 place-items-center rounded-lg bg-slate-900 text-[11px] font-black text-white">
             {customerName ? customerName.slice(0, 1).toUpperCase() : <UserRound className="size-4" />}
           </div>
           <div className="text-left leading-tight pr-1 max-w-[120px]">
@@ -60,11 +60,11 @@ export function HeaderActions({
       ) : (
         <Link
           href="/login"
-          className="hidden items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 transition hover:border-brand-300 hover:bg-brand-50/60 hover:text-brand-700 sm:flex"
+          className="hidden items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50/60 hover:text-slate-900 sm:flex"
           aria-label="Đăng nhập tài khoản"
           title="Đăng nhập"
         >
-          <UserRound className="size-4 text-brand-600" />
+          <UserRound className="size-4 text-slate-900" />
           <span>Đăng nhập</span>
         </Link>
       )}
@@ -72,12 +72,12 @@ export function HeaderActions({
       {/* Cart */}
       <Link
         href="/cart"
-        className="relative grid size-11 place-items-center rounded-xl border border-slate-200 bg-white text-slate-700 transition hover:border-brand-300 hover:bg-brand-50/70 hover:text-brand-700"
+        className="relative grid size-11 place-items-center rounded-xl border border-slate-200 bg-white text-slate-700 transition hover:border-slate-300 hover:bg-slate-50/70 hover:text-slate-900"
         aria-label={cartQuantity > 0 ? `Giỏ hàng, ${cartQuantity} sản phẩm` : 'Giỏ hàng, 0 sản phẩm'}
       >
         <ShoppingBag aria-hidden className="size-4.5" />
         {cartQuantity > 0 && (
-          <span className="absolute -right-1 -top-1 grid min-w-5 place-items-center rounded-full bg-brand-600 px-1 text-[10px] font-black text-white shadow-sm ring-2 ring-white">
+          <span className="absolute -right-1 -top-1 grid min-w-5 place-items-center rounded-full bg-slate-900 px-1 text-[10px] font-black text-white shadow-sm ring-2 ring-white">
             {cartQuantity > 99 ? '99+' : cartQuantity}
           </span>
         )}

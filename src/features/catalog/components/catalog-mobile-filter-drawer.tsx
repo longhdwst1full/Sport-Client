@@ -36,7 +36,7 @@ export function CatalogMobileFilterDrawer({
         {/* Header */}
         <div className="flex items-center justify-between border-b border-slate-100 pb-4">
           <span className="flex items-center gap-2 text-sm font-black uppercase text-slate-900">
-            <SlidersHorizontal aria-hidden className="size-4 text-brand-600" />
+            <SlidersHorizontal aria-hidden className="size-4 text-slate-900" />
             Bộ lọc tìm kiếm
           </span>
           <Button
@@ -64,9 +64,9 @@ export function CatalogMobileFilterDrawer({
                     type="button"
                     onClick={() => onSelectCategory(tab.slug)}
                     aria-pressed={isSelected}
-                    className={`rounded-full px-3.5 py-2 text-xs font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-1 ${
+                    className={`rounded-full px-3.5 py-2 text-xs font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-1 ${
                       isSelected
-                        ? 'bg-brand-600 text-white'
+                        ? 'bg-slate-900 text-white'
                         : 'border border-slate-200 bg-slate-50 text-slate-700'
                     }`}
                   >
@@ -89,9 +89,9 @@ export function CatalogMobileFilterDrawer({
                     type="button"
                     onClick={() => onSelectPriceRange(range.id)}
                     aria-pressed={isSelected}
-                    className={`rounded-xl border p-2.5 text-center text-xs font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-1 ${
+                    className={`rounded-xl border p-2.5 text-center text-xs font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-1 ${
                       isSelected
-                        ? 'border-brand-600 bg-brand-50 text-brand-800'
+                        ? 'border-slate-900 bg-slate-50 text-slate-950'
                         : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
                     }`}
                   >

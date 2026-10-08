@@ -77,7 +77,7 @@ export function EvidencePicker({ orderNo, value, onChange, onUploadingChange, di
           <Button
             disabled={disabled}
             onClick={() => inputRef.current?.click()}
-            className="grid size-24 place-items-center rounded-xl border border-dashed border-slate-300 text-xs font-bold text-slate-500 hover:border-brand-500 disabled:opacity-50"
+            className="grid size-24 place-items-center rounded-xl border border-dashed border-slate-300 text-xs font-bold text-slate-500 hover:border-slate-900 disabled:opacity-50"
           >
             {uploading > 0 ? <Spinner className="size-5" /> : <span className="grid place-items-center gap-1"><ImagePlus aria-hidden className="size-5" />Thêm ảnh</span>}
           </Button>

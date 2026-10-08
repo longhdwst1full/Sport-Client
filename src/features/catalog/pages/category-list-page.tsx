@@ -30,7 +30,7 @@ export async function CategoryListPage() {
           />
 
           <div className="max-w-2xl">
-            <span className="rounded-full bg-brand-100 px-3.5 py-1 text-xs font-extrabold uppercase tracking-widest text-brand-800">
+            <span className="rounded-full bg-slate-100 px-3.5 py-1 text-xs font-extrabold uppercase tracking-widest text-slate-950">
               Phân loại chuyên sâu
             </span>
             <h1 className="mt-3 text-3xl font-black text-ink sm:text-5xl">
@@ -52,7 +52,7 @@ export async function CategoryListPage() {
                 </p>
                 <Link
                   href="/products"
-                  className="mt-6 inline-flex items-center gap-2 rounded-full bg-brand-600 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-brand-700"
+                  className="mt-6 inline-flex items-center gap-2 rounded-full bg-slate-900 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-slate-800"
                 >
                   Xem tất cả sản phẩm
                   <ArrowRight className="size-4" />

@@ -45,7 +45,7 @@ export function AdvisorOptionStep<T extends AdvisorOption>({
               aria-pressed={isSelected}
               className={`flex flex-col justify-between rounded-2xl border p-5 text-left transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 ${
                 isSelected
-                  ? 'border-brand-500 bg-brand-950/60 ring-2 ring-brand-500/40 shadow-lg'
+                  ? 'border-slate-900 bg-slate-950/60 ring-2 ring-slate-900/40 shadow-lg'
                   : 'border-slate-800 bg-slate-900/60 hover:border-slate-700 hover:bg-slate-900'
               }`}
             >
@@ -65,7 +65,7 @@ export function AdvisorOptionStep<T extends AdvisorOption>({
           variant="primary"
           size="lg"
           onClick={onNext}
-          className={`px-6 text-xs font-black uppercase tracking-wider shadow-lg shadow-brand-600/20 ${ADVISOR_FOCUS}`}
+          className={`px-6 text-xs font-black uppercase tracking-wider shadow-lg shadow-slate-900/20 ${ADVISOR_FOCUS}`}
         >
           <span>{nextLabel}</span>
           <NextIcon className="size-4" aria-hidden="true" />

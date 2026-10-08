@@ -19,7 +19,7 @@ type BreadcrumbTone = 'default' | 'inverted';
 const TONE_CLASSES: Record<BreadcrumbTone, { root: string; link: string; current: string }> = {
   default: {
     root: 'text-slate-500',
-    link: 'rounded transition hover:text-brand-700',
+    link: 'rounded transition hover:text-slate-900',
     current: 'font-bold text-ink',
   },
   inverted: {

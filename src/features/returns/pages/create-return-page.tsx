@@ -45,7 +45,7 @@ export function CreateReturnPage({ orderNo }: { orderNo: string }) {
 
   return (
       <main className="mx-auto min-h-[60vh] max-w-4xl px-4 py-10 sm:px-6">
-        <p className="text-xs font-black uppercase tracking-[0.22em] text-brand-700">Đổi trả</p>
+        <p className="text-xs font-black uppercase tracking-[0.22em] text-slate-900">Đổi trả</p>
         <h1 className="mt-2 text-2xl font-black text-slate-950 sm:text-3xl">Yêu cầu trả hàng · <span className="break-all font-mono">{orderNo}</span></h1>
 
         {(!isLoaded || eligibility.isLoading) && (
@@ -77,7 +77,7 @@ export function CreateReturnPage({ orderNo }: { orderNo: string }) {
             <PackageX aria-hidden className="mx-auto size-11 text-amber-600" />
             <p className="mt-3 font-bold text-amber-900">{data.reason ? returnEligibilityReasonLabels[data.reason] : 'Đơn không thể trả hàng.'}</p>
             {data.openReturnNo && (
-              <Link href={`/returns/${encodeURIComponent(data.openReturnNo)}`} className="mt-4 inline-flex min-h-11 items-center font-bold text-brand-700 hover:underline">
+              <Link href={`/returns/${encodeURIComponent(data.openReturnNo)}`} className="mt-4 inline-flex min-h-11 items-center font-bold text-slate-900 hover:underline">
                 Xem yêu cầu {data.openReturnNo}
               </Link>
             )}

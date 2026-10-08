@@ -8,7 +8,7 @@ export function ArticleConsultationCta() {
     <aside className="my-10 overflow-hidden rounded-3xl border border-slate-800 bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 p-6 text-white shadow-xl sm:p-8">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
         <div className="max-w-xl">
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-brand-500/20 px-3 py-1 text-xs font-black uppercase tracking-wider text-brand-400 border border-brand-500/30">
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-slate-900/20 px-3 py-1 text-xs font-black uppercase tracking-wider text-slate-300 border border-slate-900/30">
             <Sparkles className="size-3.5" aria-hidden="true" />
             Tư vấn thể thao chuyên nghiệp 1:1
           </div>
@@ -23,7 +23,7 @@ export function ArticleConsultationCta() {
         <div className="flex flex-wrap items-center gap-3 shrink-0">
           <a
             href={`tel:${STORE_CONTACT.primaryHotlineRaw}`}
-            className="inline-flex items-center gap-2 rounded-2xl bg-brand-600 px-4 py-3 text-xs font-black text-white shadow-md transition hover:bg-brand-700 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+            className="inline-flex items-center gap-2 rounded-2xl bg-slate-900 px-4 py-3 text-xs font-black text-white shadow-md transition hover:bg-slate-800 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
           >
             <Phone className="size-4" aria-hidden="true" />
             <span>Gọi ngay: {STORE_CONTACT.primaryHotline}</span>
@@ -35,7 +35,7 @@ export function ArticleConsultationCta() {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 rounded-2xl border border-slate-700 bg-slate-800/80 px-4 py-3 text-xs font-bold text-white transition hover:bg-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
           >
-            <MessageCircle className="size-4 text-brand-400" aria-hidden="true" />
+            <MessageCircle className="size-4 text-slate-300" aria-hidden="true" />
             <span>Chat qua Zalo</span>
             <span className="sr-only"> (mở tab mới)</span>
           </a>

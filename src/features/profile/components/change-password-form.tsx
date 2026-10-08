@@ -34,7 +34,7 @@ export function ChangePasswordForm() {
       }}
     >
       <div className="flex items-center gap-2 text-sm font-black text-slate-900">
-        <KeyRound className="size-4 text-brand-600" aria-hidden />
+        <KeyRound className="size-4 text-slate-900" aria-hidden />
         Đổi mật khẩu
       </div>
 

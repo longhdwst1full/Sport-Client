@@ -38,7 +38,7 @@ export function PromoBanner({
               {title && <h2 className="line-clamp-2 text-xl font-black leading-tight sm:text-2xl">{title}</h2>}
               {subtitle && <p className="mt-2 line-clamp-2 text-xs text-slate-300 sm:text-sm">{subtitle}</p>}
               {href && (
-                <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-brand-400 group-hover:underline sm:text-sm">
+                <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-slate-300 group-hover:underline sm:text-sm">
                   {ctaLabel}
                   <ArrowRight aria-hidden className="size-4 transition group-hover:translate-x-1" />
                 </span>

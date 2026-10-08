@@ -34,13 +34,13 @@ export function CatalogMobileControlBar({
         <Button
           variant="outline"
           onClick={onOpenFilters}
-          className="h-10 border-slate-200 text-xs font-bold text-slate-700 shadow-xs hover:border-brand-500 hover:text-slate-700"
+          className="h-10 border-slate-200 text-xs font-bold text-slate-700 shadow-xs hover:border-slate-900 hover:text-slate-700"
           aria-label={activeFilterCount > 0 ? `Bộ lọc, đang áp dụng ${activeFilterCount}` : 'Bộ lọc'}
         >
-          <SlidersHorizontal aria-hidden className="size-3.5 text-brand-600" />
+          <SlidersHorizontal aria-hidden className="size-3.5 text-slate-900" />
           <span>Bộ lọc</span>
           {activeFilterCount > 0 && (
-            <span className="grid size-5 place-items-center rounded-full bg-brand-600 text-[10px] font-black text-white">
+            <span className="grid size-5 place-items-center rounded-full bg-slate-900 text-[10px] font-black text-white">
               {activeFilterCount}
             </span>
           )}

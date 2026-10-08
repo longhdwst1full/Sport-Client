@@ -97,7 +97,7 @@ export function ReviewFormDialog({
     >
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-brand-700">Đánh giá đã mua hàng</p>
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-slate-900">Đánh giá đã mua hàng</p>
             <h2 id="review-dialog-title" className="mt-1 text-xl font-black text-slate-950">{productName}</h2>
             <p className="mt-1 text-sm text-slate-500">Đánh giá được hiển thị ngay sau khi gửi.</p>
           </div>

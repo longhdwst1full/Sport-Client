@@ -95,7 +95,7 @@ export default async function CategoryDetailPage({
             items={breadcrumbItems}
           />
 
-          <div className="relative overflow-hidden rounded-[36px] bg-gradient-to-br from-slate-950 via-slate-900 to-brand-950 p-8 text-white shadow-xl sm:p-12">
+          <div className="relative overflow-hidden rounded-[36px] bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-8 text-white shadow-xl sm:p-12">
             <div className="relative z-10 max-w-2xl">
               <h1 className="text-3xl font-black text-white sm:text-5xl">{category.name}</h1>
               {category.description && (
@@ -103,12 +103,12 @@ export default async function CategoryDetailPage({
                   {category.description}
                 </p>
               )}
-              <p className="mt-4 text-xs font-bold uppercase tracking-widest text-brand-300">
+              <p className="mt-4 text-xs font-bold uppercase tracking-widest text-slate-300">
                 {category.productCount} sản phẩm
               </p>
             </div>
 
-            <div className="pointer-events-none absolute -right-20 -top-20 size-80 rounded-full bg-brand-500/10 blur-[100px]" />
+            <div className="pointer-events-none absolute -right-20 -top-20 size-80 rounded-full bg-slate-900/10 blur-[100px]" />
           </div>
 
           <CategoryTopBanners banners={topBanners} />

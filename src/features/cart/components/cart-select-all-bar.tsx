@@ -18,14 +18,14 @@ export function CartSelectAllBar({
           type="checkbox"
           checked={isAllSelected}
           onChange={onToggleSelectAll}
-          className="size-5 cursor-pointer rounded accent-brand-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+          className="size-5 cursor-pointer rounded accent-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2"
         />
         <span className="text-sm font-bold text-slate-800">
           Chọn tất cả ({itemCount} sản phẩm)
         </span>
       </label>
       <span className="text-xs font-semibold text-slate-600">
-        Đã chọn: <strong className="font-bold text-brand-700">{selectedCount}</strong>/{itemCount}
+        Đã chọn: <strong className="font-bold text-slate-900">{selectedCount}</strong>/{itemCount}
       </span>
     </div>
   );

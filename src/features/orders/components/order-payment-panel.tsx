@@ -69,14 +69,14 @@ export function OrderPaymentPanel({
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
         <div>
-          <span className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-brand-700">
+          <span className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-slate-900">
             <CreditCard aria-hidden className="size-3.5" /> Thông tin thanh toán
           </span>
           <div className="mt-1 flex items-center gap-2">
             <span className="font-mono text-sm font-extrabold text-slate-900">{view.paymentRef}</span>
             <CopyButton
               value={view.paymentRef}
-              className="grid size-9 place-items-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+              className="grid size-9 place-items-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900"
               title="Sao chép mã giao dịch"
               aria-label="Sao chép mã giao dịch"
               idleIcon={<CreditCard className="size-3.5" />}
@@ -168,7 +168,7 @@ export function OrderPaymentPanel({
               href={evidence.fileUrl}
               target="_blank"
               rel="noreferrer"
-              className="flex items-center justify-between rounded-xl border border-slate-200/80 bg-slate-50/50 p-3 text-xs transition hover:border-slate-300 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+              className="flex items-center justify-between rounded-xl border border-slate-200/80 bg-slate-50/50 p-3 text-xs transition hover:border-slate-300 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900"
             >
               <span className="font-medium text-slate-700">Ảnh gửi {evidence.submittedLabel}</span>
               <strong className="rounded-md bg-white px-2 py-0.5 border border-slate-200 text-slate-700 text-[11px]">
@@ -196,7 +196,7 @@ export function OrderPaymentPanel({
                   submit.reset();
                   resetPendingUpload();
                 }}
-                className="mt-1.5 block w-full cursor-pointer rounded-xl border border-slate-200 bg-slate-50 p-2.5 text-xs text-slate-700 file:mr-3 file:cursor-pointer file:rounded-lg file:border-0 file:bg-brand-600 file:px-3 file:py-1.5 file:text-xs file:font-bold file:text-white hover:file:bg-brand-700"
+                className="mt-1.5 block w-full cursor-pointer rounded-xl border border-slate-200 bg-slate-50 p-2.5 text-xs text-slate-700 file:mr-3 file:cursor-pointer file:rounded-lg file:border-0 file:bg-slate-900 file:px-3 file:py-1.5 file:text-xs file:font-bold file:text-white hover:file:bg-slate-800"
               />
             </label>
           </div>

@@ -43,13 +43,13 @@ export function OrderDeliveryAddressCard({
       <div className="mt-4">
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-1.5 font-bold text-slate-900 text-sm sm:text-base">
-            <User className="size-4 text-brand-600" />
+            <User className="size-4 text-slate-900" />
             <span>{view?.recipientName}</span>
           </div>
           <span className="text-slate-300">|</span>
           <a
             href={`tel:${view?.recipientPhone}`}
-            className="inline-flex items-center gap-1.5 text-sm font-bold text-brand-700 hover:underline"
+            className="inline-flex items-center gap-1.5 text-sm font-bold text-slate-900 hover:underline"
             title="Bấm để gọi"
           >
             <Phone className="size-3.5" />
@@ -61,7 +61,7 @@ export function OrderDeliveryAddressCard({
         </p>
 
         <div className="mt-4 flex items-center gap-2 rounded-xl bg-slate-50 p-3 text-xs text-slate-600 border border-slate-100">
-          <Store className="size-4 text-brand-600 shrink-0" />
+          <Store className="size-4 text-slate-900 shrink-0" />
           <span>
             Chuẩn bị và xuất phát từ: <strong className="text-slate-900">{view?.branchName}</strong>
           </span>

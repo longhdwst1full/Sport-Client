@@ -85,7 +85,7 @@ export function OverflowCategoryMenu({
                 <Link
                   key={cat.label}
                   href={cat.href}
-                  className={`flex items-center justify-between rounded-lg px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-brand-50 hover:text-brand-700 ${itemClass}`}
+                  className={`flex items-center justify-between rounded-lg px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 hover:text-slate-900 ${itemClass}`}
                 >
                   <span>{cat.label}</span>
                   <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-500">

@@ -19,7 +19,7 @@ export function MegaMenuPanel({ category, onMouseEnter, onMouseLeave }: MegaMenu
       <div className="overflow-hidden rounded-xl border border-slate-200 bg-white p-6 shadow-xl ring-1 ring-black/5">
         <div className="grid grid-cols-[1.3fr_0.7fr] gap-6">
           <div>
-            <span className="inline-block rounded-md bg-brand-50 px-2.5 py-1 text-[11px] font-black uppercase tracking-wider text-brand-700">
+            <span className="inline-block rounded-md bg-slate-50 px-2.5 py-1 text-[11px] font-black uppercase tracking-wider text-slate-900">
               {category.label}
             </span>
             <div className="mt-3 divide-y divide-slate-100">
@@ -27,16 +27,16 @@ export function MegaMenuPanel({ category, onMouseEnter, onMouseLeave }: MegaMenu
                 <Link
                   key={child.label}
                   href={child.href}
-                  className="group flex items-center justify-between rounded-lg px-2.5 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 hover:text-brand-700"
+                  className="group flex items-center justify-between rounded-lg px-2.5 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 hover:text-slate-900"
                 >
                   <span>{child.label}</span>
-                  <ChevronRight aria-hidden className="size-3.5 text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-brand-600" />
+                  <ChevronRight aria-hidden className="size-3.5 text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-slate-900" />
                 </Link>
               ))}
             </div>
             <Link
               href={category.href}
-              className="mt-4 inline-flex items-center gap-1.5 text-xs font-extrabold text-brand-700 hover:text-brand-800 hover:underline"
+              className="mt-4 inline-flex items-center gap-1.5 text-xs font-extrabold text-slate-900 hover:text-slate-950 hover:underline"
             >
               Xem tất cả {category.label} →
             </Link>

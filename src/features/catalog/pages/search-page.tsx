@@ -24,7 +24,7 @@ function SearchContent() {
         <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm sm:p-8">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div className="flex items-center gap-3.5">
-              <span className="grid size-12 place-items-center rounded-2xl bg-brand-50 text-brand-700">
+              <span className="grid size-12 place-items-center rounded-2xl bg-slate-50 text-slate-900">
                 <Search aria-hidden className="size-6" />
               </span>
               <div>
@@ -34,7 +34,7 @@ function SearchContent() {
                 <h1 className="text-xl font-black text-slate-900 sm:text-2xl">
                   {query ? (
                     <>
-                      Kết quả cho từ khóa: <span className="text-brand-700">"{query}"</span>
+                      Kết quả cho từ khóa: <span className="text-slate-900">"{query}"</span>
                     </>
                   ) : (
                     'Tất cả sản phẩm thể thao'

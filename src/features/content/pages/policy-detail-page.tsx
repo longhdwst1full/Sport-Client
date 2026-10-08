@@ -59,7 +59,7 @@ export function PolicyDetailPage({
                 href="/chinh-sach"
                 className={buttonVariants({
                   variant: 'ghost',
-                  className: 'rounded-full bg-slate-100 px-5 text-xs font-bold text-ink hover:bg-brand-50 hover:text-brand-700',
+                  className: 'rounded-full bg-slate-100 px-5 text-xs font-bold text-ink hover:bg-slate-50 hover:text-slate-900',
                 })}
               >
                 <ArrowLeft className="size-4" aria-hidden="true" /> Tất cả chính sách
@@ -77,7 +77,7 @@ export function PolicyDetailPage({
                   <li key={item.slug}>
                     <Link
                       href={`/chinh-sach/${item.slug}`}
-                      className="block rounded-xl border border-slate-200/80 bg-white px-4 py-3 text-sm font-semibold text-ink transition hover:border-brand-300 hover:text-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+                      className="block rounded-xl border border-slate-200/80 bg-white px-4 py-3 text-sm font-semibold text-ink transition hover:border-slate-300 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2"
                     >
                       {item.title}
                     </Link>

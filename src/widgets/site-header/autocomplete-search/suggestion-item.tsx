@@ -19,7 +19,7 @@ export function SuggestionItem({ product, isSelected, onSelect, onHover }: Sugge
       onMouseEnter={onHover}
       className={`flex cursor-pointer items-center gap-3.5 rounded-xl px-3.5 py-2.5 transition-colors duration-150 ${
         isSelected
-          ? 'bg-brand-50 text-slate-900 ring-1 ring-brand-500/20'
+          ? 'bg-slate-50 text-slate-900 ring-1 ring-slate-900/20'
           : 'text-slate-800 hover:bg-slate-50'
       }`}
     >
@@ -44,7 +44,7 @@ export function SuggestionItem({ product, isSelected, onSelect, onHover }: Sugge
       <div className="min-w-0 flex-1">
         <h4
           className={`text-xs font-bold leading-snug line-clamp-1 sm:text-[13px] transition ${
-            isSelected ? 'text-brand-700' : 'text-slate-900'
+            isSelected ? 'text-slate-900' : 'text-slate-900'
           }`}
         >
           {product.name}
