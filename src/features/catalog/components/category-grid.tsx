@@ -10,11 +10,8 @@ export function CategoryGrid({ items }: { items: CategoryCardView[] }) {
       {items.map((category) => {
         const Icon = category.icon;
         return (
-          <Link
-            key={category.slug}
-            href={`/category/${category.slug}`}
-            className="group card-interactive focus-ring flex flex-col"
-          >
+          <div key={category.slug} className="group card-interactive flex flex-col">
+          <Link href={`/category/${category.slug}`} className="focus-ring flex flex-col rounded-xl">
             <div className="relative aspect-[16/10] overflow-hidden bg-neutral-100">
               {category.imageUrl ? (
                 <Image
@@ -44,6 +41,21 @@ export function CategoryGrid({ items }: { items: CategoryCardView[] }) {
               <ChevronRight className="size-4 shrink-0 text-neutral-400 transition group-hover:translate-x-0.5 group-hover:text-neutral-950" aria-hidden />
             </div>
           </Link>
+          {category.subcategories && category.subcategories.length > 0 && (
+            <ul className="flex flex-wrap gap-1.5 px-4 pb-4" aria-label={`Danh mục con của ${category.title}`}>
+              {category.subcategories.map((sub) => (
+                <li key={sub.slug}>
+                  <Link
+                    href={`/category/${sub.slug}`}
+                    className="focus-ring inline-flex min-h-8 items-center rounded-full border border-neutral-200 px-3 text-xs text-neutral-700 hover:border-neutral-900 hover:text-neutral-950"
+                  >
+                    {sub.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+          </div>
         );
       })}
     </div>

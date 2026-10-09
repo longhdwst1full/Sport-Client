@@ -1,3 +1,6 @@
+import Link from 'next/link';
+import { STORE_POLICY_FACTS, STORE_POLICY_PAGES } from '@/shared/constants';
+
 interface ProductPriceHeaderProps {
   canAdd: boolean;
   outOfStock: boolean;
@@ -35,7 +38,12 @@ export function ProductPriceHeader({ canAdd, outOfStock, inStock, priceLabel }: 
             Còn hàng
           </span>
         )}
-        <span>Liên hệ cửa hàng để biết thời gian giao và lắp đặt</span>
+        {/* GAP: chưa có bộ ước tính theo tỉnh trên trang sản phẩm (`estimateCheckoutShipping` đã có, chưa
+            nối); phí và thời gian thật được báo theo địa chỉ ở bước đặt hàng. */}
+        <span>
+          {STORE_POLICY_FACTS.shippingSummary}. Phí & thời gian giao báo theo địa chỉ ở bước đặt hàng ·{' '}
+          <Link href={STORE_POLICY_PAGES.SHIPPING.href} className="text-link">Chính sách giao hàng</Link>
+        </span>
       </div>
     </div>
   );

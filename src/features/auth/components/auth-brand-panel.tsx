@@ -43,7 +43,7 @@ const PANEL_CONTENT: Record<AuthBrandPanelProps['variant'], PanelContent> = {
       'Đăng nhập để theo dõi đơn hàng, gửi yêu cầu đổi trả hoặc hỗ trợ và đặt hàng nhanh với địa chỉ đã lưu.',
     metrics: [
       { value: String(STORE_SHOWROOMS.length), label: 'Showroom HN & HCM' },
-      { value: '63', label: 'Tỉnh thành giao tới' },
+      { value: 'Toàn quốc', label: 'Giao hàng & lắp đặt' },
       { value: `${STORE_POLICY_FACTS.returnWindowDays} ngày`, label: 'Đổi trả khi lỗi' },
     ],
     perks: AUTH_PERKS,
@@ -58,7 +58,7 @@ const PANEL_CONTENT: Record<AuthBrandPanelProps['variant'], PanelContent> = {
       'Tạo tài khoản để lưu địa chỉ nhận hàng, theo dõi đơn và gửi yêu cầu đổi trả, hỗ trợ trực tuyến.',
     metrics: [
       { value: String(STORE_SHOWROOMS.length), label: 'Showroom HN & HCM' },
-      { value: '63', label: 'Tỉnh thành giao tới' },
+      { value: 'Toàn quốc', label: 'Giao hàng & lắp đặt' },
       { value: `${STORE_POLICY_FACTS.returnWindowDays} ngày`, label: 'Đổi trả khi lỗi' },
     ],
     perks: AUTH_PERKS,

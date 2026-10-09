@@ -3,11 +3,13 @@ import { RotateCcw, ShieldCheck, Truck } from 'lucide-react';
 import { buttonVariants } from '@/foundation/components/buttons';
 import { DescriptionList, IconList, type IconListItem } from '@/foundation/components/structure';
 import { formatVnd } from '@/shared/format/money';
+import { STORE_POLICY_FACTS } from '@/shared/constants';
 
 const TRUST_COMMITMENTS: IconListItem[] = [
-  { icon: ShieldCheck, label: '100% Chính hãng Bảo An Sport · Bảo hành 24T' },
-  { icon: RotateCcw, label: 'Đổi mới trong 7 ngày nếu lỗi từ NSX' },
-  { icon: Truck, label: 'Kiểm tra hàng trước khi thanh toán COD' },
+  // Cam kết lấy từ `STORE_POLICY_FACTS` (khớp CMS); bản trước ghi "7 ngày", "bảo hành 24T".
+  { icon: ShieldCheck, label: STORE_POLICY_FACTS.warrantySummary },
+  { icon: RotateCcw, label: STORE_POLICY_FACTS.returnSummary },
+  { icon: Truck, label: STORE_POLICY_FACTS.shippingSummary },
 ];
 
 interface CartSummaryProps {

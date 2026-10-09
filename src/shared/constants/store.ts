@@ -51,7 +51,7 @@ export const STORE_CONTACT = {
  * Cam kết dùng trên UI (topbar, hero, đăng nhập...) — nguồn duy nhất, khớp bài POLICY trên CMS.
  * Đổi chính sách thì sửa CMS rồi sửa ở đây; component không tự viết số ngày/số giờ.
  * Nguồn (09/10/2026): `/chinh-sach/chinh-sach-doi-tra` — đổi/trả trong 3 ngày khi lỗi NSX, giao
- * nhầm hoặc hư hại khi vận chuyển; `/chinh-sach/van-chuyen-giao-hang` — giao 63 tỉnh, lắp đặt tận
+ * nhầm hoặc hư hại khi vận chuyển; `/chinh-sach/van-chuyen-giao-hang` — giao toàn quốc, lắp đặt tận
  * nơi hàng cồng kềnh. Bài bảo hành không nêu thời hạn chung nên UI không ghi số năm/tháng.
  */
 export const STORE_POLICY_FACTS = {

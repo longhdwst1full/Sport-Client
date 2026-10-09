@@ -13,7 +13,7 @@ import {
 import { useContentStories } from '../hooks/use-content-stories';
 import { Button } from '@/foundation/components/buttons';
 import { Skeleton } from '@/foundation/components/feedback';
-import { CONTENT_POST_TYPE_LABELS, type ContentPostView } from '../model/content-post.mapper';
+import { CONTENT_POST_TYPE_LABELS, type ContentPostView, EDITORIAL_POST_TYPES } from '../model/content-post.mapper';
 
 const ALL_CATEGORY = 'ALL';
 
@@ -27,11 +27,7 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
   const [activeCat, setActiveCat] = useState<string>(ALL_CATEGORY);
   const [expanded, setExpanded] = useState(false);
 
-  // Bộ lọc dựng từ loại bài thật đang có, không phải danh sách cố định.
-  const categories = useMemo(
-    () => [ALL_CATEGORY, ...new Set(allArticles.map((article) => article.postType))],
-    [allArticles],
-  );
+  const categories: string[] = [ALL_CATEGORY, ...EDITORIAL_POST_TYPES];
 
   const displayedArticles = useMemo(() => {
     if (activeCat === ALL_CATEGORY) return allArticles;

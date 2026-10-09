@@ -29,7 +29,7 @@ Màu, cỡ, bo góc và style lặp khai **một chỗ**; component chỉ dùng 
 <button className="bg-gradient-to-r from-red-600 to-red-700">Mua ngay</button>
 <div className="bg-sky-50 text-slate-600 border-rose-200" />
 // ✅
-<Button variant="primary">Mua ngay</Button>
+<Button variant="cta">Mua ngay</Button>
 <div className="bg-neutral-50 text-neutral-600 border-red-200" />
 ```
 

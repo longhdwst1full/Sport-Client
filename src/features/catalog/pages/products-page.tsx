@@ -1,12 +1,9 @@
-import { Suspense } from 'react';
 import { listCatalogProducts } from '@/generated/api/catalog/catalog';
 import Link from 'next/link';
 import { ShieldCheck, Truck, RotateCcw, CreditCard } from 'lucide-react';
 import { STORE_POLICY_PAGES } from '@/shared/constants';
 import { Breadcrumb } from '@/foundation/components/navigation';
-import { Skeleton } from '@/foundation/components/feedback';
 import { ProductsCatalogView } from '../components/products-catalog-view';
-import { ProductCardSkeleton } from '../components/product-card';
 import { CATALOG_PAGE_SIZE } from '../model/product.mapper';
 import { parseCatalogUrlState, type CatalogListFilters } from '../model/catalog-filter.constants';
 import type { CatalogInitialPage } from '../hooks/use-catalog-filters';
@@ -37,28 +34,6 @@ export async function loadCatalogFirstPage(
 type SearchParamsRecord = Record<string, string | string[] | undefined>;
 import { FlashSaleSection } from '@/features/promotions';
 
-
-/** Khung chờ cùng bố cục `ProductsCatalogView` (sidebar lg + lưới 3 cột) để khỏi nhảy layout khi hydrate. */
-function ProductsCatalogViewSkeleton() {
-  return (
-    <div className="flex flex-col gap-8 lg:flex-row lg:items-start" role="status" aria-label="Đang tải danh mục sản phẩm">
-      <div className="hidden w-64 shrink-0 space-y-3 surface-card p-5 shadow-xs lg:block">
-        <Skeleton className="h-4 w-32 rounded" />
-        {Array.from({ length: 6 }, (_, i) => (
-          <Skeleton key={i} className="h-8 rounded-xl" />
-        ))}
-      </div>
-      <div className="min-w-0 flex-1">
-        <Skeleton className="mb-4 h-12 rounded-2xl" />
-        <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 xl:grid-cols-4">
-          {Array.from({ length: 8 }, (_, i) => (
-            <ProductCardSkeleton key={i} />
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
 
 export async function ProductsPage({
   searchParams,
@@ -113,10 +88,10 @@ export async function ProductsPage({
 
           {/* Interactive Products Catalog View */}
           <div className="mt-10">
-            {/* useSearchParams trong view cần ranh giới Suspense để trang vẫn prerender được. */}
-            <Suspense fallback={<ProductsCatalogViewSkeleton />}>
-              <ProductsCatalogView initial={initial} initialCategoryName={initialCategoryName} />
-            </Suspense>
+            {/* Không bọc Suspense: route đọc `searchParams` nên luôn render động, `useSearchParams` có sẵn
+                ở server. Bọc Suspense làm lưới bị stream SAU footer trong HTML (crawler đọc footer trước
+                sản phẩm) dù trên màn hình vẫn đúng thứ tự. */}
+            <ProductsCatalogView initial={initial} initialCategoryName={initialCategoryName} />
           </div>
 
           {/* Flash Deals Banner for Catalog */}

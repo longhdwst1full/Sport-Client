@@ -37,6 +37,12 @@ export const CONTENT_POST_TYPE_LABELS: Record<string, string> = {
 export const POLICY_POST_TYPE = 'POLICY';
 
 /**
+ * Tab lọc bài viết, thứ tự cố định — dùng chung cho trang chủ và `/news`. Trước đây mỗi nơi tự dựng
+ * tab từ những bài đã tải nên hai màn ra hai bộ tab khác nhau.
+ */
+export const EDITORIAL_POST_TYPES = ['PRODUCT_GUIDE', 'TRAINING_GUIDE', 'NEWS'] as const;
+
+/**
  * Số bài mỗi lượt tải của `/news` (server lấy trang 1, client "Xem thêm" các trang sau); khớp lưới
  * 3 cột x 4 hàng. Đặt ở model, không ở hook `'use client'`, để route server import được giá trị thật.
  */

@@ -64,6 +64,17 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'www.baoansport.vn' },
     ],
   },
+  async redirects() {
+    return [
+      // Hai bài bảo mật trùng nội dung: giữ `bao-mat-thong-tin-khach-hang` làm bản chuẩn, bản kia
+      // ẩn trên CMS (migration ở repo api) và chuyển hướng vĩnh viễn để link/SEO cũ không 404.
+      {
+        source: '/chinh-sach/chinh-sach-bao-mat-ca-nhan',
+        destination: '/chinh-sach/bao-mat-thong-tin-khach-hang',
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {

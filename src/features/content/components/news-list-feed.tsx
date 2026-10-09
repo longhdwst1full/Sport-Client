@@ -7,7 +7,7 @@ import { Button } from '@/foundation/components/buttons';
 import { EmptyState, Skeleton, SkeletonText } from '@/foundation/components/feedback';
 import { CoverImage } from './cover-image';
 import { usePaginatedContentPosts } from '../hooks/use-paginated-content-posts';
-import { CONTENT_POST_TYPE_LABELS, type ContentPostView } from '../model/content-post.mapper';
+import { CONTENT_POST_TYPE_LABELS, type ContentPostView, EDITORIAL_POST_TYPES } from '../model/content-post.mapper';
 
 const ALL_CATEGORY = 'ALL';
 const FOCUS_RING =
@@ -28,8 +28,7 @@ export function NewsListFeed({
   const { posts: articles, isPending, isError, hasMore, isLoadingMore, loadMore, retry } =
     usePaginatedContentPosts({ initialPosts, initialHasMore });
 
-  // Bộ lọc dựng từ đúng những loại bài đang có, không phải danh sách cố định.
-  const categories = [ALL_CATEGORY, ...new Set(articles.map((article) => article.postType))];
+  const categories: string[] = [ALL_CATEGORY, ...EDITORIAL_POST_TYPES];
 
   const filtered =
     selectedCat === ALL_CATEGORY

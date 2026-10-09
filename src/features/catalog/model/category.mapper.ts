@@ -17,6 +17,8 @@ export interface CategoryCardView {
   itemCountLabel: string;
   imageUrl: string | null;
   icon: LucideIcon;
+  /** Danh mục con có sản phẩm (chỉ có khi dựng bằng `toCategoryTreeCardViews`). */
+  subcategories?: Array<{ slug: string; title: string }>;
 }
 
 /**
@@ -45,6 +47,27 @@ export function toCategoryCardView(dto: CatalogCategoryDto): CategoryCardView {
     imageUrl: dto.imageUrl ?? null,
     icon: iconBySlug[dto.slug] ?? Dumbbell,
   };
+}
+
+/**
+ * Danh sách `/category`: chỉ danh mục gốc (có sản phẩm ở chính nó hoặc ở con), danh mục con thành chip
+ * trong thẻ cha — thay vì ~60 thẻ ngang hàng, phần lớn chỉ 1–2 sản phẩm.
+ */
+export function toCategoryTreeCardViews(dtos: readonly CatalogCategoryDto[]): CategoryCardView[] {
+  const childrenByParent = new Map<string, CatalogCategoryDto[]>();
+  for (const dto of dtos) {
+    if (!dto.parentSlug || dto.productCount <= 0) continue;
+    childrenByParent.set(dto.parentSlug, [...(childrenByParent.get(dto.parentSlug) ?? []), dto]);
+  }
+  return dtos
+    .filter((dto) => !dto.parentSlug && (dto.productCount > 0 || childrenByParent.has(dto.slug)))
+    .sort((left, right) => right.productCount - left.productCount)
+    .map((dto) => ({
+      ...toCategoryCardView(dto),
+      subcategories: (childrenByParent.get(dto.slug) ?? [])
+        .sort((left, right) => right.productCount - left.productCount)
+        .map((child) => ({ slug: child.slug, title: child.name })),
+    }));
 }
 
 export interface CategoryRailView {

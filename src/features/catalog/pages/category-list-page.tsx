@@ -3,14 +3,14 @@ import { ArrowRight } from 'lucide-react';
 import { Breadcrumb } from '@/foundation/components/navigation';
 import type { CatalogCategoryDto } from '@/generated/api/catalog/catalog.schemas';
 import { CategoryGrid } from '../components/category-grid';
-import { toCategoryCardView } from '../model/category.mapper';
+import { toCategoryTreeCardViews } from '../model/category.mapper';
 
 /**
  * Cây danh mục do route truyền vào (cache dùng chung). CONTRACT: API lỗi thì route truyền mảng rỗng,
  * trang render empty state thay vì lỗi 500 và không bịa dữ liệu.
  */
 export function CategoryListPage({ categories }: { categories: CatalogCategoryDto[] }) {
-  const items = categories.map(toCategoryCardView);
+  const items = toCategoryTreeCardViews(categories);
 
   return (
       <main className="page-shell">

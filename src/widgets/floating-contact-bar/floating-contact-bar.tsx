@@ -58,7 +58,7 @@ export function FloatingContactBar() {
           <MessageSquare aria-hidden className="size-5 text-neutral-600 animate-phone-vibrate" />
         </a>
 
-        {/* 24/7 Hotline Call Button */}
+        {/* Hotline Call Button */}
         <a
           href={`tel:${STORE_CONTACT.primaryHotlineRaw}`}
           className={FLOAT_BUTTON}

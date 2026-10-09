@@ -143,7 +143,7 @@ export function RegisterForm({ form, isPending, acceptedTerms, onAcceptedTermsCh
           <span>Đang khởi tạo tài khoản…</span>
         ) : (
           <>
-            <span>Đăng ký & Nhận voucher 200.000đ</span>
+            <span>Tạo tài khoản</span>
             <ArrowRight className="size-4" aria-hidden />
           </>
         )}
