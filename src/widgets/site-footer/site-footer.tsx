@@ -92,12 +92,12 @@ export function SiteFooter({ categories }: { categories?: readonly FooterCategor
 
   return (
     <footer
-      className="relative overflow-hidden border-t border-neutral-800/80 bg-gradient-to-b from-neutral-950 via-neutral-950 to-black px-4 py-12 sm:py-16 text-white sm:px-6 lg:px-10"
+      className="relative overflow-hidden border-t border-slate-800 bg-gradient-to-b from-slate-900 via-slate-950 to-slate-950 px-4 py-12 sm:py-16 text-white sm:px-6 lg:px-10"
     >
       {/* Subtle top ambient lighting */}
-      <div className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 h-px w-3/4 max-w-4xl bg-gradient-to-r from-transparent via-red-500/25 to-transparent" />
-      <div className="pointer-events-none absolute -top-40 left-1/4 size-96 rounded-full bg-red-950/10 blur-[120px]" />
-      <div className="pointer-events-none absolute -bottom-40 right-1/4 size-96 rounded-full bg-neutral-950/10 blur-[120px]" />
+      <div className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 h-px w-3/4 max-w-4xl bg-gradient-to-r from-transparent via-red-500/40 to-transparent" />
+      <div className="pointer-events-none absolute -top-40 left-1/4 size-96 rounded-full bg-red-600/10 blur-[120px]" />
+      <div className="pointer-events-none absolute -bottom-40 right-1/4 size-96 rounded-full bg-sky-600/10 blur-[120px]" />
 
       <div className="relative mx-auto grid max-w-7xl grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1.1fr] [&>*]:min-w-0">
         <div className="space-y-4">
@@ -113,14 +113,14 @@ export function SiteFooter({ categories }: { categories?: readonly FooterCategor
             </div>
           </div>
 
-          <p className="max-w-md text-sm leading-relaxed text-neutral-300">
+          <p className="max-w-md text-sm leading-relaxed text-slate-300 font-medium">
             Bảo An Sport chuyên cung cấp dụng cụ thể thao, thiết bị Gym, máy tập thể hình và phụ kiện chính hãng. Mẫu mã đa dạng, giao hàng toàn quốc, tư vấn tận tâm.
           </p>
 
-          <div className="rounded-xl border border-neutral-800/90 bg-neutral-900/60 p-4 text-xs text-neutral-300 space-y-1.5">
-            <div className="font-bold text-neutral-200 text-xs sm:text-[13px]">Thông tin đăng ký doanh nghiệp:</div>
-            <p className="text-xs sm:text-[12.5px] leading-relaxed text-neutral-400">
-              Giấy chứng nhận ĐKKD số <span className="font-bold text-neutral-300">01M8027099</span> do phòng Tài chính - Kế hoạch quận Hoàng Mai, TP. Hà Nội cấp ngày 01/03/2021.
+          <div className="rounded-2xl border border-slate-800 bg-slate-900/80 p-4 text-xs text-slate-300 space-y-1.5 shadow-sm">
+            <div className="font-extrabold text-white text-xs sm:text-[13px]">Thông tin đăng ký doanh nghiệp:</div>
+            <p className="text-xs sm:text-[12.5px] leading-relaxed text-slate-300">
+              Giấy chứng nhận ĐKKD số <span className="font-black text-amber-400">01M8027099</span> do phòng Tài chính - Kế hoạch quận Hoàng Mai, TP. Hà Nội cấp ngày 01/03/2021.
             </p>
           </div>
 
@@ -132,7 +132,7 @@ export function SiteFooter({ categories }: { categories?: readonly FooterCategor
               className="group inline-flex items-center gap-3 rounded-lg transition hover:opacity-90 focus-visible:outline-white"
               title="Website đã thông báo Bộ Công Thương"
             >
-              <div className="relative h-12 w-36 overflow-hidden rounded-lg bg-white/10 p-1 border border-white/15">
+              <div className="relative h-12 w-36 overflow-hidden rounded-lg bg-white/10 p-1 border border-white/20">
                 <Image
                   src="/images/bo-cong-thuong.png"
                   alt="Đã thông báo Bộ Công Thương"
@@ -141,11 +141,11 @@ export function SiteFooter({ categories }: { categories?: readonly FooterCategor
                   className="object-contain p-1"
                 />
               </div>
-              <div className="text-xs text-neutral-300 leading-tight">
-                <span className="block font-bold text-neutral-200 group-hover:text-neutral-300">
+              <div className="text-xs text-slate-300 leading-tight">
+                <span className="block font-bold text-white group-hover:text-slate-200">
                   Bộ Công Thương
                 </span>
-                <span className="text-neutral-400">Đã thông báo website TMĐT</span>
+                <span className="text-slate-400">Đã thông báo website TMĐT</span>
               </div>
             </a>
           </div>
@@ -158,7 +158,7 @@ export function SiteFooter({ categories }: { categories?: readonly FooterCategor
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`${label} (mở tab mới)`}
-                className={`grid size-11 place-items-center rounded-xl border backdrop-blur-xs transition-all duration-200 focus-visible:outline-white ${className}`}
+                className={`grid size-11 place-items-center rounded-xl border backdrop-blur-xs transition-all duration-300 hover:scale-110 focus-visible:outline-white ${className}`}
               >
                 <Icon aria-hidden className="size-5" />
               </a>
@@ -170,43 +170,49 @@ export function SiteFooter({ categories }: { categories?: readonly FooterCategor
         <FooterLinkColumn title="Thông tin & Chính sách" links={POLICY_LINKS} />
 
         <section aria-labelledby="footer-showrooms">
-          <h2 id="footer-showrooms" className="text-sm font-bold uppercase tracking-wider text-white">
+          <h2 id="footer-showrooms" className="text-sm font-black uppercase tracking-wider text-white">
             Hệ thống Showroom
           </h2>
-          <div className="mt-4 space-y-3.5 text-sm text-neutral-300">
+          <div className="mt-4 space-y-3.5 text-sm text-slate-300">
             {SHOWROOMS.map((showroom) => (
               <ShowroomCard key={showroom.name} showroom={showroom} />
             ))}
 
-            <div className="pt-1 space-y-1.5 text-sm text-neutral-300">
+            <div className="pt-1 space-y-1.5 text-sm text-slate-300 font-medium">
               <a
-                className="inline-flex min-h-11 items-center gap-2 break-all transition hover:text-neutral-300"
+                className="inline-flex min-h-11 items-center gap-2 break-all transition text-slate-200 hover:text-white hover:underline"
                 href={`mailto:${STORE_CONTACT.email}`}
               >
-                <Mail aria-hidden className="size-4 shrink-0 text-neutral-300" />
+                <Mail aria-hidden className="size-4 shrink-0 text-red-400" />
                 Email: {STORE_CONTACT.email}
               </a>
-              <p className="text-xs text-neutral-400">Mở cửa: {STORE_CONTACT.openingHours}</p>
+              <p className="text-xs text-slate-400">Mở cửa: {STORE_CONTACT.openingHours}</p>
             </div>
           </div>
         </section>
       </div>
 
-      <div className="mx-auto mt-12 max-w-7xl border-t border-neutral-800/80 pt-8">
+      <div className="mx-auto mt-12 max-w-7xl border-t border-slate-800 pt-8">
         <div className="flex flex-wrap items-center justify-between gap-6">
-          <div className="flex flex-wrap items-center gap-6 text-sm font-medium text-neutral-300">
-            {TRUST_BADGES.map(({ icon: Icon, label }) => (
-              <span key={label} className="inline-flex items-center gap-2">
-                <Icon aria-hidden className="size-4.5 text-neutral-300" />
-                {label}
-              </span>
-            ))}
+          <div className="flex flex-wrap items-center gap-6 text-xs sm:text-sm font-bold text-slate-200">
+            <span className="inline-flex items-center gap-2">
+              <ShieldCheck aria-hidden className="size-5 text-emerald-400" />
+              Hàng chính hãng 100%
+            </span>
+            <span className="inline-flex items-center gap-2">
+              <Truck aria-hidden className="size-5 text-sky-400" />
+              Giao hàng & lắp đặt toàn quốc
+            </span>
+            <span className="inline-flex items-center gap-2">
+              <CreditCard aria-hidden className="size-5 text-amber-400" />
+              Thanh toán an toàn 100%
+            </span>
           </div>
-          <div className="flex flex-wrap items-center gap-2.5 text-xs text-neutral-400">
+          <div className="flex flex-wrap items-center gap-2.5 text-xs text-slate-300">
             {PAYMENT_METHODS.map((method) => (
               <span
                 key={method}
-                className="rounded border border-neutral-800 bg-neutral-900 px-2.5 py-1 text-xs font-bold text-neutral-300"
+                className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-1 text-xs font-black text-slate-200 shadow-2xs"
               >
                 {method}
               </span>
@@ -215,7 +221,7 @@ export function SiteFooter({ categories }: { categories?: readonly FooterCategor
         </div>
       </div>
 
-      <div className="mx-auto mt-8 flex flex-col justify-between gap-3 max-w-7xl border-t border-neutral-800/80 pt-6 text-xs sm:text-sm text-neutral-400 sm:flex-row sm:items-center">
+      <div className="mx-auto mt-8 flex flex-col justify-between gap-3 max-w-7xl border-t border-slate-800 pt-6 text-xs sm:text-sm text-slate-400 sm:flex-row sm:items-center">
         <div>
           © {new Date().getFullYear()} {STORE_CONFIG.legalName} ({STORE_CONFIG.name}). Chuyên cung cấp dụng cụ thể thao, thiết bị thể dục và thể hình chính hãng uy tín toàn quốc.
         </div>

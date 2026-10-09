@@ -52,14 +52,22 @@ export function NewsletterSignup({ source, tone = 'light' }: { source: string; t
         inputMode="email"
         value={email}
         onChange={(event) => setEmail(event.target.value)}
-        placeholder="Email của bạn"
-        className={dark ? 'border-white/20 bg-white/5 text-white placeholder:text-neutral-400' : ''}
+        placeholder="Nhập email của bạn..."
+        className={
+          dark
+            ? 'rounded-xl border-slate-700 bg-slate-900/90 text-white placeholder:text-slate-400 focus:border-red-500 focus:ring-2 focus:ring-red-500/30 font-medium'
+            : 'rounded-xl border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus:border-red-600 font-medium'
+        }
       />
       <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
         <input tabIndex={-1} autoComplete="off" value={website} onChange={(event) => setWebsite(event.target.value)} />
       </div>
-      <Button type="submit" variant={dark ? 'inverse' : 'primary'} disabled={mutation.isPending} className="shrink-0 whitespace-nowrap px-5">
-        {mutation.isPending ? 'Đang gửi…' : 'Nhận tin'}
+      <Button
+        type="submit"
+        disabled={mutation.isPending}
+        className="shrink-0 whitespace-nowrap rounded-xl bg-gradient-to-r from-red-600 via-red-600 to-rose-600 px-6 text-sm font-black text-white shadow-md shadow-red-600/30 border border-red-500/30 hover:from-red-700 hover:to-rose-700 hover:shadow-lg hover:-translate-y-0.5 active:scale-95 transition-all duration-200"
+      >
+        <span>{mutation.isPending ? 'Đang gửi…' : 'Nhận tin'}</span>
       </Button>
       {mutation.isError && (
         <p role="alert" className={`text-xs sm:basis-full ${dark ? 'text-red-300' : 'text-red-700'}`}>

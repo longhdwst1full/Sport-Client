@@ -3,26 +3,28 @@ import Link from 'next/link';
 import { Activity, Bike, Dumbbell, Footprints, HeartPulse, Swords, Trophy } from 'lucide-react';
 import type { CategoryRailView } from '@/features/catalog';
 
-function getCategoryIcon(name: string) {
+function getCategoryIconStyle(name: string) {
   const n = name.toLowerCase();
-  if (n.includes('gym') || n.includes('tạ')) return Dumbbell;
-  if (n.includes('chạy') || n.includes('đi bộ')) return Footprints;
-  if (n.includes('bóng bàn') || n.includes('bóng rổ') || n.includes('bóng chuyền') || n.includes('cầu lông') || n.includes('tennis') || n.includes('pickleball')) return Trophy;
-  if (n.includes('võ') || n.includes('boxing') || n.includes('đấm')) return Swords;
-  if (n.includes('xe đạp')) return Bike;
-  if (n.includes('yoga')) return HeartPulse;
-  if (n.includes('thể dục') || n.includes('bơi')) return Activity;
-  return Dumbbell;
+  if (n.includes('gym') || n.includes('tạ')) return { Icon: Dumbbell, color: 'text-rose-600 bg-rose-50 border-rose-200 group-hover:bg-rose-600 group-hover:text-white' };
+  if (n.includes('chạy') || n.includes('đi bộ')) return { Icon: Footprints, color: 'text-amber-600 bg-amber-50 border-amber-200 group-hover:bg-amber-600 group-hover:text-white' };
+  if (n.includes('bóng bàn') || n.includes('bóng rổ') || n.includes('bóng chuyền') || n.includes('cầu lông') || n.includes('tennis') || n.includes('pickleball')) return { Icon: Trophy, color: 'text-amber-600 bg-amber-50 border-amber-200 group-hover:bg-amber-600 group-hover:text-white' };
+  if (n.includes('võ') || n.includes('boxing') || n.includes('đấm')) return { Icon: Swords, color: 'text-red-600 bg-red-50 border-red-200 group-hover:bg-red-600 group-hover:text-white' };
+  if (n.includes('xe đạp')) return { Icon: Bike, color: 'text-sky-600 bg-sky-50 border-sky-200 group-hover:bg-sky-600 group-hover:text-white' };
+  if (n.includes('yoga')) return { Icon: HeartPulse, color: 'text-purple-600 bg-purple-50 border-purple-200 group-hover:bg-purple-600 group-hover:text-white' };
+  if (n.includes('thể dục') || n.includes('bơi')) return { Icon: Activity, color: 'text-emerald-600 bg-emerald-50 border-emerald-200 group-hover:bg-emerald-600 group-hover:text-white' };
+  return { Icon: Dumbbell, color: 'text-red-600 bg-red-50 border-red-200 group-hover:bg-red-600 group-hover:text-white' };
 }
 
 export function CategoryRailItem({ category }: { category: CategoryRailView }) {
+  const { Icon, color } = getCategoryIconStyle(category.name);
+
   return (
     <Link
       href={category.href}
-      className="group relative flex flex-col items-center justify-between p-4 sm:p-5 w-[160px] sm:w-[190px] md:w-[200px] shrink-0 snap-start surface-card shadow-sm transition-all duration-300 hover:-translate-y-2 hover:border-neutral-400 hover:shadow-xl hover:shadow-neutral-900/10 text-center focus-ring"
+      className="group relative flex flex-col items-center justify-between p-4 sm:p-5 w-[160px] sm:w-[190px] md:w-[200px] shrink-0 snap-start rounded-3xl border border-slate-200/90 bg-white shadow-xs transition-all duration-300 hover:-translate-y-2 hover:border-red-500/80 hover:shadow-xl hover:shadow-red-600/15 text-center focus-ring"
     >
-      {/* Ultra-Rounded Circular Image Avatar (Border Tròn Đi) */}
-      <div className="relative mt-2 size-24 sm:size-28 rounded-full bg-gradient-to-b from-neutral-50 to-neutral-50/40 p-2.5 border-2 border-neutral-200/80 group-hover:border-neutral-900 group-hover:ring-4 group-hover:ring-neutral-900/15 shadow-inner transition-all duration-300 overflow-hidden">
+      {/* Ultra-Rounded Glowing Circular Image Avatar */}
+      <div className="relative mt-2 size-24 sm:size-28 rounded-full bg-gradient-to-br from-neutral-50 via-white to-neutral-100 p-2 border-2 border-slate-200/80 group-hover:border-red-600 group-hover:ring-4 group-hover:ring-red-500/20 shadow-inner transition-all duration-300 overflow-hidden">
         {category.imageUrl ? (
           <Image
             src={category.imageUrl}
@@ -32,21 +34,18 @@ export function CategoryRailItem({ category }: { category: CategoryRailView }) {
             className="object-contain p-2 transition-transform duration-500 group-hover:scale-110"
           />
         ) : (
-          <div className="absolute inset-0 grid place-items-center bg-neutral-50/60 text-neutral-900 transition-transform duration-300 group-hover:scale-110">
-            {(() => {
-              const Icon = getCategoryIcon(category.name);
-              return <Icon className="size-10 stroke-[1.75]" aria-hidden="true" />;
-            })()}
+          <div className="absolute inset-0 grid place-items-center bg-slate-50 text-slate-800 transition-transform duration-300 group-hover:scale-110">
+            <Icon className="size-10 stroke-[1.75]" aria-hidden="true" />
           </div>
         )}
       </div>
 
-      {/* Category Name & Count with Rounded Tag */}
+      {/* Category Name & Count with Vibrant Red Pill Tag */}
       <div className="mt-4 w-full">
-        <h3 className="text-xs sm:text-sm font-bold text-neutral-800 transition-colors group-hover:text-neutral-900 line-clamp-1 leading-snug">
+        <h3 className="text-xs sm:text-sm font-black text-slate-900 transition-colors group-hover:text-red-600 line-clamp-1 leading-snug">
           {category.name}
         </h3>
-        <div className="mt-2 inline-flex items-center rounded-full bg-neutral-100 group-hover:bg-neutral-50 group-hover:text-neutral-900 px-2.5 py-0.5 text-xs font-semibold text-neutral-500 transition-colors">
+        <div className={`mt-2 inline-flex items-center rounded-full border px-3 py-0.5 text-xs font-extrabold shadow-2xs transition-all duration-300 ${color}`}>
           {category.count}
         </div>
       </div>

@@ -89,11 +89,11 @@ export const ProductCard = memo(function ProductCard({
 
             {onBuyNow && (
               <Button
-                variant="outline"
+                variant="cta"
                 fullWidth
                 onClick={(e) => onBuyNow(product, e)}
                 disabled={!product.hasPrice || product.inStock === false}
-                className="relative z-10 mt-3 gap-1.5 rounded-xl border-slate-200 bg-slate-50 px-3 text-xs font-extrabold text-slate-800 hover:border-red-600 hover:bg-red-600 hover:text-white transition-all duration-200 sm:text-sm shadow-2xs disabled:border-slate-200 disabled:bg-slate-100 disabled:text-slate-400 disabled:shadow-none"
+                className="relative z-10 mt-3 gap-1.5 rounded-xl bg-gradient-to-r from-red-600 via-red-600 to-rose-600 px-4 py-2.5 text-xs font-black text-white shadow-md shadow-red-500/20 border border-red-500/30 transition-all duration-200 hover:from-red-700 hover:to-rose-700 hover:shadow-lg hover:shadow-red-600/30 hover:-translate-y-0.5 active:scale-95 sm:text-sm disabled:border-slate-200 disabled:bg-slate-100 disabled:text-slate-400 disabled:shadow-none"
                 title={
                   product.inStock === false
                     ? 'Sản phẩm tạm hết hàng'
@@ -105,7 +105,7 @@ export const ProductCard = memo(function ProductCard({
                 }
                 aria-label={`Mua ngay ${product.name}`}
               >
-                <Zap aria-hidden className="size-3.5 text-amber-500 group-hover:text-white transition-colors" />
+                <Zap aria-hidden className="size-4 fill-amber-300 text-amber-300 drop-shadow-xs shrink-0" />
                 <span>{product.inStock === false ? 'Tạm hết hàng' : 'Mua ngay'}</span>
               </Button>
             )}

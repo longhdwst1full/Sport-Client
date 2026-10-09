@@ -104,35 +104,35 @@ export function SmartFitAdvisor() {
 
   return (
     <section className="page-section">
-      <div className={`relative overflow-hidden rounded-3xl border border-slate-200/90 bg-gradient-to-b from-slate-50/90 via-white to-slate-50/50 p-6 sm:p-10 lg:p-12 text-slate-950 shadow-sm ${SMART_FIT_CARD_MIN_HEIGHT}`}>
-        {/* Subtle Ambient Glow */}
-        <div className="pointer-events-none absolute -right-16 -top-16 size-72 rounded-full bg-red-500/10 blur-3xl" aria-hidden="true" />
-        <div className="pointer-events-none absolute -left-16 -bottom-16 size-72 rounded-full bg-sky-500/10 blur-3xl" aria-hidden="true" />
+      <div className={`relative overflow-hidden rounded-3xl border border-slate-800 bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 p-6 sm:p-10 lg:p-12 text-white shadow-2xl ${SMART_FIT_CARD_MIN_HEIGHT}`}>
+        {/* Subtle Ambient Glowing Spheres */}
+        <div className="pointer-events-none absolute -right-20 -top-20 size-80 rounded-full bg-red-600/20 blur-3xl" aria-hidden="true" />
+        <div className="pointer-events-none absolute -left-20 -bottom-20 size-80 rounded-full bg-sky-600/20 blur-3xl" aria-hidden="true" />
 
         {/* Header */}
-        <div className="relative z-10 flex flex-col md:flex-row md:items-end md:justify-between gap-6 border-b border-slate-200/80 pb-8">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-end md:justify-between gap-6 border-b border-slate-800/80 pb-8">
           <div>
-            <div className="inline-flex items-center gap-1.5 rounded-full border border-sky-200 bg-sky-50/80 px-3 py-0.5 text-xs font-black uppercase tracking-wider text-sky-700 shadow-2xs">
-              <Sparkles className="size-3 text-sky-500" aria-hidden="true" />
+            <div className="inline-flex items-center gap-1.5 rounded-full border border-sky-400/30 bg-sky-500/10 px-3.5 py-1 text-xs font-black uppercase tracking-wider text-sky-400 shadow-xs backdrop-blur-md">
+              <Sparkles className="size-3.5 text-sky-400 animate-pulse" aria-hidden="true" />
               Smart Fit Advisor
             </div>
-            <h2 className="mt-2.5 text-2xl sm:text-3xl lg:text-4xl font-black text-slate-950 tracking-tight">
+            <h2 className="mt-3 text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-white">
               Không Chỉ Bán Thiết Bị. Chúng Tôi Giúp Bạn Chọn Đúng.
             </h2>
-            <p className="mt-2 text-sm text-slate-600 font-medium max-w-2xl">
+            <p className="mt-2 text-sm text-slate-300 font-medium max-w-2xl leading-relaxed">
               Chỉ mất 30 giây để xác định cấu hình phòng tập chuẩn huấn luyện theo diện tích, mục tiêu và khả năng chi trả.
             </p>
           </div>
 
           {step < 4 ? (
-            <div className="flex items-center gap-2.5 rounded-2xl border border-slate-200 bg-white px-4 py-2 text-xs font-black text-slate-700 shadow-2xs">
+            <div className="flex items-center gap-2.5 rounded-2xl border border-slate-700 bg-slate-900/90 px-4 py-2 text-xs font-black text-slate-200 shadow-md">
               <span>Bước {step}/3</span>
               <div className="flex gap-1.5" aria-hidden="true">
                 {[1, 2, 3].map((s) => (
                   <span
                     key={s}
                     className={`h-2 w-6 rounded-full transition-all duration-300 ${
-                      s <= step ? 'bg-red-600 shadow-xs' : 'bg-slate-200'
+                      s <= step ? 'bg-red-500 shadow-sm shadow-red-500/50' : 'bg-slate-700'
                     }`}
                   />
                 ))}
@@ -143,9 +143,9 @@ export function SmartFitAdvisor() {
               variant="secondary"
               size="sm"
               onClick={handleReset}
-              className={`gap-1.5 rounded-full px-4 border-slate-300 font-bold ${ADVISOR_SECONDARY_BUTTON}`}
+              className="gap-1.5 rounded-full px-4 border-slate-700 bg-slate-800 text-white hover:bg-slate-700 font-bold"
             >
-              <RefreshCw className="size-3.5 text-red-600" aria-hidden="true" />
+              <RefreshCw className="size-3.5 text-red-400" aria-hidden="true" />
               <span>Làm lại từ đầu</span>
             </Button>
           )}
@@ -165,15 +165,24 @@ export function SmartFitAdvisor() {
               NextIcon={ArrowRight}
               renderCard={(g, isSelected) => {
                 const Icon = g.icon;
+                const iconColors: Record<string, { tile: string; text: string }> = {
+                  muscle: { tile: 'bg-rose-500/20 border-rose-500/40 text-rose-400', text: 'text-rose-400' },
+                  fatloss: { tile: 'bg-amber-500/20 border-amber-500/40 text-amber-400', text: 'text-amber-400' },
+                  health: { tile: 'bg-emerald-500/20 border-emerald-500/40 text-emerald-400', text: 'text-emerald-400' },
+                  rehab: { tile: 'bg-sky-500/20 border-sky-500/40 text-sky-400', text: 'text-sky-400' },
+                };
+                const style = iconColors[g.id] || { tile: 'bg-slate-800 border-slate-700 text-slate-200', text: 'text-slate-200' };
+
                 return (
                   <OptionCardContent
                     isSelected={isSelected}
                     label={g.label}
                     desc={g.desc}
+                    labelClassName="text-sm sm:text-base text-white font-extrabold"
                     lead={
-                      <OptionIconTile isSelected={isSelected}>
-                        <Icon className="size-5" />
-                      </OptionIconTile>
+                      <div className={`grid size-11 place-items-center rounded-xl border transition-all duration-300 ${style.tile} group-hover:scale-110`}>
+                        <Icon className="size-5 transition-transform duration-300 group-hover:rotate-6" />
+                      </div>
                     }
                   />
                 );
@@ -197,10 +206,11 @@ export function SmartFitAdvisor() {
                   isSelected={isSelected}
                   label={s.label}
                   desc={s.desc}
+                  labelClassName="text-sm sm:text-base text-white font-extrabold"
                   lead={
-                    <OptionIconTile isSelected={isSelected}>
+                    <div className="grid size-11 place-items-center rounded-xl border border-sky-500/40 bg-sky-500/20 text-sky-400 transition-all duration-300 group-hover:scale-110">
                       <Maximize2 className="size-5" />
-                    </OptionIconTile>
+                    </div>
                   }
                 />
               )}
@@ -223,9 +233,9 @@ export function SmartFitAdvisor() {
                   isSelected={isSelected}
                   label={b.label}
                   desc={b.desc}
-                  labelClassName="text-base sm:text-lg text-slate-950 font-black"
+                  labelClassName="text-base sm:text-lg text-white font-black"
                   lead={
-                    <span className="rounded-full border border-amber-300 bg-amber-100 px-3 py-0.5 text-xs font-black text-amber-900 shadow-2xs">
+                    <span className="rounded-full border border-amber-400/40 bg-amber-500/20 px-3 py-1 text-xs font-black text-amber-300 shadow-sm">
                       {b.label}
                     </span>
                   }

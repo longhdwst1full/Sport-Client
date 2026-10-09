@@ -22,30 +22,41 @@ const VIEW_ALL_CONTENT = (
 export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] }) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
-  // Dừng tự trượt khi cuộn khỏi màn hình, ẩn tab hoặc người dùng chọn giảm chuyển động.
   const autoplay = useAutoplayAllowed(sectionRef);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
 
+  // Repeat items for seamless circular infinite scrolling
+  const infiniteItems = items.length > 0 ? [...items, ...items, ...items] : [];
+
   const checkScrollability = useCallback(() => {
     const el = scrollContainerRef.current;
-    if (!el) return;
+    if (!el || items.length === 0) return;
 
     const { scrollLeft, scrollWidth, clientWidth } = el;
-    setCanScrollLeft(scrollLeft > 10);
-    setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
+    const cardStep = 210;
+    const rawIndex = Math.round(scrollLeft / cardStep);
+    const normalizedIndex = rawIndex % items.length;
+    setActiveIndex(normalizedIndex);
 
-    // Calculate approximate active index for indicator dots
-    const itemWidth = 190; // Average card width + gap
-    const index = Math.round(scrollLeft / itemWidth);
-    setActiveIndex(Math.min(index, items.length - 1));
+    // Seamless loop wrap: reset scroll position silently if reaching outer bounds
+    const singleSetWidth = (scrollWidth / 3);
+    if (scrollLeft >= singleSetWidth * 2) {
+      el.scrollTo({ left: scrollLeft - singleSetWidth, behavior: 'instant' as ScrollBehavior });
+    } else if (scrollLeft <= 10) {
+      el.scrollTo({ left: scrollLeft + singleSetWidth, behavior: 'instant' as ScrollBehavior });
+    }
   }, [items.length]);
 
   useEffect(() => {
     const el = scrollContainerRef.current;
     if (!el) return;
+
+    // Start in the middle set for infinite circular scroll in both directions
+    const cardStep = 210;
+    if (el.scrollLeft === 0 && items.length > 0) {
+      el.scrollLeft = items.length * cardStep;
+    }
 
     checkScrollability();
     el.addEventListener('scroll', checkScrollability, { passive: true });
@@ -55,30 +66,23 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
       el.removeEventListener('scroll', checkScrollability);
       window.removeEventListener('resize', checkScrollability);
     };
-  }, [checkScrollability]);
+  }, [checkScrollability, items.length]);
 
-  // Smooth scroll handler
+  // Infinite circular scroll handler
   const scroll = (direction: 'left' | 'right') => {
     const el = scrollContainerRef.current;
     if (!el) return;
 
-    const scrollAmount = Math.max(el.clientWidth * 0.75, 240);
+    const scrollAmount = Math.max(el.clientWidth * 0.75, 220);
     const targetScroll =
       direction === 'left'
         ? el.scrollLeft - scrollAmount
         : el.scrollLeft + scrollAmount;
 
-    // Wrap around if reached ends
-    if (direction === 'right' && el.scrollLeft + el.clientWidth >= el.scrollWidth - 15) {
-      el.scrollTo({ left: 0, behavior: 'smooth' });
-    } else if (direction === 'left' && el.scrollLeft <= 10) {
-      el.scrollTo({ left: el.scrollWidth, behavior: 'smooth' });
-    } else {
-      el.scrollTo({ left: targetScroll, behavior: 'smooth' });
-    }
+    el.scrollTo({ left: targetScroll, behavior: 'smooth' });
   };
 
-  // Auto-play sliding motion when not hovered
+  // Continuous auto-play circular motion
   useEffect(() => {
     if (isPaused || !autoplay) return;
 
@@ -86,34 +90,21 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
       const el = scrollContainerRef.current;
       if (!el) return;
 
-      // Auto glide by one card width
       const cardStep = 210;
-      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 15) {
-        el.scrollTo({ left: 0, behavior: 'smooth' });
-      } else {
-        el.scrollBy({ left: cardStep, behavior: 'smooth' });
-      }
-    }, 3800);
+      el.scrollBy({ left: cardStep, behavior: 'smooth' });
+    }, 3200);
 
     return () => clearInterval(interval);
   }, [isPaused, autoplay]);
-
-  const scrollToItem = (index: number) => {
-    const el = scrollContainerRef.current;
-    if (!el) return;
-    const cardStep = 210;
-    el.scrollTo({ left: index * cardStep, behavior: 'smooth' });
-  };
 
   return (
     <section
       ref={sectionRef}
       id="categories"
-      className="py-8 sm:py-12 bg-gradient-to-b from-neutral-50/80 via-white to-neutral-50/60 border-y border-neutral-200/80"
+      className="py-10 sm:py-14 bg-gradient-to-b from-slate-100/90 via-white to-slate-100/70 border-y border-slate-200/90"
       aria-label="Danh mục ngành hàng thể thao"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
-      // Bàn phím đang ở trong khối thì cũng dừng tự trượt (WCAG 2.2.2), không kéo focus khỏi tầm nhìn.
       onFocus={() => setIsPaused(true)}
       onBlur={(event) => {
         if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setIsPaused(false);
@@ -121,13 +112,16 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
     >
       <div className="page-container">
         {/* Section Header with Navigation Controls */}
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-4 sm:mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6 sm:mb-8">
           <div>
-            <p className="eyebrow text-neutral-900">Danh mục thiết bị</p>
-            <h2 className="mt-2 text-2xl font-bold tracking-tight text-neutral-900 sm:text-3xl lg:text-4xl">
-              Sản Phẩm Theo Danh Mục Ngành Hàng
+            <div className="inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-red-50/80 px-3 py-0.5 text-xs font-black uppercase tracking-wider text-red-600 shadow-2xs">
+              <span className="size-1.5 rounded-full bg-red-600 animate-pulse" />
+              Tìm nhanh theo bộ môn
+            </div>
+            <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-900 sm:text-3xl lg:text-4xl">
+              Bạn Muốn Tập Luyện Bộ Môn Nào?
             </h2>
-            <p className="mt-1 text-xs text-neutral-500 sm:text-sm">
+            <p className="mt-1 text-xs text-slate-500 font-medium sm:text-sm">
               Khám phá trang thiết bị thể thao chính hãng theo từng bộ môn chuyên biệt
             </p>
           </div>
@@ -136,23 +130,23 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
           <div className="flex items-center gap-3 self-end sm:self-auto">
             <Link
               href="/category"
-              className="inline-flex items-center gap-1.5 text-sm font-bold text-neutral-700 hover:text-neutral-950 hover:underline transition rounded focus-ring"
+              className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-black text-red-600 hover:text-red-700 hover:underline transition rounded focus-ring"
             >
               {VIEW_ALL_CONTENT}
             </Link>
           </div>
         </div>
 
-        {/* Motion Slider Track with Rounded Border Styling */}
+        {/* Circular Motion Slider Track */}
         <div className="relative group/slider">
           {/* Floating Left & Right Slider Navigation Arrows */}
           <Button
             variant="ghost"
             size="icon"
             onClick={() => scroll('left')}
-            className="absolute -left-3 sm:-left-5 top-1/2 -translate-y-1/2 z-20 size-11 rounded-full border border-neutral-200 bg-white/95 text-neutral-800 shadow-md backdrop-blur-sm transition-all duration-200 hover:border-neutral-900 hover:bg-neutral-900 hover:text-white active:scale-95 disabled:pointer-events-none disabled:opacity-0 focus-visible:ring-2 focus-visible:ring-neutral-900"
+            className="absolute -left-3 sm:-left-6 top-1/2 -translate-y-1/2 z-20 size-11 rounded-full border border-slate-200 bg-white/95 text-slate-900 shadow-md backdrop-blur-sm transition-all duration-200 hover:border-red-600 hover:bg-red-600 hover:text-white active:scale-95 disabled:pointer-events-none focus-visible:ring-2 focus-visible:ring-red-600"
             aria-label="Danh mục trước"
-            title="Cuộn sang trái"
+            title="Cuộn xoay tròn sang trái"
           >
             <ChevronLeft className="size-5" aria-hidden="true" />
           </Button>
@@ -161,42 +155,42 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
             variant="ghost"
             size="icon"
             onClick={() => scroll('right')}
-            className="absolute -right-3 sm:-right-5 top-1/2 -translate-y-1/2 z-20 size-11 rounded-full border border-neutral-200 bg-white/95 text-neutral-800 shadow-md backdrop-blur-sm transition-all duration-200 hover:border-neutral-900 hover:bg-neutral-900 hover:text-white active:scale-95 disabled:pointer-events-none disabled:opacity-0 focus-visible:ring-2 focus-visible:ring-neutral-900"
+            className="absolute -right-3 sm:-right-6 top-1/2 -translate-y-1/2 z-20 size-11 rounded-full border border-slate-200 bg-white/95 text-slate-900 shadow-md backdrop-blur-sm transition-all duration-200 hover:border-red-600 hover:bg-red-600 hover:text-white active:scale-95 disabled:pointer-events-none focus-visible:ring-2 focus-visible:ring-red-600"
             aria-label="Danh mục tiếp theo"
-            title="Cuộn sang phải"
+            title="Cuộn xoay tròn sang phải"
           >
             <ChevronRight className="size-5" aria-hidden="true" />
           </Button>
 
-          {/* Subtle Fade Edges */}
-          <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-8 bg-gradient-to-r from-neutral-50/80 to-transparent sm:w-12" />
-          <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-8 bg-gradient-to-l from-neutral-50/80 to-transparent sm:w-12" />
+          {/* Gradient Edges */}
+          <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-8 bg-gradient-to-r from-slate-100/90 to-transparent sm:w-12" />
+          <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-8 bg-gradient-to-l from-slate-100/90 to-transparent sm:w-12" />
 
-          {/* Horizontal Sliding Container */}
+          {/* Horizontal Infinite Track Container */}
           <div
             ref={scrollContainerRef}
             className="flex gap-4 sm:gap-5 overflow-x-auto scroll-smooth snap-x snap-mandatory py-4 px-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
             role="region"
-            aria-label="Thanh trượt danh mục ngành hàng"
+            aria-label="Thanh trượt danh mục ngành hàng xoay tròn"
           >
-            {items.map((cat) => (
-              <CategoryRailItem key={cat.id} category={cat} />
+            {infiniteItems.map((cat, idx) => (
+              <CategoryRailItem key={`${cat.id}-${idx}`} category={cat} />
             ))}
           </div>
 
           {/* Sleek Minimalist Indicator Pill */}
-          <div className="mt-4 flex items-center justify-center">
-            <div className="inline-flex items-center gap-3 rounded-full border border-neutral-200/90 bg-white px-4 py-1.5 shadow-2xs">
-              <div className="relative h-1.5 w-28 sm:w-40 overflow-hidden rounded-full bg-neutral-100">
+          <div className="mt-5 flex items-center justify-center">
+            <div className="inline-flex items-center gap-3 rounded-full border border-slate-200 bg-white px-4 py-1.5 shadow-xs">
+              <div className="relative h-1.5 w-28 sm:w-40 overflow-hidden rounded-full bg-slate-100">
                 <div
-                  className="h-full rounded-full bg-neutral-900 transition-all duration-300 ease-out"
+                  className="h-full rounded-full bg-red-600 transition-all duration-300 ease-out shadow-xs"
                   style={{
                     width: `${Math.max(20, Math.round(100 / Math.max(items.length, 1)))}%`,
                     transform: `translateX(${items.length > 1 ? (activeIndex / (items.length - 1)) * (items.length > 5 ? 300 : 150) : 0}%)`,
                   }}
                 />
               </div>
-              <span className="text-xs font-bold tracking-wider text-neutral-600 select-none">
+              <span className="text-xs font-black tracking-wider text-slate-700 select-none">
                 {String(activeIndex + 1).padStart(2, '0')}&nbsp;/&nbsp;{String(items.length).padStart(2, '0')}
               </span>
             </div>
