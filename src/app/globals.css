@@ -352,7 +352,80 @@ html {
 }
 
 
-/* Biên lai nội bộ (D16, features/orders): ẩn trên màn hình, chỉ hiện khi body có class in biên lai. */
+/* ===== Ultra-High Aesthetics Animation & Glow Utilities ===== */
+@keyframes shine-slide {
+  0% { transform: translateX(-100%) rotate(25deg); }
+  100% { transform: translateX(200%) rotate(25deg); }
+}
+
+@keyframes float-gentle {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes glow-pulse-red {
+  0%, 100% { box-shadow: 0 0 15px rgba(239, 68, 68, 0.25), 0 0 30px rgba(239, 68, 68, 0.1); }
+  50% { box-shadow: 0 0 25px rgba(239, 68, 68, 0.5), 0 0 50px rgba(239, 68, 68, 0.25); }
+}
+
+@keyframes glow-pulse-blue {
+  0%, 100% { box-shadow: 0 0 15px rgba(14, 165, 233, 0.25); }
+  50% { box-shadow: 0 0 30px rgba(14, 165, 233, 0.5); }
+}
+
+@keyframes border-gradient-spin {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-shine {
+  position: relative;
+  overflow: hidden;
+}
+.animate-shine::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    60deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.35) 50%,
+    transparent 70%
+  );
+  transform: translateX(-100%) rotate(25deg);
+  animation: shine-slide 4s infinite ease-in-out;
+  pointer-events: none;
+}
+
+.animate-float {
+  animation: float-gentle 4s ease-in-out infinite;
+}
+
+.glow-red {
+  animation: glow-pulse-red 3s ease-in-out infinite;
+}
+
+.glow-blue {
+  animation: glow-pulse-blue 3s ease-in-out infinite;
+}
+
+.glass-panel-dark {
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-panel-light {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+/* ===== Print Receipt Styles ===== */
 .print-receipt-root { display: none; }
 @media print {
   body.printing-order-receipt * { visibility: hidden; }

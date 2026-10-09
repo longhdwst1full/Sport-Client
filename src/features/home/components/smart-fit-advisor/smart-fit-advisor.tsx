@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, type ReactNode } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/foundation/components/buttons';
 import { Check, Maximize2, RefreshCw, Sparkles } from 'lucide-react';
 import { ArrowRight } from 'lucide-react';
@@ -151,108 +152,137 @@ export function SmartFitAdvisor() {
           )}
         </div>
 
-        {/* Wizard Body */}
+        {/* Wizard Body with AnimatePresence */}
         <div className="relative z-10 mt-8">
-          {/* STEP 1: Goal */}
-          {step === 1 && (
-            <AdvisorOptionStep
-              title="1. Mục tiêu tập luyện ưu tiên của bạn là gì?"
-              options={GOAL_OPTIONS}
-              selectedId={selectedGoal}
-              onSelect={setSelectedGoal}
-              onNext={() => setStep(2)}
-              nextLabel="Tiếp tục: Chọn không gian"
-              NextIcon={ArrowRight}
-              renderCard={(g, isSelected) => {
-                const Icon = g.icon;
-                const iconColors: Record<string, { tile: string; text: string }> = {
-                  muscle: { tile: 'bg-rose-500/20 border-rose-500/40 text-rose-400', text: 'text-rose-400' },
-                  fatloss: { tile: 'bg-amber-500/20 border-amber-500/40 text-amber-400', text: 'text-amber-400' },
-                  health: { tile: 'bg-emerald-500/20 border-emerald-500/40 text-emerald-400', text: 'text-emerald-400' },
-                  rehab: { tile: 'bg-sky-500/20 border-sky-500/40 text-sky-400', text: 'text-sky-400' },
-                };
-                const style = iconColors[g.id] || { tile: 'bg-slate-800 border-slate-700 text-slate-200', text: 'text-slate-200' };
+          <AnimatePresence mode="wait">
+            {step === 1 && (
+              <motion.div
+                key="step-1"
+                initial={{ opacity: 0, x: 30 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -30 }}
+                transition={{ duration: 0.3, ease: 'easeOut' }}
+              >
+                <AdvisorOptionStep
+                  title="1. Mục tiêu tập luyện ưu tiên của bạn là gì?"
+                  options={GOAL_OPTIONS}
+                  selectedId={selectedGoal}
+                  onSelect={setSelectedGoal}
+                  onNext={() => setStep(2)}
+                  nextLabel="Tiếp tục: Chọn không gian"
+                  NextIcon={ArrowRight}
+                  renderCard={(g, isSelected) => {
+                    const Icon = g.icon;
+                    const iconColors: Record<string, { tile: string }> = {
+                      muscle: { tile: 'bg-rose-500/20 border-rose-500/50 text-rose-400' },
+                      fatloss: { tile: 'bg-amber-500/20 border-amber-500/50 text-amber-400' },
+                      health: { tile: 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400' },
+                      rehab: { tile: 'bg-sky-500/20 border-sky-500/50 text-sky-400' },
+                    };
+                    const style = iconColors[g.id] || { tile: 'bg-slate-800 border-slate-700 text-slate-200' };
 
-                return (
-                  <OptionCardContent
-                    isSelected={isSelected}
-                    label={g.label}
-                    desc={g.desc}
-                    labelClassName="text-sm sm:text-base text-white font-extrabold"
-                    lead={
-                      <div className={`grid size-11 place-items-center rounded-xl border transition-all duration-300 ${style.tile} group-hover:scale-110`}>
-                        <Icon className="size-5 transition-transform duration-300 group-hover:rotate-6" />
-                      </div>
-                    }
-                  />
-                );
-              }}
-            />
-          )}
-
-          {/* STEP 2: Space */}
-          {step === 2 && (
-            <AdvisorOptionStep
-              title="2. Diện tích không gian dự kiến đặt thiết bị?"
-              options={SPACE_OPTIONS}
-              selectedId={selectedSpace}
-              onSelect={setSelectedSpace}
-              onBack={() => setStep(1)}
-              onNext={() => setStep(3)}
-              nextLabel="Tiếp tục: Chọn ngân sách"
-              NextIcon={ArrowRight}
-              renderCard={(s, isSelected) => (
-                <OptionCardContent
-                  isSelected={isSelected}
-                  label={s.label}
-                  desc={s.desc}
-                  labelClassName="text-sm sm:text-base text-white font-extrabold"
-                  lead={
-                    <div className="grid size-11 place-items-center rounded-xl border border-sky-500/40 bg-sky-500/20 text-sky-400 transition-all duration-300 group-hover:scale-110">
-                      <Maximize2 className="size-5" />
-                    </div>
-                  }
+                    return (
+                      <OptionCardContent
+                        isSelected={isSelected}
+                        label={g.label}
+                        desc={g.desc}
+                        labelClassName="text-sm sm:text-base text-white font-black"
+                        lead={
+                          <div className={`grid size-12 place-items-center rounded-2xl border shadow-inner transition-all duration-300 ${style.tile} group-hover:scale-110`}>
+                            <Icon className="size-6 transition-transform duration-300 group-hover:rotate-12" />
+                          </div>
+                        }
+                      />
+                    );
+                  }}
                 />
-              )}
-            />
-          )}
+              </motion.div>
+            )}
 
-          {/* STEP 3: Budget */}
-          {step === 3 && (
-            <AdvisorOptionStep
-              title="3. Khoảng ngân sách đầu tư bạn mong muốn?"
-              options={BUDGET_OPTIONS}
-              selectedId={selectedBudget}
-              onSelect={setSelectedBudget}
-              onBack={() => setStep(2)}
-              onNext={() => setStep(4)}
-              nextLabel="Xem cấu hình đề xuất"
-              NextIcon={Sparkles}
-              renderCard={(b, isSelected) => (
-                <OptionCardContent
-                  isSelected={isSelected}
-                  label={b.label}
-                  desc={b.desc}
-                  labelClassName="text-base sm:text-lg text-white font-black"
-                  lead={
-                    <span className="rounded-full border border-amber-400/40 bg-amber-500/20 px-3 py-1 text-xs font-black text-amber-300 shadow-sm">
-                      {b.label}
-                    </span>
-                  }
+            {step === 2 && (
+              <motion.div
+                key="step-2"
+                initial={{ opacity: 0, x: 30 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -30 }}
+                transition={{ duration: 0.3, ease: 'easeOut' }}
+              >
+                <AdvisorOptionStep
+                  title="2. Diện tích không gian dự kiến đặt thiết bị?"
+                  options={SPACE_OPTIONS}
+                  selectedId={selectedSpace}
+                  onSelect={setSelectedSpace}
+                  onBack={() => setStep(1)}
+                  onNext={() => setStep(3)}
+                  nextLabel="Tiếp tục: Chọn ngân sách"
+                  NextIcon={ArrowRight}
+                  renderCard={(s, isSelected) => (
+                    <OptionCardContent
+                      isSelected={isSelected}
+                      label={s.label}
+                      desc={s.desc}
+                      labelClassName="text-sm sm:text-base text-white font-black"
+                      lead={
+                        <div className="grid size-12 place-items-center rounded-2xl border border-sky-500/50 bg-sky-500/20 text-sky-400 shadow-inner transition-all duration-300 group-hover:scale-110">
+                          <Maximize2 className="size-6" />
+                        </div>
+                      }
+                    />
+                  )}
                 />
-              )}
-            />
-          )}
+              </motion.div>
+            )}
 
-          {/* STEP 4: Results */}
-          {step === 4 && (
-            <AdvisorResults
-              recommendation={recommendation}
-              goalLabel={getGoalLabel()}
-              spaceLabel={getSpaceLabel()}
-              budgetLabel={getBudgetLabel()}
-            />
-          )}
+            {step === 3 && (
+              <motion.div
+                key="step-3"
+                initial={{ opacity: 0, x: 30 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -30 }}
+                transition={{ duration: 0.3, ease: 'easeOut' }}
+              >
+                <AdvisorOptionStep
+                  title="3. Khoảng ngân sách đầu tư bạn mong muốn?"
+                  options={BUDGET_OPTIONS}
+                  selectedId={selectedBudget}
+                  onSelect={setSelectedBudget}
+                  onBack={() => setStep(2)}
+                  onNext={() => setStep(4)}
+                  nextLabel="Xem cấu hình đề xuất"
+                  NextIcon={Sparkles}
+                  renderCard={(b, isSelected) => (
+                    <OptionCardContent
+                      isSelected={isSelected}
+                      label={b.label}
+                      desc={b.desc}
+                      labelClassName="text-base sm:text-lg text-white font-black"
+                      lead={
+                        <span className="rounded-full border border-amber-400/50 bg-amber-500/20 px-3.5 py-1 text-xs font-black text-amber-300 shadow-inner">
+                          {b.label}
+                        </span>
+                      }
+                    />
+                  )}
+                />
+              </motion.div>
+            )}
+
+            {step === 4 && (
+              <motion.div
+                key="step-4"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.4, ease: 'easeOut' }}
+              >
+                <AdvisorResults
+                  recommendation={recommendation}
+                  goalLabel={getGoalLabel()}
+                  spaceLabel={getSpaceLabel()}
+                  budgetLabel={getBudgetLabel()}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </section>

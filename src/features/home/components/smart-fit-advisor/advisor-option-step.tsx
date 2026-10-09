@@ -44,7 +44,7 @@ export function AdvisorOptionStep<T extends AdvisorOption>({
               aria-pressed={isSelected}
               className={`group flex flex-col justify-between rounded-2xl border p-4 text-left sm:p-5 transition-all duration-300 focus-ring ${
                 isSelected
-                  ? 'border-red-500 bg-slate-900 ring-2 ring-red-500/40 shadow-xl shadow-red-950/40 -translate-y-1'
+                  ? 'border-red-500 bg-slate-900 ring-2 ring-red-500/50 shadow-[0_0_25px_rgba(239,68,68,0.35)] -translate-y-1'
                   : 'border-slate-800 bg-slate-900/90 hover:border-slate-600 hover:bg-slate-850 hover:shadow-lg hover:-translate-y-1'
               }`}
             >

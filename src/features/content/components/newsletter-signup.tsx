@@ -2,35 +2,38 @@
 
 import { useId, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, Sparkles } from 'lucide-react';
+import confetti from 'canvas-confetti';
 import { Button } from '@/foundation/components/buttons';
 import { TextInput } from '@/foundation/components/field-system';
 import { createNewsletterSubscription } from '@/generated/api/content/content';
 import { apiErrorMessage } from '@/lib/api/error-message';
 
-/**
- * Đăng ký nhận bản tin (`createNewsletterSubscription`). API trả 200 với cùng nội dung cho mọi email
- * (không lộ email đã có hay chưa), đăng ký lại không tạo bản ghi trùng. `source` ghi vị trí form.
- * `tone="dark"` khi đặt trên nền tối.
- */
 export function NewsletterSignup({ source, tone = 'light' }: { source: string; tone?: 'light' | 'dark' }) {
   const inputId = useId();
   const [email, setEmail] = useState('');
-  // Bẫy bot: ô ẩn, người dùng không thấy; có giá trị thì API từ chối.
   const [website, setWebsite] = useState('');
   const mutation = useMutation({
     mutationFn: () =>
       createNewsletterSubscription({ email: email.trim(), source, ...(website ? { website } : {}) }),
+    onSuccess: () => {
+      confetti({
+        particleCount: 70,
+        spread: 70,
+        origin: { y: 0.7 },
+        colors: ['#ef4444', '#f59e0b', '#3b82f6', '#10b981'],
+      });
+    },
     retry: false,
   });
   const dark = tone === 'dark';
 
   if (mutation.isSuccess) {
     return (
-      <p role="status" className={`inline-flex items-center gap-2 text-sm font-medium ${dark ? 'text-white' : 'text-neutral-900'}`}>
-        <CheckCircle2 aria-hidden className="size-4 shrink-0 text-success-500" />
-        Đã đăng ký nhận tin. Muốn ngừng nhận, hãy báo hotline hoặc email hỗ trợ.
-      </p>
+      <div role="status" className="inline-flex items-center gap-2 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-2 text-sm font-bold text-emerald-400 backdrop-blur-md shadow-lg animate-scale-up">
+        <CheckCircle2 aria-hidden className="size-5 shrink-0 text-emerald-400 animate-bounce" />
+        <span>Đã đăng ký nhận tin thành công! Cảm ơn bạn.</span>
+      </div>
     );
   }
 
