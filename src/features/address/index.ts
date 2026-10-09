@@ -17,4 +17,3 @@ export {
   type Ward,
 } from './api/vietnam-divisions';
 export { useCustomerAddressList, getListCustomerAddressesQueryKey } from './api/customer-address-query';
-// test commit
