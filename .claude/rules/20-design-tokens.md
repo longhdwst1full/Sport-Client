@@ -1,3 +1,11 @@
+---
+paths:
+  - "src/**/*.tsx"
+  - "src/app/globals.css"
+  - "tailwind.config.ts"
+  - "src/foundation/**"
+---
+
 # Storefront design tokens & shared styles
 
 Màu, cỡ, bo góc và style lặp khai **một chỗ**; component chỉ dùng tên token. Đổi giao diện = sửa

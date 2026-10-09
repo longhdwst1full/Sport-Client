@@ -1,3 +1,10 @@
+---
+paths:
+  - "src/shared/constants/**"
+  - "src/features/**/*.tsx"
+  - "src/widgets/**"
+---
+
 # Storefront trust content (cam kết, số liệu, liên hệ)
 
 Thông tin khách dùng để quyết định mua phải đúng và giống nhau ở mọi trang.

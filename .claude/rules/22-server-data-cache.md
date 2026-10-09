@@ -1,3 +1,10 @@
+---
+paths:
+  - "src/app/**"
+  - "src/lib/query/**"
+  - "src/features/*/api/**"
+---
+
 # Storefront server data cache
 
 Trang ISR đọc API bằng Axios (không qua `fetch` của Next) nên không có Data Cache tự động.
