@@ -34,7 +34,7 @@ export function CheckoutPage() {
   const form = useCheckoutForm();
   const { shopArranged, paymentMethod } = form;
   const checkoutQuote = useCheckoutQuote({ form, removeItem, toast });
-  const { quote, displayQuoteView, refreshingQuote, busy, error, autoQuoting, quotePending, invalidateQuote, retryQuote, refreshConsultedQuote, setError } = checkoutQuote;
+  const { quote, displayQuoteView, refreshingQuote, busy, error, autoQuoting, quotePending, invalidateQuote, retryQuote, refreshConsultedQuote, setError, confirmIdempotencyKey } = checkoutQuote;
   const { placedOrder, redirectingToVnpay, submit } = usePlaceOrder({
     form,
     checkoutQuote,
@@ -53,6 +53,15 @@ export function CheckoutPage() {
     invalidateQuote,
   });
   useAutoQuote({ form, checkoutQuote, effectiveItems, isLoaded, isAuthenticated, placedOrder });
+
+  /**
+   * Đổi phương thức thanh toán / "Nhờ shop gửi": phí tính một lần theo địa chỉ + giỏ nên KHÔNG gọi API.
+   * Ngoại lệ: đã bấm đặt hàng một lần (có khoá xác nhận) — phiên có thể đã giữ hàng với lựa chọn cũ và
+   * Backend băm lựa chọn vào khoá idempotency, nên báo giá lại (giữ số cũ, mờ) để xác nhận bằng phiên mới.
+   */
+  const changeSelection = () => {
+    if (confirmIdempotencyKey.current) invalidateQuote(true);
+  };
 
   const useCurrentLocation = () => {
     if (!navigator.geolocation) return setError('Trình duyệt không hỗ trợ xác định vị trí.');
@@ -118,7 +127,7 @@ export function CheckoutPage() {
             <CheckoutDeliveryMethodSection
               shopArranged={shopArranged}
               setShopArranged={form.setShopArranged}
-              invalidateQuote={invalidateQuote}
+              onSelectionChange={changeSelection}
               freeRadiusKm={freeRadiusKm}
               quotePending={quotePending && !refreshingQuote}
               refreshingQuote={refreshingQuote}
@@ -133,7 +142,7 @@ export function CheckoutPage() {
             <CheckoutPaymentMethodSection
               paymentMethod={paymentMethod}
               setPaymentMethod={form.setPaymentMethod}
-              invalidateQuote={invalidateQuote}
+              onSelectionChange={changeSelection}
             />
 
             <CheckoutConfirmSection

@@ -4,9 +4,16 @@ import { useState, type FormEvent } from 'react';
 import { paymentRequest, readGuestOrderAccessToken } from '@/features/orders';
 import type { OrderDetailDto } from '@/generated/api/orders/orders.schemas';
 import { getAccountPayment, getGuestPayment } from '@/generated/api/payments/payments';
-import { confirmCheckout, placeOrder } from '../api/checkout.workflow';
+import { apiErrorCode } from '@/lib/api/error-message';
+import { confirmCheckout, placeOrder, prepareCheckout, type CheckoutContext } from '../api/checkout.workflow';
 import { resolveCheckoutQuoteGate } from '../model/checkout-quote-gate';
 import type { CheckoutFlowDeps, Toast } from './use-checkout-quote';
+
+/**
+ * Mã 409 của bước xác nhận nghĩa là "báo giá lại rồi xác nhận": lựa chọn cần phí hãng mà phiên chưa có,
+ * hoặc báo giá đã hết hạn. Chỉ các mã này được tự báo giá lại + thử lại MỘT lần.
+ */
+const REQUOTE_ERROR_CODES: ReadonlySet<string> = new Set(['CHECKOUT_REQUOTE_REQUIRED', 'CHECKOUT_QUOTE_EXPIRED']);
 
 /** Xác nhận báo giá + đặt đơn (dùng lại khóa idempotency của báo giá hiện hành) và chuyển sang VNPay nếu cần. */
 export function usePlaceOrder({
@@ -24,7 +31,10 @@ export function usePlaceOrder({
   const { readyToQuote, acceptedTerms, paymentMethod } = form;
   const {
     quote,
+    setQuote,
     context,
+    setContext,
+    quoteSeq,
     autoQuoting,
     busy,
     setBusy,
@@ -60,6 +70,43 @@ export function usePlaceOrder({
     }
     setRedirectingToVnpay(false);
     return false;
+  };
+
+  /**
+   * Xác nhận kèm lựa chọn cuối (thanh toán, "Nhờ shop gửi"). Backend trả `CHECKOUT_REQUOTE_REQUIRED` /
+   * `CHECKOUT_QUOTE_EXPIRED` thì báo giá lại (cùng địa chỉ + giỏ) và xác nhận lại đúng một lần với key mới
+   * — key cũ đã gắn với phiên cũ. Trả `undefined` khi báo giá mới cần nhân viên chốt cước (không đặt được).
+   */
+  const confirmWithRequote = async (
+    currentContext: CheckoutContext,
+    checkoutToken: string,
+  ): Promise<{ context: CheckoutContext; checkoutToken: string } | undefined> => {
+    const selection = form.confirmSelection();
+    try {
+      await confirmCheckout(currentContext, checkoutToken, confirmIdempotencyKey.current!, selection);
+      return { context: currentContext, checkoutToken };
+    } catch (caught) {
+      const code = apiErrorCode(caught);
+      if (!code || !REQUOTE_ERROR_CODES.has(code)) throw caught;
+    }
+    // Lượt báo giá tự động đang chờ (nếu có) không được ghi đè báo giá vừa lấy ở đây.
+    quoteSeq.current += 1;
+    const prepared = await prepareCheckout(
+      effectiveItems.map(({ variantId, quantity }) => ({ variantId, quantity })),
+      form.buildInput(),
+      isAuthenticated,
+      crypto.randomUUID(),
+    );
+    setQuote(prepared.quote);
+    setContext(prepared.context);
+    confirmIdempotencyKey.current = crypto.randomUUID();
+    orderIdempotencyKey.current = crypto.randomUUID();
+    if (prepared.quote.requiresShippingConsultation) {
+      block('Cần tư vấn cước vận chuyển', 'Đơn hàng cần nhân viên tư vấn cước gửi xe riêng. Vui lòng bấm kiểm tra lại phí sau khi đã thống nhất.');
+      return undefined;
+    }
+    await confirmCheckout(prepared.context, prepared.quote.checkoutToken, confirmIdempotencyKey.current, selection);
+    return { context: prepared.context, checkoutToken: prepared.quote.checkoutToken };
   };
 
   const submit = async (event: FormEvent) => {
@@ -110,8 +157,9 @@ export function usePlaceOrder({
       // IDEMPOTENCY: Chỉ tạo key khi chưa có; key bị xoá khi báo giá bị huỷ (đổi form), nên retry cùng báo giá dùng lại key cũ.
       confirmIdempotencyKey.current ??= crypto.randomUUID();
       orderIdempotencyKey.current ??= crypto.randomUUID();
-      await confirmCheckout(context, quote.checkoutToken, confirmIdempotencyKey.current);
-      const order = await placeOrder(context, quote.checkoutToken, orderIdempotencyKey.current);
+      const confirmed = await confirmWithRequote(context, quote.checkoutToken);
+      if (!confirmed) return;
+      const order = await placeOrder(confirmed.context, confirmed.checkoutToken, orderIdempotencyKey.current);
       // Xoá đúng các sản phẩm đã thanh toán khỏi giỏ hàng
       effectiveItems.forEach((item) => removeItem(item.variantId));
       if (paymentMethod === 'VNPAY' && (await redirectToVnpay(order))) return;

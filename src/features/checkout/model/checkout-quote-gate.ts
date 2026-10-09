@@ -1,8 +1,8 @@
 /**
  * Trạng thái báo giá phí giao tại thời điểm khách bấm "Đặt hàng".
  *
- * Báo giá tự động chạy sau 700 ms debounce kể từ lần đổi form cuối (đổi phương thức thanh toán, cách
- * giao, ghi chú…). Trong khoảng debounce đó chưa có quote nhưng cũng chưa có lượt gọi nào đang chạy;
+ * Báo giá tự động chạy sau 700 ms debounce kể từ lần đổi form cuối (người nhận, địa chỉ, vị trí,
+ * ghi chú…). Trong khoảng debounce đó chưa có quote nhưng cũng chưa có lượt gọi nào đang chạy;
  * trước đây trang coi khoảng này là "không tính được phí" và báo "Chưa có phí vận chuyển" dù API vẫn
  * báo giá bình thường. Lượt báo giá lỗi thật cũng bị câu chung đó che mất lý do từ API.
  *

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { EMPTY_SELECTED_ADDRESS, type SelectedAddressData } from '@/features/address';
-import type { CheckoutPaymentMethod } from '@/generated/api/checkout/checkout.schemas';
+import type { CheckoutPaymentMethod, ConfirmCheckoutDto } from '@/generated/api/checkout/checkout.schemas';
 
 /** Trạng thái form nhận hàng + lựa chọn giao/thanh toán, và payload báo giá dựng từ đúng các giá trị đó. */
 export function useCheckoutForm() {
@@ -16,10 +16,10 @@ export function useCheckoutForm() {
   /**
    * "Nhờ shop tư vấn & gửi chành": shop tự sắp xếp nhà xe và báo/thu cước riêng ngoài hệ thống.
    *
-   * CONTRACT: gửi `shippingArrangement: 'SHOP_ARRANGED'`, KHÔNG phải `requestShippingConsultation`.
-   * `SHOP_ARRANGED` trả báo giá `QUOTED` (`shippingTotal` 0, `shippingFeePending` true) nên khách đặt
-   * được đơn ngay; `requestShippingConsultation` vẫn còn trong hợp đồng và vẫn nghĩa là "chờ nhân viên
-   * chốt cước mới đặt được" — Storefront hiện không có nút nào chọn đường đó.
+   * CONTRACT (owner 2026-10-09): chỉ là state cục bộ — bật/tắt KHÔNG báo giá lại. Báo giá luôn là giao
+   * thường (phí hãng); lựa chọn cuối gửi kèm bước xác nhận (`confirmSelection`) để Backend chuyển phiên sang
+   * `SHOP_ARRANGED` (phí chờ shop báo, tổng = tiền hàng). KHÔNG phải `requestShippingConsultation` — đường
+   * đó vẫn nghĩa là "chờ nhân viên chốt cước mới đặt được" và Storefront không có nút nào chọn.
    */
   const [shopArranged, setShopArranged] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
@@ -41,9 +41,17 @@ export function useCheckoutForm() {
       wardCode: address.wardCode ?? undefined,
       ...coordinates,
     },
+    // CONTRACT: phí tính một lần theo địa chỉ + giỏ (Backend báo giá GHN với `cod_value = 0`), nên
+    // phương thức thanh toán ở đây chỉ là giá trị khởi tạo của phiên; lựa chọn cuối đi theo bước xác nhận.
     paymentMethod,
-    shippingArrangement: shopArranged ? ('SHOP_ARRANGED' as const) : ('STANDARD' as const),
+    shippingArrangement: 'STANDARD' as const,
     ...(note.trim() ? { note: note.trim() } : {}),
+  });
+
+  /** Lựa chọn cuối gửi kèm `confirm*Checkout`; Backend áp lên phiên mà không báo giá lại. */
+  const confirmSelection = (): ConfirmCheckoutDto => ({
+    paymentMethod,
+    shippingArrangement: shopArranged ? 'SHOP_ARRANGED' : 'STANDARD',
   });
 
   // Đủ người nhận + địa chỉ tới phường/xã thì tự báo giá: khách thấy phí giao (miễn phí shop tự giao
@@ -67,6 +75,7 @@ export function useCheckoutForm() {
     addressFormKey, setAddressFormKey,
     selectedAddressId, setSelectedAddressId,
     buildInput,
+    confirmSelection,
     readyToQuote,
   };
 }

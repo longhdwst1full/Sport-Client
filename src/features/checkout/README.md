@@ -1,10 +1,10 @@
 # Storefront checkout — maintenance note
 
-> **Document version:** 1.8.0
+> **Document version:** 1.9.0
 >
-> **Last updated:** 2026-09-29
+> **Last updated:** 2026-10-09
 >
-> **Change summary:** Trang checkout tách thành hook + section; hành vi, query key và idempotency giữ nguyên. Cập nhật bảng Cấu trúc.
+> **Change summary:** Phí giao tính một lần theo địa chỉ + giỏ: đổi phương thức thanh toán / bật-tắt "Nhờ shop gửi" không gọi API; lựa chọn cuối gửi kèm `confirm*Checkout`, `CHECKOUT_REQUOTE_REQUIRED`/`CHECKOUT_QUOTE_EXPIRED` thì báo giá lại và xác nhận lại một lần.
 
 ## Luồng 3 bước (2026-09-26)
 
@@ -26,7 +26,7 @@ Chưa làm (cần Backend): gọi lại GHN khi đặt đơn và báo `SHIPPING_
 
 - Tự gọi báo giá (`quote*Checkout`) sau 700 ms khi đủ tên, SĐT, số nhà và chọn tới phường/xã; lượt cũ bị bỏ qua theo `quoteSeq`. Sửa bất kỳ trường nào thì báo giá cũ bị huỷ.
 - Freeship dưới 10 km là luật `BRANCH_FREE` của Backend, chỉ áp khi khách bấm "Dùng vị trí hiện tại" (có toạ độ). Chưa có luật theo quận nội thành.
-- "Nhờ shop gửi" dùng `shippingArrangement: 'SHOP_ARRANGED'` (2026-09-27). Báo giá trả về `QUOTED` với `shippingTotal = 0.00`, `shippingFeePending = true` và `grandTotal` chỉ gồm tiền hàng, nên khách **đặt được đơn ngay**; shop gọi thống nhất và thu cước gửi xe riêng ngoài hệ thống. Chỗ nào hiện phí phải ghi "Shop báo riêng", không bao giờ hiện 0 ₫/"Miễn phí".
+- "Nhờ shop gửi" (2026-10-09) là state cục bộ: báo giá luôn là giao thường (phí hãng); bật thì tóm tắt hiện phí "Shop báo riêng" và tổng = tiền hàng, tắt thì hiện lại phí hãng của lượt báo giá đầu — không gọi API. Lúc đặt đơn gửi `shippingArrangement: 'SHOP_ARRANGED'` trong body confirm để Backend chuyển phiên sang SHOP_ARRANGED; khách **đặt được đơn ngay**, shop gọi thống nhất và thu cước riêng. Chỗ nào hiện phí phải ghi "Shop báo riêng", không bao giờ hiện 0 ₫/"Miễn phí".
 - `requestShippingConsultation: true` vẫn còn trong hợp đồng và vẫn nghĩa là "chờ nhân viên chốt cước mới đặt được"; Storefront hiện không có nút nào chọn đường đó, nhưng vẫn phải xử lý báo giá `requiresShippingConsultation` do Backend trả về.
 - `resolveCheckoutQuoteGate` là nơi duy nhất quyết định có cho đặt hàng: `CONSULTATION_PENDING` (chờ tư vấn cước) chặn, `shippingFeePending` không bao giờ chặn.
 - Thanh toán storefront chỉ còn `COD` và `VNPAY`; `BANK_TRANSFER` vẫn tồn tại ở Backend cho POS.
@@ -69,8 +69,10 @@ Checkout chỉ được import `orders`, `address`, `site-config` (và `auth`, `
 
 ## Invariant UI/API
 
-- Mọi thay đổi recipient, địa chỉ, vị trí, payment method hoặc yêu cầu tư vấn phải invalidate quote cũ.
-- Đổi payment method vẫn phải báo giá lại: checkout token lưu `paymentMethod` dùng khi đặt đơn, và GHN tính thêm phí thu hộ theo `cod_value`. Trong lúc chờ, UI giữ số cũ (mờ, "Đang cập nhật") qua `displayQuoteView`; gate đặt đơn chỉ dùng `quote` mới.
+- Mọi thay đổi recipient, địa chỉ, vị trí hoặc yêu cầu tư vấn phải invalidate quote cũ.
+- Phí giao tính **một lần** theo địa chỉ + giỏ (owner 2026-10-09; Backend báo giá GHN với `cod_value = 0`). `useAutoQuote` không phụ thuộc `paymentMethod`/`shopArranged`: đổi chúng không gọi API. Lựa chọn cuối (`form.confirmSelection()`) đi kèm `confirmCheckout`; Backend áp vào phiên trong transaction giữ hàng.
+- Confirm trả `CHECKOUT_REQUOTE_REQUIRED` hoặc `CHECKOUT_QUOTE_EXPIRED` → `usePlaceOrder` báo giá lại (cùng địa chỉ + giỏ) và xác nhận lại **một lần** với key mới.
+- Ngoại lệ: đã bấm đặt hàng một lần (có khoá xác nhận) rồi mới đổi lựa chọn → báo giá lại, giữ số cũ (mờ, "Đang cập nhật") qua `displayQuoteView`, vì Backend băm lựa chọn vào idempotency của confirm và phiên cũ có thể đã giữ hàng.
 - Không dùng tổng tiền local để confirm; quote Backend là nguồn đúng cuối cùng.
 - Quote cần tư vấn không được confirm cho đến khi Admin chốt và Client reload lại quote.
 - `Idempotency-Key` đại diện một ý định quote/confirm/place order. Confirm và Order có key riêng, nhưng mỗi key phải được giữ nguyên khi retry do lỗi mạng.
@@ -93,6 +95,7 @@ Checkout chỉ được import `orders`, `address`, `site-config` (và `auth`, `
 
 | Version | Date | Change summary | Source |
 | --- | --- | --- | --- |
+| 1.9.0 | 2026-10-09 | Phí một lần theo địa chỉ + giỏ; thanh toán/"Nhờ shop gửi" không báo giá lại, lựa chọn cuối gửi kèm confirm; tự báo giá lại + xác nhận lại một lần khi `CHECKOUT_REQUOTE_REQUIRED`/`CHECKOUT_QUOTE_EXPIRED`. | Owner requirement 2026-10-09 |
 | 1.8.0 | 2026-10-09 | Đổi phương thức thanh toán giữ phí/tổng cũ (mờ) trong lúc báo giá lại thay vì xoá về "Đang tính phí". | Checkout payment requote UX |
 | 1.7.0 | 2026-10-06 | Màu thành công dùng `success-*`; thanh CTA dính đáy mobile thay nút trong bước xác nhận; `CheckoutSkeleton` thay spinner; `<main>` landmark; input 16px trên mobile. | UI brand-red pass |
 | 1.6.0 | 2026-09-29 | Tách checkout-page thành 5 hook + 4 section, không đổi hành vi; cập nhật bảng Cấu trúc. | Client restructure (checkout split) |

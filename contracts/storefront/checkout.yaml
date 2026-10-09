@@ -132,6 +132,12 @@ paths:
           in: header
           schema:
             type: string
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConfirmCheckoutDto"
       responses:
         "201":
           description: ""
@@ -140,12 +146,12 @@ paths:
               schema:
                 $ref: "#/components/schemas/ReservationDto"
         "409":
-          description: ""
+          description: "CHECKOUT_REQUOTE_REQUIRED (lựa chọn cần phí hãng mà phiên chưa có) hoặc CHECKOUT_QUOTE_EXPIRED: báo giá lại rồi xác nhận; ngoài ra hết hàng/suất flash, phiên không ở QUOTED, hoặc cùng Idempotency-Key nhưng payload khác."
           content:
             application/json:
               schema:
                 $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
-      summary: Confirm a guest quote and reserve its physical SKU demand atomically
+      summary: Confirm a guest quote (optionally with the final payment method / shipping arrangement) and reserve its physical SKU demand atomically
       tags:
         - Storefront Guest Checkout
   /api/v1/checkouts/guest/reservations/{reservationToken}/release:
@@ -258,6 +264,12 @@ paths:
           in: header
           schema:
             type: string
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConfirmCheckoutDto"
       responses:
         "201":
           description: ""
@@ -265,9 +277,15 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ReservationDto"
+        "409":
+          description: "CHECKOUT_REQUOTE_REQUIRED (lựa chọn cần phí hãng mà phiên chưa có) hoặc CHECKOUT_QUOTE_EXPIRED: báo giá lại rồi xác nhận; ngoài ra hết hàng/suất flash, phiên không ở QUOTED, hoặc cùng Idempotency-Key nhưng payload khác."
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
       security:
         - bearer: []
-      summary: Confirm an account quote and reserve its physical SKU demand atomically
+      summary: Confirm an account quote (optionally with the final payment method / shipping arrangement) and reserve its physical SKU demand atomically
       tags:
         - Storefront Account Checkout
   /api/v1/account/checkouts/reservations/{reservationToken}/release:
@@ -567,6 +585,18 @@ components:
       required:
         - lines
         - recipient
+    ConfirmCheckoutDto:
+      type: object
+      properties:
+        paymentMethod:
+          example: VNPAY
+          description: Phương thức thanh toán cuối cùng; không làm đổi phí vận chuyển đã báo giá.
+          allOf:
+            - $ref: "#/components/schemas/CheckoutPaymentMethod"
+        shippingArrangement:
+          description: "SHOP_ARRANGED: bỏ phí hãng, phí vận chuyển shop báo/thu riêng (tổng chỉ gồm tiền hàng). STANDARD trên phiên báo giá SHOP_ARRANGED trả 409 CHECKOUT_REQUOTE_REQUIRED vì phiên chưa có phí hãng."
+          allOf:
+            - $ref: "#/components/schemas/CheckoutShippingArrangement"
     CreateCheckoutQuoteDto:
       type: object
       properties:

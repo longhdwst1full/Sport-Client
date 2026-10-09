@@ -5,11 +5,14 @@ import type { CheckoutQuoteDto } from '@/generated/api/checkout/checkout.schemas
 import type { CheckoutQuoteView } from '../../model/checkout.mapper';
 import { CheckoutStepSection, optionClass } from './checkout-step-section';
 
-/** Bước 2: giao tiêu chuẩn (kèm kết quả báo giá tự động) hoặc nhờ shop gửi chành; lỗi báo giá có nút thử lại. */
+/**
+ * Bước 2: giao tiêu chuẩn (kèm kết quả báo giá tự động) hoặc nhờ shop gửi chành; lỗi báo giá có nút thử lại.
+ * Bật/tắt "Nhờ shop gửi" chỉ đổi state cục bộ, không báo giá lại (phí tính một lần theo địa chỉ + giỏ).
+ */
 export function CheckoutDeliveryMethodSection({
   shopArranged,
   setShopArranged,
-  invalidateQuote,
+  onSelectionChange,
   freeRadiusKm,
   quotePending,
   refreshingQuote = false,
@@ -22,7 +25,8 @@ export function CheckoutDeliveryMethodSection({
 }: {
   shopArranged: boolean;
   setShopArranged: (value: boolean) => void;
-  invalidateQuote: () => void;
+  /** Gọi sau khi khách đổi cách giao; không báo giá lại trừ khi trang quyết định (xem checkout-page). */
+  onSelectionChange?: () => void;
   freeRadiusKm: number;
   quotePending: boolean;
   /** Đang báo giá lại, `quoteView` là số cũ: giữ nguyên bố cục, chỉ làm mờ và ghi "đang cập nhật". */
@@ -41,7 +45,7 @@ export function CheckoutDeliveryMethodSection({
           type="button"
           role="radio"
           aria-checked={!shopArranged}
-          onClick={() => { if (!shopArranged) return; setShopArranged(false); invalidateQuote(); }}
+          onClick={() => { if (!shopArranged) return; setShopArranged(false); onSelectionChange?.(); }}
           className={optionClass(!shopArranged)}
         >
           <div className="flex items-center justify-between gap-2">
@@ -104,7 +108,7 @@ export function CheckoutDeliveryMethodSection({
           type="button"
           role="radio"
           aria-checked={shopArranged}
-          onClick={() => { if (shopArranged) return; setShopArranged(true); invalidateQuote(); }}
+          onClick={() => { if (shopArranged) return; setShopArranged(true); onSelectionChange?.(); }}
           className={optionClass(shopArranged)}
         >
           <strong className="text-sm font-bold text-slate-900">Nhờ shop tư vấn & gửi chành</strong>

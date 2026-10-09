@@ -6,7 +6,7 @@ import {
   quoteAccountCheckout,
   quoteGuestCheckout,
 } from '@/generated/api/checkout/checkout';
-import type { CheckoutQuoteDto, CreateCheckoutQuoteDto, ReservationDto } from '@/generated/api/checkout/checkout.schemas';
+import type { CheckoutQuoteDto, ConfirmCheckoutDto, CreateCheckoutQuoteDto, ReservationDto } from '@/generated/api/checkout/checkout.schemas';
 import { placeAccountOrder, placeGuestOrder } from '@/generated/api/orders/orders';
 import type { OrderDetailDto } from '@/generated/api/orders/orders.schemas';
 import { syncAccountCart, syncGuestCart } from '@/features/cart';
@@ -52,15 +52,20 @@ export async function prepareCheckout(
   };
 }
 
+/**
+ * Giữ hàng cho báo giá hiện hành kèm lựa chọn cuối (phương thức thanh toán, "Nhờ shop gửi").
+ * IDEMPOTENCY: Backend băm `selection` cùng checkout token — cùng key mà lựa chọn khác là 409.
+ */
 export async function confirmCheckout(
   context: CheckoutContext,
   checkoutToken: string,
   idempotencyKey: string,
+  selection: ConfirmCheckoutDto,
 ): Promise<ReservationDto> {
   if (context.mode === 'ACCOUNT') {
-    return confirmAccountCheckout(checkoutToken, { timeout: CHECKOUT_TIMEOUT_MS, headers: { 'idempotency-key': idempotencyKey } });
+    return confirmAccountCheckout(checkoutToken, selection, { timeout: CHECKOUT_TIMEOUT_MS, headers: { 'idempotency-key': idempotencyKey } });
   }
-  return confirmGuestCheckout(checkoutToken, guestHeaders(context.cartToken, idempotencyKey));
+  return confirmGuestCheckout(checkoutToken, selection, guestHeaders(context.cartToken, idempotencyKey));
 }
 
 export async function placeOrder(

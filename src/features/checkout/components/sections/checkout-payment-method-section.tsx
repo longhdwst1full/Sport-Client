@@ -2,15 +2,16 @@ import { CreditCard } from 'lucide-react';
 import { CheckoutPaymentMethod } from '@/generated/api/checkout/checkout.schemas';
 import { CheckoutStepSection, optionClass } from './checkout-step-section';
 
-/** Bước 3: COD hoặc VNPay; đổi phương thức phải bỏ báo giá cũ để báo giá lại theo phương thức mới. */
+/** Bước 3: COD hoặc VNPay. Đổi phương thức không báo giá lại: phí không phụ thuộc thanh toán, lựa chọn đi kèm bước xác nhận. */
 export function CheckoutPaymentMethodSection({
   paymentMethod,
   setPaymentMethod,
-  invalidateQuote,
+  onSelectionChange,
 }: {
   paymentMethod: CheckoutPaymentMethod;
   setPaymentMethod: (value: CheckoutPaymentMethod) => void;
-  invalidateQuote: (keepDisplay?: boolean) => void;
+  /** Gọi sau khi khách đổi phương thức; không báo giá lại trừ khi trang quyết định (xem checkout-page). */
+  onSelectionChange?: () => void;
 }) {
   return (
     <CheckoutStepSection step={3} icon={CreditCard} title="Phương thức thanh toán" description="Lựa chọn hình thức thanh toán thuận tiện nhất">
@@ -34,7 +35,7 @@ export function CheckoutPaymentMethodSection({
             type="button"
             role="radio"
             aria-checked={paymentMethod === value}
-            onClick={() => { if (paymentMethod === value) return; setPaymentMethod(value); invalidateQuote(true); }}
+            onClick={() => { if (paymentMethod === value) return; setPaymentMethod(value); onSelectionChange?.(); }}
             className={optionClass(paymentMethod === value)}
           >
             <div className="flex items-center justify-between gap-2">

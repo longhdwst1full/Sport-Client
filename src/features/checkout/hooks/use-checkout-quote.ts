@@ -58,9 +58,9 @@ export function useCheckoutQuote({
   const [autoQuoting, setAutoQuoting] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
-  // Báo giá cũ chỉ để HIỂN THỊ trong lúc báo giá lại sau khi đổi phương thức thanh toán: giao hàng không
-  // đổi nên phí gần như giữ nguyên, xoá về "Đang tính phí" làm cả khối giao hàng và tóm tắt nhảy.
-  // Đặt đơn vẫn chỉ dùng `quote` mới (gate cần báo giá của đúng phương thức đang chọn).
+  // Báo giá cũ chỉ để HIỂN THỊ trong lúc báo giá lại mà giao hàng không đổi (vd. đổi lựa chọn sau một lần
+  // xác nhận dở — xem `changeSelection` ở checkout-page): xoá về "Đang tính phí" làm cả khối giao hàng và
+  // tóm tắt nhảy. Đặt đơn vẫn chỉ dùng `quote` mới.
   const [staleQuoteView, setStaleQuoteView] = useState<CheckoutQuoteView>();
 
   const invalidateQuote = (keepDisplay = false) => {
@@ -169,7 +169,9 @@ export function useAutoQuote({
   isAuthenticated,
   placedOrder,
 }: CheckoutFlowDeps & { placedOrder: OrderDetailDto | undefined }) {
-  const { readyToQuote, name, phone, email, note, address, coordinates, paymentMethod, shopArranged, buildInput } = form;
+  // CONTRACT (owner 2026-10-09): phí tính một lần theo địa chỉ + giỏ. Phương thức thanh toán và "Nhờ shop
+  // gửi" KHÔNG nằm trong deps: đổi chúng không gọi API, lựa chọn cuối đi kèm bước xác nhận.
+  const { readyToQuote, name, phone, email, note, address, coordinates, buildInput } = form;
   const { quote, quoteSeq, setAutoQuoting, setError, setQuote, setContext, handleCheckoutError } = checkoutQuote;
   useEffect(() => {
     if (!isLoaded || !readyToQuote || quote || placedOrder || !effectiveItems.length) return;
@@ -196,5 +198,5 @@ export function useAutoQuote({
     return () => clearTimeout(timer);
     // buildInput đọc đúng các state liệt kê dưới đây; thêm hàm vào deps sẽ báo giá lại mỗi lần render.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoaded, readyToQuote, quote, placedOrder, effectiveItems, isAuthenticated, name, phone, email, note, address, coordinates, paymentMethod, shopArranged]);
+  }, [isLoaded, readyToQuote, quote, placedOrder, effectiveItems, isAuthenticated, name, phone, email, note, address, coordinates]);
 }
