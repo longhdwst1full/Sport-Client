@@ -3,10 +3,9 @@ import { StorefrontPage } from './storefront.page';
 
 /** `/products`, `/search`, `/category/[slug]` dùng chung lưới sản phẩm. */
 export class CatalogPage extends StorefrontPage {
-  readonly filterInput = (): Locator =>
-    this.page.getByTestId('catalog-search-input').or(this.page.getByPlaceholder(/Tìm theo tên thiết bị/)).filter({ visible: true }).first();
+  /** `/products` không còn ô tìm kiếm riêng: từ khoá đi qua `?q=` và bỏ bằng chip bộ lọc. */
   readonly clearKeyword = (): Locator =>
-    this.page.locator('button[aria-label="Xóa từ khóa"]:visible').first();
+    this.page.getByRole('button', { name: 'Bỏ từ khóa tìm kiếm' }).filter({ visible: true }).first();
   readonly sortSelect = (): Locator =>
     this.page.getByTestId('catalog-sort-select').or(this.page.locator('select:visible')).first();
   readonly productLinks = (): Locator => this.page.locator('a[href^="/products/"]:visible');
@@ -15,5 +14,9 @@ export class CatalogPage extends StorefrontPage {
 
   async openAll(): Promise<void> {
     await this.goto('/products');
+  }
+
+  async openWithKeyword(keyword: string): Promise<void> {
+    await this.goto(`/products?q=${encodeURIComponent(keyword)}`);
   }
 }

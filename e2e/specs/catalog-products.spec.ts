@@ -18,8 +18,7 @@ test.describe('CAT — Danh sách sản phẩm /products', () => {
     const keyword = product.name.split(' ').slice(0, 2).join(' ');
 
     const catalog = new CatalogPage(page);
-    await catalog.openAll();
-    await catalog.filterInput().fill(keyword);
+    await catalog.openWithKeyword(keyword);
 
     await expect(page.getByText(new RegExp(keyword, 'i')).first()).toBeVisible({
       timeout: 15_000,
@@ -28,16 +27,14 @@ test.describe('CAT — Danh sách sản phẩm /products', () => {
 
   test('CAT-03: từ khoá vô nghĩa hiện trạng thái rỗng, không trắng trang', async ({ page }) => {
     const catalog = new CatalogPage(page);
-    await catalog.openAll();
-    await catalog.filterInput().fill('zzz-khong-ton-tai-xyz-123');
+    await catalog.openWithKeyword('zzz-khong-ton-tai-xyz-123');
 
     await expect(catalog.emptyState()).toBeVisible({ timeout: 15_000 });
   });
 
   test('CAT-04: xoá từ khoá đưa danh sách về trạng thái đầy đủ', async ({ page }) => {
     const catalog = new CatalogPage(page);
-    await catalog.openAll();
-    await catalog.filterInput().fill('zzz-khong-ton-tai-xyz-123');
+    await catalog.openWithKeyword('zzz-khong-ton-tai-xyz-123');
     await expect(catalog.emptyState()).toBeVisible({ timeout: 15_000 });
 
     await catalog.clearKeyword().click();
