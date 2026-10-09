@@ -14,10 +14,10 @@ import type { CatalogCategoryDto } from '@/generated/api/catalog/catalog.schemas
  * với hook client nên cache khớp đúng query key. Lỗi API không chặn trang: client tự tải lại.
  */
 const CATALOG_PROMISES = [
-  { href: STORE_POLICY_PAGES.SHIPPING.href, icon: Truck, label: 'Giao & Lắp Đặt Toàn Quốc', iconClassName: 'text-neutral-700' },
-  { href: STORE_POLICY_PAGES.WARRANTY.href, icon: ShieldCheck, label: 'Bảo Hành Chính Hãng', iconClassName: 'text-success-600' },
-  { href: STORE_POLICY_PAGES.RETURNS.href, icon: RotateCcw, label: 'Đổi Trả Minh Bạch', iconClassName: 'text-neutral-700' },
-  { href: STORE_POLICY_PAGES.PAYMENT.href, icon: CreditCard, label: 'Thanh Toán An Toàn', iconClassName: 'text-neutral-700' },
+  { href: STORE_POLICY_PAGES.SHIPPING.href, icon: Truck, label: 'Giao & Lắp Đặt Toàn Quốc', iconClassName: 'text-sky-600' },
+  { href: STORE_POLICY_PAGES.WARRANTY.href, icon: ShieldCheck, label: 'Bảo Hành Chính Hãng', iconClassName: 'text-emerald-600' },
+  { href: STORE_POLICY_PAGES.RETURNS.href, icon: RotateCcw, label: 'Đổi Trả Minh Bạch', iconClassName: 'text-amber-600' },
+  { href: STORE_POLICY_PAGES.PAYMENT.href, icon: CreditCard, label: 'Thanh Toán An Toàn', iconClassName: 'text-indigo-600' },
 ] as const;
 
 export async function loadCatalogFirstPage(
@@ -52,7 +52,7 @@ export async function ProductsPage({
   const initialCategoryName = categories?.find((item) => item.slug === filters.category)?.name;
 
   return (
-      <main className="bg-white pb-20 pt-8">
+      <main className="bg-slate-50/40 pb-20 pt-8">
         <div className="page-container">
           <Breadcrumb
             className="mb-6"
@@ -60,24 +60,25 @@ export async function ProductsPage({
           />
 
           {/* Compact Catalog Hero Banner */}
-          {/* Tiêu đề trang trên nền trang (không khối tối): trang danh sách để ảnh sản phẩm tạo màu. */}
           <div className="max-w-2xl">
-            <span className="eyebrow text-neutral-500">Bảo An Sport — Thể thao chính hãng</span>
-            <h1 className="mt-2 text-2xl font-bold tracking-tight text-neutral-950 sm:text-3xl lg:text-4xl">
+            <div className="inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-red-50/80 px-3 py-0.5 text-xs font-black uppercase tracking-wider text-red-600 shadow-2xs">
+              Bảo An Sport — Thể thao chính hãng
+            </div>
+            <h1 className="mt-2.5 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl lg:text-4xl">
               Thiết bị & phụ kiện thể thao
             </h1>
-            <p className="mt-1.5 text-sm text-neutral-600">
+            <p className="mt-1.5 text-xs sm:text-sm text-slate-600 font-medium">
               Rèn luyện sức mạnh, cardio, bóng bàn, cầu lông, võ thuật và phụ kiện thể thao chính hãng.
             </p>
           </div>
 
-          {/* Thin Trust Benefits Bar (Single sleek strip) */}
-          <ul className="mt-4 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-neutral-200 bg-neutral-200 text-xs font-semibold text-neutral-600 lg:grid-cols-4">
+          {/* Thin Trust Benefits Bar */}
+          <ul className="mt-5 grid grid-cols-2 gap-2 rounded-2xl border border-slate-200/90 bg-white p-1.5 shadow-2xs lg:grid-cols-4">
             {CATALOG_PROMISES.map(({ href, icon: Icon, label, iconClassName }) => (
-              <li key={href} className="bg-white">
+              <li key={href}>
                 <Link
                   href={href}
-                  className="flex h-full items-center justify-center gap-2 px-3 py-3 text-center transition hover:text-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-neutral-900"
+                  className="flex h-full items-center justify-center gap-2 rounded-xl bg-slate-50/80 px-3 py-2.5 text-xs font-extrabold text-slate-700 transition hover:bg-red-50 hover:text-red-700 hover:border-red-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-red-600"
                 >
                   <Icon aria-hidden className={`size-4 shrink-0 ${iconClassName}`} />
                   <span>{label}</span>

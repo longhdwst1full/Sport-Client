@@ -42,10 +42,10 @@ export function AdvisorOptionStep<T extends AdvisorOption>({
               type="button"
               onClick={() => onSelect(option.id)}
               aria-pressed={isSelected}
-              className={`flex flex-col justify-between rounded-2xl border p-3.5 text-left sm:p-5 transition-all duration-200 focus-ring ${
+              className={`group flex flex-col justify-between rounded-2xl border p-4 text-left sm:p-5 transition-all duration-200 focus-ring ${
                 isSelected
-                  ? 'border-neutral-950 bg-white ring-1 ring-neutral-950'
-                  : 'border-neutral-200 bg-white hover:border-neutral-400'
+                  ? 'border-red-600 bg-white ring-2 ring-red-500/20 shadow-md -translate-y-0.5'
+                  : 'border-slate-200/90 bg-white hover:border-slate-400 hover:shadow-xs hover:-translate-y-0.5'
               }`}
             >
               {renderCard(option, isSelected)}

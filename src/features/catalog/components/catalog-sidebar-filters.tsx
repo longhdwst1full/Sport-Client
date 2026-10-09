@@ -82,13 +82,13 @@ export function CatalogFilterGroups({
         aria-pressed={isSelected}
         className={
           isSidebar
-            ? `flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-xs font-bold transition ${FOCUS_RING} ${
+            ? `flex w-full items-center justify-between rounded-xl px-3.5 py-2 text-left text-xs font-bold transition ${FOCUS_RING} ${
                 isSelected
-                  ? 'bg-neutral-50 text-neutral-950 ring-1 ring-neutral-900/30'
-                  : 'text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900'
+                  ? 'bg-red-50 text-red-600 font-extrabold border-l-4 border-l-red-600 ring-1 ring-red-200/80 shadow-2xs'
+                  : 'text-slate-700 hover:bg-slate-100/80 hover:text-slate-900'
               }`
-            : `rounded-full px-3.5 py-2 text-xs font-bold transition ${FOCUS_RING} ${
-                isSelected ? 'bg-neutral-900 text-white' : 'border border-neutral-200 bg-neutral-50 text-neutral-700'
+            : `rounded-full px-4 py-2 text-xs font-extrabold transition ${FOCUS_RING} ${
+                isSelected ? 'bg-red-600 text-white shadow-xs' : 'border border-slate-200 bg-slate-50 text-slate-700 hover:border-slate-300'
               }`
         }
       >
@@ -97,8 +97,8 @@ export function CatalogFilterGroups({
             <span className="truncate">{tab.slug ? tab.label : 'Tất cả danh mục'}</span>
             {typeof tab.productCount === 'number' && tab.productCount > 0 && (
               <span
-                className={`ml-2 rounded-full px-2 py-0.5 text-3xs font-bold ${
-                  isSelected ? 'bg-neutral-900 text-white' : 'bg-neutral-100 text-neutral-600'
+                className={`ml-2 rounded-full px-2 py-0.5 text-3xs font-extrabold ${
+                  isSelected ? 'bg-red-600 text-white shadow-2xs' : 'bg-slate-100 text-slate-600'
                 }`}
               >
                 {tab.productCount}
@@ -117,10 +117,10 @@ export function CatalogFilterGroups({
     return isSidebar ? (
       <label
         key={range.id}
-        className={`flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-xs font-semibold transition ${
+        className={`flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-xs font-bold transition ${
           isSelected
-            ? 'bg-neutral-50/80 text-neutral-950 font-bold ring-1 ring-neutral-900/20'
-            : 'text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900'
+            ? 'bg-red-50/70 text-red-600 font-extrabold ring-1 ring-red-200'
+            : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
         }`}
       >
         <div className="flex items-center gap-2.5">
@@ -130,7 +130,7 @@ export function CatalogFilterGroups({
             value={range.id}
             checked={isSelected}
             onChange={() => onSelectPriceRange(range.id)}
-            className={`size-4 cursor-pointer border-neutral-300 accent-neutral-900 ${FOCUS_RING}`}
+            className={`size-4 cursor-pointer border-slate-300 accent-red-600 ${FOCUS_RING}`}
           />
           <span>{range.label}</span>
         </div>
@@ -141,10 +141,10 @@ export function CatalogFilterGroups({
         type="button"
         onClick={() => onSelectPriceRange(range.id)}
         aria-pressed={isSelected}
-        className={`rounded-xl border p-2.5 text-center text-xs font-bold transition ${FOCUS_RING} ${
+        className={`rounded-xl border p-2.5 text-center text-xs font-extrabold transition ${FOCUS_RING} ${
           isSelected
-            ? 'border-neutral-900 bg-neutral-50 text-neutral-950'
-            : 'border-neutral-200 bg-white text-neutral-700 hover:bg-neutral-50'
+            ? 'border-red-600 bg-red-50 text-red-600 shadow-2xs'
+            : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
         }`}
       >
         {range.label}

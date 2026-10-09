@@ -40,12 +40,17 @@ export function FooterNewsletterBanner({ banner: footerBanner }: { banner?: Bann
   return (
     <>
       {footerBanner && <FooterBannerStrip banner={footerBanner} />}
-      <section className="border-t border-neutral-800 bg-neutral-900 px-4 py-10 text-white sm:py-12 lg:px-10">
-        <div className="page-container flex flex-col items-center gap-6 px-0 text-center md:flex-row md:justify-between md:text-left">
+      <section className="relative overflow-hidden border-t border-red-500/30 bg-gradient-to-r from-slate-950 via-slate-900 to-red-950/80 px-4 py-10 text-white sm:py-12 lg:px-10 shadow-xl">
+        <div className="pointer-events-none absolute -left-12 -top-12 size-56 rounded-full bg-red-600/20 blur-3xl" aria-hidden="true" />
+        <div className="pointer-events-none absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-500/50 to-transparent" />
+
+        <div className="relative z-10 page-container flex flex-col items-center gap-6 px-0 text-center md:flex-row md:justify-between md:text-left">
           <div>
-            <h2 className="text-xl font-bold sm:text-2xl">Cần tư vấn chọn thiết bị?</h2>
-            <p className="mt-1.5 text-sm text-neutral-300">
-              Nhân viên {STORE_CONFIG.name} hỗ trợ {STORE_CONTACT.openingHoursShort}.
+            <h2 className="text-xl font-black sm:text-2xl lg:text-3xl text-white tracking-tight">
+              Cần tư vấn chọn thiết bị?
+            </h2>
+            <p className="mt-1.5 text-xs sm:text-sm font-medium text-slate-300">
+              Nhân viên {STORE_CONFIG.name} tư vấn trực tiếp 1:1, hỗ trợ {STORE_CONTACT.openingHoursShort}.
             </p>
           </div>
           <ContactActions tone="dark" className="justify-center" />
