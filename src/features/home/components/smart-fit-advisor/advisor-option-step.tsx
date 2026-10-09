@@ -34,7 +34,7 @@ export function AdvisorOptionStep<T extends AdvisorOption>({
   return (
     <div role="group" aria-label={title}>
       <h3 className="text-base sm:text-lg font-black text-white mb-4">{title}</h3>
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {options.map((option) => {
           const isSelected = selectedId === option.id;
           return (
@@ -43,7 +43,7 @@ export function AdvisorOptionStep<T extends AdvisorOption>({
               type="button"
               onClick={() => onSelect(option.id)}
               aria-pressed={isSelected}
-              className={`flex flex-col justify-between rounded-2xl border p-5 text-left transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 ${
+              className={`flex flex-col justify-between rounded-2xl border p-3.5 text-left sm:p-5 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 ${
                 isSelected
                   ? 'border-slate-900 bg-slate-950/60 ring-2 ring-slate-900/40 shadow-lg'
                   : 'border-slate-800 bg-slate-900/60 hover:border-slate-700 hover:bg-slate-900'

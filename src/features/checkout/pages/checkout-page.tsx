@@ -34,7 +34,7 @@ export function CheckoutPage() {
   const form = useCheckoutForm();
   const { shopArranged, paymentMethod } = form;
   const checkoutQuote = useCheckoutQuote({ form, removeItem, toast });
-  const { quote, quoteView, busy, error, autoQuoting, quotePending, invalidateQuote, retryQuote, refreshConsultedQuote, setError } = checkoutQuote;
+  const { quote, displayQuoteView, refreshingQuote, busy, error, autoQuoting, quotePending, invalidateQuote, retryQuote, refreshConsultedQuote, setError } = checkoutQuote;
   const { placedOrder, redirectingToVnpay, submit } = usePlaceOrder({
     form,
     checkoutQuote,
@@ -120,8 +120,9 @@ export function CheckoutPage() {
               setShopArranged={form.setShopArranged}
               invalidateQuote={invalidateQuote}
               freeRadiusKm={freeRadiusKm}
-              quotePending={quotePending}
-              quoteView={quoteView}
+              quotePending={quotePending && !refreshingQuote}
+              refreshingQuote={refreshingQuote}
+              quoteView={displayQuoteView}
               readyToQuote={form.readyToQuote}
               error={error}
               autoQuoting={autoQuoting}
@@ -146,9 +147,10 @@ export function CheckoutPage() {
           <CheckoutOrderSummary
             items={effectiveItems}
             localSubtotal={localSubtotal}
-            quote={quoteView}
+            quote={displayQuoteView}
             busy={busy || redirectingToVnpay}
-            quoting={quotePending}
+            quoting={quotePending && !refreshingQuote}
+            refreshing={refreshingQuote}
             authLoaded={isLoaded}
             shopArranged={shopArranged}
             showSubmit={true}

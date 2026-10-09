@@ -12,6 +12,7 @@ export function CheckoutDeliveryMethodSection({
   invalidateQuote,
   freeRadiusKm,
   quotePending,
+  refreshingQuote = false,
   quoteView,
   readyToQuote,
   error,
@@ -24,6 +25,8 @@ export function CheckoutDeliveryMethodSection({
   invalidateQuote: () => void;
   freeRadiusKm: number;
   quotePending: boolean;
+  /** Đang báo giá lại, `quoteView` là số cũ: giữ nguyên bố cục, chỉ làm mờ và ghi "đang cập nhật". */
+  refreshingQuote?: boolean;
   quoteView: CheckoutQuoteView | undefined;
   readyToQuote: boolean;
   error: string;
@@ -58,7 +61,7 @@ export function CheckoutDeliveryMethodSection({
                   <Spinner className="size-3.5 animate-spin text-slate-900" /> Đang tính phí vận chuyển...
                 </span>
               ) : quoteView ? (
-                <div className="space-y-1">
+                <div className={`space-y-1 transition-opacity ${refreshingQuote ? 'opacity-60' : ''}`} aria-busy={refreshingQuote}>
                   <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
                     <span
                       className={`text-sm font-black ${
@@ -73,6 +76,11 @@ export function CheckoutDeliveryMethodSection({
                     </span>
                     <span className="text-slate-400">·</span>
                     <span className="font-semibold text-slate-600">{quoteView.shippingMethodLabel}</span>
+                    {refreshingQuote && (
+                      <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-500">
+                        <Spinner className="size-3 animate-spin" /> Đang cập nhật
+                      </span>
+                    )}
                   </div>
                   <p className="text-[11px] font-medium text-slate-500">
                     Dự kiến nhận hàng: <strong className="font-bold text-slate-700">{quoteView.etaLabel}</strong>

@@ -148,6 +148,9 @@ describe('CheckoutPage – đổi phương thức thanh toán phải báo giá l
 
     // Đổi sang VNPay: phải bỏ quote COD cũ (invalidateQuote) rồi báo giá lại.
     fireEvent.click(screen.getByRole('radio', { name: /Chuyển khoản VietQR \/ VNPay/ }));
+    // Giao hàng không đổi: giữ phí cũ (mờ, "Đang cập nhật") thay vì xoá về spinner "Đang tính phí".
+    expect(screen.queryByText(/Đang tính phí/)).toBeNull();
+    expect(screen.getByText('Đang cập nhật')).toBeTruthy();
 
     await act(async () => {
       vi.advanceTimersByTime(800);

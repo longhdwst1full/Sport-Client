@@ -8,7 +8,7 @@ import type { OrderDetailDto } from '@/generated/api/orders/orders.schemas';
 import { apiErrorCode, apiErrorMessage } from '@/lib/api/error-message';
 import type { useToast } from '@/shared/components/global-toast';
 import { prepareCheckout, reloadCheckout, type CheckoutContext } from '../api/checkout.workflow';
-import { toCheckoutQuoteView } from '../model/checkout.mapper';
+import { toCheckoutQuoteView, type CheckoutQuoteView } from '../model/checkout.mapper';
 import type { CheckoutForm } from './use-checkout-form';
 
 export type Toast = ReturnType<typeof useToast>['toast'];
@@ -58,8 +58,13 @@ export function useCheckoutQuote({
   const [autoQuoting, setAutoQuoting] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  // Báo giá cũ chỉ để HIỂN THỊ trong lúc báo giá lại sau khi đổi phương thức thanh toán: giao hàng không
+  // đổi nên phí gần như giữ nguyên, xoá về "Đang tính phí" làm cả khối giao hàng và tóm tắt nhảy.
+  // Đặt đơn vẫn chỉ dùng `quote` mới (gate cần báo giá của đúng phương thức đang chọn).
+  const [staleQuoteView, setStaleQuoteView] = useState<CheckoutQuoteView>();
 
-  const invalidateQuote = () => {
+  const invalidateQuote = (keepDisplay = false) => {
+    setStaleQuoteView(keepDisplay ? quoteView ?? staleQuoteView : undefined);
     quoteSeq.current += 1;
     setAutoQuoting(false);
     setQuote(undefined);
@@ -71,6 +76,7 @@ export function useCheckoutQuote({
 
   /** SKU trong giỏ trên máy không còn bán: bỏ khỏi giỏ để báo giá lại với các dòng còn lại. */
   const handleCheckoutError = (caught: unknown) => {
+    setStaleQuoteView(undefined);
     if (caught instanceof UnavailableCartLinesError) {
       caught.variantIds.forEach((variantId) => removeItem(variantId));
     }
@@ -97,6 +103,7 @@ export function useCheckoutQuote({
 
   /** Lượt báo giá tự động lỗi (GHN timeout, mạng): khách bấm thử lại mà không phải sửa form. */
   const retryQuote = () => {
+    setStaleQuoteView(undefined);
     setError('');
     setQuote(undefined);
     quoteSeq.current += 1;
@@ -127,6 +134,9 @@ export function useCheckoutQuote({
 
   // Debounce 700 ms trước lượt báo giá cũng là "đang tính": chưa có quote nhưng không phải lỗi.
   const quotePending = autoQuoting || (form.readyToQuote && !quote && !error);
+  /** Đang báo giá lại nhưng còn số cũ để hiển thị: UI giữ số cũ (mờ) thay vì spinner. */
+  const refreshingQuote = quotePending && !quoteView && Boolean(staleQuoteView);
+  const displayQuoteView = quoteView ?? staleQuoteView;
 
   return {
     quote, setQuote,
@@ -143,6 +153,8 @@ export function useCheckoutQuote({
     retryQuote,
     refreshConsultedQuote,
     quotePending,
+    refreshingQuote,
+    displayQuoteView,
   };
 }
 

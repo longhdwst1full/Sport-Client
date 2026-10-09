@@ -24,6 +24,8 @@ interface CheckoutOrderSummaryProps {
   shopArranged?: boolean;
   /** Đang gọi báo giá: hiện "Đang tính phí", không bao giờ hiện 0 ₫ tạm. */
   quoting?: boolean;
+  /** Đang báo giá lại, `quote` là số cũ (vd. vừa đổi phương thức thanh toán): giữ số, làm mờ phí và tổng. */
+  refreshing?: boolean;
   /** Nút đặt hàng chỉ có ở bước xác nhận; các bước trước điều hướng bằng nút trong từng bước. */
   showSubmit?: boolean;
   submitDisabled?: boolean;
@@ -41,6 +43,7 @@ export function CheckoutOrderSummary({
   authLoaded,
   shopArranged = false,
   quoting = false,
+  refreshing = false,
   showSubmit = false,
   submitDisabled = false,
   submitLabel = 'Đặt hàng',
@@ -70,6 +73,7 @@ export function CheckoutOrderSummary({
       : quote.shippingTotalAmount === 0
         ? { value: 'Miễn phí', className: 'font-semibold text-success-700' }
         : { value: quote.shippingTotalLabel };
+  if (refreshing) shippingRow.className = `${shippingRow.className ?? ''} opacity-60`;
   const totalRow: DescriptionItem | null = shippingPending
     ? { label: 'Tiền hàng', value: formatVnd(localSubtotal) }
     : !quoting && quote
@@ -111,7 +115,7 @@ export function CheckoutOrderSummary({
               layout="inline"
               className="border-t pt-3 text-base font-black"
               labelClassName="text-slate-900"
-              valueClassName="font-black text-slate-900"
+              valueClassName={`font-black text-slate-900 ${refreshing ? 'opacity-60' : ''}`}
               items={[totalRow]}
             />
           )}

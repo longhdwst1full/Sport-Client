@@ -1,6 +1,6 @@
 # Storefront checkout — maintenance note
 
-> **Document version:** 1.7.0
+> **Document version:** 1.8.0
 >
 > **Last updated:** 2026-09-29
 >
@@ -70,6 +70,7 @@ Checkout chỉ được import `orders`, `address`, `site-config` (và `auth`, `
 ## Invariant UI/API
 
 - Mọi thay đổi recipient, địa chỉ, vị trí, payment method hoặc yêu cầu tư vấn phải invalidate quote cũ.
+- Đổi payment method vẫn phải báo giá lại: checkout token lưu `paymentMethod` dùng khi đặt đơn, và GHN tính thêm phí thu hộ theo `cod_value`. Trong lúc chờ, UI giữ số cũ (mờ, "Đang cập nhật") qua `displayQuoteView`; gate đặt đơn chỉ dùng `quote` mới.
 - Không dùng tổng tiền local để confirm; quote Backend là nguồn đúng cuối cùng.
 - Quote cần tư vấn không được confirm cho đến khi Admin chốt và Client reload lại quote.
 - `Idempotency-Key` đại diện một ý định quote/confirm/place order. Confirm và Order có key riêng, nhưng mỗi key phải được giữ nguyên khi retry do lỗi mạng.
@@ -92,6 +93,7 @@ Checkout chỉ được import `orders`, `address`, `site-config` (và `auth`, `
 
 | Version | Date | Change summary | Source |
 | --- | --- | --- | --- |
+| 1.8.0 | 2026-10-09 | Đổi phương thức thanh toán giữ phí/tổng cũ (mờ) trong lúc báo giá lại thay vì xoá về "Đang tính phí". | Checkout payment requote UX |
 | 1.7.0 | 2026-10-06 | Màu thành công dùng `success-*`; thanh CTA dính đáy mobile thay nút trong bước xác nhận; `CheckoutSkeleton` thay spinner; `<main>` landmark; input 16px trên mobile. | UI brand-red pass |
 | 1.6.0 | 2026-09-29 | Tách checkout-page thành 5 hook + 4 section, không đổi hành vi; cập nhật bảng Cấu trúc. | Client restructure (checkout split) |
 | 1.5.0 | 2026-09-27 | "Nhờ shop gửi" dùng `shippingArrangement: SHOP_ARRANGED` và đặt được đơn ngay; gate thêm `CONSULTATION_PENDING`. | D62 checkout shipping arrangement |

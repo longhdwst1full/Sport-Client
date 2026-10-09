@@ -10,7 +10,7 @@ export function CheckoutPaymentMethodSection({
 }: {
   paymentMethod: CheckoutPaymentMethod;
   setPaymentMethod: (value: CheckoutPaymentMethod) => void;
-  invalidateQuote: () => void;
+  invalidateQuote: (keepDisplay?: boolean) => void;
 }) {
   return (
     <CheckoutStepSection step={3} icon={CreditCard} title="Phương thức thanh toán" description="Lựa chọn hình thức thanh toán thuận tiện nhất">
@@ -34,7 +34,7 @@ export function CheckoutPaymentMethodSection({
             type="button"
             role="radio"
             aria-checked={paymentMethod === value}
-            onClick={() => { if (paymentMethod === value) return; setPaymentMethod(value); invalidateQuote(); }}
+            onClick={() => { if (paymentMethod === value) return; setPaymentMethod(value); invalidateQuote(true); }}
             className={optionClass(paymentMethod === value)}
           >
             <div className="flex items-center justify-between gap-2">

@@ -40,7 +40,7 @@ function OptionCardContent({
 }) {
   return (
     <>
-      <div className="flex items-center justify-between mb-4">
+      <div className="mb-3 flex items-center justify-between sm:mb-4">
         {lead}
         {isSelected && (
           <div className="grid size-6 place-items-center rounded-full bg-slate-900 text-white">
