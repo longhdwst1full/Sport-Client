@@ -1,3 +1,8 @@
+---
+paths:
+  - "src/**/*.tsx"
+---
+
 # Storefront image usage
 
 ## RULE-IMG-01: Dùng pipeline ảnh của Next (P0)

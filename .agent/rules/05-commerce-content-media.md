@@ -1,3 +1,9 @@
+---
+paths:
+  - "src/features/content/**"
+  - "src/features/catalog/**"
+---
+
 # Storefront commerce, content and media
 
 - Optimize product and editorial images through the Next.js image pipeline or the approved third-party media transformation URL.

@@ -1,3 +1,10 @@
+---
+paths:
+  - "src/features/**"
+  - "src/foundation/**"
+  - "src/widgets/**"
+---
+
 # Storefront skeleton loading
 
 Applies to every surface that renders data from `src/generated/api`.

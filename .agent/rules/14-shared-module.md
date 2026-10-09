@@ -1,3 +1,8 @@
+---
+paths:
+  - "src/shared/**"
+---
+
 # Storefront shared module
 
 `src/shared` chỉ chứa thứ **thực sự trung lập domain**.

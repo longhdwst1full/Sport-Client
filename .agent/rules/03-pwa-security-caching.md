@@ -1,3 +1,10 @@
+---
+paths:
+  - "src/pwa/**"
+  - "public/sw.js"
+  - "next.config.ts"
+---
+
 # Storefront PWA security and caching
 
 Classify each route:

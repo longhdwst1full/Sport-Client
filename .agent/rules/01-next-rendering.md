@@ -1,3 +1,10 @@
+---
+paths:
+  - "src/app/**"
+  - "src/layouts/**"
+  - "src/widgets/**"
+---
+
 # Next.js rendering boundaries
 
 - Default public, indexable catalog/content routes to server rendering where the data path supports it.

@@ -1,3 +1,9 @@
+---
+paths:
+  - "src/**/*.tsx"
+  - "src/**/hooks/**"
+---
+
 # Storefront React hooks
 
 ## RULE-HOOK-01: Không `setState` trong thân `useEffect` (P0)
