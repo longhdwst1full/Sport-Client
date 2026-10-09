@@ -401,7 +401,7 @@ html {
   scrollbar-width: none;
 }
 
-/* Floating contact dynamic ring animation */
+/* Floating contact dynamic ring & pulse animations */
 @keyframes phone-ring {
   0%, 100% {
     transform: rotate(0deg) scale(1);
@@ -417,9 +417,31 @@ html {
   }
 }
 
+@keyframes phone-vibrate {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  5%, 15%, 25% { transform: rotate(-12deg) scale(1.12); }
+  10%, 20%, 30% { transform: rotate(12deg) scale(1.12); }
+  35% { transform: rotate(0deg) scale(1); }
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.35); opacity: 0; }
+  100% { transform: scale(1.35); opacity: 0; }
+}
+
 .animate-phone-ring {
-  animation: phone-ring 3.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite;
+  animation: phone-ring 3s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite;
   transform-origin: center;
+}
+
+.animate-phone-vibrate {
+  animation: phone-vibrate 2.2s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite;
+  transform-origin: center;
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
 }
 
 

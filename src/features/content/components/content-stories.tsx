@@ -104,7 +104,12 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
           >
             {/* Image Thumbnail */}
             {/* Ảnh mobile theo tỷ lệ 16:9 (không còn khối 220px cao); ảnh thiếu/lỗi do `CoverImage` thay bằng placeholder. */}
-            <div className="relative aspect-[16/9] overflow-hidden bg-slate-50 md:aspect-auto md:min-h-[220px]">
+            <Link
+              href={`/news/${post.slug}`}
+              className="relative aspect-[16/9] overflow-hidden bg-slate-50 block md:aspect-auto md:min-h-[220px]"
+              tabIndex={-1}
+              aria-hidden="true"
+            >
               <CoverImage
                 src={post.coverUrl}
                 alt={post.title}
@@ -115,7 +120,7 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
               <div className="absolute left-3 top-3 rounded-full bg-slate-900/85 px-3 py-1 text-xs font-black uppercase tracking-wider text-slate-300 backdrop-blur-md">
                 {post.categoryLabel}
               </div>
-            </div>
+            </Link>
 
             {/* Content Details */}
             <div className="flex flex-col justify-between p-5 sm:p-6">

@@ -66,16 +66,21 @@ export function NewsListFeed({
       {/* Featured Hero Article */}
       {featured && (
         <article className="mt-10 overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm transition hover:shadow-lg lg:grid lg:grid-cols-[1.2fr_0.8fr] lg:rounded-[36px]">
-          <div className="relative aspect-[16/10] bg-slate-100 lg:aspect-auto lg:min-h-[420px]">
+          <Link
+            href={`/news/${featured.slug}`}
+            className="relative aspect-[16/10] bg-slate-100 block overflow-hidden lg:aspect-auto lg:min-h-[420px]"
+            tabIndex={-1}
+            aria-hidden="true"
+          >
             <CoverImage
               src={featured.coverUrl}
               alt={featured.title}
               fill
               priority
               sizes="(max-width: 1024px) 100vw, 60vw"
-              className="object-cover"
+              className="object-cover transition duration-500 hover:scale-105"
             />
-          </div>
+          </Link>
           <div className="flex flex-col justify-between p-6 sm:p-10 lg:p-12">
             <div>
               <div className="flex flex-wrap items-center gap-3 text-xs font-bold text-slate-900">
@@ -152,7 +157,12 @@ export function NewsListFeed({
               key={item.id}
               className="group flex flex-col overflow-hidden rounded-[28px] border border-slate-200/80 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl"
             >
-              <div className="relative aspect-[16/10] overflow-hidden bg-slate-100">
+              <Link
+                href={`/news/${item.slug}`}
+                className="relative aspect-[16/10] overflow-hidden bg-slate-100 block"
+                tabIndex={-1}
+                aria-hidden="true"
+              >
                 <CoverImage
                   src={item.coverUrl}
                   alt={item.title}
@@ -163,7 +173,7 @@ export function NewsListFeed({
                 <div className="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-xs font-bold text-slate-800 shadow-sm backdrop-blur">
                   {item.categoryLabel}
                 </div>
-              </div>
+              </Link>
 
               <div className="flex flex-1 flex-col p-5 sm:p-6">
                 <div className="flex items-center gap-2 text-xs text-slate-500">

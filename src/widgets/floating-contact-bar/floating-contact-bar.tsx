@@ -54,7 +54,8 @@ export function FloatingContactBar() {
           <span className={FLOAT_TOOLTIP}>
             Chat Zalo: {STORE_CONTACT.primaryHotline}
           </span>
-          <MessageSquare aria-hidden className="size-5 text-sky-600" />
+          <span className="absolute inset-0 rounded-full border border-sky-400 animate-pulse-ring pointer-events-none" />
+          <MessageSquare aria-hidden className="size-5 text-sky-600 animate-phone-vibrate" />
         </a>
 
         {/* 24/7 Hotline Call Button */}
@@ -67,6 +68,7 @@ export function FloatingContactBar() {
           <span className={FLOAT_TOOLTIP}>
             Hotline: {STORE_CONTACT.primaryHotline}
           </span>
+          <span className="absolute inset-0 rounded-full border border-emerald-400 animate-pulse-ring pointer-events-none" />
           <span className="absolute -right-0.5 -top-0.5 flex size-2.5">
             <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-75" />
             <span className="relative inline-flex size-2.5 rounded-full bg-emerald-500" />

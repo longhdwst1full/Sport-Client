@@ -14,7 +14,7 @@ import { PRODUCT_PLACEHOLDER_IMAGE } from '@/shared/constants';
  * thay vì nới `limit`. Đặt ở model (không có `'use client'`) để server component trang chủ
  * lấy trước đúng trang đầu mà hook client sẽ dùng.
  */
-export const CATALOG_PAGE_SIZE = { SHOWCASE: 8, SCOPED: 24, MAX: 100 } as const;
+export const CATALOG_PAGE_SIZE = { SHOWCASE: 8, SCOPED: 9, MAX: 100 } as const;
 
 /**
  * Giá tối thiểu có bán được không. Null/rỗng/0 đều là "chưa có bảng giá hiệu lực":
