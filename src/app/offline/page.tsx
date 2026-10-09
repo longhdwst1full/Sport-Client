@@ -6,14 +6,14 @@ import { Button, buttonVariants } from '@/foundation/components/buttons';
 
 export default function OfflinePage() {
   return (
-    <main className="grid min-h-screen place-items-center bg-slate-50 px-4 py-12 text-slate-900">
-      <section className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-card sm:p-10">
+    <main className="grid min-h-screen place-items-center bg-neutral-50 px-4 py-12 text-neutral-900">
+      <section className="w-full max-w-lg rounded-2xl border border-neutral-200 bg-white p-6 text-center shadow-card sm:p-10">
         <div className="mx-auto grid size-20 place-items-center rounded-2xl bg-amber-100 text-amber-700">
           <CloudOff aria-hidden className="size-10" />
         </div>
-        <p className="mt-6 text-xs font-black uppercase tracking-[0.2em] text-slate-900">Bảo An Sport</p>
+        <p className="mt-6 eyebrow text-neutral-900">Bảo An Sport</p>
         <h1 className="mt-3 text-3xl font-black">Bạn đang ngoại tuyến</h1>
-        <p className="mt-4 text-sm leading-6 text-slate-600">
+        <p className="mt-4 text-sm leading-6 text-neutral-600">
           Đơn hàng, tài khoản, tồn kho và thanh toán cần kết nối mạng để đảm bảo dữ liệu luôn chính xác và riêng tư.
         </p>
         <div className="mt-7 flex flex-wrap justify-center gap-3">

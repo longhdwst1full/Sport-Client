@@ -27,3 +27,4 @@ export {
   toCategorySeoDescription,
   toBreadcrumbJsonLd,
 } from './model/product-json-ld';
+export { PRICE_RANGES, priceRangeHref } from './model/catalog-filter.constants';

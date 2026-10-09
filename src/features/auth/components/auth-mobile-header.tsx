@@ -10,7 +10,7 @@ export function AuthMobileHeader() {
     <>
       {/* Mobile Header Brand & Back */}
       <div className="mb-6 flex items-center justify-between lg:hidden">
-        <Link href="/" aria-label="Bảo An Sport — Trang chủ" className="inline-flex items-center rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900">
+        <Link href="/" aria-label="Bảo An Sport — Trang chủ" className="inline-flex items-center rounded-lg focus-ring-tight">
           <div className="relative h-9 w-40">
             <Image
               src="/images/logo.png"
@@ -25,7 +25,7 @@ export function AuthMobileHeader() {
 
         <Link
           href="/"
-          className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-xs font-bold text-slate-600 shadow-sm transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900"
+          className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-neutral-200 bg-white px-3.5 py-1.5 text-xs font-bold text-neutral-600 shadow-sm transition hover:bg-neutral-50 focus-ring-tight"
         >
           <ArrowLeft className="size-3.5" aria-hidden />
           <span>Trang chủ</span>
@@ -36,7 +36,7 @@ export function AuthMobileHeader() {
       <div className="hidden lg:block mb-5">
         <Link
           href="/"
-          className="group inline-flex items-center gap-2 text-xs font-bold text-slate-500 transition hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 rounded"
+          className="group inline-flex items-center gap-2 text-xs font-bold text-neutral-500 transition hover:text-neutral-900 focus-ring-tight rounded"
         >
           <ArrowLeft className="size-3.5 transition-transform group-hover:-translate-x-1" />
           <span>Quay lại trang chủ mua sắm</span>

@@ -41,7 +41,7 @@ export function ArticleDetailPage({
       {/* Scroll Reading Progress Bar */}
       <ArticleReadingProgress />
 
-      <div className="bg-slate-50/70 pb-20 pt-8">
+      <div className="bg-neutral-50/70 pb-20 pt-8">
         <main className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <Breadcrumb
             className="mb-6"
@@ -52,40 +52,40 @@ export function ArticleDetailPage({
             ]}
           />
 
-          <article className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white p-6 shadow-xs sm:p-10 lg:p-12">
+          <article className="overflow-hidden surface-card p-6 shadow-xs sm:p-10 lg:p-12">
             {/* Meta Tags & Category Header */}
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-5">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-neutral-100 pb-5">
               <div className="flex flex-wrap items-center gap-2.5 text-xs font-bold">
-                <span className="rounded-full bg-slate-50 px-3 py-1 text-xs font-black uppercase tracking-wider text-slate-950 ring-1 ring-slate-900/20">
+                <span className="rounded-full bg-neutral-50 px-3 py-1 text-xs font-black uppercase tracking-wider text-neutral-950 ring-1 ring-neutral-900/20">
                   {article.categoryLabel}
                 </span>
-                <span className="flex items-center gap-1.5 text-slate-500">
-                  <CalendarDays className="size-3.5 text-slate-400" aria-hidden="true" />
+                <span className="flex items-center gap-1.5 text-neutral-500">
+                  <CalendarDays className="size-3.5 text-neutral-400" aria-hidden="true" />
                   {article.publishedLabel}
                 </span>
-                <span className="text-slate-300" aria-hidden="true">•</span>
-                <span className="flex items-center gap-1.5 text-slate-500">
-                  <Clock className="size-3.5 text-slate-400" aria-hidden="true" />
+                <span className="text-neutral-300" aria-hidden="true">•</span>
+                <span className="flex items-center gap-1.5 text-neutral-500">
+                  <Clock className="size-3.5 text-neutral-400" aria-hidden="true" />
                   {article.readTimeLabel}
                 </span>
               </div>
             </div>
 
             {/* Main Editorial Title */}
-            <h1 className="mt-6 text-2xl sm:text-3xl lg:text-4xl font-black leading-tight tracking-tight text-slate-900">
+            <h1 className="mt-6 text-2xl sm:text-3xl lg:text-4xl font-black leading-tight tracking-tight text-neutral-900">
               {article.title}
             </h1>
 
             {/* Lead Excerpt Callout */}
             {article.excerpt && (
-              <div className="mt-6 rounded-2xl border-l-4 border-slate-900 bg-slate-50/50 p-4 sm:p-5 text-base sm:text-lg leading-relaxed font-medium text-slate-700">
+              <div className="mt-6 rounded-2xl border-l-4 border-neutral-900 bg-neutral-50/50 p-4 sm:p-5 text-base sm:text-lg leading-relaxed font-medium text-neutral-700">
                 {article.excerpt}
               </div>
             )}
 
             {/* Cover Image */}
             {article.hasCover && (
-              <div className="relative my-8 aspect-[16/9] overflow-hidden rounded-2xl bg-slate-100 shadow-xs">
+              <div className="relative my-8 aspect-[16/9] overflow-hidden rounded-2xl bg-neutral-100 shadow-xs">
                 <CoverImage
                   src={article.coverUrl}
                   alt={article.title}
@@ -101,7 +101,7 @@ export function ArticleDetailPage({
             <ArticleTableOfContents headings={tocHeadings} />
 
             {/* Article Body Blocks */}
-            <div className="mt-8 text-base leading-8 text-slate-700">
+            <div className="mt-8 text-base leading-8 text-neutral-700">
               {article.blocks.map((block, index) => {
                 if (block.kind === 'heading') {
                   const headingId = createArticleHeadingId(block, index);
@@ -110,7 +110,7 @@ export function ArticleDetailPage({
                     <h2
                       key={index}
                       id={headingId}
-                      className="mt-10 scroll-mt-28 text-xl sm:text-2xl font-black text-slate-900 border-b border-slate-100 pb-2"
+                      className="mt-10 scroll-mt-28 text-xl sm:text-2xl font-black text-neutral-900 border-b border-neutral-100 pb-2"
                     >
                       {block.text}
                     </h2>
@@ -118,7 +118,7 @@ export function ArticleDetailPage({
                     <h3
                       key={index}
                       id={headingId}
-                      className="mt-8 scroll-mt-28 text-lg sm:text-xl font-bold text-slate-900"
+                      className="mt-8 scroll-mt-28 text-lg sm:text-xl font-bold text-neutral-900"
                     >
                       {block.text}
                     </h3>
@@ -130,7 +130,7 @@ export function ArticleDetailPage({
                     <p key={index} className="mt-2.5 flex items-start gap-2.5 pl-1 leading-relaxed">
                       <span
                         aria-hidden
-                        className="mt-2.5 size-1.5 shrink-0 rounded-full bg-slate-900"
+                        className="mt-2.5 size-1.5 shrink-0 rounded-full bg-neutral-900"
                       />
                       <span>{block.text}</span>
                     </p>
@@ -138,7 +138,7 @@ export function ArticleDetailPage({
                 }
 
                 return (
-                  <p key={index} className="mt-4 leading-relaxed text-slate-700">
+                  <p key={index} className="mt-4 leading-relaxed text-neutral-700">
                     {block.text}
                   </p>
                 );
@@ -149,12 +149,12 @@ export function ArticleDetailPage({
             <ArticleConsultationCta />
 
             {/* Bottom Actions */}
-            <div className="mt-10 flex items-center justify-between border-t border-slate-100 pt-6">
+            <div className="mt-10 flex items-center justify-between border-t border-neutral-100 pt-6">
               <Link
                 href="/news"
                 className={buttonVariants({
                   variant: 'outline',
-                  className: 'rounded-full border-slate-200 px-5 text-xs font-bold text-slate-700 shadow-2xs hover:border-slate-900 hover:bg-slate-50',
+                  className: 'rounded-full border-neutral-200 px-5 text-xs font-bold text-neutral-700 shadow-2xs hover:border-neutral-900 hover:bg-neutral-50',
                 })}
               >
                 <ArrowLeft className="size-4" aria-hidden="true" />

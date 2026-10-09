@@ -17,14 +17,14 @@ const STORE_POLICY_LINKS = [
 
 export function StorePolicyLinks() {
   return (
-    <nav aria-label="Chính sách mua hàng" className="grid grid-cols-1 gap-2 border-t border-stone-100 pt-5 text-xs min-[400px]:grid-cols-2">
+    <nav aria-label="Chính sách mua hàng" className="grid grid-cols-1 gap-2 border-t border-neutral-100 pt-5 text-xs min-[400px]:grid-cols-2">
       {STORE_POLICY_LINKS.map(({ icon: Icon, title, href }) => (
         <Link
           key={href}
           href={href}
-          className="flex items-center gap-2.5 rounded-xl px-2 py-1.5 font-bold text-ink transition hover:bg-stone-50 hover:text-slate-900"
+          className="flex items-center gap-2.5 rounded-xl px-2 py-1.5 font-bold text-ink transition hover:bg-neutral-50 hover:text-neutral-900"
         >
-          <Icon className="size-4 shrink-0 text-slate-900" aria-hidden="true" />
+          <Icon className="size-4 shrink-0 text-neutral-900" aria-hidden="true" />
           <span>{title}</span>
         </Link>
       ))}

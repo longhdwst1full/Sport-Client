@@ -28,15 +28,15 @@ export function CatalogSidebarFilters({ hasActiveFilters, onResetFilters, ...gro
   return (
     <aside className="space-y-6">
       {/* Header filter title & Reset */}
-      <div className="flex items-center justify-between border-b border-slate-200/90 pb-3">
-        <span className="text-xs font-black uppercase tracking-wider text-slate-900">
+      <div className="flex items-center justify-between border-b border-neutral-200/90 pb-3">
+        <span className="text-xs font-black uppercase tracking-wider text-neutral-900">
           Bộ lọc tìm kiếm
         </span>
         {hasActiveFilters && (
           <Button
             variant="ghost"
             onClick={onResetFilters}
-            className="h-auto gap-1 rounded px-0 text-[11px] font-bold text-rose-700 hover:bg-transparent hover:text-rose-800 sm:text-[11px]"
+            className="h-auto gap-1 rounded px-0 text-2xs font-bold text-neutral-700 underline-offset-2 hover:bg-transparent hover:text-neutral-950 hover:underline sm:text-2xs"
           >
             <RotateCcw aria-hidden className="size-3" />
             <span>Đặt lại</span>
@@ -50,10 +50,10 @@ export function CatalogSidebarFilters({ hasActiveFilters, onResetFilters, ...gro
 }
 
 const FOCUS_RING =
-  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-1';
+  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-1';
 const SIDEBAR_HEADING =
-  'mb-2.5 flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-slate-800';
-const SHEET_HEADING = 'text-xs font-black uppercase text-slate-700 mb-2';
+  'mb-2.5 flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-neutral-800';
+const SHEET_HEADING = 'text-xs font-black uppercase text-neutral-700 mb-2';
 
 /**
  * Nhóm "Danh mục" + "Khoảng giá" dùng chung cho sidebar desktop và drawer mobile; `variant` chỉ đổi
@@ -84,11 +84,11 @@ export function CatalogFilterGroups({
           isSidebar
             ? `flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-xs font-bold transition ${FOCUS_RING} ${
                 isSelected
-                  ? 'bg-slate-50 text-slate-950 ring-1 ring-slate-900/30'
-                  : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
+                  ? 'bg-neutral-50 text-neutral-950 ring-1 ring-neutral-900/30'
+                  : 'text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900'
               }`
             : `rounded-full px-3.5 py-2 text-xs font-bold transition ${FOCUS_RING} ${
-                isSelected ? 'bg-slate-900 text-white' : 'border border-slate-200 bg-slate-50 text-slate-700'
+                isSelected ? 'bg-neutral-900 text-white' : 'border border-neutral-200 bg-neutral-50 text-neutral-700'
               }`
         }
       >
@@ -97,8 +97,8 @@ export function CatalogFilterGroups({
             <span className="truncate">{tab.slug ? tab.label : 'Tất cả danh mục'}</span>
             {typeof tab.productCount === 'number' && tab.productCount > 0 && (
               <span
-                className={`ml-2 rounded-full px-2 py-0.5 text-[10px] font-bold ${
-                  isSelected ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600'
+                className={`ml-2 rounded-full px-2 py-0.5 text-3xs font-bold ${
+                  isSelected ? 'bg-neutral-900 text-white' : 'bg-neutral-100 text-neutral-600'
                 }`}
               >
                 {tab.productCount}
@@ -119,8 +119,8 @@ export function CatalogFilterGroups({
         key={range.id}
         className={`flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-xs font-semibold transition ${
           isSelected
-            ? 'bg-slate-50/80 text-slate-950 font-bold ring-1 ring-slate-900/20'
-            : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
+            ? 'bg-neutral-50/80 text-neutral-950 font-bold ring-1 ring-neutral-900/20'
+            : 'text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900'
         }`}
       >
         <div className="flex items-center gap-2.5">
@@ -130,7 +130,7 @@ export function CatalogFilterGroups({
             value={range.id}
             checked={isSelected}
             onChange={() => onSelectPriceRange(range.id)}
-            className={`size-4 cursor-pointer border-slate-300 accent-slate-900 ${FOCUS_RING}`}
+            className={`size-4 cursor-pointer border-neutral-300 accent-neutral-900 ${FOCUS_RING}`}
           />
           <span>{range.label}</span>
         </div>
@@ -143,8 +143,8 @@ export function CatalogFilterGroups({
         aria-pressed={isSelected}
         className={`rounded-xl border p-2.5 text-center text-xs font-bold transition ${FOCUS_RING} ${
           isSelected
-            ? 'border-slate-900 bg-slate-50 text-slate-950'
-            : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
+            ? 'border-neutral-900 bg-neutral-50 text-neutral-950'
+            : 'border-neutral-200 bg-white text-neutral-700 hover:bg-neutral-50'
         }`}
       >
         {range.label}
@@ -158,7 +158,7 @@ export function CatalogFilterGroups({
       <div>
         {isSidebar ? (
           <h3 className={SIDEBAR_HEADING}>
-            <Boxes aria-hidden className="size-3.5 text-slate-900" />
+            <Boxes aria-hidden className="size-3.5 text-neutral-900" />
             <span>Danh mục sản phẩm</span>
           </h3>
         ) : (
@@ -176,10 +176,10 @@ export function CatalogFilterGroups({
       </div>
 
       {/* Price Range Facet */}
-      <div className={isSidebar ? 'border-t border-slate-100 pt-5' : undefined}>
+      <div className={isSidebar ? 'border-t border-neutral-100 pt-5' : undefined}>
         {isSidebar ? (
           <h3 className={SIDEBAR_HEADING}>
-            <Tag aria-hidden className="size-3.5 text-slate-900" />
+            <Tag aria-hidden className="size-3.5 text-neutral-900" />
             <span>Khoảng giá</span>
           </h3>
         ) : (

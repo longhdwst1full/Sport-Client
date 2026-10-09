@@ -12,8 +12,8 @@ const PRESENTATION = {
   },
   FAILED: {
     icon: XCircle,
-    tone: 'border-rose-300 bg-rose-50 text-rose-900',
-    iconTone: 'text-rose-600',
+    tone: 'border-red-300 bg-red-50 text-red-900',
+    iconTone: 'text-red-600',
     title: 'Giao dịch chưa thành công',
   },
   INVALID: {
@@ -29,7 +29,7 @@ export function VnpayReturnPage({ result }: { result: VnpayReturnView }) {
   const Icon = presentation.icon;
 
   return (
-      <div className="bg-stone-50/60 pb-20 pt-10">
+      <div className="bg-neutral-50/60 pb-20 pt-10">
         <main className="mx-auto max-w-2xl px-4 sm:px-6">
           <section role="status" className={`rounded-3xl border p-5 shadow-sm sm:p-8 ${presentation.tone}`}>
             <Icon aria-hidden className={`size-12 ${presentation.iconTone}`} />
@@ -48,7 +48,7 @@ export function VnpayReturnPage({ result }: { result: VnpayReturnView }) {
             Trạng thái thật của đơn do IPN quyết định, nên luôn hướng khách về
             trang đơn hàng thay vì để họ tin vào màn hình này.
           */}
-          <p className="mt-5 rounded-2xl border border-slate-200 bg-white p-4 text-sm leading-6 text-slate-600">
+          <p className="mt-5 rounded-2xl border border-neutral-200 bg-white p-4 text-sm leading-6 text-neutral-600">
             Trạng thái cuối cùng của đơn được cập nhật khi hệ thống nhận xác nhận trực tiếp từ
             VNPay. Mở trang đơn hàng để xem tình trạng chính thức.
           </p>
@@ -62,7 +62,7 @@ export function VnpayReturnPage({ result }: { result: VnpayReturnView }) {
             </Link>
             <Link
               href="/"
-              className={buttonVariants({ variant: 'ghost', className: 'rounded-full bg-slate-100 px-6 font-bold text-slate-800 hover:bg-slate-200' })}
+              className={buttonVariants({ variant: 'ghost', className: 'rounded-full bg-neutral-100 px-6 font-bold text-neutral-800 hover:bg-neutral-200' })}
             >
               Về trang chủ
             </Link>

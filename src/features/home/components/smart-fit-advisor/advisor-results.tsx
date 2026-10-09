@@ -23,23 +23,23 @@ export function AdvisorResults({ recommendation, goalLabel, spaceLabel, budgetLa
   );
 
   return (
-    <div className="rounded-2xl border border-slate-700 bg-slate-900/90 p-6 sm:p-8 backdrop-blur-sm">
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 border-b border-slate-800 pb-6">
+    <div className="rounded-2xl border border-neutral-700 bg-neutral-900/90 p-6 sm:p-8 backdrop-blur-sm">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 border-b border-neutral-800 pb-6">
         <div>
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-slate-900/20 px-3 py-1 text-xs font-black uppercase tracking-wider text-slate-300 mb-2">
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-neutral-900/20 px-3 py-1 text-xs font-black uppercase tracking-wider text-neutral-300 mb-2">
             <Sparkles className="size-3.5" aria-hidden="true" />
             <span>CẤU HÌNH ĐƯỢC CHUYÊN GIA BẢO AN SPORT TỐI ƯU</span>
           </div>
           <h3 className="text-xl sm:text-2xl font-black text-white">
             {recommendation.title}
           </h3>
-          <div className="mt-2 flex flex-wrap gap-2 text-xs text-slate-400">
+          <div className="mt-2 flex flex-wrap gap-2 text-xs text-neutral-400">
             {[
               `Mục tiêu: ${goalLabel}`,
               `Không gian: ${spaceLabel}`,
               `Ngân sách: ${budgetLabel}`,
             ].map((summary) => (
-              <span key={summary} className="rounded-md bg-slate-800 px-2 py-0.5">
+              <span key={summary} className="rounded-md bg-neutral-800 px-2 py-0.5">
                 {summary}
               </span>
             ))}
@@ -53,7 +53,7 @@ export function AdvisorResults({ recommendation, goalLabel, spaceLabel, budgetLa
             rel="noopener noreferrer"
             className={buttonVariants({
               variant: 'primary',
-              className: `px-5 text-xs font-black uppercase tracking-wider shadow-lg shadow-slate-900/20 ${ADVISOR_FOCUS}`,
+              className: `px-5 text-xs font-black uppercase tracking-wider shadow-lg shadow-neutral-900/20 ${ADVISOR_FOCUS}`,
             })}
           >
             <Send className="size-3.5" aria-hidden="true" />
@@ -71,19 +71,19 @@ export function AdvisorResults({ recommendation, goalLabel, spaceLabel, budgetLa
       </div>
 
       <div className="mt-6">
-        <span className="block text-xs font-black uppercase tracking-wider text-slate-400 mb-3">
+        <span className="block text-xs font-black uppercase tracking-wider text-neutral-400 mb-3">
           Thiết bị nên có trong combo này:
         </span>
         <div className="grid gap-3 sm:grid-cols-3">
           {recommendation.items.map((item, idx) => (
             <div
               key={item}
-              className="flex items-center gap-3 rounded-xl border border-slate-800 bg-slate-950/70 p-4"
+              className="flex items-center gap-3 rounded-xl border border-neutral-800 bg-neutral-950/70 p-4"
             >
-              <div className="grid size-7 shrink-0 place-items-center rounded-lg bg-slate-900/20 text-xs font-black text-slate-300">
+              <div className="grid size-7 shrink-0 place-items-center rounded-lg bg-neutral-900/20 text-xs font-black text-neutral-300">
                 {idx + 1}
               </div>
-              <span className="text-xs font-bold text-slate-200">{item}</span>
+              <span className="text-xs font-bold text-neutral-200">{item}</span>
             </div>
           ))}
         </div>

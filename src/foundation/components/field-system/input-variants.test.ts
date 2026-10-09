@@ -5,15 +5,15 @@ describe('inputVariants', () => {
   it('defaults to md, not invalid', () => {
     const classes = inputVariants();
     expect(classes).toContain('h-11');
-    expect(classes).toContain('border-slate-300');
-    expect(classes).not.toContain('border-rose-500');
+    expect(classes).toContain('border-neutral-300');
+    expect(classes).not.toContain('border-red-500');
   });
 
   it('applies lg and invalid styles, invalid border wins', () => {
     const classes = inputVariants({ size: 'lg', invalid: true });
     expect(classes).toContain('h-12');
-    expect(classes).toContain('border-rose-500');
-    expect(classes).not.toContain('border-slate-300');
+    expect(classes).toContain('border-red-500');
+    expect(classes).not.toContain('border-neutral-300');
   });
 
   it('merges caller className last', () => {

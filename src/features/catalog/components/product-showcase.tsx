@@ -49,10 +49,10 @@ export function ProductShowcase({
                 type="button"
                 aria-pressed={isActive}
                 onClick={() => setActiveTabSlug(tab.slug)}
-                className={`rounded-full px-4 py-2 text-xs font-bold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2 ${
+                className={`rounded-full px-4 py-2 text-xs font-bold transition-all duration-200 focus-ring ${
                   isActive
-                    ? 'bg-gradient-to-r from-red-600 to-rose-600 text-white shadow-md shadow-red-500/20'
-                    : 'border border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50'
+                    ? 'bg-gradient-to-r from-red-600 to-red-600 text-white shadow-md shadow-red-500/20'
+                    : 'border border-neutral-200 bg-white text-neutral-700 hover:border-neutral-300 hover:bg-neutral-50'
                 }`}
               >
                 {tab.label}
@@ -67,11 +67,11 @@ export function ProductShowcase({
         gridClassName={GRID_CLASS}
         errorTitle="Không thể tải sản phẩm lúc này."
         emptyState={
-          <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-8 sm:p-12 text-center text-slate-600">
-            <p className="text-base font-bold text-slate-900">
+          <div className="rounded-3xl border border-dashed border-neutral-300 bg-white p-8 sm:p-12 text-center text-neutral-600">
+            <p className="text-base font-bold text-neutral-900">
               {searchQuery ? `Không tìm thấy sản phẩm nào khớp với từ khóa "${searchQuery}"` : 'Chưa có sản phẩm phù hợp.'}
             </p>
-            <p className="mt-2 text-xs sm:text-sm text-slate-500 max-w-md mx-auto">
+            <p className="mt-2 text-xs sm:text-sm text-neutral-500 max-w-md mx-auto">
               {searchQuery
                 ? 'Vui lòng kiểm tra lại chính tả hoặc khám phá các danh mục thiết bị thể thao phổ biến dưới đây.'
                 : 'Vui lòng chọn danh mục khác hoặc quay lại sau.'}
@@ -98,10 +98,10 @@ export function ProductShowcase({
       />
 
       {/* Catalog View All Banner */}
-      <div className="flex flex-col items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:flex-row sm:px-8">
+      <div className="flex flex-col items-center justify-between gap-4 rounded-2xl border border-neutral-200 bg-neutral-50 p-5 sm:flex-row sm:px-8">
         <div className="text-center sm:text-left">
-          <span className="text-xs font-black uppercase tracking-wider text-slate-900">Danh mục chính hãng</span>
-          <p className="text-sm font-bold text-slate-800">
+          <span className="text-xs font-black uppercase tracking-wider text-neutral-900">Danh mục chính hãng</span>
+          <p className="text-sm font-bold text-neutral-800">
             {total > 0
               ? `${total} mẫu thiết bị thể dục thể thao đang bán`
               : 'Thiết bị thể dục thể thao cho phòng tập và gia đình'}

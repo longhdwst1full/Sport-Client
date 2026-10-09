@@ -81,22 +81,22 @@ export function ProductDetailPage({ product, slug, relatedCategorySlug }: Produc
         />
         {/* Main Product Title Header */}
         <div className="mx-auto max-w-7xl px-4 pt-2 sm:px-6 lg:px-8">
-          <h1 className="text-2xl font-black tracking-tight text-slate-900 sm:text-3xl lg:text-4xl">
+          <h1 className="text-2xl font-black tracking-tight text-neutral-900 sm:text-3xl lg:text-4xl">
             {product.name}
           </h1>
-          <div className="mt-2 flex flex-wrap items-center gap-3 text-xs font-semibold text-slate-500">
+          <div className="mt-2 flex flex-wrap items-center gap-3 text-xs font-semibold text-neutral-500">
             {brand && (
-              <span className="rounded-full bg-slate-50 px-3 py-1 font-bold text-slate-900">
+              <span className="rounded-full bg-neutral-50 px-3 py-1 font-bold text-neutral-900">
                 {brand}
               </span>
             )}
             {product.primaryCategory && (
               <span>
-                Danh mục: <strong className="text-slate-700">{product.primaryCategory}</strong>
+                Danh mục: <strong className="text-neutral-700">{product.primaryCategory}</strong>
               </span>
             )}
             <span>
-              Mã SP: <strong className="text-slate-700">{product.productNo}</strong>
+              Mã SP: <strong className="text-neutral-700">{product.productNo}</strong>
             </span>
           </div>
         </div>
@@ -106,7 +106,7 @@ export function ProductDetailPage({ product, slug, relatedCategorySlug }: Produc
           {/* Left Column: Visual Showcase & Detailed Story */}
           <div className="space-y-8">
             {/* Product media is image-first. Heavy 3D rendering is intentionally excluded here. */}
-            <div className="overflow-hidden rounded-[28px] border border-[var(--dc-border)] bg-white shadow-[0_18px_50px_rgba(0,49,41,0.08)]">
+            <div className="overflow-hidden rounded-4xl border border-[var(--dc-border)] bg-white shadow-[0_18px_50px_rgba(0,49,41,0.08)]">
               <div className="flex items-center justify-between border-b border-[var(--dc-border)] px-5 py-3.5">
                 <span className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-[0.12em] text-[var(--dc-primary-700)]">
                   <Images className="size-4" aria-hidden="true" />

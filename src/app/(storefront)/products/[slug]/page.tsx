@@ -3,10 +3,11 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { ProductDetailPage } from '@/features/catalog/pages/product-detail-page';
 import { toProductSeoDescription } from '@/features/catalog';
-import { getCatalogProduct, listCatalogCategories } from '@/generated/api/catalog/catalog';
+import { getCatalogProduct } from '@/generated/api/catalog/catalog';
 import { ApiError } from '@/lib/api/fetcher';
 import { buildPageMetadata } from '@/lib/seo/page-metadata';
 import { toOgImageUrl } from '@/lib/seo/og-image';
+import { getPublicCategories } from '../../_data/public-data';
 
 // ISR 2 phút: trang public đọc nhiều, giá ở đây chỉ để tham khảo vì bước báo giá checkout
 // luôn tính lại. `revalidate = 0` trước đây bắt mọi lượt xem gọi API tới hai lần.
@@ -25,14 +26,7 @@ const loadProduct = cache((slug: string) => getCatalogProduct(slug));
  * `ProductDetailDto` chỉ có tên danh mục chính, trong khi lọc sản phẩm liên quan cần slug.
  * Tra theo tên trong cây danh mục; không khớp hoặc API lỗi thì trả undefined (liên quan chung).
  */
-const loadCategories = cache(async () => {
-  try {
-    const { items } = await listCatalogCategories();
-    return items;
-  } catch {
-    return undefined;
-  }
-});
+const loadCategories = getPublicCategories;
 
 export async function generateMetadata({
   params,

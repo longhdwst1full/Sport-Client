@@ -19,15 +19,15 @@ export function OrderDetailCard({
   children: ReactNode;
 }) {
   return (
-    <section className={`rounded-3xl border border-slate-200/80 bg-white p-6 sm:p-7 shadow-card transition-shadow hover:shadow-card-hover ${className}`}>
-      <div className={`border-b border-slate-100 pb-4 ${headerClassName}`}>
+    <section className={`surface-card p-6 sm:p-7 shadow-card transition-shadow hover:shadow-card-hover ${className}`}>
+      <div className={`border-b border-neutral-100 pb-4 ${headerClassName}`}>
         <div className="flex items-center gap-2.5">
-          <div className="grid size-9 place-items-center rounded-2xl bg-slate-100 text-slate-900">
+          <div className="grid size-9 place-items-center rounded-2xl bg-neutral-100 text-neutral-900">
             <Icon aria-hidden className="size-4.5" />
           </div>
           <div>
-            <h2 className="text-base font-black text-slate-900">{title}</h2>
-            <p className="text-xs text-slate-500">{description}</p>
+            <h2 className="text-base font-black text-neutral-900">{title}</h2>
+            <p className="text-xs text-neutral-500">{description}</p>
           </div>
         </div>
         {action}

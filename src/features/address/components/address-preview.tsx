@@ -11,11 +11,11 @@ export function AddressPreview({ streetAddress, wardName, districtName, province
   if (!provinceName && !streetAddress) return null;
 
   return (
-    <div className="flex items-start gap-2 rounded-xl bg-slate-50 p-3 text-xs text-slate-600 border border-slate-200/70">
-      <MapPin className="mt-0.5 size-4 shrink-0 text-slate-900" aria-hidden />
+    <div className="flex items-start gap-2 rounded-xl bg-neutral-50 p-3 text-xs text-neutral-600 border border-neutral-200/70">
+      <MapPin className="mt-0.5 size-4 shrink-0 text-neutral-900" aria-hidden />
       <div>
-        <span className="font-bold text-slate-700">Địa chỉ đầy đủ: </span>
-        <span className="font-semibold text-slate-900">
+        <span className="font-bold text-neutral-700">Địa chỉ đầy đủ: </span>
+        <span className="font-semibold text-neutral-900">
           {[streetAddress.trim(), wardName, districtName, provinceName]
             .filter(Boolean)
             .join(', ') || 'Chưa nhập địa chỉ đầy đủ'}

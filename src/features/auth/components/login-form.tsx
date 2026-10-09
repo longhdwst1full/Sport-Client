@@ -43,7 +43,7 @@ export function LoginForm({ form, isPending, onSubmit }: LoginFormProps) {
         labelAction={
           <Link
             href="/forgot-password"
-            className="text-xs font-bold text-slate-900 hover:text-slate-900 hover:underline rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900"
+            className="text-xs font-bold text-neutral-900 hover:text-neutral-900 hover:underline rounded focus-ring-tight"
           >
             Quên mật khẩu?
           </Link>

@@ -73,7 +73,7 @@ export function ProductImageGallery({
 
         {/* Zoom Hint Badge */}
         {!isZooming && (
-          <span className="pointer-events-none absolute bottom-3 left-3 hidden items-center gap-1.5 rounded-full bg-slate-900/60 px-2.5 py-1 text-[11px] font-medium text-white/90 backdrop-blur-xs sm:inline-flex transition-opacity group-hover:opacity-0">
+          <span className="pointer-events-none absolute bottom-3 left-3 hidden items-center gap-1.5 rounded-full bg-neutral-900/60 px-2.5 py-1 text-2xs font-medium text-white/90 backdrop-blur-xs sm:inline-flex transition-opacity group-hover:opacity-0">
             <ZoomIn className="size-3.5" aria-hidden="true" /> Rê chuột để phóng to
           </span>
         )}
@@ -85,13 +85,13 @@ export function ProductImageGallery({
                 key={delta}
                 type="button"
                 onClick={() => step(delta)}
-                className={`absolute ${side} top-1/2 z-10 grid size-11 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-slate-700 shadow transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2`}
+                className={`absolute ${side} top-1/2 z-10 grid size-11 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-neutral-700 shadow transition hover:bg-white focus-ring`}
                 aria-label={label}
               >
                 <Icon aria-hidden className="size-5" />
               </button>
             ))}
-            <span className="absolute bottom-3 right-3 z-10 rounded-full bg-slate-900/70 px-2.5 py-1 text-[11px] font-bold text-white">
+            <span className="absolute bottom-3 right-3 z-10 rounded-full bg-neutral-900/70 px-2.5 py-1 text-2xs font-bold text-white">
               {activeIndex + 1}/{images.length}
             </span>
           </>
@@ -108,10 +108,10 @@ export function ProductImageGallery({
                   onClick={() => setActiveIndex(index)}
                   aria-label={`Xem ảnh ${index + 1} của ${productName}`}
                   aria-current={selected ? 'true' : undefined}
-                  className={`relative block aspect-square w-full overflow-hidden rounded-xl border-2 bg-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2 ${
+                  className={`relative block aspect-square w-full overflow-hidden rounded-xl border-2 bg-white transition focus-ring ${
                     selected
-                      ? 'border-slate-900'
-                      : 'border-[var(--dc-border)] hover:border-slate-300'
+                      ? 'border-neutral-900'
+                      : 'border-[var(--dc-border)] hover:border-neutral-300'
                   }`}
                 >
                   <Image

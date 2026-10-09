@@ -242,7 +242,7 @@ export function toOrderListItemView(order: OrderSummaryDto): OrderListItemView {
     branchName: order.branchName,
     statusCode: order.status,
     statusLabel: orderStatusLabels[order.status] ?? order.status,
-    statusToneClass: orderStatusTone[order.status] ?? 'bg-slate-100 text-slate-700 ring-slate-200',
+    statusToneClass: orderStatusTone[order.status] ?? 'bg-neutral-100 text-neutral-700 ring-neutral-200',
     paymentStatusLabel: paymentStatusLabels[order.paymentStatus] ?? order.paymentStatus,
     recipientName: order.recipient.name,
     grandTotalLabel: formatVnd(Number(order.grandTotal)),

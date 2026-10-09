@@ -47,9 +47,9 @@ export function ProfileSidebar({ activeTab, onSelectTab, onLogout }: ProfileSide
     <aside className="hidden space-y-4 lg:block">
       <nav
         aria-label="Tài khoản"
-        className="rounded-[24px] border border-[var(--dc-border)] bg-white p-3 shadow-sm"
+        className="rounded-3xl border border-[var(--dc-border)] bg-white p-3 shadow-sm"
       >
-        <p className="px-3.5 pb-1 pt-2 text-[11px] font-bold uppercase tracking-wider text-[var(--dc-text-secondary)]">
+        <p className="px-3.5 pb-1 pt-2 text-2xs font-bold uppercase tracking-wider text-[var(--dc-text-secondary)]">
           Tài khoản
         </p>
         {PROFILE_TABS.map(({ id, label, icon: Icon }) => (
@@ -67,7 +67,7 @@ export function ProfileSidebar({ activeTab, onSelectTab, onLogout }: ProfileSide
           </button>
         ))}
 
-        <p className="mt-2 border-t border-[var(--dc-border)] px-3.5 pb-1 pt-4 text-[11px] font-bold uppercase tracking-wider text-[var(--dc-text-secondary)]">
+        <p className="mt-2 border-t border-[var(--dc-border)] px-3.5 pb-1 pt-4 text-2xs font-bold uppercase tracking-wider text-[var(--dc-text-secondary)]">
           Mua sắm
         </p>
         {SHOPPING_LINKS.map(({ href, label, icon: Icon }) => (
@@ -83,14 +83,14 @@ export function ProfileSidebar({ activeTab, onSelectTab, onLogout }: ProfileSide
         <button
           type="button"
           onClick={onLogout}
-          className="mt-2 flex w-full items-center gap-3 rounded-xl border-t border-[var(--dc-border)] px-3.5 pb-2.5 pt-4 text-sm font-semibold text-rose-600 transition hover:bg-rose-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500"
+          className="mt-2 flex w-full items-center gap-3 rounded-xl border-t border-[var(--dc-border)] px-3.5 pb-2.5 pt-4 text-sm font-semibold text-red-600 transition hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
         >
           <LogOut className="size-4.5" aria-hidden />
           Đăng xuất
         </button>
       </nav>
 
-      <div className="rounded-[24px] border border-[var(--dc-border)] bg-white p-5 text-sm">
+      <div className="rounded-3xl border border-[var(--dc-border)] bg-white p-5 text-sm">
         <p className="font-bold text-[var(--dc-text-primary)]">Cần hỗ trợ đơn hàng?</p>
         <p className="mt-1 text-xs text-[var(--dc-text-secondary)]">Gọi hotline, nhân viên hỗ trợ ngay.</p>
         <a
@@ -113,7 +113,7 @@ export function ProfileShoppingLinks() {
         <Link
           key={href}
           href={href}
-          className="flex flex-col items-center gap-1.5 rounded-2xl border border-[var(--dc-border)] bg-white px-2 py-3 text-center text-[11px] font-semibold text-[var(--dc-text-secondary)] transition hover:border-[var(--dc-primary-500)] hover:text-[var(--dc-primary-700)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--dc-primary-600)]"
+          className="flex flex-col items-center gap-1.5 rounded-2xl border border-[var(--dc-border)] bg-white px-2 py-3 text-center text-2xs font-semibold text-[var(--dc-text-secondary)] transition hover:border-[var(--dc-primary-500)] hover:text-[var(--dc-primary-700)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--dc-primary-600)]"
         >
           <Icon className="size-5" aria-hidden />
           {label}

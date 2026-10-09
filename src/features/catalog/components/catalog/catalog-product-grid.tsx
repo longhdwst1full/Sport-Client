@@ -63,10 +63,10 @@ export function CatalogProductGrid({
 
   const retryButton = (
     <Button
-      variant="danger"
+      variant="primary"
       size="sm"
       onClick={refetch}
-      className="rounded-full bg-rose-700 px-5 text-xs font-bold shadow-xs hover:bg-rose-800"
+      className="rounded-full px-5 text-xs font-bold"
     >
       <RotateCcw aria-hidden className="size-3.5" /> Thử lại
     </Button>
@@ -74,7 +74,7 @@ export function CatalogProductGrid({
 
   if (!hasProducts && isError) {
     return (
-      <InlineAlert role="alert" className="rounded-3xl border border-rose-200 bg-rose-50/70 p-8 text-center text-rose-800">
+      <InlineAlert role="alert" className="rounded-3xl border border-red-200 bg-red-50/70 p-8 text-center text-red-800">
         <p className="font-bold">{errorTitle}</p>
         <div className="mt-4">{retryButton}</div>
       </InlineAlert>
@@ -85,13 +85,13 @@ export function CatalogProductGrid({
     return (
       emptyState ?? (
         <EmptyState
-          className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-slate-300 bg-white px-4 py-16 text-center"
-          iconWrapClassName="mb-4 grid size-14 place-items-center rounded-2xl bg-slate-50 text-slate-900"
+          className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-neutral-300 bg-white px-4 py-16 text-center"
+          iconWrapClassName="mb-4 grid size-14 place-items-center rounded-2xl bg-neutral-50 text-neutral-900"
           icon={<Search aria-hidden className="size-6" />}
           titleAs="h3"
-          titleClassName="text-base font-black text-slate-900"
+          titleClassName="text-base font-black text-neutral-900"
           title="Không tìm thấy sản phẩm phù hợp"
-          descriptionClassName="mt-1 max-w-sm text-xs text-slate-600"
+          descriptionClassName="mt-1 max-w-sm text-xs text-neutral-600"
           description="Rất tiếc không có thiết bị nào đáp ứng các bộ lọc hiện tại. Bạn vui lòng thử xóa bớt bộ lọc hoặc tìm kiếm từ khóa khác."
           actions={
             hasActiveFilters && onResetFilters ? (
@@ -112,7 +112,7 @@ export function CatalogProductGrid({
       {isError && (
         <InlineAlert
           role="alert"
-          className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-rose-200 bg-rose-50/70 px-4 py-3 text-sm text-rose-800"
+          className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-red-200 bg-red-50/70 px-4 py-3 text-sm text-red-800"
         >
           <span className="font-semibold">Chưa cập nhật được danh sách mới nhất.</span>
           {retryButton}

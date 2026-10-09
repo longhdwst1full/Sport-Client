@@ -109,7 +109,7 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
     <section
       ref={sectionRef}
       id="categories"
-      className="py-8 sm:py-12 bg-gradient-to-b from-slate-50/80 via-white to-slate-50/60 border-y border-slate-200/80"
+      className="py-8 sm:py-12 bg-gradient-to-b from-neutral-50/80 via-white to-neutral-50/60 border-y border-neutral-200/80"
       aria-label="Danh mục ngành hàng thể thao"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
@@ -119,15 +119,15 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
         if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setIsPaused(false);
       }}
     >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="page-container">
         {/* Section Header with Navigation Controls */}
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-4 sm:mb-6">
           <div>
-            <p className="text-xs font-black uppercase tracking-[.2em] text-slate-900">Danh mục thiết bị</p>
-            <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-900 sm:text-3xl lg:text-4xl">
+            <p className="eyebrow text-neutral-900">Danh mục thiết bị</p>
+            <h2 className="mt-2 text-2xl font-black tracking-tight text-neutral-900 sm:text-3xl lg:text-4xl">
               Sản Phẩm Theo Danh Mục Ngành Hàng
             </h2>
-            <p className="mt-1 text-xs text-slate-500 sm:text-sm">
+            <p className="mt-1 text-xs text-neutral-500 sm:text-sm">
               Khám phá trang thiết bị thể thao chính hãng theo từng bộ môn chuyên biệt
             </p>
           </div>
@@ -136,7 +136,7 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
           <div className="flex items-center gap-3 self-end sm:self-auto">
             <Link
               href="/category"
-              className="inline-flex items-center gap-1.5 text-sm font-bold text-slate-700 hover:text-slate-950 hover:underline transition rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2"
+              className="inline-flex items-center gap-1.5 text-sm font-bold text-neutral-700 hover:text-neutral-950 hover:underline transition rounded focus-ring"
             >
               {VIEW_ALL_CONTENT}
             </Link>
@@ -150,7 +150,7 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
             variant="ghost"
             size="icon"
             onClick={() => scroll('left')}
-            className="absolute -left-3 sm:-left-5 top-1/2 -translate-y-1/2 z-20 size-11 rounded-full border border-slate-200 bg-white/95 text-slate-800 shadow-md backdrop-blur-sm transition-all duration-200 hover:border-slate-900 hover:bg-slate-900 hover:text-white active:scale-95 disabled:pointer-events-none disabled:opacity-0 focus-visible:ring-2 focus-visible:ring-slate-900"
+            className="absolute -left-3 sm:-left-5 top-1/2 -translate-y-1/2 z-20 size-11 rounded-full border border-neutral-200 bg-white/95 text-neutral-800 shadow-md backdrop-blur-sm transition-all duration-200 hover:border-neutral-900 hover:bg-neutral-900 hover:text-white active:scale-95 disabled:pointer-events-none disabled:opacity-0 focus-visible:ring-2 focus-visible:ring-neutral-900"
             aria-label="Danh mục trước"
             title="Cuộn sang trái"
           >
@@ -161,7 +161,7 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
             variant="ghost"
             size="icon"
             onClick={() => scroll('right')}
-            className="absolute -right-3 sm:-right-5 top-1/2 -translate-y-1/2 z-20 size-11 rounded-full border border-slate-200 bg-white/95 text-slate-800 shadow-md backdrop-blur-sm transition-all duration-200 hover:border-slate-900 hover:bg-slate-900 hover:text-white active:scale-95 disabled:pointer-events-none disabled:opacity-0 focus-visible:ring-2 focus-visible:ring-slate-900"
+            className="absolute -right-3 sm:-right-5 top-1/2 -translate-y-1/2 z-20 size-11 rounded-full border border-neutral-200 bg-white/95 text-neutral-800 shadow-md backdrop-blur-sm transition-all duration-200 hover:border-neutral-900 hover:bg-neutral-900 hover:text-white active:scale-95 disabled:pointer-events-none disabled:opacity-0 focus-visible:ring-2 focus-visible:ring-neutral-900"
             aria-label="Danh mục tiếp theo"
             title="Cuộn sang phải"
           >
@@ -169,8 +169,8 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
           </Button>
 
           {/* Subtle Fade Edges */}
-          <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-8 bg-gradient-to-r from-slate-50/80 to-transparent sm:w-12" />
-          <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-8 bg-gradient-to-l from-slate-50/80 to-transparent sm:w-12" />
+          <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-8 bg-gradient-to-r from-neutral-50/80 to-transparent sm:w-12" />
+          <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-8 bg-gradient-to-l from-neutral-50/80 to-transparent sm:w-12" />
 
           {/* Horizontal Sliding Container */}
           <div
@@ -186,17 +186,17 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
 
           {/* Sleek Minimalist Indicator Pill */}
           <div className="mt-4 flex items-center justify-center">
-            <div className="inline-flex items-center gap-3 rounded-full border border-slate-200/90 bg-white px-4 py-1.5 shadow-2xs">
-              <div className="relative h-1.5 w-28 sm:w-40 overflow-hidden rounded-full bg-slate-100">
+            <div className="inline-flex items-center gap-3 rounded-full border border-neutral-200/90 bg-white px-4 py-1.5 shadow-2xs">
+              <div className="relative h-1.5 w-28 sm:w-40 overflow-hidden rounded-full bg-neutral-100">
                 <div
-                  className="h-full rounded-full bg-slate-900 transition-all duration-300 ease-out"
+                  className="h-full rounded-full bg-neutral-900 transition-all duration-300 ease-out"
                   style={{
                     width: `${Math.max(20, Math.round(100 / Math.max(items.length, 1)))}%`,
                     transform: `translateX(${items.length > 1 ? (activeIndex / (items.length - 1)) * (items.length > 5 ? 300 : 150) : 0}%)`,
                   }}
                 />
               </div>
-              <span className="text-xs font-bold tracking-wider text-slate-600 select-none">
+              <span className="text-xs font-bold tracking-wider text-neutral-600 select-none">
                 {String(activeIndex + 1).padStart(2, '0')}&nbsp;/&nbsp;{String(items.length).padStart(2, '0')}
               </span>
             </div>

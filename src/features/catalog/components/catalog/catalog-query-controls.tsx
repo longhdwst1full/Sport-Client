@@ -36,7 +36,7 @@ export function CatalogSearchField({
 }) {
   return (
     <div className={twMerge('relative', className)}>
-      <Search aria-hidden className={twMerge('absolute top-1/2 size-4 -translate-y-1/2 text-slate-400', iconClassName)} />
+      <Search aria-hidden className={twMerge('absolute top-1/2 size-4 -translate-y-1/2 text-neutral-400', iconClassName)} />
       <TextInput
         size="md"
         type="text"
@@ -45,14 +45,14 @@ export function CatalogSearchField({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder="Tìm theo tên thiết bị, máy tập..."
-        className={twMerge('border-slate-200 font-semibold sm:text-xs', inputClassName)}
+        className={twMerge('border-neutral-200 font-semibold sm:text-xs', inputClassName)}
       />
       {value && (
         <Button
           variant="ghost"
           size="icon"
           onClick={() => onChange('')}
-          className={twMerge('absolute top-1/2 -translate-y-1/2 rounded-full text-slate-500', clearClassName)}
+          className={twMerge('absolute top-1/2 -translate-y-1/2 rounded-full text-neutral-500', clearClassName)}
           aria-label="Xóa từ khóa"
         >
           <X aria-hidden className="size-3" />
@@ -85,7 +85,7 @@ export function CatalogSortSelect({
         data-testid={testId}
         value={value}
         onChange={(e) => onChange(e.target.value as ProductListSort)}
-        className={twMerge('h-9 border-slate-200 pl-3 text-xs font-bold text-slate-700 sm:text-xs', className)}
+        className={twMerge('h-9 border-neutral-200 pl-3 text-xs font-bold text-neutral-700 sm:text-xs', className)}
       >
         {SORT_OPTIONS.map((option) => (
           <option key={option.value} value={option.value}>
@@ -104,9 +104,9 @@ export function CatalogSearchSortBar({
   onSortChange,
 }: Omit<CatalogQueryState, 'searchQuery' | 'onSearchQueryChange'> & { displayedCount: number; total: number }) {
   return (
-    <div className="hidden lg:flex items-center justify-between gap-4 mb-4 rounded-2xl border border-slate-200/80 bg-white p-3 shadow-xs">
-      <span className="text-xs font-medium text-slate-600" aria-live="polite">
-        Hiển thị <strong className="text-slate-900 font-bold">{displayedCount}</strong> / {total} sản phẩm
+    <div className="hidden lg:flex items-center justify-between gap-4 mb-4 rounded-2xl border border-neutral-200/80 bg-white p-3 shadow-xs">
+      <span className="text-xs font-medium text-neutral-600" aria-live="polite">
+        Hiển thị <strong className="text-neutral-900 font-bold">{displayedCount}</strong> / {total} sản phẩm
       </span>
 
       <div className="flex items-center gap-1.5">
@@ -115,7 +115,7 @@ export function CatalogSearchSortBar({
           testId="catalog-sort-select"
           value={activeSort}
           onChange={onSortChange}
-          labelClassName="text-xs font-semibold text-slate-600"
+          labelClassName="text-xs font-semibold text-neutral-600"
           className="shadow-2xs"
         />
       </div>
@@ -134,13 +134,13 @@ export function CatalogMobileControlBar({
       <Button
         variant="outline"
         onClick={onOpenFilters}
-        className="h-10 border-slate-200 text-xs font-bold text-slate-700 shadow-xs hover:border-slate-900 hover:text-slate-700"
+        className="h-10 border-neutral-200 text-xs font-bold text-neutral-700 shadow-xs hover:border-neutral-900 hover:text-neutral-700"
         aria-label={activeFilterCount > 0 ? `Bộ lọc, đang áp dụng ${activeFilterCount}` : 'Bộ lọc'}
       >
-        <SlidersHorizontal aria-hidden className="size-3.5 text-slate-900" />
+        <SlidersHorizontal aria-hidden className="size-3.5 text-neutral-900" />
         <span>Bộ lọc</span>
         {activeFilterCount > 0 && (
-          <span className="grid size-5 place-items-center rounded-full bg-slate-900 text-[10px] font-black text-white">
+          <span className="grid size-5 place-items-center rounded-full bg-neutral-900 text-3xs font-black text-white">
             {activeFilterCount}
           </span>
         )}
@@ -151,7 +151,7 @@ export function CatalogMobileControlBar({
           id="catalog-sort-mobile"
           value={activeSort}
           onChange={onSortChange}
-          labelClassName="text-[11px] font-bold text-slate-600"
+          labelClassName="text-2xs font-bold text-neutral-600"
           className="h-10 shadow-xs"
         />
       </div>

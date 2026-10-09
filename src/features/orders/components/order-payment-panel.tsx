@@ -36,7 +36,7 @@ export function OrderPaymentPanel({
 
   if (isLoading) {
     return (
-      <Card as="section" aria-label="Đang tải thông tin thanh toán" className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-card">
+      <Card as="section" aria-label="Đang tải thông tin thanh toán" className="surface-card p-6 shadow-card">
         <div className="flex items-start justify-between gap-3">
           <SkeletonText lines={2} className="w-40" />
           <Skeleton className="h-6 w-24 rounded-full" />
@@ -50,11 +50,11 @@ export function OrderPaymentPanel({
     return (
       <ErrorState
         as="section"
-        className="rounded-3xl border border-rose-200 bg-rose-50/80 p-6 text-sm text-rose-800 shadow-sm"
+        className="rounded-3xl border border-red-200 bg-red-50/80 p-6 text-sm text-red-800 shadow-sm"
         titleAs="p"
         titleClassName="font-bold"
         title="Không thể tải thông tin thanh toán"
-        descriptionClassName="mt-1 text-xs text-rose-700"
+        descriptionClassName="mt-1 text-xs text-red-700"
         description={paymentErrorMessage(error)}
       />
     );
@@ -65,18 +65,18 @@ export function OrderPaymentPanel({
   const isPending = view.statusCode === PAYMENT_STATUS.PENDING;
 
   return (
-    <section className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-card transition-shadow hover:shadow-card-hover">
+    <section className="surface-card p-6 shadow-card transition-shadow hover:shadow-card-hover">
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
         <div>
-          <span className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-slate-900">
+          <span className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-neutral-900">
             <CreditCard aria-hidden className="size-3.5" /> Thông tin thanh toán
           </span>
           <div className="mt-1 flex items-center gap-2">
-            <span className="font-mono text-sm font-extrabold text-slate-900">{view.paymentRef}</span>
+            <span className="font-mono text-sm font-extrabold text-neutral-900">{view.paymentRef}</span>
             <CopyButton
               value={view.paymentRef}
-              className="grid size-9 place-items-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900"
+              className="grid size-9 place-items-center rounded-lg text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-700 focus-ring-tight"
               title="Sao chép mã giao dịch"
               aria-label="Sao chép mã giao dịch"
               idleIcon={<CreditCard className="size-3.5" />}
@@ -90,7 +90,7 @@ export function OrderPaymentPanel({
             isSuccess
               ? 'bg-success-100 text-success-800'
               : isFailed
-              ? 'bg-rose-100 text-rose-800'
+              ? 'bg-red-100 text-red-800'
               : 'bg-amber-100 text-amber-800'
           }`}
         >
@@ -101,19 +101,19 @@ export function OrderPaymentPanel({
       </div>
 
       {/* Main Payment Details Box */}
-      <div className="mt-5 rounded-2xl border border-slate-200/90 bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 sm:p-5 shadow-sm">
-        <div className="flex items-center gap-2.5 text-slate-900">
-          <div className="grid size-8 place-items-center rounded-xl bg-white text-slate-700 shadow-sm ring-1 ring-slate-200">
+      <div className="mt-5 rounded-2xl border border-neutral-200/90 bg-gradient-to-br from-neutral-50 via-white to-neutral-50 p-4 sm:p-5 shadow-sm">
+        <div className="flex items-center gap-2.5 text-neutral-900">
+          <div className="grid size-8 place-items-center rounded-xl bg-white text-neutral-700 shadow-sm ring-1 ring-neutral-200">
             {view.methodCode === PAYMENT_METHOD.COD ? <Banknote className="size-4" /> : <CreditCard className="size-4" />}
           </div>
           <div>
-            <strong className="block text-sm font-bold text-slate-900">{view.providerLabel}</strong>
-            <span className="text-[11px] text-slate-500">Phương thức: {view.methodLabel}</span>
+            <strong className="block text-sm font-bold text-neutral-900">{view.providerLabel}</strong>
+            <span className="text-2xs text-neutral-500">Phương thức: {view.methodLabel}</span>
           </div>
         </div>
 
         {view.customerMessage && (
-          <p className="mt-3 text-xs leading-relaxed text-slate-600 bg-white/80 rounded-xl p-3 border border-slate-100">
+          <p className="mt-3 text-xs leading-relaxed text-neutral-600 bg-white/80 rounded-xl p-3 border border-neutral-100">
             {view.customerMessage}
           </p>
         )}
@@ -153,25 +153,25 @@ export function OrderPaymentPanel({
 
       {/* Failure Reason */}
       {view.failureReason && (
-        <InlineAlert as="p" className="mt-3 rounded-xl bg-rose-50 border border-rose-200 p-3 text-xs font-medium text-rose-800">
+        <InlineAlert as="p" className="mt-3 rounded-xl bg-red-50 border border-red-200 p-3 text-xs font-medium text-red-800">
           {view.failureReason}
         </InlineAlert>
       )}
 
       {/* Submitted Evidences */}
       {view.evidences.length > 0 && (
-        <div className="mt-5 space-y-2.5 border-t border-slate-100 pt-4">
-          <h3 className="text-xs font-black uppercase tracking-wider text-slate-700">Bằng chứng đã gửi ({view.evidences.length})</h3>
+        <div className="mt-5 space-y-2.5 border-t border-neutral-100 pt-4">
+          <h3 className="text-xs font-black uppercase tracking-wider text-neutral-700">Bằng chứng đã gửi ({view.evidences.length})</h3>
           {view.evidences.map((evidence) => (
             <a
               key={evidence.id}
               href={evidence.fileUrl}
               target="_blank"
               rel="noreferrer"
-              className="flex items-center justify-between rounded-xl border border-slate-200/80 bg-slate-50/50 p-3 text-xs transition hover:border-slate-300 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900"
+              className="flex items-center justify-between rounded-xl border border-neutral-200/80 bg-neutral-50/50 p-3 text-xs transition hover:border-neutral-300 hover:bg-neutral-50 focus-ring-tight"
             >
-              <span className="font-medium text-slate-700">Ảnh gửi {evidence.submittedLabel}</span>
-              <strong className="rounded-md bg-white px-2 py-0.5 border border-slate-200 text-slate-700 text-[11px]">
+              <span className="font-medium text-neutral-700">Ảnh gửi {evidence.submittedLabel}</span>
+              <strong className="rounded-md bg-white px-2 py-0.5 border border-neutral-200 text-neutral-700 text-2xs">
                 {evidence.statusLabel}
               </strong>
             </a>
@@ -181,12 +181,12 @@ export function OrderPaymentPanel({
 
       {/* Submit Evidence Form */}
       {canSubmit && (
-        <div className="mt-5 border-t border-slate-100 pt-5">
-          <span className="block text-xs font-black uppercase tracking-wider text-slate-800">
-            Tải lên bằng chứng chuyển khoản <span className="text-rose-600">*</span>
+        <div className="mt-5 border-t border-neutral-100 pt-5">
+          <span className="block text-xs font-black uppercase tracking-wider text-neutral-800">
+            Tải lên bằng chứng chuyển khoản <span className="text-red-600">*</span>
           </span>
           <div className="mt-2.5">
-            <label className="block text-xs font-semibold text-slate-700">
+            <label className="block text-xs font-semibold text-neutral-700">
               Chọn tệp ảnh
               <input
                 type="file"
@@ -196,12 +196,12 @@ export function OrderPaymentPanel({
                   submit.reset();
                   resetPendingUpload();
                 }}
-                className="mt-1.5 block w-full cursor-pointer rounded-xl border border-slate-200 bg-slate-50 p-2.5 text-xs text-slate-700 file:mr-3 file:cursor-pointer file:rounded-lg file:border-0 file:bg-slate-900 file:px-3 file:py-1.5 file:text-xs file:font-bold file:text-white hover:file:bg-slate-800"
+                className="mt-1.5 block w-full cursor-pointer rounded-xl border border-neutral-200 bg-neutral-50 p-2.5 text-xs text-neutral-700 file:mr-3 file:cursor-pointer file:rounded-lg file:border-0 file:bg-neutral-900 file:px-3 file:py-1.5 file:text-xs file:font-bold file:text-white hover:file:bg-neutral-800"
               />
             </label>
           </div>
           <div className="mt-3">
-            <Field label="Ghi chú thêm (không bắt buộc)" labelClassName="block text-xs font-semibold text-slate-700">
+            <Field label="Ghi chú thêm (không bắt buộc)" labelClassName="block text-xs font-semibold text-neutral-700">
               <Textarea
                 value={note}
                 onChange={(event) => {
@@ -217,7 +217,7 @@ export function OrderPaymentPanel({
             </Field>
           </div>
           {submit.isError && (
-            <p role="alert" className="mt-2.5 text-xs font-semibold text-rose-700">
+            <p role="alert" className="mt-2.5 text-xs font-semibold text-red-700">
               {paymentErrorMessage(submit.error)}
             </p>
           )}

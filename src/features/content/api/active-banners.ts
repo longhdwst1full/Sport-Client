@@ -1,5 +1,5 @@
 import { listActiveBanners } from '@/generated/api/content/content';
-import type { BannerPlacement } from '@/generated/api/content/content.schemas';
+import type { ActiveBannerDto, BannerPlacement } from '@/generated/api/content/content.schemas';
 import { toBannerView, type BannerView } from '../model/banner.mapper';
 
 /**
@@ -14,8 +14,13 @@ export async function loadActiveBanners(
 ): Promise<BannerView[]> {
   try {
     const { items } = await listActiveBanners({ placement, ...(categoryId ? { categoryId } : {}) });
-    return items.filter((item) => item.placement === placement && item.desktopImageUrl).map(toBannerView);
+    return toActiveBannerViews(items, placement);
   } catch {
     return [];
   }
+}
+
+/** Lọc banner đúng vị trí và có ảnh rồi map sang view; dùng chung cho loader có cache ở tầng `app`. */
+export function toActiveBannerViews(items: ActiveBannerDto[], placement: BannerPlacement): BannerView[] {
+  return items.filter((item) => item.placement === placement && item.desktopImageUrl).map(toBannerView);
 }

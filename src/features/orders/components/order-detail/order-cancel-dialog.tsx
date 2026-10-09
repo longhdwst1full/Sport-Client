@@ -35,18 +35,18 @@ export function OrderCancelDialog({
       title="Xác nhận hủy đơn hàng"
       subtitle={<span className="font-mono">#{orderNo}</span>}
       icon={AlertTriangle}
-      iconClassName="bg-rose-100 text-rose-600"
+      iconClassName="bg-red-100 text-red-600"
       className="max-w-lg"
       onClose={closeCancel}
       closeDisabled={cancel.isPending}
     >
-        <div className="mt-4 rounded-2xl bg-rose-50/80 p-3.5 border border-rose-100 text-xs leading-relaxed text-rose-900">
+        <div className="mt-4 rounded-2xl bg-red-50/80 p-3.5 border border-red-100 text-xs leading-relaxed text-red-900">
           <strong className="block font-bold">Lưu ý quan trọng:</strong>
           Sau khi hủy, hệ thống sẽ tự động giải phóng toàn bộ sản phẩm đang giữ chỗ cho bạn. Nếu đơn đã thanh toán online, nhân viên sẽ liên hệ để hoàn tiền theo chính sách. Thao tác hủy không thể hoàn tác.
         </div>
 
         <div className="mt-4">
-          <label className="block text-xs font-bold text-slate-800">
+          <label className="block text-xs font-bold text-neutral-800">
             Chọn lý do hủy nhanh:
           </label>
           <div className="mt-2 flex flex-wrap gap-1.5">
@@ -55,10 +55,10 @@ export function OrderCancelDialog({
                 key={preset}
                 type="button"
                 onClick={() => setReason(preset)}
-                className={`rounded-lg px-2.5 py-1 text-[11px] font-medium transition ${
+                className={`rounded-lg px-2.5 py-1 text-2xs font-medium transition ${
                   reason === preset
-                    ? 'bg-rose-600 text-white font-bold'
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                    ? 'bg-red-600 text-white font-bold'
+                    : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
                 }`}
               >
                 {preset}
@@ -69,8 +69,8 @@ export function OrderCancelDialog({
 
         <div className="mt-4">
           <Field
-            label={<>Chi tiết lý do hủy đơn <span className="text-rose-600">*</span></>}
-            labelClassName="block text-xs font-bold text-slate-800"
+            label={<>Chi tiết lý do hủy đơn <span className="text-red-600">*</span></>}
+            labelClassName="block text-xs font-bold text-neutral-800"
           >
             <Textarea
               id="customer-cancel-reason"
@@ -83,14 +83,14 @@ export function OrderCancelDialog({
               className="mt-1.5"
             />
           </Field>
-          <div className="mt-1 flex justify-between text-[11px] text-slate-400">
+          <div className="mt-1 flex justify-between text-2xs text-neutral-400">
             <span>Tối thiểu 3 ký tự</span>
             <span>{reason.trim().length}/500</span>
           </div>
         </div>
 
         {cancel.isError && (
-          <p className="mt-2 text-xs font-semibold text-rose-700">
+          <p className="mt-2 text-xs font-semibold text-red-700">
             {apiErrorMessage(cancel.error, ORDER_LOAD_ERROR_MESSAGE)}
           </p>
         )}

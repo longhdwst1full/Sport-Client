@@ -16,12 +16,12 @@ export type DescriptionItem = {
 
 const LAYOUT = {
   /** Nhãn trên, giá trị dưới; chia cột bằng `columns`. */
-  stacked: { item: '', label: 'text-slate-500', value: 'font-semibold text-slate-900' },
+  stacked: { item: '', label: 'text-neutral-500', value: 'font-semibold text-neutral-900' },
   /** Nhãn trái, giá trị phải trên cùng một dòng (tóm tắt đơn, hoá đơn). */
   inline: {
     item: 'flex items-baseline justify-between gap-3',
-    label: 'text-slate-500',
-    value: 'text-right font-semibold text-slate-900',
+    label: 'text-neutral-500',
+    value: 'text-right font-semibold text-neutral-900',
   },
 } as const;
 

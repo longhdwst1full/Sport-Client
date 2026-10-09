@@ -18,12 +18,12 @@ type BreadcrumbTone = 'default' | 'inverted';
 
 const TONE_CLASSES: Record<BreadcrumbTone, { root: string; link: string; current: string }> = {
   default: {
-    root: 'text-slate-500',
-    link: 'rounded transition hover:text-slate-900',
+    root: 'text-neutral-500',
+    link: 'rounded transition hover:text-neutral-900',
     current: 'font-bold text-ink',
   },
   inverted: {
-    root: 'text-slate-400',
+    root: 'text-neutral-400',
     link: 'transition hover:text-white',
     current: 'font-bold text-white',
   },
@@ -52,7 +52,7 @@ export function Breadcrumb({
           const isLast = index === items.length - 1;
           return (
             <li key={`${item.label}-${index}`} className="flex items-center gap-2">
-              {index > 0 && <ChevronRight className="size-3 text-slate-400" aria-hidden />}
+              {index > 0 && <ChevronRight className="size-3 text-neutral-400" aria-hidden />}
               {item.href && !isLast ? (
                 <Link href={item.href} className={toneClasses.link}>
                   {item.label}

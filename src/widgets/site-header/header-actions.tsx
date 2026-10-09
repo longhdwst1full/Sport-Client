@@ -30,7 +30,7 @@ export function HeaderActions({
         variant="outline"
         size="icon"
         onClick={onToggleSearch}
-        className="border-slate-200 text-slate-700 transition hover:border-slate-200 hover:bg-slate-100 hover:text-slate-700 lg:hidden"
+        className="border-neutral-200 text-neutral-700 transition hover:border-neutral-200 hover:bg-neutral-100 hover:text-neutral-700 lg:hidden"
         aria-label="Tìm sản phẩm"
       >
         <Search aria-hidden className="size-4.5" />
@@ -43,16 +43,16 @@ export function HeaderActions({
       {isLoggedIn ? (
         <Link
           href="/profile"
-          className="hidden items-center gap-2 rounded-xl border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-bold text-slate-800 transition hover:border-slate-300 hover:bg-slate-50/60 sm:flex"
+          className="hidden items-center gap-2 rounded-xl border border-neutral-200 bg-white px-2.5 py-1.5 text-xs font-bold text-neutral-800 transition hover:border-neutral-300 hover:bg-neutral-50/60 sm:flex"
           aria-label="Tài khoản cá nhân"
           title="Tài khoản cá nhân"
         >
-          <div className="grid size-7 shrink-0 place-items-center rounded-lg bg-slate-900 text-[11px] font-black text-white">
+          <div className="grid size-7 shrink-0 place-items-center rounded-lg bg-neutral-900 text-2xs font-black text-white">
             {customerName ? customerName.slice(0, 1).toUpperCase() : <UserRound className="size-4" />}
           </div>
           <div className="text-left leading-tight pr-1 max-w-[120px]">
-            <span className="block text-[11px] font-semibold text-slate-500">Tài khoản</span>
-            <span className="block truncate text-xs font-extrabold text-slate-800">
+            <span className="block text-2xs font-semibold text-neutral-500">Tài khoản</span>
+            <span className="block truncate text-xs font-extrabold text-neutral-800">
               {customerName || 'Hội viên'}
             </span>
           </div>
@@ -60,11 +60,11 @@ export function HeaderActions({
       ) : (
         <Link
           href="/login"
-          className="hidden items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50/60 hover:text-slate-900 sm:flex"
+          className="hidden items-center gap-1.5 rounded-xl border border-neutral-200 bg-white px-3 py-2 text-xs font-bold text-neutral-700 transition hover:border-neutral-300 hover:bg-neutral-50/60 hover:text-neutral-900 sm:flex"
           aria-label="Đăng nhập tài khoản"
           title="Đăng nhập"
         >
-          <UserRound className="size-4 text-slate-900" />
+          <UserRound className="size-4 text-neutral-900" />
           <span>Đăng nhập</span>
         </Link>
       )}
@@ -72,12 +72,12 @@ export function HeaderActions({
       {/* Cart */}
       <Link
         href="/cart"
-        className="relative grid size-11 place-items-center rounded-xl border border-slate-200 bg-white text-slate-700 transition hover:border-slate-300 hover:bg-slate-50/70 hover:text-slate-900"
+        className="relative grid size-11 place-items-center rounded-xl border border-neutral-200 bg-white text-neutral-700 transition hover:border-neutral-300 hover:bg-neutral-50/70 hover:text-neutral-900"
         aria-label={cartQuantity > 0 ? `Giỏ hàng, ${cartQuantity} sản phẩm` : 'Giỏ hàng, 0 sản phẩm'}
       >
         <ShoppingBag aria-hidden className="size-4.5" />
         {cartQuantity > 0 && (
-          <span className="absolute -right-1 -top-1 grid min-w-5 place-items-center rounded-full bg-slate-900 px-1 text-[10px] font-black text-white shadow-sm ring-2 ring-white">
+          <span className="absolute -right-1 -top-1 grid min-w-5 place-items-center rounded-full bg-neutral-900 px-1 text-3xs font-black text-white shadow-sm ring-2 ring-white">
             {cartQuantity > 99 ? '99+' : cartQuantity}
           </span>
         )}
@@ -87,7 +87,7 @@ export function HeaderActions({
       <Button
         variant="outline"
         size="icon"
-        className="border-slate-200 text-slate-700 transition hover:border-slate-200 hover:bg-slate-100 hover:text-slate-700 lg:hidden"
+        className="border-neutral-200 text-neutral-700 transition hover:border-neutral-200 hover:bg-neutral-100 hover:text-neutral-700 lg:hidden"
         aria-label={mobileMenuOpen ? 'Đóng menu' : 'Mở menu'}
         aria-expanded={mobileMenuOpen}
         onClick={onToggleMobileMenu}

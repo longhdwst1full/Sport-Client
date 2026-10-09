@@ -29,7 +29,7 @@ export function PolicyDetailPage({
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(articleJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbJsonLd) }} />
-      <div className="bg-slate-50/60 pb-20 pt-8">
+      <div className="bg-neutral-50/60 pb-20 pt-8">
         <main className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <Breadcrumb
             className="mb-6"
@@ -40,26 +40,26 @@ export function PolicyDetailPage({
             ]}
           />
 
-          <article className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm sm:p-10">
+          <article className="surface-card p-6 shadow-sm sm:p-10">
             <h1 className="text-2xl font-black leading-tight text-ink sm:text-3xl">
               {policy.title}
             </h1>
-            <p className="mt-3 flex items-center gap-1.5 text-xs font-semibold text-slate-500">
+            <p className="mt-3 flex items-center gap-1.5 text-xs font-semibold text-neutral-500">
               <CalendarDays className="size-3.5" aria-hidden="true" /> Cập nhật {policy.updatedLabel}
             </p>
 
-            <div className="mt-8 space-y-4 text-base leading-8 text-slate-700">
+            <div className="mt-8 space-y-4 text-base leading-8 text-neutral-700">
               {policy.paragraphs.map((paragraph, index) => (
                 <p key={index}>{paragraph}</p>
               ))}
             </div>
 
-            <div className="mt-10 border-t border-slate-100 pt-6">
+            <div className="mt-10 border-t border-neutral-100 pt-6">
               <Link
                 href="/chinh-sach"
                 className={buttonVariants({
                   variant: 'ghost',
-                  className: 'rounded-full bg-slate-100 px-5 text-xs font-bold text-ink hover:bg-slate-50 hover:text-slate-900',
+                  className: 'rounded-full bg-neutral-100 px-5 text-xs font-bold text-ink hover:bg-neutral-50 hover:text-neutral-900',
                 })}
               >
                 <ArrowLeft className="size-4" aria-hidden="true" /> Tất cả chính sách
@@ -69,7 +69,7 @@ export function PolicyDetailPage({
 
           {others.length > 0 && (
             <section className="mt-8">
-              <h2 className="text-sm font-bold uppercase tracking-wider text-slate-500">
+              <h2 className="text-sm font-bold uppercase tracking-wider text-neutral-500">
                 Chính sách khác
               </h2>
               <ul className="mt-4 grid gap-3 sm:grid-cols-2">
@@ -77,7 +77,7 @@ export function PolicyDetailPage({
                   <li key={item.slug}>
                     <Link
                       href={`/chinh-sach/${item.slug}`}
-                      className="block rounded-xl border border-slate-200/80 bg-white px-4 py-3 text-sm font-semibold text-ink transition hover:border-slate-300 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2"
+                      className="block rounded-xl border border-neutral-200/80 bg-white px-4 py-3 text-sm font-semibold text-ink transition hover:border-neutral-300 hover:text-neutral-900 focus-ring"
                     >
                       {item.title}
                     </Link>

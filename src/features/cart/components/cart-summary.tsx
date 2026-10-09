@@ -25,8 +25,8 @@ export function CartSummary({
   onCheckoutClick,
 }: CartSummaryProps) {
   return (
-    <aside className="h-fit rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm lg:sticky lg:top-40">
-      <h2 className="text-lg font-black text-slate-900">Tóm tắt đơn hàng</h2>
+    <aside className="h-fit surface-card p-6 shadow-sm lg:sticky lg:top-40">
+      <h2 className="text-lg font-black text-neutral-900">Tóm tắt đơn hàng</h2>
       <div className="mt-5 space-y-3 text-sm">
         <DescriptionList
           layout="inline"
@@ -35,17 +35,17 @@ export function CartSummary({
           valueClassName="font-semibold"
           items={[
             { label: `Tạm tính (${selectedCount} sản phẩm)`, value: formatVnd(subtotal) },
-            { label: 'Phí vận chuyển', value: 'Tính ở bước thanh toán', valueClassName: 'font-medium text-slate-600' },
+            { label: 'Phí vận chuyển', value: 'Tính ở bước thanh toán', valueClassName: 'font-medium text-neutral-600' },
           ]}
         />
-        <hr className="border-slate-100" />
+        <hr className="border-neutral-100" />
         <DescriptionList
           layout="inline"
           className="text-base"
-          labelClassName="font-bold text-slate-900"
+          labelClassName="font-bold text-neutral-900"
           items={[{ label: 'Tạm tính', value: formatVnd(subtotal), valueClassName: 'text-xl font-black text-brand-700' }]}
         />
-        <p className="text-xs text-slate-500">
+        <p className="text-xs text-neutral-500">
           Chưa gồm phí vận chuyển và khuyến mãi. Tổng thanh toán chính xác hiển thị ở bước thanh toán.
         </p>
       </div>
@@ -61,7 +61,7 @@ export function CartSummary({
           className: `mt-6 rounded-full font-bold ${
             selectedCount > 0
               ? 'shadow-lg shadow-red-600/30'
-              : 'cursor-not-allowed bg-slate-300 shadow-none hover:bg-slate-300 from-slate-300 to-slate-300'
+              : 'cursor-not-allowed bg-neutral-300 shadow-none hover:bg-neutral-300 from-neutral-300 to-neutral-300'
           }`,
         })}
       >
@@ -69,7 +69,7 @@ export function CartSummary({
       </Link>
       <Link
         href="/products"
-        className="mt-3 block rounded py-2 text-center text-xs font-semibold text-slate-600 transition hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900"
+        className="mt-3 block rounded py-2 text-center text-xs font-semibold text-neutral-600 transition hover:text-neutral-900 focus-ring-tight"
       >
         ← Tiếp tục mua sắm
       </Link>
@@ -77,9 +77,9 @@ export function CartSummary({
       {/* Conversion Trust Commitments */}
       <IconList
         items={TRUST_COMMITMENTS}
-        className="mt-6 gap-3 border-t border-slate-100 pt-5 text-xs text-slate-600"
+        className="mt-6 gap-3 border-t border-neutral-100 pt-5 text-xs text-neutral-600"
         itemClassName="gap-2.5"
-        iconClassName="text-slate-900"
+        iconClassName="text-neutral-900"
       />
     </aside>
   );

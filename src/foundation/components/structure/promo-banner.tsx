@@ -32,13 +32,13 @@ export function PromoBanner({
       {media}
       {hasText && (
         <>
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-950/50 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-neutral-950/85 via-neutral-950/50 to-transparent" />
           <div className="absolute inset-0 flex flex-col justify-center px-6 py-6 text-white sm:px-10">
             <div className="max-w-xl">
               {title && <h2 className="line-clamp-2 text-xl font-black leading-tight sm:text-2xl">{title}</h2>}
-              {subtitle && <p className="mt-2 line-clamp-2 text-xs text-slate-300 sm:text-sm">{subtitle}</p>}
+              {subtitle && <p className="mt-2 line-clamp-2 text-xs text-neutral-300 sm:text-sm">{subtitle}</p>}
               {href && (
-                <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-slate-300 group-hover:underline sm:text-sm">
+                <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-neutral-300 group-hover:underline sm:text-sm">
                   {ctaLabel}
                   <ArrowRight aria-hidden className="size-4 transition group-hover:translate-x-1" />
                 </span>

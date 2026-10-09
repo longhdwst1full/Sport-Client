@@ -31,14 +31,14 @@ export function CartItemRow({
         type="checkbox"
         checked={isSelected}
         onChange={onToggleSelect}
-        className="size-5 shrink-0 cursor-pointer rounded accent-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2"
+        className="size-5 shrink-0 cursor-pointer rounded accent-neutral-900 focus-ring"
         aria-label={`Chọn sản phẩm ${item.name}`}
       />
 
       {/* Image */}
       <Link
         href={`/products/${item.slug ?? item.productId}`}
-        className="group/img relative size-20 shrink-0 overflow-hidden rounded-xl bg-stone-100 sm:size-28"
+        className="group/img relative size-20 shrink-0 overflow-hidden rounded-xl bg-neutral-100 sm:size-28"
         tabIndex={-1}
         aria-hidden="true"
       >
@@ -55,11 +55,11 @@ export function CartItemRow({
       <div className="flex min-w-0 flex-1 flex-col">
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0">
-            <p className="truncate text-[10px] font-bold uppercase tracking-wider text-stone-500">{item.sku}</p>
+            <p className="truncate text-3xs font-bold uppercase tracking-wider text-neutral-500">{item.sku}</p>
             <h3 className="mt-1 truncate text-sm font-bold sm:text-base">
               <Link
                 href={`/products/${item.slug ?? item.productId}`}
-                className="rounded-sm transition hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2"
+                className="rounded-sm transition hover:text-neutral-900 focus-ring"
               >
                 {item.name}
               </Link>
@@ -69,7 +69,7 @@ export function CartItemRow({
             variant="ghost"
             size="icon"
             onClick={onRemove}
-            className="shrink-0 rounded-lg text-stone-500 hover:bg-rose-50 hover:text-rose-700"
+            className="shrink-0 rounded-lg text-neutral-500 hover:bg-red-50 hover:text-red-700"
             aria-label={`Xóa ${item.name} khỏi giỏ hàng`}
             data-testid="remove-cart-item"
           >
@@ -84,8 +84,8 @@ export function CartItemRow({
             onIncrement={onIncrementQuantity}
             decrementDisabled={item.quantity <= 1}
             wrapperClassName="flex items-center rounded-xl border border-ink/10"
-            decrementClassName="grid size-10 place-items-center text-stone-500 transition hover:text-ink disabled:opacity-30"
-            incrementClassName="grid size-10 place-items-center text-stone-500 transition hover:text-ink"
+            decrementClassName="grid size-10 place-items-center text-neutral-500 transition hover:text-ink disabled:opacity-30"
+            incrementClassName="grid size-10 place-items-center text-neutral-500 transition hover:text-ink"
             valueClassName="min-w-[2rem] text-center text-sm font-bold"
           />
           {/* Price */}

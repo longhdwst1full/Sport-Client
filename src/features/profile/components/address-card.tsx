@@ -20,7 +20,7 @@ export function AddressCard({ addr, canDelete, onSetDefault, onEdit, onDelete }:
       label: 'Đặt làm mặc định',
       ariaLabel: `Đặt địa chỉ của ${addr.recipient} làm mặc định`,
       onClick: () => onSetDefault(addr),
-      className: 'text-slate-900 hover:underline focus-visible:ring-slate-900',
+      className: 'text-neutral-900 hover:underline focus-visible:ring-neutral-900',
     },
     {
       key: 'edit',
@@ -28,7 +28,7 @@ export function AddressCard({ addr, canDelete, onSetDefault, onEdit, onDelete }:
       label: 'Sửa',
       ariaLabel: `Sửa địa chỉ của ${addr.recipient}`,
       onClick: () => onEdit(addr),
-      className: 'text-slate-600 hover:text-slate-900 hover:no-underline focus-visible:ring-slate-900',
+      className: 'text-neutral-600 hover:text-neutral-900 hover:no-underline focus-visible:ring-neutral-900',
     },
     {
       key: 'delete',
@@ -36,7 +36,7 @@ export function AddressCard({ addr, canDelete, onSetDefault, onEdit, onDelete }:
       label: 'Xóa',
       ariaLabel: `Xóa địa chỉ của ${addr.recipient}`,
       onClick: () => onDelete(addr.id),
-      className: 'text-rose-600 hover:underline focus-visible:ring-rose-500',
+      className: 'text-red-600 hover:underline focus-visible:ring-red-500',
     },
   ];
 
@@ -44,16 +44,16 @@ export function AddressCard({ addr, canDelete, onSetDefault, onEdit, onDelete }:
     <div
       className={`relative rounded-2xl border p-5 transition ${
         addr.isDefault
-          ? 'border-2 border-slate-900/60 bg-slate-50/20 shadow-sm'
-          : 'border-slate-200 hover:border-slate-300'
+          ? 'border-2 border-neutral-900/60 bg-neutral-50/20 shadow-sm'
+          : 'border-neutral-200 hover:border-neutral-300'
       }`}
     >
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex min-w-0 flex-wrap items-center gap-2">
-          <strong className="text-sm font-bold text-slate-900">{addr.recipient}</strong>
-          <span className="text-xs text-slate-500">· {addr.phone}</span>
+          <strong className="text-sm font-bold text-neutral-900">{addr.recipient}</strong>
+          <span className="text-xs text-neutral-500">· {addr.phone}</span>
           {addr.isDefault && (
-            <span className="rounded-full bg-slate-900 px-2.5 py-0.5 text-[10px] font-black uppercase text-white">
+            <span className="rounded-full bg-neutral-900 px-2.5 py-0.5 text-3xs font-black uppercase text-white">
               Mặc định
             </span>
           )}
@@ -77,7 +77,7 @@ export function AddressCard({ addr, canDelete, onSetDefault, onEdit, onDelete }:
         </div>
       </div>
 
-      <p className="mt-2 text-xs leading-relaxed text-slate-600 sm:text-sm">
+      <p className="mt-2 text-xs leading-relaxed text-neutral-600 sm:text-sm">
         {addr.fullAddress}
       </p>
     </div>

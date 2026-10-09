@@ -41,8 +41,8 @@ export function DivisionSelect({
   return (
     <div>
       <Field
-        label={<>{label} {required && <span className="text-rose-600">*</span>}</>}
-        labelClassName="block text-xs font-bold text-slate-700"
+        label={<>{label} {required && <span className="text-red-600">*</span>}</>}
+        labelClassName="block text-xs font-bold text-neutral-700"
         htmlFor={selectId}
       >
         <div className="relative mt-1.5">
@@ -56,7 +56,7 @@ export function DivisionSelect({
             invalid={Boolean(error)}
             aria-describedby={error ? errorId : undefined}
             aria-busy={isLoading || undefined}
-            className="font-semibold text-slate-800"
+            className="font-semibold text-neutral-800"
           >
             <option value="">{emptyOptionLabel}</option>
             {options.map((o) => (
@@ -67,14 +67,14 @@ export function DivisionSelect({
           </Select>
           {/* Đang tải luôn kèm `disabled` (nền slate-50) → spinner phủ lên mũi tên của Select. */}
           {isLoading && (
-            <span className="pointer-events-none absolute right-2 top-1/2 grid size-6 -translate-y-1/2 place-items-center bg-slate-50">
-              <Spinner className="size-4 animate-spin text-slate-900" />
+            <span className="pointer-events-none absolute right-2 top-1/2 grid size-6 -translate-y-1/2 place-items-center bg-neutral-50">
+              <Spinner className="size-4 animate-spin text-neutral-900" />
             </span>
           )}
         </div>
       </Field>
       {error && (
-        <InlineAlert as="p" role="alert" className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-medium text-rose-700">
+        <InlineAlert as="p" role="alert" className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-medium text-red-700">
           <span id={errorId}>{error}</span>
           {onRetry && (
             <Button variant="link" onClick={onRetry} className="gap-1 rounded font-bold underline-offset-2">

@@ -68,7 +68,7 @@ export function HeroBannerSlider({
       badge: 'GIẢI PHÁP HOME GYM CHUYÊN NGHIỆP',
       title: 'Biến Góc Nhỏ Thành Phòng Tập Chuẩn Huấn Luyện',
       subtitle:
-        'Thiết bị thể lực & cardio chính hãng từ 500K • Tư vấn theo diện tích 5m² – 20m² • Miễn phí vận chuyển & hỗ trợ lắp đặt tận nơi.',
+        'Thiết bị thể lực & cardio chính hãng từ 500K • Tư vấn theo diện tích 5m² – 20m² • Giao toàn quốc, lắp đặt tận nơi hàng cồng kềnh.',
       ctaText: 'Tìm thiết bị phù hợp',
       ctaLink: '#products',
       imageUrl:

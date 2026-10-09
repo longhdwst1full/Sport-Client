@@ -31,15 +31,15 @@ const TEXT_FIELDS: {
   { name: 'phone', label: 'Số điện thoại', type: 'tel', autoComplete: 'tel', placeholder: '0912 345 678', icon: Phone },
 ];
 
-const RequiredMark = () => <span className="text-rose-500">*</span>;
+const RequiredMark = () => <span className="text-red-500">*</span>;
 
 const TERMS_LINK_CLASS =
-  'font-bold text-slate-900 hover:underline rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900';
+  'font-bold text-neutral-900 hover:underline rounded focus-ring-tight';
 
 function PasswordHint({ met, label }: { met: boolean; label: string }) {
   return (
     <span className={`inline-flex items-center gap-1 ${met ? 'text-success-700 font-bold' : ''}`}>
-      <Check className={`size-3 ${met ? 'text-success-600' : 'text-slate-300'}`} />
+      <Check className={`size-3 ${met ? 'text-success-600' : 'text-neutral-300'}`} />
       {label}
     </span>
   );
@@ -98,7 +98,7 @@ export function RegisterForm({ form, isPending, acceptedTerms, onAcceptedTermsCh
         }
         error={errors.password?.message}
         hint={
-          <div className="mt-1 flex items-center gap-3 text-[11px] text-slate-500">
+          <div className="mt-1 flex items-center gap-3 text-2xs text-neutral-500">
             <PasswordHint met={hasMinLen} label="8+ ký tự" />
             <PasswordHint met={hasNumberOrSpecial} label="Số hoặc ký tự đặc biệt" />
           </div>
@@ -123,7 +123,7 @@ export function RegisterForm({ form, isPending, acceptedTerms, onAcceptedTermsCh
           onChange={(e) => onAcceptedTermsChange(e.target.checked)}
           wrapperClassName="gap-2.5 py-0"
           label={
-          <span className="text-xs font-medium text-slate-600">
+          <span className="text-xs font-medium text-neutral-600">
             Tôi đồng ý với{' '}
             <Link href="/terms" className={TERMS_LINK_CLASS}>
               Điều khoản dịch vụ

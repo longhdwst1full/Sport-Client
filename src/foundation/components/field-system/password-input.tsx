@@ -43,7 +43,7 @@ export const PasswordInput = forwardRef<
         className={
           styled
             ? twMerge(
-                'absolute right-1 top-1/2 grid size-10 -translate-y-1/2 place-items-center rounded-lg text-slate-500 hover:text-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900',
+                'absolute right-1 top-1/2 grid size-10 -translate-y-1/2 place-items-center rounded-lg text-neutral-500 hover:text-neutral-800 focus-ring-tight',
                 toggleClassName,
               )
             : toggleClassName

@@ -39,12 +39,12 @@ const SOCIAL_PROVIDERS: { key: SocialProvider; label: string; icon: ReactNode }[
   {
     key: 'zalo',
     label: 'Zalo',
-    icon: <span className="grid size-4 place-items-center rounded-full bg-[#0068FF] text-[10px] font-black text-white">Z</span>,
+    icon: <span className="grid size-4 place-items-center rounded-full bg-[#0068FF] text-3xs font-black text-white">Z</span>,
   },
   {
     key: 'facebook',
     label: 'Facebook',
-    icon: <span className="grid size-4 place-items-center rounded-full bg-[#1877F2] text-[10px] font-black text-white">f</span>,
+    icon: <span className="grid size-4 place-items-center rounded-full bg-[#1877F2] text-3xs font-black text-white">f</span>,
   },
 ];
 
@@ -56,9 +56,9 @@ export function SocialLoginButtons({ dividerText, toastTitles, toastMessages }: 
     <>
       {/* Social Logins Divider */}
       <div className="my-3.5 sm:my-4 flex items-center gap-3">
-        <div className="h-px flex-1 bg-slate-200" />
-        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">{dividerText}</span>
-        <div className="h-px flex-1 bg-slate-200" />
+        <div className="h-px flex-1 bg-neutral-200" />
+        <span className="text-3xs font-bold uppercase tracking-wider text-neutral-500">{dividerText}</span>
+        <div className="h-px flex-1 bg-neutral-200" />
       </div>
 
       {/* Social Buttons */}
@@ -68,7 +68,7 @@ export function SocialLoginButtons({ dividerText, toastTitles, toastMessages }: 
             key={key}
             variant="outline"
             onClick={() => toast({ title: toastTitles[key], message: toastMessages[key] })}
-            className="h-9 sm:h-10 border-slate-200 px-2 text-xs font-bold text-slate-700 shadow-2xs hover:border-slate-300 hover:bg-slate-50 hover:text-slate-700 focus-visible:ring-offset-0"
+            className="h-9 sm:h-10 border-neutral-200 px-2 text-xs font-bold text-neutral-700 shadow-2xs hover:border-neutral-300 hover:bg-neutral-50 hover:text-neutral-700 focus-visible:ring-offset-0"
           >
             {icon}
             <span>{label}</span>

@@ -39,7 +39,7 @@ import { formatDateTime } from '@/shared/format/date-time';
 
 const PRIMARY_ACTION = buttonVariants({ variant: 'primary', className: 'px-5 font-bold shadow-sm' });
 const DANGER_ACTION = buttonVariants({ variant: 'danger', className: 'px-5 font-bold shadow-sm' });
-const HOME_ACTION = buttonVariants({ variant: 'outline', className: 'px-5 font-bold text-slate-700' });
+const HOME_ACTION = buttonVariants({ variant: 'outline', className: 'px-5 font-bold text-neutral-700' });
 
 export function OrderDetailPage({ orderNo }: { orderNo: string }) {
   // Hook tải đơn gọi trước hook hủy đơn: effect thu hồi mã truy cập vãng lai giữ nguyên thứ tự chạy cũ.
@@ -78,7 +78,7 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
             className="mx-auto max-w-xl rounded-3xl border border-amber-200 bg-amber-50/70 p-8 sm:p-10 text-center shadow-card"
             iconWrapClassName="mx-auto grid size-16 place-items-center rounded-2xl bg-amber-100 text-amber-600"
             icon={<XCircle className="size-9" />}
-            titleClassName="mt-5 text-xl font-black text-slate-900"
+            titleClassName="mt-5 text-xl font-black text-neutral-900"
             title="Không tìm thấy mã truy cập đơn hàng"
             descriptionClassName="mx-auto mt-2 max-w-md text-sm leading-relaxed text-amber-900"
             description="Hãy mở đơn trên trình duyệt đã dùng để đặt hàng, tra cứu bằng email người nhận, hoặc đăng nhập tài khoản để xem toàn bộ lịch sử đơn."
@@ -98,12 +98,12 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
           />
         ) : orderQuery.isError ? (
           <ErrorState
-            className="mx-auto max-w-xl rounded-3xl border border-rose-200 bg-rose-50/80 p-8 sm:p-10 text-center shadow-card"
-            iconWrapClassName="mx-auto grid size-16 place-items-center rounded-2xl bg-rose-100 text-rose-600"
+            className="mx-auto max-w-xl rounded-3xl border border-red-200 bg-red-50/80 p-8 sm:p-10 text-center shadow-card"
+            iconWrapClassName="mx-auto grid size-16 place-items-center rounded-2xl bg-red-100 text-red-600"
             icon={<AlertTriangle className="size-9" />}
-            titleClassName="mt-5 text-xl font-black text-rose-950"
+            titleClassName="mt-5 text-xl font-black text-red-950"
             title="Không thể tải thông tin đơn hàng"
-            descriptionClassName="mx-auto mt-2 max-w-md text-sm leading-relaxed text-rose-800"
+            descriptionClassName="mx-auto mt-2 max-w-md text-sm leading-relaxed text-red-800"
             description={
               accessMode === 'lookup'
                 ? guestLookupErrorMessage(orderQuery.error, apiErrorMessage(orderQuery.error, ORDER_LOAD_ERROR_MESSAGE))
@@ -135,7 +135,7 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
             />
 
             {accessMode === 'lookup' && lookupGrant && (
-              <div role="status" className="mt-4 rounded-2xl border border-sky-200 bg-sky-50 p-4 text-xs text-sky-900">
+              <div role="status" className="mt-4 rounded-2xl border border-neutral-200 bg-neutral-50 p-4 text-xs text-neutral-900">
                 {GUEST_LOOKUP_COPY.viaLookupNotice} <strong>{formatDateTime(lookupGrant.expiresAt)}</strong>.{' '}
                 {GUEST_LOOKUP_COPY.viaLookupReadOnly}
               </div>

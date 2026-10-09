@@ -28,13 +28,13 @@ export function RouteErrorContent({ digest, onRetry }: { digest?: string; onRetr
 
   return (
     <div className="mx-auto max-w-2xl text-center">
-      <div className="mx-auto grid size-16 place-items-center rounded-2xl bg-slate-50 text-slate-900">
+      <div className="mx-auto grid size-16 place-items-center rounded-2xl bg-neutral-50 text-neutral-900">
         <Icon aria-hidden className="size-8" />
       </div>
-      <h1 className="mt-5 text-balance text-2xl font-black tracking-tight text-slate-900 sm:text-4xl">
+      <h1 className="mt-5 text-balance text-2xl font-black tracking-tight text-neutral-900 sm:text-4xl">
         {isOffline ? 'Bạn đang mất kết nối mạng' : 'Trang chưa tải được'}
       </h1>
-      <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-slate-600 sm:text-base">
+      <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-neutral-600 sm:text-base">
         {isOffline
           ? 'Kiểm tra Wi-Fi hoặc dữ liệu di động rồi thử lại. Đặt hàng và thanh toán cần kết nối mạng.'
           : 'Đã có lỗi khi hiển thị trang này. Vui lòng thử lại; nếu vẫn lỗi, hãy liên hệ hotline để được hỗ trợ.'}
@@ -54,17 +54,17 @@ export function RouteErrorContent({ digest, onRetry }: { digest?: string; onRetr
         </Link>
       </div>
 
-      <p className="mt-8 text-sm text-slate-600">
+      <p className="mt-8 text-sm text-neutral-600">
         Hỗ trợ ({STORE_CONTACT.openingHours}):{' '}
         <a
           href={`tel:${STORE_CONTACT.primaryHotlineRaw}`}
-          className="inline-flex min-h-11 items-center gap-1.5 font-bold text-slate-900 hover:underline"
+          className="inline-flex min-h-11 items-center gap-1.5 font-bold text-neutral-900 hover:underline"
         >
           <Phone aria-hidden className="size-4" />
           {STORE_CONTACT.primaryHotline}
         </a>
       </p>
-      {digest ? <p className="mt-2 text-xs text-slate-500">Mã lỗi: {digest}</p> : null}
+      {digest ? <p className="mt-2 text-xs text-neutral-500">Mã lỗi: {digest}</p> : null}
     </div>
   );
 }

@@ -34,9 +34,9 @@ export function SearchInput({
   return (
     <form
       onSubmit={onSubmit}
-      className="group relative flex items-center overflow-hidden rounded-full border border-slate-300 bg-slate-50/80 hover:border-slate-400 hover:bg-white transition-all duration-200 focus-within:border-slate-800 focus-within:bg-white focus-within:ring-4 focus-within:ring-slate-900/10 shadow-2xs"
+      className="group relative flex items-center overflow-hidden rounded-full border border-neutral-300 bg-neutral-50/80 hover:border-neutral-400 hover:bg-white transition-all duration-200 focus-within:border-neutral-800 focus-within:bg-white focus-within:ring-4 focus-within:ring-neutral-900/10 shadow-2xs"
     >
-      <Search aria-hidden className="ml-4 size-4 shrink-0 text-slate-400 transition group-focus-within:text-slate-800" />
+      <Search aria-hidden className="ml-4 size-4 shrink-0 text-neutral-400 transition group-focus-within:text-neutral-800" />
 
       <input
         ref={inputRef}
@@ -55,7 +55,7 @@ export function SearchInput({
             ? `product-search-option-${results[selectedIndex].id}`
             : undefined
         }
-        className="w-full border-0 border-none bg-transparent px-3 py-2 text-sm font-medium text-slate-800 outline-none ring-0 placeholder:text-slate-500 focus:border-0 focus:outline-none focus:ring-0 sm:py-2.5"
+        className="w-full border-0 border-none bg-transparent px-3 py-2 text-sm font-medium text-neutral-800 outline-none ring-0 placeholder:text-neutral-500 focus:border-0 focus:outline-none focus:ring-0 sm:py-2.5"
         aria-label="Tìm kiếm sản phẩm"
         autoComplete="off"
       />
@@ -65,7 +65,7 @@ export function SearchInput({
         <button
           type="button"
           onClick={onClear}
-          className="mr-1 grid size-7 shrink-0 place-items-center rounded-full text-slate-400 transition hover:bg-slate-200/60 hover:text-slate-700 focus-visible:outline-none"
+          className="mr-1 grid size-7 shrink-0 place-items-center rounded-full text-neutral-400 transition hover:bg-neutral-200/60 hover:text-neutral-700 focus-visible:outline-none"
           aria-label="Xóa từ khóa"
         >
           <X aria-hidden className="size-3.5" />

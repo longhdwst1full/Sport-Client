@@ -6,7 +6,7 @@ import { Button } from '@/foundation/components/buttons';
 import { Field, Textarea, TextInput } from '@/foundation/components/field-system';
 import { CheckoutStepSection, optionClass } from './checkout-step-section';
 
-const FIELD_LABEL = 'block text-xs font-bold text-slate-700';
+const FIELD_LABEL = 'block text-xs font-bold text-neutral-700';
 
 /** Bước 1: người nhận, sổ địa chỉ (khách đã đăng nhập), địa chỉ hành chính, vị trí và ghi chú giao hàng. */
 export function CheckoutShippingInfoSection({
@@ -32,7 +32,7 @@ export function CheckoutShippingInfoSection({
     <CheckoutStepSection step={1} icon={MapPin} title="Thông tin giao hàng" description="Người nhận và địa chỉ nhận hàng tận nơi">
       {savedAddresses && savedAddresses.length > 0 && (
         <div className="mt-5 space-y-2.5" role="radiogroup" aria-label="Địa chỉ đã lưu">
-          <span className="block text-xs font-bold uppercase tracking-wider text-slate-400">
+          <span className="block text-xs font-bold uppercase tracking-wider text-neutral-400">
             Sổ địa chỉ của bạn:
           </span>
           {savedAddresses.map((saved) => (
@@ -45,14 +45,14 @@ export function CheckoutShippingInfoSection({
               className={`w-full ${optionClass(selectedAddressId === saved.id)}`}
             >
               <span className="flex flex-wrap items-center justify-between gap-2">
-                <strong className="text-sm font-bold text-slate-900">{saved.recipient}</strong>
-                <span className="text-xs font-bold text-slate-500">{saved.phone}</span>
+                <strong className="text-sm font-bold text-neutral-900">{saved.recipient}</strong>
+                <span className="text-xs font-bold text-neutral-500">{saved.phone}</span>
               </span>
-              <span className="mt-1 block text-xs leading-5 text-slate-600">
+              <span className="mt-1 block text-xs leading-5 text-neutral-600">
                 {[saved.addressLine, saved.ward, saved.district, saved.province].filter(Boolean).join(', ')}
               </span>
               {saved.isDefault && (
-                <span className="mt-1.5 inline-block rounded-full bg-slate-100 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-slate-900">
+                <span className="mt-1.5 inline-block rounded-full bg-neutral-100 px-2.5 py-0.5 text-3xs font-black uppercase tracking-wider text-neutral-900">
                   Mặc định
                 </span>
               )}
@@ -62,7 +62,7 @@ export function CheckoutShippingInfoSection({
             variant="outline"
             fullWidth
             onClick={onDeliverToOtherAddress}
-            className="rounded-2xl border-dashed p-3 text-xs font-bold text-slate-900 hover:border-slate-400 hover:bg-slate-50/50"
+            className="rounded-2xl border-dashed p-3 text-xs font-bold text-neutral-900 hover:border-neutral-400 hover:bg-neutral-50/50"
           >
             + Giao tới địa chỉ khác
           </Button>
@@ -71,7 +71,7 @@ export function CheckoutShippingInfoSection({
 
       <div className="mt-5 grid gap-4 sm:grid-cols-2">
         <div>
-          <Field label={<>Người nhận <span className="text-rose-600">*</span></>} labelClassName={FIELD_LABEL}>
+          <Field label={<>Người nhận <span className="text-red-600">*</span></>} labelClassName={FIELD_LABEL}>
             <TextInput
               size="md"
               value={name}
@@ -83,7 +83,7 @@ export function CheckoutShippingInfoSection({
           </Field>
         </div>
         <div>
-          <Field label={<>Số điện thoại <span className="text-rose-600">*</span></>} labelClassName={FIELD_LABEL}>
+          <Field label={<>Số điện thoại <span className="text-red-600">*</span></>} labelClassName={FIELD_LABEL}>
             <TextInput
               size="md"
               value={phone}
@@ -124,13 +124,13 @@ export function CheckoutShippingInfoSection({
         <button
           type="button"
           onClick={useCurrentLocation}
-          className={`inline-flex min-h-11 items-center gap-2 rounded-xl border px-3.5 py-2 text-left text-xs font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2 ${
+          className={`inline-flex min-h-11 items-center gap-2 rounded-xl border px-3.5 py-2 text-left text-xs font-bold transition focus-ring ${
             coordinates
               ? 'border-success-200 bg-success-50 text-success-800 hover:bg-success-100'
-              : 'border-slate-200 bg-slate-50/50 text-slate-950 hover:bg-slate-100'
+              : 'border-neutral-200 bg-neutral-50/50 text-neutral-950 hover:bg-neutral-100'
           }`}
         >
-          <LocateFixed aria-hidden className={`size-4 shrink-0 ${coordinates ? 'text-success-600' : 'text-slate-900'}`} />
+          <LocateFixed aria-hidden className={`size-4 shrink-0 ${coordinates ? 'text-success-600' : 'text-neutral-900'}`} />
           <span>{coordinates ? 'Đã lấy vị trí của bạn' : `Định vị vị trí hiện tại (Miễn phí nếu dưới ${freeRadiusKm} km)`}</span>
         </button>
       </div>

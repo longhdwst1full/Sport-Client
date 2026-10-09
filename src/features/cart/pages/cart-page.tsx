@@ -95,15 +95,15 @@ export function CartPage() {
         />
 
         <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-black text-slate-900 sm:text-4xl">
+          <h1 className="text-3xl font-black text-neutral-900 sm:text-4xl">
             Giỏ hàng của bạn{' '}
-            {hydrated && <span className="text-2xl font-bold text-slate-500 sm:text-3xl">({items.length})</span>}
+            {hydrated && <span className="text-2xl font-bold text-neutral-500 sm:text-3xl">({items.length})</span>}
           </h1>
           {hydrated && items.length > 0 && (
             <Button
               variant="ghost"
               onClick={handleClearCart}
-              className="rounded px-2 text-xs font-bold text-rose-700 hover:bg-transparent hover:text-rose-800"
+              className="rounded px-2 text-xs font-bold text-red-700 hover:bg-transparent hover:text-red-800"
             >
               Xóa tất cả
             </Button>

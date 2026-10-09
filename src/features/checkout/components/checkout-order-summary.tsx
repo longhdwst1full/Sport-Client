@@ -12,7 +12,7 @@ import { formatVnd } from '@/shared/format/money';
 import { PRODUCT_PLACEHOLDER_IMAGE, STORE_POLICY_PAGES } from '@/shared/constants';
 
 /** Nút đặt hàng (desktop + thanh dính mobile): bo lớn, chữ đậm, trạng thái khoá xám thay vì mờ. */
-const SUBMIT_CLASS = 'rounded-2xl text-sm font-black shadow-sm disabled:bg-slate-300 disabled:text-slate-600 disabled:opacity-100';
+const SUBMIT_CLASS = 'rounded-2xl text-sm font-black shadow-sm disabled:bg-neutral-300 disabled:text-neutral-600 disabled:opacity-100';
 
 interface CheckoutOrderSummaryProps {
   items: CartItem[];
@@ -68,7 +68,7 @@ export function CheckoutOrderSummary({
               {quoting ? <><Spinner className="size-3.5 animate-spin" /> Đang tính phí...</> : 'Chưa tính'}
             </span>
           ),
-          className: 'text-slate-500',
+          className: 'text-neutral-500',
         }
       : quote.shippingTotalAmount === 0
         ? { value: 'Miễn phí', className: 'font-semibold text-success-700' }
@@ -81,20 +81,20 @@ export function CheckoutOrderSummary({
       : null;
   return (
     <aside>
-      <div className="rounded-3xl border border-slate-200/90 bg-white p-4 shadow-sm sm:p-6 lg:sticky lg:top-28">
+      <div className="surface-card p-4 shadow-sm sm:p-6 lg:sticky lg:top-28">
         <div className="flex items-center justify-between">
-          <h2 className="font-black text-slate-900">Đơn hàng ({items.length})</h2>
-          <Link href="/cart" className="-my-2 inline-flex min-h-11 items-center px-2 text-xs font-bold text-slate-900 hover:underline">Chỉnh sửa</Link>
+          <h2 className="font-black text-neutral-900">Đơn hàng ({items.length})</h2>
+          <Link href="/cart" className="-my-2 inline-flex min-h-11 items-center px-2 text-xs font-bold text-neutral-900 hover:underline">Chỉnh sửa</Link>
         </div>
         <div className="mt-4 max-h-72 space-y-3 overflow-auto">
           {items.map((item) => (
             <div key={item.variantId} className="flex items-center gap-3">
-              <div className="relative size-12 shrink-0 overflow-hidden rounded-xl border bg-slate-50">
+              <div className="relative size-12 shrink-0 overflow-hidden rounded-xl border bg-neutral-50">
                 <Image src={item.imageUrl || PRODUCT_PLACEHOLDER_IMAGE} alt={item.name} fill sizes="48px" className="object-contain p-1" />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-xs font-bold text-slate-900">{item.name}</p>
-                <p className="text-xs text-slate-500">{item.sku} · ×{item.quantity}</p>
+                <p className="truncate text-xs font-bold text-neutral-900">{item.name}</p>
+                <p className="text-xs text-neutral-500">{item.sku} · ×{item.quantity}</p>
               </div>
               <strong className="shrink-0 text-xs">{formatVnd(item.price * item.quantity)}</strong>
             </div>
@@ -103,8 +103,8 @@ export function CheckoutOrderSummary({
         <div className="mt-5 space-y-3 border-t pt-4 text-sm">
           <DescriptionList
             layout="inline"
-            labelClassName="text-slate-700"
-            valueClassName="font-normal text-slate-900"
+            labelClassName="text-neutral-700"
+            valueClassName="font-normal text-neutral-900"
             items={[
               { label: 'Tạm tính tham khảo', value: formatVnd(localSubtotal) },
               { label: 'Phí giao', value: shippingRow.value, valueClassName: shippingRow.className },
@@ -114,8 +114,8 @@ export function CheckoutOrderSummary({
             <DescriptionList
               layout="inline"
               className="border-t pt-3 text-base font-black"
-              labelClassName="text-slate-900"
-              valueClassName={`font-black text-slate-900 ${refreshing ? 'opacity-60' : ''}`}
+              labelClassName="text-neutral-900"
+              valueClassName={`font-black text-neutral-900 ${refreshing ? 'opacity-60' : ''}`}
               items={[totalRow]}
             />
           )}
@@ -131,15 +131,15 @@ export function CheckoutOrderSummary({
           <Checkbox
             checked={acceptedTerms}
             onChange={(e) => setAcceptedTerms(e.target.checked)}
-            wrapperClassName="mt-5 rounded-2xl border border-slate-200/60 bg-slate-50 p-3"
+            wrapperClassName="mt-5 rounded-2xl border border-neutral-200/60 bg-neutral-50 p-3"
             label={
               <span className="text-xs leading-relaxed">
                 Tôi đã đọc và đồng ý với{' '}
-                <Link href={STORE_POLICY_PAGES.TERMS.href} target="_blank" className="font-bold text-slate-900 underline-offset-2 hover:underline">
+                <Link href={STORE_POLICY_PAGES.TERMS.href} target="_blank" className="font-bold text-neutral-900 underline-offset-2 hover:underline">
                   {STORE_POLICY_PAGES.TERMS.title.toLowerCase()}
                 </Link>{' '}
                 và{' '}
-                <Link href={STORE_POLICY_PAGES.RETURNS.href} target="_blank" className="font-bold text-slate-900 underline-offset-2 hover:underline">
+                <Link href={STORE_POLICY_PAGES.RETURNS.href} target="_blank" className="font-bold text-neutral-900 underline-offset-2 hover:underline">
                   chính sách đổi trả & bảo hành
                 </Link>{' '}
                 của Bảo An Sport.
@@ -153,23 +153,23 @@ export function CheckoutOrderSummary({
             {busy ? 'Đang xử lý...' : submitLabel}
           </Button>
         )}
-        <div className="mt-4 flex gap-2 text-xs leading-5 text-slate-500">
-          <ShieldCheck aria-hidden className="mt-0.5 size-4 shrink-0 text-slate-400" />
+        <div className="mt-4 flex gap-2 text-xs leading-5 text-neutral-500">
+          <ShieldCheck aria-hidden className="mt-0.5 size-4 shrink-0 text-neutral-400" />
           <span>Giá, tồn kho và phí giao được xác nhận lại khi bạn đặt hàng.</span>
         </div>
       </div>
 
       {/* Mobile: thanh tổng + nút đặt hàng dính đáy để khách không phải cuộn xuống cuối form. */}
       {showSubmit && (
-        <div className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200 bg-white/95 px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3 shadow-[0_-8px_24px_-12px_rgba(15,23,42,0.25)] backdrop-blur lg:hidden">
+        <div className="fixed inset-x-0 bottom-0 z-30 border-t border-neutral-200 bg-white/95 px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3 shadow-[0_-8px_24px_-12px_rgba(23, 23, 23,0.25)] backdrop-blur lg:hidden">
           <div className="mx-auto flex max-w-3xl items-center gap-3">
             <div className="min-w-0 flex-1">
-              <span className="block text-[11px] font-semibold text-slate-500">
+              <span className="block text-2xs font-semibold text-neutral-500">
                 {hasFinalTotal ? 'Khách thanh toán' : shippingPending ? 'Tiền hàng (chưa gồm phí giao)' : 'Tạm tính (chưa gồm phí giao)'}
               </span>
-              <strong className="block truncate text-lg font-black text-slate-900">{mobileTotalLabel}</strong>
+              <strong className="block truncate text-lg font-black text-neutral-900">{mobileTotalLabel}</strong>
               {setAcceptedTerms && !acceptedTerms && (
-                <span className="block text-[11px] font-semibold text-amber-700">Đánh dấu đồng ý điều khoản để đặt hàng</span>
+                <span className="block text-2xs font-semibold text-amber-700">Đánh dấu đồng ý điều khoản để đặt hàng</span>
               )}
             </div>
             <Button type="submit" variant="primary" size="lg" disabled={submitIsDisabled} className={`shrink-0 px-5 ${SUBMIT_CLASS}`}>

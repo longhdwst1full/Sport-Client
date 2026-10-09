@@ -25,7 +25,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
       id={inputId}
       type="checkbox"
       className={twMerge(
-        'size-5 shrink-0 cursor-pointer rounded border-slate-300 accent-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2 disabled:cursor-not-allowed',
+        'size-5 shrink-0 cursor-pointer rounded border-neutral-300 accent-neutral-900 focus-ring disabled:cursor-not-allowed',
         className,
       )}
       {...props}
@@ -35,9 +35,9 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
   return (
     <label htmlFor={inputId} className={twMerge('flex min-h-11 cursor-pointer items-start gap-3 py-2', wrapperClassName)}>
       <span className="pt-0.5">{input}</span>
-      <span className="text-sm text-slate-700">
+      <span className="text-sm text-neutral-700">
         {label}
-        {description ? <span className="mt-0.5 block text-xs text-slate-500">{description}</span> : null}
+        {description ? <span className="mt-0.5 block text-xs text-neutral-500">{description}</span> : null}
       </span>
     </label>
   );

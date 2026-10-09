@@ -22,8 +22,8 @@ export function OrderMilestoneStepper({ milestones }: { milestones: OrderMilesto
                       isDone
                         ? 'bg-success-500'
                         : isCurrent
-                        ? 'bg-gradient-to-r from-success-500 to-slate-200'
-                        : 'bg-slate-200'
+                        ? 'bg-gradient-to-r from-success-500 to-neutral-200'
+                        : 'bg-neutral-200'
                     }`}
                   />
                 )}
@@ -36,18 +36,18 @@ export function OrderMilestoneStepper({ milestones }: { milestones: OrderMilesto
                     </span>
                   ) : isCurrent ? (
                     <span className="relative flex size-9 items-center justify-center">
-                      <span className="absolute size-full animate-ping rounded-full bg-slate-700 opacity-60" />
-                      <span className="relative grid size-9 place-items-center rounded-full border-2 border-slate-900 bg-white text-slate-900 shadow-sm ring-4 ring-slate-200">
-                        <span className="size-3 rounded-full bg-slate-900" />
+                      <span className="absolute size-full animate-ping rounded-full bg-neutral-700 opacity-60" />
+                      <span className="relative grid size-9 place-items-center rounded-full border-2 border-neutral-900 bg-white text-neutral-900 shadow-sm ring-4 ring-neutral-200">
+                        <span className="size-3 rounded-full bg-neutral-900" />
                       </span>
                     </span>
                   ) : isFailed ? (
-                    <span className="grid size-9 place-items-center rounded-full bg-rose-600 text-white shadow-sm ring-4 ring-rose-50">
+                    <span className="grid size-9 place-items-center rounded-full bg-red-600 text-white shadow-sm ring-4 ring-red-50">
                       <X className="size-4 stroke-[3]" />
                     </span>
                   ) : (
-                    <span className="grid size-9 place-items-center rounded-full border-2 border-slate-200 bg-white text-slate-300 ring-4 ring-slate-50">
-                      <span className="size-2.5 rounded-full bg-slate-200" />
+                    <span className="grid size-9 place-items-center rounded-full border-2 border-neutral-200 bg-white text-neutral-300 ring-4 ring-neutral-50">
+                      <span className="size-2.5 rounded-full bg-neutral-200" />
                     </span>
                   )}
                 </div>
@@ -55,30 +55,30 @@ export function OrderMilestoneStepper({ milestones }: { milestones: OrderMilesto
                 {/* Step Label, Subtitle & Date */}
                 <div className="mt-3 w-full">
                   {isCurrent && (
-                    <span className="mb-1 inline-block rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-black uppercase text-slate-950">
+                    <span className="mb-1 inline-block rounded-md bg-neutral-100 px-2 py-0.5 text-3xs font-black uppercase text-neutral-950">
                       Hiện tại
                     </span>
                   )}
                   <strong
                     className={`block text-xs leading-snug ${
                       isCurrent
-                        ? 'font-black text-slate-950 text-sm'
+                        ? 'font-black text-neutral-950 text-sm'
                         : isDone
-                        ? 'font-bold text-slate-900'
+                        ? 'font-bold text-neutral-900'
                         : isFailed
-                        ? 'font-bold text-rose-700'
-                        : 'font-medium text-slate-400'
+                        ? 'font-bold text-red-700'
+                        : 'font-medium text-neutral-400'
                     }`}
                   >
                     {milestone.label}
                   </strong>
                   {milestone.subLabel && (
-                    <span className="block mt-0.5 text-[11px] text-slate-500 leading-tight">
+                    <span className="block mt-0.5 text-2xs text-neutral-500 leading-tight">
                       {milestone.subLabel}
                     </span>
                   )}
                   {milestone.occurredLabel && (
-                    <p className="mt-1 text-[11px] font-medium text-slate-400">
+                    <p className="mt-1 text-2xs font-medium text-neutral-400">
                       {milestone.occurredLabel}
                     </p>
                   )}
@@ -103,7 +103,7 @@ export function OrderMilestoneStepper({ milestones }: { milestones: OrderMilesto
                   <span
                     aria-hidden
                     className={`absolute left-[13px] top-6 h-[calc(100%-1rem)] w-0.5 ${
-                      isDone ? 'bg-success-500' : 'bg-slate-200'
+                      isDone ? 'bg-success-500' : 'bg-neutral-200'
                     }`}
                   />
                 )}
@@ -114,18 +114,18 @@ export function OrderMilestoneStepper({ milestones }: { milestones: OrderMilesto
                     </span>
                   ) : isCurrent ? (
                     <span className="relative flex size-7 items-center justify-center">
-                      <span className="absolute size-full animate-ping rounded-full bg-slate-700 opacity-60" />
-                      <span className="relative grid size-7 place-items-center rounded-full border-2 border-slate-900 bg-white text-slate-900 shadow-sm">
-                        <span className="size-2.5 rounded-full bg-slate-900" />
+                      <span className="absolute size-full animate-ping rounded-full bg-neutral-700 opacity-60" />
+                      <span className="relative grid size-7 place-items-center rounded-full border-2 border-neutral-900 bg-white text-neutral-900 shadow-sm">
+                        <span className="size-2.5 rounded-full bg-neutral-900" />
                       </span>
                     </span>
                   ) : isFailed ? (
-                    <span className="grid size-7 place-items-center rounded-full bg-rose-600 text-white shadow-sm">
+                    <span className="grid size-7 place-items-center rounded-full bg-red-600 text-white shadow-sm">
                       <X className="size-4 stroke-[2.5]" />
                     </span>
                   ) : (
-                    <span className="grid size-7 place-items-center rounded-full border-2 border-slate-200 bg-white text-slate-300">
-                      <span className="size-2 rounded-full bg-slate-200" />
+                    <span className="grid size-7 place-items-center rounded-full border-2 border-neutral-200 bg-white text-neutral-300">
+                      <span className="size-2 rounded-full bg-neutral-200" />
                     </span>
                   )}
                 </span>
@@ -135,28 +135,28 @@ export function OrderMilestoneStepper({ milestones }: { milestones: OrderMilesto
                     <strong
                       className={`text-sm ${
                         isCurrent
-                          ? 'font-black text-slate-950'
+                          ? 'font-black text-neutral-950'
                           : isDone
-                          ? 'font-bold text-slate-900'
+                          ? 'font-bold text-neutral-900'
                           : isFailed
-                          ? 'font-bold text-rose-700'
-                          : 'font-medium text-slate-400'
+                          ? 'font-bold text-red-700'
+                          : 'font-medium text-neutral-400'
                       }`}
                     >
                       {milestone.label}
                     </strong>
                     {isCurrent && (
-                      <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold text-slate-950">
+                      <span className="rounded bg-neutral-100 px-1.5 py-0.5 text-3xs font-bold text-neutral-950">
                         Hiện tại
                       </span>
                     )}
                   </div>
                   {milestone.subLabel && (
-                    <p className="text-xs text-slate-500 mt-0.5">{milestone.subLabel}</p>
+                    <p className="text-xs text-neutral-500 mt-0.5">{milestone.subLabel}</p>
                   )}
                   {milestone.occurredLabel && (
-                    <p className="mt-1 flex items-center gap-1 text-[11px] text-slate-400">
-                      <Clock className="size-3 text-slate-400" />
+                    <p className="mt-1 flex items-center gap-1 text-2xs text-neutral-400">
+                      <Clock className="size-3 text-neutral-400" />
                       {milestone.occurredLabel}
                     </p>
                   )}

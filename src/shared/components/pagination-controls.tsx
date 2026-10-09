@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/foundation/components/buttons';
 
 const NAV_BUTTON_CLASS =
-  'grid size-11 place-items-center rounded-xl border border-slate-200 bg-white transition hover:bg-slate-50 disabled:opacity-40';
+  'grid size-11 place-items-center rounded-xl border border-neutral-200 bg-white transition hover:bg-neutral-50 disabled:opacity-40';
 
 /**
  * Phân trang trước/sau "Trang x / y" cho các trang danh sách tài khoản (đơn hàng, đổi trả).
@@ -35,7 +35,7 @@ export function PaginationControls({
       >
         <ChevronLeft aria-hidden className="size-4" />
       </Button>
-      <span className="text-sm font-bold text-slate-700">
+      <span className="text-sm font-bold text-neutral-700">
         Trang {page} / {totalPages}
       </span>
       <Button

@@ -15,10 +15,10 @@ function paymentNote(view: OrderDetailView | undefined): {
   if (view?.paymentMethodCode === PAYMENT_METHOD.COD) {
     return {
       icon: Banknote,
-      tone: 'text-sky-900 bg-sky-50/90 border-sky-200/80',
-      iconTone: 'text-sky-600',
+      tone: 'text-neutral-900 bg-neutral-50/90 border-neutral-200/80',
+      iconTone: 'text-neutral-600',
       title: 'Hình thức thanh toán khi nhận hàng (COD):',
-      body: <>Quý khách vui lòng chuẩn bị đúng số tiền <strong className="text-slate-900">{view.grandTotalLabel}</strong> tiền mặt để thanh toán cho bưu tá khi nhận kiện hàng.</>,
+      body: <>Quý khách vui lòng chuẩn bị đúng số tiền <strong className="text-neutral-900">{view.grandTotalLabel}</strong> tiền mặt để thanh toán cho bưu tá khi nhận kiện hàng.</>,
     };
   }
   if (view?.paymentStatusCode === PAYMENT_STATUS.SUCCESS) {
@@ -45,11 +45,11 @@ export function OrderBillSummary({ view }: { view: OrderDetailView | undefined }
   return (
     <>
       {/* Bill Breakdown Summary (P0 & P1) */}
-      <div className="mt-5 space-y-3 rounded-2xl bg-slate-50/80 p-4 sm:p-5 border border-slate-100 text-sm">
+      <div className="mt-5 space-y-3 rounded-2xl bg-neutral-50/80 p-4 sm:p-5 border border-neutral-100 text-sm">
         <DescriptionList
           layout="inline"
           className="gap-y-3"
-          labelClassName="text-slate-600"
+          labelClassName="text-neutral-600"
           items={[
             { label: 'Tiền hàng (tạm tính)', value: view?.subtotalLabel },
             {
@@ -62,10 +62,10 @@ export function OrderBillSummary({ view }: { view: OrderDetailView | undefined }
             { label: 'Phí vận chuyển', value: view?.isShippingFree ? 'Miễn phí' : view?.shippingTotalLabel },
             {
               key: 'grand-total',
-              label: <span className="font-black text-slate-900">Tổng thanh toán</span>,
+              label: <span className="font-black text-neutral-900">Tổng thanh toán</span>,
               value: view?.grandTotalLabel,
-              itemClassName: 'border-t border-slate-200/80 pt-3 text-base',
-              valueClassName: 'text-xl sm:text-2xl font-black text-slate-900',
+              itemClassName: 'border-t border-neutral-200/80 pt-3 text-base',
+              valueClassName: 'text-xl sm:text-2xl font-black text-neutral-900',
             },
           ]}
         />
@@ -76,12 +76,12 @@ export function OrderBillSummary({ view }: { view: OrderDetailView | undefined }
             <note.icon aria-hidden className={`size-4 shrink-0 mt-0.5 ${note.iconTone}`} />
             <div>
               <strong>{note.title}</strong>
-              <p className="mt-0.5 text-slate-700">{note.body}</p>
+              <p className="mt-0.5 text-neutral-700">{note.body}</p>
             </div>
           </div>
         </div>
 
-        <p className="text-[11px] text-slate-400 text-right">
+        <p className="text-2xs text-neutral-400 text-right">
           (Đã bao gồm thuế GTGT/VAT nếu có)
         </p>
       </div>

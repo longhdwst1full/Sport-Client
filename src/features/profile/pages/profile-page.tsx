@@ -103,7 +103,7 @@ export function ProfilePage() {
           </nav>
 
           {/* Thẻ chào: ai đang đăng nhập — tên, liên hệ, mã khách để báo khi gọi hỗ trợ. */}
-          <section className="relative overflow-hidden rounded-[28px] bg-gradient-to-br from-[var(--dc-primary-700)] to-[var(--dc-primary-900)] p-6 text-white shadow-lg shadow-[var(--dc-primary-900)]/15 sm:p-8">
+          <section className="relative overflow-hidden rounded-4xl bg-gradient-to-br from-[var(--dc-primary-700)] to-[var(--dc-primary-900)] p-6 text-white shadow-lg shadow-[var(--dc-primary-900)]/15 sm:p-8">
             <div className="pointer-events-none absolute -right-16 -top-20 size-64 rounded-full bg-white/5" />
             {profile ? (
               <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center">
@@ -184,7 +184,7 @@ export function ProfilePage() {
           <div className="mt-6 grid gap-6 lg:grid-cols-[260px_1fr]">
             <ProfileSidebar activeTab={activeTab} onSelectTab={selectTab} onLogout={handleLogout} />
 
-            <section className="rounded-[28px] border border-[var(--dc-border)] bg-white p-5 shadow-sm sm:p-8">
+            <section className="rounded-4xl border border-[var(--dc-border)] bg-white p-5 shadow-sm sm:p-8">
               {activeTab === 'address' ? (
                 <AddressBookPanel
                   addresses={book.addresses}
@@ -224,7 +224,7 @@ export function ProfilePage() {
             variant="outline"
             fullWidth
             onClick={handleLogout}
-            className="mt-6 h-auto rounded-2xl border-rose-200 py-3 font-bold text-rose-600 hover:border-rose-200 hover:bg-rose-50 hover:text-rose-600 focus-visible:ring-rose-500 lg:hidden"
+            className="mt-6 h-auto rounded-2xl border-red-200 py-3 font-bold text-red-600 hover:border-red-200 hover:bg-red-50 hover:text-red-600 focus-visible:ring-red-500 lg:hidden"
           >
             Đăng xuất
           </Button>

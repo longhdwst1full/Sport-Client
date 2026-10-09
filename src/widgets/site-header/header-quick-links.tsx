@@ -6,7 +6,7 @@ interface HeaderQuickLinksProps {
 }
 
 const QUICK_LINK =
-  'inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg px-2.5 py-1.5 text-xs font-semibold text-slate-700 transition-all hover:bg-slate-100 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 xl:px-3 xl:py-1.5 xl:text-sm';
+  'inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg px-2.5 py-1.5 text-xs font-semibold text-neutral-700 transition-all hover:bg-neutral-100 hover:text-neutral-950 focus-ring-tight xl:px-3 xl:py-1.5 xl:text-sm';
 
 export function HeaderQuickLinks({
   hasFlashSaleCampaign,
@@ -22,18 +22,16 @@ export function HeaderQuickLinks({
         >
           <span>⚡ Flash Sale</span>
           {flashSaleMaxDiscountPercent ? (
-            <span className="rounded-full bg-white/20 px-1.5 py-0.5 text-[10px] font-black uppercase text-white">
+            <span className="rounded-full bg-white/20 px-1.5 py-0.5 text-3xs font-black uppercase text-white">
               -{flashSaleMaxDiscountPercent}%
             </span>
           ) : null}
         </Link>
       )}
 
+      {/* Chưa có danh mục/bộ lọc combo trong API: nhãn "Combo Home Gym" cũ dẫn tới toàn bộ sản phẩm. */}
       <Link href="/products" className={QUICK_LINK}>
-        <span>Combo Home Gym</span>
-        <span className="rounded-full bg-amber-100 border border-amber-300/60 px-1.5 py-0.5 text-[10px] font-black uppercase text-amber-800">
-          Hot
-        </span>
+        <span>Tất cả sản phẩm</span>
       </Link>
 
       <Link href="/news" className={`hidden xl:inline-flex ${QUICK_LINK}`}>

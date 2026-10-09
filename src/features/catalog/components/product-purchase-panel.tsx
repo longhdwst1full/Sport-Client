@@ -90,7 +90,7 @@ export function ProductPurchasePanel({ product }: { product: ProductPurchaseView
 
   return (
     <section
-      className="flex flex-col gap-6 rounded-[28px] border border-slate-200/80 bg-white p-6 shadow-xl shadow-slate-200/40 sm:p-8"
+      className="flex flex-col gap-6 rounded-4xl border border-neutral-200/80 bg-white p-6 shadow-xl shadow-neutral-200/40 sm:p-8"
       aria-labelledby="purchase-heading"
     >
       {/* Price & Rating Header */}
@@ -101,7 +101,7 @@ export function ProductPurchasePanel({ product }: { product: ProductPurchaseView
         priceLabel={selectedVariant?.priceLabel}
       />
 
-      <hr className="border-stone-100" />
+      <hr className="border-neutral-100" />
 
       {/* Variant Selector */}
       <VariantSelector

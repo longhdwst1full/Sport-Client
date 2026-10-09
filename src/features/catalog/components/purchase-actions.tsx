@@ -40,11 +40,11 @@ export function PurchaseActions({
           value={quantity}
           onDecrement={onDecrementQuantity}
           onIncrement={onIncrementQuantity}
-          wrapperClassName="flex items-center rounded-full border border-stone-200 bg-stone-50 p-1"
-          decrementClassName={`grid size-10 place-items-center rounded-full bg-white text-ink shadow-sm transition hover:bg-stone-200 ${
+          wrapperClassName="flex items-center rounded-full border border-neutral-200 bg-neutral-50 p-1"
+          decrementClassName={`grid size-10 place-items-center rounded-full bg-white text-ink shadow-sm transition hover:bg-neutral-200 ${
             quantity <= 1 ? 'opacity-40 cursor-not-allowed' : ''
           }`}
-          incrementClassName="grid size-10 place-items-center rounded-full bg-white text-ink shadow-sm transition hover:bg-stone-200"
+          incrementClassName="grid size-10 place-items-center rounded-full bg-white text-ink shadow-sm transition hover:bg-neutral-200"
           valueClassName="w-12 text-center text-sm font-extrabold text-ink"
         />
       </div>
@@ -60,7 +60,7 @@ export function PurchaseActions({
             Gọi{' '}
             <a
               href={`tel:${STORE_CONTACT.primaryHotlineRaw}`}
-              className="inline-flex items-center gap-1 rounded font-extrabold text-slate-900 underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2"
+              className="inline-flex items-center gap-1 rounded font-extrabold text-neutral-900 underline-offset-2 hover:underline focus-ring"
             >
               <Phone className="size-3" aria-hidden="true" />
               {STORE_CONTACT.primaryHotline}
@@ -125,7 +125,7 @@ export function StickyBuyBar({ visible, priceLabel, canAdd, outOfStock, onAddToC
     <div
       data-sticky-buy-bar
       hidden={!visible}
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 px-4 py-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] backdrop-blur lg:hidden"
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-neutral-200 bg-white/95 px-4 py-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] backdrop-blur lg:hidden"
     >
       <div className="mx-auto flex max-w-7xl items-center gap-2">
         <strong className="min-w-0 flex-1 truncate text-base font-bold text-brand-600">

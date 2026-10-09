@@ -60,13 +60,13 @@ export function EvidencePicker({ orderNo, value, onChange, onUploadingChange, di
     <div>
       <div className="flex flex-wrap gap-3">
         {value.map((image) => (
-          <div key={image.publicId} className="relative size-24 overflow-hidden rounded-xl border border-slate-200">
+          <div key={image.publicId} className="relative size-24 overflow-hidden rounded-xl border border-neutral-200">
             {/* SECURITY: ảnh minh chứng của khách: `unoptimized` để không đi qua bộ tối ưu ảnh dùng chung của Next (cache server) và cache ảnh của service worker. */}
             <Image src={image.previewUrl} alt="Ảnh minh chứng đã tải" fill sizes="96px" unoptimized className="object-cover" />
             <Button
               disabled={disabled}
               onClick={() => onChange(value.filter((item) => item.publicId !== image.publicId))}
-              className="absolute right-1 top-1 grid size-6 place-items-center rounded-full bg-slate-900/70 text-white"
+              className="absolute right-1 top-1 grid size-6 place-items-center rounded-full bg-neutral-900/70 text-white"
               aria-label="Bỏ ảnh"
             >
               <X aria-hidden className="size-3.5" />
@@ -77,7 +77,7 @@ export function EvidencePicker({ orderNo, value, onChange, onUploadingChange, di
           <Button
             disabled={disabled}
             onClick={() => inputRef.current?.click()}
-            className="grid size-24 place-items-center rounded-xl border border-dashed border-slate-300 text-xs font-bold text-slate-500 hover:border-slate-900 disabled:opacity-50"
+            className="grid size-24 place-items-center rounded-xl border border-dashed border-neutral-300 text-xs font-bold text-neutral-500 hover:border-neutral-900 disabled:opacity-50"
           >
             {uploading > 0 ? <Spinner className="size-5" /> : <span className="grid place-items-center gap-1"><ImagePlus aria-hidden className="size-5" />Thêm ảnh</span>}
           </Button>
@@ -91,7 +91,7 @@ export function EvidencePicker({ orderNo, value, onChange, onUploadingChange, di
         hidden
         onChange={(event) => pick(event.target.files)}
       />
-      {error && <InlineAlert as="p" role="alert" className="mt-2 text-sm font-semibold text-rose-700">{error}</InlineAlert>}
+      {error && <InlineAlert as="p" role="alert" className="mt-2 text-sm font-semibold text-red-700">{error}</InlineAlert>}
     </div>
   );
 }

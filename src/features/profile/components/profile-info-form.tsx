@@ -87,7 +87,7 @@ export function ProfileInfoForm({ profile }: { profile: CustomerProfileDto }) {
       </div>
 
       {/* Email và SĐT cũng là thông tin đăng nhập; nói rõ để khách không đổi rồi mới biết. */}
-      <p className="rounded-xl bg-slate-50 px-3 py-2 text-[11px] leading-relaxed text-slate-600">
+      <p className="rounded-xl bg-neutral-50 px-3 py-2 text-2xs leading-relaxed text-neutral-600">
         Email và số điện thoại cũng là thông tin dùng để đăng nhập. Đổi xong, lần sau bạn cần
         dùng thông tin mới để vào tài khoản.
       </p>
@@ -96,7 +96,7 @@ export function ProfileInfoForm({ profile }: { profile: CustomerProfileDto }) {
         checked={form.marketingConsent}
         onChange={(event) => setForm((c) => ({ ...c, marketingConsent: event.target.checked }))}
         wrapperClassName="items-center gap-2 py-0"
-        label={<span className="text-xs font-medium text-slate-600">Nhận email về khuyến mãi và sản phẩm mới</span>}
+        label={<span className="text-xs font-medium text-neutral-600">Nhận email về khuyến mãi và sản phẩm mới</span>}
       />
 
       {profileNotice && (
@@ -105,7 +105,7 @@ export function ProfileInfoForm({ profile }: { profile: CustomerProfileDto }) {
         </InlineAlert>
       )}
       {profileError && (
-        <InlineAlert as="p" role="alert" className="rounded-xl bg-rose-50 px-3 py-2 text-xs font-semibold text-rose-700">
+        <InlineAlert as="p" role="alert" className="rounded-xl bg-red-50 px-3 py-2 text-xs font-semibold text-red-700">
           {profileError}
         </InlineAlert>
       )}

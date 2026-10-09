@@ -12,7 +12,7 @@ const DEFAULT_DESC =
 
 export const viewport: Viewport = {
   // Trùng `theme_color` của manifest (brand-600) để thanh trạng thái không đổi màu khi mở app đã cài.
-  themeColor: '#dc2626',
+  themeColor: '#d42a27',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,

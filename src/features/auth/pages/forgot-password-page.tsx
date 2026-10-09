@@ -31,7 +31,7 @@ export function ForgotPasswordPage() {
     <AuthRecoveryMain>
       <Link
         href="/login"
-        className="inline-flex min-h-11 items-center gap-1.5 self-start text-xs font-semibold text-stone-600 hover:text-slate-900 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900"
+        className="inline-flex min-h-11 items-center gap-1.5 self-start text-xs font-semibold text-neutral-600 hover:text-neutral-900 rounded focus-ring-tight"
       >
         <ArrowLeft className="size-4" aria-hidden />
         Quay lại đăng nhập
@@ -40,13 +40,13 @@ export function ForgotPasswordPage() {
       {submitted ? (
         <div role="status" className="mt-6 rounded-3xl border border-success-200 bg-success-50 p-6 text-center">
           <MailCheck className="mx-auto size-10 text-success-600" aria-hidden />
-          <h1 className="mt-3 text-lg font-black text-stone-900">Đã gửi yêu cầu</h1>
-          <p className="mt-2 text-xs leading-relaxed text-stone-600">
+          <h1 className="mt-3 text-lg font-black text-neutral-900">Đã gửi yêu cầu</h1>
+          <p className="mt-2 text-xs leading-relaxed text-neutral-600">
             Nếu <strong>{email.trim()}</strong> có tài khoản tại {STORE_CONFIG.name}, chúng tôi vừa
             gửi một email kèm đường dẫn đặt lại mật khẩu. Đường dẫn hết hạn sau 30 phút và chỉ dùng
             được một lần.
           </p>
-          <p className="mt-2 text-xs text-stone-500">
+          <p className="mt-2 text-xs text-neutral-500">
             Không thấy email? Kiểm tra hộp thư rác trước khi thử lại.
           </p>
           <Button variant="link" onClick={() => setSubmitted(false)} className="mt-5 rounded text-xs font-bold">
@@ -55,14 +55,14 @@ export function ForgotPasswordPage() {
         </div>
       ) : (
         <form
-          className="mt-6 rounded-3xl border border-stone-200 bg-white p-6 shadow-sm"
+          className="mt-6 surface-card p-6 shadow-sm"
           onSubmit={(event) => {
             event.preventDefault();
             request.mutate({ data: { email: email.trim() } });
           }}
         >
-          <h1 className="text-lg font-black text-stone-900">Quên mật khẩu</h1>
-          <p className="mt-1 text-xs leading-relaxed text-stone-500">
+          <h1 className="text-lg font-black text-neutral-900">Quên mật khẩu</h1>
+          <p className="mt-1 text-xs leading-relaxed text-neutral-500">
             Nhập email đăng nhập của bạn. Chúng tôi sẽ gửi đường dẫn để đặt lại mật khẩu.
           </p>
 

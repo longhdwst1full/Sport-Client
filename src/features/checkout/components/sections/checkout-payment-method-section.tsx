@@ -39,12 +39,12 @@ export function CheckoutPaymentMethodSection({
             className={optionClass(paymentMethod === value)}
           >
             <div className="flex items-center justify-between gap-2">
-              <strong className="text-sm font-bold text-slate-900">{label}</strong>
-              <span aria-hidden className="grid size-7 shrink-0 place-items-center rounded-lg bg-slate-100 font-extrabold text-[11px] text-slate-950">
+              <strong className="text-sm font-bold text-neutral-900">{label}</strong>
+              <span aria-hidden className="grid size-7 shrink-0 place-items-center rounded-lg bg-neutral-100 font-extrabold text-2xs text-neutral-950">
                 {badge}
               </span>
             </div>
-            <span className="mt-2 block text-xs leading-5 text-slate-500">{description}</span>
+            <span className="mt-2 block text-xs leading-5 text-neutral-500">{description}</span>
           </button>
         ))}
       </div>

@@ -15,8 +15,8 @@ export function NewsListPage({
   initialHasMore?: boolean;
 }) {
   return (
-    <div className="bg-slate-50/60 pb-20 pt-8">
-      <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div className="bg-neutral-50/60 pb-20 pt-8">
+      <main className="page-container">
         <Breadcrumb
           className="mb-6"
           items={[
@@ -26,13 +26,13 @@ export function NewsListPage({
         />
 
         <div className="max-w-2xl">
-          <span className="rounded-full bg-slate-50 px-3.5 py-1 text-xs font-extrabold uppercase tracking-widest text-slate-900">
+          <span className="rounded-full bg-neutral-50 px-3.5 py-1 text-xs font-extrabold uppercase tracking-widest text-neutral-900">
             Bảo An Sport Journal
           </span>
           <h1 className="mt-3 text-3xl font-black text-ink sm:text-5xl">
             Kiến thức tập luyện & Tin tức thể thao
           </h1>
-          <p className="mt-3 text-base text-slate-600 sm:text-lg">
+          <p className="mt-3 text-base text-neutral-600 sm:text-lg">
             Tổng hợp bài viết phân tích kỹ thuật, cẩm nang chọn thiết bị tập gym, xe đạp tập, bàn bóng bàn và kinh nghiệm bảo dưỡng từ chuyên gia Bảo An Sport.
           </p>
         </div>

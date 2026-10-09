@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ComponentProps, ReactNode } from 'react';
 import { SiteHeader, type MegaMenuEntry } from '@/widgets/site-header/site-header';
 import { SiteFooter } from '@/widgets/site-footer/site-footer';
 import { FooterNewsletterBanner } from '@/widgets/site-footer/footer-newsletter-banner';
@@ -12,8 +12,11 @@ const CONTENT_ANCHOR_ID = 'noi-dung-chinh';
 export function StorefrontLayout({
   children,
   categories,
+  footerBanner,
 }: {
   children: ReactNode;
+  /** Banner FOOTER đầu tiên (đã lấy ở route layout); không có thì chỉ hiện khối nhận tin. */
+  footerBanner?: ComponentProps<typeof FooterNewsletterBanner>['banner'];
   /** Danh mục từ server cho mega-menu và cột "Sản phẩm nổi bật" ở footer; thiếu thì widget tự xử lý. */
   categories?: MegaMenuEntry[];
 }) {
@@ -21,7 +24,7 @@ export function StorefrontLayout({
     <div className="min-h-screen">
       <a
         href={`#${CONTENT_ANCHOR_ID}`}
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-slate-900 focus:shadow-lg"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-neutral-900 focus:shadow-lg"
       >
         Bỏ qua tới nội dung
       </a>
@@ -30,7 +33,7 @@ export function StorefrontLayout({
         {children}
       </div>
       <NewsletterRouteGate>
-        <FooterNewsletterBanner />
+        <FooterNewsletterBanner banner={footerBanner} />
       </NewsletterRouteGate>
       <SiteFooter categories={categories} />
       <FloatingContactBar />

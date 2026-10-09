@@ -25,12 +25,12 @@ export const returnStatusLabels: Record<ReturnStatus, string> = {
 
 export const returnStatusTone: Record<ReturnStatus, string> = {
   REQUESTED: 'bg-amber-50 text-amber-800',
-  APPROVED: 'bg-sky-50 text-sky-800',
-  REJECTED: 'bg-rose-50 text-rose-800',
-  RECEIVED: 'bg-violet-50 text-violet-800',
+  APPROVED: 'bg-neutral-50 text-neutral-800',
+  REJECTED: 'bg-red-50 text-red-800',
+  RECEIVED: 'bg-neutral-50 text-neutral-800',
   REFUNDED: 'bg-success-50 text-success-800',
   CLOSED: 'bg-success-50 text-success-800',
-  CANCELLED: 'bg-slate-100 text-slate-600',
+  CANCELLED: 'bg-neutral-100 text-neutral-600',
 };
 
 /** Các mốc tiến trình khách nhìn thấy, theo đúng thứ tự xử lý. */

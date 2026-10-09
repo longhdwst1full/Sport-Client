@@ -1,7 +1,7 @@
 import { timingSafeEqual } from 'node:crypto';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { NextResponse, type NextRequest } from 'next/server';
-import { parseRevalidateRequest, revalidateTargets } from './revalidate-targets';
+import { parseRevalidateRequest, revalidateTags, revalidateTargets } from './revalidate-targets';
 
 export const dynamic = 'force-dynamic';
 
@@ -50,11 +50,13 @@ export async function POST(request: NextRequest) {
   }
 
   const targets = revalidateTargets(input);
+  const tags = revalidateTags(input);
+  for (const tag of tags) revalidateTag(tag);
   for (const target of targets) {
     revalidatePath(target.path, target.type);
   }
   return NextResponse.json(
-    { revalidated: targets.map((target) => target.path) },
+    { revalidated: targets.map((target) => target.path), tags },
     { headers: { 'Cache-Control': 'no-store' } },
   );
 }

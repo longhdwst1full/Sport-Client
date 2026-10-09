@@ -13,9 +13,9 @@ import { STORE_CONTACT } from '@/shared/constants';
  */
 /** Nút nổi đồng bộ: nền trắng, viền mảnh, icon mang màu kênh — không nhiều khối màu đặc chen nhau. */
 const FLOAT_BUTTON =
-  "group relative grid size-11 place-items-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-lg shadow-slate-900/10 transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2";
+  "group relative grid size-11 place-items-center rounded-full border border-neutral-200 bg-white text-neutral-700 shadow-lg shadow-neutral-900/10 transition hover:-translate-y-0.5 hover:border-neutral-300 hover:shadow-xl focus-ring";
 const FLOAT_TOOLTIP =
-  'pointer-events-none absolute right-full mr-3 hidden whitespace-nowrap rounded-lg bg-slate-900 px-2.5 py-1.5 text-xs font-semibold text-white opacity-0 shadow-lg transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100 sm:block';
+  'pointer-events-none absolute right-full mr-3 hidden whitespace-nowrap rounded-lg bg-neutral-900 px-2.5 py-1.5 text-xs font-semibold text-white opacity-0 shadow-lg transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100 sm:block';
 
 const MOBILE_HIDDEN_ROUTES: readonly RegExp[] = [/^\/products\/[^/]+\/?$/, /^\/checkout(\/|$)/];
 
@@ -54,8 +54,8 @@ export function FloatingContactBar() {
           <span className={FLOAT_TOOLTIP}>
             Chat Zalo: {STORE_CONTACT.primaryHotline}
           </span>
-          <span className="absolute inset-0 rounded-full border border-sky-400 animate-pulse-ring pointer-events-none" />
-          <MessageSquare aria-hidden className="size-5 text-sky-600 animate-phone-vibrate" />
+          <span className="absolute inset-0 rounded-full border border-neutral-400 animate-pulse-ring pointer-events-none" />
+          <MessageSquare aria-hidden className="size-5 text-neutral-600 animate-phone-vibrate" />
         </a>
 
         {/* 24/7 Hotline Call Button */}
@@ -68,12 +68,12 @@ export function FloatingContactBar() {
           <span className={FLOAT_TOOLTIP}>
             Hotline: {STORE_CONTACT.primaryHotline}
           </span>
-          <span className="absolute inset-0 rounded-full border border-emerald-400 animate-pulse-ring pointer-events-none" />
+          <span className="absolute inset-0 rounded-full border border-success-400 animate-pulse-ring pointer-events-none" />
           <span className="absolute -right-0.5 -top-0.5 flex size-2.5">
-            <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-            <span className="relative inline-flex size-2.5 rounded-full bg-emerald-500" />
+            <span className="absolute inline-flex size-full animate-ping rounded-full bg-success-400 opacity-75" />
+            <span className="relative inline-flex size-2.5 rounded-full bg-success-500" />
           </span>
-          <Phone aria-hidden className="size-5 text-emerald-600 animate-phone-ring" />
+          <Phone aria-hidden className="size-5 text-success-600 animate-phone-ring" />
         </a>
 
         {/* Showroom Locator */}
@@ -85,7 +85,7 @@ export function FloatingContactBar() {
           <span className={FLOAT_TOOLTIP}>
             Showroom Bảo An Sport
           </span>
-          <MapPin aria-hidden className="size-5 text-slate-700" />
+          <MapPin aria-hidden className="size-5 text-neutral-700" />
         </Link>
       </div>
 

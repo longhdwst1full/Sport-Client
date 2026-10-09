@@ -24,9 +24,9 @@ export const supportTicketStatusLabels: Record<SupportTicketStatus, string> = {
 
 export const supportTicketStatusTone: Record<SupportTicketStatus, string> = {
   OPEN: 'bg-amber-50 text-amber-800',
-  ASSIGNED: 'bg-sky-50 text-sky-800',
+  ASSIGNED: 'bg-neutral-50 text-neutral-800',
   RESOLVED: 'bg-success-50 text-success-800',
-  CLOSED: 'bg-slate-100 text-slate-600',
+  CLOSED: 'bg-neutral-100 text-neutral-600',
 };
 
 export const SUPPORT_FIELD_LABELS = {

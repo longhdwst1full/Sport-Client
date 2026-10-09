@@ -17,12 +17,12 @@ const SmartFitAdvisor = dynamic(
 function SmartFitAdvisorPlaceholder() {
   return (
     <section
-      className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 sm:py-10"
+      className="page-container py-6 sm:py-10"
       aria-busy="true"
       aria-label="Đang tải trợ lý chọn thiết bị"
     >
       <div
-        className={`rounded-[32px] border border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 shadow-2xl ${SMART_FIT_CARD_MIN_HEIGHT}`}
+        className={`rounded-4xl border border-neutral-800 bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-800 shadow-2xl ${SMART_FIT_CARD_MIN_HEIGHT}`}
       />
     </section>
   );

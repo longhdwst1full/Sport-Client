@@ -3,6 +3,37 @@
 @tailwind utilities;
 
 /*
+ * STYLE DÙNG CHUNG — một chỗ sửa, áp cho mọi nơi (`.agent/rules/20-design-tokens.md`).
+ * Nằm ở layer `components` nên utility viết thêm trong component (vd. `p-6`, `shadow-sm`,
+ * `focus-visible:ring-white`) vẫn ghi đè được.
+ */
+@layer components {
+  /* Vòng focus bàn phím chuẩn; `-tight` cho phần tử sát viền, `-inverse` cho nền tối. */
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2;
+  }
+  .focus-ring-tight {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900;
+  }
+  .focus-ring-inverse {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2;
+  }
+  /* Khung nội dung trang: rộng tối đa 1280px, lề 16/24/32px. */
+  .page-container {
+    @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+  /* Thẻ/khối nền trắng chuẩn; padding và shadow do nơi dùng thêm khi cần. */
+  .surface-card {
+    @apply rounded-3xl border border-neutral-200 bg-white;
+  }
+  /* Nhãn nhỏ viết hoa phía trên tiêu đề khối. */
+  .eyebrow {
+    @apply text-xs font-black uppercase tracking-eyebrow;
+  }
+}
+
+
+/*
  * Noto Sans tự host (fontsource) cho máy không có SF Pro/Roboto (chủ yếu Windows/Linux desktop).
  * Cần đủ latin + latin-ext + vietnamese: chỉ có subset `vietnamese` thì a-z/A-Z/số rơi về font khác
  * và một dòng chữ bị lẫn hai font. Thứ tự khai báo có chủ đích: khi `unicode-range` chồng nhau,
@@ -157,21 +188,21 @@
 :root {
   color-scheme: light;
   /* DC design tokens: shared visual language with admin-client/dragon-web. */
-  --dc-primary-50: #f8fafc;
-  --dc-primary-100: #f1f5f9;
-  --dc-primary-500: #334155;
-  --dc-primary-600: #0f172a;
-  --dc-primary-700: #0f172a;
-  --dc-primary-800: #020617;
-  --dc-primary-900: #020617;
-  --dc-info-500: #0ea5e9;
+  --dc-primary-50: #fafafa;
+  --dc-primary-100: #f5f5f5;
+  --dc-primary-500: #404040;
+  --dc-primary-600: #171717;
+  --dc-primary-700: #171717;
+  --dc-primary-800: #0a0a0a;
+  --dc-primary-900: #0a0a0a;
+  --dc-info-500: #525252;
   --dc-warning-500: #f59e0b;
   --dc-error-500: #ef4444;
-  --dc-text-primary: #0f172a;
-  --dc-text-secondary: #64748b;
-  --dc-border: #e2e8f0;
+  --dc-text-primary: #171717;
+  --dc-text-secondary: #737373;
+  --dc-border: #e5e5e5;
   --dc-surface: #ffffff;
-  --dc-canvas: #f8fafc;
+  --dc-canvas: #fafafa;
 }
 * {
   box-sizing: border-box;
@@ -193,7 +224,7 @@ body::before {
   pointer-events: none;
   background:
     radial-gradient(circle at 15% 10%, rgba(220, 38, 38, 0.02), transparent 35rem),
-    radial-gradient(circle at 85% 30%, rgba(15, 23, 42, 0.02), transparent 35rem);
+    radial-gradient(circle at 85% 30%, rgba(23, 23, 23, 0.02), transparent 35rem);
 }
 h1,
 h2,
@@ -213,7 +244,7 @@ html {
   scroll-behavior: smooth;
 }
 ::selection {
-  background: #0f172a;
+  background: #171717;
   color: #ffffff;
 }
 .text-balance {
@@ -223,7 +254,7 @@ html {
 /* Vòng focus bàn phím mặc định (brand-500) cho mọi phần tử tương tác chưa tự khai báo ring.
    Phần tử có `outline-none`/`outline-hidden` (utilities, khai báo sau) tự lo focus-within/ring riêng. */
 :focus-visible {
-  outline: 2px solid #0f172a;
+  outline: 2px solid #171717;
   outline-offset: 2px;
 }
 
@@ -277,14 +308,14 @@ html {
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: #f5f5f5;
 }
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #d4d4d4;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #a3a3a3;
 }
 
 /* ===== Scroll Reveal Animations ===== */

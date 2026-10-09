@@ -25,20 +25,20 @@ export function CatalogMobileFilterDrawer({
     <Drawer
       onClose={onClose}
       ariaLabel="Bộ lọc tìm kiếm"
-      backdropClassName="fixed inset-0 z-50 flex items-end bg-slate-950/60 backdrop-blur-xs lg:hidden animate-in fade-in duration-200"
+      backdropClassName="fixed inset-0 z-50 flex items-end bg-neutral-950/60 backdrop-blur-xs lg:hidden animate-in fade-in duration-200"
       className="flex max-h-[85vh] w-full flex-col rounded-t-[32px] bg-white p-6 shadow-2xl animate-in slide-in-from-bottom duration-200"
     >
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-          <span className="flex items-center gap-2 text-sm font-black uppercase text-slate-900">
-            <SlidersHorizontal aria-hidden className="size-4 text-slate-900" />
+        <div className="flex items-center justify-between border-b border-neutral-100 pb-4">
+          <span className="flex items-center gap-2 text-sm font-black uppercase text-neutral-900">
+            <SlidersHorizontal aria-hidden className="size-4 text-neutral-900" />
             Bộ lọc tìm kiếm
           </span>
           <Button
             variant="ghost"
             size="icon"
             onClick={onClose}
-            className="size-9 rounded-full text-slate-500"
+            className="size-9 rounded-full text-neutral-500"
             aria-label="Đóng bộ lọc"
           >
             <X aria-hidden className="size-5" />
@@ -51,13 +51,13 @@ export function CatalogMobileFilterDrawer({
         </div>
 
         {/* Footer Actions */}
-        <div className="flex items-center gap-3 border-t border-slate-100 pt-4">
+        <div className="flex items-center gap-3 border-t border-neutral-100 pt-4">
           {hasActiveFilters && (
             <Button
               variant="outline"
               size="lg"
               onClick={onResetFilters}
-              className="flex-1 gap-1.5 rounded-2xl border-slate-200 px-0 text-xs font-bold text-slate-700 hover:border-slate-200 hover:bg-slate-50 hover:text-slate-700"
+              className="flex-1 gap-1.5 rounded-2xl border-neutral-200 px-0 text-xs font-bold text-neutral-700 hover:border-neutral-200 hover:bg-neutral-50 hover:text-neutral-700"
             >
               <RotateCcw aria-hidden className="size-3.5" />
               <span>Đặt lại</span>

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseRevalidateRequest, revalidateTargets } from './revalidate-targets';
+import { parseRevalidateRequest, revalidateTags, revalidateTargets } from './revalidate-targets';
 
 describe('parseRevalidateRequest', () => {
   it('nhận đúng resource và slug hợp lệ', () => {
@@ -57,5 +57,17 @@ describe('revalidateTargets', () => {
 
   it('all làm mới cả cây từ layout gốc', () => {
     expect(revalidateTargets({ resource: 'all' })).toEqual([{ path: '/', type: 'layout' }]);
+  });
+});
+
+describe('revalidateTags', () => {
+  it('sản phẩm/danh mục làm mới cache cây danh mục dùng chung', () => {
+    expect(revalidateTags({ resource: 'product' })).toEqual(['public:catalog-categories']);
+    expect(revalidateTags({ resource: 'category' })).toEqual(['public:catalog-categories']);
+  });
+
+  it('bài viết không đụng cache danh mục/banner; all làm mới cả hai', () => {
+    expect(revalidateTags({ resource: 'post' })).toEqual([]);
+    expect(revalidateTags({ resource: 'all' })).toEqual(['public:catalog-categories', 'public:content-banners']);
   });
 });

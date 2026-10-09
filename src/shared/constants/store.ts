@@ -43,6 +43,22 @@ export const STORE_CONTACT = {
   tiktokUrl: 'https://www.tiktok.com/@baoansport',
   // Working Hours
   openingHours: '08:30 - 21:30 (Tất cả các ngày trong tuần)',
+  /** Bản ngắn của `openingHours` cho dòng phụ (hỗ trợ đơn hàng, form tư vấn). */
+  openingHoursShort: '08:30 – 21:30 hằng ngày',
+} as const;
+
+/**
+ * Cam kết dùng trên UI (topbar, hero, đăng nhập...) — nguồn duy nhất, khớp bài POLICY trên CMS.
+ * Đổi chính sách thì sửa CMS rồi sửa ở đây; component không tự viết số ngày/số giờ.
+ * Nguồn (09/10/2026): `/chinh-sach/chinh-sach-doi-tra` — đổi/trả trong 3 ngày khi lỗi NSX, giao
+ * nhầm hoặc hư hại khi vận chuyển; `/chinh-sach/van-chuyen-giao-hang` — giao 63 tỉnh, lắp đặt tận
+ * nơi hàng cồng kềnh. Bài bảo hành không nêu thời hạn chung nên UI không ghi số năm/tháng.
+ */
+export const STORE_POLICY_FACTS = {
+  returnWindowDays: 3,
+  returnSummary: 'Đổi trả trong 3 ngày nếu lỗi nhà sản xuất hoặc giao nhầm',
+  shippingSummary: 'Giao hàng toàn quốc · Lắp đặt tận nơi hàng cồng kềnh',
+  warrantySummary: 'Bảo hành chính hãng theo phiếu bảo hành',
 } as const;
 
 // ==========================================
@@ -86,9 +102,8 @@ export const STORE_SHOWROOMS: Showroom[] = [
 // 7. ANNOUNCEMENTS & QUICK LINKS
 // ==========================================
 export const STORE_ANNOUNCEMENTS = [
-  'Giao từ kho gần nhất · Giá hiển thị đã gồm VAT',
-  `Miễn phí tư vấn không gian tập · Hotline: ${STORE_CONTACT.primaryHotline}`,
-  'Đổi trả trong 7 ngày · Bảo hành chính hãng 2-5 năm',
+  `${STORE_POLICY_FACTS.shippingSummary} · Hotline: ${STORE_CONTACT.primaryHotline}`,
+  `${STORE_POLICY_FACTS.returnSummary} · ${STORE_POLICY_FACTS.warrantySummary}`,
 ] as const;
 
 // ==========================================

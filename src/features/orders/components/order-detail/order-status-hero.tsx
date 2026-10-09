@@ -3,7 +3,7 @@ import { IconList } from '@/foundation/components/structure';
 import type { OrderDetailView } from '../../model/order.mapper';
 
 const METRIC_CARD_CLASS = 'rounded-2xl bg-white/[0.06] p-4 backdrop-blur-sm border border-white/[0.08]';
-const METRIC_LABEL_CLASS = 'block text-[11px] font-bold uppercase tracking-wider text-slate-400';
+const METRIC_LABEL_CLASS = 'block text-2xs font-bold uppercase tracking-wider text-neutral-400';
 import { PAYMENT_METHOD, PAYMENT_STATUS } from '../../model/order.constants';
 import { getOrderStatusBadge, getPaymentStatusBadge } from './order-status-badges';
 
@@ -20,25 +20,25 @@ export function OrderStatusHero({
   onCopyOrderNo: (code: string) => void;
 }) {
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-slate-800/80 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-6 sm:p-8 text-white shadow-xl">
-      <div className="pointer-events-none absolute -right-16 -top-16 size-80 rounded-full bg-slate-900/15 blur-3xl" />
-      <div className="pointer-events-none absolute -left-16 -bottom-16 size-64 rounded-full bg-slate-800/10 blur-2xl" />
+    <div className="relative overflow-hidden rounded-3xl border border-neutral-800/80 bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-950 p-6 sm:p-8 text-white shadow-xl">
+      <div className="pointer-events-none absolute -right-16 -top-16 size-80 rounded-full bg-neutral-900/15 blur-3xl" />
+      <div className="pointer-events-none absolute -left-16 -bottom-16 size-64 rounded-full bg-neutral-800/10 blur-2xl" />
 
       <div className="relative flex flex-col md:flex-row md:items-start justify-between gap-5">
         <div className="flex-1 min-w-0">
           <div className="flex flex-wrap items-center gap-2.5">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-900/15 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-slate-300 border border-slate-900/25">
-              <span className="size-1.5 rounded-full bg-slate-700" />
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-neutral-900/15 px-3 py-1 text-2xs font-bold uppercase tracking-wider text-neutral-300 border border-neutral-900/25">
+              <span className="size-1.5 rounded-full bg-neutral-700" />
               Đơn hàng trực tuyến
             </span>
             <div className="flex items-center gap-2">
-              <h1 className="font-mono text-sm sm:text-base font-extrabold text-slate-200">
+              <h1 className="font-mono text-sm sm:text-base font-extrabold text-neutral-200">
                 <span className="sr-only">Đơn hàng </span>#{orderNo}
               </h1>
               <button
                 type="button"
                 onClick={() => onCopyOrderNo(orderNo)}
-                className="inline-flex min-h-9 items-center gap-1 rounded-lg bg-white/10 px-2.5 py-1 text-xs font-medium text-slate-300 hover:bg-white/20 hover:text-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+                className="inline-flex min-h-9 items-center gap-1 rounded-lg bg-white/10 px-2.5 py-1 text-xs font-medium text-neutral-300 hover:bg-white/20 hover:text-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
                 title="Sao chép mã đơn"
                 aria-label={copiedOrderNo ? 'Đã sao chép mã đơn' : 'Sao chép mã đơn'}
               >
@@ -62,18 +62,18 @@ export function OrderStatusHero({
             <div className="flex flex-wrap items-center gap-3">
               {view && getOrderStatusBadge(view.statusCode, view.statusLabel)}
             </div>
-            <p className="mt-2.5 text-sm sm:text-base font-medium leading-relaxed text-slate-200 max-w-2xl">
+            <p className="mt-2.5 text-sm sm:text-base font-medium leading-relaxed text-neutral-200 max-w-2xl">
               {view?.statusDescription}
             </p>
             <IconList
-              className="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs font-medium text-slate-300"
+              className="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs font-medium text-neutral-300"
               itemClassName="gap-1.5"
-              iconClassName="size-3.5 text-slate-400"
+              iconClassName="size-3.5 text-neutral-400"
               items={[
                 {
                   key: 'updated',
                   icon: Clock,
-                  label: <span className="font-semibold text-slate-200">Cập nhật lần cuối: {view?.lastUpdatedLabel}</span>,
+                  label: <span className="font-semibold text-neutral-200">Cập nhật lần cuối: {view?.lastUpdatedLabel}</span>,
                 },
                 { key: 'placed', icon: Calendar, label: <>Đặt lúc: {view?.placedLabel}</> },
                 { key: 'branch', icon: Store, label: <>Xuất phát từ: {view?.branchName}</> },
@@ -88,8 +88,8 @@ export function OrderStatusHero({
         <div className={METRIC_CARD_CLASS}>
           <span className={METRIC_LABEL_CLASS}>Người nhận hàng</span>
           <strong className="mt-1 block truncate text-sm font-bold text-white">{view?.recipientName}</strong>
-          <span className="mt-0.5 block text-xs text-slate-300 font-mono">{view?.recipientPhone}</span>
-          <span className="mt-1 block truncate text-[11px] text-slate-400">{view?.recipientAddress}</span>
+          <span className="mt-0.5 block text-xs text-neutral-300 font-mono">{view?.recipientPhone}</span>
+          <span className="mt-1 block truncate text-2xs text-neutral-400">{view?.recipientAddress}</span>
         </div>
 
         <div className={METRIC_CARD_CLASS}>
@@ -98,7 +98,7 @@ export function OrderStatusHero({
           <div className="mt-1.5 flex items-center gap-2">
             {view && getPaymentStatusBadge(view.paymentStatusCode, view.paymentStatusLabel)}
           </div>
-          <span className="mt-1 block text-[11px] text-slate-300">
+          <span className="mt-1 block text-2xs text-neutral-300">
             {view?.paymentMethodCode === PAYMENT_METHOD.COD
               ? 'Thanh toán tiền mặt khi nhận hàng'
               : view?.paymentStatusCode === PAYMENT_STATUS.SUCCESS
@@ -109,10 +109,10 @@ export function OrderStatusHero({
 
         <div className={METRIC_CARD_CLASS}>
           <span className={METRIC_LABEL_CLASS}>Tổng thanh toán</span>
-          <strong className="mt-1 block text-2xl font-black text-slate-300 tracking-tight">
+          <strong className="mt-1 block text-2xl font-black text-neutral-300 tracking-tight">
             {view?.grandTotalLabel}
           </strong>
-          <div className="mt-0.5 flex items-center justify-between text-[11px] text-slate-300/80">
+          <div className="mt-0.5 flex items-center justify-between text-2xs text-neutral-300/80">
             <span>{view?.itemCount} món sản phẩm</span>
             {view?.paymentMethodCode === PAYMENT_METHOD.COD && (
               <span className="font-semibold text-amber-300">(Trả khi nhận)</span>

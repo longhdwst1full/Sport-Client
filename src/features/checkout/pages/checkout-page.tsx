@@ -97,15 +97,15 @@ export function CheckoutPage() {
   return (
       <main className="mx-auto max-w-7xl px-4 pb-28 pt-6 sm:px-6 sm:pt-8 lg:px-8 lg:pb-8">
         <div className="mb-6 sm:mb-8">
-          <Link href="/cart" className="-ml-1 inline-flex min-h-11 items-center gap-1.5 px-1 text-xs font-bold text-slate-900 hover:underline">
+          <Link href="/cart" className="-ml-1 inline-flex min-h-11 items-center gap-1.5 px-1 text-xs font-bold text-neutral-900 hover:underline">
             ← Quay lại giỏ hàng
           </Link>
           <div className="mt-2 flex flex-wrap items-baseline justify-between gap-4">
             <div>
-              <h1 className="mt-2 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
+              <h1 className="mt-2 text-2xl font-black tracking-tight text-neutral-950 sm:text-3xl">
                 Đặt hàng & Thanh toán
               </h1>
-              <p className="mt-1 text-sm text-slate-500">
+              <p className="mt-1 text-sm text-neutral-500">
                 Vui lòng điền thông tin nhận hàng và chọn phương thức thanh toán phù hợp.
               </p>
             </div>

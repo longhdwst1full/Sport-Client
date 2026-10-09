@@ -7,7 +7,7 @@ export function SupportContacts() {
       <h3 className="text-lg font-black text-white">Tổng đài hỗ trợ toàn quốc</h3>
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
         <div className="flex items-center gap-3">
-          <span className="grid size-10 place-items-center rounded-xl bg-slate-900 text-white">
+          <span className="grid size-10 place-items-center rounded-xl bg-neutral-900 text-white">
             <Phone className="size-5" aria-hidden />
           </span>
           <div>
@@ -17,7 +17,7 @@ export function SupportContacts() {
         </div>
 
         <div className="flex items-center gap-3">
-          <span className="grid size-10 place-items-center rounded-xl bg-slate-900 text-white">
+          <span className="grid size-10 place-items-center rounded-xl bg-neutral-900 text-white">
             <Mail className="size-5" aria-hidden />
           </span>
           <div>

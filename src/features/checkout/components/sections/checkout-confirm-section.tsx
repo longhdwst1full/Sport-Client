@@ -22,7 +22,7 @@ export function CheckoutConfirmSection({
   // Không còn nội dung thì không render thẻ rỗng.
   if (!consultation && !error) return null;
   return (
-    <section className="space-y-4 rounded-3xl border border-slate-200/90 bg-white p-4 shadow-sm sm:p-6">
+    <section className="space-y-4 surface-card p-4 shadow-sm sm:p-6">
       {consultation && (
         <div className="flex flex-col gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs sm:text-sm font-semibold text-amber-900">
@@ -40,8 +40,8 @@ export function CheckoutConfirmSection({
       )}
 
       {error && (
-        <InlineAlert role="alert" className="flex items-center gap-2 rounded-2xl border border-rose-200 bg-rose-50 p-4 text-xs font-bold text-rose-700">
-          <AlertTriangle aria-hidden className="size-4 shrink-0 text-rose-600" />
+        <InlineAlert role="alert" className="flex items-center gap-2 rounded-2xl border border-red-200 bg-red-50 p-4 text-xs font-bold text-red-700">
+          <AlertTriangle aria-hidden className="size-4 shrink-0 text-red-600" />
           <span>{error}</span>
         </InlineAlert>
       )}

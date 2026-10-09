@@ -11,7 +11,7 @@ export function OrderProductsCard(props: OrderItemsListProps) {
       title="Danh sách sản phẩm"
       description={`Sản phẩm thuộc đơn hàng #${order.orderNo}`}
       action={
-        <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">
+        <span className="rounded-full bg-neutral-100 px-3 py-1 text-xs font-bold text-neutral-700">
           {view?.items.length} món
         </span>
       }

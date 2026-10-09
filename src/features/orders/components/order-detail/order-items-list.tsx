@@ -34,10 +34,10 @@ export function OrderItemsList({
   onReorderItem,
 }: OrderItemsListProps) {
   return (
-    <div className="divide-y divide-slate-100">
+    <div className="divide-y divide-neutral-100">
       {(view?.items ?? []).map((item) => (
         <div key={item.id} className="flex flex-wrap items-start gap-x-4 gap-y-3 py-5 sm:flex-nowrap sm:items-center">
-          <div className="relative size-16 sm:size-20 shrink-0 overflow-hidden rounded-2xl border border-slate-200/70 bg-slate-50">
+          <div className="relative size-16 sm:size-20 shrink-0 overflow-hidden rounded-2xl border border-neutral-200/70 bg-neutral-50">
             <Image
               src={item.imageUrl || PRODUCT_PLACEHOLDER_IMAGE}
               alt={item.productName}
@@ -47,23 +47,23 @@ export function OrderItemsList({
             />
           </div>
           <div className="min-w-0 flex-1">
-            <h3 className="text-sm sm:text-base font-bold text-slate-900 line-clamp-2">
+            <h3 className="text-sm sm:text-base font-bold text-neutral-900 line-clamp-2">
               {item.productName}
             </h3>
             <div className="mt-1.5 flex flex-wrap items-center gap-2">
               {item.variantName && (
-                <span className="rounded-md bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700">
+                <span className="rounded-md bg-neutral-100 px-2 py-0.5 text-xs font-medium text-neutral-700">
                   {item.variantName}
                 </span>
               )}
-              <span className="font-mono text-xs text-slate-400">SKU: {item.sku}</span>
+              <span className="font-mono text-xs text-neutral-400">SKU: {item.sku}</span>
             </div>
-            <p className="mt-1.5 text-xs text-slate-600 font-medium">
+            <p className="mt-1.5 text-xs text-neutral-600 font-medium">
               {item.unitPriceLabel} × {item.quantity}
             </p>
           </div>
           <div className="flex w-full items-center justify-between gap-3 sm:w-auto sm:flex-col sm:items-end sm:text-right">
-            <strong className="block text-sm sm:text-base font-black text-slate-900">
+            <strong className="block text-sm sm:text-base font-black text-neutral-900">
               {item.lineTotalLabel}
             </strong>
 
@@ -78,7 +78,7 @@ export function OrderItemsList({
                     variant="outline"
                     size="sm"
                     onClick={() => onReview({ id: item.id, productName: item.productName })}
-                    className={`${ITEM_ACTION_CLASS} border-slate-200 text-slate-900 hover:bg-slate-50`}
+                    className={`${ITEM_ACTION_CLASS} border-neutral-200 text-neutral-900 hover:bg-neutral-50`}
                   >
                     <MessageSquarePlus aria-hidden className="size-3.5" /> Đánh giá
                   </Button>
@@ -90,7 +90,7 @@ export function OrderItemsList({
                   variant="outline"
                   size="sm"
                   onClick={() => onReorderItem(item, Number(order.items.find((i) => i.id === item.id)?.unitPrice) || 0)}
-                  className={`${ITEM_ACTION_CLASS} border-slate-200 text-slate-700 hover:border-slate-200 hover:bg-slate-50 hover:text-slate-700`}
+                  className={`${ITEM_ACTION_CLASS} border-neutral-200 text-neutral-700 hover:border-neutral-200 hover:bg-neutral-50 hover:text-neutral-700`}
                   title="Thêm vào giỏ hàng để mua lại"
                 >
                   <RotateCcw aria-hidden className="size-3.5" /> Mua lại

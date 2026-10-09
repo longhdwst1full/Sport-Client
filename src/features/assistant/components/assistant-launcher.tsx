@@ -16,7 +16,7 @@ const AssistantPanelHost = dynamic(() => import('./assistant-panel-host').then((
   ssr: false,
   loading: () => (
     <div role="status" className="fixed bottom-20 right-5 z-[60] grid size-12 place-items-center rounded-2xl bg-white shadow-xl">
-      <Spinner className="size-5 animate-spin text-slate-900" />
+      <Spinner className="size-5 animate-spin text-neutral-900" />
       <span className="sr-only">Đang mở trợ lý mua sắm</span>
     </div>
   ),
@@ -51,7 +51,7 @@ export function AssistantLauncher() {
         // (tên nằm ở aria-label + tooltip) để không thành viên thuốc dài đè lên nội dung bên phải trang.
         title={ASSISTANT_TITLE}
         variant="primary"
-        className={`fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-3.5 z-50 size-11 rounded-full p-0 shadow-lg shadow-slate-900/25 sm:bottom-6 sm:right-5 ${hideOnMobile ? 'hidden lg:inline-flex' : ''}`}
+        className={`fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-3.5 z-50 size-11 rounded-full p-0 shadow-lg shadow-neutral-900/25 sm:bottom-6 sm:right-5 ${hideOnMobile ? 'hidden lg:inline-flex' : ''}`}
       >
         {open ? <X className="size-5" aria-hidden /> : <Bot className="size-5" aria-hidden />}
       </Button>

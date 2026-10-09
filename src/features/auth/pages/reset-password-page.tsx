@@ -40,13 +40,13 @@ export function ResetPasswordPage() {
       <AuthRecoveryMain>
         <div className="rounded-3xl border border-amber-200 bg-amber-50 p-6 text-center">
           <AlertTriangle className="mx-auto size-10 text-amber-600" aria-hidden />
-          <h1 className="mt-3 text-lg font-black text-stone-900">Thiếu mã đặt lại</h1>
-          <p className="mt-2 text-xs text-stone-600">
+          <h1 className="mt-3 text-lg font-black text-neutral-900">Thiếu mã đặt lại</h1>
+          <p className="mt-2 text-xs text-neutral-600">
             Hãy mở đúng đường dẫn trong email chúng tôi gửi cho bạn.
           </p>
           <Link
             href="/forgot-password"
-            className="mt-5 inline-block rounded text-xs font-bold text-slate-900 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900"
+            className="mt-5 inline-block rounded text-xs font-bold text-neutral-900 hover:underline focus-ring-tight"
           >
             Gửi lại email đặt lại mật khẩu
           </Link>
@@ -60,9 +60,9 @@ export function ResetPasswordPage() {
       <AuthRecoveryMain>
         <div role="status" className="rounded-3xl border border-success-200 bg-success-50 p-6 text-center">
           <CheckCircle2 className="mx-auto size-10 text-success-600" aria-hidden />
-          <h1 className="mt-3 text-lg font-black text-stone-900">Đã đặt lại mật khẩu</h1>
+          <h1 className="mt-3 text-lg font-black text-neutral-900">Đã đặt lại mật khẩu</h1>
           {/* Mọi phiên đều bị thu hồi khi đặt lại mật khẩu; nói rõ để khách không bất ngờ. */}
-          <p className="mt-2 text-xs leading-relaxed text-stone-600">
+          <p className="mt-2 text-xs leading-relaxed text-neutral-600">
             Mọi thiết bị đang đăng nhập đã bị đăng xuất. Hãy đăng nhập lại bằng mật khẩu mới.
           </p>
           <Button size="md" onClick={() => router.push('/login')} className="mt-5 px-5 text-xs font-bold">
@@ -76,7 +76,7 @@ export function ResetPasswordPage() {
   return (
     <AuthRecoveryMain>
       <form
-        className="rounded-3xl border border-stone-200 bg-white p-6 shadow-sm"
+        className="surface-card p-6 shadow-sm"
         onSubmit={(event) => {
           event.preventDefault();
           if (password.next !== password.confirm) {
@@ -87,8 +87,8 @@ export function ResetPasswordPage() {
           reset.mutate({ data: { token, newPassword: password.next } });
         }}
       >
-        <h1 className="text-lg font-black text-stone-900">Đặt mật khẩu mới</h1>
-        <p className="mt-1 text-xs text-stone-500">Tối thiểu 8 ký tự.</p>
+        <h1 className="text-lg font-black text-neutral-900">Đặt mật khẩu mới</h1>
+        <p className="mt-1 text-xs text-neutral-500">Tối thiểu 8 ký tự.</p>
 
         <Field label="Mật khẩu mới" labelClassName={`mt-5 ${RECOVERY_LABEL_CLASS}`}>
           <TextInput
@@ -119,7 +119,7 @@ export function ResetPasswordPage() {
         </Field>
 
         {(localError || reset.isError) && (
-          <InlineAlert as="p" role="alert" className="mt-4 rounded-xl bg-rose-50 px-3 py-2 text-xs font-semibold text-rose-700">
+          <InlineAlert as="p" role="alert" className="mt-4 rounded-xl bg-red-50 px-3 py-2 text-xs font-semibold text-red-700">
             {localError ?? messageOf(reset.error)}
           </InlineAlert>
         )}

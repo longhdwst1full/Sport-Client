@@ -8,8 +8,8 @@ import { Field, TextInput } from '@/foundation/components/field-system';
 import { GUEST_LOOKUP_CODE_LENGTH, GUEST_LOOKUP_COPY } from '../model/guest-order-lookup.constants';
 import { useGuestOrderLookup } from '../hooks/use-guest-order-lookup';
 
-const LABEL_CLASS = 'block text-xs font-bold text-slate-800';
-const ERROR_ALERT_CLASS = 'rounded-2xl border border-rose-200 bg-rose-50 p-3 text-xs font-semibold text-rose-800';
+const LABEL_CLASS = 'block text-xs font-bold text-neutral-800';
+const ERROR_ALERT_CLASS = 'rounded-2xl border border-red-200 bg-red-50 p-3 text-xs font-semibold text-red-800';
 
 /** `/orders/lookup`: khách vãng lai xem đơn bằng mã đơn + email + OTP, không cần trình duyệt đã đặt hàng. */
 export function GuestOrderLookupPage({ initialOrderNo = '' }: { initialOrderNo?: string }) {
@@ -17,13 +17,13 @@ export function GuestOrderLookupPage({ initialOrderNo = '' }: { initialOrderNo?:
 
   return (
     <main className="mx-auto min-h-[60vh] max-w-xl px-4 py-10 sm:px-6">
-      <p className="text-xs font-black uppercase tracking-[0.22em] text-slate-900">Khách vãng lai</p>
-      <h1 className="mt-2 text-2xl font-black text-slate-950 sm:text-3xl">{GUEST_LOOKUP_COPY.title}</h1>
-      <p className="mt-2 text-sm text-slate-600">{GUEST_LOOKUP_COPY.intro}</p>
+      <p className="eyebrow text-neutral-900">Khách vãng lai</p>
+      <h1 className="mt-2 text-2xl font-black text-neutral-950 sm:text-3xl">{GUEST_LOOKUP_COPY.title}</h1>
+      <p className="mt-2 text-sm text-neutral-600">{GUEST_LOOKUP_COPY.intro}</p>
 
       {lookup.step === 'request' ? (
         <form
-          className="mt-7 space-y-5 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6"
+          className="mt-7 space-y-5 surface-card p-4 shadow-sm sm:p-6"
           onSubmit={(event) => {
             event.preventDefault();
             lookup.requestCode();
@@ -79,15 +79,15 @@ export function GuestOrderLookupPage({ initialOrderNo = '' }: { initialOrderNo?:
         </form>
       ) : (
         <form
-          className="mt-7 space-y-5 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6"
+          className="mt-7 space-y-5 surface-card p-4 shadow-sm sm:p-6"
           onSubmit={(event) => {
             event.preventDefault();
             lookup.verifyCode();
           }}
         >
           <InlineAlert as="p" role="status" className="rounded-2xl border border-success-200 bg-success-50 p-3 text-sm text-success-900">{GUEST_LOOKUP_COPY.sent}</InlineAlert>
-          <p className="text-xs text-slate-500">
-            Đơn <span className="font-mono font-bold text-slate-800">{lookup.orderNo.trim().toUpperCase()}</span> ·{' '}
+          <p className="text-xs text-neutral-500">
+            Đơn <span className="font-mono font-bold text-neutral-800">{lookup.orderNo.trim().toUpperCase()}</span> ·{' '}
             <Button variant="link" onClick={lookup.editDetails} className="min-h-11 font-bold underline">Sửa thông tin</Button>
           </p>
           <div>
@@ -122,7 +122,7 @@ export function GuestOrderLookupPage({ initialOrderNo = '' }: { initialOrderNo?:
             {!lookup.isVerifying && <SearchCheck className="size-4" aria-hidden />}
             Xem đơn hàng
           </Button>
-          <div className="text-center text-xs text-slate-500">
+          <div className="text-center text-xs text-neutral-500">
             {lookup.secondsLeft > 0 ? (
               <span aria-live="polite">Gửi lại mã sau {lookup.secondsLeft} giây</span>
             ) : (
@@ -132,13 +132,13 @@ export function GuestOrderLookupPage({ initialOrderNo = '' }: { initialOrderNo?:
             )}
           </div>
           {lookup.requestErrorMessage && (
-            <InlineAlert as="p" role="alert" className="text-center text-xs font-semibold text-rose-700">{lookup.requestErrorMessage}</InlineAlert>
+            <InlineAlert as="p" role="alert" className="text-center text-xs font-semibold text-red-700">{lookup.requestErrorMessage}</InlineAlert>
           )}
         </form>
       )}
 
-      <p className="mt-6 text-center text-xs text-slate-500">
-        Có tài khoản? <Link href="/login" className="font-bold text-slate-900">Đăng nhập</Link> để xem toàn bộ đơn hàng.
+      <p className="mt-6 text-center text-xs text-neutral-500">
+        Có tài khoản? <Link href="/login" className="font-bold text-neutral-900">Đăng nhập</Link> để xem toàn bộ đơn hàng.
       </p>
     </main>
   );

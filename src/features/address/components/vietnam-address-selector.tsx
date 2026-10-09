@@ -293,8 +293,8 @@ export function VietnamAddressSelector({
       {/* Street Address Input */}
       <div>
         <Field
-          label={<>Số nhà, tên đường, tòa nhà {required && <span className="text-rose-600">*</span>}</>}
-          labelClassName="block text-xs font-bold text-slate-700"
+          label={<>Số nhà, tên đường, tòa nhà {required && <span className="text-red-600">*</span>}</>}
+          labelClassName="block text-xs font-bold text-neutral-700"
         >
           <TextInput
             size="md"
@@ -305,7 +305,7 @@ export function VietnamAddressSelector({
             value={streetAddress}
             onChange={(e) => setStreetAddress(e.target.value)}
             placeholder="Ví dụ: Số 123 Đường Nguyễn Hữu Thọ, Tòa nhà Landmark..."
-            className="mt-1.5 font-medium text-slate-800"
+            className="mt-1.5 font-medium text-neutral-800"
           />
         </Field>
       </div>

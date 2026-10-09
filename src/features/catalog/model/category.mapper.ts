@@ -58,11 +58,9 @@ export interface CategoryRailView {
 
 /** Gradient là trang trí thuần, gán theo vị trí để rail luôn đủ màu. */
 const railColors = [
-  'from-amber-500/20 to-orange-500/10',
-  'from-slate-800/20 to-slate-300/10',
-  'from-sky-500/20 to-indigo-500/10',
-  'from-rose-500/20 to-pink-500/10',
-  'from-violet-500/20 to-purple-500/10',
+  'from-neutral-900/15 to-neutral-300/10',
+  'from-brand-500/15 to-neutral-200/10',
+  'from-neutral-600/15 to-neutral-200/10',
 ];
 
 export function toCategoryRailView(dto: CatalogCategoryDto, index: number): CategoryRailView {

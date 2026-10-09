@@ -14,25 +14,25 @@ export function OrderDetailHeader({
 }) {
   return (
     <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-      <nav aria-label="Breadcrumb" className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-xs font-medium text-slate-500">
-        <Link href="/" className="inline-flex min-h-8 items-center hover:text-slate-900 transition">Trang chủ</Link>
-        <ChevronRight aria-hidden className="size-3 text-slate-400" />
+      <nav aria-label="Breadcrumb" className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-xs font-medium text-neutral-500">
+        <Link href="/" className="inline-flex min-h-8 items-center hover:text-neutral-900 transition">Trang chủ</Link>
+        <ChevronRight aria-hidden className="size-3 text-neutral-400" />
         {isAuthenticated ? (
           <>
-            <Link href="/orders" className="inline-flex min-h-8 items-center hover:text-slate-900 transition">Đơn hàng của tôi</Link>
-            <ChevronRight aria-hidden className="size-3 text-slate-400" />
+            <Link href="/orders" className="inline-flex min-h-8 items-center hover:text-neutral-900 transition">Đơn hàng của tôi</Link>
+            <ChevronRight aria-hidden className="size-3 text-neutral-400" />
           </>
         ) : null}
-        <span className="text-slate-600">Chi tiết đơn hàng</span>
-        <ChevronRight aria-hidden className="size-3 text-slate-400" />
-        <span aria-current="page" className="font-mono font-bold text-slate-900 break-all">{orderNo}</span>
+        <span className="text-neutral-600">Chi tiết đơn hàng</span>
+        <ChevronRight aria-hidden className="size-3 text-neutral-400" />
+        <span aria-current="page" className="font-mono font-bold text-neutral-900 break-all">{orderNo}</span>
       </nav>
 
       <div className="flex items-center gap-2">
         {isAuthenticated && (
           <Link
             href="/orders"
-            className={buttonVariants({ variant: 'outline', className: 'gap-1.5 border-slate-200/80 px-3.5 text-xs font-bold text-slate-700 shadow-sm' })}
+            className={buttonVariants({ variant: 'outline', className: 'gap-1.5 border-neutral-200/80 px-3.5 text-xs font-bold text-neutral-700 shadow-sm' })}
           >
             <ArrowLeft className="size-3.5" /> Danh sách đơn
           </Link>
@@ -40,9 +40,9 @@ export function OrderDetailHeader({
         <Button
           variant="outline"
           onClick={onOpenSupport}
-          className="gap-1.5 border-slate-200 bg-slate-50/70 px-3.5 text-xs font-bold text-slate-950 hover:bg-slate-100"
+          className="gap-1.5 border-neutral-200 bg-neutral-50/70 px-3.5 text-xs font-bold text-neutral-950 hover:bg-neutral-100"
         >
-          <Headphones aria-hidden className="size-3.5 text-slate-900" /> Cần hỗ trợ?
+          <Headphones aria-hidden className="size-3.5 text-neutral-900" /> Cần hỗ trợ?
         </Button>
       </div>
     </div>

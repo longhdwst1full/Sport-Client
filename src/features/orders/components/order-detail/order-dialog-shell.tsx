@@ -22,7 +22,7 @@ export function OrderDialogShell({
   title: ReactNode;
   subtitle: ReactNode;
   icon: ComponentType<SVGProps<SVGSVGElement>>;
-  /** Màu ô icon, vd. `bg-rose-100 text-rose-600`. */
+  /** Màu ô icon, vd. `bg-red-100 text-red-600`. */
   iconClassName: string;
   /** Độ rộng tối đa của hộp, vd. `max-w-lg`. */
   className: string;
@@ -34,14 +34,14 @@ export function OrderDialogShell({
   useDialogA11y(dialogRef, { onClose, disableClose: closeDisabled, trapFocus: true });
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-950/60 backdrop-blur-sm animate-fade-in">
       <div
         ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
         tabIndex={-1}
-        className={`relative w-full rounded-3xl border border-slate-100 bg-white p-6 sm:p-7 shadow-2xl animate-fade-in-up outline-none ${className}`}
+        className={`relative w-full rounded-3xl border border-neutral-100 bg-white p-6 sm:p-7 shadow-2xl animate-fade-in-up outline-none ${className}`}
       >
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3">
@@ -49,8 +49,8 @@ export function OrderDialogShell({
               <Icon aria-hidden className="size-5.5" />
             </div>
             <div>
-              <h2 id={titleId} className="text-base font-black text-slate-900">{title}</h2>
-              <p className="text-xs text-slate-500">{subtitle}</p>
+              <h2 id={titleId} className="text-base font-black text-neutral-900">{title}</h2>
+              <p className="text-xs text-neutral-500">{subtitle}</p>
             </div>
           </div>
           <Button
@@ -59,7 +59,7 @@ export function OrderDialogShell({
             onClick={onClose}
             disabled={closeDisabled}
             aria-label="Đóng"
-            className="-m-1.5 text-slate-400 hover:text-slate-700"
+            className="-m-1.5 text-neutral-400 hover:text-neutral-700"
           >
             <X aria-hidden className="size-5" />
           </Button>

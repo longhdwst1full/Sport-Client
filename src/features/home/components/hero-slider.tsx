@@ -6,7 +6,7 @@ import { CarouselDots } from '@/foundation/components/indicators';
 import { BannerPicture } from '@/features/content';
 
 /** Vòng focus trắng trên nền tối của hero. */
-const HERO_FOCUS = 'focus-visible:ring-white focus-visible:ring-offset-slate-900';
+const HERO_FOCUS = 'focus-visible:ring-white focus-visible:ring-offset-neutral-900';
 /** Nút tròn nổi trên ảnh (mũi tên, dừng/chạy): nền đen mờ, chữ trắng. */
 const HERO_ROUND_BUTTON = `absolute z-20 rounded-full bg-black/40 text-white backdrop-blur ${HERO_FOCUS}`;
 
@@ -56,7 +56,7 @@ export function HeroSlider({
 
   return (
     <div
-      className="relative overflow-hidden rounded-2xl border border-slate-200/90 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 shadow-lg lg:col-span-8 group min-h-[380px] sm:min-h-[440px] lg:min-h-[480px]"
+      className="relative overflow-hidden rounded-2xl border border-neutral-200/90 bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-950 shadow-lg lg:col-span-8 group min-h-[380px] sm:min-h-[440px] lg:min-h-[480px]"
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
     >
@@ -98,7 +98,7 @@ export function HeroSlider({
                 )}
                 {/* Gradient Overlay for high text readability */}
                 {hasText && (
-                  <div className="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/65 to-transparent sm:from-slate-950/95 sm:via-slate-950/50" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-neutral-950/90 via-neutral-950/65 to-transparent sm:from-neutral-950/95 sm:via-neutral-950/50" />
                 )}
               </div>
             )}
@@ -131,7 +131,7 @@ export function HeroSlider({
                   )}
 
                   {slide.subtitle && (
-                    <p className="mt-3 text-xs leading-relaxed text-slate-300 sm:text-sm sm:leading-6 line-clamp-2 sm:line-clamp-3">
+                    <p className="mt-3 text-xs leading-relaxed text-neutral-300 sm:text-sm sm:leading-6 line-clamp-2 sm:line-clamp-3">
                       {slide.subtitle}
                     </p>
                   )}
@@ -188,7 +188,7 @@ export function HeroSlider({
               variant="ghost"
               size="icon"
               onClick={onClick}
-              className={`${HERO_ROUND_BUTTON} ${position} top-1/2 hidden -translate-y-1/2 opacity-70 sm:grid hover:bg-white hover:text-slate-950 group-hover:opacity-100 focus-visible:opacity-100`}
+              className={`${HERO_ROUND_BUTTON} ${position} top-1/2 hidden -translate-y-1/2 opacity-70 sm:grid hover:bg-white hover:text-neutral-950 group-hover:opacity-100 focus-visible:opacity-100`}
               aria-label={label}
             >
               <Icon className="size-5" aria-hidden="true" />

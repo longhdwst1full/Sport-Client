@@ -32,15 +32,15 @@ export function AssistantHandoff({
   const trimmed = message.trim();
 
   return (
-    <section aria-labelledby="assistant-handoff-title" className="border-t border-slate-200 bg-slate-50 p-3">
+    <section aria-labelledby="assistant-handoff-title" className="border-t border-neutral-200 bg-neutral-50 p-3">
       <div className="flex items-center justify-between gap-2">
-        <h3 id="assistant-handoff-title" className="text-xs font-black text-slate-900">{ASSISTANT_COPY.handoff}</h3>
+        <h3 id="assistant-handoff-title" className="text-xs font-black text-neutral-900">{ASSISTANT_COPY.handoff}</h3>
         {/* 36px: khung handoff nằm trong panel 380px nên dùng nút gọn. */}
         <Button
           variant="ghost"
           size="icon"
           onClick={onCancel}
-          className="size-9 rounded-lg text-slate-500 hover:bg-slate-200 hover:text-slate-700 focus-visible:ring-offset-0"
+          className="size-9 rounded-lg text-neutral-500 hover:bg-neutral-200 hover:text-neutral-700 focus-visible:ring-offset-0"
           aria-label="Đóng chuyển nhân viên"
         >
           <X className="size-4" aria-hidden />
@@ -48,7 +48,7 @@ export function AssistantHandoff({
       </div>
 
       {!isAuthenticated && (
-        <div className="mt-2 space-y-2 text-xs text-slate-600">
+        <div className="mt-2 space-y-2 text-xs text-neutral-600">
           <p>{ASSISTANT_COPY.handoffLoginRequired}</p>
           <Link href="/login" onClick={onNavigate} className={buttonVariants({ size: 'sm', className: 'gap-1.5 rounded-lg px-3 text-xs font-bold' })}>
             <LogIn className="size-3.5" aria-hidden />
@@ -58,7 +58,7 @@ export function AssistantHandoff({
       )}
 
       {isAuthenticated && create.created && (
-        <div className="mt-2 space-y-2 text-xs text-slate-600" role="status">
+        <div className="mt-2 space-y-2 text-xs text-neutral-600" role="status">
           <p>Đã tạo yêu cầu hỗ trợ. Nhân viên sẽ phản hồi trong mục Hỗ trợ của tôi.</p>
           <AssistantTicketCard card={create.created} onNavigate={onNavigate} />
         </div>
@@ -73,7 +73,7 @@ export function AssistantHandoff({
             create.submit({ subject: ASSISTANT_HANDOFF_SUBJECT, message: trimmed, conversationId });
           }}
         >
-          <Field label="Mô tả vấn đề cho nhân viên" labelClassName="block text-[11px] font-bold text-slate-700">
+          <Field label="Mô tả vấn đề cho nhân viên" labelClassName="block text-2xs font-bold text-neutral-700">
             <Textarea
               styled
               id="assistant-handoff-message"
@@ -82,10 +82,10 @@ export function AssistantHandoff({
               maxLength={HANDOFF_MESSAGE_MAX_LENGTH}
               rows={2}
               disabled={create.isPending}
-              className="min-h-0 resize-none p-2 text-slate-800 sm:text-xs"
+              className="min-h-0 resize-none p-2 text-neutral-800 sm:text-xs"
             />
           </Field>
-          {create.errorMessage && <InlineAlert as="p" role="alert" className="text-[11px] font-semibold text-rose-700">{create.errorMessage}</InlineAlert>}
+          {create.errorMessage && <InlineAlert as="p" role="alert" className="text-2xs font-semibold text-red-700">{create.errorMessage}</InlineAlert>}
           <div className="flex justify-end">
             <Button
               type="submit"

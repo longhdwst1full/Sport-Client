@@ -40,15 +40,15 @@ function StateBlock({
         <div
           className={
             iconWrapClassName ??
-            `mb-4 grid size-14 place-items-center rounded-2xl ${tone === 'error' ? 'bg-rose-50 text-rose-600' : 'bg-slate-100 text-slate-500'}`
+            `mb-4 grid size-14 place-items-center rounded-2xl ${tone === 'error' ? 'bg-red-50 text-red-600' : 'bg-neutral-100 text-neutral-500'}`
           }
         >
           {icon}
         </div>
       ) : null}
-      <TitleTag className={titleClassName ?? 'text-lg font-bold text-slate-900'}>{title}</TitleTag>
+      <TitleTag className={titleClassName ?? 'text-lg font-bold text-neutral-900'}>{title}</TitleTag>
       {description ? (
-        <p className={descriptionClassName ?? 'mt-2 text-sm text-slate-600'}>{description}</p>
+        <p className={descriptionClassName ?? 'mt-2 text-sm text-neutral-600'}>{description}</p>
       ) : null}
       {/* Chỉ bọc hàng nút ở chế độ mặc định; caller tự truyền className thì tự lo bố cục actions như cũ. */}
       {actions && className === undefined ? (

@@ -8,36 +8,36 @@ export function CheckoutEmptyCart() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
       <div className="mb-8">
-        <Link href="/cart" className="text-sm font-bold text-slate-900 hover:underline">
+        <Link href="/cart" className="text-sm font-bold text-neutral-900 hover:underline">
           ← Quay lại giỏ hàng
         </Link>
-        <h1 className="mt-2 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
+        <h1 className="mt-2 text-2xl font-black tracking-tight text-neutral-950 sm:text-3xl">
           Thanh toán đơn hàng
         </h1>
       </div>
 
       <div className="grid gap-8 lg:grid-cols-[1fr_380px]">
-        <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-8 text-center sm:p-12 shadow-sm">
+        <div className="rounded-3xl border border-dashed border-neutral-300 bg-white p-8 text-center sm:p-12 shadow-sm">
           <div className="mx-auto grid size-16 place-items-center rounded-2xl bg-amber-50 text-amber-600">
             <Truck className="size-8" />
           </div>
-          <h2 className="mt-4 text-xl font-black text-slate-900">Giỏ hàng của bạn đang trống</h2>
-          <p className="mx-auto mt-2 max-w-md text-sm text-slate-500 leading-relaxed">
+          <h2 className="mt-4 text-xl font-black text-neutral-900">Giỏ hàng của bạn đang trống</h2>
+          <p className="mx-auto mt-2 max-w-md text-sm text-neutral-500 leading-relaxed">
             Bạn chưa có sản phẩm nào trong giỏ để thực hiện thanh toán. Vui lòng chọn sản phẩm thể thao ưng ý trước khi hoàn tất đặt hàng.
           </p>
 
           {/* Payment Methods Info */}
-          <div className="mt-8 rounded-2xl border border-slate-100 bg-slate-50 p-5 text-left">
-            <span className="block text-xs font-bold uppercase tracking-wider text-slate-500">
+          <div className="mt-8 rounded-2xl border border-neutral-100 bg-neutral-50 p-5 text-left">
+            <span className="block text-xs font-bold uppercase tracking-wider text-neutral-500">
               Phương thức thanh toán hỗ trợ:
             </span>
-            <div className="mt-3 grid gap-2.5 sm:grid-cols-2 text-xs font-semibold text-slate-700">
-              <div className="flex items-center gap-2 rounded-xl bg-white p-3 border border-slate-200">
-                <span className="grid size-6 place-items-center rounded bg-slate-100 text-slate-900 font-extrabold text-[10px]">COD</span>
+            <div className="mt-3 grid gap-2.5 sm:grid-cols-2 text-xs font-semibold text-neutral-700">
+              <div className="flex items-center gap-2 rounded-xl bg-white p-3 border border-neutral-200">
+                <span className="grid size-6 place-items-center rounded bg-neutral-100 text-neutral-900 font-extrabold text-3xs">COD</span>
                 <span>Thanh toán khi nhận hàng (COD)</span>
               </div>
-              <div className="flex items-center gap-2 rounded-xl bg-white p-3 border border-slate-200">
-                <CreditCard className="size-4 text-slate-900" />
+              <div className="flex items-center gap-2 rounded-xl bg-white p-3 border border-neutral-200">
+                <CreditCard className="size-4 text-neutral-900" />
                 <span>Chuyển khoản VietQR / VNPay</span>
               </div>
             </div>
@@ -46,7 +46,7 @@ export function CheckoutEmptyCart() {
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link
               href="/products"
-              className={buttonVariants({ variant: 'primary', className: 'rounded-full px-6 font-bold shadow-md shadow-slate-900/20' })}
+              className={buttonVariants({ variant: 'primary', className: 'rounded-full px-6 font-bold shadow-md shadow-neutral-900/20' })}
             >
               <span>Tiếp tục mua sắm</span>
             </Link>
@@ -59,22 +59,22 @@ export function CheckoutEmptyCart() {
           </div>
         </div>
 
-        <aside className="h-fit rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-          <h2 className="text-base font-black text-slate-950">Tóm tắt đơn hàng</h2>
-          <div className="mt-4 space-y-3 border-t border-slate-100 pt-4 text-sm">
+        <aside className="h-fit surface-card p-6 shadow-sm">
+          <h2 className="text-base font-black text-neutral-950">Tóm tắt đơn hàng</h2>
+          <div className="mt-4 space-y-3 border-t border-neutral-100 pt-4 text-sm">
             <DescriptionList
               layout="inline"
               className="gap-y-3"
               valueClassName="font-bold"
               items={[
                 { label: 'Tạm tính', value: '0 ₫' },
-                { label: 'Phí vận chuyển', value: 'Tính khi có hàng', valueClassName: 'font-normal text-slate-400' },
+                { label: 'Phí vận chuyển', value: 'Tính khi có hàng', valueClassName: 'font-normal text-neutral-400' },
               ]}
             />
             <DescriptionList
               layout="inline"
-              className="border-t border-slate-100 pt-3 text-base font-black"
-              labelClassName="text-slate-950"
+              className="border-t border-neutral-100 pt-3 text-base font-black"
+              labelClassName="text-neutral-950"
               valueClassName="font-black text-brand-700"
               items={[{ label: 'Tổng tiền', value: '0 ₫' }]}
             />

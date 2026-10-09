@@ -1,10 +1,12 @@
 /**
  * Map một sự kiện "nội dung công khai vừa đổi" của API sang các trang ISR phải làm mới.
  *
- * Pure function để test được; route handler chỉ xác thực rồi gọi `revalidatePath` theo kết quả.
- * Các trang ISR đọc API bằng Axios (không qua `fetch` của Next) nên không có tag để
- * `revalidateTag` — làm mới theo đường dẫn là cơ chế duy nhất áp dụng được.
+ * Pure function để test được; route handler chỉ xác thực rồi gọi `revalidatePath`/`revalidateTag`.
+ * Trang ISR đọc API bằng Axios (không qua `fetch` của Next); riêng dữ liệu dùng chung (danh mục,
+ * banner) đi qua `unstable_cache` có tag (`app/(storefront)/_data/public-data.ts`), nên phải làm
+ * mới cả tag — chỉ `revalidatePath` thì trang dựng lại vẫn đọc cây danh mục cũ trong cache.
  */
+import { PUBLIC_DATA_TAGS } from '../../(storefront)/_data/public-data-tags';
 export const REVALIDATE_RESOURCES = ['post', 'product', 'category', 'all'] as const;
 export type RevalidateResource = (typeof REVALIDATE_RESOURCES)[number];
 
@@ -68,5 +70,19 @@ export function revalidateTargets({ resource, slug }: RevalidateRequest): Revali
       ];
     case 'all':
       return [{ path: '/', type: 'layout' }];
+  }
+}
+
+/** Tag của `unstable_cache` cần làm mới theo cùng sự kiện. */
+export function revalidateTags({ resource }: RevalidateRequest): string[] {
+  switch (resource) {
+    case 'post':
+      return [];
+    case 'product':
+    case 'category':
+      // Số sản phẩm của danh mục (`productCount`) đổi theo sản phẩm.
+      return [PUBLIC_DATA_TAGS.categories];
+    case 'all':
+      return [PUBLIC_DATA_TAGS.categories, PUBLIC_DATA_TAGS.banners];
   }
 }

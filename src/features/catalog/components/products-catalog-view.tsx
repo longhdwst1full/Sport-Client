@@ -27,7 +27,7 @@ export function ProductsCatalogView({ initial }: { initial?: CatalogInitialPage 
       {/* Main Two-Column Layout (Faceted Sidebar + Product Grid) */}
       <div className="flex flex-col lg:flex-row lg:items-start gap-8">
         {/* DESKTOP FACETED SIDEBAR */}
-        <div className="hidden lg:block w-64 shrink-0 rounded-3xl border border-slate-200/80 bg-white p-5 shadow-xs">
+        <div className="hidden lg:block w-64 shrink-0 surface-card p-5 shadow-xs">
           <CatalogSidebarFilters {...filterProps} isTabsPending={isTabsPending} />
         </div>
 

@@ -35,13 +35,13 @@ export const orderStatusLabels: Record<OrderStatus, string> = {
 /** Màu nhãn trạng thái đơn trên nền sáng: chờ = amber, đang xử lý = sky, xong = success, huỷ = slate. */
 export const orderStatusTone: Record<OrderStatus, string> = {
   PENDING_CONFIRMATION: 'bg-amber-50 text-amber-800 ring-amber-200',
-  CONFIRMED: 'bg-sky-50 text-sky-800 ring-sky-200',
-  PICKING: 'bg-sky-50 text-sky-800 ring-sky-200',
-  PACKED: 'bg-sky-50 text-sky-800 ring-sky-200',
-  SHIPPED: 'bg-slate-50 text-slate-950 ring-slate-200',
+  CONFIRMED: 'bg-neutral-50 text-neutral-800 ring-neutral-200',
+  PICKING: 'bg-neutral-50 text-neutral-800 ring-neutral-200',
+  PACKED: 'bg-neutral-50 text-neutral-800 ring-neutral-200',
+  SHIPPED: 'bg-neutral-50 text-neutral-950 ring-neutral-200',
   DELIVERED: 'bg-success-50 text-success-800 ring-success-200',
   COMPLETED: 'bg-success-50 text-success-800 ring-success-200',
-  CANCELLED: 'bg-slate-100 text-slate-600 ring-slate-200',
+  CANCELLED: 'bg-neutral-100 text-neutral-600 ring-neutral-200',
 };
 
 export const paymentStatusLabels: Record<PaymentStatus, string> = {

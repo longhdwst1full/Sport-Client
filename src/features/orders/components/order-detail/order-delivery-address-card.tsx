@@ -22,7 +22,7 @@ export function OrderDeliveryAddressCard({
           variant="outline"
           size="sm"
           onClick={onCopyAddress}
-          className="gap-1 rounded-lg border-slate-200 px-2.5 text-xs font-medium text-slate-600 hover:border-slate-200 hover:bg-slate-50 hover:text-slate-600"
+          className="gap-1 rounded-lg border-neutral-200 px-2.5 text-xs font-medium text-neutral-600 hover:border-neutral-200 hover:bg-neutral-50 hover:text-neutral-600"
           title="Sao chép toàn bộ thông tin người nhận"
           aria-label={copiedAddress ? 'Đã sao chép thông tin người nhận' : 'Sao chép toàn bộ thông tin người nhận'}
         >
@@ -42,28 +42,28 @@ export function OrderDeliveryAddressCard({
     >
       <div className="mt-4">
         <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-1.5 font-bold text-slate-900 text-sm sm:text-base">
-            <User className="size-4 text-slate-900" />
+          <div className="flex items-center gap-1.5 font-bold text-neutral-900 text-sm sm:text-base">
+            <User className="size-4 text-neutral-900" />
             <span>{view?.recipientName}</span>
           </div>
-          <span className="text-slate-300">|</span>
+          <span className="text-neutral-300">|</span>
           <a
             href={`tel:${view?.recipientPhone}`}
-            className="inline-flex items-center gap-1.5 text-sm font-bold text-slate-900 hover:underline"
+            className="inline-flex items-center gap-1.5 text-sm font-bold text-neutral-900 hover:underline"
             title="Bấm để gọi"
           >
             <Phone className="size-3.5" />
             {view?.recipientPhone}
           </a>
         </div>
-        <p className="mt-3 text-sm leading-relaxed text-slate-700 font-normal">
+        <p className="mt-3 text-sm leading-relaxed text-neutral-700 font-normal">
           {view?.recipientAddress}
         </p>
 
-        <div className="mt-4 flex items-center gap-2 rounded-xl bg-slate-50 p-3 text-xs text-slate-600 border border-slate-100">
-          <Store className="size-4 text-slate-900 shrink-0" />
+        <div className="mt-4 flex items-center gap-2 rounded-xl bg-neutral-50 p-3 text-xs text-neutral-600 border border-neutral-100">
+          <Store className="size-4 text-neutral-900 shrink-0" />
           <span>
-            Chuẩn bị và xuất phát từ: <strong className="text-slate-900">{view?.branchName}</strong>
+            Chuẩn bị và xuất phát từ: <strong className="text-neutral-900">{view?.branchName}</strong>
           </span>
         </div>
       </div>

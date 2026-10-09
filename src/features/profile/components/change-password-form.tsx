@@ -20,7 +20,7 @@ export function ChangePasswordForm() {
 
   return (
     <form
-      className="space-y-4 rounded-2xl border border-slate-200 bg-slate-50/60 p-4"
+      className="space-y-4 rounded-2xl border border-neutral-200 bg-neutral-50/60 p-4"
       onSubmit={(event) => {
         event.preventDefault();
         if (password.next !== password.confirm) {
@@ -33,8 +33,8 @@ export function ChangePasswordForm() {
         });
       }}
     >
-      <div className="flex items-center gap-2 text-sm font-black text-slate-900">
-        <KeyRound className="size-4 text-slate-900" aria-hidden />
+      <div className="flex items-center gap-2 text-sm font-black text-neutral-900">
+        <KeyRound className="size-4 text-neutral-900" aria-hidden />
         Đổi mật khẩu
       </div>
 
@@ -86,7 +86,7 @@ export function ChangePasswordForm() {
         </div>
       </div>
 
-      <p className="text-[11px] leading-relaxed text-slate-600">
+      <p className="text-2xs leading-relaxed text-neutral-600">
         Đổi mật khẩu sẽ đăng xuất mọi thiết bị khác đang đăng nhập; thiết bị này vẫn giữ nguyên.
       </p>
 
@@ -96,7 +96,7 @@ export function ChangePasswordForm() {
         </InlineAlert>
       )}
       {passwordError && (
-        <InlineAlert as="p" role="alert" className="rounded-xl bg-rose-50 px-3 py-2 text-xs font-semibold text-rose-700">
+        <InlineAlert as="p" role="alert" className="rounded-xl bg-red-50 px-3 py-2 text-xs font-semibold text-red-700">
           {passwordError}
         </InlineAlert>
       )}

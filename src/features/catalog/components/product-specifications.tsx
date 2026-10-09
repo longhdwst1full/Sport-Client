@@ -29,19 +29,19 @@ export function ProductSpecifications({
   const ToggleIcon = isExpanded ? ChevronUp : ChevronDown;
 
   return (
-    <div className="rounded-[28px] border border-[var(--dc-border)] bg-white p-6 shadow-sm sm:p-8">
+    <div className="rounded-4xl border border-[var(--dc-border)] bg-white p-6 shadow-sm sm:p-8">
       <div className="flex items-center justify-between gap-3">
         <h2 className="text-xl font-black text-ink sm:text-2xl">Thông số kỹ thuật chi tiết</h2>
-        <span className="rounded-full bg-stone-100 px-3 py-1 text-xs font-bold text-stone-600">
+        <span className="rounded-full bg-neutral-100 px-3 py-1 text-xs font-bold text-neutral-600">
           {specs.length} thông số
         </span>
       </div>
 
       <DescriptionList
         items={displayedSpecs.map(({ label, value }) => ({ key: label, label, value }))}
-        className="mt-6 gap-0 divide-y divide-stone-100 rounded-2xl border border-stone-100 bg-stone-50/50"
+        className="mt-6 gap-0 divide-y divide-neutral-100 rounded-2xl border border-neutral-100 bg-neutral-50/50"
         itemClassName="grid grid-cols-1 gap-1 px-4 py-3.5 text-xs sm:grid-cols-[1fr_1.3fr] sm:gap-4 sm:px-6 sm:text-sm"
-        labelClassName="font-bold text-stone-500"
+        labelClassName="font-bold text-neutral-500"
         valueClassName="font-semibold text-ink"
       />
 

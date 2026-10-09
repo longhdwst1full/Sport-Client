@@ -29,7 +29,7 @@ export function OrderActionsBar({
   onPrintReceipt?: () => void;
 }) {
   return (
-    <div className="rounded-3xl border border-slate-200/80 bg-white p-4 shadow-card sm:p-5">
+    <div className="surface-card p-4 shadow-card sm:p-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap gap-2.5">
           <Link
@@ -43,9 +43,9 @@ export function OrderActionsBar({
             <Button
               variant="outline"
               onClick={onReorderAll}
-              className={`${ACTION_CLASS} border-slate-300 bg-slate-50 text-slate-950 hover:bg-slate-100`}
+              className={`${ACTION_CLASS} border-neutral-300 bg-neutral-50 text-neutral-950 hover:bg-neutral-100`}
             >
-              <RotateCcw aria-hidden className="size-3.5 text-slate-900" /> Mua lại cả đơn
+              <RotateCcw aria-hidden className="size-3.5 text-neutral-900" /> Mua lại cả đơn
             </Button>
           )}
 
@@ -70,20 +70,20 @@ export function OrderActionsBar({
             <Button
               variant="outline"
               onClick={onOpenCancel}
-              className={`${ACTION_CLASS} gap-1.5 border-rose-200 bg-rose-50/70 text-rose-700 hover:border-rose-300 hover:bg-rose-100 hover:text-rose-700`}
+              className={`${ACTION_CLASS} gap-1.5 border-red-200 bg-red-50/70 text-red-700 hover:border-red-300 hover:bg-red-100 hover:text-red-700`}
             >
               <X aria-hidden className="size-3.5" /> Hủy đơn hàng
             </Button>
           ) : orderStatus !== ORDER_STATUS.CANCELLED ? (
-            <Button variant="outline" onClick={onOpenSupport} className={`${ACTION_CLASS} gap-1.5 bg-slate-50 hover:bg-slate-100`}>
-              <Headphones aria-hidden className="size-3.5 text-slate-900" /> Cần hỗ trợ về đơn này?
+            <Button variant="outline" onClick={onOpenSupport} className={`${ACTION_CLASS} gap-1.5 bg-neutral-50 hover:bg-neutral-100`}>
+              <Headphones aria-hidden className="size-3.5 text-neutral-900" /> Cần hỗ trợ về đơn này?
             </Button>
           ) : null}
         </div>
       </div>
 
       {canCancel && (
-        <p className="mt-3 text-[11px] text-slate-500">
+        <p className="mt-3 text-2xs text-neutral-500">
           * Đơn hàng đang ở trạng thái chờ xác nhận. Bạn có thể tự thao tác hủy đơn trực tiếp trên website trước khi đơn được tiếp nhận tại kho.
         </p>
       )}

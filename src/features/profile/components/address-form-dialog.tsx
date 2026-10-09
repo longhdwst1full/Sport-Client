@@ -41,10 +41,10 @@ export function AddressFormDialog({
         aria-modal="true"
         aria-labelledby="address-form-dialog-title"
         tabIndex={-1}
-        className="w-full max-w-2xl rounded-[32px] border border-slate-200/80 bg-white p-6 shadow-2xl sm:p-8 outline-none"
+        className="w-full max-w-2xl rounded-4xl border border-neutral-200/80 bg-white p-6 shadow-2xl sm:p-8 outline-none"
       >
-        <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-          <h3 id="address-form-dialog-title" className="text-lg font-black text-slate-900">
+        <div className="flex items-center justify-between border-b border-neutral-100 pb-4">
+          <h3 id="address-form-dialog-title" className="text-lg font-black text-neutral-900">
             {editingAddress ? 'Chỉnh sửa địa chỉ' : 'Thêm địa chỉ nhận hàng mới'}
           </h3>
           <Button
@@ -52,7 +52,7 @@ export function AddressFormDialog({
             size="icon"
             onClick={onClose}
             aria-label="Đóng"
-            className="text-slate-500 hover:text-slate-700 focus-visible:ring-offset-0"
+            className="text-neutral-500 hover:text-neutral-700 focus-visible:ring-offset-0"
           >
             <X className="size-5" aria-hidden />
           </Button>
@@ -94,7 +94,7 @@ export function AddressFormDialog({
           </div>
 
           {/* Vietnam Cascading Address Selector Component */}
-          <div className="border-y border-slate-100 py-4">
+          <div className="border-y border-neutral-100 py-4">
             <VietnamAddressSelector
               initialData={form.location}
               onChange={(location) => onFormChange({ location })}
@@ -108,17 +108,17 @@ export function AddressFormDialog({
               checked={form.isDefault}
               onChange={(e) => onFormChange({ isDefault: e.target.checked })}
               wrapperClassName="items-center gap-2 py-0"
-              label={<span className="text-xs font-bold text-slate-700">Đặt làm địa chỉ mặc định</span>}
+              label={<span className="text-xs font-bold text-neutral-700">Đặt làm địa chỉ mặc định</span>}
             />
           </div>
 
           {/* Modal Footer Buttons */}
-          <div className="mt-6 flex justify-end gap-3 border-t border-slate-100 pt-4">
+          <div className="mt-6 flex justify-end gap-3 border-t border-neutral-100 pt-4">
             <Button
               variant="outline"
               size="md"
               onClick={onClose}
-              className="h-auto border-slate-200 py-2.5 text-xs font-bold text-slate-600 hover:border-slate-200 hover:bg-slate-50 hover:text-slate-600"
+              className="h-auto border-neutral-200 py-2.5 text-xs font-bold text-neutral-600 hover:border-neutral-200 hover:bg-neutral-50 hover:text-neutral-600"
             >
               Hủy bỏ
             </Button>

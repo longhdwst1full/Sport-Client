@@ -1,13 +1,21 @@
 import { ProductListSort } from '@/generated/api/catalog/catalog.schemas';
 import type { PriceRangeOption } from '../components/catalog-sidebar-filters';
 
-// Khoảng giá gửi thẳng lên API (`minPrice`/`maxPrice`, VND) để lọc trên toàn bộ catalog
+/**
+ * Khoảng giá gửi thẳng lên API (`minPrice`/`maxPrice`, VND) để lọc trên toàn bộ catalog. Nguồn duy
+ * nhất cho cả sidebar `/products` và thẻ "Theo ngân sách" ở trang chủ (link `?price=<id>`): trước
+ * đây trang chủ dùng `?minPrice=` mà parser không đọc nên link không lọc gì, và hai nơi lệch mốc.
+ */
 export const PRICE_RANGES: PriceRangeOption[] = [
   { id: 'all', label: 'Tất cả mức giá' },
-  { id: 'under-2m', label: 'Dưới 2 triệu', max: '1999999' },
-  { id: '2m-10m', label: '2 - 10 triệu', min: '2000000', max: '10000000' },
-  { id: 'over-10m', label: 'Trên 10 triệu', min: '10000001' },
+  { id: 'under-500k', label: 'Dưới 500K', max: '499999' },
+  { id: '500k-2m', label: '500K – 2 triệu', min: '500000', max: '1999999' },
+  { id: '2m-5m', label: '2 – 5 triệu', min: '2000000', max: '4999999' },
+  { id: 'over-5m', label: 'Trên 5 triệu', min: '5000000' },
 ];
+
+/** Link `/products` đã lọc theo một khoảng giá. */
+export const priceRangeHref = (id: string) => `/products?price=${encodeURIComponent(id)}`;
 
 export const SORT_OPTIONS: Array<{ value: ProductListSort; label: string }> = [
   { value: ProductListSort.NEWEST, label: 'Mới nhất' },

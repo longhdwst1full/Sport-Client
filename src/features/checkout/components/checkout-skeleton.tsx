@@ -12,13 +12,13 @@ export function CheckoutSkeleton() {
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_400px]">
         <div className="space-y-6">
           {[0, 1, 2].map((section) => (
-            <div key={section} className="rounded-3xl border border-slate-200 bg-white p-6">
+            <div key={section} className="surface-card p-6">
               <Skeleton className="h-5 w-48" />
               <SkeletonText lines={3} className="mt-5" />
             </div>
           ))}
         </div>
-        <div className="h-fit rounded-3xl border border-slate-200 bg-white p-6">
+        <div className="h-fit surface-card p-6">
           <Skeleton className="h-5 w-40" />
           <div className="mt-5 space-y-4">
             {[0, 1].map((row) => (

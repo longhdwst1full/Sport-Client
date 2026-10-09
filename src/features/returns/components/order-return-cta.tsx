@@ -22,33 +22,33 @@ export function OrderReturnCta({ orderNo, authenticated }: { orderNo: string; au
   if (!data || data.reason === 'ORDER_NOT_RETURNABLE' || (!data.eligible && !data.openReturnNo)) return null;
 
   return (
-    <Card as="section" className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-card transition-shadow hover:shadow-card-hover">
+    <Card as="section" className="surface-card p-6 shadow-card transition-shadow hover:shadow-card-hover">
       <div className="flex items-center gap-2.5">
-        <div className="grid size-8 place-items-center rounded-xl bg-slate-100 text-slate-900">
+        <div className="grid size-8 place-items-center rounded-xl bg-neutral-100 text-neutral-900">
           <RotateCcw className="size-4" />
         </div>
-        <h2 className="text-sm font-black text-slate-900">Chính sách đổi trả</h2>
+        <h2 className="text-sm font-black text-neutral-900">Chính sách đổi trả</h2>
       </div>
       {data.returnDeadline && (
-        <div className="mt-3 flex items-center gap-2 rounded-xl bg-slate-50 p-2.5 text-xs text-slate-600 border border-slate-100">
-          <ShieldCheck className="size-4 text-slate-900 shrink-0" />
-          <span>{RETURN_FIELD_LABELS.deadline}: <strong className="text-slate-900">{formatDate(data.returnDeadline)}</strong></span>
+        <div className="mt-3 flex items-center gap-2 rounded-xl bg-neutral-50 p-2.5 text-xs text-neutral-600 border border-neutral-100">
+          <ShieldCheck className="size-4 text-neutral-900 shrink-0" />
+          <span>{RETURN_FIELD_LABELS.deadline}: <strong className="text-neutral-900">{formatDate(data.returnDeadline)}</strong></span>
         </div>
       )}
       {data.eligible ? (
         <Link
           href={`/orders/${encodeURIComponent(orderNo)}/return`}
-          className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-slate-800"
+          className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-neutral-900 px-4 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-neutral-800"
         >
           <RotateCcw className="size-3.5" /> Tạo yêu cầu đổi trả
         </Link>
       ) : (
-        <div className="mt-3 text-xs leading-relaxed text-slate-600 bg-slate-50 rounded-xl p-3 border border-slate-100">
+        <div className="mt-3 text-xs leading-relaxed text-neutral-600 bg-neutral-50 rounded-xl p-3 border border-neutral-100">
           {data.reason && returnEligibilityReasonLabels[data.reason]}
           {data.openReturnNo && (
             <Link
               href={`/returns/${encodeURIComponent(data.openReturnNo)}`}
-              className="mt-2 inline-flex items-center gap-1 font-bold text-slate-900 hover:underline"
+              className="mt-2 inline-flex items-center gap-1 font-bold text-neutral-900 hover:underline"
             >
               Xem chi tiết yêu cầu {data.openReturnNo} →
             </Link>

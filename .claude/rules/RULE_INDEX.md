@@ -57,6 +57,23 @@ Skill: `.agent/skills/pwa-development/SKILL.md`
 | P0 | `17-image-usage.md` | next/image, aspect, alt |
 | P1 | `10-reference-adoption.md` | adapt `dragon-web-v2` patterns, do not copy |
 
+### 🎨 UI style / màu / nút / nội dung cam kết
+
+| Prio | Rule | Check |
+| --- | --- | --- |
+| P0 | `20-design-tokens.md` | màu theo logo, token, class dùng chung, nút qua `Button` |
+| P0 | `21-trust-content.md` | hotline/chính sách một nguồn, không số liệu không nguồn |
+| P1 | `13-foundation-components.md` | preset thiếu thì bổ sung foundation |
+
+Skill: `.agent/skills/storefront-ui-design/SKILL.md`
+
+### ⚡ Server data / cache / hiệu năng
+
+| Prio | Rule | Check |
+| --- | --- | --- |
+| P0 | `22-server-data-cache.md` | dữ liệu công khai dùng chung qua `_data/public-data.ts`, tag revalidate |
+| P1 | `07-state-tools-performance.md` | Query vs Redux, cache client |
+
 ### 🧭 Unfamiliar code / impact analysis
 
 Skill: `.agent/skills/storefront-codebase-navigation/SKILL.md` + GitNexus (`CLAUDE.md`).
@@ -101,4 +118,7 @@ Skill: `.agent/skills/client-quality-review/SKILL.md`
 | `17-image-usage.md` | ảnh và CLS |
 | `18-list-page-pattern.md` | pattern trang danh sách |
 | `19-openapi-spec-management.md` | quản lý spec OpenAPI |
+| `20-design-tokens.md` | màu theo logo, token, class dùng chung |
+| `21-trust-content.md` | cam kết, liên hệ, số liệu có nguồn |
+| `22-server-data-cache.md` | cache dữ liệu công khai phía server |
 | `99-rule-maintenance.md` | how rules themselves change |

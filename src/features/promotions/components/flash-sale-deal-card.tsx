@@ -11,7 +11,7 @@ import type { FlashSaleDealView } from '../model/flash-sale.mapper';
 
 /** Vòng focus cho nền tối của trang flash sale (dùng chung cho thẻ và trang). */
 export const FLASH_SALE_FOCUS_RING =
-  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900';
+  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-900';
 
 export function FlashSaleDealCard({
   deal,
@@ -23,8 +23,8 @@ export function FlashSaleDealCard({
   const soldOut = deal.availableQuantity <= 0;
 
   return (
-    <div className="group flex flex-col overflow-hidden rounded-2xl sm:rounded-[26px] border border-slate-800 bg-slate-900/90 shadow-xl transition-all duration-300 hover:-translate-y-1.5 hover:border-brand-500/50 hover:shadow-2xl hover:shadow-brand-600/10">
-      <Link href={`/products/${deal.slug}`} className={`relative aspect-[4/3] overflow-hidden bg-slate-800 ${FLASH_SALE_FOCUS_RING}`} aria-label={`Xem chi tiết ${deal.name}`}>
+    <div className="group flex flex-col overflow-hidden rounded-2xl sm:rounded-3xl border border-neutral-800 bg-neutral-900/90 shadow-xl transition-all duration-300 hover:-translate-y-1.5 hover:border-brand-500/50 hover:shadow-2xl hover:shadow-brand-600/10">
+      <Link href={`/products/${deal.slug}`} className={`relative aspect-[4/3] overflow-hidden bg-neutral-800 ${FLASH_SALE_FOCUS_RING}`} aria-label={`Xem chi tiết ${deal.name}`}>
         {deal.imageUrl ? (
           <Image
             src={deal.imageUrl}
@@ -34,12 +34,12 @@ export function FlashSaleDealCard({
             className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
-          <div className="absolute inset-0 grid place-items-center text-xs font-bold text-slate-600">
+          <div className="absolute inset-0 grid place-items-center text-xs font-bold text-neutral-600">
             Chưa có ảnh
           </div>
         )}
         <div className="absolute inset-x-2 top-2 flex flex-wrap items-center justify-between gap-1 sm:inset-x-3 sm:top-3">
-          <span className="rounded-full bg-slate-950/80 px-2 py-0.5 text-xs font-black uppercase text-amber-300 sm:px-2.5 sm:tracking-wider backdrop-blur-md">
+          <span className="rounded-full bg-neutral-950/80 px-2 py-0.5 text-xs font-black uppercase text-amber-300 sm:px-2.5 sm:tracking-wider backdrop-blur-md">
             {soldOut ? 'Hết suất' : `Còn ${deal.availableQuantity} suất`}
           </span>
           {deal.discountPercent !== null ? (
@@ -60,19 +60,19 @@ export function FlashSaleDealCard({
             label={formatVnd(deal.price)}
             className="text-base font-black text-brand-400 sm:text-xl"
             strikeLabel={deal.originalPrice !== null ? formatVnd(deal.originalPrice) : null}
-            strikeClassName="text-xs text-slate-500 line-through"
+            strikeClassName="text-xs text-neutral-500 line-through"
           />
         </div>
 
         <div className="mt-4">
           <div className="flex justify-between text-xs font-bold">
-            <span className="text-slate-400">
+            <span className="text-neutral-400">
               Đã bán {deal.soldQuantity}/{deal.soldQuantity + deal.availableQuantity}
             </span>
             <span className="text-amber-300">{deal.soldPercent}%</span>
           </div>
           <div
-            className="mt-1.5 h-2 w-full overflow-hidden rounded-full bg-slate-800"
+            className="mt-1.5 h-2 w-full overflow-hidden rounded-full bg-neutral-800"
             role="progressbar"
             aria-valuemin={0}
             aria-valuemax={100}
@@ -87,7 +87,7 @@ export function FlashSaleDealCard({
         </div>
 
         {deal.perCustomerLimit !== null ? (
-          <p className="mt-2 text-xs font-semibold text-slate-500">
+          <p className="mt-2 text-xs font-semibold text-neutral-500">
             Tối đa {deal.perCustomerLimit} sản phẩm mỗi khách
           </p>
         ) : null}
@@ -97,7 +97,7 @@ export function FlashSaleDealCard({
           fullWidth
           disabled={soldOut}
           onClick={(event) => onQuickAdd(deal, event)}
-          className={`mt-4 h-auto min-h-11 bg-slate-800 px-2 text-xs font-bold hover:bg-slate-900 disabled:bg-slate-800/50 disabled:text-slate-500 disabled:opacity-100 disabled:hover:bg-slate-800/50 sm:mt-5 ${FLASH_SALE_FOCUS_RING}`}
+          className={`mt-4 h-auto min-h-11 bg-neutral-800 px-2 text-xs font-bold hover:bg-neutral-900 disabled:bg-neutral-800/50 disabled:text-neutral-500 disabled:opacity-100 disabled:hover:bg-neutral-800/50 sm:mt-5 ${FLASH_SALE_FOCUS_RING}`}
         >
           <ShoppingBag className="size-3.5" aria-hidden="true" />
           {soldOut ? 'Hết suất' : 'Thêm vào giỏ'}
@@ -111,14 +111,14 @@ export function FlashSaleDealCard({
 /** Khung chờ cùng kích thước thẻ suất bán (ảnh 4/3 + thân thẻ) để lưới không nhảy khi dữ liệu về. */
 export function FlashSaleDealCardSkeleton() {
   return (
-    <div className="flex flex-col overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/90 sm:rounded-[26px]" aria-hidden>
-      <Skeleton className="aspect-[4/3] w-full rounded-none bg-slate-800" />
+    <div className="flex flex-col overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900/90 sm:rounded-3xl" aria-hidden>
+      <Skeleton className="aspect-[4/3] w-full rounded-none bg-neutral-800" />
       <div className="flex flex-1 flex-col p-3 sm:p-5">
-        <Skeleton className="h-[44px] w-full bg-slate-800" />
-        <Skeleton className="mt-3 h-6 w-2/3 bg-slate-800 sm:mt-4 sm:h-7" />
-        <Skeleton className="mt-4 h-3 w-full bg-slate-800" />
-        <Skeleton className="mt-1.5 h-2 w-full rounded-full bg-slate-800" />
-        <Skeleton className="mt-4 h-11 w-full bg-slate-800 sm:mt-5" />
+        <Skeleton className="h-[44px] w-full bg-neutral-800" />
+        <Skeleton className="mt-3 h-6 w-2/3 bg-neutral-800 sm:mt-4 sm:h-7" />
+        <Skeleton className="mt-4 h-3 w-full bg-neutral-800" />
+        <Skeleton className="mt-1.5 h-2 w-full rounded-full bg-neutral-800" />
+        <Skeleton className="mt-4 h-11 w-full bg-neutral-800 sm:mt-5" />
       </div>
     </div>
   );

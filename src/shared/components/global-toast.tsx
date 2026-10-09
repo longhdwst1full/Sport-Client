@@ -72,31 +72,31 @@ function ToastCard({ item, onDismiss }: { item: ToastItem; onDismiss: (id: strin
       badgeClass: 'bg-success-950/60 text-success-300 border-success-500/30',
     },
     error: {
-      border: 'border-rose-500/30',
-      glow: 'shadow-rose-950/40',
-      iconBg: 'bg-rose-500/15 text-rose-400 ring-1 ring-rose-500/30',
+      border: 'border-red-500/30',
+      glow: 'shadow-red-950/40',
+      iconBg: 'bg-red-500/15 text-red-400 ring-1 ring-red-500/30',
       icon: <AlertCircle className="size-5" />,
-      barColor: 'bg-gradient-to-r from-rose-500 to-red-400',
+      barColor: 'bg-gradient-to-r from-red-500 to-red-400',
       badge: 'Lỗi',
-      badgeClass: 'bg-rose-950/60 text-rose-300 border-rose-500/30',
+      badgeClass: 'bg-red-950/60 text-red-300 border-red-500/30',
     },
     warning: {
       border: 'border-amber-500/30',
       glow: 'shadow-amber-950/40',
       iconBg: 'bg-amber-500/15 text-amber-400 ring-1 ring-amber-500/30',
       icon: <AlertTriangle className="size-5" />,
-      barColor: 'bg-gradient-to-r from-amber-500 to-yellow-400',
+      barColor: 'bg-gradient-to-r from-amber-500 to-amber-400',
       badge: 'Lưu ý',
       badgeClass: 'bg-amber-950/60 text-amber-300 border-amber-500/30',
     },
     info: {
-      border: 'border-sky-500/30',
-      glow: 'shadow-sky-950/40',
-      iconBg: 'bg-sky-500/15 text-sky-400 ring-1 ring-sky-500/30',
+      border: 'border-neutral-500/30',
+      glow: 'shadow-neutral-950/40',
+      iconBg: 'bg-neutral-500/15 text-neutral-400 ring-1 ring-neutral-500/30',
       icon: <Info className="size-5" />,
-      barColor: 'bg-gradient-to-r from-sky-500 to-blue-400',
+      barColor: 'bg-gradient-to-r from-neutral-500 to-neutral-400',
       badge: 'Thông báo',
-      badgeClass: 'bg-sky-950/60 text-sky-300 border-sky-500/30',
+      badgeClass: 'bg-neutral-950/60 text-neutral-300 border-neutral-500/30',
     },
   }[item.type];
 
@@ -104,7 +104,7 @@ function ToastCard({ item, onDismiss }: { item: ToastItem; onDismiss: (id: strin
     <div
       role="status"
       aria-live="polite"
-      className={`pointer-events-auto relative overflow-hidden rounded-xl border bg-slate-950/95 p-4 text-white shadow-2xl backdrop-blur-xl animate-in fade-in slide-in-from-top-4 ${config.border} ${config.glow}`}
+      className={`pointer-events-auto relative overflow-hidden rounded-xl border bg-neutral-950/95 p-4 text-white shadow-2xl backdrop-blur-xl animate-in fade-in slide-in-from-top-4 ${config.border} ${config.glow}`}
     >
       <div className="flex items-start gap-3.5">
         <div className={`grid size-9 shrink-0 place-items-center rounded-xl ${config.iconBg}`}>
@@ -113,14 +113,14 @@ function ToastCard({ item, onDismiss }: { item: ToastItem; onDismiss: (id: strin
         <div className="min-w-0 flex-1 pt-0.5">
           <div className="flex items-center gap-2">
             <span
-              className={`rounded-full border px-2 py-0.5 text-[10px] font-black uppercase tracking-wider ${config.badgeClass}`}
+              className={`rounded-full border px-2 py-0.5 text-3xs font-black uppercase tracking-wider ${config.badgeClass}`}
             >
               {config.badge}
             </span>
-            <p className="truncate text-sm font-bold text-slate-100">{item.title}</p>
+            <p className="truncate text-sm font-bold text-neutral-100">{item.title}</p>
           </div>
           {item.message && (
-            <p className="mt-1 text-xs leading-relaxed text-slate-300 line-clamp-3">
+            <p className="mt-1 text-xs leading-relaxed text-neutral-300 line-clamp-3">
               {item.message}
             </p>
           )}
@@ -129,7 +129,7 @@ function ToastCard({ item, onDismiss }: { item: ToastItem; onDismiss: (id: strin
           variant="ghost"
           size="icon"
           onClick={() => onDismiss(item.id)}
-          className="-mr-2 -mt-2 size-9 shrink-0 rounded-lg text-slate-400 hover:bg-white/10 hover:text-white focus-visible:ring-white focus-visible:ring-offset-slate-950"
+          className="-mr-2 -mt-2 size-9 shrink-0 rounded-lg text-neutral-400 hover:bg-white/10 hover:text-white focus-visible:ring-white focus-visible:ring-offset-neutral-950"
           aria-label="Đóng thông báo"
         >
           <X aria-hidden className="size-4" />

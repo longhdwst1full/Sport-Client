@@ -16,7 +16,7 @@ export function NewsletterForm() {
   return (
     <div className="mx-auto max-w-md">
       <form
-        className="flex items-center gap-2 rounded-2xl border border-white/20 bg-white/10 p-1.5 backdrop-blur-md shadow-lg transition-all focus-within:border-slate-400 focus-within:ring-2 focus-within:ring-slate-900/30"
+        className="flex items-center gap-2 rounded-2xl border border-white/20 bg-white/10 p-1.5 backdrop-blur-md shadow-lg transition-all focus-within:border-neutral-400 focus-within:ring-2 focus-within:ring-neutral-900/30"
         onSubmit={(e) => {
           e.preventDefault();
           setSubmitted(true);
@@ -24,7 +24,7 @@ export function NewsletterForm() {
         aria-describedby={submitted ? statusId : undefined}
       >
         <div className="relative flex-1 min-w-0 flex items-center">
-          <Mail className="pointer-events-none absolute left-3.5 size-4 text-slate-400" aria-hidden="true" />
+          <Mail className="pointer-events-none absolute left-3.5 size-4 text-neutral-400" aria-hidden="true" />
           <TextInput
             type="email"
             name="email"
@@ -32,14 +32,14 @@ export function NewsletterForm() {
             autoComplete="email"
             inputMode="email"
             placeholder="Nhập email của bạn..."
-            className="h-11 w-full border-0 bg-transparent pl-10 pr-3 text-sm text-white placeholder:text-slate-400 outline-none focus:outline-none focus-visible:ring-0"
+            className="h-11 w-full border-0 bg-transparent pl-10 pr-3 text-sm text-white placeholder:text-neutral-400 outline-none focus:outline-none focus-visible:ring-0"
             aria-label="Email nhận tin"
           />
         </div>
         <Button
           type="submit"
           variant="primary"
-          className="h-11 shrink-0 rounded-xl px-6 text-sm font-bold shadow-sm focus-visible:ring-white focus-visible:ring-offset-slate-900"
+          className="h-11 shrink-0 rounded-xl px-6 text-sm font-bold shadow-sm focus-visible:ring-white focus-visible:ring-offset-neutral-900"
         >
           Đăng ký
         </Button>

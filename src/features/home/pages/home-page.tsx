@@ -4,16 +4,11 @@ import { BenefitsStrip } from '@/widgets/benefits-strip/benefits-strip';
 import { SectionHeading } from '@/foundation/components/structure/section-heading';
 import { ProductShowcase, toCategoryCardView, toCategoryRailView } from '@/features/catalog';
 import { CATALOG_PAGE_SIZE } from '@/features/catalog';
-import { listCatalogCategories, listCatalogProducts } from '@/generated/api/catalog/catalog';
+import { listCatalogProducts } from '@/generated/api/catalog/catalog';
 import type { CatalogCategoryDto } from '@/generated/api/catalog/catalog.schemas';
 import { listPublishedPosts } from '@/generated/api/content/content';
 import { ContentStories } from '@/features/content';
-import {
-  loadActiveBanners,
-  POLICY_POST_TYPE,
-  toContentPostView,
-} from '@/features/content';
-import { BannerPlacement } from '@/generated/api/content/content.schemas';
+import { POLICY_POST_TYPE, toContentPostView, type BannerView } from '@/features/content';
 import { ProductReviews } from '@/features/reviews';
 import { HeroBannerSlider } from '../components/hero-banner-slider';
 import { QuickGoalNavigation } from '../components/quick-goal-navigation';
@@ -29,19 +24,9 @@ const SPORT_CARD_COUNT = 4;
 const QUICK_LINK_COUNT = 8;
 
 /** Khoảng đệm dọc chung cho mọi khối trang chủ (không cộng thêm margin) để nhịp trang đều. */
-const SECTION_CLASS = 'mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 sm:py-10';
+const SECTION_CLASS = 'page-container py-6 sm:py-10';
 /** Nhãn nhỏ trên tiêu đề khối, cùng kiểu `SectionHeading`. */
-const EYEBROW_CLASS = 'text-xs font-black uppercase tracking-[.2em] text-slate-900';
-
-async function loadCategories(): Promise<CatalogCategoryDto[]> {
-  try {
-    const { items } = await listCatalogCategories();
-    return items;
-  } catch {
-    // Danh mục là nội dung phụ trợ: API lỗi thì các khối dựa trên nó ẩn hẳn, không chặn trang chủ.
-    return [];
-  }
-}
+const EYEBROW_CLASS = 'eyebrow text-neutral-900';
 
 /** Bài viết đã đăng (trừ trang chính sách) cho slider; API lỗi thì slider dùng slide thương hiệu. */
 async function loadHeroPosts() {
@@ -68,14 +53,20 @@ async function loadShowcaseFirstPage() {
   }
 }
 
-export async function HomePage() {
-  const [categories, heroPosts, showcase, heroBanners, promoBanners] = await Promise.all([
-    loadCategories(),
-    loadHeroPosts(),
-    loadShowcaseFirstPage(),
-    loadActiveBanners(BannerPlacement.HOME_HERO),
-    loadActiveBanners(BannerPlacement.HOME_PROMO),
-  ]);
+/**
+ * Danh mục và banner do route truyền vào (cache dùng chung với layout, xem
+ * `app/(storefront)/_data/public-data.ts`). Danh mục rỗng khi API lỗi: các khối dựa trên nó ẩn hẳn.
+ */
+export async function HomePage({
+  categories,
+  heroBanners,
+  promoBanners,
+}: {
+  categories: CatalogCategoryDto[];
+  heroBanners: BannerView[];
+  promoBanners: BannerView[];
+}) {
+  const [heroPosts, showcase] = await Promise.all([loadHeroPosts(), loadShowcaseFirstPage()]);
   const categoryRail = categories.map(toCategoryRailView);
   const featuredProductSlug = showcase?.page.items[0]?.slug;
   const byProductCount = (left: CatalogCategoryDto, right: CatalogCategoryDto) =>
@@ -119,10 +110,10 @@ export async function HomePage() {
         <section id="products" className={SECTION_CLASS}>
           <div className="mb-6">
             <p className={EYEBROW_CLASS}>Thiết bị bán chạy</p>
-            <h2 className="mt-2 text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-slate-900">
+            <h2 className="mt-2 text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-neutral-900">
               Sản Phẩm Nổi Bật & Bán Chạy
             </h2>
-            <p className="mt-1 text-xs sm:text-sm text-slate-500 max-w-2xl">
+            <p className="mt-1 text-xs sm:text-sm text-neutral-500 max-w-2xl">
               Khám phá trang thiết bị thể lực, cardio, bóng bàn, bóng rổ và võ thuật chính hãng được đông đảo khách hàng và huấn luyện viên tin chọn
             </p>
           </div>
@@ -146,20 +137,20 @@ export async function HomePage() {
                 <Link
                   key={slug}
                   href={`/category/${slug}`}
-                  className="group flex flex-col justify-between gap-3 rounded-2xl border border-slate-200/80 bg-gradient-to-br from-white via-slate-50/50 to-red-50/20 p-4 text-slate-900 transition-all duration-300 hover:-translate-y-1 hover:border-red-200 hover:shadow-lg hover:shadow-red-500/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2 sm:min-h-[160px] sm:p-6"
+                  className="group flex flex-col justify-between gap-3 rounded-2xl border border-neutral-200/80 bg-gradient-to-br from-white via-neutral-50/50 to-neutral-50 p-4 text-neutral-900 transition-all duration-300 hover:-translate-y-1 hover:border-red-200 hover:shadow-lg hover:shadow-red-500/5 focus-ring sm:min-h-[160px] sm:p-6"
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <div className="grid size-10 place-items-center rounded-xl bg-gradient-to-br from-red-500/10 to-rose-500/20 text-red-600 border border-red-500/15 transition-transform duration-300 group-hover:scale-110 sm:size-12">
+                    <div className="grid size-10 place-items-center rounded-xl bg-gradient-to-br from-red-500/10 to-red-500/20 text-red-600 border border-red-500/15 transition-transform duration-300 group-hover:scale-110 sm:size-12">
                       <Icon className="size-5 sm:size-6" aria-hidden="true" />
                     </div>
-                    <span className="rounded-full bg-white/90 border border-slate-200/70 px-2.5 py-0.5 text-[11px] font-bold text-slate-600 shadow-2xs sm:text-xs">
+                    <span className="rounded-full bg-white/90 border border-neutral-200/70 px-2.5 py-0.5 text-2xs font-bold text-neutral-600 shadow-2xs sm:text-xs">
                       {itemCountLabel}
                     </span>
                   </div>
 
                   <div>
-                    <h3 className="text-sm font-black leading-snug sm:text-xl text-slate-900 group-hover:text-red-700 transition-colors">{title}</h3>
-                    <span className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold text-red-600 transition group-hover:text-red-700">
+                    <h3 className="text-sm font-black leading-snug sm:text-xl text-neutral-900 group-hover:text-neutral-700 transition-colors">{title}</h3>
+                    <span className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold text-neutral-900 transition group-hover:underline">
                       Khám phá ngay <MoveUpRight className="size-3.5 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
                     </span>
                   </div>

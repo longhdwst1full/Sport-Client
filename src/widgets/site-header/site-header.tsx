@@ -55,7 +55,7 @@ export function SiteHeader({ initialCategories }: SiteHeaderProps = {}) {
       {/* Main Header Row */}
       <div
         style={{ zIndex: 60 }}
-        className="relative border-b border-slate-200 bg-white"
+        className="relative border-b border-neutral-200 bg-white"
       >
         <div className="mx-auto flex h-[72px] max-w-7xl items-center gap-3 px-4 sm:gap-6 sm:px-6 lg:px-8">
           {/* Logo */}
@@ -85,15 +85,15 @@ export function SiteHeader({ initialCategories }: SiteHeaderProps = {}) {
           {/* Hotline — Desktop */}
           <a
             href={`tel:${STORE_CONTACT.primaryHotlineRaw}`}
-            className="group hidden items-center gap-2.5 rounded-xl px-2.5 py-1.5 transition hover:bg-slate-50 lg:flex"
+            className="group hidden items-center gap-2.5 rounded-xl px-2.5 py-1.5 transition hover:bg-neutral-50 lg:flex"
             aria-label={`Gọi hotline tư vấn ${STORE_CONTACT.primaryHotline}`}
           >
-            <span className="grid size-10 place-items-center rounded-full border border-slate-200 bg-slate-50 text-slate-700 transition-all duration-200 group-hover:border-slate-900 group-hover:bg-slate-900 group-hover:text-white shadow-2xs">
+            <span className="grid size-10 place-items-center rounded-full border border-neutral-200 bg-neutral-50 text-neutral-700 transition-all duration-200 group-hover:border-neutral-900 group-hover:bg-neutral-900 group-hover:text-white shadow-2xs">
               <Phone aria-hidden className="size-4" />
             </span>
             <span className="flex flex-col leading-tight">
-              <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Hotline tư vấn</span>
-              <strong className="text-sm font-black text-slate-900 transition-colors group-hover:text-black">{STORE_CONTACT.primaryHotline}</strong>
+              <span className="text-2xs font-semibold text-neutral-500 uppercase tracking-wider">Hotline tư vấn</span>
+              <strong className="text-sm font-black text-neutral-900 transition-colors group-hover:text-black">{STORE_CONTACT.primaryHotline}</strong>
             </span>
           </a>
 
@@ -111,7 +111,7 @@ export function SiteHeader({ initialCategories }: SiteHeaderProps = {}) {
 
         {/* Mobile Search Overlay */}
         {searchOpen && (
-          <div className="border-t border-slate-100 bg-slate-50 px-4 py-3 lg:hidden">
+          <div className="border-t border-neutral-100 bg-neutral-50 px-4 py-3 lg:hidden">
             <AutocompleteSearch isMobile onCloseMobile={() => setSearchOpen(false)} />
           </div>
         )}

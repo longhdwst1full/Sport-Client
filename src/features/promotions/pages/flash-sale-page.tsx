@@ -38,29 +38,29 @@ export function FlashSalePage() {
   };
 
   return (
-      <div className="bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 pb-20 pt-10 text-white">
-        <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-950 pb-20 pt-10 text-white">
+        <main className="page-container">
           <Breadcrumb
             className="mb-6"
             tone="inverted"
             items={[{ label: 'Trang chủ', href: '/' }, { label: 'Flash Sale' }]}
           />
 
-          <div className="flex flex-col gap-6 border-b border-slate-800/80 pb-8 md:flex-row md:items-end md:justify-between">
+          <div className="flex flex-col gap-6 border-b border-neutral-800/80 pb-8 md:flex-row md:items-end md:justify-between">
             <div>
               <div className="inline-flex items-center gap-2 rounded-full border border-amber-400/30 bg-amber-400/10 px-3.5 py-1 text-xs font-black uppercase tracking-widest text-amber-300">
                 <Flame className="size-4 text-amber-400" aria-hidden="true" />
                 Ưu đãi chớp nhoáng
               </div>
               <h1 className="mt-3 text-3xl font-black sm:text-5xl">Flash Sale đang diễn ra</h1>
-              <p className="mt-3 text-sm text-slate-400 sm:text-base">
+              <p className="mt-3 text-sm text-neutral-400 sm:text-base">
                 Mỗi suất bán có số lượng giới hạn. Suất được giữ khi bạn thanh toán, không phải khi thêm vào giỏ.
               </p>
             </div>
 
             {countdown.finished ? null : (
               <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
-                <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-400">
+                <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-neutral-400">
                   <Clock className="size-4 text-amber-400" aria-hidden="true" />
                   Kết thúc trong:
                 </span>
@@ -71,8 +71,8 @@ export function FlashSalePage() {
                 >
                   {[countdown.hours, countdown.minutes, countdown.seconds].map((value, index) => (
                     <span key={index} className="contents">
-                      {index > 0 ? <span className="font-bold text-slate-500" aria-hidden="true">:</span> : null}
-                      <span className="grid size-9 place-items-center rounded-xl bg-slate-900 text-white shadow-md shadow-slate-900/20 sm:size-10">
+                      {index > 0 ? <span className="font-bold text-neutral-500" aria-hidden="true">:</span> : null}
+                      <span className="grid size-9 place-items-center rounded-xl bg-neutral-900 text-white shadow-md shadow-neutral-900/20 sm:size-10">
                         {pad(value)}
                       </span>
                     </span>
@@ -91,7 +91,7 @@ export function FlashSalePage() {
           ) : isError && campaigns.length === 0 ? (
             <div className="mt-10 rounded-3xl border border-brand-900/40 bg-brand-950/20 p-10 text-center" role="alert">
               <h2 className="text-lg font-black">Không tải được chương trình flash sale</h2>
-              <p className="mt-2 text-sm text-slate-400">
+              <p className="mt-2 text-sm text-neutral-400">
                 Vui lòng thử lại sau ít phút hoặc xem toàn bộ sản phẩm đang bán.
               </p>
               <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
@@ -103,7 +103,7 @@ export function FlashSalePage() {
                   href={PRODUCTS_HREF}
                   className={buttonVariants({
                     variant: 'secondary',
-                    className: `border border-slate-700 bg-slate-800 hover:bg-slate-700 ${PILL}`,
+                    className: `border border-neutral-700 bg-neutral-800 hover:bg-neutral-700 ${PILL}`,
                   })}
                 >
                   {PRODUCTS_LABEL}
@@ -112,10 +112,10 @@ export function FlashSalePage() {
             </div>
           ) : campaigns.length === 0 ? (
             <EmptyState
-              className="mt-10 rounded-3xl border border-slate-800 bg-slate-900/60 p-12 text-center"
+              className="mt-10 rounded-3xl border border-neutral-800 bg-neutral-900/60 p-12 text-center"
               titleClassName="text-lg font-black"
               title="Hiện chưa có chương trình nào đang chạy"
-              descriptionClassName="mt-2 text-sm text-slate-400"
+              descriptionClassName="mt-2 text-sm text-neutral-400"
               description="Các khung giờ vàng sẽ được thông báo trước khi mở bán."
               actions={
                 <Link href={PRODUCTS_HREF} className={buttonVariants({ variant: 'primary', className: `mt-6 ${PILL}` })}>
@@ -131,10 +131,10 @@ export function FlashSalePage() {
                   <div>
                     <h2 className="text-xl font-black sm:text-2xl">{campaign.name}</h2>
                     {campaign.description ? (
-                      <p className="mt-1 text-sm text-slate-400">{campaign.description}</p>
+                      <p className="mt-1 text-sm text-neutral-400">{campaign.description}</p>
                     ) : null}
                   </div>
-                  <span className="shrink-0 text-xs font-bold text-slate-500">
+                  <span className="shrink-0 text-xs font-bold text-neutral-500">
                     {campaign.deals.length} suất bán
                   </span>
                 </div>
