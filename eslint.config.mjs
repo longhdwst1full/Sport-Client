@@ -1,5 +1,6 @@
 // Import-boundary lint only. Style/correctness rules stay with `tsc` and review; enabling a broad preset here
 // would force unrelated edits. Layer and feature-edge rules mirror CLAUDE.md and .claude/rules/00-directory-structure.md.
+import nextPlugin from '@next/eslint-plugin-next';
 import importPlugin from 'eslint-plugin-import';
 import reactHooks from 'eslint-plugin-react-hooks';
 import tseslint from 'typescript-eslint';
@@ -127,6 +128,8 @@ const EXCEPTIONS = [
 ];
 
 export default [
+  // Đăng ký toàn cục: `next build` dò plugin bằng config của chính file này, không phải của src/**.
+  { plugins: { '@next/next': nextPlugin } },
   { ignores: ['.next/**', 'node_modules/**', 'src/generated/**', 'public/**', 'e2e/**', 'contracts/**'] },
   {
     files: ['src/**/*.{ts,tsx}'],
@@ -142,6 +145,7 @@ export default [
       'import/resolver': { typescript: { project: './tsconfig.json' } },
     },
     rules: {
+      ...nextPlugin.configs['core-web-vitals'].rules,
       'import/no-restricted-paths': restrictedPaths(),
       'no-restricted-imports': ['error', {
         patterns: [

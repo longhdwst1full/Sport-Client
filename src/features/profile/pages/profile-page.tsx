@@ -83,8 +83,8 @@ export function ProfilePage() {
   // Address state — dữ liệu do API tài khoản sở hữu, form chỉ giữ input đang nhập.
   const book = useAddressBook(authLoaded && isAuthenticated, profileName, profilePhone);
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     router.push('/login');
   };
 

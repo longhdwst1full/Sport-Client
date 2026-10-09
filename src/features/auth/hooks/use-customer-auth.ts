@@ -1,12 +1,14 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { logoutCustomer } from '@/generated/api/auth/auth';
 import { useGetCustomerProfile } from '@/generated/api/customer/customer';
 import type { CustomerProfileDto } from '@/generated/api/customer/customer.schemas';
 import {
   isCustomerAuthenticated,
   readCustomerAuthTokens,
   clearCustomerAuthTokens,
+  usesCustomerAuthCookieTransport,
 } from '@/core/auth/customer-auth-token.store';
 import { ApiError } from '@/lib/api/fetcher';
 
@@ -58,9 +60,23 @@ export function useCustomerAuth() {
     }
   }, [profileQuery.error]);
 
-  const logout = useCallback(() => {
-    clearCustomerAuthTokens();
-    setIsAuthenticated(false);
+  /**
+   * SECURITY: thu hồi phiên ở server trước khi dọn state. Refresh token ở transport COOKIE nằm trong
+   * cookie HttpOnly mà JS không xoá được; chỉ dọn phía client thì máy dùng chung vẫn refresh được phiên cũ.
+   * Lỗi mạng không được giữ khách ở trạng thái đăng nhập nên state luôn được dọn trong `finally`.
+   */
+  const logout = useCallback(async () => {
+    const refreshToken = readCustomerAuthTokens()?.refreshToken;
+    try {
+      if (refreshToken || usesCustomerAuthCookieTransport()) {
+        await logoutCustomer(refreshToken ? { refreshToken } : {});
+      }
+    } catch {
+      // Phiên có thể đã hết hạn sẵn; vẫn dọn phía client.
+    } finally {
+      clearCustomerAuthTokens();
+      setIsAuthenticated(false);
+    }
   }, []);
 
   return {
