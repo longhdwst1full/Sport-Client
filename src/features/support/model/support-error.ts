@@ -13,6 +13,8 @@ export const SupportErrorCode = {
   IDEMPOTENCY_KEY_INVALID: 'SUPPORT_IDEMPOTENCY_KEY_INVALID',
   IDEMPOTENCY_CONFLICT: 'SUPPORT_IDEMPOTENCY_CONFLICT',
   PERSISTENCE_DISABLED: 'SUPPORT_PERSISTENCE_DISABLED',
+  CONSULTATION_RATE_LIMITED: 'SUPPORT_CONSULTATION_RATE_LIMITED',
+  CONSULTATION_PHONE_INVALID: 'SUPPORT_CONSULTATION_PHONE_INVALID',
 } as const;
 
 const SUPPORT_ERROR_MESSAGES: Record<string, string> = {
@@ -26,6 +28,8 @@ const SUPPORT_ERROR_MESSAGES: Record<string, string> = {
   [SupportErrorCode.IDEMPOTENCY_KEY_INVALID]: 'Yêu cầu gửi không hợp lệ. Vui lòng bấm gửi lại.',
   [SupportErrorCode.IDEMPOTENCY_CONFLICT]: 'Nội dung khác với lần gửi trước đó. Vui lòng bấm gửi lại.',
   [SupportErrorCode.PERSISTENCE_DISABLED]: 'Hệ thống hỗ trợ đang tạm ngưng. Vui lòng gọi hotline.',
+  [SupportErrorCode.CONSULTATION_RATE_LIMITED]: 'Số điện thoại này đã gửi nhiều yêu cầu trong 24 giờ. Nhân viên sẽ liên hệ, hoặc bạn gọi hotline.',
+  [SupportErrorCode.CONSULTATION_PHONE_INVALID]: 'Số điện thoại chưa đúng định dạng Việt Nam.',
 };
 
 export function supportErrorCode(error: unknown): string | undefined {
@@ -38,6 +42,7 @@ export function supportErrorCode(error: unknown): string | undefined {
 export function supportErrorMessage(error: unknown, fallback: string): string {
   const code = supportErrorCode(error);
   if (code && SUPPORT_ERROR_MESSAGES[code]) return SUPPORT_ERROR_MESSAGES[code];
+  if (error instanceof ApiError && error.status === 429) return SUPPORT_ERROR_MESSAGES[SupportErrorCode.CONSULTATION_RATE_LIMITED];
   if (error instanceof ApiError && error.status === 503) return SUPPORT_ERROR_MESSAGES[SupportErrorCode.PERSISTENCE_DISABLED];
   return apiErrorMessage(error, fallback);
 }

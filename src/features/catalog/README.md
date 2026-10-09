@@ -1,6 +1,6 @@
 # Storefront Catalog — maintenance note
 
-> **Document version:** 1.5.0
+> **Document version:** 1.6.0
 >
 > **Last updated:** 2026-10-06
 >
@@ -55,6 +55,7 @@
 
 | Version | Date | Change summary | Source |
 | --- | --- | --- | --- |
+| 1.6.0 | 2026-10-09 | Lọc server-side theo thương hiệu (`?brand=` → `brand[]`, facet `includeFacets`) và còn hàng (`?instock=1` → `inStock`) qua `toListCatalogParams`; khoảng giá dùng chung với trang chủ (`?price=<id>`); chip hiện tên danh mục; `/category` chỉ danh mục gốc + chip con; `/products` bỏ Suspense để lưới nằm trước footer trong HTML. | CLIENT-20261009-CATALOG-FILTERS |
 | 1.5.0 | 2026-10-06 | Server prefetch trang 1, sticky buy bar mobile PDP, thẻ sản phẩm gọn, JSON-LD qua `lib/seo/json-ld` + BreadcrumbList danh mục, mô tả meta dự phòng, `<main>` mỗi trang. | CLIENT-20261006-CATALOG-UX-SEO |
 | 1.4.0 | 2026-09-27 | Filter server-side, gỡ facet client-side không đúng, CACHE_POLICY cho search/review, canonical/OG theo `buildPageMetadata`. | CLIENT-20260927-CACHE-PWA-SEO |
 | 1.3.0 | 2026-09-25 | Helper bán được dùng chung, phân trang theo page, gallery `media[]`, gỡ nội dung bịa, ISR 120s + `cache()`. | CLIENT-20260925-TRUTHFUL-CATALOG |

@@ -1,6 +1,6 @@
 # Storefront Support — maintenance note
 
-> **Document version:** 3.1.1
+> **Document version:** 3.2.0
 >
 > **Last updated:** 2026-10-06
 >
@@ -64,6 +64,7 @@ Hotline/địa chỉ/giờ mở cửa lấy từ `@/shared/constants` (`STORE_CO
 
 | Version | Date | Change summary |
 | --- | --- | --- |
+| 3.2.0 | 2026-10-09 | Form tư vấn: khách chưa đăng nhập gửi `createConsultationRequest` (idempotency-key, honeypot `website`, map 429/SĐT sai) thay cho mailto; khách đăng nhập vẫn `createSupportRequest`. Nhãn tác giả `GUEST`. |
 | 3.1.1 | 2026-10-06 | UI: form tư vấn, tạo/chi tiết/danh sách phiếu dùng primitive foundation (`Field`, `TextInput`, `Select`, `Textarea`, `Button`, `InlineAlert`, `DescriptionList`); không đổi hành vi. |
 | 3.1.0 | 2026-09-30 | Idempotency-Key cho nhắn thêm trên phiếu; map lỗi idempotency. |
 | 3.0.1 | 2026-09-29 | Map thêm `SUPPORT_BRANCH_INVALID`. |

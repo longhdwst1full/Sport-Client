@@ -36,6 +36,7 @@ function operationOverrides(domain: string): Record<string, { requestOptions: bo
   if (domain === 'support') {
     return {
       createSupportRequest: { requestOptions: true },
+      createConsultationRequest: { requestOptions: true },
       addAccountSupportTicketMessage: { requestOptions: true },
     };
   }

@@ -2,13 +2,14 @@
 
 import { useId, useState } from 'react';
 import Link from 'next/link';
-import { CheckCircle2, Mail, Send } from 'lucide-react';
+import { CheckCircle2, Send } from 'lucide-react';
 import { useCustomerAuth } from '@/features/auth';
 import { InlineAlert } from '@/foundation/components/feedback';
 import { Button } from '@/foundation/components/buttons';
 import { Field, Select, Textarea, TextInput } from '@/foundation/components/field-system';
 import { STORE_CONFIG, STORE_CONTACT } from '@/shared/constants';
 import { useCreateSupportRequest } from '../hooks/use-create-support-request';
+import { useCreateConsultationRequest } from '../hooks/use-create-consultation-request';
 import { SUPPORT_ROUTES } from '../model/support-ticket.constants';
 
 const LABEL_CLASS = 'block text-xs font-bold uppercase text-neutral-600';
@@ -31,8 +32,10 @@ const LINK_CLASS = 'font-bold text-neutral-900 underline rounded focus-visible:o
 export function ConsultationForm() {
   const fieldId = useId();
   const { isAuthenticated } = useCustomerAuth();
-  const [mailtoOpened, setMailtoOpened] = useState(false);
   const create = useCreateSupportRequest();
+  const guest = useCreateConsultationRequest();
+  // Bẫy bot: ô ẩn với người dùng; bot điền vào thì API trả 400.
+  const [website, setWebsite] = useState('');
   const [form, setForm] = useState({
     name: '',
     phone: '',
@@ -55,10 +58,9 @@ export function ConsultationForm() {
   ].join('\n');
 
   /**
-   * Khách đã đăng nhập: gửi thẳng thành phiếu hỗ trợ (`createSupportRequest`) — có mã phiếu, nhân
-   * viên nhận trong hàng đợi, khách theo dõi ở "Hỗ trợ của tôi".
-   * Khách vãng lai: Backend chưa có endpoint nhận yêu cầu không cần đăng nhập, nên mở email soạn sẵn
-   * và đẩy hotline/Zalo lên trước; thông báo chỉ nói đúng điều đã xảy ra (email chưa được gửi).
+   * Khách đã đăng nhập: phiếu hỗ trợ gắn hồ sơ (`createSupportRequest`), theo dõi ở "Hỗ trợ của tôi".
+   * Khách vãng lai: `createConsultationRequest` (không cần đăng nhập) — phiếu vào chung hàng đợi
+   * nhân viên, trả mã phiếu; API giới hạn 3 yêu cầu/SĐT/24 giờ.
    */
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,14 +68,25 @@ export function ConsultationForm() {
       create.submit({ subject, message });
       return;
     }
-    window.location.href = `mailto:${STORE_CONTACT.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
-    setMailtoOpened(true);
+    guest.submit({
+      name: form.name.trim(),
+      phone: form.phone.trim(),
+      ...(form.email.trim() ? { email: form.email.trim() } : {}),
+      topic: 'Tư vấn Home Gym',
+      spaceSize: SPACE_LABELS[form.spaceSize] ?? form.spaceSize,
+      purpose: PURPOSE_LABELS[form.purpose] ?? form.purpose,
+      message: form.note.trim() || 'Khách chưa ghi chú thêm.',
+      ...(website ? { website } : {}),
+    });
   };
 
   const resetForm = () => {
-    setMailtoOpened(false);
     create.reset();
+    guest.reset();
   };
+
+  const pending = create.isPending || guest.isPending;
+  const errorMessage = create.errorMessage ?? guest.errorMessage;
 
   return (
     <div className="surface-card p-6 shadow-sm sm:p-8">
@@ -94,25 +107,20 @@ export function ConsultationForm() {
             Nhân viên sẽ liên hệ trong giờ làm việc ({STORE_CONTACT.openingHoursShort}). Bạn theo dõi phản hồi tại{' '}
             <Link href={SUPPORT_ROUTES.detail(create.created.ticketNo)} className={LINK_CLASS}>Hỗ trợ của tôi</Link>.
           </p>
-          <Button variant="secondary" onClick={resetForm} className="mt-5 rounded-full bg-ink px-6 text-xs font-bold hover:bg-ink/90">
+          <Button variant="secondary" onClick={resetForm} className="mt-5 rounded-full px-6 text-xs">
             Gửi yêu cầu khác
           </Button>
         </div>
-      ) : mailtoOpened ? (
-        <div role="status" className="mt-8 rounded-2xl bg-neutral-50 p-6 text-center">
-          <Mail className="mx-auto size-12 text-neutral-700" aria-hidden />
-          <h3 className="mt-3 text-lg font-bold text-ink">Đã mở email soạn sẵn</h3>
+      ) : guest.ticketNo ? (
+        <div role="status" className="mt-8 rounded-2xl bg-success-50 p-6 text-center">
+          <CheckCircle2 className="mx-auto size-12 text-success-600" aria-hidden />
+          <h3 className="mt-3 text-lg font-bold text-ink">Đã nhận yêu cầu #{guest.ticketNo}</h3>
           <p className="mt-1 text-xs text-neutral-600">
-            Nội dung đã được điền vào email gửi tới {STORE_CONTACT.email}.
-            <strong className="text-ink"> Yêu cầu chỉ đến với chúng tôi sau khi bạn bấm gửi trong ứng dụng email.</strong>
+            Nhân viên sẽ gọi lại số bạn để lại trong giờ làm việc ({STORE_CONTACT.openingHoursShort}). Cần gấp? Gọi{' '}
+            <a href={`tel:${STORE_CONTACT.primaryHotlineRaw}`} className={LINK_CLASS}>{STORE_CONTACT.primaryHotline}</a>.
           </p>
-          <p className="mt-2 text-xs text-neutral-600">
-            Không mở được email? Gọi{' '}
-            <a href={`tel:${STORE_CONTACT.primaryHotlineRaw}`} className={LINK_CLASS}>{STORE_CONTACT.primaryHotline}</a>
-            {' '}hoặc <Link href="/login" className={LINK_CLASS}>đăng nhập</Link> để gửi yêu cầu trực tiếp.
-          </p>
-          <Button variant="secondary" onClick={resetForm} className="mt-5 rounded-full bg-ink px-6 text-xs font-bold hover:bg-ink/90">
-            Soạn yêu cầu khác
+          <Button variant="secondary" onClick={resetForm} className="mt-5 rounded-full px-6 text-xs">
+            Gửi yêu cầu khác
           </Button>
         </div>
       ) : (
@@ -221,18 +229,20 @@ export function ConsultationForm() {
             variant="cta"
             size="lg"
             fullWidth
-            disabled={create.isPending}
+            disabled={pending}
             className="h-12"
           >
             <Send className="size-4" aria-hidden />
-            <span>{isAuthenticated ? (create.isPending ? 'Đang gửi...' : 'Gửi yêu cầu tư vấn') : 'Soạn email yêu cầu tư vấn'}</span>
+            <span>{pending ? 'Đang gửi...' : 'Gửi yêu cầu tư vấn'}</span>
           </Button>
-          {create.errorMessage && <InlineAlert role="alert" className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">{create.errorMessage}</InlineAlert>}
-          {!isAuthenticated && (
-            <p className="text-center text-xs text-neutral-600">
-              <Link href="/login" className={LINK_CLASS}>Đăng nhập</Link> để gửi yêu cầu trực tiếp và nhận mã theo dõi.
-            </p>
-          )}
+          {errorMessage && <InlineAlert role="alert" className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">{errorMessage}</InlineAlert>}
+          {/* Honeypot: ẩn khỏi người dùng và trình đọc màn hình, không tự điền. */}
+          <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
+            <label>
+              Website
+              <input tabIndex={-1} autoComplete="off" value={website} onChange={(e) => setWebsite(e.target.value)} />
+            </label>
+          </div>
         </form>
       )}
     </div>

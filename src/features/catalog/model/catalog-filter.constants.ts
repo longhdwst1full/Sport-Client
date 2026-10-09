@@ -34,6 +34,23 @@ export interface CatalogListFilters {
   sort?: ProductListSort;
   minPrice?: string;
   maxPrice?: string;
+  /** Slug thương hiệu (URL `?brand=`); API nhận mảng `brand[]`, storefront chọn một. */
+  brand?: string;
+  /** Chỉ sản phẩm còn hàng bán được (URL `?instock=1`). */
+  inStock?: boolean;
+}
+
+/**
+ * Chuyển bộ lọc storefront sang tham số `listCatalogProducts`. Một chỗ duy nhất đổi hình dạng
+ * (`brand` → `brand[]`) để route server và hook client gửi giống hệt nhau (cùng query key).
+ */
+export function toListCatalogParams(filters: CatalogListFilters) {
+  const { brand, inStock, ...rest } = filters;
+  return {
+    ...rest,
+    ...(brand ? { brand: [brand] } : {}),
+    ...(inStock ? { inStock: true } : {}),
+  };
 }
 
 export interface CatalogUrlState {
@@ -41,6 +58,8 @@ export interface CatalogUrlState {
   activePriceRange: string;
   activeSort: ProductListSort;
   urlSearch: string;
+  activeBrand: string | null;
+  inStockOnly: boolean;
   filters: CatalogListFilters;
 }
 
@@ -55,17 +74,23 @@ export function parseCatalogUrlState(get: (key: string) => string | null | undef
   const sortParam = get('sort') ?? null;
   const activeSort: ProductListSort = isSort(sortParam) ? sortParam : ProductListSort.NEWEST;
   const urlSearch = get('q') ?? '';
+  const activeBrand = get('brand') || null;
+  const inStockOnly = get('instock') === '1';
   return {
     activeTabSlug,
     activePriceRange: priceRange?.id ?? 'all',
     activeSort,
     urlSearch,
+    activeBrand,
+    inStockOnly,
     filters: {
       category: activeTabSlug ?? undefined,
       search: urlSearch.trim() || undefined,
       sort: activeSort === ProductListSort.NEWEST ? undefined : activeSort,
       minPrice: priceRange?.min,
       maxPrice: priceRange?.max,
+      brand: activeBrand ?? undefined,
+      inStock: inStockOnly || undefined,
     },
   };
 }
@@ -76,6 +101,8 @@ export function isSameCatalogFilters(a: CatalogListFilters, b: CatalogListFilter
     (a.search?.trim() || undefined) === (b.search?.trim() || undefined) &&
     a.sort === b.sort &&
     a.minPrice === b.minPrice &&
-    a.maxPrice === b.maxPrice
+    a.maxPrice === b.maxPrice &&
+    (a.brand || undefined) === (b.brand || undefined) &&
+    Boolean(a.inStock) === Boolean(b.inStock)
   );
 }

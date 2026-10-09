@@ -43,6 +43,7 @@ export const SUPPORT_AUTHOR_LABELS: Record<SupportTicketMessageAuthor, string> =
   CUSTOMER: 'Bạn',
   STAFF: 'Nhân viên Bảo An Sport',
   SYSTEM: 'Hệ thống',
+  GUEST: 'Khách',
 };
 
 const SUPPORT_TICKET_STATUS_CODES: readonly string[] = Object.values(SupportTicketStatusCode);

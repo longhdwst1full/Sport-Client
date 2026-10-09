@@ -6,10 +6,10 @@ import {
   getListCatalogProductsQueryKey,
   listCatalogProducts,
 } from '@/generated/api/catalog/catalog';
-import type { ProductListResponseDto, ProductListSort } from '@/generated/api/catalog/catalog.schemas';
+import type { CatalogBrandFacetDto, ProductListResponseDto, ProductListSort } from '@/generated/api/catalog/catalog.schemas';
 import { CACHE_POLICY } from '@/lib/query/query-cache-policy';
 import { useIsMounted } from '@/shared/hooks';
-import { isSameCatalogFilters, type CatalogListFilters } from '../model/catalog-filter.constants';
+import { isSameCatalogFilters, toListCatalogParams, type CatalogListFilters } from '../model/catalog-filter.constants';
 import {
   CATALOG_PAGE_SIZE,
   toProductShowcaseItems,
@@ -36,6 +36,11 @@ export interface ProductShowcaseOptions {
   /** Khoảng giá (VND, dạng chuỗi số) áp trên `minPrice` ở server; sản phẩm chưa có giá bị loại. */
   minPrice?: string;
   maxPrice?: string;
+  /** Slug thương hiệu và cờ "còn hàng" — lọc ở server (`brand[]`, `inStock`). */
+  brand?: string;
+  inStock?: boolean;
+  /** Xin thêm `facets.brands` (thương hiệu + số SP theo bộ lọc hiện tại) cho sidebar lọc. */
+  includeFacets?: boolean;
   /**
    * Đổi bộ lọc/tab thì giữ danh sách cũ (làm mờ) tới khi kết quả mới về, thay vì quay lại
    * skeleton làm nhảy layout (RULE-SKEL-02). Tắt mặc định: khối "liên quan" không nên hiện
@@ -67,14 +72,16 @@ export function useProductShowcase(
   isError: boolean;
   /** Đang hiển thị kết quả của bộ lọc trước trong lúc chờ kết quả mới (chỉ khi `keepPreviousResults`). */
   isShowingPreviousResults: boolean;
+  /** Thương hiệu kèm số sản phẩm (chỉ khi `includeFacets`). */
+  brandFacets: CatalogBrandFacetDto[];
   refetch: () => void;
 } {
   // Lọc danh mục chạy server-side và gồm cả nhánh con. Trước đây hook lấy 8 sản phẩm
   // đầu của toàn catalog rồi lọc ở client, nên trang danh mục chỉ xét được 8 trong 596
   // sản phẩm và gần như luôn ra sai.
   const search = searchQuery?.trim() || undefined;
-  const { sort, minPrice, maxPrice } = options;
-  const scoped = Boolean(categorySlug || search || sort || minPrice || maxPrice);
+  const { sort, minPrice, maxPrice, brand, inStock, includeFacets } = options;
+  const scoped = Boolean(categorySlug || search || sort || minPrice || maxPrice || brand || inStock);
   const pageSize = Math.min(
     options.pageSize ?? (scoped ? CATALOG_PAGE_SIZE.SCOPED : CATALOG_PAGE_SIZE.SHOWCASE),
     CATALOG_PAGE_SIZE.MAX,
@@ -86,11 +93,16 @@ export function useProductShowcase(
   // trang mỗi lần bấm, nên tới lượt thứ 5 ở trang danh mục (limit 120) API trả 400 và
   // khách không bao giờ xem được phần còn lại.
   // RULE-LIST-03: mọi tham số ảnh hưởng kết quả đều nằm trong `params`, tức trong query key.
-  const params = { limit: pageSize, category: categorySlug, search, sort, minPrice, maxPrice };
+  const filters = { category: categorySlug, search, sort, minPrice, maxPrice, brand, inStock };
+  const params = {
+    limit: pageSize,
+    ...toListCatalogParams(filters),
+    ...(includeFacets ? { includeFacets: true } : {}),
+  };
   const initialData =
     options.initialPage &&
     options.initialPage.meta.limit === pageSize &&
-    isSameCatalogFilters(options.initialPageFilters ?? {}, { category: categorySlug, search, sort, minPrice, maxPrice })
+    isSameCatalogFilters(options.initialPageFilters ?? {}, filters)
       ? { pages: [options.initialPage], pageParams: [1] }
       : undefined;
 
@@ -129,6 +141,7 @@ export function useProductShowcase(
     isLoadMoreError: query.isFetchNextPageError,
     isError: query.isError && products.length === 0,
     isShowingPreviousResults: query.isPlaceholderData,
+    brandFacets: pages?.[0]?.facets?.brands ?? [],
     refetch: () => void query.refetch(),
   };
 }

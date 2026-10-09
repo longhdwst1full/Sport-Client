@@ -11,3 +11,4 @@ export * from './model/banner.mapper';
 export { loadActiveBanners, toActiveBannerViews } from './api/active-banners';
 export { BannerPicture } from './components/banner-picture';
 export { CategoryTopBanners } from './components/category-top-banners';
+export { NewsletterSignup } from './components/newsletter-signup';

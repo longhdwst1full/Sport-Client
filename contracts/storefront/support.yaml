@@ -223,6 +223,57 @@ paths:
       summary: Khách nhắn thêm trên phiếu chưa CLOSED; trả chi tiết phiếu với version mới
       tags:
         - Storefront Support
+  /api/v1/support/consultation-requests:
+    post:
+      description: Không cần đăng nhập. Cùng Idempotency-Key + cùng nội dung trả lại phiếu cũ; khác nội dung → 409. Tối đa 3 yêu cầu mới mỗi SĐT trong 24 giờ.
+      operationId: createConsultationRequest
+      parameters:
+        - name: idempotency-key
+          in: header
+          description: 8-120 ký tự; giữ nguyên khi retry cùng lệnh
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateConsultationRequestDto"
+      responses:
+        "201":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConsultationRequestResultDto"
+        "400":
+          description: Body sai/honeypot có giá trị, SUPPORT_CONSULTATION_PHONE_INVALID, SUPPORT_IDEMPOTENCY_KEY_INVALID
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
+        "409":
+          description: SUPPORT_IDEMPOTENCY_CONFLICT
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
+        "429":
+          description: SUPPORT_CONSULTATION_RATE_LIMITED (theo SĐT) hoặc burst throttle theo IP
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
+        "503":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
+      summary: Khách vãng lai gửi yêu cầu tư vấn (tạo phiếu hỗ trợ OPEN); trả mã phiếu + trạng thái
+      tags:
+        - Storefront Support
 components:
   schemas:
     AccountSupportTicketDetailDto:
@@ -305,6 +356,61 @@ components:
       required:
         - body
         - expectedVersion
+    ConsultationRequestResultDto:
+      type: object
+      properties:
+        ticketNo:
+          type: string
+          example: TKT-20261009-000123
+        status:
+          description: Trạng thái lúc tạo (OPEN); replay cùng khoá trả lại kết quả gốc
+          allOf:
+            - $ref: "#/components/schemas/SupportTicketStatus"
+      required:
+        - ticketNo
+        - status
+    CreateConsultationRequestDto:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 2
+          maxLength: 100
+          example: Nguyễn Văn An
+        phone:
+          type: string
+          pattern: ^[0-9+()\s.-]{9,20}$
+          example: "0912345678"
+          description: SĐT Việt Nam (0xxxxxxxxx, +84…, 84…); server chuẩn hoá về E.164
+        email:
+          type: string
+          maxLength: 255
+          example: an@example.com
+        topic:
+          type: string
+          maxLength: 100
+          example: Thiết kế phòng gym gia đình
+        spaceSize:
+          type: string
+          maxLength: 50
+          example: 30 m²
+        purpose:
+          type: string
+          maxLength: 200
+          example: Tập luyện tại nhà
+        message:
+          type: string
+          minLength: 5
+          maxLength: 2000
+          example: Tôi cần tư vấn bộ dụng cụ cho phòng 30 m².
+        website:
+          type: string
+          maxLength: 0
+          description: "Honeypot chống spam: client PHẢI để trống hoặc không gửi; có giá trị thì bị từ chối 400"
+      required:
+        - name
+        - phone
+        - message
     CreateSupportRequestDto:
       type: object
       properties:
@@ -333,6 +439,7 @@ components:
       type: string
       enum:
         - CUSTOMER
+        - GUEST
         - STAFF
         - SYSTEM
     SupportTicketDto:

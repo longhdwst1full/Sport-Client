@@ -5,7 +5,7 @@ import { STORE_POLICY_PAGES } from '@/shared/constants';
 import { Breadcrumb } from '@/foundation/components/navigation';
 import { ProductsCatalogView } from '../components/products-catalog-view';
 import { CATALOG_PAGE_SIZE } from '../model/product.mapper';
-import { parseCatalogUrlState, type CatalogListFilters } from '../model/catalog-filter.constants';
+import { parseCatalogUrlState, toListCatalogParams, type CatalogListFilters } from '../model/catalog-filter.constants';
 import type { CatalogInitialPage } from '../hooks/use-catalog-filters';
 import type { CatalogCategoryDto } from '@/generated/api/catalog/catalog.schemas';
 
@@ -22,9 +22,15 @@ const CATALOG_PROMISES = [
 
 export async function loadCatalogFirstPage(
   filters: CatalogListFilters,
+  { includeFacets = false }: { includeFacets?: boolean } = {},
 ): Promise<CatalogInitialPage | undefined> {
   try {
-    const page = await listCatalogProducts({ page: 1, limit: CATALOG_PAGE_SIZE.SCOPED, ...filters });
+    const page = await listCatalogProducts({
+      page: 1,
+      limit: CATALOG_PAGE_SIZE.SCOPED,
+      ...toListCatalogParams(filters),
+      ...(includeFacets ? { includeFacets: true } : {}),
+    });
     return { page, fetchedAt: Date.now(), filters };
   } catch {
     return undefined;
@@ -48,7 +54,8 @@ export async function ProductsPage({
     const value = query[key];
     return Array.isArray(value) ? value[0] : value;
   });
-  const initial = await loadCatalogFirstPage(filters);
+  // `includeFacets`: sidebar có sẵn danh sách thương hiệu ngay trong HTML đầu.
+  const initial = await loadCatalogFirstPage(filters, { includeFacets: true });
   const initialCategoryName = categories?.find((item) => item.slug === filters.category)?.name;
 
   return (

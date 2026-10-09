@@ -22,6 +22,10 @@ export interface CatalogActiveChipsProps {
   onClearCategory?: () => void;
   priceLabel?: string | null;
   onClearPrice?: () => void;
+  brandLabel?: string | null;
+  onClearBrand?: () => void;
+  inStockOnly?: boolean;
+  onClearInStock?: () => void;
   searchQuery?: string | null;
   onClearSearch?: () => void;
   onClearAll?: () => void;
@@ -32,12 +36,16 @@ export function CatalogActiveChips({
   onClearCategory,
   priceLabel,
   onClearPrice,
+  brandLabel,
+  onClearBrand,
+  inStockOnly = false,
+  onClearInStock,
   searchQuery,
   onClearSearch,
   onClearAll,
 }: CatalogActiveChipsProps) {
   const hasAnyFilter = Boolean(
-    categoryLabel || priceLabel || searchQuery,
+    categoryLabel || priceLabel || brandLabel || inStockOnly || searchQuery,
   );
 
   if (!hasAnyFilter) return null;
@@ -45,6 +53,8 @@ export function CatalogActiveChips({
   const chips: ActiveChip[] = [
     ...(categoryLabel ? [{ key: 'category', tone: 'brand', label: `Danh mục: ${categoryLabel}`, onRemove: onClearCategory, removeAriaLabel: 'Bỏ lọc danh mục' } as const] : []),
     ...(priceLabel ? [{ key: 'price', tone: 'brand', label: `Giá: ${priceLabel}`, onRemove: onClearPrice, removeAriaLabel: 'Bỏ lọc giá' } as const] : []),
+    ...(brandLabel ? [{ key: 'brand', tone: 'brand', label: `Thương hiệu: ${brandLabel}`, onRemove: onClearBrand, removeAriaLabel: 'Bỏ lọc thương hiệu' } as const] : []),
+    ...(inStockOnly ? [{ key: 'stock', tone: 'brand', label: 'Còn hàng', onRemove: onClearInStock, removeAriaLabel: 'Bỏ lọc còn hàng' } as const] : []),
     ...(searchQuery ? [{ key: 'search', tone: 'neutral', label: `Từ khóa: "${searchQuery}"`, onRemove: onClearSearch, removeAriaLabel: 'Bỏ từ khóa tìm kiếm' } as const] : []),
   ];
 

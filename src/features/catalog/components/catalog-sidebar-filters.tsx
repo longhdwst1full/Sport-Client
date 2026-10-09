@@ -1,8 +1,9 @@
 'use client';
 
-import { RotateCcw, Tag, Boxes } from 'lucide-react';
+import { RotateCcw, Tag, Boxes, Award, PackageCheck } from 'lucide-react';
 import { Button } from '@/foundation/components/buttons';
 import { Skeleton } from '@/foundation/components/feedback';
+import type { CatalogBrandFacetDto } from '@/generated/api/catalog/catalog.schemas';
 import type { CategoryTabView } from '../hooks/use-category-tabs';
 
 export interface PriceRangeOption {
@@ -19,6 +20,12 @@ export interface CatalogSidebarFiltersProps {
   priceRanges: PriceRangeOption[];
   activePriceRange: string;
   onSelectPriceRange: (id: string) => void;
+  /** Thương hiệu kèm số sản phẩm theo bộ lọc hiện tại (facet của API); rỗng thì ẩn nhóm. */
+  brands: CatalogBrandFacetDto[];
+  activeBrand: string | null;
+  onSelectBrand: (slug: string | null) => void;
+  inStockOnly: boolean;
+  onToggleInStock: (value: boolean) => void;
   hasActiveFilters: boolean;
   onResetFilters: () => void;
   isTabsPending?: boolean;
@@ -67,6 +74,11 @@ export function CatalogFilterGroups({
   priceRanges,
   activePriceRange,
   onSelectPriceRange,
+  brands,
+  activeBrand,
+  onSelectBrand,
+  inStockOnly,
+  onToggleInStock,
   isTabsPending = false,
 }: Omit<CatalogSidebarFiltersProps, 'hasActiveFilters' | 'onResetFilters'> & { variant: 'sidebar' | 'sheet' }) {
   const isSidebar = variant === 'sidebar';
@@ -192,6 +204,59 @@ export function CatalogFilterGroups({
         ) : (
           <div className="grid grid-cols-2 gap-2">{priceOptions}</div>
         )}
+      </div>
+
+      {/* Brand Facet — số sản phẩm do API đếm theo bộ lọc hiện tại */}
+      {brands.length > 0 && (
+        <div className={isSidebar ? 'border-t border-neutral-100 pt-5' : undefined}>
+          {isSidebar ? (
+            <h3 className={SIDEBAR_HEADING}>
+              <Award aria-hidden className="size-3.5 text-neutral-900" />
+              <span>Thương hiệu</span>
+            </h3>
+          ) : (
+            <h4 className={SHEET_HEADING}>Thương hiệu</h4>
+          )}
+          <div className={isSidebar ? 'space-y-1' : 'flex flex-wrap gap-2'} role="group" aria-label="Thương hiệu">
+            {brands.map((brand) => {
+              const isSelected = activeBrand === brand.slug;
+              return (
+                <button
+                  key={brand.slug}
+                  type="button"
+                  aria-pressed={isSelected}
+                  onClick={() => onSelectBrand(isSelected ? null : brand.slug)}
+                  className={
+                    isSidebar
+                      ? `flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-xs font-medium transition ${FOCUS_RING} ${
+                          isSelected ? 'bg-neutral-50 font-semibold text-neutral-950 ring-1 ring-neutral-900/30' : 'text-neutral-700 hover:bg-neutral-100'
+                        }`
+                      : `rounded-full px-3.5 py-2 text-xs font-semibold transition ${FOCUS_RING} ${
+                          isSelected ? 'bg-neutral-900 text-white' : 'border border-neutral-200 bg-white text-neutral-700'
+                        }`
+                  }
+                >
+                  <span className="truncate">{brand.name}</span>
+                  {isSidebar && <span className="ml-2 text-3xs text-neutral-500">{brand.count}</span>}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Availability */}
+      <div className={isSidebar ? 'border-t border-neutral-100 pt-5' : undefined}>
+        <label className={`flex cursor-pointer items-center gap-2.5 text-xs font-semibold text-neutral-800 ${isSidebar ? 'px-3' : ''}`}>
+          <input
+            type="checkbox"
+            checked={inStockOnly}
+            onChange={(event) => onToggleInStock(event.target.checked)}
+            className={`size-4 cursor-pointer rounded border-neutral-300 accent-neutral-900 ${FOCUS_RING}`}
+          />
+          <PackageCheck aria-hidden className="size-3.5 text-neutral-900" />
+          Chỉ hiện sản phẩm còn hàng
+        </label>
       </div>
     </>
   );

@@ -1,6 +1,6 @@
 # Storefront Content — maintenance note
 
-> **Document version:** 2.5.0
+> **Document version:** 2.6.0
 >
 > **Last updated:** 2026-10-06
 >
@@ -84,6 +84,7 @@ TanStack Query. Không mirror dữ liệu bài viết vào Redux hay `useState`.
 
 | Version | Date | Change summary |
 | --- | --- | --- |
+| 2.6.0 | 2026-10-09 | `NewsletterSignup` gọi `createNewsletterSubscription` (honeypot, `source`); tab tin tức cố định `EDITORIAL_POST_TYPES`; danh sách không hiện "phút đọc" (summary không có body); CTA bài viết dùng `ContactActions`. |
 | 2.4.0 | 2026-10-06 | `/news` server-first + island `NewsListFeed`; `ContentStories` bỏ fetch trùng; `BannerPicture` art direction một ảnh; `/chinh-sach` ném lỗi lúc chạy (giữ bản ISR tốt), `[slug]` gọi song song. |
 | 2.3.0 | 2026-10-03 | `CoverImage` fallback ảnh bìa, og:image JPEG 1200×630 cho Cloudinary. |
 | 2.2.0 | 2026-10-02 | Banner CMS-02: loader server, mapper, `BannerPicture`, `CategoryTopBanners`; fallback giữ nguyên UI khi không có banner. |

@@ -40,7 +40,7 @@ export function useCatalogFilters(initial?: CatalogInitialPage, initialCategoryN
   const { tabs, nameBySlug, isPending: isTabsPending } = useCategoryTabs();
 
   // URL State Sync
-  const { activeTabSlug, activePriceRange, activeSort, urlSearch, filters } = parseCatalogUrlState(
+  const { activeTabSlug, activePriceRange, activeSort, urlSearch, activeBrand, inStockOnly, filters } = parseCatalogUrlState(
     (key) => searchParams.get(key),
   );
 
@@ -56,6 +56,8 @@ export function useCatalogFilters(initial?: CatalogInitialPage, initialCategoryN
 
   const setActiveTabSlug = (slug: string | null) => updateQuery({ category: slug });
   const setActivePriceRange = (id: string) => updateQuery({ price: id === 'all' ? null : id });
+  const setActiveBrand = (slug: string | null) => updateQuery({ brand: slug });
+  const setInStockOnly = (value: boolean) => updateQuery({ instock: value ? '1' : null });
   const setActiveSort = (sort: ProductListSort) =>
     updateQuery({ sort: sort === ProductListSort.NEWEST ? null : sort });
 
@@ -70,15 +72,17 @@ export function useCatalogFilters(initial?: CatalogInitialPage, initialCategoryN
   }, [debouncedSearch]);
 
   // Lọc danh mục chạy server-side (gồm cả nhánh con). Search cũng server-side.
-  // CONTRACT: API danh sách sản phẩm chỉ nhận category/search/sort/minPrice/maxPrice. Lọc thương
-  // hiệu và "còn hàng" từng chạy trên client trên đúng một trang đã tải, nên cho kết quả sai (bỏ sót
-  // sản phẩm ở trang sau, đếm "tìm thấy" lệch tổng). Gỡ cho đến khi API có tham số `brand`/`inStock`.
+  // Thương hiệu và "còn hàng" lọc ở server (`brand[]`, `inStock`) trên toàn bộ catalog — không lọc
+  // client trên một trang đã tải (bỏ sót trang sau, đếm lệch tổng). Facet thương hiệu do API đếm.
   const list = useProductShowcase(filters.category, filters.search, {
     pageSize: CATALOG_PAGE_SIZE.SCOPED,
     keepPreviousResults: true,
     sort: filters.sort,
     minPrice: filters.minPrice,
     maxPrice: filters.maxPrice,
+    brand: filters.brand,
+    inStock: filters.inStock,
+    includeFacets: true,
     initialPage: initial?.page,
     initialPageFetchedAt: initial?.fetchedAt,
     initialPageFilters: initial?.filters,
@@ -99,7 +103,14 @@ export function useCatalogFilters(initial?: CatalogInitialPage, initialCategoryN
     return PRICE_RANGES.find((p) => p.id === activePriceRange)?.label ?? null;
   }, [activePriceRange]);
 
+  const activeBrandLabel = useMemo(() => {
+    if (!activeBrand) return null;
+    return list.brandFacets.find((facet) => facet.slug === activeBrand)?.name ?? activeBrand;
+  }, [activeBrand, list.brandFacets]);
+
   const hasActiveFilters =
+    activeBrand !== null ||
+    inStockOnly ||
     activeTabSlug !== null ||
     activePriceRange !== 'all' ||
     activeSort !== ProductListSort.NEWEST ||
@@ -108,6 +119,8 @@ export function useCatalogFilters(initial?: CatalogInitialPage, initialCategoryN
   const activeFilterCount =
     (activeTabSlug !== null ? 1 : 0) +
     (activePriceRange !== 'all' ? 1 : 0) +
+    (activeBrand !== null ? 1 : 0) +
+    (inStockOnly ? 1 : 0) +
     (urlSearch !== '' ? 1 : 0);
 
   const handleResetFilters = () => {
@@ -128,6 +141,11 @@ export function useCatalogFilters(initial?: CatalogInitialPage, initialCategoryN
       priceRanges: PRICE_RANGES,
       activePriceRange,
       onSelectPriceRange: setActivePriceRange,
+      brands: list.brandFacets,
+      activeBrand,
+      onSelectBrand: setActiveBrand,
+      inStockOnly,
+      onToggleInStock: setInStockOnly,
       hasActiveFilters,
       onResetFilters: handleResetFilters,
     } satisfies CatalogSidebarFiltersProps,
@@ -142,6 +160,10 @@ export function useCatalogFilters(initial?: CatalogInitialPage, initialCategoryN
       onClearCategory: () => setActiveTabSlug(null),
       priceLabel: activePriceLabel,
       onClearPrice: () => setActivePriceRange('all'),
+      brandLabel: activeBrandLabel,
+      onClearBrand: () => setActiveBrand(null),
+      inStockOnly,
+      onClearInStock: () => setInStockOnly(false),
       searchQuery: urlSearch || null,
       onClearSearch: () => setSearchQuery(''),
       onClearAll: handleResetFilters,

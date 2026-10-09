@@ -1,5 +1,6 @@
 import {
   BANNER_DEFAULT_CTA_TEXT,
+  NewsletterSignup,
   BannerPicture,
   type BannerView,
 } from '@/features/content';
@@ -33,8 +34,7 @@ function FooterBannerStrip({ banner }: { banner: BannerView }) {
 /**
  * Dải cuối trang trong layout storefront: banner FOOTER (nếu Admin bật) + khối liên hệ tư vấn.
  *
- * GAP: trước đây là form "nhận tin qua email" nhưng contract Storefront chưa có API newsletter nên
- * form không gửi đi đâu (RULE-TRUST-03). Thay bằng các kênh liên hệ có thật; có endpoint thì thêm lại.
+ * Đăng ký nhận tin đi qua API thật `createNewsletterSubscription` (`NewsletterSignup`).
  */
 export function FooterNewsletterBanner({ banner: footerBanner }: { banner?: BannerView }) {
   return (
@@ -44,7 +44,7 @@ export function FooterNewsletterBanner({ banner: footerBanner }: { banner?: Bann
         <div className="pointer-events-none absolute -left-12 -top-12 size-56 rounded-full bg-red-600/20 blur-3xl" aria-hidden="true" />
         <div className="pointer-events-none absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-500/50 to-transparent" />
 
-        <div className="relative z-10 page-container flex flex-col items-center gap-6 px-0 text-center md:flex-row md:justify-between md:text-left">
+        <div className="relative z-10 page-container grid gap-8 px-0 md:grid-cols-2 md:items-center">
           <div>
             <h2 className="text-xl font-black sm:text-2xl lg:text-3xl text-white tracking-tight">
               Cần tư vấn chọn thiết bị?
@@ -52,8 +52,13 @@ export function FooterNewsletterBanner({ banner: footerBanner }: { banner?: Bann
             <p className="mt-1.5 text-xs sm:text-sm font-medium text-slate-300">
               Nhân viên {STORE_CONFIG.name} tư vấn trực tiếp 1:1, hỗ trợ {STORE_CONTACT.openingHoursShort}.
             </p>
+            <ContactActions tone="dark" className="mt-4" />
           </div>
-          <ContactActions tone="dark" className="justify-center" />
+          <div>
+            <h2 className="text-base font-semibold">Nhận ưu đãi & bài hướng dẫn tập</h2>
+            <p className="mb-3 mt-1 text-sm text-slate-300">Email về sản phẩm mới và khuyến mãi.</p>
+            <NewsletterSignup source="footer" tone="dark" />
+          </div>
         </div>
       </section>
     </>

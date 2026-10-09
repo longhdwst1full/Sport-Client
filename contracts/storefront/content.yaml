@@ -116,6 +116,44 @@ paths:
       summary: Banner đang hiển thị theo vị trí (và danh mục với CATEGORY_TOP)
       tags:
         - Storefront Content
+  /api/v1/newsletter/subscriptions:
+    post:
+      operationId: createNewsletterSubscription
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateNewsletterSubscriptionDto"
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NewsletterSubscriptionResultDto"
+        "400":
+          description: Email/source sai định dạng hoặc honeypot có giá trị
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
+        "429":
+          description: Burst throttle theo IP
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
+        "503":
+          description: NEWSLETTER_PERSISTENCE_DISABLED
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
+      summary: Đăng ký nhận bản tin; gọi lại cùng email trả cùng kết quả, không tạo bản ghi trùng
+      tags:
+        - Storefront Content
 components:
   schemas:
     ActiveBannerDto:
@@ -329,6 +367,37 @@ components:
         - PRODUCT_GUIDE
         - ABOUT
         - POLICY
+    CreateNewsletterSubscriptionDto:
+      type: object
+      properties:
+        email:
+          type: string
+          maxLength: 254
+          example: an@example.com
+        source:
+          type: string
+          pattern: ^[a-z0-9_-]{1,32}$
+          example: footer
+          description: Vị trí form trên storefront (chữ thường, số, `_`, `-`; tối đa 32 ký tự)
+        website:
+          type: string
+          maxLength: 0
+          description: "Honeypot chống spam: client PHẢI để trống hoặc không gửi; có giá trị thì bị từ chối 400"
+      required:
+        - email
+    NewsletterSubscriptionResultDto:
+      type: object
+      properties:
+        status:
+          example: SUBSCRIBED
+          allOf:
+            - $ref: "#/components/schemas/NewsletterSubscriptionResultStatus"
+      required:
+        - status
+    NewsletterSubscriptionResultStatus:
+      type: string
+      enum:
+        - SUBSCRIBED
   securitySchemes:
     bearer:
       scheme: bearer

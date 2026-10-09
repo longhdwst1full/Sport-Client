@@ -25,6 +25,7 @@ paths:
         - Storefront Catalog
   /api/v1/catalog/products:
     get:
+      description: Lọc thêm theo thương hiệu, còn hàng và thông số OPTION; `includeFacets=true` trả thương hiệu kèm số lượng.
       operationId: listCatalogProducts
       parameters:
         - name: page
@@ -99,6 +100,42 @@ paths:
             pattern: ^\d+(\.\d{1,2})?$
             example: "5000000"
             type: string
+        - name: brand
+          required: false
+          in: query
+          description: Slug thương hiệu; lặp tham số hoặc phân tách dấu phẩy. Nhiều giá trị = OR
+          schema:
+            maxItems: 20
+            example:
+              - adidas
+            type: array
+            items:
+              type: string
+        - name: inStock
+          required: false
+          in: query
+          description: true = chỉ sản phẩm còn ít nhất một SKU bán được (cùng luật với trường `inStock`); false/bỏ trống = không lọc
+          schema:
+            type: boolean
+        - name: attributes
+          required: false
+          in: query
+          description: "Lọc theo thông số dạng lựa chọn (OPTION): `<mã thuộc tính>:<mã lựa chọn>`, lặp tham số. Cùng mã thuộc tính = OR giữa các lựa chọn; khác mã = AND."
+          schema:
+            maxItems: 10
+            example:
+              - MATERIAL:COTTON
+              - COLOR:RED
+            type: array
+            items:
+              type: string
+        - name: includeFacets
+          required: false
+          in: query
+          description: true = trả thêm `facets` (thương hiệu kèm số sản phẩm) cho bộ lọc hiện tại
+          schema:
+            default: false
+            type: boolean
       responses:
         "200":
           description: ""
@@ -162,6 +199,22 @@ components:
         - componentSku
         - componentName
         - quantity
+    CatalogBrandFacetDto:
+      type: object
+      properties:
+        slug:
+          type: string
+          example: adidas
+        name:
+          type: string
+          example: Adidas
+        count:
+          type: number
+          example: 12
+      required:
+        - slug
+        - name
+        - count
     CatalogCategoryDto:
       type: object
       properties:
@@ -208,6 +261,16 @@ components:
       required:
         - items
         - total
+    CatalogProductFacetsDto:
+      type: object
+      properties:
+        brands:
+          description: Thương hiệu ACTIVE có sản phẩm khớp danh mục/tìm kiếm/thông số hiện tại (bỏ qua chính bộ lọc brand, giá và inStock); xếp theo số lượng giảm dần rồi tên
+          type: array
+          items:
+            $ref: "#/components/schemas/CatalogBrandFacetDto"
+      required:
+        - brands
     ProductBundleDto:
       type: object
       properties:
@@ -389,6 +452,12 @@ components:
             $ref: "#/components/schemas/ProductSummaryDto"
         meta:
           $ref: "#/components/schemas/ProductListMetaDto"
+        facets:
+          nullable: true
+          description: Chỉ có ở listCatalogProducts khi `includeFacets=true`
+          type: object
+          allOf:
+            - $ref: "#/components/schemas/CatalogProductFacetsDto"
       required:
         - items
         - meta
