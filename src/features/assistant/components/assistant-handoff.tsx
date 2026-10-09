@@ -34,7 +34,7 @@ export function AssistantHandoff({
   return (
     <section aria-labelledby="assistant-handoff-title" className="border-t border-neutral-200 bg-neutral-50 p-3">
       <div className="flex items-center justify-between gap-2">
-        <h3 id="assistant-handoff-title" className="text-xs font-black text-neutral-900">{ASSISTANT_COPY.handoff}</h3>
+        <h3 id="assistant-handoff-title" className="text-xs font-bold text-neutral-900">{ASSISTANT_COPY.handoff}</h3>
         {/* 36px: khung handoff nằm trong panel 380px nên dùng nút gọn. */}
         <Button
           variant="ghost"

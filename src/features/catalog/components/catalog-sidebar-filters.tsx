@@ -29,7 +29,7 @@ export function CatalogSidebarFilters({ hasActiveFilters, onResetFilters, ...gro
     <aside className="space-y-6">
       {/* Header filter title & Reset */}
       <div className="flex items-center justify-between border-b border-neutral-200/90 pb-3">
-        <span className="text-xs font-black uppercase tracking-wider text-neutral-900">
+        <span className="text-xs font-bold uppercase tracking-wider text-neutral-900">
           Bộ lọc tìm kiếm
         </span>
         {hasActiveFilters && (
@@ -52,8 +52,8 @@ export function CatalogSidebarFilters({ hasActiveFilters, onResetFilters, ...gro
 const FOCUS_RING =
   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-1';
 const SIDEBAR_HEADING =
-  'mb-2.5 flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-neutral-800';
-const SHEET_HEADING = 'text-xs font-black uppercase text-neutral-700 mb-2';
+  'mb-2.5 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-neutral-800';
+const SHEET_HEADING = 'text-xs font-bold uppercase text-neutral-700 mb-2';
 
 /**
  * Nhóm "Danh mục" + "Khoảng giá" dùng chung cho sidebar desktop và drawer mobile; `variant` chỉ đổi

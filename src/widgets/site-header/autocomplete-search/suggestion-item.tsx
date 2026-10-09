@@ -56,7 +56,7 @@ export function SuggestionItem({ product, isSelected, onSelect, onHover }: Sugge
 
       {/* Price on right */}
       <div className="shrink-0 text-right">
-        <strong className="block text-xs font-black text-brand-600 sm:text-sm">
+        <strong className="block text-xs font-bold text-neutral-950 sm:text-sm">
           {product.priceLabel}
         </strong>
       </div>

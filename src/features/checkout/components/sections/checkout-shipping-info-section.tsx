@@ -52,7 +52,7 @@ export function CheckoutShippingInfoSection({
                 {[saved.addressLine, saved.ward, saved.district, saved.province].filter(Boolean).join(', ')}
               </span>
               {saved.isDefault && (
-                <span className="mt-1.5 inline-block rounded-full bg-neutral-100 px-2.5 py-0.5 text-3xs font-black uppercase tracking-wider text-neutral-900">
+                <span className="mt-1.5 inline-block rounded-full bg-neutral-100 px-2.5 py-0.5 text-3xs font-bold uppercase tracking-wider text-neutral-900">
                   Mặc định
                 </span>
               )}

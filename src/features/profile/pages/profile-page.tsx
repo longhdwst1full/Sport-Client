@@ -107,12 +107,12 @@ export function ProfilePage() {
             <div className="pointer-events-none absolute -right-16 -top-20 size-64 rounded-full bg-white/5" />
             {profile ? (
               <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center">
-                <div className="grid size-16 shrink-0 place-items-center rounded-2xl bg-white/15 text-2xl font-black ring-1 ring-white/25 sm:size-20 sm:text-3xl">
+                <div className="grid size-16 shrink-0 place-items-center rounded-2xl bg-white/15 text-2xl font-bold ring-1 ring-white/25 sm:size-20 sm:text-3xl">
                   {initialsOf(profile.name)}
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-xs font-semibold text-white/70">Xin chào,</p>
-                  <h1 className="truncate text-xl font-black sm:text-2xl">{profile.name}</h1>
+                  <h1 className="truncate text-xl font-bold sm:text-2xl">{profile.name}</h1>
                   <IconList
                     items={[
                       ...(profile.email
@@ -199,7 +199,7 @@ export function ProfilePage() {
               ) : (
                 <>
                   <header className="border-b border-[var(--dc-border)] pb-5">
-                    <h2 className="text-xl font-black text-[var(--dc-text-primary)]">{copy.title}</h2>
+                    <h2 className="text-xl font-bold text-[var(--dc-text-primary)]">{copy.title}</h2>
                     <p className="mt-1 text-sm text-[var(--dc-text-secondary)]">{copy.description}</p>
                   </header>
                   <div className="mt-6 max-w-xl">

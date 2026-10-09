@@ -25,7 +25,7 @@ export const ProductCard = memo(function ProductCard({
   priority = false,
 }: ProductCardProps) {
   return (
-    <article className="group relative flex flex-col overflow-hidden rounded-xl border border-neutral-200/80 bg-white transition-shadow duration-200 hover:border-neutral-300 hover:shadow-md motion-reduce:transition-none">
+    <article className="group card-interactive relative flex flex-col motion-reduce:transition-none">
       <div className="flex w-full flex-1 flex-col">
         {/* Thumbnail Link */}
         <Link
@@ -71,7 +71,7 @@ export const ProductCard = memo(function ProductCard({
           {/* Price, stock & CTA */}
           <div className="mt-auto pt-2">
             <strong
-              className={`block truncate text-base font-bold ${product.hasPrice ? 'text-brand-600' : 'text-neutral-700'}`}
+              className={`block truncate text-base font-bold ${product.hasPrice ? 'text-neutral-950' : 'text-neutral-500'}`}
             >
               {product.displayPrice}
             </strong>

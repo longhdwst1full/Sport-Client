@@ -55,7 +55,7 @@ export function MobileMenuDrawer({
 
           {/* Main Categories Accordion */}
           <div className="px-4 py-3 space-y-1">
-            <div className="px-3 py-1 text-xs font-black uppercase tracking-wider text-neutral-500">
+            <div className="px-3 py-1 eyebrow text-neutral-500">
               Điều hướng
             </div>
             <Link
@@ -73,7 +73,7 @@ export function MobileMenuDrawer({
               Tất cả sản phẩm
             </Link>
 
-            <div className="pt-2 px-3 py-1 text-xs font-black uppercase tracking-wider text-neutral-500">
+            <div className="pt-2 px-3 py-1 eyebrow text-neutral-500">
               Danh mục thiết bị chính hãng
             </div>
             {megaMenuCategories.map((cat, catIdx) => {
@@ -130,7 +130,7 @@ export function MobileMenuDrawer({
                       ))}
                       <Link
                         href={cat.href}
-                        className="inline-block py-2 text-sm font-extrabold text-neutral-900 hover:underline"
+                        className="inline-block py-2 text-sm font-semibold text-neutral-900 hover:underline"
                         onClick={onClose}
                       >
                         Xem tất cả {cat.label} →
@@ -147,7 +147,7 @@ export function MobileMenuDrawer({
             {hasFlashSaleCampaign && (
               <Link
                 href="/flash-sale"
-                className="flex items-center justify-between rounded-xl px-3 py-3 text-sm font-black text-neutral-900 hover:bg-neutral-50 transition"
+                className="flex items-center justify-between rounded-xl px-3 py-3 text-sm font-bold text-neutral-900 hover:bg-neutral-50 transition"
                 onClick={onClose}
               >
                 <span className="flex items-center gap-2">
@@ -155,7 +155,7 @@ export function MobileMenuDrawer({
                   ⚡ Giờ Vàng Flash Sale
                   {flashSaleMaxDiscountPercent ? ` Giảm ${flashSaleMaxDiscountPercent}%` : ''}
                 </span>
-                <span className="rounded-full bg-neutral-900 px-2 py-0.5 text-3xs font-black uppercase text-white">
+                <span className="rounded-full bg-neutral-900 px-2 py-0.5 text-3xs font-bold uppercase text-white">
                   SỐC
                 </span>
               </Link>
@@ -169,7 +169,7 @@ export function MobileMenuDrawer({
               <span className="flex items-center gap-2.5">
                 Combo Home Gym Trọn Gói
               </span>
-              <span className="rounded-full bg-amber-400 px-2 py-0.5 text-3xs font-black uppercase text-neutral-950">
+              <span className="rounded-full bg-amber-400 px-2 py-0.5 text-3xs font-bold uppercase text-neutral-950">
                 Hot
               </span>
             </Link>
@@ -227,7 +227,7 @@ export function MobileMenuDrawer({
             </a>
             <Link
               href="/cart"
-              className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-neutral-900 px-4 py-3 text-sm font-black text-white hover:bg-black transition"
+              className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-neutral-900 px-4 py-3 text-sm font-bold text-white hover:bg-black transition"
               onClick={onClose}
             >
               <ShoppingBag className="size-3.5" />
@@ -237,7 +237,7 @@ export function MobileMenuDrawer({
               href={isLoggedIn ? '/profile' : '/login'}
               className={`flex items-center justify-center gap-1.5 rounded-xl px-4 py-3 text-sm font-bold transition ${
                 isLoggedIn
-                  ? 'border border-neutral-200 bg-white text-neutral-800 font-extrabold'
+                  ? 'border border-neutral-200 bg-white text-neutral-800 font-semibold'
                   : 'border border-neutral-200 bg-white text-neutral-700'
               }`}
               onClick={onClose}

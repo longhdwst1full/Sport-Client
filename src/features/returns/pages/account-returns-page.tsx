@@ -34,7 +34,7 @@ export function AccountReturnsPage() {
       <main className="mx-auto min-h-[60vh] max-w-6xl px-4 py-10 sm:px-6">
         <div className="mb-7">
           <p className="eyebrow text-neutral-900">Tài khoản</p>
-          <h1 className="mt-2 text-2xl font-black text-neutral-950 sm:text-3xl">Yêu cầu đổi trả</h1>
+          <h1 className="heading-page mt-2">Yêu cầu đổi trả</h1>
           <p className="mt-2 text-sm text-neutral-600">Tạo yêu cầu từ trang chi tiết của đơn đã giao; theo dõi tiến độ tại đây.</p>
         </div>
 
@@ -45,7 +45,7 @@ export function AccountReturnsPage() {
           <EmptyState
             as="section"
             className="surface-card p-6 text-center shadow-sm sm:p-10"
-            titleClassName="text-xl font-black"
+            titleClassName="text-xl font-bold"
             title="Đăng nhập để xem yêu cầu đổi trả"
             actions={<Link href="/login" className={buttonVariants({ variant: 'primary', className: 'mt-5 px-5 font-bold' })}>Đăng nhập</Link>}
           />
@@ -61,7 +61,7 @@ export function AccountReturnsPage() {
             className="rounded-3xl border border-dashed border-neutral-300 bg-white p-6 text-center sm:p-10"
             iconWrapClassName="flex justify-center"
             icon={<RotateCcw aria-hidden className="size-12 text-neutral-400" />}
-            titleClassName="mt-4 text-lg font-black"
+            titleClassName="mt-4 text-lg font-bold"
             title="Chưa có yêu cầu đổi trả"
             actions={<Link href="/orders" className={buttonVariants({ variant: 'link', className: 'mt-4 min-h-11 font-bold' })}>Xem đơn hàng</Link>}
           />
@@ -76,7 +76,7 @@ export function AccountReturnsPage() {
               >
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div>
-                    <div className="font-mono text-sm font-black text-neutral-900">{item.returnNo}</div>
+                    <div className="font-mono text-sm font-bold text-neutral-900">{item.returnNo}</div>
                     <div className="mt-1 text-xs text-neutral-500">{RETURN_FIELD_LABELS.orderNo} {item.orderNo} · {formatDateTime(item.createdAt)}</div>
                   </div>
                   <span className={`rounded-full px-3 py-1 text-xs font-bold ${returnStatusTone[item.status]}`}>{returnStatusLabels[item.status]}</span>

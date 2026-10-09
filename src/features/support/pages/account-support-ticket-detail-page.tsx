@@ -69,7 +69,7 @@ export function AccountSupportTicketDetailPage({ ticketNo }: { ticketNo: string 
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div className="min-w-0">
                 <p className="text-xs font-bold uppercase tracking-eyebrow text-neutral-900">{SUPPORT_FIELD_LABELS.ticketNo}</p>
-                <h1 className="mt-1 font-mono text-xl font-black text-neutral-950">{detail.ticketNo}</h1>
+                <h1 className="mt-1 font-mono text-xl font-bold text-neutral-950">{detail.ticketNo}</h1>
                 <p className="mt-2 text-sm font-bold text-neutral-800">{detail.subject}</p>
               </div>
               <SupportTicketStatusBadge status={detail.status} />
@@ -91,7 +91,7 @@ export function AccountSupportTicketDetailPage({ ticketNo }: { ticketNo: string 
           </header>
 
           <section className="mt-6" aria-labelledby="support-thread-title">
-            <h2 id="support-thread-title" className="text-sm font-black uppercase tracking-wider text-neutral-700">Trao đổi</h2>
+            <h2 id="support-thread-title" className="text-sm font-bold uppercase tracking-wider text-neutral-700">Trao đổi</h2>
             {/* SECURITY: chỉ render tin khách thấy được; view model không mang ghi chú nội bộ. */}
             <ol className="mt-3 space-y-3">
               {detail.messages.map((message) => {

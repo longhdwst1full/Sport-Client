@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { ArrowRight, Send, Sparkles } from 'lucide-react';
 import { buttonVariants } from '@/foundation/components/buttons';
 import { STORE_CONTACT } from '@/shared/constants';
-import { ADVISOR_FOCUS, ADVISOR_SECONDARY_BUTTON } from './advisor-option-step';
 
 interface Recommendation {
   title: string;
@@ -23,23 +22,23 @@ export function AdvisorResults({ recommendation, goalLabel, spaceLabel, budgetLa
   );
 
   return (
-    <div className="rounded-2xl border border-neutral-700 bg-neutral-900/90 p-6 sm:p-8 backdrop-blur-sm">
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 border-b border-neutral-800 pb-6">
+    <div className="rounded-xl border border-neutral-200 bg-white p-6 sm:p-8">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 border-b border-neutral-200 pb-6">
         <div>
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-neutral-900/20 px-3 py-1 text-xs font-black uppercase tracking-wider text-neutral-300 mb-2">
+          <div className="eyebrow mb-2 inline-flex items-center gap-1.5 text-neutral-500">
             <Sparkles className="size-3.5" aria-hidden="true" />
-            <span>CẤU HÌNH ĐƯỢC CHUYÊN GIA BẢO AN SPORT TỐI ƯU</span>
+            <span>Cấu hình gợi ý</span>
           </div>
-          <h3 className="text-xl sm:text-2xl font-black text-white">
+          <h3 className="text-xl sm:text-2xl font-bold text-neutral-950">
             {recommendation.title}
           </h3>
-          <div className="mt-2 flex flex-wrap gap-2 text-xs text-neutral-400">
+          <div className="mt-2 flex flex-wrap gap-2 text-xs text-neutral-600">
             {[
               `Mục tiêu: ${goalLabel}`,
               `Không gian: ${spaceLabel}`,
               `Ngân sách: ${budgetLabel}`,
             ].map((summary) => (
-              <span key={summary} className="rounded-md bg-neutral-800 px-2 py-0.5">
+              <span key={summary} className="rounded-md bg-neutral-100 px-2 py-0.5">
                 {summary}
               </span>
             ))}
@@ -52,8 +51,8 @@ export function AdvisorResults({ recommendation, goalLabel, spaceLabel, budgetLa
             target="_blank"
             rel="noopener noreferrer"
             className={buttonVariants({
-              variant: 'primary',
-              className: `px-5 text-xs font-black uppercase tracking-wider shadow-lg shadow-neutral-900/20 ${ADVISOR_FOCUS}`,
+              variant: 'cta',
+              className: 'px-5',
             })}
           >
             <Send className="size-3.5" aria-hidden="true" />
@@ -62,7 +61,7 @@ export function AdvisorResults({ recommendation, goalLabel, spaceLabel, budgetLa
           </a>
           <Link
             href={recommendation.catalogHref}
-            className={buttonVariants({ variant: 'secondary', className: `px-5 ${ADVISOR_SECONDARY_BUTTON} text-white` })}
+            className={buttonVariants({ variant: 'secondary', className: 'px-5' })}
           >
             <span>Xem sản phẩm</span>
             <ArrowRight className="size-3.5" aria-hidden="true" />
@@ -71,19 +70,19 @@ export function AdvisorResults({ recommendation, goalLabel, spaceLabel, budgetLa
       </div>
 
       <div className="mt-6">
-        <span className="block text-xs font-black uppercase tracking-wider text-neutral-400 mb-3">
+        <span className="eyebrow mb-3 block text-neutral-500">
           Thiết bị nên có trong combo này:
         </span>
         <div className="grid gap-3 sm:grid-cols-3">
           {recommendation.items.map((item, idx) => (
             <div
               key={item}
-              className="flex items-center gap-3 rounded-xl border border-neutral-800 bg-neutral-950/70 p-4"
+              className="flex items-center gap-3 rounded-lg bg-neutral-50 p-4"
             >
-              <div className="grid size-7 shrink-0 place-items-center rounded-lg bg-neutral-900/20 text-xs font-black text-neutral-300">
+              <div className="grid size-7 shrink-0 place-items-center rounded-md bg-neutral-950 text-xs font-semibold text-white">
                 {idx + 1}
               </div>
-              <span className="text-xs font-bold text-neutral-200">{item}</span>
+              <span className="text-sm font-medium text-neutral-800">{item}</span>
             </div>
           ))}
         </div>

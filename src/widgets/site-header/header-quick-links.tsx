@@ -18,11 +18,11 @@ export function HeaderQuickLinks({
       {hasFlashSaleCampaign && (
         <Link
           href="/flash-sale"
-          className="mr-1 inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-gradient-to-r from-brand-600 to-brand-700 px-3 py-1 text-xs font-black text-white shadow-xs transition hover:from-brand-700 hover:to-brand-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 xl:px-3.5 xl:py-1.5 xl:text-sm"
+          className="mr-1 inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-gradient-to-r from-brand-600 to-brand-700 px-3 py-1 text-xs font-bold text-white shadow-xs transition hover:from-brand-700 hover:to-brand-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 xl:px-3.5 xl:py-1.5 xl:text-sm"
         >
           <span>⚡ Flash Sale</span>
           {flashSaleMaxDiscountPercent ? (
-            <span className="rounded-full bg-white/20 px-1.5 py-0.5 text-3xs font-black uppercase text-white">
+            <span className="rounded-full bg-white/20 px-1.5 py-0.5 text-3xs font-bold uppercase text-white">
               -{flashSaleMaxDiscountPercent}%
             </span>
           ) : null}

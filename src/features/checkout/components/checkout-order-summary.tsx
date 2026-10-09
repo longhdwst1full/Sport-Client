@@ -12,7 +12,7 @@ import { formatVnd } from '@/shared/format/money';
 import { PRODUCT_PLACEHOLDER_IMAGE, STORE_POLICY_PAGES } from '@/shared/constants';
 
 /** Nút đặt hàng (desktop + thanh dính mobile): bo lớn, chữ đậm, trạng thái khoá xám thay vì mờ. */
-const SUBMIT_CLASS = 'rounded-2xl text-sm font-black shadow-sm disabled:bg-neutral-300 disabled:text-neutral-600 disabled:opacity-100';
+const SUBMIT_CLASS = 'rounded-2xl text-sm font-bold shadow-sm disabled:bg-neutral-300 disabled:text-neutral-600 disabled:opacity-100';
 
 interface CheckoutOrderSummaryProps {
   items: CartItem[];
@@ -83,7 +83,7 @@ export function CheckoutOrderSummary({
     <aside>
       <div className="surface-card p-4 shadow-sm sm:p-6 lg:sticky lg:top-28">
         <div className="flex items-center justify-between">
-          <h2 className="font-black text-neutral-900">Đơn hàng ({items.length})</h2>
+          <h2 className="font-bold text-neutral-900">Đơn hàng ({items.length})</h2>
           <Link href="/cart" className="-my-2 inline-flex min-h-11 items-center px-2 text-xs font-bold text-neutral-900 hover:underline">Chỉnh sửa</Link>
         </div>
         <div className="mt-4 max-h-72 space-y-3 overflow-auto">
@@ -113,9 +113,9 @@ export function CheckoutOrderSummary({
           {totalRow && (
             <DescriptionList
               layout="inline"
-              className="border-t pt-3 text-base font-black"
+              className="border-t pt-3 text-base font-bold"
               labelClassName="text-neutral-900"
-              valueClassName={`font-black text-neutral-900 ${refreshing ? 'opacity-60' : ''}`}
+              valueClassName={`font-bold text-neutral-900 ${refreshing ? 'opacity-60' : ''}`}
               items={[totalRow]}
             />
           )}
@@ -148,7 +148,7 @@ export function CheckoutOrderSummary({
           />
         )}
         {showSubmit && (
-          <Button type="submit" variant="primary" size="lg" fullWidth disabled={submitIsDisabled} className={`mt-4 hidden lg:flex ${SUBMIT_CLASS}`}>
+          <Button type="submit" variant="cta" size="lg" fullWidth disabled={submitIsDisabled} className={`mt-4 hidden lg:flex ${SUBMIT_CLASS}`}>
             {busy ? <Spinner className="size-5 animate-spin" /> : <CheckCircle2 aria-hidden className="size-5" />}
             {busy ? 'Đang xử lý...' : submitLabel}
           </Button>
@@ -167,12 +167,12 @@ export function CheckoutOrderSummary({
               <span className="block text-2xs font-semibold text-neutral-500">
                 {hasFinalTotal ? 'Khách thanh toán' : shippingPending ? 'Tiền hàng (chưa gồm phí giao)' : 'Tạm tính (chưa gồm phí giao)'}
               </span>
-              <strong className="block truncate text-lg font-black text-neutral-900">{mobileTotalLabel}</strong>
+              <strong className="block truncate text-lg font-bold text-neutral-900">{mobileTotalLabel}</strong>
               {setAcceptedTerms && !acceptedTerms && (
                 <span className="block text-2xs font-semibold text-amber-700">Đánh dấu đồng ý điều khoản để đặt hàng</span>
               )}
             </div>
-            <Button type="submit" variant="primary" size="lg" disabled={submitIsDisabled} className={`shrink-0 px-5 ${SUBMIT_CLASS}`}>
+            <Button type="submit" variant="cta" size="lg" disabled={submitIsDisabled} className={`shrink-0 px-5 ${SUBMIT_CLASS}`}>
               {busy ? <Spinner className="size-5 animate-spin" /> : null}
               {busy ? 'Đang xử lý...' : submitLabel}
             </Button>

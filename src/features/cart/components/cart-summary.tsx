@@ -26,7 +26,7 @@ export function CartSummary({
 }: CartSummaryProps) {
   return (
     <aside className="h-fit surface-card p-6 shadow-sm lg:sticky lg:top-40">
-      <h2 className="text-lg font-black text-neutral-900">Tóm tắt đơn hàng</h2>
+      <h2 className="text-lg font-bold text-neutral-900">Tóm tắt đơn hàng</h2>
       <div className="mt-5 space-y-3 text-sm">
         <DescriptionList
           layout="inline"
@@ -43,7 +43,7 @@ export function CartSummary({
           layout="inline"
           className="text-base"
           labelClassName="font-bold text-neutral-900"
-          items={[{ label: 'Tạm tính', value: formatVnd(subtotal), valueClassName: 'text-xl font-black text-brand-700' }]}
+          items={[{ label: 'Tạm tính', value: formatVnd(subtotal), valueClassName: 'text-xl font-bold text-neutral-950' }]}
         />
         <p className="text-xs text-neutral-500">
           Chưa gồm phí vận chuyển và khuyến mãi. Tổng thanh toán chính xác hiển thị ở bước thanh toán.
@@ -56,12 +56,13 @@ export function CartSummary({
         onClick={onCheckoutClick}
         aria-disabled={selectedCount === 0}
         className={buttonVariants({
+          variant: 'cta',
           size: 'lg',
           fullWidth: true,
           className: `mt-6 rounded-full font-bold ${
             selectedCount > 0
-              ? 'shadow-lg shadow-red-600/30'
-              : 'cursor-not-allowed bg-neutral-300 shadow-none hover:bg-neutral-300 from-neutral-300 to-neutral-300'
+              ? ''
+              : 'cursor-not-allowed bg-neutral-200 text-neutral-500 hover:bg-neutral-200'
           }`,
         })}
       >

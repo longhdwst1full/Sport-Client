@@ -93,7 +93,7 @@ export function SiteHeader({ initialCategories }: SiteHeaderProps = {}) {
             </span>
             <span className="flex flex-col leading-tight">
               <span className="text-2xs font-semibold text-neutral-500 uppercase tracking-wider">Hotline tư vấn</span>
-              <strong className="text-sm font-black text-neutral-900 transition-colors group-hover:text-black">{STORE_CONTACT.primaryHotline}</strong>
+              <strong className="text-sm font-bold text-neutral-900 transition-colors group-hover:text-black">{STORE_CONTACT.primaryHotline}</strong>
             </span>
           </a>
 

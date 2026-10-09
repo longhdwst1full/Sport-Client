@@ -113,7 +113,7 @@ function ToastCard({ item, onDismiss }: { item: ToastItem; onDismiss: (id: strin
         <div className="min-w-0 flex-1 pt-0.5">
           <div className="flex items-center gap-2">
             <span
-              className={`rounded-full border px-2 py-0.5 text-3xs font-black uppercase tracking-wider ${config.badgeClass}`}
+              className={`rounded-full border px-2 py-0.5 text-3xs font-bold uppercase tracking-wider ${config.badgeClass}`}
             >
               {config.badge}
             </span>

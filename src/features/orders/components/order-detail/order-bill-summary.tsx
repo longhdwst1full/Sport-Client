@@ -62,10 +62,10 @@ export function OrderBillSummary({ view }: { view: OrderDetailView | undefined }
             { label: 'Phí vận chuyển', value: view?.isShippingFree ? 'Miễn phí' : view?.shippingTotalLabel },
             {
               key: 'grand-total',
-              label: <span className="font-black text-neutral-900">Tổng thanh toán</span>,
+              label: <span className="font-bold text-neutral-900">Tổng thanh toán</span>,
               value: view?.grandTotalLabel,
               itemClassName: 'border-t border-neutral-200/80 pt-3 text-base',
-              valueClassName: 'text-xl sm:text-2xl font-black text-neutral-900',
+              valueClassName: 'text-xl sm:text-2xl font-bold text-neutral-900',
             },
           ]}
         />

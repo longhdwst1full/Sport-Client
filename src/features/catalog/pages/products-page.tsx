@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import { listCatalogProducts } from '@/generated/api/catalog/catalog';
 import Link from 'next/link';
-import { Sparkles, ShieldCheck, Truck, RotateCcw, CreditCard } from 'lucide-react';
+import { ShieldCheck, Truck, RotateCcw, CreditCard } from 'lucide-react';
 import { STORE_POLICY_PAGES } from '@/shared/constants';
 import { Breadcrumb } from '@/foundation/components/navigation';
 import { Skeleton } from '@/foundation/components/feedback';
@@ -77,7 +77,7 @@ export async function ProductsPage({
   const initialCategoryName = categories?.find((item) => item.slug === filters.category)?.name;
 
   return (
-      <main className="bg-neutral-50/60 pb-20 pt-8">
+      <main className="bg-white pb-20 pt-8">
         <div className="page-container">
           <Breadcrumb
             className="mb-6"
@@ -85,21 +85,15 @@ export async function ProductsPage({
           />
 
           {/* Compact Catalog Hero Banner */}
-          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-neutral-950 via-neutral-900 to-neutral-950 px-6 py-6 sm:px-8 sm:py-8 text-white shadow-md">
-            <div className="relative z-10 max-w-2xl">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-neutral-400/30 bg-neutral-950/60 px-3 py-0.5 text-2xs font-extrabold uppercase tracking-widest text-neutral-300 backdrop-blur-md">
-                <Sparkles aria-hidden className="size-3" /> Bảo An Sport — Tổng Kho Thể Thao Chính Hãng
-              </span>
-              <h1 className="mt-2 text-2xl font-black text-white sm:text-3xl lg:text-4xl tracking-tight">
-                Thiết Bị Thể Thao Chuẩn Thi Đấu
-              </h1>
-              <p className="mt-1.5 text-xs text-neutral-300 sm:text-sm">
-                Rèn luyện sức mạnh, cardio, bóng bàn, cầu lông, võ thuật và phụ kiện thể thao chính hãng.
-              </p>
-            </div>
-
-            {/* Ambient lighting */}
-            <div className="pointer-events-none absolute -right-16 -top-16 size-56 rounded-full bg-neutral-900/20 blur-[80px]" />
+          {/* Tiêu đề trang trên nền trang (không khối tối): trang danh sách để ảnh sản phẩm tạo màu. */}
+          <div className="max-w-2xl">
+            <span className="eyebrow text-neutral-500">Bảo An Sport — Thể thao chính hãng</span>
+            <h1 className="mt-2 text-2xl font-bold tracking-tight text-neutral-950 sm:text-3xl lg:text-4xl">
+              Thiết bị & phụ kiện thể thao
+            </h1>
+            <p className="mt-1.5 text-sm text-neutral-600">
+              Rèn luyện sức mạnh, cardio, bóng bàn, cầu lông, võ thuật và phụ kiện thể thao chính hãng.
+            </p>
           </div>
 
           {/* Thin Trust Benefits Bar (Single sleek strip) */}

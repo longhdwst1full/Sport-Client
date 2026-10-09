@@ -69,11 +69,11 @@ export function OrderPaymentPanel({
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
         <div>
-          <span className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-neutral-900">
+          <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-neutral-900">
             <CreditCard aria-hidden className="size-3.5" /> Thông tin thanh toán
           </span>
           <div className="mt-1 flex items-center gap-2">
-            <span className="font-mono text-sm font-extrabold text-neutral-900">{view.paymentRef}</span>
+            <span className="font-mono text-sm font-semibold text-neutral-900">{view.paymentRef}</span>
             <CopyButton
               value={view.paymentRef}
               className="grid size-9 place-items-center rounded-lg text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-700 focus-ring-tight"
@@ -139,7 +139,7 @@ export function OrderPaymentPanel({
       {canRetryVnpay && (
         <a
           href={view.redirectUrl ?? undefined}
-          className={buttonVariants({ variant: 'primary', size: 'lg', fullWidth: true, className: 'mt-5 rounded-2xl px-5 text-sm font-black shadow-glow' })}
+          className={buttonVariants({ variant: 'primary', size: 'lg', fullWidth: true, className: 'mt-5 rounded-2xl px-5 text-sm font-bold shadow-glow' })}
         >
           <CreditCard className="size-4.5" />
           {view.statusCode === PAYMENT_STATUS.FAILED ? 'Thử thanh toán lại qua VNPay' : 'Thanh toán qua cổng VNPay'}
@@ -161,7 +161,7 @@ export function OrderPaymentPanel({
       {/* Submitted Evidences */}
       {view.evidences.length > 0 && (
         <div className="mt-5 space-y-2.5 border-t border-neutral-100 pt-4">
-          <h3 className="text-xs font-black uppercase tracking-wider text-neutral-700">Bằng chứng đã gửi ({view.evidences.length})</h3>
+          <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-700">Bằng chứng đã gửi ({view.evidences.length})</h3>
           {view.evidences.map((evidence) => (
             <a
               key={evidence.id}
@@ -182,7 +182,7 @@ export function OrderPaymentPanel({
       {/* Submit Evidence Form */}
       {canSubmit && (
         <div className="mt-5 border-t border-neutral-100 pt-5">
-          <span className="block text-xs font-black uppercase tracking-wider text-neutral-800">
+          <span className="block text-xs font-bold uppercase tracking-wider text-neutral-800">
             Tải lên bằng chứng chuyển khoản <span className="text-red-600">*</span>
           </span>
           <div className="mt-2.5">

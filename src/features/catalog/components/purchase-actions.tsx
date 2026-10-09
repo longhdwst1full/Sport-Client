@@ -45,7 +45,7 @@ export function PurchaseActions({
             quantity <= 1 ? 'opacity-40 cursor-not-allowed' : ''
           }`}
           incrementClassName="grid size-10 place-items-center rounded-full bg-white text-ink shadow-sm transition hover:bg-neutral-200"
-          valueClassName="w-12 text-center text-sm font-extrabold text-ink"
+          valueClassName="w-12 text-center text-sm font-semibold text-ink"
         />
       </div>
 
@@ -60,7 +60,7 @@ export function PurchaseActions({
             Gọi{' '}
             <a
               href={`tel:${STORE_CONTACT.primaryHotlineRaw}`}
-              className="inline-flex items-center gap-1 rounded font-extrabold text-neutral-900 underline-offset-2 hover:underline focus-ring"
+              className="inline-flex items-center gap-1 rounded font-semibold text-neutral-900 underline-offset-2 hover:underline focus-ring"
             >
               <Phone className="size-3" aria-hidden="true" />
               {STORE_CONTACT.primaryHotline}
@@ -92,7 +92,7 @@ export function PurchaseActions({
         </Button>
 
         <Button
-          variant="primary"
+          variant="cta"
           size="lg"
           disabled={!canAdd}
           onClick={onBuyNow}
@@ -128,7 +128,7 @@ export function StickyBuyBar({ visible, priceLabel, canAdd, outOfStock, onAddToC
       className="fixed inset-x-0 bottom-0 z-40 border-t border-neutral-200 bg-white/95 px-4 py-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] backdrop-blur lg:hidden"
     >
       <div className="mx-auto flex max-w-7xl items-center gap-2">
-        <strong className="min-w-0 flex-1 truncate text-base font-bold text-brand-600">
+        <strong className="min-w-0 flex-1 truncate text-base font-bold text-neutral-950">
           {canAdd || outOfStock ? priceLabel : 'Liên hệ báo giá'}
         </strong>
         <Button
@@ -140,7 +140,7 @@ export function StickyBuyBar({ visible, priceLabel, canAdd, outOfStock, onAddToC
           <ShoppingBag aria-hidden className="size-4" />
           <span>{canAdd ? 'Thêm vào giỏ' : outOfStock ? 'Tạm hết hàng' : 'Liên hệ'}</span>
         </Button>
-        <Button variant="primary" disabled={!canAdd} onClick={onBuyNow} className="gap-1.5 text-xs font-bold">
+        <Button variant="cta" disabled={!canAdd} onClick={onBuyNow} className="gap-1.5 text-xs font-bold">
           <Zap aria-hidden className="size-4 fill-current" />
           <span>Mua ngay</span>
         </Button>

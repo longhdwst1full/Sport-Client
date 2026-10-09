@@ -11,7 +11,7 @@ export function CheckoutEmptyCart() {
         <Link href="/cart" className="text-sm font-bold text-neutral-900 hover:underline">
           ← Quay lại giỏ hàng
         </Link>
-        <h1 className="mt-2 text-2xl font-black tracking-tight text-neutral-950 sm:text-3xl">
+        <h1 className="mt-2 text-2xl font-bold tracking-tight text-neutral-950 sm:text-3xl">
           Thanh toán đơn hàng
         </h1>
       </div>
@@ -21,19 +21,19 @@ export function CheckoutEmptyCart() {
           <div className="mx-auto grid size-16 place-items-center rounded-2xl bg-amber-50 text-amber-600">
             <Truck className="size-8" />
           </div>
-          <h2 className="mt-4 text-xl font-black text-neutral-900">Giỏ hàng của bạn đang trống</h2>
+          <h2 className="mt-4 text-xl font-bold text-neutral-900">Giỏ hàng của bạn đang trống</h2>
           <p className="mx-auto mt-2 max-w-md text-sm text-neutral-500 leading-relaxed">
             Bạn chưa có sản phẩm nào trong giỏ để thực hiện thanh toán. Vui lòng chọn sản phẩm thể thao ưng ý trước khi hoàn tất đặt hàng.
           </p>
 
           {/* Payment Methods Info */}
           <div className="mt-8 rounded-2xl border border-neutral-100 bg-neutral-50 p-5 text-left">
-            <span className="block text-xs font-bold uppercase tracking-wider text-neutral-500">
+            <span className="block eyebrow text-neutral-500">
               Phương thức thanh toán hỗ trợ:
             </span>
             <div className="mt-3 grid gap-2.5 sm:grid-cols-2 text-xs font-semibold text-neutral-700">
               <div className="flex items-center gap-2 rounded-xl bg-white p-3 border border-neutral-200">
-                <span className="grid size-6 place-items-center rounded bg-neutral-100 text-neutral-900 font-extrabold text-3xs">COD</span>
+                <span className="grid size-6 place-items-center rounded bg-neutral-100 text-neutral-900 font-semibold text-3xs">COD</span>
                 <span>Thanh toán khi nhận hàng (COD)</span>
               </div>
               <div className="flex items-center gap-2 rounded-xl bg-white p-3 border border-neutral-200">
@@ -60,7 +60,7 @@ export function CheckoutEmptyCart() {
         </div>
 
         <aside className="h-fit surface-card p-6 shadow-sm">
-          <h2 className="text-base font-black text-neutral-950">Tóm tắt đơn hàng</h2>
+          <h2 className="text-base font-bold text-neutral-950">Tóm tắt đơn hàng</h2>
           <div className="mt-4 space-y-3 border-t border-neutral-100 pt-4 text-sm">
             <DescriptionList
               layout="inline"
@@ -73,9 +73,9 @@ export function CheckoutEmptyCart() {
             />
             <DescriptionList
               layout="inline"
-              className="border-t border-neutral-100 pt-3 text-base font-black"
+              className="border-t border-neutral-100 pt-3 text-base font-bold"
               labelClassName="text-neutral-950"
-              valueClassName="font-black text-brand-700"
+              valueClassName="font-bold text-neutral-950"
               items={[{ label: 'Tổng tiền', value: '0 ₫' }]}
             />
           </div>

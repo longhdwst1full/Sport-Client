@@ -13,10 +13,10 @@ export function ProductPriceHeader({ canAdd, outOfStock, inStock, priceLabel }: 
           biến thể, bản trước tự nhân giá bán ×1,25 để dựng ra mức giảm không có thật. */}
       <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
         <div className="min-w-0">
-          <span className="text-xs font-bold uppercase tracking-wider text-neutral-500">
-            {canAdd || outOfStock ? 'Giá bán niêm yết (Đã gồm VAT)' : 'Giá bán'}
+          <span className="eyebrow text-neutral-500">
+            {canAdd || outOfStock ? 'Giá bán niêm yết' : 'Giá bán'}
           </span>
-          <strong className="mt-1 block break-words text-2xl font-black text-brand-600 min-[400px]:text-3xl sm:text-4xl">
+          <strong className="mt-1 block break-words text-2xl font-bold text-neutral-950 min-[400px]:text-3xl sm:text-4xl">
             {(canAdd || outOfStock) && priceLabel ? priceLabel : 'Liên hệ báo giá'}
           </strong>
           {outOfStock && (

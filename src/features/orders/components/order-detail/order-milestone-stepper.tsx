@@ -55,14 +55,14 @@ export function OrderMilestoneStepper({ milestones }: { milestones: OrderMilesto
                 {/* Step Label, Subtitle & Date */}
                 <div className="mt-3 w-full">
                   {isCurrent && (
-                    <span className="mb-1 inline-block rounded-md bg-neutral-100 px-2 py-0.5 text-3xs font-black uppercase text-neutral-950">
+                    <span className="mb-1 inline-block rounded-md bg-neutral-100 px-2 py-0.5 text-3xs font-bold uppercase text-neutral-950">
                       Hiện tại
                     </span>
                   )}
                   <strong
                     className={`block text-xs leading-snug ${
                       isCurrent
-                        ? 'font-black text-neutral-950 text-sm'
+                        ? 'font-bold text-neutral-950 text-sm'
                         : isDone
                         ? 'font-bold text-neutral-900'
                         : isFailed
@@ -135,7 +135,7 @@ export function OrderMilestoneStepper({ milestones }: { milestones: OrderMilesto
                     <strong
                       className={`text-sm ${
                         isCurrent
-                          ? 'font-black text-neutral-950'
+                          ? 'font-bold text-neutral-950'
                           : isDone
                           ? 'font-bold text-neutral-900'
                           : isFailed

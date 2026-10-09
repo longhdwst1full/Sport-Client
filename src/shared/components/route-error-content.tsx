@@ -31,7 +31,7 @@ export function RouteErrorContent({ digest, onRetry }: { digest?: string; onRetr
       <div className="mx-auto grid size-16 place-items-center rounded-2xl bg-neutral-50 text-neutral-900">
         <Icon aria-hidden className="size-8" />
       </div>
-      <h1 className="mt-5 text-balance text-2xl font-black tracking-tight text-neutral-900 sm:text-4xl">
+      <h1 className="mt-5 text-balance text-2xl font-bold tracking-tight text-neutral-900 sm:text-4xl">
         {isOffline ? 'Bạn đang mất kết nối mạng' : 'Trang chưa tải được'}
       </h1>
       <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-neutral-600 sm:text-base">

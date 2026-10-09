@@ -4,7 +4,7 @@ import { STORE_SHOWROOMS } from '@/shared/constants';
 export function ShowroomList() {
   return (
     <>
-      <h2 className="text-xl font-black text-ink">Hệ thống Showroom chính hãng</h2>
+      <h2 className="text-xl font-bold text-ink">Hệ thống Showroom chính hãng</h2>
       <div className="grid gap-4 sm:grid-cols-2">
         {STORE_SHOWROOMS.map((s) => (
           <div
@@ -15,7 +15,7 @@ export function ShowroomList() {
               <span className="inline-block rounded-full bg-neutral-100 px-2.5 py-0.5 text-3xs font-bold text-neutral-600">
                 {s.city}
               </span>
-              <h3 className="mt-2 text-base font-black text-ink">{s.name}</h3>
+              <h3 className="mt-2 text-base font-bold text-ink">{s.name}</h3>
               <p className="mt-1 text-xs font-semibold text-neutral-900">
                 {s.isHeadquarter ? 'Trụ sở chính & Kho trung tâm' : 'Chi nhánh miền Nam & Kho hàng'}
               </p>

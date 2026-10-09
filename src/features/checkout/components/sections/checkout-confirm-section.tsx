@@ -32,7 +32,7 @@ export function CheckoutConfirmSection({
             variant="warning"
             onClick={refreshConsultedQuote}
             disabled={busy}
-            className="shrink-0 text-xs font-black focus-visible:ring-amber-500"
+            className="shrink-0 text-xs font-bold focus-visible:ring-amber-500"
           >
             {busy ? 'Đang kiểm tra...' : 'Kiểm tra lại phí'}
           </Button>

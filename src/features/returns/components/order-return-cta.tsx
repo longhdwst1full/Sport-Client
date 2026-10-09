@@ -27,7 +27,7 @@ export function OrderReturnCta({ orderNo, authenticated }: { orderNo: string; au
         <div className="grid size-8 place-items-center rounded-xl bg-neutral-100 text-neutral-900">
           <RotateCcw className="size-4" />
         </div>
-        <h2 className="text-sm font-black text-neutral-900">Chính sách đổi trả</h2>
+        <h2 className="text-sm font-bold text-neutral-900">Chính sách đổi trả</h2>
       </div>
       {data.returnDeadline && (
         <div className="mt-3 flex items-center gap-2 rounded-xl bg-neutral-50 p-2.5 text-xs text-neutral-600 border border-neutral-100">

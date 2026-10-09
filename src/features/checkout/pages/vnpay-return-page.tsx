@@ -33,7 +33,7 @@ export function VnpayReturnPage({ result }: { result: VnpayReturnView }) {
         <main className="mx-auto max-w-2xl px-4 sm:px-6">
           <section role="status" className={`rounded-3xl border p-5 shadow-sm sm:p-8 ${presentation.tone}`}>
             <Icon aria-hidden className={`size-12 ${presentation.iconTone}`} />
-            <h1 className="mt-4 text-2xl font-black">{presentation.title}</h1>
+            <h1 className="mt-4 text-2xl font-bold">{presentation.title}</h1>
             <p className="mt-3 text-sm leading-6">{result.message}</p>
 
             {result.paymentRef && (
@@ -56,7 +56,7 @@ export function VnpayReturnPage({ result }: { result: VnpayReturnView }) {
           <div className="mt-5 flex flex-wrap gap-3">
             <Link
               href="/orders"
-              className={buttonVariants({ variant: 'primary', className: 'rounded-full px-6 font-black' })}
+              className={buttonVariants({ variant: 'primary', className: 'rounded-full px-6 font-bold' })}
             >
               Xem đơn hàng của tôi
             </Link>

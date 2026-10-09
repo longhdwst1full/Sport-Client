@@ -5,7 +5,7 @@ import { ConsultationForm } from '../components/consultation-form';
 
 export function ContactPage() {
   return (
-      <div className="bg-neutral-50/60 pb-20 pt-8">
+      <div className="page-shell">
         <main className="page-container">
           {/* Breadcrumbs */}
           <Breadcrumb
@@ -18,10 +18,10 @@ export function ContactPage() {
 
           {/* Header */}
           <div className="mx-auto max-w-3xl text-center">
-            <span className="inline-block rounded-full bg-neutral-100 px-3.5 py-1 text-xs font-extrabold uppercase tracking-widest text-neutral-950">
+            <span className="inline-block rounded-full bg-neutral-100 px-3.5 py-1 text-xs font-semibold uppercase tracking-widest text-neutral-950">
               Hệ thống phân phối toàn quốc
             </span>
-            <h1 className="mt-4 text-2xl font-black text-ink sm:text-4xl lg:text-5xl">
+            <h1 className="mt-4 text-2xl font-bold text-ink sm:text-4xl lg:text-5xl">
               Ghé thăm showroom & Tư vấn chuyên sâu
             </h1>
             <p className="mt-3 text-base text-neutral-600 sm:text-lg">

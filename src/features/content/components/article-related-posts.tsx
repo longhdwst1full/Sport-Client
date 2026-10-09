@@ -11,10 +11,10 @@ export function ArticleRelatedPosts({ related }: { related: ContentPostView[] })
     <section className="mt-12 border-t border-neutral-200/80 pt-10">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <span className="text-xs font-black uppercase tracking-wider text-neutral-900">
+          <span className="text-xs font-bold uppercase tracking-wider text-neutral-900">
             Khám phá thêm
           </span>
-          <h2 className="mt-1 text-xl sm:text-2xl font-black text-neutral-900">
+          <h2 className="mt-1 text-xl sm:text-2xl font-bold text-neutral-900">
             Bài viết cùng chủ đề
           </h2>
         </div>
@@ -53,7 +53,7 @@ export function ArticleRelatedPosts({ related }: { related: ContentPostView[] })
                   <span className="font-bold tracking-widest uppercase text-2xs">Bảo An Sport</span>
                 </div>
               )}
-              <span className="absolute left-3 top-3 rounded-full bg-white/95 px-2.5 py-0.5 text-xs font-black uppercase text-neutral-950 shadow-2xs backdrop-blur-xs">
+              <span className="absolute left-3 top-3 rounded-full bg-white/95 px-2.5 py-0.5 text-xs font-bold uppercase text-neutral-950 shadow-2xs backdrop-blur-xs">
                 {item.categoryLabel}
               </span>
             </Link>

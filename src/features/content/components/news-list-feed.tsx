@@ -94,7 +94,7 @@ export function NewsListFeed({
                 )}
               </div>
 
-              <h2 className="mt-4 text-2xl font-black leading-tight text-ink sm:text-3xl">
+              <h2 className="mt-4 text-2xl font-bold leading-tight text-ink sm:text-3xl">
                 <Link href={`/news/${featured.slug}`} className={`rounded hover:text-neutral-900 ${FOCUS_RING}`}>
                   {featured.title}
                 </Link>
@@ -109,7 +109,7 @@ export function NewsListFeed({
               <span className="text-xs font-bold text-neutral-500">{featured.publishedLabel}</span>
               <Link
                 href={`/news/${featured.slug}`}
-                className={`inline-flex min-h-11 items-center gap-2 rounded text-sm font-black text-neutral-900 hover:text-neutral-950 ${FOCUS_RING}`}
+                className={`inline-flex min-h-11 items-center gap-2 rounded text-sm font-bold text-neutral-900 hover:text-neutral-950 ${FOCUS_RING}`}
               >
                 <span>Đọc toàn bộ bài viết</span>
                 <ArrowRight className="size-4" aria-hidden="true" />
@@ -136,7 +136,7 @@ export function NewsListFeed({
         </div>
       ) : isError && articles.length === 0 ? (
         <div role="alert" className="mt-12 rounded-4xl border border-dashed border-neutral-300 bg-white p-8 text-center sm:p-12">
-          <h3 className="text-lg font-black text-ink">Không tải được bài viết</h3>
+          <h3 className="text-lg font-bold text-ink">Không tải được bài viết</h3>
           <p className="mt-2 text-sm text-neutral-500">Vui lòng thử lại sau ít phút.</p>
           <Button variant="primary" onClick={retry} className={`mt-6 rounded-full px-6 font-bold ${FOCUS_RING}`}>
             <RefreshCw className="size-4" aria-hidden="true" />
@@ -147,7 +147,7 @@ export function NewsListFeed({
         <EmptyState
           className="mt-12 rounded-4xl border border-dashed border-neutral-300 bg-white p-8 text-center sm:p-12"
           titleAs="h3"
-          titleClassName="text-lg font-black text-ink"
+          titleClassName="text-lg font-bold text-ink"
           title="Chưa có bài viết trong mục này"
           descriptionClassName="mt-2 text-sm text-neutral-500"
           description="Nội dung đang được cập nhật."
@@ -190,7 +190,7 @@ export function NewsListFeed({
                   )}
                 </div>
 
-                <h3 className="mt-3 text-lg font-black leading-snug text-ink transition group-hover:text-neutral-900">
+                <h3 className="mt-3 text-lg font-bold leading-snug text-ink transition group-hover:text-neutral-900">
                   <Link href={`/news/${item.slug}`} className={`rounded ${FOCUS_RING}`}>
                     {item.title}
                   </Link>

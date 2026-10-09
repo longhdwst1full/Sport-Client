@@ -60,7 +60,7 @@ export function ProductReviewSection({
   return (
     <section aria-labelledby="product-reviews-title" className="space-y-8">
       <div className="rounded-4xl border border-neutral-200/80 bg-white p-6 shadow-sm sm:p-8">
-        <h2 id="product-reviews-title" className="text-xl font-black text-ink sm:text-2xl">
+        <h2 id="product-reviews-title" className="text-xl font-bold text-ink sm:text-2xl">
           Đánh giá từ khách hàng
         </h2>
         <p className="mt-1 text-sm text-neutral-500">
@@ -84,7 +84,7 @@ export function ProductReviewSection({
           <>
             <div className="mt-8 grid gap-8 md:grid-cols-[240px_1fr]">
               <div className="text-center md:text-left">
-                <p className="text-5xl font-black text-ink">
+                <p className="text-5xl font-bold text-ink">
                   {formatAverageRating(averageRating)}
                   <span className="text-xl font-bold text-neutral-400">/5</span>
                 </p>
@@ -160,7 +160,7 @@ export function ProductReviewSection({
                     <div className="mt-3">
                       <StarRow rating={review.rating} className="size-3.5" />
                     </div>
-                    <h3 className="mt-2 text-sm font-black text-ink">{review.title}</h3>
+                    <h3 className="mt-2 text-sm font-bold text-ink">{review.title}</h3>
                     <p className="mt-1.5 text-sm leading-relaxed text-neutral-600">{review.content}</p>
 
                     {review.media.length > 0 && (

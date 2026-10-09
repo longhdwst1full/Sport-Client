@@ -4,9 +4,8 @@ import { Button } from '@/foundation/components/buttons';
 import type { AdvisorOption } from '../../model/smart-fit.constants';
 
 /** Vòng focus trắng trên nền tối của khối tư vấn. */
-export const ADVISOR_FOCUS = 'focus-visible:ring-white focus-visible:ring-offset-neutral-900';
-/** Nút phụ nền tối (Quay lại, Làm lại từ đầu). */
-export const ADVISOR_SECONDARY_BUTTON = `border border-neutral-700 bg-neutral-800 text-xs font-bold text-neutral-300 hover:bg-neutral-700 ${ADVISOR_FOCUS}`;
+/** Nút phụ (Quay lại, Làm lại từ đầu) — dùng variant `secondary` trắng viền mảnh. */
+export const ADVISOR_SECONDARY_BUTTON = 'text-xs font-semibold';
 
 interface AdvisorOptionStepProps<T extends AdvisorOption> {
   title: string;
@@ -33,7 +32,7 @@ export function AdvisorOptionStep<T extends AdvisorOption>({
 }: AdvisorOptionStepProps<T>) {
   return (
     <div role="group" aria-label={title}>
-      <h3 className="text-base sm:text-lg font-black text-white mb-4">{title}</h3>
+      <h3 className="text-base sm:text-lg font-semibold text-neutral-950 mb-4">{title}</h3>
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {options.map((option) => {
           const isSelected = selectedId === option.id;
@@ -43,10 +42,10 @@ export function AdvisorOptionStep<T extends AdvisorOption>({
               type="button"
               onClick={() => onSelect(option.id)}
               aria-pressed={isSelected}
-              className={`flex flex-col justify-between rounded-2xl border p-3.5 text-left sm:p-5 transition-all duration-200 focus-ring-inverse focus-visible:ring-offset-neutral-900 ${
+              className={`flex flex-col justify-between rounded-2xl border p-3.5 text-left sm:p-5 transition-all duration-200 focus-ring ${
                 isSelected
-                  ? 'border-neutral-900 bg-neutral-950/60 ring-2 ring-neutral-900/40 shadow-lg'
-                  : 'border-neutral-800 bg-neutral-900/60 hover:border-neutral-700 hover:bg-neutral-900'
+                  ? 'border-neutral-950 bg-white ring-1 ring-neutral-950'
+                  : 'border-neutral-200 bg-white hover:border-neutral-400'
               }`}
             >
               {renderCard(option, isSelected)}
@@ -65,7 +64,7 @@ export function AdvisorOptionStep<T extends AdvisorOption>({
           variant="primary"
           size="lg"
           onClick={onNext}
-          className={`px-6 text-xs font-black uppercase tracking-wider shadow-lg shadow-neutral-900/20 ${ADVISOR_FOCUS}`}
+          className="px-6 text-sm"
         >
           <span>{nextLabel}</span>
           <NextIcon className="size-4" aria-hidden="true" />

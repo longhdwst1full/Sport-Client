@@ -80,34 +80,29 @@ export default async function CategoryDetailPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(toBreadcrumbJsonLd(breadcrumbItems)) }}
       />
-      <div className="bg-neutral-50/60 pb-20 pt-8">
+      <div className="bg-white pb-20 pt-8">
         <main className="page-container">
           <Breadcrumb
             className="mb-6"
             items={breadcrumbItems}
           />
 
-          <div className="relative overflow-hidden rounded-4xl bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-950 p-8 text-white shadow-xl sm:p-12">
-            <div className="relative z-10 max-w-2xl">
-              <h1 className="text-3xl font-black text-white sm:text-5xl">{category.name}</h1>
-              {category.description && (
-                <p className="mt-3 text-sm leading-relaxed text-neutral-300 sm:text-base">
-                  {category.description}
-                </p>
-              )}
-              <p className="mt-4 text-xs font-bold uppercase tracking-widest text-neutral-300">
-                {category.productCount} sản phẩm
+          {/* Tiêu đề danh mục trên nền sáng; mô tả SEO dài kẹp 3 dòng để không đẩy lưới sản phẩm xuống. */}
+          <div className="max-w-3xl">
+            <h1 className="text-3xl font-bold tracking-tight text-neutral-950 sm:text-4xl">{category.name}</h1>
+            <p className="mt-2 text-sm font-medium text-neutral-500">{category.productCount} sản phẩm</p>
+            {category.description && (
+              <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-neutral-600 sm:text-base">
+                {category.description}
               </p>
-            </div>
-
-            <div className="pointer-events-none absolute -right-20 -top-20 size-80 rounded-full bg-neutral-900/10 blur-[100px]" />
+            )}
           </div>
 
           <CategoryTopBanners banners={topBanners} />
 
           <div className="mt-12">
             <div className="mb-6 border-b border-neutral-200/80 pb-4">
-              <span className="text-xs font-bold uppercase tracking-wider text-neutral-500">
+              <span className="eyebrow text-neutral-500">
                 Sản phẩm thuộc {category.name}
               </span>
             </div>

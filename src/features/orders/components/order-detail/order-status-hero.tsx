@@ -32,7 +32,7 @@ export function OrderStatusHero({
               Đơn hàng trực tuyến
             </span>
             <div className="flex items-center gap-2">
-              <h1 className="font-mono text-sm sm:text-base font-extrabold text-neutral-200">
+              <h1 className="font-mono text-sm sm:text-base font-semibold text-neutral-200">
                 <span className="sr-only">Đơn hàng </span>#{orderNo}
               </h1>
               <button
@@ -109,7 +109,7 @@ export function OrderStatusHero({
 
         <div className={METRIC_CARD_CLASS}>
           <span className={METRIC_LABEL_CLASS}>Tổng thanh toán</span>
-          <strong className="mt-1 block text-2xl font-black text-neutral-300 tracking-tight">
+          <strong className="mt-1 block text-2xl font-bold text-neutral-300 tracking-tight">
             {view?.grandTotalLabel}
           </strong>
           <div className="mt-0.5 flex items-center justify-between text-2xs text-neutral-300/80">

@@ -81,7 +81,7 @@ export function ProductDetailPage({ product, slug, relatedCategorySlug }: Produc
         />
         {/* Main Product Title Header */}
         <div className="mx-auto max-w-7xl px-4 pt-2 sm:px-6 lg:px-8">
-          <h1 className="text-2xl font-black tracking-tight text-neutral-900 sm:text-3xl lg:text-4xl">
+          <h1 className="text-2xl font-bold tracking-tight text-neutral-900 sm:text-3xl lg:text-4xl">
             {product.name}
           </h1>
           <div className="mt-2 flex flex-wrap items-center gap-3 text-xs font-semibold text-neutral-500">
@@ -110,7 +110,7 @@ export function ProductDetailPage({ product, slug, relatedCategorySlug }: Produc
           {/* Product media is image-first. Heavy 3D rendering is intentionally excluded here. */}
           <div className="overflow-hidden rounded-4xl border border-[var(--dc-border)] bg-white shadow-card">
             <div className="flex items-center justify-between border-b border-[var(--dc-border)] px-5 py-3.5">
-              <span className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-[0.12em] text-[var(--dc-primary-700)]">
+              <span className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-[var(--dc-primary-700)]">
                 <Images className="size-4" aria-hidden="true" />
                 Hình ảnh sản phẩm
               </span>

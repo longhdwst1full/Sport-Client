@@ -44,7 +44,7 @@ export function AddressFormDialog({
         className="w-full max-w-2xl rounded-4xl border border-neutral-200/80 bg-white p-6 shadow-2xl sm:p-8 outline-none"
       >
         <div className="flex items-center justify-between border-b border-neutral-100 pb-4">
-          <h3 id="address-form-dialog-title" className="text-lg font-black text-neutral-900">
+          <h3 id="address-form-dialog-title" className="text-lg font-bold text-neutral-900">
             {editingAddress ? 'Chỉnh sửa địa chỉ' : 'Thêm địa chỉ nhận hàng mới'}
           </h3>
           <Button

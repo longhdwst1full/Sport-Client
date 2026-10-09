@@ -63,7 +63,7 @@ export function OrderItemsList({
             </p>
           </div>
           <div className="flex w-full items-center justify-between gap-3 sm:w-auto sm:flex-col sm:items-end sm:text-right">
-            <strong className="block text-sm sm:text-base font-black text-neutral-900">
+            <strong className="block text-sm sm:text-base font-bold text-neutral-900">
               {item.lineTotalLabel}
             </strong>
 

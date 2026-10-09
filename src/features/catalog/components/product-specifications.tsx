@@ -31,7 +31,7 @@ export function ProductSpecifications({
   return (
     <div className="rounded-4xl border border-[var(--dc-border)] bg-white p-6 shadow-sm sm:p-8">
       <div className="flex items-center justify-between gap-3">
-        <h2 className="text-xl font-black text-ink sm:text-2xl">Thông số kỹ thuật chi tiết</h2>
+        <h2 className="text-xl font-bold text-ink sm:text-2xl">Thông số kỹ thuật chi tiết</h2>
         <span className="rounded-full bg-neutral-100 px-3 py-1 text-xs font-bold text-neutral-600">
           {specs.length} thông số
         </span>

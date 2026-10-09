@@ -41,7 +41,7 @@ export function OrderSupportDialog({
                 <span className="text-2xs font-normal text-neutral-600">{STORE_CONTACT.openingHoursShort}</span>
               </div>
             </div>
-            <span className="font-mono text-sm font-black text-neutral-900">{STORE_CONTACT.primaryHotline}</span>
+            <span className="font-mono text-sm font-bold text-neutral-900">{STORE_CONTACT.primaryHotline}</span>
           </a>
 
           <a
@@ -62,7 +62,7 @@ export function OrderSupportDialog({
         <div className="mt-4 rounded-xl bg-neutral-50 p-3 text-xs text-neutral-600 border border-neutral-200/70 flex items-center justify-between">
           <div>
             <span className="text-3xs uppercase font-bold text-neutral-400 block">Mã đơn hàng cần đọc khi gọi</span>
-            <strong className="font-mono text-sm font-black text-neutral-900">#{orderNo}</strong>
+            <strong className="font-mono text-sm font-bold text-neutral-900">#{orderNo}</strong>
           </div>
           <Button variant="outline" size="sm" onClick={() => onCopyOrderNo(orderNo)} className="rounded-lg px-2.5 text-xs">
             {copiedOrderNo ? 'Đã sao chép' : 'Sao chép'}

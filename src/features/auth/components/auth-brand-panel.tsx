@@ -130,12 +130,12 @@ export function AuthBrandPanel({ variant }: AuthBrandPanelProps) {
 
       {/* Center: Editorial Showcase */}
       <div className="relative z-10 my-auto py-3 xl:py-5">
-        <div className="inline-flex items-center gap-1.5 rounded-full border border-neutral-400/30 bg-neutral-950/60 px-3.5 py-1 text-xs font-extrabold text-neutral-300 backdrop-blur-md">
+        <div className="inline-flex items-center gap-1.5 rounded-full border border-neutral-400/30 bg-neutral-950/60 px-3.5 py-1 text-xs font-semibold text-neutral-300 backdrop-blur-md">
           <Sparkles className="size-3.5 text-neutral-300" />
           <span>{content.badge}</span>
         </div>
 
-        <h2 className="mt-3 text-2xl font-black leading-tight text-white xl:text-3xl">
+        <h2 className="mt-3 text-2xl font-bold leading-tight text-white xl:text-3xl">
           {content.headline} <br className="hidden xl:inline" />
           <span className="bg-gradient-to-r from-neutral-300 via-neutral-300 to-neutral-50 bg-clip-text text-transparent">
             {content.highlight}
@@ -151,7 +151,7 @@ export function AuthBrandPanel({ variant }: AuthBrandPanelProps) {
               key={metric.label}
               className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-center backdrop-blur-md transition hover:bg-white/10"
             >
-              <div className="text-xl font-black text-neutral-300 xl:text-2xl">{metric.value}</div>
+              <div className="text-xl font-bold text-neutral-300 xl:text-2xl">{metric.value}</div>
               <div className="mt-0.5 text-2xs font-bold text-neutral-300">{metric.label}</div>
             </div>
           ))}

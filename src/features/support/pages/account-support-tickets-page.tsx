@@ -30,7 +30,7 @@ export function AccountSupportTicketsPage() {
       <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="eyebrow text-neutral-900">Tài khoản</p>
-          <h1 className="mt-2 text-3xl font-black text-neutral-950">Hỗ trợ của tôi</h1>
+          <h1 className="mt-2 text-3xl font-bold text-neutral-950">Hỗ trợ của tôi</h1>
           <p className="mt-2 text-sm text-neutral-600">Theo dõi các yêu cầu hỗ trợ bạn đã gửi và phản hồi của nhân viên.</p>
         </div>
         {isAuthenticated && (
@@ -63,7 +63,7 @@ export function AccountSupportTicketsPage() {
       {isAuthenticated && hasData && items.length === 0 && (
         <section className="rounded-3xl border border-dashed border-neutral-300 bg-white p-10 text-center">
           <LifeBuoy className="mx-auto size-12 text-neutral-400" aria-hidden />
-          <h2 className="mt-4 text-lg font-black">Chưa có yêu cầu hỗ trợ</h2>
+          <h2 className="mt-4 text-lg font-bold">Chưa có yêu cầu hỗ trợ</h2>
           <Link href={SUPPORT_ROUTES.create} className="mt-4 inline-flex text-sm font-bold text-neutral-900 hover:underline rounded focus-ring-tight">Tạo yêu cầu hỗ trợ</Link>
         </section>
       )}
@@ -77,7 +77,7 @@ export function AccountSupportTicketsPage() {
             >
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div className="min-w-0">
-                  <div className="font-mono text-sm font-black text-neutral-900">{ticket.ticketNo}</div>
+                  <div className="font-mono text-sm font-bold text-neutral-900">{ticket.ticketNo}</div>
                   <div className="mt-1 truncate text-sm font-bold text-neutral-900">{ticket.subject}</div>
                 </div>
                 <SupportTicketStatusBadge status={ticket.status} />

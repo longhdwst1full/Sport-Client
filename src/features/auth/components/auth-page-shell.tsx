@@ -38,7 +38,7 @@ export function AuthPageShell({
               <AuthModeSwitcher variant={variant} />
 
               <div className="mt-4 sm:mt-5">
-                <h1 className="text-xl font-black tracking-tight text-neutral-950 sm:text-2xl">{title}</h1>
+                <h1 className="text-xl font-bold tracking-tight text-neutral-950 sm:text-2xl">{title}</h1>
                 <p className="mt-1 text-xs text-neutral-500 leading-relaxed line-clamp-2">{subtitle}</p>
               </div>
 

@@ -30,7 +30,7 @@ export function CatalogMobileFilterDrawer({
     >
         {/* Header */}
         <div className="flex items-center justify-between border-b border-neutral-100 pb-4">
-          <span className="flex items-center gap-2 text-sm font-black uppercase text-neutral-900">
+          <span className="flex items-center gap-2 text-sm font-bold uppercase text-neutral-900">
             <SlidersHorizontal aria-hidden className="size-4 text-neutral-900" />
             Bộ lọc tìm kiếm
           </span>
@@ -66,7 +66,7 @@ export function CatalogMobileFilterDrawer({
           <Button
             size="lg"
             onClick={onClose}
-            className="flex-[2] rounded-2xl px-0 text-xs font-black uppercase tracking-wider shadow-md"
+            className="flex-[2] rounded-2xl px-0 text-xs font-bold uppercase tracking-wider shadow-md"
           >
             Xem {totalProductsCount} sản phẩm
           </Button>

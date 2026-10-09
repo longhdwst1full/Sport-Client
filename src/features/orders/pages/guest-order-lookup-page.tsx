@@ -18,7 +18,7 @@ export function GuestOrderLookupPage({ initialOrderNo = '' }: { initialOrderNo?:
   return (
     <main className="mx-auto min-h-[60vh] max-w-xl px-4 py-10 sm:px-6">
       <p className="eyebrow text-neutral-900">Khách vãng lai</p>
-      <h1 className="mt-2 text-2xl font-black text-neutral-950 sm:text-3xl">{GUEST_LOOKUP_COPY.title}</h1>
+      <h1 className="heading-page mt-2">{GUEST_LOOKUP_COPY.title}</h1>
       <p className="mt-2 text-sm text-neutral-600">{GUEST_LOOKUP_COPY.intro}</p>
 
       {lookup.step === 'request' ? (

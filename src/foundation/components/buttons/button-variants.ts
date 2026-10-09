@@ -1,42 +1,38 @@
 import { twMerge } from 'tailwind-merge';
 
 /**
- * Màu nút theo logo: than trung tính (#171717 ≈ chữ "BẢO AN") cho hành động; đỏ thương hiệu chỉ cho
- * giá/khuyến mãi, đỏ `red` chỉ cho huỷ/xoá. Nền đặc, không gradient/bóng màu — gradient đỏ trước đây
- * làm nút mua/tìm kiếm trông rẻ và tranh chỗ với giá.
+ * Ba tầng nút (`20-design-tokens.md` RULE-DS-04):
+ * - `cta`: cam hành động, CHỈ cho chuyển đổi (Mua ngay, Thêm vào giỏ, Đặt hàng, Gửi tư vấn). Chữ than
+ *   trên cam (#FF5A1F) đạt 5.7:1 — chữ trắng chỉ 3.1:1, không đạt AA.
+ * - `primary` (than) cho hành động chính không phải mua; `secondary`/`outline` trắng viền mảnh.
+ * - `link`/`ghost` cho "Xem tất cả →", "Đọc thêm →" — loại nên dùng nhiều nhất ở trang chủ.
+ * Nền đặc, không gradient, không bóng màu.
  */
 export const BUTTON_VARIANT = {
-  primary:
-    'bg-neutral-900 text-white shadow-sm hover:bg-neutral-800 active:bg-neutral-950 active:scale-[0.98]',
-  secondary:
-    'bg-neutral-100 text-neutral-900 hover:bg-neutral-200 active:scale-[0.98] border border-neutral-200',
-  outline:
-    'border border-neutral-300 bg-white text-neutral-900 hover:border-neutral-900 hover:bg-neutral-50 active:scale-[0.98]',
-  ghost: 'text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900 active:scale-[0.98]',
-  danger:
-    'bg-red-600 text-white shadow-sm hover:bg-red-700 active:bg-red-800 active:scale-[0.98]',
-  success:
-    'bg-success-600 text-white shadow-sm hover:bg-success-700 active:scale-[0.98]',
-  warning:
-    'bg-amber-400 text-neutral-950 font-black shadow-sm hover:bg-amber-300 active:scale-[0.98]',
+  cta: 'bg-accent-500 text-neutral-950 hover:bg-accent-600 active:bg-accent-700 active:text-white',
+  primary: 'bg-neutral-900 text-white hover:bg-neutral-800 active:bg-neutral-950',
+  secondary: 'border border-neutral-300 bg-white text-neutral-900 hover:border-neutral-900 hover:bg-neutral-50',
+  outline: 'border border-neutral-300 bg-white text-neutral-900 hover:border-neutral-900 hover:bg-neutral-50',
+  ghost: 'text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900',
+  danger: 'bg-red-600 text-white hover:bg-red-700 active:bg-red-800',
+  success: 'bg-success-600 text-white hover:bg-success-700',
+  warning: 'bg-amber-400 text-neutral-950 hover:bg-amber-300',
   /** Viền đỏ nhạt cho hành động huỷ/xoá không phải hành động chính. */
-  dangerOutline:
-    'border border-red-200 bg-white text-red-700 hover:border-red-400 hover:bg-red-50 hover:text-red-800 active:scale-[0.98]',
-  /** Nút đen sâu cho nền sáng cần nhấn mạnh hơn `primary`. */
-  dark:
-    'bg-neutral-950 text-white shadow-sm hover:bg-neutral-800 active:scale-[0.98]',
-  /** Nút trên nền tối (hero, banner). */
-  inverse:
-    'bg-white text-neutral-900 shadow-sm hover:bg-neutral-100 active:scale-[0.98]',
+  dangerOutline: 'border border-red-200 bg-white text-red-700 hover:border-red-400 hover:bg-red-50 hover:text-red-800',
+  /** Than đậm hơn `primary` cho nền sáng cần nhấn mạnh. */
+  dark: 'bg-neutral-950 text-white hover:bg-neutral-800',
+  /** Nút trên nền tối (hero, banner, footer). */
+  inverse: 'bg-white text-neutral-900 hover:bg-neutral-100',
   /** Nút dạng chữ/link: không nền, không chiều cao cố định (size bị bỏ qua). */
-  link: 'h-auto px-0 text-neutral-900 font-bold underline-offset-4 hover:underline',
+  link: 'h-auto px-0 text-neutral-900 underline-offset-4 hover:underline',
 } as const;
 
 export const BUTTON_SIZE = {
   sm: 'h-9 px-3 text-sm',
   /** 44px — vùng chạm tối thiểu trên mobile. */
   md: 'h-11 px-4 text-sm',
-  lg: 'h-12 px-6 text-base',
+  /** 48px — nút chuyển đổi. */
+  lg: 'h-12 px-6 text-[15px]',
   icon: 'grid size-11 place-items-center',
 } as const;
 
@@ -51,7 +47,7 @@ export interface ButtonVariantOptions {
 }
 
 const BUTTON_BASE =
-  'inline-flex items-center justify-center gap-2 rounded-xl font-bold tracking-tight transition-all duration-200 ease-out focus-ring disabled:cursor-not-allowed disabled:opacity-50 select-none';
+  'inline-flex items-center justify-center gap-2 rounded-lg font-semibold transition-colors duration-150 active:scale-[0.98] focus-ring disabled:cursor-not-allowed disabled:opacity-50 select-none';
 
 /**
  * Chuỗi class của nút trong design system — hàm thuần để `<Link className={buttonVariants(...)}>` dùng

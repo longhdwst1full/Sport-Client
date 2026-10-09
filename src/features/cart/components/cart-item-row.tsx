@@ -89,7 +89,7 @@ export function CartItemRow({
             valueClassName="min-w-[2rem] text-center text-sm font-bold"
           />
           {/* Price */}
-          <strong className="text-sm text-brand-600 sm:text-base">{formatVnd(item.price * item.quantity)}</strong>
+          <strong className="text-sm text-neutral-950 sm:text-base">{formatVnd(item.price * item.quantity)}</strong>
         </div>
       </div>
     </div>

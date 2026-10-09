@@ -11,7 +11,7 @@ export function VariantSelector({ variants, selectedVariantId, onSelectVariant }
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
-        <h2 id="purchase-heading" className="text-sm font-black uppercase tracking-wider text-ink">
+        <h2 id="purchase-heading" className="text-sm font-bold uppercase tracking-wider text-ink">
           Phiên bản / Quy cách
         </h2>
         {/* "có sẵn" từng ngụ ý còn hàng; contract chưa có tồn kho nên chỉ đếm số phiên bản. */}
@@ -50,7 +50,7 @@ export function VariantSelector({ variants, selectedVariantId, onSelectVariant }
                 </div>
               </div>
               <div className="shrink-0 text-right">
-                <strong className="block text-sm font-black text-ink">
+                <strong className="block text-sm font-bold text-ink">
                   {variant.priceAmount !== null ? variant.priceLabel : 'Liên hệ'}
                 </strong>
                 {!variant.sellable && (

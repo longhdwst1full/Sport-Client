@@ -15,8 +15,8 @@ function OptionIconTile({ isSelected, children }: { isSelected: boolean; childre
     <div
       className={`grid size-11 place-items-center rounded-xl border ${
         isSelected
-          ? 'border-neutral-900/40 bg-neutral-900/20 text-neutral-300'
-          : 'border-neutral-800 bg-neutral-800/80 text-neutral-300'
+          ? 'border-neutral-950 bg-neutral-950 text-white'
+          : 'border-neutral-200 bg-neutral-50 text-neutral-700'
       }`}
     >
       {children}
@@ -30,7 +30,7 @@ function OptionCardContent({
   isSelected,
   label,
   desc,
-  labelClassName = 'text-sm sm:text-base text-white',
+  labelClassName = 'text-sm sm:text-base text-neutral-950',
 }: {
   lead: ReactNode;
   isSelected: boolean;
@@ -49,7 +49,7 @@ function OptionCardContent({
         )}
       </div>
       <strong className={`block font-bold mb-1 ${labelClassName}`}>{label}</strong>
-      <p className="text-xs text-neutral-400 leading-snug">{desc}</p>
+      <p className="text-xs text-neutral-500 leading-snug">{desc}</p>
     </>
   );
 }
@@ -103,35 +103,33 @@ export function SmartFitAdvisor() {
   const recommendation = getRecommendation();
 
   return (
-    <section className="page-container py-6 sm:py-10">
-      <div className={`relative overflow-hidden rounded-4xl border border-neutral-800/80 bg-gradient-to-br from-neutral-900 via-neutral-900 to-neutral-950 p-6 sm:p-10 lg:p-12 text-white shadow-2xl ${SMART_FIT_CARD_MIN_HEIGHT}`}>
+    <section className="page-section">
+      <div className={`relative overflow-hidden rounded-2xl bg-neutral-50 p-6 sm:p-10 lg:p-12 text-neutral-950 ${SMART_FIT_CARD_MIN_HEIGHT}`}>
         {/* Subtle Sports Ambient Lighting */}
-        <div className="pointer-events-none absolute -right-20 -top-20 size-80 rounded-full bg-red-600/12 blur-[100px]" />
-        <div className="pointer-events-none absolute -bottom-20 -left-20 size-80 rounded-full bg-neutral-600/10 blur-[100px]" />
 
         {/* Header */}
-        <div className="relative z-10 flex flex-col md:flex-row md:items-end md:justify-between gap-6 border-b border-neutral-800/80 pb-8">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-end md:justify-between gap-6 border-b border-neutral-200 pb-8">
           <div>
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-red-500/15 border border-red-500/25 px-3 py-1 text-xs font-black uppercase tracking-wider text-red-400">
+            <span className="eyebrow text-neutral-500">
               Smart Fit Advisor
             </span>
-            <h2 className="mt-3 text-2xl sm:text-3xl lg:text-4xl font-black text-white">
+            <h2 className="mt-3 text-2xl sm:text-3xl lg:text-4xl font-bold text-neutral-950">
               Không Chỉ Bán Thiết Bị. Chúng Tôi Giúp Bạn Chọn Đúng.
             </h2>
-            <p className="mt-2 text-xs sm:text-sm text-neutral-300 max-w-2xl">
+            <p className="mt-2 text-sm text-neutral-600 max-w-2xl">
               Chỉ mất 30 giây để xác định cấu hình phòng tập chuẩn huấn luyện theo diện tích, mục tiêu và khả năng chi trả.
             </p>
           </div>
 
           {step < 4 ? (
-            <div className="flex items-center gap-2 text-xs font-bold text-neutral-400">
+            <div className="flex items-center gap-2 text-xs font-semibold text-neutral-500">
               <span>Bước {step}/3</span>
               <div className="flex gap-1.5" aria-hidden="true">
                 {[1, 2, 3].map((s) => (
                   <span
                     key={s}
                     className={`h-1.5 w-6 rounded-full transition-all ${
-                      s <= step ? 'bg-neutral-700' : 'bg-neutral-800'
+                      s <= step ? 'bg-neutral-950' : 'bg-neutral-200'
                     }`}
                   />
                 ))}
@@ -222,9 +220,9 @@ export function SmartFitAdvisor() {
                   isSelected={isSelected}
                   label={b.label}
                   desc={b.desc}
-                  labelClassName="text-base sm:text-lg text-neutral-300"
+                  labelClassName="text-base sm:text-lg text-neutral-950"
                   lead={
-                    <span className="rounded-full bg-neutral-800 px-2.5 py-0.5 text-xs font-bold text-neutral-300">
+                    <span className="rounded-full bg-neutral-100 px-2.5 py-0.5 text-xs font-semibold text-neutral-700">
                       {b.label}
                     </span>
                   }

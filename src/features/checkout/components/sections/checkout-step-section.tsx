@@ -21,11 +21,11 @@ export function CheckoutStepSection({
   return (
     <section className="surface-card p-4 shadow-sm sm:p-6 transition hover:border-neutral-300">
       <div className="flex items-center gap-3 border-b border-neutral-100 pb-4">
-        <span className="grid size-8 place-items-center rounded-xl bg-neutral-900 text-sm font-black text-white shadow-sm shadow-neutral-900/30">
+        <span className="grid size-8 place-items-center rounded-xl bg-neutral-900 text-sm font-bold text-white shadow-sm shadow-neutral-900/30">
           {step}
         </span>
         <div>
-          <h2 className="flex items-center gap-2 text-base font-black text-neutral-900 sm:text-lg">
+          <h2 className="flex items-center gap-2 text-base font-bold text-neutral-900 sm:text-lg">
             <Icon aria-hidden className="size-5 text-neutral-900" /> {title}
           </h2>
           <p className="text-xs text-neutral-500">{description}</p>

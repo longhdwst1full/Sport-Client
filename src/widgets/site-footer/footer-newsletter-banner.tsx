@@ -1,12 +1,10 @@
-import Link from 'next/link';
-import { MessageCircle, Phone } from 'lucide-react';
 import {
   BANNER_DEFAULT_CTA_TEXT,
   BannerPicture,
   type BannerView,
 } from '@/features/content';
 import { PromoBanner } from '@/foundation/components/structure';
-import { buttonVariants } from '@/foundation/components/buttons';
+import { ContactActions } from '@/shared/components/contact-actions';
 import { STORE_CONFIG, STORE_CONTACT } from '@/shared/constants';
 
 /** Dải banner FOOTER ngay trên khối nhận tin; chỉ lấy banner đầu (API đã sắp theo `sortOrder`). */
@@ -45,27 +43,12 @@ export function FooterNewsletterBanner({ banner: footerBanner }: { banner?: Bann
       <section className="border-t border-neutral-800 bg-neutral-900 px-4 py-10 text-white sm:py-12 lg:px-10">
         <div className="page-container flex flex-col items-center gap-6 px-0 text-center md:flex-row md:justify-between md:text-left">
           <div>
-            <h2 className="text-xl font-black sm:text-2xl">Cần tư vấn chọn thiết bị?</h2>
+            <h2 className="text-xl font-bold sm:text-2xl">Cần tư vấn chọn thiết bị?</h2>
             <p className="mt-1.5 text-sm text-neutral-300">
               Nhân viên {STORE_CONFIG.name} hỗ trợ {STORE_CONTACT.openingHoursShort}.
             </p>
           </div>
-          <div className="flex flex-wrap justify-center gap-3">
-            <a href={`tel:${STORE_CONTACT.primaryHotlineRaw}`} className={buttonVariants({ variant: 'inverse', className: 'focus-ring-inverse rounded-full px-5' })}>
-              <Phone aria-hidden className="size-4" /> {STORE_CONTACT.primaryHotline}
-            </a>
-            <a
-              href={STORE_CONTACT.zaloUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={buttonVariants({ variant: 'outline', className: 'focus-ring-inverse rounded-full border-white/30 bg-transparent px-5 text-white hover:border-white hover:bg-white/10' })}
-            >
-              <MessageCircle aria-hidden className="size-4" /> Nhắn Zalo
-            </a>
-            <Link href="/contact" className={buttonVariants({ variant: 'outline', className: 'focus-ring-inverse rounded-full border-white/30 bg-transparent px-5 text-white hover:border-white hover:bg-white/10' })}>
-              Đăng ký tư vấn
-            </Link>
-          </div>
+          <ContactActions tone="dark" className="justify-center" />
         </div>
       </section>
     </>

@@ -78,7 +78,7 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
             className="mx-auto max-w-xl rounded-3xl border border-amber-200 bg-amber-50/70 p-8 sm:p-10 text-center shadow-card"
             iconWrapClassName="mx-auto grid size-16 place-items-center rounded-2xl bg-amber-100 text-amber-600"
             icon={<XCircle className="size-9" />}
-            titleClassName="mt-5 text-xl font-black text-neutral-900"
+            titleClassName="mt-5 text-xl font-bold text-neutral-900"
             title="Không tìm thấy mã truy cập đơn hàng"
             descriptionClassName="mx-auto mt-2 max-w-md text-sm leading-relaxed text-amber-900"
             description="Hãy mở đơn trên trình duyệt đã dùng để đặt hàng, tra cứu bằng email người nhận, hoặc đăng nhập tài khoản để xem toàn bộ lịch sử đơn."
@@ -101,7 +101,7 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
             className="mx-auto max-w-xl rounded-3xl border border-red-200 bg-red-50/80 p-8 sm:p-10 text-center shadow-card"
             iconWrapClassName="mx-auto grid size-16 place-items-center rounded-2xl bg-red-100 text-red-600"
             icon={<AlertTriangle className="size-9" />}
-            titleClassName="mt-5 text-xl font-black text-red-950"
+            titleClassName="mt-5 text-xl font-bold text-red-950"
             title="Không thể tải thông tin đơn hàng"
             descriptionClassName="mx-auto mt-2 max-w-md text-sm leading-relaxed text-red-800"
             description={

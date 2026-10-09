@@ -89,7 +89,7 @@ export function CatalogProductGrid({
           iconWrapClassName="mb-4 grid size-14 place-items-center rounded-2xl bg-neutral-50 text-neutral-900"
           icon={<Search aria-hidden className="size-6" />}
           titleAs="h3"
-          titleClassName="text-base font-black text-neutral-900"
+          titleClassName="text-base font-bold text-neutral-900"
           title="Không tìm thấy sản phẩm phù hợp"
           descriptionClassName="mt-1 max-w-sm text-xs text-neutral-600"
           description="Rất tiếc không có thiết bị nào đáp ứng các bộ lọc hiện tại. Bạn vui lòng thử xóa bớt bộ lọc hoặc tìm kiếm từ khóa khác."

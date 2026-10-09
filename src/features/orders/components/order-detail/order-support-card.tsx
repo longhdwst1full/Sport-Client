@@ -9,7 +9,7 @@ export function OrderSupportCard({ orderNo, onOpenSupport }: { orderNo: string; 
           <Headphones className="size-4.5" />
         </div>
         <div>
-          <h2 className="text-sm font-black text-neutral-900">Bạn cần hỗ trợ về đơn hàng?</h2>
+          <h2 className="text-sm font-bold text-neutral-900">Bạn cần hỗ trợ về đơn hàng?</h2>
           <p className="text-2xs text-neutral-500">Đội ngũ Bảo An Sport phục vụ {STORE_CONTACT.openingHoursShort}</p>
         </div>
       </div>
@@ -23,7 +23,7 @@ export function OrderSupportCard({ orderNo, onOpenSupport }: { orderNo: string; 
             <Phone className="size-4 text-neutral-700" />
             <span>Hotline</span>
           </div>
-          <span className="font-mono text-neutral-900 font-black">{STORE_CONTACT.primaryHotline}</span>
+          <span className="font-mono text-neutral-900 font-bold">{STORE_CONTACT.primaryHotline}</span>
         </a>
 
         <button

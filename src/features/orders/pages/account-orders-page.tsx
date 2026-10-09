@@ -31,7 +31,7 @@ export function AccountOrdersPage() {
         <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="eyebrow text-neutral-900">Tài khoản</p>
-            <h1 className="mt-2 text-2xl font-black text-neutral-950 sm:text-3xl">Đơn hàng của tôi</h1>
+            <h1 className="heading-page mt-2">Đơn hàng của tôi</h1>
             <p className="mt-2 text-sm text-neutral-600">Theo dõi trạng thái thanh toán, xử lý và giao hàng từ dữ liệu thực.</p>
           </div>
           <Link href="/products" className={buttonVariants({ variant: 'primary', className: 'font-bold' })}>Tiếp tục mua sắm</Link>
@@ -44,7 +44,7 @@ export function AccountOrdersPage() {
             className="surface-card p-6 text-center shadow-sm sm:p-10"
             iconWrapClassName="flex justify-center"
             icon={<PackageSearch aria-hidden className="size-12 text-neutral-400" />}
-            titleClassName="mt-4 text-xl font-black"
+            titleClassName="mt-4 text-xl font-bold"
             title="Đăng nhập để xem toàn bộ đơn hàng"
             descriptionClassName="mt-2 text-sm text-neutral-600"
             description="Khách mua không đăng nhập có thể mở đơn trực tiếp từ trang đặt hàng thành công."
@@ -66,7 +66,7 @@ export function AccountOrdersPage() {
             className="rounded-3xl border border-dashed border-neutral-300 bg-white p-6 text-center sm:p-10"
             iconWrapClassName="flex justify-center"
             icon={<PackageSearch aria-hidden className="size-12 text-neutral-400" />}
-            titleClassName="mt-4 text-lg font-black"
+            titleClassName="mt-4 text-lg font-bold"
             title="Chưa có đơn hàng"
           />
         )}
@@ -75,7 +75,7 @@ export function AccountOrdersPage() {
             <Link key={order.id} href={`/orders/${order.orderNo}`} className="group surface-card p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-neutral-300 hover:shadow-md">
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
-                  <div className="font-mono text-sm font-black text-neutral-900">{order.orderNo}</div>
+                  <div className="font-mono text-sm font-bold text-neutral-900">{order.orderNo}</div>
                   <div className="mt-1 text-xs text-neutral-500">{order.placedAtLabel} · {order.branchName}</div>
                 </div>
                 <div className={`rounded-full px-3 py-1 text-xs font-bold ring-1 ring-inset ${order.statusToneClass}`}>{order.statusLabel}</div>

@@ -95,7 +95,7 @@ export function CartPage() {
         />
 
         <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-black text-neutral-900 sm:text-4xl">
+          <h1 className="text-3xl font-bold text-neutral-900 sm:text-4xl">
             Giỏ hàng của bạn{' '}
             {hydrated && <span className="text-2xl font-bold text-neutral-500 sm:text-3xl">({items.length})</span>}
           </h1>

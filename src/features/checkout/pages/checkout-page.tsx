@@ -102,7 +102,7 @@ export function CheckoutPage() {
           </Link>
           <div className="mt-2 flex flex-wrap items-baseline justify-between gap-4">
             <div>
-              <h1 className="mt-2 text-2xl font-black tracking-tight text-neutral-950 sm:text-3xl">
+              <h1 className="mt-2 text-2xl font-bold tracking-tight text-neutral-950 sm:text-3xl">
                 Đặt hàng & Thanh toán
               </h1>
               <p className="mt-1 text-sm text-neutral-500">

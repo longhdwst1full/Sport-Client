@@ -40,7 +40,7 @@ export function CreateSupportRequestPage() {
         <span aria-hidden>/</span>
         <Link href={SUPPORT_ROUTES.list} className="hover:text-neutral-900 rounded focus-ring-tight">Hỗ trợ của tôi</Link>
       </nav>
-      <h1 className="text-3xl font-black text-neutral-950">Tạo yêu cầu hỗ trợ</h1>
+      <h1 className="text-3xl font-bold text-neutral-950">Tạo yêu cầu hỗ trợ</h1>
       <p className="mt-2 text-sm text-neutral-600">Mô tả vấn đề của bạn, nhân viên Bảo An Sport sẽ phản hồi trong mục Hỗ trợ của tôi.</p>
 
       {!isLoaded && (

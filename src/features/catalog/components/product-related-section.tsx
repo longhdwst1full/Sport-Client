@@ -50,7 +50,7 @@ export function ProductRelatedSection({
             <Sparkles aria-hidden className="size-3.5 text-neutral-900" />
             Gợi ý dành cho bạn
           </div>
-          <h2 className="mt-2 text-2xl font-black tracking-tight text-neutral-900 sm:text-3xl">
+          <h2 className="mt-2 text-2xl font-bold tracking-tight text-neutral-900 sm:text-3xl">
             Sản phẩm liên quan
           </h2>
           <p className="mt-1 text-sm text-neutral-600">

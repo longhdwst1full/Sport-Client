@@ -15,7 +15,7 @@ export function CheckoutSuccess({ order }: CheckoutSuccessProps) {
         <div className="mx-auto grid size-20 place-items-center rounded-3xl bg-success-100 text-success-700">
           <CheckCircle2 aria-hidden className="size-11" />
         </div>
-        <h1 className="mt-5 text-2xl font-black text-neutral-950">Đặt hàng thành công</h1>
+        <h1 className="mt-5 text-2xl font-bold text-neutral-950">Đặt hàng thành công</h1>
         <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-neutral-600">
           Mã đơn <strong className="break-all font-mono text-neutral-950">{order.orderNo}</strong> đã được tiếp nhận tại{' '}
           <strong>{order.branchName}</strong>.

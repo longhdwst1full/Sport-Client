@@ -29,7 +29,7 @@ export function PolicyDetailPage({
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(articleJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbJsonLd) }} />
-      <div className="bg-neutral-50/60 pb-20 pt-8">
+      <div className="page-shell">
         <main className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <Breadcrumb
             className="mb-6"
@@ -41,7 +41,7 @@ export function PolicyDetailPage({
           />
 
           <article className="surface-card p-6 shadow-sm sm:p-10">
-            <h1 className="text-2xl font-black leading-tight text-ink sm:text-3xl">
+            <h1 className="text-2xl font-bold leading-tight text-ink sm:text-3xl">
               {policy.title}
             </h1>
             <p className="mt-3 flex items-center gap-1.5 text-xs font-semibold text-neutral-500">

@@ -1,135 +1,90 @@
 import Link from 'next/link';
-import { Award, CheckCircle2, Clock, MapPin, Phone, Star } from 'lucide-react';
+import { CheckCircle2, Clock, MapPin, Phone } from 'lucide-react';
 import { buttonVariants } from '@/foundation/components/buttons';
 import { IconList } from '@/foundation/components/structure';
-import { STORE_CONTACT, STORE_SHOWROOMS } from '@/shared/constants';
+import { STORE_CONFIG, STORE_CONTACT, STORE_POLICY_FACTS, STORE_SHOWROOMS } from '@/shared/constants';
 
-const DARK_FOCUS = 'focus-visible:ring-white focus-visible:ring-offset-neutral-900';
-
+/**
+ * Khối tối DUY NHẤT của trang chủ (nhịp: trắng → … → tối → footer). Chỉ nêu điều kiểm chứng được:
+ * năm thành lập, số showroom, phạm vi giao, chính sách đổi trả (`STORE_POLICY_FACTS`, CMS). Bản trước
+ * có "30.000+ khách", "4.9/3.200+ đánh giá", "10+ năm", "bảo hành khung 5 năm" không có nguồn.
+ */
 const COMMITMENTS = [
-  'Miễn phí tư vấn setup theo diện tích',
-  'Giao hàng và hỗ trợ lắp đặt tận nơi',
-  'Đổi mới trong 7 ngày nếu lỗi kỹ thuật',
-  'Bảo hành khung sườn lên đến 5 năm',
+  'Tư vấn chọn thiết bị theo diện tích, mục tiêu',
+  STORE_POLICY_FACTS.shippingSummary,
+  STORE_POLICY_FACTS.returnSummary,
+  STORE_POLICY_FACTS.warrantySummary,
 ].map((label) => ({ icon: CheckCircle2, label }));
 
 const FACTS = [
-  { value: '10+ Năm', valueClassName: 'text-white', caption: 'Kinh nghiệm phân phối' },
-  { value: '100%', valueClassName: 'text-white', caption: 'Chính hãng có VAT' },
+  { value: `Từ ${STORE_CONFIG.sinceYear}`, caption: 'Phân phối thiết bị thể thao' },
+  { value: String(STORE_SHOWROOMS.length), caption: 'Showroom Hà Nội & TP.HCM' },
+  { value: '63', caption: 'Tỉnh thành giao tới' },
 ];
 
 export function TrustSocialProof() {
   return (
-    <section className="page-container py-6 sm:py-10">
-      <div className="relative overflow-hidden rounded-4xl border border-neutral-800/80 bg-gradient-to-br from-neutral-900 via-neutral-900 to-neutral-950 text-white p-6 sm:p-10 lg:p-12 shadow-2xl">
-        {/* Subtle Sports Ambient Lighting */}
-        <div className="pointer-events-none absolute -left-20 -top-20 size-72 rounded-full bg-red-600/15 blur-[90px]" />
-        <div className="pointer-events-none absolute -bottom-20 -right-20 size-80 rounded-full bg-neutral-600/10 blur-[100px]" />
+    <section className="bg-neutral-950 text-white">
+      <div className="page-container grid gap-10 py-14 sm:py-16 lg:grid-cols-[1.1fr_.9fr] lg:items-center">
+        <div>
+          <span className="eyebrow text-neutral-400">An tâm khi đầu tư thiết bị</span>
+          <h2 className="mt-3 text-2xl font-bold leading-tight sm:text-3xl">
+            Mua thiết bị tập có người đồng hành
+          </h2>
+          <p className="mt-3 max-w-xl text-sm leading-relaxed text-neutral-300">
+            Thiết bị thể thao là khoản đầu tư cho sức khoẻ lâu dài. {STORE_CONFIG.name} tư vấn từ khâu chọn
+            máy theo không gian tới giao, lắp đặt và bảo hành.
+          </p>
 
-        <div className="relative z-10 grid gap-8 lg:grid-cols-[1.1fr_.9fr] lg:items-center">
-          {/* Left Column: Proof points & Rating */}
-          <div>
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-red-500/15 border border-red-500/25 px-3 py-1 text-xs font-black uppercase tracking-wider text-red-400">
-              An tâm khi đầu tư thiết bị
-            </span>
-
-            {/* TODO(data): số liệu chưa có nguồn xác nhận ("30.000+ khách hàng") — chờ chủ shop quyết định giữ/bỏ. */}
-            <h2 className="mt-3 text-2xl sm:text-3xl lg:text-4xl font-black text-white leading-tight">
-              Vì sao hơn 30.000+ khách hàng tin chọn Bảo An Sport?
-            </h2>
-
-            <p className="mt-3 text-sm text-neutral-300 leading-relaxed max-w-xl">
-              Chúng tôi hiểu rằng thiết bị thể thao là khoản đầu tư cho sức khỏe lâu dài. Không chỉ cung cấp sản phẩm chính hãng, Bảo An Sport đồng hành cùng bạn từ khâu tư vấn không gian đến bảo trì định kỳ.
-            </p>
-
-            {/* TODO(data): số liệu chưa có nguồn xác nhận ("4.9/5", "3.200+ đánh giá", "10+ năm") — không lấy từ API đánh giá. */}
-            <div className="mt-6 flex flex-wrap items-center gap-6 sm:gap-8 border-y border-neutral-800 py-6">
-              <div>
-                <div className="flex items-center gap-1.5 text-amber-400">
-                  <Star className="size-5 fill-amber-400" />
-                  <span className="text-2xl font-black text-white">4.9</span>
-                  <span className="text-xs text-neutral-400">/ 5.0</span>
-                </div>
-                <span className="mt-1 block text-xs text-neutral-400">3.200+ đánh giá xác thực</span>
+          <dl className="mt-6 grid grid-cols-3 gap-4 border-y border-neutral-800 py-6">
+            {FACTS.map((fact) => (
+              <div key={fact.caption}>
+                <dt className="sr-only">{fact.caption}</dt>
+                <dd className="text-2xl font-bold">{fact.value}</dd>
+                <dd className="mt-1 text-xs text-neutral-400">{fact.caption}</dd>
               </div>
+            ))}
+          </dl>
 
-              {FACTS.map((fact) => (
-                <div key={fact.caption} className="contents">
-                  <div className="h-8 w-px bg-neutral-800" aria-hidden="true" />
-                  <div>
-                    <span className={`text-2xl font-black ${fact.valueClassName}`}>{fact.value}</span>
-                    <span className="mt-1 block text-xs text-neutral-400">{fact.caption}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
+          <IconList
+            items={COMMITMENTS}
+            columns={2}
+            className="mt-6 grid-cols-1 gap-2.5 text-sm text-neutral-300 sm:grid-cols-2"
+            iconClassName="text-neutral-400"
+          />
+        </div>
 
-            <IconList
-              items={COMMITMENTS}
-              columns={2}
-              className="mt-6 grid-cols-1 gap-2.5 text-xs font-semibold text-neutral-300 sm:grid-cols-2"
-              iconClassName="text-success-400"
-            />
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center gap-2">
+            <MapPin className="size-5 text-neutral-400" aria-hidden />
+            <h3 className="text-base font-semibold">Trải nghiệm máy tại showroom</h3>
+            <span className="ml-auto inline-flex items-center gap-1.5 text-xs text-neutral-400">
+              <Clock className="size-3" aria-hidden /> {STORE_CONTACT.openingHoursShort}
+            </span>
           </div>
 
-          {/* Right Column: Showroom System */}
-          <div className="flex flex-col gap-4 rounded-2xl border border-neutral-800 bg-neutral-900/80 p-6 sm:p-7 backdrop-blur-sm">
-            <div className="flex items-center justify-between border-b border-neutral-800 pb-4">
-              <div className="flex items-center gap-2">
-                <MapPin className="size-5 text-neutral-300" />
-                <h3 className="text-base font-black text-white">Trải nghiệm máy tại Showroom</h3>
-              </div>
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-neutral-900/10 px-2.5 py-0.5 text-xs font-bold text-neutral-300">
-                <Clock className="size-3" />
-                8:30 - 21:30
-              </span>
-            </div>
-
-            <div className="space-y-4 text-xs">
-              {STORE_SHOWROOMS.map((showroom) => (
-                <div
-                  key={showroom.id}
-                  className="rounded-xl border border-neutral-800/80 bg-neutral-950/60 p-4 transition hover:border-neutral-700"
-                >
-                  <strong className="block text-sm font-bold text-white mb-1">
-                    {showroom.city}: {showroom.name}
-                  </strong>
-                  <p className="text-neutral-400 mb-2 leading-relaxed">
-                    {showroom.address}
-                  </p>
-                  <a
-                    href={`tel:${showroom.phoneRaw}`}
-                    className="inline-flex items-center gap-1.5 font-bold text-neutral-300 hover:text-neutral-300 rounded focus-ring-inverse focus-visible:ring-offset-neutral-900"
-                  >
-                    <Phone className="size-3" />
-                    <span>Hotline: {showroom.phone}</span>
-                  </a>
-                </div>
-              ))}
-            </div>
-
-            <div className="pt-2 flex items-center justify-between gap-3">
-              <Link
-                href="/contact"
-                className={buttonVariants({
-                  variant: 'primary',
-                  className: `flex-1 text-xs font-bold shadow-md shadow-neutral-900 ${DARK_FOCUS}`,
-                })}
-              >
-                Xem chi tiết chỉ đường
-              </Link>
-              <a
-                href={STORE_CONTACT.zaloUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={buttonVariants({
-                  variant: 'secondary',
-                  className: `border border-neutral-700 bg-neutral-800 text-xs font-bold text-neutral-200 hover:bg-neutral-700 ${DARK_FOCUS}`,
-                })}
-              >
-                Chat Zalo tư vấn
+          {STORE_SHOWROOMS.map((showroom) => (
+            <div key={showroom.id} className="rounded-xl bg-neutral-900 p-4 text-sm">
+              <strong className="mb-1 block font-semibold">{showroom.city}: {showroom.name}</strong>
+              <p className="mb-2 leading-relaxed text-neutral-400">{showroom.address}</p>
+              <a href={`tel:${showroom.phoneRaw}`} className="focus-ring-inverse inline-flex items-center gap-1.5 rounded font-semibold text-neutral-200 hover:text-white">
+                <Phone className="size-3" aria-hidden /> Hotline: {showroom.phone}
               </a>
             </div>
+          ))}
+
+          <div className="flex flex-wrap gap-3 pt-1">
+            <Link href="/contact" className={buttonVariants({ variant: 'inverse', className: 'focus-ring-inverse flex-1' })}>
+              Xem chỉ đường
+            </Link>
+            <a
+              href={STORE_CONTACT.zaloUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={buttonVariants({ variant: 'outline', className: 'focus-ring-inverse flex-1 border-neutral-700 bg-transparent text-white hover:border-white hover:bg-white/10' })}
+            >
+              Chat Zalo tư vấn
+            </a>
           </div>
         </div>
       </div>

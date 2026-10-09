@@ -19,7 +19,7 @@ export function NotFoundContent() {
         Liên kết không khả dụng
       </span>
 
-      <h1 className="mt-3 text-balance text-2xl font-black tracking-tight text-neutral-900 sm:text-4xl">
+      <h1 className="mt-3 text-balance text-2xl font-bold tracking-tight text-neutral-900 sm:text-4xl">
         Không tìm thấy trang bạn yêu cầu
       </h1>
 

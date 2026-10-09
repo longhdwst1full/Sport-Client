@@ -125,7 +125,7 @@ export function HeroSlider({
                   )}
 
                   {slide.title && (
-                    <h2 className="mt-3.5 line-clamp-3 text-2xl font-black leading-tight text-white sm:text-3xl lg:text-4xl">
+                    <h2 className="mt-3.5 line-clamp-3 text-2xl font-bold leading-tight text-white sm:text-3xl lg:text-4xl">
                       {slide.title}
                     </h2>
                   )}

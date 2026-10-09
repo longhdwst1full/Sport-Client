@@ -40,7 +40,7 @@ export function ForgotPasswordPage() {
       {submitted ? (
         <div role="status" className="mt-6 rounded-3xl border border-success-200 bg-success-50 p-6 text-center">
           <MailCheck className="mx-auto size-10 text-success-600" aria-hidden />
-          <h1 className="mt-3 text-lg font-black text-neutral-900">Đã gửi yêu cầu</h1>
+          <h1 className="mt-3 text-lg font-bold text-neutral-900">Đã gửi yêu cầu</h1>
           <p className="mt-2 text-xs leading-relaxed text-neutral-600">
             Nếu <strong>{email.trim()}</strong> có tài khoản tại {STORE_CONFIG.name}, chúng tôi vừa
             gửi một email kèm đường dẫn đặt lại mật khẩu. Đường dẫn hết hạn sau 30 phút và chỉ dùng
@@ -61,7 +61,7 @@ export function ForgotPasswordPage() {
             request.mutate({ data: { email: email.trim() } });
           }}
         >
-          <h1 className="text-lg font-black text-neutral-900">Quên mật khẩu</h1>
+          <h1 className="text-lg font-bold text-neutral-900">Quên mật khẩu</h1>
           <p className="mt-1 text-xs leading-relaxed text-neutral-500">
             Nhập email đăng nhập của bạn. Chúng tôi sẽ gửi đường dẫn để đặt lại mật khẩu.
           </p>

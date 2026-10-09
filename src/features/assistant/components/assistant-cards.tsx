@@ -45,7 +45,7 @@ function ProductCard({
         {card.brand && <p className="text-2xs text-neutral-500">{card.brand}</p>}
         <div className="mt-1 flex flex-wrap items-center gap-2 text-xs">
           {card.price !== null && (
-            <strong className="text-brand-700">
+            <strong className="text-neutral-950">
               {card.variants.length > 1 ? 'Từ ' : ''}
               {formatVnd(card.price)}
             </strong>
@@ -86,7 +86,7 @@ function OrderCard({ card, onNavigate }: { card: AssistantOrderCardView; onNavig
       className="block rounded-2xl border border-neutral-200 bg-white p-3 text-xs hover:border-neutral-300 focus-ring-tight"
     >
       <div className="flex items-center justify-between gap-2">
-        <span className="flex items-center gap-1.5 font-mono font-black text-neutral-900">
+        <span className="flex items-center gap-1.5 font-mono font-bold text-neutral-900">
           <Package className="size-3.5" aria-hidden />
           {card.orderNo}
         </span>
@@ -131,7 +131,7 @@ export function AssistantTicketCard({
       onClick={onNavigate}
       className="flex items-center justify-between gap-2 rounded-2xl border border-neutral-200 bg-white p-3 text-xs hover:border-neutral-300 focus-ring-tight"
     >
-      <span className="flex items-center gap-1.5 font-mono font-black text-neutral-900">
+      <span className="flex items-center gap-1.5 font-mono font-bold text-neutral-900">
         <Ticket className="size-3.5" aria-hidden />
         {card.ticketNo}
       </span>

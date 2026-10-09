@@ -13,7 +13,7 @@ const MODES: { mode: AuthMode; href: string; label: string }[] = [
 
 const TAB_BASE =
   'flex min-h-9 sm:min-h-10 flex-1 items-center justify-center rounded-xl py-2 text-center text-xs transition focus-ring-tight';
-const TAB_ACTIVE = `${TAB_BASE} bg-white font-black text-neutral-900 shadow-sm`;
+const TAB_ACTIVE = `${TAB_BASE} bg-white font-bold text-neutral-900 shadow-sm`;
 const TAB_IDLE = `${TAB_BASE} font-bold text-neutral-500 hover:text-neutral-900`;
 
 /** Segmented pill Login/Register switcher; highlights the active side. */

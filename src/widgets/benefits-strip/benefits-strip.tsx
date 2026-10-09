@@ -30,7 +30,7 @@ export function BenefitsStrip() {
             </span>
             <div>
               {/* Dải không có tiêu đề section: dùng <p> thay <h2> để không chen mục giả vào dàn heading trang chủ. */}
-              <p className="text-sm font-black text-neutral-900">{title}</p>
+              <p className="text-sm font-bold text-neutral-900">{title}</p>
               <p className="mt-0.5 text-xs leading-relaxed text-neutral-600">{description}</p>
             </div>
           </div>

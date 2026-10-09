@@ -1,10 +1,22 @@
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
+import { Be_Vietnam_Pro } from 'next/font/google';
 import { absoluteUrl, DEFAULT_OG_IMAGE, SITE_NAME, SITE_URL } from '@/lib/seo/page-metadata';
 import { ORGANIZATION_ID, serializeJsonLd, WEBSITE_ID } from '@/lib/seo/json-ld';
 import { STORE_CONFIG, STORE_CONTACT, STORE_SHOWROOMS } from '@/shared/constants';
 import { Providers } from './providers';
 import './globals.css';
+
+/**
+ * Be Vietnam Pro: thiết kế cho tiếng Việt, tự host lúc build (không gọi Google lúc chạy) và preload.
+ * Chỉ 4 độ đậm: tiêu đề 700, nhãn/nút 600, nhấn nhẹ 500, thân bài 400 (`20-design-tokens.md`).
+ */
+const fontSans = Be_Vietnam_Pro({
+  subsets: ['latin', 'latin-ext', 'vietnamese'],
+  weight: ['400', '500', '600', '700'],
+  display: 'swap',
+  variable: '--font-sans',
+});
 
 const DEFAULT_TITLE = 'Bảo An Sport — Dụng Cụ Thể Thao Chính Hãng Giá Tốt Nhất';
 const DEFAULT_DESC =
@@ -170,7 +182,7 @@ const SITE_JSON_LD = {
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="vi" suppressHydrationWarning>
+    <html lang="vi" className={fontSans.variable} suppressHydrationWarning>
       <body suppressHydrationWarning>
         <script
           type="application/ld+json"

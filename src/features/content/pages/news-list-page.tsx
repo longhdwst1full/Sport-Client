@@ -15,7 +15,7 @@ export function NewsListPage({
   initialHasMore?: boolean;
 }) {
   return (
-    <div className="bg-neutral-50/60 pb-20 pt-8">
+    <div className="page-shell">
       <main className="page-container">
         <Breadcrumb
           className="mb-6"
@@ -26,10 +26,10 @@ export function NewsListPage({
         />
 
         <div className="max-w-2xl">
-          <span className="rounded-full bg-neutral-50 px-3.5 py-1 text-xs font-extrabold uppercase tracking-widest text-neutral-900">
+          <span className="rounded-full bg-neutral-50 px-3.5 py-1 text-xs font-semibold uppercase tracking-widest text-neutral-900">
             Bảo An Sport Journal
           </span>
-          <h1 className="mt-3 text-3xl font-black text-ink sm:text-5xl">
+          <h1 className="mt-3 text-3xl font-bold text-ink sm:text-5xl">
             Kiến thức tập luyện & Tin tức thể thao
           </h1>
           <p className="mt-3 text-base text-neutral-600 sm:text-lg">

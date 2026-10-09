@@ -53,7 +53,7 @@ export function AddressCard({ addr, canDelete, onSetDefault, onEdit, onDelete }:
           <strong className="text-sm font-bold text-neutral-900">{addr.recipient}</strong>
           <span className="text-xs text-neutral-500">· {addr.phone}</span>
           {addr.isDefault && (
-            <span className="rounded-full bg-neutral-900 px-2.5 py-0.5 text-3xs font-black uppercase text-white">
+            <span className="rounded-full bg-neutral-900 px-2.5 py-0.5 text-3xs font-bold uppercase text-white">
               Mặc định
             </span>
           )}

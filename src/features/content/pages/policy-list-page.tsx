@@ -14,7 +14,7 @@ export function PolicyListPage({
   loadFailed?: boolean;
 }) {
   return (
-      <div className="bg-neutral-50/60 pb-20 pt-8">
+      <div className="page-shell">
         <main className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <Breadcrumb
             className="mb-6"
@@ -25,7 +25,7 @@ export function PolicyListPage({
           />
 
           <header className="surface-card p-6 shadow-sm sm:p-10">
-            <h1 className="text-3xl font-black leading-tight text-ink sm:text-4xl">
+            <h1 className="text-3xl font-bold leading-tight text-ink sm:text-4xl">
               Thông tin và chính sách
             </h1>
             <p className="mt-3 max-w-2xl text-sm leading-relaxed text-neutral-600 sm:text-base">

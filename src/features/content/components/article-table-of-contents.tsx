@@ -27,7 +27,7 @@ export function ArticleTableOfContents({ headings }: { headings: TocHeading[] })
     >
       <div className="flex items-center gap-2 border-b border-neutral-200/60 pb-3">
         <ListOrdered className="size-4 text-neutral-900" aria-hidden="true" />
-        <h2 className="text-xs font-black uppercase tracking-wider text-neutral-950">
+        <h2 className="text-xs font-bold uppercase tracking-wider text-neutral-950">
           Mục lục bài viết
         </h2>
       </div>

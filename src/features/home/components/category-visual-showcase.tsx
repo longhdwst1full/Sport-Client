@@ -124,7 +124,7 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-4 sm:mb-6">
           <div>
             <p className="eyebrow text-neutral-900">Danh mục thiết bị</p>
-            <h2 className="mt-2 text-2xl font-black tracking-tight text-neutral-900 sm:text-3xl lg:text-4xl">
+            <h2 className="mt-2 text-2xl font-bold tracking-tight text-neutral-900 sm:text-3xl lg:text-4xl">
               Sản Phẩm Theo Danh Mục Ngành Hàng
             </h2>
             <p className="mt-1 text-xs text-neutral-500 sm:text-sm">

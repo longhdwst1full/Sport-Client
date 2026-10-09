@@ -27,7 +27,7 @@ function PromoBannerCard({ banner }: { banner: BannerView }) {
       {hasText && (
         <div className="absolute inset-0 flex flex-col justify-end p-3 sm:p-5 text-white">
           {banner.title && (
-            <h3 className="mt-1 text-sm font-black leading-snug sm:text-lg group-hover:text-neutral-300 transition">
+            <h3 className="mt-1 text-sm font-bold leading-snug sm:text-lg group-hover:text-neutral-300 transition">
               {banner.title}
             </h3>
           )}
@@ -87,11 +87,11 @@ export function HeroPromoCards({ banners = [] }: { banners?: BannerView[] }) {
 
         {/* Text Info */}
         <div className="absolute inset-0 flex flex-col justify-end p-3 sm:p-5 text-white">
-          <span className="hidden sm:inline-flex items-center gap-1 text-xs font-black uppercase tracking-wider text-neutral-300">
+          <span className="hidden sm:inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-neutral-300">
             <ShieldCheck className="size-3.5" aria-hidden="true" />
             BẢO AN SPORT CHÍNH HÃNG
           </span>
-          <h3 className="mt-1 text-sm font-black leading-snug sm:text-lg group-hover:text-neutral-300 transition">
+          <h3 className="mt-1 text-sm font-bold leading-snug sm:text-lg group-hover:text-neutral-300 transition">
             Chính Sách Bảo Hành
           </h3>
           <p className="mt-0.5 text-xs text-neutral-300 line-clamp-2 max-sm:hidden">
@@ -123,13 +123,13 @@ export function HeroPromoCards({ banners = [] }: { banners?: BannerView[] }) {
 
         {/* Text Info */}
         <div className="absolute inset-0 flex flex-col justify-end p-3 sm:p-5 text-white">
-          <span className="hidden sm:inline-flex items-center gap-1 text-xs font-black uppercase tracking-wider text-amber-400">
+          <span className="hidden sm:inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-amber-400">
             <Flame className="size-3.5 fill-amber-400 text-amber-400" aria-hidden="true" />
             {/* Thẻ này dẫn sang danh mục, không phải chương trình flash sale; gọi đúng tên
                 để không hứa một chương trình có thể đang không chạy. */}
             PHỤ KIỆN TẬP GYM
           </span>
-          <h3 className="mt-1 text-sm font-black leading-snug sm:text-lg group-hover:text-amber-300 transition">
+          <h3 className="mt-1 text-sm font-bold leading-snug sm:text-lg group-hover:text-amber-300 transition">
             Tạ Tay & Phụ Kiện Thể Thao
           </h3>
           <p className="mt-0.5 text-xs text-neutral-300 line-clamp-2 max-sm:hidden">

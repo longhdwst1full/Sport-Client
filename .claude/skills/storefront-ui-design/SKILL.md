@@ -11,12 +11,12 @@ description: Style or restyle DCTD storefront UI (colors, buttons, cards, spacin
 
 | Cần đổi | Sửa ở |
 | --- | --- |
-| Màu thương hiệu, cỡ chữ nhỏ, bo góc lớn, giãn chữ | `tailwind.config.ts` (`brand`, `ink`, `fontSize`, `borderRadius`, `letterSpacing`) |
-| Focus ring, khung trang, thẻ, nhãn nhỏ | `src/app/globals.css` → `@layer components` |
+| Màu (brand, accent), font, cỡ chữ nhỏ, bo góc, giãn chữ | `tailwind.config.ts` (`brand`, `ink`, `fontSize`, `borderRadius`, `letterSpacing`) |
+| Focus ring, khung trang, thẻ, tiêu đề, link, nhãn nhỏ | `src/app/globals.css` → `@layer components` |
 | Kiểu nút | `src/foundation/components/buttons/button-variants.ts` |
 | Hotline, giờ, cam kết chính sách | `src/shared/constants/store.ts` |
 
-Logo: đỏ `#E83734` + xám than `#4D4D4F`. Nút hành động = than (`primary`); đỏ chỉ cho giá/khuyến mãi; `red` cho lỗi/huỷ.
+Logo: đỏ `#E83734` + xám than `#4D4D4F`. Nút chuyển đổi = `cta` (cam #FF5A1F, chữ than); hành động khác = `primary` than / `secondary` / `link`; giá thường màu than, đỏ chỉ cho giá sale/khuyến mãi; `red` cho lỗi/huỷ. Trang trắng, tối đa một khối tối trên trang chủ.
 
 ## Quy trình
 

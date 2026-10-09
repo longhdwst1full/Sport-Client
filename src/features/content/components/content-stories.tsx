@@ -88,7 +88,7 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
 
         <Link
           href="/news"
-          className="inline-flex items-center gap-1.5 text-xs font-extrabold text-neutral-900 hover:underline rounded focus-ring"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-neutral-900 hover:underline rounded focus-ring"
         >
           <span>Xem tất cả bài viết</span>
           <ArrowRight className="size-3.5" aria-hidden="true" />
@@ -117,7 +117,7 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
                 sizes="(max-width: 768px) 100vw, 45vw"
                 className="object-cover transition duration-500 group-hover:scale-105"
               />
-              <div className="absolute left-3 top-3 rounded-full bg-neutral-900/85 px-3 py-1 text-xs font-black uppercase tracking-wider text-neutral-300 backdrop-blur-md">
+              <div className="absolute left-3 top-3 rounded-full bg-neutral-900/85 px-3 py-1 text-xs font-bold uppercase tracking-wider text-neutral-300 backdrop-blur-md">
                 {post.categoryLabel}
               </div>
             </Link>
@@ -143,7 +143,7 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
                 </div>
 
                 {/* Title */}
-                <h3 className="mt-2.5 text-base font-black leading-snug text-neutral-900 transition line-clamp-2 group-hover:text-neutral-900 sm:text-lg">
+                <h3 className="mt-2.5 text-base font-bold leading-snug text-neutral-900 transition line-clamp-2 group-hover:text-neutral-900 sm:text-lg">
                   <Link href={`/news/${post.slug}`} className="rounded focus-ring">
                     {post.title}
                   </Link>
@@ -184,7 +184,7 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
         <div className="mt-6 flex justify-center">
           <Link
             href="/news"
-            className="inline-flex items-center gap-1.5 text-xs font-extrabold text-neutral-900 hover:underline rounded focus-ring"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-neutral-900 hover:underline rounded focus-ring"
           >
             <span>Đọc toàn bộ chuyên mục tin tức</span>
             <ArrowRight className="size-3.5" aria-hidden="true" />

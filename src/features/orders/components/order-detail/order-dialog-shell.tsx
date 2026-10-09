@@ -49,7 +49,7 @@ export function OrderDialogShell({
               <Icon aria-hidden className="size-5.5" />
             </div>
             <div>
-              <h2 id={titleId} className="text-base font-black text-neutral-900">{title}</h2>
+              <h2 id={titleId} className="text-base font-bold text-neutral-900">{title}</h2>
               <p className="text-xs text-neutral-500">{subtitle}</p>
             </div>
           </div>

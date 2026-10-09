@@ -37,45 +37,45 @@ export function FlashSaleSection() {
 
   return (
     <section
-      className="bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-950 py-16 text-white sm:py-20"
+      className="bg-white py-12 sm:py-16"
       aria-labelledby="flash-sale-heading"
     >
       <div className="page-container">
         {/* Header with Flame & Live Countdown */}
-        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between border-b border-neutral-800/80 pb-8">
+        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between border-b border-neutral-200 pb-6">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-amber-400/30 bg-amber-400/10 px-3.5 py-1 text-xs font-black uppercase tracking-widest text-amber-300">
-              <Flame className="size-4 text-amber-400 motion-safe:animate-bounce" aria-hidden="true" />
-              Ưu đãi chớp nhoáng — Giờ vàng thể thao
+            <div className="eyebrow inline-flex items-center gap-1.5 text-brand-600">
+              <Flame className="size-4" aria-hidden="true" />
+              Flash sale
             </div>
-            <h2 id="flash-sale-heading" className="mt-3 text-3xl font-black text-white sm:text-4xl">
+            <h2 id="flash-sale-heading" className="heading-page mt-2">
               {campaign?.name ?? 'Flash Sale Thiết Bị Hôm Nay'}
             </h2>
-            <p className="mt-2 text-sm text-neutral-400 sm:text-base">
+            <p className="mt-1.5 text-sm text-neutral-600">
               {campaign?.description ?? 'Số lượng ưu đãi có hạn theo từng suất bán.'}
             </p>
           </div>
 
           {/* Countdown Clock Box */}
           <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
-            <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-neutral-400">
-              <Clock className="size-4 text-amber-400" aria-hidden="true" />
+            <span className="flex items-center gap-1.5 text-xs font-semibold text-neutral-500">
+              <Clock className="size-4" aria-hidden="true" />
               Kết thúc trong:
             </span>
             <div
-              className="flex items-center gap-1.5 font-mono text-sm sm:text-base font-black"
+              className="flex items-center gap-1.5 font-mono text-sm sm:text-base font-bold"
               role="timer"
               aria-label={`Còn ${countdown.hours} giờ ${countdown.minutes} phút`}
             >
-              <span className="grid size-9 sm:size-10 place-items-center rounded-xl bg-brand-600 text-white shadow-md shadow-brand-600/20">
+              <span className="grid size-9 sm:size-10 place-items-center rounded-lg bg-neutral-950 text-white">
                 {format2Digits(countdown.hours)}
               </span>
-              <span className="text-neutral-500 font-bold" aria-hidden="true">:</span>
-              <span className="grid size-9 sm:size-10 place-items-center rounded-xl bg-brand-600 text-white shadow-md shadow-brand-600/20">
+              <span className="text-neutral-400 font-bold" aria-hidden="true">:</span>
+              <span className="grid size-9 sm:size-10 place-items-center rounded-lg bg-neutral-950 text-white">
                 {format2Digits(countdown.minutes)}
               </span>
-              <span className="text-neutral-500 font-bold" aria-hidden="true">:</span>
-              <span className="grid size-9 sm:size-10 place-items-center rounded-xl bg-brand-600 text-white shadow-md shadow-brand-600/20">
+              <span className="text-neutral-400 font-bold" aria-hidden="true">:</span>
+              <span className="grid size-9 sm:size-10 place-items-center rounded-lg bg-neutral-950 text-white">
                 {format2Digits(countdown.seconds)}
               </span>
             </div>
@@ -83,28 +83,15 @@ export function FlashSaleSection() {
         </div>
 
         {/* Product Cards Grid */}
-        <div className="mt-10 grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
+        <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
           {campaign.deals.map((deal) => (
             <FlashSaleDealCard key={deal.id} deal={deal} onQuickAdd={handleQuickAdd} />
           ))}
         </div>
 
-        {/* Bottom Banner with All Deals CTA */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 rounded-3xl border border-brand-900/40 bg-gradient-to-r from-neutral-950/50 via-neutral-900/70 to-neutral-900/90 p-6 sm:flex-row sm:px-8">
-          <div className="text-center sm:text-left">
-            <strong className="block text-base font-black text-white">
-              Xem toàn bộ suất flash sale đang mở trong hôm nay
-            </strong>
-            <span className="text-xs text-neutral-400">
-              Khám phá toàn bộ 5 ca giờ vàng Flash Sale và săn voucher giảm thêm độc quyền từ Bảo An Sport.
-            </span>
-          </div>
-          <Link
-            href="/flash-sale"
-            className="inline-flex shrink-0 items-center gap-2 rounded-full bg-white px-6 py-3 text-xs font-black text-neutral-900 shadow-md transition hover:bg-neutral-100 hover:scale-105 active:scale-95 focus-ring-inverse focus-visible:ring-offset-neutral-900"
-          >
-            <span>Xem tất cả Deal Flash Sale</span>
-            <ArrowRight className="size-3.5" aria-hidden="true" />
+        <div className="mt-8 text-center">
+          <Link href="/flash-sale" className="focus-ring inline-flex items-center gap-1.5 rounded text-sm font-semibold text-neutral-950 underline-offset-4 hover:underline">
+            Xem tất cả suất flash sale <ArrowRight className="size-4" aria-hidden="true" />
           </Link>
         </div>
       </div>

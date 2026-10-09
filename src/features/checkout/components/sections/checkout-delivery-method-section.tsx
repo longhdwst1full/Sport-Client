@@ -50,7 +50,7 @@ export function CheckoutDeliveryMethodSection({
         >
           <div className="flex items-center justify-between gap-2">
             <strong className="text-sm font-bold text-neutral-900">Giao hàng tiêu chuẩn</strong>
-            <span className="rounded-full bg-neutral-100 px-2 py-0.5 text-3xs font-black uppercase tracking-wider text-neutral-950">
+            <span className="rounded-full bg-neutral-100 px-2 py-0.5 text-3xs font-bold uppercase tracking-wider text-neutral-950">
               Khuyên dùng
             </span>
           </div>
@@ -68,7 +68,7 @@ export function CheckoutDeliveryMethodSection({
                 <div className={`space-y-1 transition-opacity ${refreshingQuote ? 'opacity-60' : ''}`} aria-busy={refreshingQuote}>
                   <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
                     <span
-                      className={`text-sm font-black ${
+                      className={`text-sm font-bold ${
                         !quoteView.shippingFeePending && quoteView.shippingTotalAmount === 0 ? 'text-success-700' : 'text-neutral-900'
                       }`}
                     >

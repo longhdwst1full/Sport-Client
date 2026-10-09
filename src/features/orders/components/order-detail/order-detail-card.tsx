@@ -26,7 +26,7 @@ export function OrderDetailCard({
             <Icon aria-hidden className="size-4.5" />
           </div>
           <div>
-            <h2 className="text-base font-black text-neutral-900">{title}</h2>
+            <h2 className="text-base font-bold text-neutral-900">{title}</h2>
             <p className="text-xs text-neutral-500">{description}</p>
           </div>
         </div>

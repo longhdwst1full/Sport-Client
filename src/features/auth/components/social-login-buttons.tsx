@@ -39,12 +39,12 @@ const SOCIAL_PROVIDERS: { key: SocialProvider; label: string; icon: ReactNode }[
   {
     key: 'zalo',
     label: 'Zalo',
-    icon: <span className="grid size-4 place-items-center rounded-full bg-[#0068FF] text-3xs font-black text-white">Z</span>,
+    icon: <span className="grid size-4 place-items-center rounded-full bg-[#0068FF] text-3xs font-bold text-white">Z</span>,
   },
   {
     key: 'facebook',
     label: 'Facebook',
-    icon: <span className="grid size-4 place-items-center rounded-full bg-[#1877F2] text-3xs font-black text-white">f</span>,
+    icon: <span className="grid size-4 place-items-center rounded-full bg-[#1877F2] text-3xs font-bold text-white">f</span>,
   },
 ];
 

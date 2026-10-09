@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { MoveUpRight } from 'lucide-react';
 import { BenefitsStrip } from '@/widgets/benefits-strip/benefits-strip';
 import { SectionHeading } from '@/foundation/components/structure/section-heading';
 import { ProductShowcase, toCategoryCardView, toCategoryRailView } from '@/features/catalog';
@@ -21,10 +20,10 @@ import { STORE_CONFIG } from '@/shared/constants';
 
 /** Số thẻ "theo bộ môn" và số lối tắt nhóm sản phẩm; chọn theo `productCount` thật. */
 const SPORT_CARD_COUNT = 4;
+/** Số danh mục lớn trên rail trang chủ. */
+const CATEGORY_RAIL_COUNT = 8;
 const QUICK_LINK_COUNT = 8;
 
-/** Khoảng đệm dọc chung cho mọi khối trang chủ (không cộng thêm margin) để nhịp trang đều. */
-const SECTION_CLASS = 'page-container py-6 sm:py-10';
 /** Nhãn nhỏ trên tiêu đề khối, cùng kiểu `SectionHeading`. */
 const EYEBROW_CLASS = 'eyebrow text-neutral-900';
 
@@ -67,7 +66,12 @@ export async function HomePage({
   promoBanners: BannerView[];
 }) {
   const [heroPosts, showcase] = await Promise.all([loadHeroPosts(), loadShowcaseFirstPage()]);
-  const categoryRail = categories.map(toCategoryRailView);
+  // Rail chỉ lấy danh mục gốc có sản phẩm (tối đa 8) thay vì toàn bộ ~60 danh mục kể cả lá.
+  const categoryRail = categories
+    .filter((category) => !category.parentSlug && category.productCount > 0)
+    .sort((left, right) => right.productCount - left.productCount)
+    .slice(0, CATEGORY_RAIL_COUNT)
+    .map(toCategoryRailView);
   const featuredProductSlug = showcase?.page.items[0]?.slug;
   const byProductCount = (left: CatalogCategoryDto, right: CatalogCategoryDto) =>
     right.productCount - left.productCount;
@@ -107,10 +111,10 @@ export async function HomePage({
         {/* 4. Sản phẩm nổi bật & bán chạy. */}
         {/* Một lối "xem tất cả" cho khối này: banner cuối lưới (sang /products); bỏ link danh mục ở đầu khối
             vì rail danh mục ngay phía trên đã có. */}
-        <section id="products" className={SECTION_CLASS}>
+        <section id="products" className="page-section">
           <div className="mb-6">
             <p className={EYEBROW_CLASS}>Thiết bị bán chạy</p>
-            <h2 className="mt-2 text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-neutral-900">
+            <h2 className="mt-2 text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-neutral-900">
               Sản Phẩm Nổi Bật & Bán Chạy
             </h2>
             <p className="mt-1 text-xs sm:text-sm text-neutral-500 max-w-2xl">
@@ -129,7 +133,7 @@ export async function HomePage({
         <QuickGoalNavigation />
 
         {sportCards.length > 0 && (
-          <section id="shop-by-sport" className={SECTION_CLASS}>
+          <section id="shop-by-sport" className="page-section">
             <SectionHeading eyebrow="Tìm nhanh theo bộ môn" title="Bạn muốn tập luyện bộ môn nào?" />
             {/* Thẻ sáng (không còn 4 khối tối liền nhau trước trust/smart-fit); mobile 2 cột gọn. */}
             <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
@@ -149,10 +153,7 @@ export async function HomePage({
                   </div>
 
                   <div>
-                    <h3 className="text-sm font-black leading-snug sm:text-xl text-neutral-900 group-hover:text-neutral-700 transition-colors">{title}</h3>
-                    <span className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold text-neutral-900 transition group-hover:underline">
-                      Khám phá ngay <MoveUpRight className="size-3.5 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
-                    </span>
+                    <h3 className="text-sm font-bold leading-snug sm:text-xl text-neutral-900 group-hover:text-neutral-700 transition-colors">{title}</h3>
                   </div>
                 </Link>
               ))}
@@ -169,7 +170,7 @@ export async function HomePage({
 
         {/* Đánh giá sản phẩm — `ProductReviews` trả null khi chưa có đánh giá; `empty:hidden` để
             section rỗng không còn chiếm 128–160px padding trước footer. */}
-        <section className={`${SECTION_CLASS} empty:hidden`}>
+        <section className="page-section empty:hidden">
           {featuredProductSlug ? <ProductReviews productSlug={featuredProductSlug} /> : null}
         </section>
 
@@ -181,7 +182,7 @@ export async function HomePage({
 
         {/* 8. Tin tức — chỉ hiển thị khi có bài viết thật. */}
         {heroPosts.length > 0 && (
-          <section id="stories" className={SECTION_CLASS}>
+          <section id="stories" className="page-section">
             <SectionHeading eyebrow="Kiến thức luyện tập" title="Bài viết mới" />
             <ContentStories initialPosts={heroPosts} />
           </section>

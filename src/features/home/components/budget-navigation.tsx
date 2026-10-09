@@ -29,13 +29,13 @@ export interface BudgetNavigationProps {
 
 export function BudgetNavigation({ quickLinks = [] }: BudgetNavigationProps) {
   return (
-    <section className="page-container py-6 sm:py-10" aria-label="Tìm kiếm theo ngân sách">
+    <section className="page-section" aria-label="Tìm kiếm theo ngân sách">
       <div className="surface-card p-4 sm:p-8 md:p-10 shadow-sm">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-5 sm:mb-8">
           <div>
             <p className="eyebrow text-neutral-900">Theo ngân sách</p>
-            <h2 className="mt-2 text-2xl sm:text-3xl lg:text-4xl font-black text-neutral-900 tracking-tight">
+            <h2 className="mt-2 text-2xl sm:text-3xl lg:text-4xl font-bold text-neutral-900 tracking-tight">
               Tìm thiết bị theo mức ngân sách của bạn
             </h2>
             <p className="mt-1 text-xs sm:text-sm text-neutral-500">
@@ -66,7 +66,7 @@ export function BudgetNavigation({ quickLinks = [] }: BudgetNavigationProps) {
                     {tier.tag}
                   </span>
                 </div>
-                <strong className={`block text-base sm:text-xl font-black text-neutral-900`}>
+                <strong className={`block text-base sm:text-xl font-bold text-neutral-900`}>
                   {tier.label}
                 </strong>
                 <p className="mt-1.5 text-xs text-neutral-500 leading-relaxed line-clamp-2 max-sm:hidden">

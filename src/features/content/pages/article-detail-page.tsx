@@ -56,7 +56,7 @@ export function ArticleDetailPage({
             {/* Meta Tags & Category Header */}
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-neutral-100 pb-5">
               <div className="flex flex-wrap items-center gap-2.5 text-xs font-bold">
-                <span className="rounded-full bg-neutral-50 px-3 py-1 text-xs font-black uppercase tracking-wider text-neutral-950 ring-1 ring-neutral-900/20">
+                <span className="rounded-full bg-neutral-50 px-3 py-1 text-xs font-bold uppercase tracking-wider text-neutral-950 ring-1 ring-neutral-900/20">
                   {article.categoryLabel}
                 </span>
                 <span className="flex items-center gap-1.5 text-neutral-500">
@@ -72,7 +72,7 @@ export function ArticleDetailPage({
             </div>
 
             {/* Main Editorial Title */}
-            <h1 className="mt-6 text-2xl sm:text-3xl lg:text-4xl font-black leading-tight tracking-tight text-neutral-900">
+            <h1 className="mt-6 text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight tracking-tight text-neutral-900">
               {article.title}
             </h1>
 
@@ -110,7 +110,7 @@ export function ArticleDetailPage({
                     <h2
                       key={index}
                       id={headingId}
-                      className="mt-10 scroll-mt-28 text-xl sm:text-2xl font-black text-neutral-900 border-b border-neutral-100 pb-2"
+                      className="mt-10 scroll-mt-28 text-xl sm:text-2xl font-bold text-neutral-900 border-b border-neutral-100 pb-2"
                     >
                       {block.text}
                     </h2>

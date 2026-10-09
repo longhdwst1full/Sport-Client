@@ -77,7 +77,7 @@ export function ConsultationForm() {
 
   return (
     <div className="surface-card p-6 shadow-sm sm:p-8">
-      <h2 className="text-xl font-black text-ink">Đăng ký tư vấn thiết kế Home Gym</h2>
+      <h2 className="text-xl font-bold text-ink">Đăng ký tư vấn thiết kế Home Gym</h2>
       <p className="mt-1 text-xs text-neutral-600">
         Nhân viên {STORE_CONFIG.name} liên hệ lại trong giờ làm việc ({STORE_CONTACT.openingHoursShort}).
         Cần gấp? Gọi{' '}
@@ -218,10 +218,11 @@ export function ConsultationForm() {
 
           <Button
             type="submit"
+            variant="cta"
             size="lg"
             fullWidth
             disabled={create.isPending}
-            className="h-14 rounded-full font-black shadow-lg shadow-neutral-900/25"
+            className="h-12"
           >
             <Send className="size-4" aria-hidden />
             <span>{isAuthenticated ? (create.isPending ? 'Đang gửi...' : 'Gửi yêu cầu tư vấn') : 'Soạn email yêu cầu tư vấn'}</span>

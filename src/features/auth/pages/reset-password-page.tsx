@@ -40,7 +40,7 @@ export function ResetPasswordPage() {
       <AuthRecoveryMain>
         <div className="rounded-3xl border border-amber-200 bg-amber-50 p-6 text-center">
           <AlertTriangle className="mx-auto size-10 text-amber-600" aria-hidden />
-          <h1 className="mt-3 text-lg font-black text-neutral-900">Thiếu mã đặt lại</h1>
+          <h1 className="mt-3 text-lg font-bold text-neutral-900">Thiếu mã đặt lại</h1>
           <p className="mt-2 text-xs text-neutral-600">
             Hãy mở đúng đường dẫn trong email chúng tôi gửi cho bạn.
           </p>
@@ -60,7 +60,7 @@ export function ResetPasswordPage() {
       <AuthRecoveryMain>
         <div role="status" className="rounded-3xl border border-success-200 bg-success-50 p-6 text-center">
           <CheckCircle2 className="mx-auto size-10 text-success-600" aria-hidden />
-          <h1 className="mt-3 text-lg font-black text-neutral-900">Đã đặt lại mật khẩu</h1>
+          <h1 className="mt-3 text-lg font-bold text-neutral-900">Đã đặt lại mật khẩu</h1>
           {/* Mọi phiên đều bị thu hồi khi đặt lại mật khẩu; nói rõ để khách không bất ngờ. */}
           <p className="mt-2 text-xs leading-relaxed text-neutral-600">
             Mọi thiết bị đang đăng nhập đã bị đăng xuất. Hãy đăng nhập lại bằng mật khẩu mới.
@@ -87,7 +87,7 @@ export function ResetPasswordPage() {
           reset.mutate({ data: { token, newPassword: password.next } });
         }}
       >
-        <h1 className="text-lg font-black text-neutral-900">Đặt mật khẩu mới</h1>
+        <h1 className="text-lg font-bold text-neutral-900">Đặt mật khẩu mới</h1>
         <p className="mt-1 text-xs text-neutral-500">Tối thiểu 8 ký tự.</p>
 
         <Field label="Mật khẩu mới" labelClassName={`mt-5 ${RECOVERY_LABEL_CLASS}`}>

@@ -19,7 +19,7 @@ export function MegaMenuPanel({ category, onMouseEnter, onMouseLeave }: MegaMenu
       <div className="overflow-hidden rounded-xl border border-neutral-200 bg-white p-6 shadow-xl ring-1 ring-black/5">
         <div className="grid grid-cols-[1.3fr_0.7fr] gap-6">
           <div>
-            <span className="inline-block rounded-md bg-neutral-50 px-2.5 py-1 text-2xs font-black uppercase tracking-wider text-neutral-900">
+            <span className="inline-block rounded-md bg-neutral-50 px-2.5 py-1 text-2xs font-bold uppercase tracking-wider text-neutral-900">
               {category.label}
             </span>
             <div className="mt-3 divide-y divide-neutral-100">
@@ -36,7 +36,7 @@ export function MegaMenuPanel({ category, onMouseEnter, onMouseLeave }: MegaMenu
             </div>
             <Link
               href={category.href}
-              className="mt-4 inline-flex items-center gap-1.5 text-xs font-extrabold text-neutral-900 hover:text-neutral-950 hover:underline"
+              className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-neutral-900 hover:text-neutral-950 hover:underline"
             >
               Xem tất cả {category.label} →
             </Link>

@@ -13,7 +13,7 @@ export function CategoryListPage({ categories }: { categories: CatalogCategoryDt
   const items = categories.map(toCategoryCardView);
 
   return (
-      <main className="bg-neutral-50/60 pb-20 pt-8">
+      <main className="page-shell">
         <div className="page-container">
           <Breadcrumb
             className="mb-6"
@@ -21,10 +21,10 @@ export function CategoryListPage({ categories }: { categories: CatalogCategoryDt
           />
 
           <div className="max-w-2xl">
-            <span className="rounded-full bg-neutral-100 px-3.5 py-1 text-xs font-extrabold uppercase tracking-widest text-neutral-950">
+            <span className="rounded-full bg-neutral-100 px-3.5 py-1 text-xs font-semibold uppercase tracking-widest text-neutral-950">
               Phân loại chuyên sâu
             </span>
-            <h1 className="mt-3 text-3xl font-black text-ink sm:text-5xl">
+            <h1 className="mt-3 text-3xl font-bold text-ink sm:text-5xl">
               Danh mục thể thao &amp; Thiết bị chuyên nghiệp
             </h1>
             <p className="mt-3 text-base text-neutral-600 sm:text-lg">
@@ -37,7 +37,7 @@ export function CategoryListPage({ categories }: { categories: CatalogCategoryDt
               <CategoryGrid items={items} />
             ) : (
               <div className="rounded-4xl border border-dashed border-neutral-300 bg-white p-12 text-center">
-                <h2 className="text-lg font-black text-ink">Chưa có danh mục nào để hiển thị</h2>
+                <h2 className="text-lg font-bold text-ink">Chưa có danh mục nào để hiển thị</h2>
                 <p className="mt-2 text-sm text-neutral-500">
                   Danh mục đang được cập nhật. Bạn có thể xem toàn bộ sản phẩm trong lúc chờ.
                 </p>

@@ -49,7 +49,7 @@ export function ReturnDetailPage({ returnNo }: { returnNo: string }) {
             as="section"
             className="surface-card p-10 text-center shadow-sm"
             titleAs="h1"
-            titleClassName="text-xl font-black"
+            titleClassName="text-xl font-bold"
             title="Đăng nhập để xem yêu cầu đổi trả"
             actions={<Link href="/login" className={buttonVariants({ variant: 'primary', className: 'mt-5 px-5 font-bold' })}>Đăng nhập</Link>}
           />
@@ -66,7 +66,7 @@ export function ReturnDetailPage({ returnNo }: { returnNo: string }) {
               <div className="flex flex-wrap items-start justify-between gap-5">
                 <div>
                   <p className="text-xs font-bold uppercase tracking-eyebrow text-neutral-300">{RETURN_FIELD_LABELS.returnNo}</p>
-                  <h1 className="mt-2 break-all font-mono text-xl font-black sm:text-2xl">{detail.returnNo}</h1>
+                  <h1 className="mt-2 break-all font-mono text-xl font-bold sm:text-2xl">{detail.returnNo}</h1>
                   <p className="mt-2 text-sm text-neutral-300">
                     {RETURN_FIELD_LABELS.orderNo}{' '}
                     <Link href={`/orders/${encodeURIComponent(detail.orderNo)}`} className="font-bold underline underline-offset-2 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70">{detail.orderNo}</Link>
@@ -107,7 +107,7 @@ export function ReturnDetailPage({ returnNo }: { returnNo: string }) {
 
             <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
               <section className="surface-card p-4 shadow-sm sm:p-6">
-                <h2 className="text-lg font-black">{RETURN_FIELD_LABELS.product}</h2>
+                <h2 className="text-lg font-bold">{RETURN_FIELD_LABELS.product}</h2>
                 <div className="mt-4 divide-y divide-neutral-100">
                   {detail.items.map((item) => (
                     <div key={item.id} className="flex flex-wrap justify-between gap-4 py-4">
@@ -127,7 +127,7 @@ export function ReturnDetailPage({ returnNo }: { returnNo: string }) {
                 </div>
                 {detail.description && (
                   <div className="mt-4 border-t border-neutral-100 pt-4">
-                    <h3 className="text-sm font-black">{RETURN_FIELD_LABELS.description}</h3>
+                    <h3 className="text-sm font-bold">{RETURN_FIELD_LABELS.description}</h3>
                     <p className="mt-1 whitespace-pre-line text-sm text-neutral-600">{detail.description}</p>
                   </div>
                 )}
@@ -145,7 +145,7 @@ export function ReturnDetailPage({ returnNo }: { returnNo: string }) {
 
               <aside className="space-y-5">
                 <section className="surface-card p-6 shadow-sm">
-                  <h2 className="font-black">{RETURN_FIELD_LABELS.refunds}</h2>
+                  <h2 className="font-bold">{RETURN_FIELD_LABELS.refunds}</h2>
                   {detail.refunds.filter((refund) => refund.status === RefundStatus.SUCCEEDED).length === 0 ? (
                     <p className="mt-2 text-sm text-neutral-500">Chưa hoàn tiền.</p>
                   ) : (
@@ -160,7 +160,7 @@ export function ReturnDetailPage({ returnNo }: { returnNo: string }) {
                   )}
                 </section>
                 <section className="surface-card p-6 shadow-sm">
-                  <h2 className="font-black">{RETURN_FIELD_LABELS.history}</h2>
+                  <h2 className="font-bold">{RETURN_FIELD_LABELS.history}</h2>
                   <div className="mt-3 space-y-3">
                     {detail.history.map((entry) => (
                       <div key={entry.sequenceNo} className="text-sm">
@@ -181,7 +181,7 @@ export function ReturnDetailPage({ returnNo }: { returnNo: string }) {
             </div>
             {showCancel && (
               <section className="mt-5 rounded-3xl border border-red-200 bg-red-50 p-4 sm:p-6">
-                <Field label={<>Lý do huỷ <span className="text-red-600">*</span></>} labelClassName="font-black text-red-950">
+                <Field label={<>Lý do huỷ <span className="text-red-600">*</span></>} labelClassName="font-bold text-red-950">
                 <Textarea
                   id="return-cancel-reason"
                   styled

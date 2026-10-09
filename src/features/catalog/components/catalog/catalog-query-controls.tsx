@@ -140,7 +140,7 @@ export function CatalogMobileControlBar({
         <SlidersHorizontal aria-hidden className="size-3.5 text-neutral-900" />
         <span>Bộ lọc</span>
         {activeFilterCount > 0 && (
-          <span className="grid size-5 place-items-center rounded-full bg-neutral-900 text-3xs font-black text-white">
+          <span className="grid size-5 place-items-center rounded-full bg-neutral-900 text-3xs font-bold text-white">
             {activeFilterCount}
           </span>
         )}

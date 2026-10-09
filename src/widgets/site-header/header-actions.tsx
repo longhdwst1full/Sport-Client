@@ -47,12 +47,12 @@ export function HeaderActions({
           aria-label="Tài khoản cá nhân"
           title="Tài khoản cá nhân"
         >
-          <div className="grid size-7 shrink-0 place-items-center rounded-lg bg-neutral-900 text-2xs font-black text-white">
+          <div className="grid size-7 shrink-0 place-items-center rounded-lg bg-neutral-900 text-2xs font-bold text-white">
             {customerName ? customerName.slice(0, 1).toUpperCase() : <UserRound className="size-4" />}
           </div>
           <div className="text-left leading-tight pr-1 max-w-[120px]">
             <span className="block text-2xs font-semibold text-neutral-500">Tài khoản</span>
-            <span className="block truncate text-xs font-extrabold text-neutral-800">
+            <span className="block truncate text-xs font-semibold text-neutral-800">
               {customerName || 'Hội viên'}
             </span>
           </div>
@@ -77,7 +77,7 @@ export function HeaderActions({
       >
         <ShoppingBag aria-hidden className="size-4.5" />
         {cartQuantity > 0 && (
-          <span className="absolute -right-1 -top-1 grid min-w-5 place-items-center rounded-full bg-neutral-900 px-1 text-3xs font-black text-white shadow-sm ring-2 ring-white">
+          <span className="absolute -right-1 -top-1 grid min-w-5 place-items-center rounded-full bg-neutral-900 px-1 text-3xs font-bold text-white shadow-sm ring-2 ring-white">
             {cartQuantity > 99 ? '99+' : cartQuantity}
           </span>
         )}

@@ -98,7 +98,7 @@ export function ReviewFormDialog({
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="eyebrow text-neutral-900">Đánh giá đã mua hàng</p>
-            <h2 id="review-dialog-title" className="mt-1 text-xl font-black text-neutral-950">{productName}</h2>
+            <h2 id="review-dialog-title" className="mt-1 text-xl font-bold text-neutral-950">{productName}</h2>
             <p className="mt-1 text-sm text-neutral-500">Đánh giá được hiển thị ngay sau khi gửi.</p>
           </div>
           <Button variant="ghost" size="icon" onClick={onClose} disabled={submitting} className="size-9 shrink-0 rounded-full bg-neutral-100 text-neutral-600" aria-label="Đóng"><X aria-hidden className="size-4" /></Button>

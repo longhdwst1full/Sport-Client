@@ -48,7 +48,7 @@ export function SuggestionPopover({
     <div className="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-xl border border-neutral-200 bg-white p-3 shadow-xl shadow-neutral-900/10 animate-in fade-in slide-in-from-top-1 ring-1 ring-black/5">
       {!query.trim() ? (
         <div>
-          <div className="flex items-center gap-1.5 text-2xs font-black uppercase tracking-wider text-neutral-500 mb-2.5">
+          <div className="flex items-center gap-1.5 text-2xs font-bold uppercase tracking-wider text-neutral-500 mb-2.5">
             <Sparkles className="size-3.5 text-neutral-900" />
             <span>Từ khóa tìm kiếm phổ biến</span>
           </div>
@@ -65,7 +65,7 @@ export function SuggestionPopover({
           </div>
 
           <div className="border-t border-neutral-100 pt-3">
-            <span className="block text-2xs font-black uppercase tracking-wider text-neutral-500 mb-2">
+            <span className="block text-2xs font-bold uppercase tracking-wider text-neutral-500 mb-2">
               Bộ môn & Thiết bị nổi bật
             </span>
             <div className="grid grid-cols-2 gap-2 text-xs">
@@ -113,7 +113,7 @@ export function SuggestionPopover({
       ) : results.length > 0 ? (
         <div>
           {/* Header hint */}
-          <div className="flex items-center justify-between rounded-lg bg-neutral-50 px-4 py-2 text-2xs font-extrabold uppercase tracking-wider text-neutral-700">
+          <div className="flex items-center justify-between rounded-lg bg-neutral-50 px-4 py-2 text-2xs font-semibold uppercase tracking-wider text-neutral-700">
             <span className="inline-flex items-center gap-1.5">
               <Sparkles className="size-3 text-neutral-900" />
               GỢI Ý SẢN PHẨM ({results.length})

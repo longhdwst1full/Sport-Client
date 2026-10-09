@@ -61,12 +61,12 @@ const GOALS: GoalItem[] = [
 
 export function QuickGoalNavigation() {
   return (
-    <section className="page-container py-6 sm:py-10">
+    <section className="page-section">
       <div className="rounded-3xl border border-neutral-200/80 bg-gradient-to-b from-white via-neutral-50/50 to-white p-4 sm:p-8 shadow-xs">
         <div className="mb-5 sm:mb-8">
           <div>
             <p className="eyebrow text-neutral-900">Định hướng tập luyện</p>
-            <h2 className="mt-2 text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-neutral-900">
+            <h2 className="mt-2 text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-neutral-900">
               Bạn đang tìm thiết bị cho mục tiêu nào?
             </h2>
             <p className="mt-1 text-xs sm:text-sm text-neutral-500">
@@ -97,7 +97,7 @@ export function QuickGoalNavigation() {
                     </span>
                   </div>
 
-                  <h3 className="text-sm sm:text-lg font-black leading-snug text-neutral-900">
+                  <h3 className="text-sm sm:text-lg font-bold leading-snug text-neutral-900">
                     {goal.title}
                   </h3>
                   <p className="mt-1.5 text-xs text-neutral-500 leading-relaxed max-sm:hidden">
@@ -105,7 +105,7 @@ export function QuickGoalNavigation() {
                   </p>
                 </div>
 
-                <div className="mt-3 sm:mt-5 flex items-center gap-1.5 text-xs font-black text-neutral-800 group-hover:text-neutral-900 transition">
+                <div className="mt-3 sm:mt-5 flex items-center gap-1.5 text-xs font-bold text-neutral-800 group-hover:text-neutral-900 transition">
                   <span>Khám phá ngay</span>
                   <MoveUpRight className="size-3.5 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
                 </div>

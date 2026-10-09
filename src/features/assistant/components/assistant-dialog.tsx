@@ -75,7 +75,7 @@ export function AssistantDialog({ chat, onClose }: { chat: AssistantChatState; o
         <header className="flex items-center justify-between gap-2 bg-neutral-800 px-4 pb-2 pt-[max(0.5rem,env(safe-area-inset-top))] text-white sm:py-3">
           <div className="flex min-w-0 items-center gap-2">
             <span className="grid size-8 place-items-center rounded-full bg-white/15" aria-hidden><Bot className="size-4.5" /></span>
-            <h2 id={TITLE_ID} className="truncate text-sm font-black">{ASSISTANT_TITLE}</h2>
+            <h2 id={TITLE_ID} className="truncate text-sm font-bold">{ASSISTANT_TITLE}</h2>
           </div>
           <div className="flex items-center gap-1">
             {/* Panel 380px: nút đóng thu về 32px trên desktop, giữ 44px trên mobile. */}
@@ -95,12 +95,12 @@ export function AssistantDialog({ chat, onClose }: { chat: AssistantChatState; o
           <div role="status" className="flex gap-2 border-b border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-900">
             <AlertTriangle className="mt-0.5 size-4 shrink-0" aria-hidden />
             <div>
-              <p className="font-black">{ASSISTANT_COPY.unavailableTitle}</p>
+              <p className="font-bold">{ASSISTANT_COPY.unavailableTitle}</p>
               <p className="mt-0.5">
                 {ASSISTANT_COPY.unavailableBody}{' '}
-                <Link href="/contact" onClick={onClose} className="rounded font-bold underline focus-ring-tight">{ASSISTANT_COPY.contactLink}</Link>
+                <Link href="/contact" onClick={onClose} className="text-link">{ASSISTANT_COPY.contactLink}</Link>
                 {' · '}
-                <a href={`tel:${STORE_CONTACT.primaryHotlineRaw}`} className="rounded font-bold underline focus-ring-tight">{STORE_CONTACT.primaryHotline}</a>
+                <a href={`tel:${STORE_CONTACT.primaryHotlineRaw}`} className="text-link">{STORE_CONTACT.primaryHotline}</a>
               </p>
             </div>
           </div>
@@ -138,7 +138,7 @@ export function AssistantDialog({ chat, onClose }: { chat: AssistantChatState; o
                 <InlineAlert role="alert" className="flex flex-wrap items-center gap-2 text-2xs text-red-700">
                   <span>{assistantErrorMessage(chat.pending.error, undefined, { isAuthenticated: chat.isAuthenticated })}</span>
                   {!chat.isAuthenticated && isAssistantQuotaExceeded(chat.pending.error) && (
-                    <Link href="/login" onClick={onClose} className="rounded font-bold underline focus-ring-tight">Đăng nhập</Link>
+                    <Link href="/login" onClick={onClose} className="text-link">Đăng nhập</Link>
                   )}
                   <Button variant="link" onClick={() => void chat.send(chat.pending?.content ?? '')} className={INLINE_LINK_BUTTON}>
                     <RotateCw className="size-3" aria-hidden />
@@ -163,7 +163,7 @@ export function AssistantDialog({ chat, onClose }: { chat: AssistantChatState; o
           {chat.suggestOrderLookup && (
             <li className="flex flex-wrap items-center gap-2 rounded-xl bg-neutral-50 px-3 py-2 text-xs text-neutral-900">
               <span>{ASSISTANT_COPY.orderLookupHint}</span>
-              <Link href={GUEST_LOOKUP_ROUTE} onClick={onClose} className="rounded font-bold underline focus-ring-tight">{ASSISTANT_COPY.orderLookupLink}</Link>
+              <Link href={GUEST_LOOKUP_ROUTE} onClick={onClose} className="text-link">{ASSISTANT_COPY.orderLookupLink}</Link>
             </li>
           )}
           {chat.isHandedOff && (

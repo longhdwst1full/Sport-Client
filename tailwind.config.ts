@@ -5,7 +5,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['"SF Pro"', '-apple-system', 'BlinkMacSystemFont', 'Roboto', '"Noto Sans"', 'sans-serif'],
+        sans: ['var(--font-sans)', '-apple-system', 'BlinkMacSystemFont', 'Roboto', 'sans-serif'],
       },
       // Xám dùng họ `neutral` mặc định của Tailwind (trung tính như xám logo #4D4D4F). Đổi tông xám
       // toàn site: khai `neutral: {...}` tại đây — component không dùng slate/stone/gray/zinc.
@@ -26,6 +26,20 @@ export default {
           800: '#921f1d',
           900: '#791f1d',
           950: '#420b0a',
+        },
+        // Cam hành động (CTA chuyển đổi: Mua ngay, Thêm vào giỏ, Gửi tư vấn). Chỉ dùng cho nút chính —
+        // không cho nền, viền, icon trang trí hay giá. Cùng nhóm đỏ-cam với logo nhưng sáng, khoẻ hơn.
+        accent: {
+          50: '#fff4ed',
+          100: '#ffe6d5',
+          200: '#ffc9aa',
+          300: '#ffa274',
+          400: '#ff753c',
+          500: '#ff5a1f',
+          600: '#e64a12',
+          700: '#bf3810',
+          800: '#982f15',
+          900: '#7a2914',
         },
         // Trạng thái "thành công/hoàn tất/còn hàng" giữ xanh lục: không dùng đỏ thương hiệu cho nghĩa OK.
         success: {
@@ -48,8 +62,12 @@ export default {
         '3xs': ['0.625rem', { lineHeight: '0.875rem' }], // 10px — badge rất nhỏ
         '2xs': ['0.6875rem', { lineHeight: '1rem' }], // 11px — metadata, helper
       },
+      // Bo góc tối đa 16px: thương mại thể thao cần nét gọn, không mềm kiểu app fintech. Ghi đè `3xl`
+      // (mặc định 24px) và `4xl` về 16px để mọi khối cũ tự gọn lại mà không phải sửa từng file.
+      // Dùng: nút/ô nhập `lg` 8 · thẻ sản phẩm/danh mục `xl` 12 · khối lớn/modal `2xl` 16.
       borderRadius: {
-        '4xl': '2rem', // 32px — khối lớn (hero, banner, section nổi bật)
+        '3xl': '1rem',
+        '4xl': '1rem',
       },
       letterSpacing: {
         eyebrow: '0.2em', // nhãn nhỏ viết hoa trên tiêu đề khối

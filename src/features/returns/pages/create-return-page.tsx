@@ -46,7 +46,7 @@ export function CreateReturnPage({ orderNo }: { orderNo: string }) {
   return (
       <main className="mx-auto min-h-[60vh] max-w-4xl px-4 py-10 sm:px-6">
         <p className="eyebrow text-neutral-900">Đổi trả</p>
-        <h1 className="mt-2 text-2xl font-black text-neutral-950 sm:text-3xl">Yêu cầu trả hàng · <span className="break-all font-mono">{orderNo}</span></h1>
+        <h1 className="heading-page mt-2">Yêu cầu trả hàng · <span className="break-all font-mono">{orderNo}</span></h1>
 
         {(!isLoaded || eligibility.isLoading) && (
           <div className="mt-6 space-y-6" role="status" aria-label="Đang tải thông tin đơn hàng">
@@ -59,7 +59,7 @@ export function CreateReturnPage({ orderNo }: { orderNo: string }) {
           <EmptyState
             as="section"
             className="mt-6 surface-card p-8 text-center shadow-sm"
-            titleClassName="text-lg font-black"
+            titleClassName="text-lg font-bold"
             title="Đăng nhập để yêu cầu trả hàng"
             descriptionClassName="mt-2 text-sm text-neutral-600"
             description="Nếu đặt hàng không đăng nhập, vui lòng gọi hotline để nhân viên tạo yêu cầu giúp bạn."
@@ -97,7 +97,7 @@ export function CreateReturnPage({ orderNo }: { orderNo: string }) {
             )}
 
             <section className="surface-card p-4 shadow-sm sm:p-6">
-              <h2 className="text-lg font-black">Chọn sản phẩm muốn trả <span className="text-red-600">*</span></h2>
+              <h2 className="text-lg font-bold">Chọn sản phẩm muốn trả <span className="text-red-600">*</span></h2>
               <div className="mt-4 divide-y divide-neutral-100">
                 {lines.map((line) => {
                   const quantity = form.quantities[line.orderItemId] ?? 0;
@@ -149,7 +149,7 @@ export function CreateReturnPage({ orderNo }: { orderNo: string }) {
             <section className="surface-card p-4 shadow-sm sm:p-6">
               <Field
                 htmlFor="return-reason"
-                labelClassName="text-lg font-black"
+                labelClassName="text-lg font-bold"
                 label={<>{RETURN_FIELD_LABELS.reason} <span className="text-red-600">*</span></>}
               >
               <Select
@@ -165,7 +165,7 @@ export function CreateReturnPage({ orderNo }: { orderNo: string }) {
               </Select>
               </Field>
 
-              <Field label={RETURN_FIELD_LABELS.description} labelClassName="mt-5 block font-black">
+              <Field label={RETURN_FIELD_LABELS.description} labelClassName="mt-5 block font-bold">
               <Textarea
                 styled
                 id="return-description"
@@ -179,14 +179,14 @@ export function CreateReturnPage({ orderNo }: { orderNo: string }) {
               />
               </Field>
 
-              <p className="mt-5 font-black">{RETURN_FIELD_LABELS.evidence}</p>
+              <p className="mt-5 font-bold">{RETURN_FIELD_LABELS.evidence}</p>
               <p className="mb-3 text-xs text-neutral-500">Không bắt buộc. Ảnh giúp cửa hàng duyệt nhanh hơn, nhất là khi hàng lỗi.</p>
               <EvidencePicker orderNo={orderNo} value={images} onChange={setImages} onUploadingChange={setUploading} disabled={submit.isPending} />
             </section>
 
             <section aria-live="polite" className="rounded-3xl border border-neutral-200 bg-neutral-50 p-4 sm:p-6">
               <p className="text-sm text-neutral-600">{RETURN_FIELD_LABELS.estimatedRefund}</p>
-              <p className="text-2xl font-black text-neutral-950">{formatVnd(estimate)}</p>
+              <p className="text-2xl font-bold text-neutral-950">{formatVnd(estimate)}</p>
               <p className="mt-1 text-xs text-neutral-600">{RETURN_ESTIMATE_NOTE} Chưa gồm phí giao hàng.</p>
             </section>
 

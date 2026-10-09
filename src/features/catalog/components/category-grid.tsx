@@ -13,7 +13,7 @@ export function CategoryGrid({ items }: { items: CategoryCardView[] }) {
           <Link
             key={category.slug}
             href={`/category/${category.slug}`}
-            className="group flex flex-col overflow-hidden rounded-4xl border border-neutral-200/80 bg-white shadow-sm transition duration-300 hover:-translate-y-1.5 hover:border-neutral-400 hover:shadow-xl"
+            className="group card-interactive focus-ring flex flex-col"
           >
             <div className="relative aspect-[16/10] overflow-hidden bg-neutral-100">
               {category.imageUrl ? (
@@ -31,29 +31,17 @@ export function CategoryGrid({ items }: { items: CategoryCardView[] }) {
               )}
               <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
               <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-white">
-                <span className="rounded-full bg-white px-3 py-1 text-xs font-black text-neutral-900">
+                <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-neutral-900">
                   {category.itemCountLabel}
                 </span>
                 <Icon className="size-6 text-neutral-300" />
               </div>
             </div>
 
-            <div className="flex flex-1 flex-col justify-between p-6">
-              <div>
-                <h2 className="text-xl font-black text-ink group-hover:text-neutral-900">
-                  {category.title}
-                </h2>
-                {category.description ? (
-                  <p className="mt-2 text-xs leading-relaxed text-neutral-500">
-                    {category.description}
-                  </p>
-                ) : null}
-              </div>
-
-              <div className="mt-6 flex items-center justify-between border-t border-neutral-100 pt-4 text-xs font-bold text-neutral-900">
-                <span>Xem toàn bộ sản phẩm</span>
-                <ChevronRight className="size-4 transition group-hover:translate-x-1" />
-              </div>
+            {/* Cả thẻ là link: chỉ tên + số sản phẩm; mô tả SEO dài nằm ở trang chi tiết danh mục. */}
+            <div className="flex items-center justify-between gap-3 p-4">
+              <h2 className="text-base font-semibold text-neutral-950">{category.title}</h2>
+              <ChevronRight className="size-4 shrink-0 text-neutral-400 transition group-hover:translate-x-0.5 group-hover:text-neutral-950" aria-hidden />
             </div>
           </Link>
         );
@@ -69,7 +57,7 @@ export function CategoryGridSkeleton({ count = 6 }: { count?: number }) {
       {Array.from({ length: count }, (_, index) => (
         <div
           key={index}
-          className="flex flex-col overflow-hidden rounded-4xl border border-neutral-200/80 bg-white shadow-sm"
+          className="card-interactive flex flex-col"
         >
           <Skeleton className="aspect-[16/10] rounded-none" />
           <div className="flex flex-1 flex-col justify-between p-6">

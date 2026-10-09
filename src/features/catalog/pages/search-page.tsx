@@ -69,7 +69,7 @@ function SearchContent() {
   const query = searchParams.get('q') || '';
 
   return (
-    <div className="bg-neutral-50/60 pb-20 pt-8">
+    <div className="page-shell">
       <main className="page-container">
         <Breadcrumb
           className="mb-6"
@@ -79,17 +79,17 @@ function SearchContent() {
         <div className="surface-card p-6 shadow-sm sm:p-8">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div className="flex items-center gap-3.5">
-              <span className="grid size-12 place-items-center rounded-2xl bg-red-50 text-brand-600">
+              <span className="grid size-12 place-items-center rounded-2xl bg-neutral-100 text-neutral-700">
                 <Search aria-hidden className="size-6 text-red-600" />
               </span>
               <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-neutral-500">
+                <span className="eyebrow text-neutral-500">
                   Tìm kiếm sản phẩm Bảo An Sport
                 </span>
-                <h1 className="text-xl font-black text-neutral-900 sm:text-2xl">
+                <h1 className="text-xl font-bold text-neutral-900 sm:text-2xl">
                   {query ? (
                     <>
-                      Kết quả cho: <span className="text-brand-600">"{query}"</span>
+                      Kết quả cho: <span className="text-neutral-950">"{query}"</span>
                     </>
                   ) : (
                     'Tất cả sản phẩm thể thao'
@@ -116,7 +116,7 @@ function SearchContent() {
 /** Khung chờ trùng bố cục SearchContent */
 function SearchPageSkeleton() {
   return (
-    <div className="bg-neutral-50/60 pb-20 pt-8" role="status" aria-label="Đang tải kết quả tìm kiếm">
+    <div className="page-shell" role="status" aria-label="Đang tải kết quả tìm kiếm">
       <div className="page-container">
         <Skeleton className="mb-6 h-4 w-48 rounded" />
         <Skeleton className="h-32 rounded-3xl" />

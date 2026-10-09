@@ -61,7 +61,7 @@ export function OrderShippingInfo({
       <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-b border-neutral-200/60 pb-3">
         <div className="flex items-center gap-2">
           <Truck aria-hidden className="size-4 text-neutral-900" />
-          <span className="text-xs font-black uppercase tracking-wider text-neutral-800">
+          <span className="text-xs font-bold uppercase tracking-wider text-neutral-800">
             Thông tin vận chuyển thực tế
           </span>
         </div>
@@ -92,7 +92,7 @@ export function OrderShippingInfo({
         >
           {view?.shipment?.trackingNo ? (
             <div className="mt-1 flex items-center gap-1.5">
-              <strong className="font-mono text-sm font-black text-neutral-900">
+              <strong className="font-mono text-sm font-bold text-neutral-900">
                 {view.shipment.trackingNo}
               </strong>
               <TrackingNoCopyButton
