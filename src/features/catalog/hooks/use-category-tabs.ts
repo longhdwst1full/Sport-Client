@@ -15,7 +15,12 @@ export interface CategoryTabView {
 /** Số tab tối đa để hàng tab không tràn trên màn hình hẹp. */
 const MAX_TABS = 8;
 
-export function useCategoryTabs(): { tabs: CategoryTabView[]; isPending: boolean } {
+export function useCategoryTabs(): {
+  tabs: CategoryTabView[];
+  /** Tên mọi danh mục (kể cả danh mục con, ngoài 8 tab) theo slug — để chip lọc không hiện slug. */
+  nameBySlug: ReadonlyMap<string, string>;
+  isPending: boolean;
+} {
   const isMounted = useIsMounted();
 
   const query = useListCatalogCategories({
@@ -36,5 +41,10 @@ export function useCategoryTabs(): { tabs: CategoryTabView[]; isPending: boolean
     return [{ slug: null, label: 'Tất cả' }, ...roots];
   }, [query.data?.items]);
 
-  return { tabs, isPending: query.isPending };
+  const nameBySlug = useMemo(
+    () => new Map((query.data?.items ?? []).map((item) => [item.slug, item.name])),
+    [query.data?.items],
+  );
+
+  return { tabs, nameBySlug, isPending: query.isPending };
 }

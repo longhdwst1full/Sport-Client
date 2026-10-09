@@ -64,11 +64,15 @@ export function ArticleRelatedPosts({ related }: { related: ContentPostView[] })
                   <CalendarDays className="size-3" aria-hidden="true" />
                   {item.publishedLabel}
                 </span>
-                <span aria-hidden="true">•</span>
-                <span className="inline-flex items-center gap-1">
-                  <Clock className="size-3" aria-hidden="true" />
-                  {item.readTimeLabel}
-                </span>
+                {item.readTimeLabel && (
+                  <>
+                    <span aria-hidden="true">•</span>
+                    <span className="inline-flex items-center gap-1">
+                      <Clock className="size-3" aria-hidden="true" />
+                      {item.readTimeLabel}
+                    </span>
+                  </>
+                )}
               </div>
 
               <h3 className="mt-2 text-sm font-bold text-neutral-900 group-hover:text-neutral-900 transition line-clamp-2 leading-snug">

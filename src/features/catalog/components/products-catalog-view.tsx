@@ -8,12 +8,15 @@ import { CatalogMobileFilterDrawer } from './catalog-mobile-filter-drawer';
 import { CatalogMobileControlBar, CatalogSearchSortBar } from './catalog/catalog-query-controls';
 import { CatalogProductGrid } from './catalog/catalog-product-grid';
 
-export function ProductsCatalogView({ initial }: { initial?: CatalogInitialPage } = {}) {
+export function ProductsCatalogView({
+  initial,
+  initialCategoryName,
+}: { initial?: CatalogInitialPage; initialCategoryName?: string } = {}) {
   // Mobile filter drawer state
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
 
   const { isTabsPending, activeFilterCount, list, filterProps, queryProps, chipsProps } =
-    useCatalogFilters(initial);
+    useCatalogFilters(initial, initialCategoryName);
 
   return (
     <section className="relative">

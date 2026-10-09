@@ -47,7 +47,8 @@ const FALLBACK_FEATURED_PRODUCT_LINKS: FooterLinkItem[] = [
 const FEATURED_LINK_LIMIT = 7;
 
 const POLICY_LINKS: FooterLinkItem[] = [
-  { label: 'Giới thiệu Bảo An Sport', href: '/#about' },
+  // CMS chưa có bài ABOUT; `/#about` cũ trỏ vào chính footer. Có bài giới thiệu thì đổi link về đó.
+  { label: 'Liên hệ & showroom', href: '/contact' },
   { label: 'Cam kết khách hàng', href: '/chinh-sach/cam-ket-khach-hang' },
   { label: 'Cẩm nang & Hướng dẫn tập luyện', href: '/news' },
   { label: 'Vận chuyển & giao hàng', href: '/chinh-sach/van-chuyen-giao-hang' },
@@ -72,9 +73,9 @@ const TRUST_BADGES = [
   { icon: CreditCard, label: 'Thanh toán an toàn 100%' },
 ];
 
-// CONTRACT: chỉ liệt kê phương thức checkout thật sự nhận (BANK_TRANSFER/VietQR, COD, VNPAY).
+// CONTRACT: chỉ liệt kê phương thức checkout Storefront thật sự nhận: COD và VNPAY (QR/ATM/thẻ); BANK_TRANSFER chỉ dùng ở POS.
 // Bản trước ghi VISA/MASTER/MOMO/"Trả góp 0%" dù không có luồng nào xử lý.
-const PAYMENT_METHODS = ['Chuyển khoản VietQR', 'COD', 'VNPay'];
+const PAYMENT_METHODS = ['COD', 'VNPay (QR · ATM · Thẻ)'];
 
 /** Mục tối thiểu footer cần từ danh mục (khớp cấu trúc `MegaMenuEntry`, không phụ thuộc feature). */
 export interface FooterCategoryLink {
@@ -91,7 +92,6 @@ export function SiteFooter({ categories }: { categories?: readonly FooterCategor
 
   return (
     <footer
-      id="about"
       className="relative overflow-hidden border-t border-neutral-800/80 bg-gradient-to-b from-neutral-950 via-neutral-950 to-black px-4 py-12 sm:py-16 text-white sm:px-6 lg:px-10"
     >
       {/* Subtle top ambient lighting */}

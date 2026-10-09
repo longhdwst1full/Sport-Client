@@ -31,7 +31,7 @@ export function CategoryGrid({ items }: { items: CategoryCardView[] }) {
               )}
               <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
               <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-white">
-                <span className="rounded-full bg-neutral-700 px-3 py-1 text-xs font-black text-ink">
+                <span className="rounded-full bg-white px-3 py-1 text-xs font-black text-neutral-900">
                   {category.itemCountLabel}
                 </span>
                 <Icon className="size-6 text-neutral-300" />

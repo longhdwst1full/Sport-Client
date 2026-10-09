@@ -101,42 +101,44 @@ export function ProductDetailPage({ product, slug, relatedCategorySlug }: Produc
           </div>
         </div>
 
-        {/* Main Product Stage */}
-        <div className="mx-auto mt-4 grid max-w-7xl gap-8 px-4 py-3 sm:px-6 lg:grid-cols-[1.12fr_0.88fr] lg:px-8">
-          {/* Left Column: Visual Showcase & Detailed Story */}
-          <div className="space-y-8">
-            {/* Product media is image-first. Heavy 3D rendering is intentionally excluded here. */}
-            <div className="overflow-hidden rounded-4xl border border-[var(--dc-border)] bg-white shadow-[0_18px_50px_rgba(0,49,41,0.08)]">
-              <div className="flex items-center justify-between border-b border-[var(--dc-border)] px-5 py-3.5">
-                <span className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-[0.12em] text-[var(--dc-primary-700)]">
-                  <Images className="size-4" aria-hidden="true" />
-                  Hình ảnh sản phẩm
+        {/* Main Product Stage
+         * Thứ tự DOM = thứ tự trên mobile: ảnh → giá/nút mua/thông số → mô tả/đánh giá, để khách thấy
+         * giá và nút mua ngay dưới ảnh thay vì phải cuộn qua mô tả dài (audit §15.1). Trên desktop grid
+         * đặt lại: cột trái ảnh + mô tả, cột phải khung mua dính (sticky) trải hai hàng.
+         */}
+        <div className="page-container mt-4 grid gap-8 py-3 lg:grid-cols-[1.12fr_0.88fr] lg:grid-rows-[auto_1fr]">
+          {/* Product media is image-first. Heavy 3D rendering is intentionally excluded here. */}
+          <div className="overflow-hidden rounded-4xl border border-[var(--dc-border)] bg-white shadow-card">
+            <div className="flex items-center justify-between border-b border-[var(--dc-border)] px-5 py-3.5">
+              <span className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-[0.12em] text-[var(--dc-primary-700)]">
+                <Images className="size-4" aria-hidden="true" />
+                Hình ảnh sản phẩm
+              </span>
+              {gallery.length > 1 && (
+                <span className="text-xs font-semibold text-[var(--dc-text-secondary)]">
+                  {gallery.length} ảnh
                 </span>
-                {gallery.length > 1 && (
-                  <span className="text-xs font-semibold text-[var(--dc-text-secondary)]">
-                    {gallery.length} ảnh
-                  </span>
-                )}
-              </div>
-              <ProductImageGallery images={gallery} productName={product.name} />
+              )}
             </div>
+            <ProductImageGallery images={gallery} productName={product.name} />
+          </div>
 
-            {/* Product Story / Description — collapsible với nút Xem thêm / Thu gọn */}
+          {/* Sticky Purchase Panel + Technical Specs */}
+          <div className="space-y-6 lg:sticky lg:top-24 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-start">
+            <ProductPurchasePanel product={purchaseView} />
+
+            {/* Technical Specifications Table directly under price/purchase box */}
+            <ProductSpecifications specs={TECH_SPECS} initialLimit={5} />
+          </div>
+
+          {/* Product Story / Description + Reviews */}
+          <div className="space-y-8 lg:col-start-1">
             <ProductDescriptionCollapsible
               shortDescription={shortDescription}
               longDescriptionHtml={showLongDescription ? longDescriptionHtml : null}
             />
 
-            {/* Customer Rating & Reviews Summary */}
             <ProductReviewSection productName={product.name} productSlug={slug} />
-          </div>
-
-          {/* Right Column: Sticky Purchase Panel + Technical Specs */}
-          <div className="space-y-6 lg:sticky lg:top-24 lg:self-start">
-            <ProductPurchasePanel product={purchaseView} />
-
-            {/* Technical Specifications Table directly under price/purchase box */}
-            <ProductSpecifications specs={TECH_SPECS} initialLimit={5} />
           </div>
         </div>
 

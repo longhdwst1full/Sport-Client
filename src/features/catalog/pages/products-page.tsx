@@ -10,6 +10,7 @@ import { ProductCardSkeleton } from '../components/product-card';
 import { CATALOG_PAGE_SIZE } from '../model/product.mapper';
 import { parseCatalogUrlState, type CatalogListFilters } from '../model/catalog-filter.constants';
 import type { CatalogInitialPage } from '../hooks/use-catalog-filters';
+import type { CatalogCategoryDto } from '@/generated/api/catalog/catalog.schemas';
 
 /**
  * Lấy trước trang 1 trên server để HTML có sẵn thẻ sản phẩm + link (SEO), cùng `limit` và bộ lọc
@@ -17,7 +18,7 @@ import type { CatalogInitialPage } from '../hooks/use-catalog-filters';
  */
 const CATALOG_PROMISES = [
   { href: STORE_POLICY_PAGES.SHIPPING.href, icon: Truck, label: 'Giao & Lắp Đặt Toàn Quốc', iconClassName: 'text-neutral-700' },
-  { href: STORE_POLICY_PAGES.WARRANTY.href, icon: ShieldCheck, label: 'Bảo Hành Chính Hãng 100%', iconClassName: 'text-success-600' },
+  { href: STORE_POLICY_PAGES.WARRANTY.href, icon: ShieldCheck, label: 'Bảo Hành Chính Hãng', iconClassName: 'text-success-600' },
   { href: STORE_POLICY_PAGES.RETURNS.href, icon: RotateCcw, label: 'Đổi Trả Minh Bạch', iconClassName: 'text-neutral-700' },
   { href: STORE_POLICY_PAGES.PAYMENT.href, icon: CreditCard, label: 'Thanh Toán An Toàn', iconClassName: 'text-neutral-700' },
 ] as const;
@@ -59,13 +60,21 @@ function ProductsCatalogViewSkeleton() {
   );
 }
 
-export async function ProductsPage({ searchParams }: { searchParams?: Promise<SearchParamsRecord> } = {}) {
+export async function ProductsPage({
+  searchParams,
+  categories,
+}: {
+  searchParams?: Promise<SearchParamsRecord>;
+  /** Cây danh mục (cache dùng chung ở route) để tra tên danh mục đang lọc. */
+  categories?: CatalogCategoryDto[];
+} = {}) {
   const query = (await searchParams) ?? {};
   const { filters } = parseCatalogUrlState((key) => {
     const value = query[key];
     return Array.isArray(value) ? value[0] : value;
   });
   const initial = await loadCatalogFirstPage(filters);
+  const initialCategoryName = categories?.find((item) => item.slug === filters.category)?.name;
 
   return (
       <main className="bg-neutral-50/60 pb-20 pt-8">
@@ -112,7 +121,7 @@ export async function ProductsPage({ searchParams }: { searchParams?: Promise<Se
           <div className="mt-10">
             {/* useSearchParams trong view cần ranh giới Suspense để trang vẫn prerender được. */}
             <Suspense fallback={<ProductsCatalogViewSkeleton />}>
-              <ProductsCatalogView initial={initial} />
+              <ProductsCatalogView initial={initial} initialCategoryName={initialCategoryName} />
             </Suspense>
           </div>
 

@@ -87,9 +87,11 @@ export function NewsListFeed({
                 <span className="rounded-full bg-neutral-50 px-2.5 py-0.5 uppercase tracking-wider">
                   {featured.categoryLabel}
                 </span>
-                <span className="flex items-center gap-1 text-neutral-500">
-                  <Clock className="size-3.5" aria-hidden="true" /> {featured.readTimeLabel}
-                </span>
+                {featured.readTimeLabel && (
+                  <span className="flex items-center gap-1 text-neutral-500">
+                    <Clock className="size-3.5" aria-hidden="true" /> {featured.readTimeLabel}
+                  </span>
+                )}
               </div>
 
               <h2 className="mt-4 text-2xl font-black leading-tight text-ink sm:text-3xl">
@@ -179,9 +181,13 @@ export function NewsListFeed({
                 <div className="flex items-center gap-2 text-xs text-neutral-500">
                   <Calendar className="size-3.5" aria-hidden="true" />
                   <span>{item.publishedLabel}</span>
-                  <span aria-hidden="true">·</span>
-                  <Clock className="size-3.5" aria-hidden="true" />
-                  <span>{item.readTimeLabel}</span>
+                  {item.readTimeLabel && (
+                    <>
+                      <span aria-hidden="true">·</span>
+                      <Clock className="size-3.5" aria-hidden="true" />
+                      <span>{item.readTimeLabel}</span>
+                    </>
+                  )}
                 </div>
 
                 <h3 className="mt-3 text-lg font-black leading-snug text-ink transition group-hover:text-neutral-900">

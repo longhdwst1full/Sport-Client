@@ -27,13 +27,17 @@ export interface CatalogInitialPage {
   filters: CatalogListFilters;
 }
 
-export function useCatalogFilters(initial?: CatalogInitialPage) {
+/**
+ * `initialCategoryName`: tên danh mục đang lọc do server tra sẵn, để HTML đầu (trước khi danh sách
+ * danh mục tải ở client) hiện tên thay vì slug.
+ */
+export function useCatalogFilters(initial?: CatalogInitialPage, initialCategoryName?: string) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
   // Tab lấy từ danh mục thật (slug từ API)
-  const { tabs, isPending: isTabsPending } = useCategoryTabs();
+  const { tabs, nameBySlug, isPending: isTabsPending } = useCategoryTabs();
 
   // URL State Sync
   const { activeTabSlug, activePriceRange, activeSort, urlSearch, filters } = parseCatalogUrlState(
@@ -82,8 +86,13 @@ export function useCatalogFilters(initial?: CatalogInitialPage) {
 
   const activeCategoryLabel = useMemo(() => {
     if (!activeTabSlug) return null;
-    return tabs.find((t) => t.slug === activeTabSlug)?.label ?? activeTabSlug;
-  }, [tabs, activeTabSlug]);
+    return (
+      nameBySlug.get(activeTabSlug)
+      ?? tabs.find((t) => t.slug === activeTabSlug)?.label
+      ?? (initial?.filters.category === activeTabSlug ? initialCategoryName : undefined)
+      ?? activeTabSlug
+    );
+  }, [nameBySlug, tabs, activeTabSlug, initial?.filters.category, initialCategoryName]);
 
   const activePriceLabel = useMemo(() => {
     if (activePriceRange === 'all') return null;

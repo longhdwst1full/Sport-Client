@@ -131,11 +131,15 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
                     <Calendar className="size-3" aria-hidden="true" />
                     {post.publishedLabel}
                   </span>
-                  <span aria-hidden="true">·</span>
-                  <span className="flex items-center gap-1">
-                    <Clock className="size-3" aria-hidden="true" />
-                    {post.readTimeLabel}
-                  </span>
+                  {post.readTimeLabel && (
+                    <>
+                      <span aria-hidden="true">·</span>
+                      <span className="flex items-center gap-1">
+                        <Clock className="size-3" aria-hidden="true" />
+                        {post.readTimeLabel}
+                      </span>
+                    </>
+                  )}
                 </div>
 
                 {/* Title */}

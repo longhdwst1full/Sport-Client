@@ -1,5 +1,6 @@
 import { ProductsPage } from '@/features/catalog';
 import { buildPageMetadata } from '@/lib/seo/page-metadata';
+import { getPublicCategories } from '../_data/public-data';
 
 // `/catalog` re-export metadata này nên canonical của nó cũng trỏ về `/products`.
 export const metadata = buildPageMetadata({
@@ -10,10 +11,10 @@ export const metadata = buildPageMetadata({
 });
 
 // Đọc `searchParams` để server render sẵn trang 1 theo đúng bộ lọc trên URL (SEO + không nháy skeleton).
-export default function Page({
+export default async function Page({
   searchParams,
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  return <ProductsPage searchParams={searchParams} />;
+  return <ProductsPage searchParams={searchParams} categories={await getPublicCategories()} />;
 }

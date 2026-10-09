@@ -1,11 +1,13 @@
-import { Mail } from 'lucide-react';
+import Link from 'next/link';
+import { MessageCircle, Phone } from 'lucide-react';
 import {
   BANNER_DEFAULT_CTA_TEXT,
   BannerPicture,
   type BannerView,
 } from '@/features/content';
 import { PromoBanner } from '@/foundation/components/structure';
-import { NewsletterForm } from '@/widgets/newsletter-form/newsletter-form';
+import { buttonVariants } from '@/foundation/components/buttons';
+import { STORE_CONFIG, STORE_CONTACT } from '@/shared/constants';
 
 /** Dải banner FOOTER ngay trên khối nhận tin; chỉ lấy banner đầu (API đã sắp theo `sortOrder`). */
 function FooterBannerStrip({ banner }: { banner: BannerView }) {
@@ -31,36 +33,39 @@ function FooterBannerStrip({ banner }: { banner: BannerView }) {
 }
 
 /**
- * Server component trong layout storefront (ISR 300s đặt ở `app/(storefront)/layout.tsx`).
- * Có banner FOOTER thì thêm dải banner phía trên; khối nhận tin giữ nguyên trong mọi trường hợp
- * (banner là quảng bá, không thay chức năng đăng ký email). Không có banner: giao diện như cũ.
+ * Dải cuối trang trong layout storefront: banner FOOTER (nếu Admin bật) + khối liên hệ tư vấn.
+ *
+ * GAP: trước đây là form "nhận tin qua email" nhưng contract Storefront chưa có API newsletter nên
+ * form không gửi đi đâu (RULE-TRUST-03). Thay bằng các kênh liên hệ có thật; có endpoint thì thêm lại.
  */
 export function FooterNewsletterBanner({ banner: footerBanner }: { banner?: BannerView }) {
   return (
     <>
       {footerBanner && <FooterBannerStrip banner={footerBanner} />}
-      <section className="relative overflow-hidden bg-gradient-to-b from-neutral-900 via-neutral-950 to-neutral-950 px-4 py-12 sm:py-16 text-white border-t border-neutral-800/80 lg:px-10">
-        {/* Subtle Top Red Ambient Glow */}
-        <div className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 h-px w-3/4 max-w-4xl bg-gradient-to-r from-transparent via-red-500/35 to-transparent" />
-        <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 size-80 rounded-full bg-red-600/10 blur-[100px]" />
-
-        <div className="relative z-10 mx-auto max-w-3xl text-center">
-          <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-red-500/20 to-red-600/10 border border-red-500/30 text-red-400 shadow-lg shadow-red-500/10">
-            <Mail aria-hidden className="size-6 text-red-400" />
+      <section className="border-t border-neutral-800 bg-neutral-900 px-4 py-10 text-white sm:py-12 lg:px-10">
+        <div className="page-container flex flex-col items-center gap-6 px-0 text-center md:flex-row md:justify-between md:text-left">
+          <div>
+            <h2 className="text-xl font-black sm:text-2xl">Cần tư vấn chọn thiết bị?</h2>
+            <p className="mt-1.5 text-sm text-neutral-300">
+              Nhân viên {STORE_CONFIG.name} hỗ trợ {STORE_CONTACT.openingHoursShort}.
+            </p>
           </div>
-          <h2 className="mt-5 text-2xl font-black sm:text-3xl text-white">
-            Nhận ưu đãi độc quyền & kiến thức thể thao
-          </h2>
-          <p className="mt-2.5 text-sm text-neutral-300 sm:text-base">
-            Đăng ký email để nhận thông tin sản phẩm mới, combo thiết bị giảm giá và bài viết hướng
-            dẫn tập luyện từ HLV.
-          </p>
-          <div className="mt-6">
-            <NewsletterForm />
+          <div className="flex flex-wrap justify-center gap-3">
+            <a href={`tel:${STORE_CONTACT.primaryHotlineRaw}`} className={buttonVariants({ variant: 'inverse', className: 'focus-ring-inverse rounded-full px-5' })}>
+              <Phone aria-hidden className="size-4" /> {STORE_CONTACT.primaryHotline}
+            </a>
+            <a
+              href={STORE_CONTACT.zaloUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={buttonVariants({ variant: 'outline', className: 'focus-ring-inverse rounded-full border-white/30 bg-transparent px-5 text-white hover:border-white hover:bg-white/10' })}
+            >
+              <MessageCircle aria-hidden className="size-4" /> Nhắn Zalo
+            </a>
+            <Link href="/contact" className={buttonVariants({ variant: 'outline', className: 'focus-ring-inverse rounded-full border-white/30 bg-transparent px-5 text-white hover:border-white hover:bg-white/10' })}>
+              Đăng ký tư vấn
+            </Link>
           </div>
-          <p className="mt-3 text-xs text-neutral-400">
-            Chúng tôi cam kết bảo mật thông tin. Bạn có thể hủy nhận tin bất cứ lúc nào.
-          </p>
         </div>
       </section>
     </>

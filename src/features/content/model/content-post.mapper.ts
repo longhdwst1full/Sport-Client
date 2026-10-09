@@ -11,7 +11,11 @@ export interface ContentPostView {
   postType: string;
   categoryLabel: string;
   publishedLabel: string;
-  readTimeLabel: string;
+  /**
+   * `null` ở danh sách: summary không có `body`, ước lượng từ `excerpt` luôn ra "1 phút đọc" cho mọi
+   * bài (sai). Chỉ trang chi tiết (có thân bài) mới có số phút.
+   */
+  readTimeLabel: string | null;
 }
 
 /**
@@ -51,9 +55,8 @@ function readTimeLabel(text: string): string {
 
 /**
  * Danh sách bài viết (`listPublishedPosts`) trả `ContentPostSummaryDto` — không có `body`
- * (contract v2: tóm tắt cho danh sách, tránh tải nguyên thân bài không dùng tới). Ước lượng
- * thời gian đọc ở đây vì vậy chỉ dựa trên `excerpt`; bài chi tiết dùng `toArticleDetailView`
- * bên dưới để tính đúng theo thân bài đầy đủ.
+ * (contract v2: tóm tắt cho danh sách). Không đủ dữ liệu ước lượng thời gian đọc nên để `null`;
+ * bài chi tiết dùng `toArticleDetailView` để tính theo thân bài đầy đủ.
  */
 export function toContentPostView(dto: ContentPostSummaryDto): ContentPostView {
   return {
@@ -65,7 +68,7 @@ export function toContentPostView(dto: ContentPostSummaryDto): ContentPostView {
     postType: dto.postType,
     categoryLabel: CONTENT_POST_TYPE_LABELS[dto.postType] ?? dto.postType,
     publishedLabel: formatDate(dto.publishedAt),
-    readTimeLabel: readTimeLabel(dto.excerpt),
+    readTimeLabel: null,
   };
 }
 
