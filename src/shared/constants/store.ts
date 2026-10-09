@@ -61,6 +61,19 @@ export const STORE_POLICY_FACTS = {
   warrantySummary: 'Bảo hành chính hãng theo phiếu bảo hành',
 } as const;
 
+/**
+ * Số liệu marketing hiển thị ở khối uy tín trang chủ. Do chủ shop cung cấp/chịu trách nhiệm, CHƯA
+ * đối chiếu với dữ liệu hệ thống (API không có thống kê khách/đánh giá tổng). Khai MỘT chỗ ở đây để
+ * thay bằng số thật mà không sửa component (`21-trust-content.md` RULE-TRUST-02).
+ */
+export const STORE_MARKETING_STATS = {
+  customers: '30.000+',
+  rating: '4.9',
+  reviewCount: '3.200+',
+  yearsLabel: '10+ Năm',
+  warrantyHighlight: 'Bảo hành khung sườn lên đến 5 năm',
+} as const;
+
 // ==========================================
 // 6. SHOWROOMS LOCATIONS
 // ==========================================

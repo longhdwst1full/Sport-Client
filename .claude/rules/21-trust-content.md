@@ -24,11 +24,20 @@ Thông tin khách dùng để quyết định mua phải đúng và giống nhau
 <a href={`tel:${STORE_CONTACT.primaryHotlineRaw}`}>{STORE_CONTACT.primaryHotline}</a> · {STORE_CONTACT.openingHoursShort}
 ```
 
-## RULE-TRUST-02: Không số liệu/cam kết không có nguồn (P0)
+## RULE-TRUST-02: Số liệu marketing chỉ khai ở một chỗ (P0)
 
-Cấm tự viết: số khách/đánh giá ("50K+", "4.9/12.800"), lời chứng thực đặt tên, "24/7", "trọn đời",
-"bảo hành N năm", "miễn phí vận chuyển" không điều kiện, "phản hồi trong 30 phút". Chỉ hiển thị khi
-có nguồn (API, CMS, `STORE_POLICY_FACTS`); hứa thời gian phản hồi phải gắn giờ làm việc.
+Số khách, điểm đánh giá, số năm, cam kết bảo hành nổi bật… chỉ lấy từ `STORE_MARKETING_STATS`
+(`shared/constants/store.ts`) — chủ shop cung cấp và chịu trách nhiệm, đổi số tại đó là đổi toàn site.
+
+```tsx
+// ❌ số viết thẳng trong component, mỗi trang một con số
+<h2>Vì sao hơn 50K+ hội viên tin chọn…</h2>
+// ✅
+<h2>Vì sao hơn {STORE_MARKETING_STATS.customers} khách hàng tin chọn…</h2>
+```
+
+Cam kết chính sách (đổi trả, giao hàng) luôn lấy `STORE_POLICY_FACTS`, không đặt trong marketing stats.
+Không viết lời chứng thực gắn tên người thật nếu không có nguồn; hứa thời gian phản hồi phải gắn giờ làm việc.
 
 ## RULE-TRUST-03: Thông báo đúng điều đã xảy ra (P1)
 
