@@ -1,7 +1,7 @@
 'use client';
 
+import { Reveal } from '@/foundation/components/motion';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import { Building2, Dumbbell, Flame, Home, MoveUpRight } from 'lucide-react';
 
 interface GoalItem {
@@ -86,13 +86,12 @@ export function QuickGoalNavigation() {
           {GOALS.map((goal, idx) => {
             const Icon = goal.icon;
             return (
-              <motion.div
+              <Reveal
                 key={goal.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: idx * 0.1 }}
-                whileHover={{ y: -6, scale: 1.02 }}
+                delayMs={idx * 100}
+                durationMs={400}
+                offsetY={20}
+                className="transition-transform duration-300 ease-out hover:-translate-y-1.5 hover:scale-[1.02] motion-reduce:transition-none"
               >
                 <Link
                   href={goal.href}
@@ -123,7 +122,7 @@ export function QuickGoalNavigation() {
                     <MoveUpRight className="size-4 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" aria-hidden="true" />
                   </div>
                 </Link>
-              </motion.div>
+              </Reveal>
             );
           })}
         </div>

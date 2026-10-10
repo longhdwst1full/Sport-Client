@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { Reveal } from '@/foundation/components/motion';
 import { BadgeCheck, Headphones, RotateCcw, Truck, type LucideIcon } from 'lucide-react';
 
 const BENEFITS: Array<{
@@ -50,14 +50,10 @@ export function BenefitsStrip() {
     <section id="benefits" className="border-y border-neutral-200/80 bg-gradient-to-r from-neutral-50 via-white to-neutral-50 py-7">
       <div className="mx-auto grid max-w-7xl gap-4 px-4 sm:grid-cols-2 sm:px-6 lg:grid-cols-4 lg:px-8">
         {BENEFITS.map(({ icon: Icon, title, description, tileBg, ringGlow }, idx) => (
-          <motion.div
+          <Reveal
             key={title}
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.3, delay: idx * 0.08 }}
-            whileHover={{ y: -4, scale: 1.02 }}
-            className="group flex items-start gap-4 rounded-2xl border border-neutral-200/80 bg-white p-4 shadow-xs transition-all duration-300 hover:border-neutral-300 hover:shadow-xl animate-shine"
+            delayMs={idx * 80}
+            className="group hover:-translate-y-1 hover:scale-[1.02] flex items-start gap-4 rounded-2xl border border-neutral-200/80 bg-white p-4 shadow-xs transition-all duration-300 hover:border-neutral-300 hover:shadow-xl animate-shine"
           >
             <span
               className={`grid size-12 shrink-0 place-items-center rounded-2xl border ${tileBg} shadow-xs transition-all duration-300 group-hover:scale-110 group-hover:ring-4 ${ringGlow}`}
@@ -70,7 +66,7 @@ export function BenefitsStrip() {
               </p>
               <p className="mt-0.5 text-xs leading-relaxed font-medium text-neutral-500">{description}</p>
             </div>
-          </motion.div>
+          </Reveal>
         ))}
       </div>
     </section>

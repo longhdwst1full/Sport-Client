@@ -1,11 +1,10 @@
 'use client';
 
+import { Reveal } from '@/foundation/components/motion';
 import React, { memo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Zap, Sparkles } from 'lucide-react';
-import { motion } from 'framer-motion';
-import confetti from 'canvas-confetti';
 import { Button } from '@/foundation/components/buttons';
 import { Skeleton } from '@/foundation/components/feedback';
 import type { ProductShowcaseItem } from '../model/product.mapper';
@@ -27,13 +26,15 @@ export const ProductCard = memo(function ProductCard({
   priority = false,
 }: ProductCardProps) {
   const handleBuy = (e: React.MouseEvent) => {
-    // Confetti burst for instant celebratory feedback!
-    confetti({
-      particleCount: 50,
-      spread: 60,
-      origin: { y: 0.8 },
-      colors: ['#ef4444', '#f59e0b', '#10b981', '#3b82f6'],
-    });
+    // Confetti chỉ tải khi khách bấm mua (dynamic import), không nằm trong JS tải trang.
+    void import('canvas-confetti').then(({ default: confetti }) =>
+      confetti({
+        particleCount: 50,
+        spread: 60,
+        origin: { y: 0.8 },
+        colors: ['#ef4444', '#f59e0b', '#10b981', '#3b82f6'],
+      }),
+    );
 
     if (onBuyNow) {
       onBuyNow(product, e);
@@ -41,13 +42,10 @@ export const ProductCard = memo(function ProductCard({
   };
 
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 15 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-50px' }}
-      whileHover={{ y: -6, scale: 1.01 }}
-      transition={{ duration: 0.3, ease: 'easeOut' }}
-      className="group relative flex flex-col rounded-3xl border border-neutral-200/90 bg-white shadow-sm transition-all duration-300 hover:border-red-500/80 hover:shadow-2xl hover:shadow-red-600/15 overflow-hidden"
+    <Reveal
+      as="article"
+      rootMargin="-50px"
+      className="group hover:-translate-y-1.5 hover:scale-[1.01] relative flex flex-col rounded-3xl border border-neutral-200/90 bg-white shadow-sm transition-all duration-300 hover:border-red-500/80 hover:shadow-2xl hover:shadow-red-600/15 overflow-hidden"
     >
       <div className="flex w-full flex-1 flex-col">
         {/* Thumbnail Link */}
@@ -139,7 +137,7 @@ export const ProductCard = memo(function ProductCard({
           </div>
         </div>
       </div>
-    </motion.article>
+    </Reveal>
   );
 });
 
