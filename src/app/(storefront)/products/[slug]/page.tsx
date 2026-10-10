@@ -9,9 +9,10 @@ import { buildPageMetadata } from '@/lib/seo/page-metadata';
 import { toOgImageUrl } from '@/lib/seo/og-image';
 import { getPublicCategories } from '../../_data/public-data';
 
-// ISR 2 phút: trang public đọc nhiều, giá ở đây chỉ để tham khảo vì bước báo giá checkout
-// luôn tính lại. `revalidate = 0` trước đây bắt mọi lượt xem gọi API tới hai lần.
-export const revalidate = 120;
+// ISR 5 phút (= layout storefront và cache dữ liệu công khai; Next lấy giá trị nhỏ nhất): trang public
+// đọc nhiều, giá ở đây chỉ để tham khảo vì bước báo giá checkout luôn tính lại. 120s trước đây làm
+// trang dựng lại gấp 2,5 lần, tốn Active CPU của Vercel. `revalidate = 0` trước nữa gọi API mỗi lượt xem.
+export const revalidate = 300;
 
 // Không build trước slug nào; trả mảng rỗng để Next render lần đầu theo yêu cầu rồi cache theo
 // `revalidate` (ISR). Thiếu hàm này route `[slug]` bị coi là dynamic và bỏ qua `revalidate`.
