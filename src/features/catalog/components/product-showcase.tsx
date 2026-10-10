@@ -51,7 +51,7 @@ export function ProductShowcase({
                 onClick={() => setActiveTabSlug(tab.slug)}
                 className={`rounded-full px-4 py-2 text-xs font-bold transition-all duration-200 focus-ring ${
                   isActive
-                    ? 'bg-gradient-to-r from-red-600 to-red-600 text-white shadow-md shadow-red-500/20'
+                    ? 'bg-neutral-900 text-white shadow-xs'
                     : 'border border-neutral-200 bg-white text-neutral-700 hover:border-neutral-300 hover:bg-neutral-50'
                 }`}
               >

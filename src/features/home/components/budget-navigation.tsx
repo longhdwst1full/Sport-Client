@@ -67,8 +67,8 @@ export function BudgetNavigation({ quickLinks = [] }: BudgetNavigationProps) {
         {/* Header */}
         <div className="relative z-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6 sm:mb-8">
           <div>
-            <div className="inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-red-50/80 px-3 py-0.5 text-xs font-bold uppercase tracking-wider text-red-600 shadow-2xs">
-              <Sparkles className="size-3 text-red-500" aria-hidden="true" />
+            <div className="inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-neutral-100 px-3 py-0.5 text-xs font-bold uppercase tracking-wider text-neutral-700 shadow-2xs">
+              <Sparkles className="size-3 text-neutral-600" aria-hidden="true" />
               Theo ngân sách
             </div>
             <h2 className="mt-2 text-2xl sm:text-3xl lg:text-4xl font-bold text-neutral-900 tracking-tight">
@@ -128,7 +128,7 @@ export function BudgetNavigation({ quickLinks = [] }: BudgetNavigationProps) {
               </span>
               <Link
                 href="/category"
-                className="group inline-flex items-center gap-1 text-xs font-semibold text-red-600 hover:underline transition"
+                className="group inline-flex items-center gap-1 text-xs font-semibold text-neutral-800 hover:text-neutral-950 hover:underline transition"
               >
                 <span>Xem tất cả danh mục</span>
                 <ChevronRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
@@ -140,7 +140,7 @@ export function BudgetNavigation({ quickLinks = [] }: BudgetNavigationProps) {
                 <Link
                   key={category.slug}
                   href={`/category/${category.slug}`}
-                  className="rounded-full border border-neutral-200/90 bg-neutral-50/80 px-3.5 py-1.5 text-xs font-bold text-neutral-700 shadow-2xs transition-all hover:border-red-300 hover:bg-red-50/90 hover:text-red-700 hover:shadow-xs active:scale-95"
+                  className="rounded-full border border-neutral-200 bg-neutral-50 px-3.5 py-1.5 text-xs font-bold text-neutral-700 shadow-2xs transition-all hover:border-neutral-900 hover:bg-neutral-900 hover:text-white hover:shadow-xs active:scale-95"
                 >
                   {category.name}
                 </Link>

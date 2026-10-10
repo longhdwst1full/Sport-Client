@@ -59,15 +59,16 @@ export function NewsletterSignup({ source, tone = 'light' }: { source: string; t
         placeholder="Nhập email của bạn..."
         className={
           dark
-            ? 'rounded-xl border-neutral-700 bg-neutral-900/90 text-white placeholder:text-neutral-400 focus:border-red-500 focus:ring-2 focus:ring-red-500/30 font-medium'
-            : 'rounded-xl border-neutral-300 bg-white text-neutral-900 placeholder:text-neutral-400 focus:border-red-600 font-medium'
+            ? 'rounded-xl border-neutral-700 bg-neutral-900/90 text-white placeholder:text-neutral-400 focus:border-white focus:ring-2 focus:ring-white/20 font-medium'
+            : 'rounded-xl border-neutral-300 bg-white text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-900 focus:ring-2 focus:ring-neutral-900/20 font-medium'
         }
       />
       <HoneypotField value={website} onChange={setWebsite} />
       <Button
         type="submit"
+        variant={dark ? 'inverse' : 'primary'}
         disabled={mutation.isPending}
-        className="shrink-0 whitespace-nowrap rounded-xl bg-gradient-to-r from-red-600 via-red-600 to-red-600 px-6 text-sm font-bold text-white shadow-md shadow-red-600/30 border border-red-500/30 hover:from-red-700 hover:to-red-700 hover:shadow-lg hover:-translate-y-0.5 active:scale-95 transition-all duration-200"
+        className="shrink-0 whitespace-nowrap px-5"
       >
         <span>{mutation.isPending ? 'Đang gửi…' : 'Nhận tin'}</span>
       </Button>

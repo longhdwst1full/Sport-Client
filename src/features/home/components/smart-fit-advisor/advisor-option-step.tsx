@@ -44,8 +44,8 @@ export function AdvisorOptionStep<T extends AdvisorOption>({
               aria-pressed={isSelected}
               className={`group flex flex-col justify-between rounded-2xl border p-4 text-left sm:p-5 transition-all duration-300 focus-ring ${
                 isSelected
-                  ? 'border-red-500 bg-neutral-900 ring-2 ring-red-500/50 shadow-[0_0_25px_rgba(239,68,68,0.35)] -translate-y-1'
-                  : 'border-neutral-800 bg-neutral-900/90 hover:border-neutral-600 hover:bg-neutral-800 hover:shadow-lg hover:-translate-y-1'
+                  ? 'border-neutral-400 bg-neutral-850 ring-2 ring-white/20 shadow-lg -translate-y-1'
+                  : 'border-neutral-800 bg-neutral-900/90 hover:border-neutral-700 hover:bg-neutral-800 hover:shadow-md hover:-translate-y-0.5'
               }`}
             >
               {renderCard(option, isSelected)}
@@ -61,10 +61,10 @@ export function AdvisorOptionStep<T extends AdvisorOption>({
           </Button>
         )}
         <Button
-          variant="cta"
+          variant="inverse"
           size="lg"
           onClick={onNext}
-          className="px-6 text-sm gap-2 rounded-xl bg-gradient-to-r from-red-600 to-red-600 text-white font-semibold shadow-md shadow-red-600/30 hover:from-red-700 hover:to-red-700 hover:shadow-lg hover:shadow-red-600/40"
+          className="gap-2 px-6 text-sm font-bold shadow-md"
         >
           <span>{nextLabel}</span>
           <NextIcon className="size-4" aria-hidden="true" />

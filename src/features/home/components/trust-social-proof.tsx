@@ -31,21 +31,21 @@ const OUTLINE_ON_DARK =
 export function TrustSocialProof() {
   return (
     <section className="page-section">
-      <div className="relative overflow-hidden rounded-3xl border border-neutral-800/90 bg-gradient-to-br from-neutral-950 via-neutral-900 to-red-950/70 p-6 text-white sm:p-10 lg:p-12 shadow-2xl">
+      <div className="relative overflow-hidden rounded-3xl border border-neutral-800/90 bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-900 p-6 text-white sm:p-10 lg:p-12 shadow-2xl">
         {/* Rich Ambient Glow Backgrounds */}
-        <div className="pointer-events-none absolute -left-20 -top-20 size-80 rounded-full bg-red-600/20 blur-3xl" aria-hidden />
+        <div className="pointer-events-none absolute -left-20 -top-20 size-80 rounded-full bg-neutral-600/20 blur-3xl" aria-hidden />
         <div className="pointer-events-none absolute -right-20 -bottom-20 size-80 rounded-full bg-amber-500/15 blur-3xl" aria-hidden />
-        <div className="pointer-events-none absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-500/40 to-transparent" />
+        <div className="pointer-events-none absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-neutral-500/40 to-transparent" />
 
         <div className="relative z-10 grid gap-10 lg:grid-cols-[1.1fr_.9fr] lg:items-center">
           <div>
-            <div className="inline-flex items-center gap-1.5 rounded-full border border-red-500/30 bg-red-950/70 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-red-200 backdrop-blur-md">
-              <CheckCircle2 className="size-3.5 text-red-400" aria-hidden />
+            <div className="inline-flex items-center gap-1.5 rounded-full border border-neutral-700 bg-neutral-800/70 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-neutral-200 backdrop-blur-md">
+              <CheckCircle2 className="size-3.5 text-neutral-400" aria-hidden />
               <span>An tâm khi đầu tư thiết bị</span>
             </div>
 
             <h2 className="mt-3.5 text-2xl font-bold leading-tight tracking-tight text-white sm:text-3xl lg:text-4xl">
-              Vì sao hơn <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-neutral-100 to-red-300">{STORE_MARKETING_STATS.customers}</span> khách hàng tin chọn Bảo An Sport?
+              Vì sao hơn <span className="text-white">{STORE_MARKETING_STATS.customers}</span> khách hàng tin chọn Bảo An Sport?
             </h2>
             <p className="mt-3 max-w-xl text-xs sm:text-sm leading-relaxed text-neutral-300 font-medium">
               Thiết bị thể thao là khoản đầu tư cho sức khoẻ lâu dài. Không chỉ cung cấp sản phẩm chính
@@ -86,7 +86,7 @@ export function TrustSocialProof() {
           <div className="flex flex-col gap-4 rounded-2xl border border-neutral-700/60 bg-neutral-900/80 p-6 backdrop-blur-xl shadow-xl sm:p-7">
             <div className="flex items-center justify-between gap-3 border-b border-neutral-800/90 pb-4">
               <div className="flex items-center gap-2">
-                <div className="grid size-8 place-items-center rounded-lg bg-red-500/20 text-red-400 border border-red-500/30">
+                <div className="grid size-8 place-items-center rounded-lg bg-neutral-800 text-neutral-300 border border-neutral-700">
                   <MapPin className="size-4" aria-hidden />
                 </div>
                 <h3 className="text-base font-bold text-white">Trải nghiệm máy tại showroom</h3>
@@ -111,9 +111,9 @@ export function TrustSocialProof() {
                   <p className="mb-2 leading-relaxed text-neutral-400 text-xs font-medium">{showroom.address}</p>
                   <a
                     href={`tel:${showroom.phoneRaw}`}
-                    className="inline-flex items-center gap-1.5 font-semibold text-red-400 hover:text-red-300 transition text-xs"
+                    className="inline-flex items-center gap-1.5 font-semibold text-neutral-300 hover:text-white transition text-xs"
                   >
-                    <Phone className="size-3.5 text-red-500 animate-phone-ring" aria-hidden />
+                    <Phone className="size-3.5 text-neutral-400 animate-phone-ring" aria-hidden />
                     Hotline: {showroom.phone}
                   </a>
                 </div>

@@ -22,12 +22,15 @@ export function ContactActions({
 
   return (
     <div className={`flex flex-wrap gap-3 ${className}`.trim()}>
-      {/* Hotline Button: Vibrant Red CTA */}
+      {/* Hotline Button: Primary solid action */}
       <a
         href={`tel:${STORE_CONTACT.primaryHotlineRaw}`}
-        className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-red-600 via-red-600 to-red-600 px-5 py-2.5 text-xs sm:text-sm font-bold text-white shadow-md shadow-red-600/30 border border-red-500/30 hover:from-red-700 hover:to-red-700 hover:shadow-lg hover:-translate-y-0.5 active:scale-95 transition-all duration-200 focus-ring"
+        className={buttonVariants({
+          variant: dark ? 'inverse' : 'primary',
+          className: 'px-5 gap-2 text-xs sm:text-sm font-bold',
+        })}
       >
-        <Phone aria-hidden className="size-4 shrink-0 animate-phone-ring text-amber-300" />
+        <Phone aria-hidden className="size-4 shrink-0 animate-phone-ring" />
         <span>{STORE_CONTACT.primaryHotline}</span>
       </a>
 
@@ -36,7 +39,7 @@ export function ContactActions({
         href={STORE_CONTACT.zaloUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center gap-2 rounded-xl bg-[#0068FF] px-5 py-2.5 text-xs sm:text-sm font-bold text-white shadow-md shadow-[#0068FF]/25 border border-[#0068FF]/30 hover:bg-[#0052cc] hover:shadow-lg hover:-translate-y-0.5 active:scale-95 transition-all duration-200 focus-ring"
+        className="inline-flex items-center gap-2 rounded-lg bg-[#0068FF] px-5 py-2.5 text-xs sm:text-sm font-bold text-white shadow-md shadow-[#0068FF]/25 border border-[#0068FF]/30 hover:bg-[#0052cc] hover:shadow-lg hover:-translate-y-0.5 active:scale-95 transition-all duration-200 focus-ring"
       >
         <MessageCircle aria-hidden className="size-4 shrink-0" />
         <span>Nhắn Zalo</span>
@@ -46,13 +49,14 @@ export function ContactActions({
       {/* Showroom / Contact Button */}
       <Link
         href="/contact"
-        className={
-          dark
-            ? 'inline-flex items-center gap-2 rounded-xl border border-neutral-700 bg-neutral-900/90 px-5 py-2.5 text-xs sm:text-sm font-bold text-neutral-100 hover:border-neutral-500 hover:bg-neutral-800 hover:-translate-y-0.5 active:scale-95 transition-all duration-200 focus-ring'
-            : 'inline-flex items-center gap-2 rounded-xl border border-neutral-300 bg-white px-5 py-2.5 text-xs sm:text-sm font-bold text-neutral-900 shadow-2xs hover:border-neutral-400 hover:bg-neutral-50 hover:-translate-y-0.5 active:scale-95 transition-all duration-200 focus-ring'
-        }
+        className={buttonVariants({
+          variant: 'outline',
+          className: dark
+            ? 'border-neutral-700 bg-neutral-900/90 text-neutral-100 hover:bg-neutral-800 px-5 gap-2 text-xs sm:text-sm font-bold'
+            : 'border-neutral-300 bg-white text-neutral-900 hover:bg-neutral-50 px-5 gap-2 text-xs sm:text-sm font-bold',
+        })}
       >
-        <MapPin aria-hidden className="size-4 shrink-0 text-red-500" />
+        <MapPin aria-hidden className="size-4 shrink-0 text-neutral-500" />
         <span>{contactLabel}</span>
       </Link>
     </div>

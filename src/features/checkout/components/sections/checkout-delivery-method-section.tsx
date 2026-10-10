@@ -128,7 +128,7 @@ export function CheckoutDeliveryMethodSection({
       {error && !autoQuoting && !quote && (
         <InlineAlert role="alert" className="mt-4 flex flex-col gap-3 rounded-2xl border border-red-200 bg-red-50 p-4 text-xs font-semibold text-red-700 sm:flex-row sm:items-center sm:justify-between">
           <span className="flex items-start gap-2"><AlertTriangle aria-hidden className="mt-0.5 size-4 shrink-0" /> {error}</span>
-          <Button variant="danger" size="md" onClick={retryQuote} className="shrink-0 gap-1.5 text-xs font-bold shadow-sm focus-visible:ring-red-500">
+          <Button variant="primary" size="md" onClick={retryQuote} className="shrink-0 gap-1.5 text-xs font-bold shadow-sm">
             <RotateCcw aria-hidden className="size-3.5" /> Thử lại
           </Button>
         </InlineAlert>

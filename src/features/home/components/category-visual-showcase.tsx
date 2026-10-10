@@ -114,8 +114,8 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
         {/* Section Header with Navigation Controls */}
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6 sm:mb-8">
           <div>
-            <div className="inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-red-50/80 px-3 py-0.5 text-xs font-bold uppercase tracking-wider text-red-600 shadow-2xs">
-              <span className="size-1.5 rounded-full bg-red-600 animate-pulse" />
+            <div className="inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-neutral-50 px-3 py-0.5 text-xs font-bold uppercase tracking-wider text-neutral-700 shadow-2xs">
+              <span className="size-1.5 rounded-full bg-neutral-900" />
               Tìm nhanh theo bộ môn
             </div>
             <h2 className="mt-2 text-2xl font-bold tracking-tight text-neutral-900 sm:text-3xl lg:text-4xl">
@@ -130,7 +130,7 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
           <div className="flex items-center gap-3 self-end sm:self-auto">
             <Link
               href="/category"
-              className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-red-600 hover:text-red-700 hover:underline transition rounded focus-ring"
+              className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-neutral-800 hover:text-neutral-950 hover:underline transition rounded focus-ring"
             >
               {VIEW_ALL_CONTENT}
             </Link>
@@ -144,7 +144,7 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
             variant="ghost"
             size="icon"
             onClick={() => scroll('left')}
-            className="absolute -left-3 sm:-left-6 top-1/2 -translate-y-1/2 z-20 size-11 rounded-full border border-neutral-200 bg-white/95 text-neutral-900 shadow-md backdrop-blur-sm transition-all duration-200 hover:border-red-600 hover:bg-red-600 hover:text-white active:scale-95 disabled:pointer-events-none focus-visible:ring-2 focus-visible:ring-red-600"
+            className="absolute -left-3 sm:-left-6 top-1/2 -translate-y-1/2 z-20 size-11 rounded-full border border-neutral-200 bg-white/95 text-neutral-900 shadow-md backdrop-blur-sm transition-all duration-200 hover:border-neutral-900 hover:bg-neutral-900 hover:text-white active:scale-95 disabled:pointer-events-none focus-visible:ring-2 focus-visible:ring-neutral-900"
             aria-label="Danh mục trước"
             title="Cuộn xoay tròn sang trái"
           >
@@ -155,7 +155,7 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
             variant="ghost"
             size="icon"
             onClick={() => scroll('right')}
-            className="absolute -right-3 sm:-right-6 top-1/2 -translate-y-1/2 z-20 size-11 rounded-full border border-neutral-200 bg-white/95 text-neutral-900 shadow-md backdrop-blur-sm transition-all duration-200 hover:border-red-600 hover:bg-red-600 hover:text-white active:scale-95 disabled:pointer-events-none focus-visible:ring-2 focus-visible:ring-red-600"
+            className="absolute -right-3 sm:-right-6 top-1/2 -translate-y-1/2 z-20 size-11 rounded-full border border-neutral-200 bg-white/95 text-neutral-900 shadow-md backdrop-blur-sm transition-all duration-200 hover:border-neutral-900 hover:bg-neutral-900 hover:text-white active:scale-95 disabled:pointer-events-none focus-visible:ring-2 focus-visible:ring-neutral-900"
             aria-label="Danh mục tiếp theo"
             title="Cuộn xoay tròn sang phải"
           >
@@ -183,7 +183,7 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
             <div className="inline-flex items-center gap-3 rounded-full border border-neutral-200 bg-white px-4 py-1.5 shadow-xs">
               <div className="relative h-1.5 w-28 sm:w-40 overflow-hidden rounded-full bg-neutral-100">
                 <div
-                  className="h-full rounded-full bg-red-600 transition-all duration-300 ease-out shadow-xs"
+                  className="h-full rounded-full bg-neutral-900 transition-all duration-300 ease-out shadow-xs"
                   style={{
                     width: `${Math.max(20, Math.round(100 / Math.max(items.length, 1)))}%`,
                     transform: `translateX(${items.length > 1 ? (activeIndex / (items.length - 1)) * (items.length > 5 ? 300 : 150) : 0}%)`,

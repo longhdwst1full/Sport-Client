@@ -57,7 +57,7 @@ export function OrderCancelDialog({
                 onClick={() => setReason(preset)}
                 className={`rounded-lg px-2.5 py-1 text-2xs font-medium transition ${
                   reason === preset
-                    ? 'bg-red-600 text-white font-bold'
+                    ? 'bg-neutral-900 text-white font-bold'
                     : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
                 }`}
               >

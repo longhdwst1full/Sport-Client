@@ -44,7 +44,7 @@ function OptionCardContent({
       <div className="mb-3 flex items-center justify-between sm:mb-4">
         {lead}
         {isSelected && (
-          <div className="grid size-6 place-items-center rounded-full bg-red-600 text-white shadow-xs animate-scale-up">
+          <div className="grid size-6 place-items-center rounded-full bg-white text-neutral-950 shadow-xs animate-scale-up">
             <Check className="size-3.5 stroke-[3]" aria-hidden="true" />
           </div>
         )}
@@ -133,7 +133,7 @@ export function SmartFitAdvisor() {
                   <span
                     key={s}
                     className={`h-2 w-6 rounded-full transition-all duration-300 ${
-                      s <= step ? 'bg-red-500 shadow-sm shadow-red-500/50' : 'bg-neutral-700'
+                      s <= step ? 'bg-white shadow-xs' : 'bg-neutral-700'
                     }`}
                   />
                 ))}

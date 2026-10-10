@@ -112,11 +112,11 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
             actions={
               <div className="mt-6 flex flex-wrap justify-center gap-3">
                 {lookupExpired ? (
-                  <Link href={lookupHref} className={DANGER_ACTION}>
+                  <Link href={lookupHref} className={PRIMARY_ACTION}>
                     Xác thực lại bằng email
                   </Link>
                 ) : (
-                  <Button variant="danger" onClick={() => orderQuery.refetch()} className="px-5 font-bold shadow-sm">
+                  <Button variant="primary" onClick={() => orderQuery.refetch()} className="px-5 font-bold shadow-sm">
                     Thử lại
                   </Button>
                 )}
