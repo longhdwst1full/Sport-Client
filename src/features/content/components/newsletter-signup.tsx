@@ -3,7 +3,6 @@
 import { useId, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { CheckCircle2, Sparkles } from 'lucide-react';
-import confetti from 'canvas-confetti';
 import { Button } from '@/foundation/components/buttons';
 import { TextInput, HoneypotField } from '@/foundation/components/field-system';
 import { createNewsletterSubscription } from '@/generated/api/content/content';
@@ -17,12 +16,15 @@ export function NewsletterSignup({ source, tone = 'light' }: { source: string; t
     mutationFn: () =>
       createNewsletterSubscription({ email: email.trim(), source, ...(website ? { website } : {}) }),
     onSuccess: () => {
-      confetti({
-        particleCount: 70,
-        spread: 70,
-        origin: { y: 0.7 },
-        colors: ['#ef4444', '#f59e0b', '#3b82f6', '#10b981'],
-      });
+      // Confetti chỉ tải khi đăng ký thành công (dynamic import), không nằm trong JS tải trang.
+      void import('canvas-confetti').then(({ default: confetti }) =>
+        confetti({
+          particleCount: 70,
+          spread: 70,
+          origin: { y: 0.7 },
+          colors: ['#ef4444', '#f59e0b', '#3b82f6', '#10b981'],
+        }),
+      );
     },
     retry: false,
   });

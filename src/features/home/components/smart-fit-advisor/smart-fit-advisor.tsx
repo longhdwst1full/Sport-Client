@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, type ReactNode } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/foundation/components/buttons';
 import { Check, Maximize2, RefreshCw, Sparkles } from 'lucide-react';
 import { ArrowRight } from 'lucide-react';
@@ -152,16 +151,12 @@ export function SmartFitAdvisor() {
           )}
         </div>
 
-        {/* Wizard Body with AnimatePresence */}
+        {/* Wizard Body: mỗi bước có `key` riêng nên CSS animation chạy lại khi đổi bước */}
         <div className="relative z-10 mt-8">
-          <AnimatePresence mode="wait">
             {step === 1 && (
-              <motion.div
+              <div
                 key="step-1"
-                initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -30 }}
-                transition={{ duration: 0.3, ease: 'easeOut' }}
+                className="animate-step-in"
               >
                 <AdvisorOptionStep
                   title="1. Mục tiêu tập luyện ưu tiên của bạn là gì?"
@@ -196,16 +191,13 @@ export function SmartFitAdvisor() {
                     );
                   }}
                 />
-              </motion.div>
+              </div>
             )}
 
             {step === 2 && (
-              <motion.div
+              <div
                 key="step-2"
-                initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -30 }}
-                transition={{ duration: 0.3, ease: 'easeOut' }}
+                className="animate-step-in"
               >
                 <AdvisorOptionStep
                   title="2. Diện tích không gian dự kiến đặt thiết bị?"
@@ -230,16 +222,13 @@ export function SmartFitAdvisor() {
                     />
                   )}
                 />
-              </motion.div>
+              </div>
             )}
 
             {step === 3 && (
-              <motion.div
+              <div
                 key="step-3"
-                initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -30 }}
-                transition={{ duration: 0.3, ease: 'easeOut' }}
+                className="animate-step-in"
               >
                 <AdvisorOptionStep
                   title="3. Khoảng ngân sách đầu tư bạn mong muốn?"
@@ -264,15 +253,13 @@ export function SmartFitAdvisor() {
                     />
                   )}
                 />
-              </motion.div>
+              </div>
             )}
 
             {step === 4 && (
-              <motion.div
+              <div
                 key="step-4"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.4, ease: 'easeOut' }}
+                className="animate-zoom-in-soft"
               >
                 <AdvisorResults
                   recommendation={recommendation}
@@ -280,9 +267,8 @@ export function SmartFitAdvisor() {
                   spaceLabel={getSpaceLabel()}
                   budgetLabel={getBudgetLabel()}
                 />
-              </motion.div>
+              </div>
             )}
-          </AnimatePresence>
         </div>
       </div>
     </section>

@@ -2,7 +2,6 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import { Activity, Bike, Dumbbell, Footprints, HeartPulse, Swords, Trophy } from 'lucide-react';
 import type { CategoryRailView } from '@/features/catalog';
 
@@ -22,11 +21,8 @@ export function CategoryRailItem({ category }: { category: CategoryRailView }) {
   const { Icon, color } = getCategoryIconStyle(category.name);
 
   return (
-    <motion.div
-      whileHover={{ y: -8, scale: 1.03 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-      className="shrink-0 snap-start"
-    >
+    // Nhấc + phóng nhẹ khi hover, đường cong vượt ngưỡng nhẹ thay spring của framer-motion.
+    <div className="shrink-0 snap-start transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-2 hover:scale-[1.03] motion-reduce:transition-none">
       <Link
         href={category.href}
         className="group relative flex flex-col items-center justify-between p-4 sm:p-5 w-[160px] sm:w-[190px] md:w-[200px] rounded-3xl border border-neutral-200/90 bg-white shadow-sm transition-all duration-300 hover:border-red-500/80 hover:shadow-2xl hover:shadow-red-600/20 text-center focus-ring animate-shine overflow-hidden"
@@ -58,6 +54,6 @@ export function CategoryRailItem({ category }: { category: CategoryRailView }) {
           </div>
         </div>
       </Link>
-    </motion.div>
+    </div>
   );
 }

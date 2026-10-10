@@ -64,6 +64,23 @@
   .text-link {
     @apply rounded font-semibold text-neutral-950 underline underline-offset-2 hover:text-neutral-700 focus-ring-tight;
   }
+  /*
+   * `<Reveal>`: ẩn tới khi vào tầm nhìn rồi hiện dần + trượt lên. Dùng thuộc tính `translate` (không phải
+   * `transform`) để hover `hover:-translate-y-*` vẫn chạy độc lập.
+   */
+  .reveal {
+    opacity: 0;
+  }
+  .reveal[data-shown] {
+    animation: reveal-up var(--reveal-duration, 300ms) ease-out var(--reveal-delay, 0ms) both;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal,
+    .reveal[data-shown] {
+      opacity: 1;
+      animation: none;
+    }
+  }
   /* Nhãn nhỏ viết hoa phía trên tiêu đề khối. */
   .eyebrow {
     @apply text-xs font-semibold uppercase tracking-eyebrow;
@@ -461,3 +478,45 @@ html {
   .print-receipt__note { margin-top: 6px; }
   .print-receipt__footer { margin-top: 10px; text-align: center; font-size: 11px; }
 }
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    translate: 0 var(--reveal-y, 15px);
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+/* Bộ tư vấn: bước mới trượt vào từ phải; kết quả phóng nhẹ (thay AnimatePresence của framer-motion). */
+@keyframes step-in {
+  from {
+    opacity: 0;
+    translate: 30px 0;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+@keyframes zoom-in-soft {
+  from {
+    opacity: 0;
+    scale: 0.95;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .animate-step-in {
+    animation: step-in 300ms ease-out both;
+  }
+  .animate-zoom-in-soft {
+    animation: zoom-in-soft 400ms ease-out both;
+  }
+}
+
