@@ -39,9 +39,9 @@ const BENEFITS: Array<{
     icon: RotateCcw,
     title: 'Đổi trả rõ ràng',
     description: 'Kiểm tra và xử lý theo từng sản phẩm.',
-    tileBg: 'bg-red-500/10 border-red-300 text-red-600',
-    iconColor: 'text-red-600',
-    ringGlow: 'group-hover:ring-red-400/40',
+    tileBg: 'bg-sky-500/10 border-sky-300 text-sky-600',
+    iconColor: 'text-sky-600',
+    ringGlow: 'group-hover:ring-sky-400/40',
   },
 ];
 
@@ -61,7 +61,7 @@ export function BenefitsStrip() {
               <Icon className="size-6 transition-transform duration-300 group-hover:rotate-12" aria-hidden="true" />
             </span>
             <div>
-              <p className="text-sm font-bold text-neutral-900 group-hover:text-red-600 transition-colors">
+              <p className="text-sm font-bold text-neutral-900 group-hover:text-neutral-950 transition-colors">
                 {title}
               </p>
               <p className="mt-0.5 text-xs leading-relaxed font-medium text-neutral-500">{description}</p>

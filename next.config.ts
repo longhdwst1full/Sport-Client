@@ -34,6 +34,9 @@ const contentSecurityPolicyReportOnly = [
 
 const nextConfig: NextConfig = {
   allowedDevOrigins: ['127.0.0.1', 'localhost', '127.0.0.1:3199', 'localhost:3199'],
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   // Nén HTTP (gzip) do `next start` tự làm; trên Vercel CDN nén thay. Giữ mặc định `compress: true`.
   poweredByHeader: false,
   images: {

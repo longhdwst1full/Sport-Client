@@ -141,10 +141,10 @@ export async function HomePage({
                 <Link
                   key={slug}
                   href={`/category/${slug}`}
-                  className="group flex flex-col justify-between gap-3 rounded-2xl border border-neutral-200/80 bg-gradient-to-br from-white via-neutral-50/50 to-neutral-50 p-4 text-neutral-900 transition-all duration-300 hover:-translate-y-1 hover:border-red-200 hover:shadow-lg hover:shadow-red-500/5 focus-ring sm:min-h-[160px] sm:p-6"
+                  className="group flex flex-col justify-between gap-3 rounded-2xl border border-neutral-200/80 bg-gradient-to-br from-white via-neutral-50/50 to-neutral-50 p-4 text-neutral-900 transition-all duration-300 hover:-translate-y-1 hover:border-neutral-300 hover:shadow-lg focus-ring sm:min-h-[160px] sm:p-6"
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <div className="grid size-10 place-items-center rounded-xl bg-gradient-to-br from-red-500/10 to-red-500/20 text-red-600 border border-red-500/15 transition-transform duration-300 group-hover:scale-110 sm:size-12">
+                    <div className="grid size-10 place-items-center rounded-xl bg-neutral-100 text-neutral-800 border border-neutral-200/80 transition-transform duration-300 group-hover:scale-110 sm:size-12">
                       <Icon className="size-5 sm:size-6" aria-hidden="true" />
                     </div>
                     <span className="rounded-full bg-white/90 border border-neutral-200/70 px-2.5 py-0.5 text-2xs font-bold text-neutral-600 shadow-2xs sm:text-xs">
@@ -153,7 +153,7 @@ export async function HomePage({
                   </div>
 
                   <div>
-                    <h3 className="text-sm font-bold leading-snug sm:text-xl text-neutral-900 group-hover:text-neutral-700 transition-colors">{title}</h3>
+                    <h3 className="text-sm font-bold leading-snug sm:text-xl text-neutral-900 group-hover:text-neutral-950 transition-colors">{title}</h3>
                   </div>
                 </Link>
               ))}

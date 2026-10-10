@@ -47,9 +47,9 @@ const BUDGET_TIERS: BudgetTier[] = [
     label: 'Trên 5 Triệu',
     sublabel: 'Máy chạy bộ điện, giàn tạ khối, xe đạp thể lực',
     tag: 'Chuyên nghiệp',
-    badgeStyle: 'bg-red-100/80 text-red-800 border-red-300',
-    cardStyle: 'border-red-200/90 bg-gradient-to-br from-red-50/60 via-white to-red-50/40 hover:border-red-400 hover:shadow-lg hover:shadow-red-500/10',
-    arrowColor: 'text-red-600',
+    badgeStyle: 'bg-indigo-100/80 text-indigo-800 border-indigo-300',
+    cardStyle: 'border-indigo-200/90 bg-gradient-to-br from-indigo-50/60 via-white to-neutral-50/40 hover:border-indigo-400 hover:shadow-lg hover:shadow-indigo-500/10',
+    arrowColor: 'text-indigo-600',
   },
 ];
 
@@ -62,7 +62,7 @@ export function BudgetNavigation({ quickLinks = [] }: BudgetNavigationProps) {
     <section className="page-section" aria-label="Tìm kiếm theo ngân sách">
       <div className="rounded-3xl border border-neutral-200/80 bg-white p-5 sm:p-8 md:p-10 shadow-sm relative overflow-hidden">
         {/* Ambient background accent glow */}
-        <div className="pointer-events-none absolute -right-20 -top-20 size-72 rounded-full bg-gradient-to-br from-amber-400/10 to-red-500/10 blur-3xl" aria-hidden="true" />
+        <div className="pointer-events-none absolute -right-20 -top-20 size-72 rounded-full bg-gradient-to-br from-neutral-200/20 to-neutral-100/10 blur-3xl" aria-hidden="true" />
 
         {/* Header */}
         <div className="relative z-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6 sm:mb-8">

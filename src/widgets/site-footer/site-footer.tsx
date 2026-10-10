@@ -95,9 +95,9 @@ export function SiteFooter({ categories }: { categories?: readonly FooterCategor
       className="relative overflow-hidden border-t border-neutral-800 bg-gradient-to-b from-neutral-900 via-neutral-950 to-neutral-950 px-4 py-12 sm:py-16 text-white sm:px-6 lg:px-10"
     >
       {/* Subtle top ambient lighting */}
-      <div className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 h-px w-3/4 max-w-4xl bg-gradient-to-r from-transparent via-red-500/40 to-transparent" />
-      <div className="pointer-events-none absolute -top-40 left-1/4 size-96 rounded-full bg-red-600/10 blur-[120px]" />
-      <div className="pointer-events-none absolute -bottom-40 right-1/4 size-96 rounded-full bg-neutral-600/10 blur-[120px]" />
+      <div className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 h-px w-3/4 max-w-4xl bg-gradient-to-r from-transparent via-neutral-700/60 to-transparent" />
+      <div className="pointer-events-none absolute -top-40 left-1/4 size-96 rounded-full bg-neutral-800/20 blur-[120px]" />
+      <div className="pointer-events-none absolute -bottom-40 right-1/4 size-96 rounded-full bg-neutral-800/20 blur-[120px]" />
 
       <div className="relative mx-auto grid max-w-7xl grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1.1fr] [&>*]:min-w-0">
         <div className="space-y-4">

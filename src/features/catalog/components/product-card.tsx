@@ -45,7 +45,7 @@ export const ProductCard = memo(function ProductCard({
     <Reveal
       as="article"
       rootMargin="-50px"
-      className="group hover:-translate-y-1.5 hover:scale-[1.01] relative flex flex-col rounded-3xl border border-neutral-200/90 bg-white shadow-sm transition-all duration-300 hover:border-red-500/80 hover:shadow-2xl hover:shadow-red-600/15 overflow-hidden"
+      className="group hover:-translate-y-1.5 hover:scale-[1.01] relative flex flex-col rounded-3xl border border-neutral-200/90 bg-white shadow-sm transition-all duration-300 hover:border-neutral-300 hover:shadow-xl hover:shadow-neutral-900/10 overflow-hidden"
     >
       <div className="flex w-full flex-1 flex-col">
         {/* Thumbnail Link */}
@@ -66,7 +66,7 @@ export const ProductCard = memo(function ProductCard({
 
           {/* Combo Badge */}
           {product.productType === 'BUNDLE' && (
-            <span className="pointer-events-none absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-red-600 to-red-600 px-3 py-0.5 text-2xs font-bold text-white shadow-md shadow-red-600/30">
+            <span className="pointer-events-none absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-neutral-900 to-neutral-800 px-3 py-0.5 text-2xs font-bold text-white shadow-md shadow-neutral-900/20">
               <Sparkles className="size-3 text-amber-300 animate-spin" />
               Combo trọn bộ
             </span>

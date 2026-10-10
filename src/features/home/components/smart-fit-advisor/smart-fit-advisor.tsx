@@ -106,7 +106,7 @@ export function SmartFitAdvisor() {
     <section className="page-section">
       <div className={`relative overflow-hidden rounded-3xl border border-neutral-800 bg-gradient-to-br from-neutral-900 via-neutral-950 to-neutral-900 p-6 sm:p-10 lg:p-12 text-white shadow-2xl ${SMART_FIT_CARD_MIN_HEIGHT}`}>
         {/* Subtle Ambient Glowing Spheres */}
-        <div className="pointer-events-none absolute -right-20 -top-20 size-80 rounded-full bg-red-600/20 blur-3xl" aria-hidden="true" />
+        <div className="pointer-events-none absolute -right-20 -top-20 size-80 rounded-full bg-neutral-600/20 blur-3xl" aria-hidden="true" />
         <div className="pointer-events-none absolute -left-20 -bottom-20 size-80 rounded-full bg-neutral-600/20 blur-3xl" aria-hidden="true" />
 
         {/* Header */}

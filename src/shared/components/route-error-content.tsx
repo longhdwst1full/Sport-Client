@@ -11,7 +11,7 @@ import { STORE_CONTACT } from '@/shared/constants';
  * Chỉ nói "mất kết nối" khi trình duyệt thật sự offline; lỗi khác là lỗi tải trang (`04-offline-commerce-ux.md`).
  */
 export function RouteErrorContent({ digest, onRetry }: { digest?: string; onRetry: () => void }) {
-  const [isOffline, setIsOffline] = useState(false);
+  const [isOffline, setIsOffline] = useState(() => (typeof navigator !== 'undefined' ? !navigator.onLine : false));
 
   useEffect(() => {
     const sync = () => setIsOffline(!navigator.onLine);

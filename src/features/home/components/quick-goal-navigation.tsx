@@ -24,9 +24,9 @@ const GOALS: GoalItem[] = [
     subtitle: 'Máy chạy, xe đạp, ghế tập & tạ tay gọn gàng',
     badge: 'Phổ biến nhất',
     href: '/products?category=may-tap-the-duc',
-    gradient: 'hover:border-neutral-500/80 hover:shadow-2xl hover:shadow-neutral-500/20',
-    iconColor: 'bg-neutral-50 text-neutral-600 border-neutral-200 group-hover:bg-neutral-600 group-hover:text-white',
-    badgeStyle: 'bg-neutral-50 text-neutral-700 border-neutral-200',
+    gradient: 'hover:border-neutral-300 hover:shadow-xl hover:shadow-neutral-900/5',
+    iconColor: 'bg-neutral-100 text-neutral-800 border-neutral-200/80 group-hover:bg-neutral-900 group-hover:text-white',
+    badgeStyle: 'bg-neutral-100 text-neutral-700 border-neutral-200/80',
   },
   {
     id: 'strength',
@@ -35,9 +35,9 @@ const GOALS: GoalItem[] = [
     subtitle: 'Giàn tạ đa năng, tạ khối & khung gánh an toàn',
     badge: 'Chuyên sâu',
     href: '/products?category=dung-cu-tap-gym',
-    gradient: 'hover:border-red-500/80 hover:shadow-2xl hover:shadow-red-500/20',
-    iconColor: 'bg-red-50 text-red-600 border-red-200 group-hover:bg-red-600 group-hover:text-white',
-    badgeStyle: 'bg-red-50 text-red-700 border-red-200',
+    gradient: 'hover:border-neutral-300 hover:shadow-xl hover:shadow-neutral-900/5',
+    iconColor: 'bg-neutral-100 text-neutral-800 border-neutral-200/80 group-hover:bg-neutral-900 group-hover:text-white',
+    badgeStyle: 'bg-neutral-100 text-neutral-700 border-neutral-200/80',
   },
   {
     id: 'cardio',
@@ -46,9 +46,9 @@ const GOALS: GoalItem[] = [
     subtitle: 'Máy chạy bộ cao cấp, xe đạp tập & cardio',
     badge: 'Hiệu quả cao',
     href: '/products?category=may-chay-bo',
-    gradient: 'hover:border-amber-500/80 hover:shadow-2xl hover:shadow-amber-500/20',
-    iconColor: 'bg-amber-50 text-amber-600 border-amber-200 group-hover:bg-amber-600 group-hover:text-white',
-    badgeStyle: 'bg-amber-50 text-amber-700 border-amber-200',
+    gradient: 'hover:border-neutral-300 hover:shadow-xl hover:shadow-neutral-900/5',
+    iconColor: 'bg-amber-50 text-amber-700 border-amber-200/80 group-hover:bg-amber-600 group-hover:text-white',
+    badgeStyle: 'bg-amber-50 text-amber-700 border-amber-200/80',
   },
   {
     id: 'commercial',
@@ -57,9 +57,9 @@ const GOALS: GoalItem[] = [
     subtitle: 'Tư vấn thiết kế & combo thiết bị cho dự án',
     badge: 'Hỗ trợ trọn gói',
     href: '/contact',
-    gradient: 'hover:border-success-500/80 hover:shadow-2xl hover:shadow-success-500/20',
-    iconColor: 'bg-success-50 text-success-600 border-success-200 group-hover:bg-success-600 group-hover:text-white',
-    badgeStyle: 'bg-success-50 text-success-700 border-success-200',
+    gradient: 'hover:border-neutral-300 hover:shadow-xl hover:shadow-neutral-900/5',
+    iconColor: 'bg-success-50 text-success-700 border-success-200/80 group-hover:bg-success-600 group-hover:text-white',
+    badgeStyle: 'bg-success-50 text-success-700 border-success-200/80',
   },
 ];
 
@@ -109,7 +109,7 @@ export function QuickGoalNavigation() {
                       </span>
                     </div>
 
-                    <h3 className="text-base sm:text-lg font-bold leading-snug text-neutral-900 transition-colors group-hover:text-red-600">
+                    <h3 className="text-base sm:text-lg font-bold leading-snug text-neutral-900 transition-colors group-hover:text-neutral-950">
                       {goal.title}
                     </h3>
                     <p className="mt-1.5 text-xs font-medium text-neutral-500 leading-relaxed max-sm:hidden">
@@ -117,7 +117,7 @@ export function QuickGoalNavigation() {
                     </p>
                   </div>
 
-                  <div className="mt-5 sm:mt-6 flex items-center gap-1.5 text-xs font-bold text-red-600 group-hover:text-red-700 transition">
+                  <div className="mt-5 sm:mt-6 flex items-center gap-1.5 text-xs font-bold text-neutral-900 group-hover:text-neutral-950 transition">
                     <span>Khám phá ngay</span>
                     <MoveUpRight className="size-4 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" aria-hidden="true" />
                   </div>

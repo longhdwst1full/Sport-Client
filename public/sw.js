@@ -11,7 +11,24 @@ const { CACHE_NAMES, CACHE_LIMITS, STRATEGY, OFFLINE_URL } = R;
 const CACHED_AT_HEADER = 'x-dctd-sw-cached-at';
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(CACHE_NAMES.shell).then((cache) => cache.addAll(R.APP_SHELL)));
+  event.waitUntil(
+    (async () => {
+      const shellCache = await caches.open(CACHE_NAMES.shell);
+      await shellCache.addAll(R.APP_SHELL);
+      try {
+        const offlineRes = await caches.match(OFFLINE_URL, { cacheName: CACHE_NAMES.shell });
+        if (offlineRes) {
+          const html = await offlineRes.text();
+          const matches = html.matchAll(/(?:src|href)="(\/_next\/static\/[^"]+)"/g);
+          const urls = Array.from(new Set(Array.from(matches).map((m) => m[1])));
+          const staticCache = await caches.open(CACHE_NAMES.static);
+          await Promise.all(urls.map((url) => staticCache.add(url).catch(() => undefined)));
+        }
+      } catch {
+        // Precaching sub-assets is best-effort.
+      }
+    })(),
+  );
   // No skipWaiting here: a waiting worker activates only after the user confirms the update
   // prompt (SKIP_WAITING message), so an open checkout never switches worker mid-flow.
 });

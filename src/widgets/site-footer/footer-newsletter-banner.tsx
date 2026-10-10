@@ -40,9 +40,9 @@ export function FooterNewsletterBanner({ banner: footerBanner }: { banner?: Bann
   return (
     <>
       {footerBanner && <FooterBannerStrip banner={footerBanner} />}
-      <section className="relative overflow-hidden border-t border-red-500/30 bg-gradient-to-r from-neutral-950 via-neutral-900 to-red-950/80 px-4 py-10 text-white sm:py-12 lg:px-10 shadow-xl">
-        <div className="pointer-events-none absolute -left-12 -top-12 size-56 rounded-full bg-red-600/20 blur-3xl" aria-hidden="true" />
-        <div className="pointer-events-none absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-500/50 to-transparent" />
+      <section className="relative overflow-hidden border-t border-neutral-800 bg-gradient-to-b from-neutral-900 via-neutral-950 to-neutral-950 px-4 py-10 text-white sm:py-12 lg:px-10 shadow-xl">
+        <div className="pointer-events-none absolute -left-12 -top-12 size-56 rounded-full bg-neutral-800/20 blur-3xl" aria-hidden="true" />
+        <div className="pointer-events-none absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-neutral-700/50 to-transparent" />
 
         <div className="relative z-10 page-container grid gap-8 px-0 md:grid-cols-2 md:items-center">
           <div>
