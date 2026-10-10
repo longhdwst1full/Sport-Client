@@ -5,3 +5,5 @@ export { Select, type SelectProps } from './select';
 export { PasswordInput } from './password-input';
 export { Checkbox, type CheckboxProps } from './checkbox';
 export { inputVariants, INPUT_SIZE, type InputSize, type InputVariantOptions } from './input-variants';
+export { SearchBox, type SearchBoxProps } from './search-box';
+export { HoneypotField } from './honeypot-field';

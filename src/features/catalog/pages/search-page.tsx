@@ -2,9 +2,9 @@
 
 import { Suspense, useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Search, X } from 'lucide-react';
 import { Breadcrumb } from '@/foundation/components/navigation';
-import { Button } from '@/foundation/components/buttons';
+import { Search } from 'lucide-react';
+import { SearchBox } from '@/foundation/components/field-system';
 import { Skeleton } from '@/foundation/components/feedback';
 import { ProductShowcase } from '../components/product-showcase';
 import { ProductCardSkeleton } from '../components/product-card';
@@ -29,38 +29,16 @@ function InPageSearchForm({ currentQuery }: { currentQuery: string }) {
   };
 
   return (
-    <form
+    <SearchBox
+      value={val}
+      onValueChange={setVal}
       onSubmit={handleSubmit}
-      className="relative flex items-center w-full overflow-hidden rounded-full border border-neutral-300 bg-neutral-50/80 hover:bg-white focus-within:border-neutral-800 focus-within:bg-white focus-within:ring-4 focus-within:ring-neutral-900/10 shadow-2xs"
-    >
-      <Search className="ml-4 size-4 shrink-0 text-neutral-400" aria-hidden="true" />
-      <input
-        type="text"
-        value={val}
-        onChange={(e) => setVal(e.target.value)}
-        placeholder="Tìm thiết bị tập luyện khác..."
-        className="w-full border-0 border-none bg-transparent px-3 py-2 text-sm font-medium text-neutral-800 outline-none ring-0 placeholder:text-neutral-500 focus:border-0 focus:outline-none focus:ring-0 sm:py-2.5"
-        aria-label="Tìm kiếm sản phẩm"
-      />
-      {val && (
-        <button
-          type="button"
-          onClick={() => setVal('')}
-          className="mr-1 grid size-7 shrink-0 place-items-center rounded-full text-neutral-400 transition hover:bg-neutral-200/60 hover:text-neutral-700"
-          aria-label="Xóa từ khóa"
-        >
-          <X className="size-3.5" aria-hidden="true" />
-        </button>
-      )}
-      <Button
-        type="submit"
-        variant="primary"
-        size="sm"
-        className="my-1 mr-1.5 inline-flex shrink-0 items-center gap-1.5 rounded-full px-4 text-xs font-bold tracking-tight shadow-md sm:px-5"
-      >
-        <span>Tìm</span>
-      </Button>
-    </form>
+      placeholder="Tìm thiết bị tập luyện khác..."
+      submitLabel="Tìm"
+      submitIcon={false}
+      className="w-full hover:border-neutral-300"
+      iconClassName="group-focus-within:text-neutral-400"
+    />
   );
 }
 
