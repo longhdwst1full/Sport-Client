@@ -49,6 +49,9 @@ export const apiClient = axios.create({
   timeout: 10_000,
   withCredentials: true,
   headers: { Accept: 'application/json' },
+  // CONTRACT: NestJS đọc mảng query dạng lặp khoá (`brand=a&brand=b`); mặc định Axios gửi `brand[]=a`
+  // và backend từ chối 400 (whitelist). `indexes: null` = lặp khoá, không ngoặc.
+  paramsSerializer: { indexes: null },
 });
 
 apiClient.interceptors.request.use((config) => {

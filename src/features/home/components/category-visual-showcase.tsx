@@ -101,7 +101,7 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
     <section
       ref={sectionRef}
       id="categories"
-      className="py-10 sm:py-14 bg-gradient-to-b from-slate-100/90 via-white to-slate-100/70 border-y border-slate-200/90"
+      className="py-10 sm:py-14 bg-gradient-to-b from-neutral-100/90 via-white to-neutral-100/70 border-y border-neutral-200/90"
       aria-label="Danh mục ngành hàng thể thao"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
@@ -114,14 +114,14 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
         {/* Section Header with Navigation Controls */}
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6 sm:mb-8">
           <div>
-            <div className="inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-red-50/80 px-3 py-0.5 text-xs font-black uppercase tracking-wider text-red-600 shadow-2xs">
+            <div className="inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-red-50/80 px-3 py-0.5 text-xs font-bold uppercase tracking-wider text-red-600 shadow-2xs">
               <span className="size-1.5 rounded-full bg-red-600 animate-pulse" />
               Tìm nhanh theo bộ môn
             </div>
-            <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-900 sm:text-3xl lg:text-4xl">
+            <h2 className="mt-2 text-2xl font-bold tracking-tight text-neutral-900 sm:text-3xl lg:text-4xl">
               Bạn Muốn Tập Luyện Bộ Môn Nào?
             </h2>
-            <p className="mt-1 text-xs text-slate-500 font-medium sm:text-sm">
+            <p className="mt-1 text-xs text-neutral-500 font-medium sm:text-sm">
               Khám phá trang thiết bị thể thao chính hãng theo từng bộ môn chuyên biệt
             </p>
           </div>
@@ -130,7 +130,7 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
           <div className="flex items-center gap-3 self-end sm:self-auto">
             <Link
               href="/category"
-              className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-black text-red-600 hover:text-red-700 hover:underline transition rounded focus-ring"
+              className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-red-600 hover:text-red-700 hover:underline transition rounded focus-ring"
             >
               {VIEW_ALL_CONTENT}
             </Link>
@@ -144,7 +144,7 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
             variant="ghost"
             size="icon"
             onClick={() => scroll('left')}
-            className="absolute -left-3 sm:-left-6 top-1/2 -translate-y-1/2 z-20 size-11 rounded-full border border-slate-200 bg-white/95 text-slate-900 shadow-md backdrop-blur-sm transition-all duration-200 hover:border-red-600 hover:bg-red-600 hover:text-white active:scale-95 disabled:pointer-events-none focus-visible:ring-2 focus-visible:ring-red-600"
+            className="absolute -left-3 sm:-left-6 top-1/2 -translate-y-1/2 z-20 size-11 rounded-full border border-neutral-200 bg-white/95 text-neutral-900 shadow-md backdrop-blur-sm transition-all duration-200 hover:border-red-600 hover:bg-red-600 hover:text-white active:scale-95 disabled:pointer-events-none focus-visible:ring-2 focus-visible:ring-red-600"
             aria-label="Danh mục trước"
             title="Cuộn xoay tròn sang trái"
           >
@@ -155,7 +155,7 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
             variant="ghost"
             size="icon"
             onClick={() => scroll('right')}
-            className="absolute -right-3 sm:-right-6 top-1/2 -translate-y-1/2 z-20 size-11 rounded-full border border-slate-200 bg-white/95 text-slate-900 shadow-md backdrop-blur-sm transition-all duration-200 hover:border-red-600 hover:bg-red-600 hover:text-white active:scale-95 disabled:pointer-events-none focus-visible:ring-2 focus-visible:ring-red-600"
+            className="absolute -right-3 sm:-right-6 top-1/2 -translate-y-1/2 z-20 size-11 rounded-full border border-neutral-200 bg-white/95 text-neutral-900 shadow-md backdrop-blur-sm transition-all duration-200 hover:border-red-600 hover:bg-red-600 hover:text-white active:scale-95 disabled:pointer-events-none focus-visible:ring-2 focus-visible:ring-red-600"
             aria-label="Danh mục tiếp theo"
             title="Cuộn xoay tròn sang phải"
           >
@@ -163,8 +163,8 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
           </Button>
 
           {/* Gradient Edges */}
-          <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-8 bg-gradient-to-r from-slate-100/90 to-transparent sm:w-12" />
-          <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-8 bg-gradient-to-l from-slate-100/90 to-transparent sm:w-12" />
+          <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-8 bg-gradient-to-r from-neutral-100/90 to-transparent sm:w-12" />
+          <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-8 bg-gradient-to-l from-neutral-100/90 to-transparent sm:w-12" />
 
           {/* Horizontal Infinite Track Container */}
           <div
@@ -180,8 +180,8 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
 
           {/* Sleek Minimalist Indicator Pill */}
           <div className="mt-5 flex items-center justify-center">
-            <div className="inline-flex items-center gap-3 rounded-full border border-slate-200 bg-white px-4 py-1.5 shadow-xs">
-              <div className="relative h-1.5 w-28 sm:w-40 overflow-hidden rounded-full bg-slate-100">
+            <div className="inline-flex items-center gap-3 rounded-full border border-neutral-200 bg-white px-4 py-1.5 shadow-xs">
+              <div className="relative h-1.5 w-28 sm:w-40 overflow-hidden rounded-full bg-neutral-100">
                 <div
                   className="h-full rounded-full bg-red-600 transition-all duration-300 ease-out shadow-xs"
                   style={{
@@ -190,7 +190,7 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
                   }}
                 />
               </div>
-              <span className="text-xs font-black tracking-wider text-slate-700 select-none">
+              <span className="text-xs font-bold tracking-wider text-neutral-700 select-none">
                 {String(activeIndex + 1).padStart(2, '0')}&nbsp;/&nbsp;{String(items.length).padStart(2, '0')}
               </span>
             </div>

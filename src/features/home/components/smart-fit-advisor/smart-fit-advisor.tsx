@@ -16,8 +16,8 @@ function OptionIconTile({ isSelected, children }: { isSelected: boolean; childre
     <div
       className={`grid size-11 place-items-center rounded-xl border transition-all ${
         isSelected
-          ? 'border-slate-900 bg-slate-900 text-white shadow-md shadow-slate-950/20'
-          : 'border-slate-200 bg-slate-100/80 text-slate-700 group-hover:bg-slate-200/70 group-hover:text-slate-900'
+          ? 'border-neutral-900 bg-neutral-900 text-white shadow-md shadow-neutral-950/20'
+          : 'border-neutral-200 bg-neutral-100/80 text-neutral-700 group-hover:bg-neutral-200/70 group-hover:text-neutral-900'
       }`}
     >
       {children}
@@ -31,7 +31,7 @@ function OptionCardContent({
   isSelected,
   label,
   desc,
-  labelClassName = 'text-sm sm:text-base text-slate-950',
+  labelClassName = 'text-sm sm:text-base text-neutral-950',
 }: {
   lead: ReactNode;
   isSelected: boolean;
@@ -49,8 +49,8 @@ function OptionCardContent({
           </div>
         )}
       </div>
-      <strong className={`block font-extrabold mb-1 ${labelClassName}`}>{label}</strong>
-      <p className="text-xs text-slate-500 font-medium leading-snug">{desc}</p>
+      <strong className={`block font-semibold mb-1 ${labelClassName}`}>{label}</strong>
+      <p className="text-xs text-neutral-500 font-medium leading-snug">{desc}</p>
     </>
   );
 }
@@ -105,35 +105,35 @@ export function SmartFitAdvisor() {
 
   return (
     <section className="page-section">
-      <div className={`relative overflow-hidden rounded-3xl border border-slate-800 bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 p-6 sm:p-10 lg:p-12 text-white shadow-2xl ${SMART_FIT_CARD_MIN_HEIGHT}`}>
+      <div className={`relative overflow-hidden rounded-3xl border border-neutral-800 bg-gradient-to-br from-neutral-900 via-neutral-950 to-neutral-900 p-6 sm:p-10 lg:p-12 text-white shadow-2xl ${SMART_FIT_CARD_MIN_HEIGHT}`}>
         {/* Subtle Ambient Glowing Spheres */}
         <div className="pointer-events-none absolute -right-20 -top-20 size-80 rounded-full bg-red-600/20 blur-3xl" aria-hidden="true" />
-        <div className="pointer-events-none absolute -left-20 -bottom-20 size-80 rounded-full bg-sky-600/20 blur-3xl" aria-hidden="true" />
+        <div className="pointer-events-none absolute -left-20 -bottom-20 size-80 rounded-full bg-neutral-600/20 blur-3xl" aria-hidden="true" />
 
         {/* Header */}
-        <div className="relative z-10 flex flex-col md:flex-row md:items-end md:justify-between gap-6 border-b border-slate-800/80 pb-8">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-end md:justify-between gap-6 border-b border-neutral-800/80 pb-8">
           <div>
-            <div className="inline-flex items-center gap-1.5 rounded-full border border-sky-400/30 bg-sky-500/10 px-3.5 py-1 text-xs font-black uppercase tracking-wider text-sky-400 shadow-xs backdrop-blur-md">
-              <Sparkles className="size-3.5 text-sky-400 animate-pulse" aria-hidden="true" />
+            <div className="inline-flex items-center gap-1.5 rounded-full border border-neutral-400/30 bg-neutral-500/10 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-neutral-400 shadow-xs backdrop-blur-md">
+              <Sparkles className="size-3.5 text-neutral-400 animate-pulse" aria-hidden="true" />
               Smart Fit Advisor
             </div>
-            <h2 className="mt-3 text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-white">
+            <h2 className="mt-3 text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-white">
               Không Chỉ Bán Thiết Bị. Chúng Tôi Giúp Bạn Chọn Đúng.
             </h2>
-            <p className="mt-2 text-sm text-slate-300 font-medium max-w-2xl leading-relaxed">
+            <p className="mt-2 text-sm text-neutral-300 font-medium max-w-2xl leading-relaxed">
               Chỉ mất 30 giây để xác định cấu hình phòng tập chuẩn huấn luyện theo diện tích, mục tiêu và khả năng chi trả.
             </p>
           </div>
 
           {step < 4 ? (
-            <div className="flex items-center gap-2.5 rounded-2xl border border-slate-700 bg-slate-900/90 px-4 py-2 text-xs font-black text-slate-200 shadow-md">
+            <div className="flex items-center gap-2.5 rounded-2xl border border-neutral-700 bg-neutral-900/90 px-4 py-2 text-xs font-bold text-neutral-200 shadow-md">
               <span>Bước {step}/3</span>
               <div className="flex gap-1.5" aria-hidden="true">
                 {[1, 2, 3].map((s) => (
                   <span
                     key={s}
                     className={`h-2 w-6 rounded-full transition-all duration-300 ${
-                      s <= step ? 'bg-red-500 shadow-sm shadow-red-500/50' : 'bg-slate-700'
+                      s <= step ? 'bg-red-500 shadow-sm shadow-red-500/50' : 'bg-neutral-700'
                     }`}
                   />
                 ))}
@@ -144,7 +144,7 @@ export function SmartFitAdvisor() {
               variant="secondary"
               size="sm"
               onClick={handleReset}
-              className="gap-1.5 rounded-full px-4 border-slate-700 bg-slate-800 text-white hover:bg-slate-700 font-bold"
+              className="gap-1.5 rounded-full px-4 border-neutral-700 bg-neutral-800 text-white hover:bg-neutral-700 font-bold"
             >
               <RefreshCw className="size-3.5 text-red-400" aria-hidden="true" />
               <span>Làm lại từ đầu</span>
@@ -174,19 +174,19 @@ export function SmartFitAdvisor() {
                   renderCard={(g, isSelected) => {
                     const Icon = g.icon;
                     const iconColors: Record<string, { tile: string }> = {
-                      muscle: { tile: 'bg-rose-500/20 border-rose-500/50 text-rose-400' },
+                      muscle: { tile: 'bg-red-500/20 border-red-500/50 text-red-400' },
                       fatloss: { tile: 'bg-amber-500/20 border-amber-500/50 text-amber-400' },
-                      health: { tile: 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400' },
-                      rehab: { tile: 'bg-sky-500/20 border-sky-500/50 text-sky-400' },
+                      health: { tile: 'bg-success-500/20 border-success-500/50 text-success-400' },
+                      rehab: { tile: 'bg-neutral-500/20 border-neutral-500/50 text-neutral-400' },
                     };
-                    const style = iconColors[g.id] || { tile: 'bg-slate-800 border-slate-700 text-slate-200' };
+                    const style = iconColors[g.id] || { tile: 'bg-neutral-800 border-neutral-700 text-neutral-200' };
 
                     return (
                       <OptionCardContent
                         isSelected={isSelected}
                         label={g.label}
                         desc={g.desc}
-                        labelClassName="text-sm sm:text-base text-white font-black"
+                        labelClassName="text-sm sm:text-base text-white font-bold"
                         lead={
                           <div className={`grid size-12 place-items-center rounded-2xl border shadow-inner transition-all duration-300 ${style.tile} group-hover:scale-110`}>
                             <Icon className="size-6 transition-transform duration-300 group-hover:rotate-12" />
@@ -221,9 +221,9 @@ export function SmartFitAdvisor() {
                       isSelected={isSelected}
                       label={s.label}
                       desc={s.desc}
-                      labelClassName="text-sm sm:text-base text-white font-black"
+                      labelClassName="text-sm sm:text-base text-white font-bold"
                       lead={
-                        <div className="grid size-12 place-items-center rounded-2xl border border-sky-500/50 bg-sky-500/20 text-sky-400 shadow-inner transition-all duration-300 group-hover:scale-110">
+                        <div className="grid size-12 place-items-center rounded-2xl border border-neutral-500/50 bg-neutral-500/20 text-neutral-400 shadow-inner transition-all duration-300 group-hover:scale-110">
                           <Maximize2 className="size-6" />
                         </div>
                       }
@@ -255,9 +255,9 @@ export function SmartFitAdvisor() {
                       isSelected={isSelected}
                       label={b.label}
                       desc={b.desc}
-                      labelClassName="text-base sm:text-lg text-white font-black"
+                      labelClassName="text-base sm:text-lg text-white font-bold"
                       lead={
-                        <span className="rounded-full border border-amber-400/50 bg-amber-500/20 px-3.5 py-1 text-xs font-black text-amber-300 shadow-inner">
+                        <span className="rounded-full border border-amber-400/50 bg-amber-500/20 px-3.5 py-1 text-xs font-bold text-amber-300 shadow-inner">
                           {b.label}
                         </span>
                       }

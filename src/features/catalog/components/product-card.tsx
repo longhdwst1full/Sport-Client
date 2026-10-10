@@ -47,13 +47,13 @@ export const ProductCard = memo(function ProductCard({
       viewport={{ once: true, margin: '-50px' }}
       whileHover={{ y: -6, scale: 1.01 }}
       transition={{ duration: 0.3, ease: 'easeOut' }}
-      className="group relative flex flex-col rounded-3xl border border-slate-200/90 bg-white shadow-sm transition-all duration-300 hover:border-red-500/80 hover:shadow-2xl hover:shadow-red-600/15 overflow-hidden"
+      className="group relative flex flex-col rounded-3xl border border-neutral-200/90 bg-white shadow-sm transition-all duration-300 hover:border-red-500/80 hover:shadow-2xl hover:shadow-red-600/15 overflow-hidden"
     >
       <div className="flex w-full flex-1 flex-col">
         {/* Thumbnail Link */}
         <Link
           href={`/products/${product.slug}`}
-          className="relative block aspect-square overflow-hidden bg-gradient-to-b from-slate-50/80 via-white to-slate-50/50 p-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-slate-900 animate-shine"
+          className="relative block aspect-square overflow-hidden bg-gradient-to-b from-neutral-50/80 via-white to-neutral-50/50 p-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-neutral-900 animate-shine"
           tabIndex={-1}
           aria-hidden="true"
         >
@@ -68,7 +68,7 @@ export const ProductCard = memo(function ProductCard({
 
           {/* Combo Badge */}
           {product.productType === 'BUNDLE' && (
-            <span className="pointer-events-none absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-red-600 to-rose-600 px-3 py-0.5 text-2xs font-black text-white shadow-md shadow-red-600/30">
+            <span className="pointer-events-none absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-red-600 to-red-600 px-3 py-0.5 text-2xs font-bold text-white shadow-md shadow-red-600/30">
               <Sparkles className="size-3 text-amber-300 animate-spin" />
               Combo trọn bộ
             </span>
@@ -77,12 +77,12 @@ export const ProductCard = memo(function ProductCard({
 
         {/* Content details */}
         <div className="flex flex-1 flex-col p-4 sm:p-5">
-          <p className="truncate text-xs font-bold text-slate-400 uppercase tracking-wider">
+          <p className="truncate text-xs font-bold text-neutral-400 uppercase tracking-wider">
             {[product.brand ?? 'Chính hãng', product.category].filter(Boolean).join(' · ')}
           </p>
 
           {/* Product Title */}
-          <h3 className="mt-1.5 line-clamp-2 min-h-[2.75rem] text-sm font-black leading-snug text-slate-900 group-hover:text-red-600 transition-colors">
+          <h3 className="mt-1.5 line-clamp-2 min-h-[2.75rem] text-sm font-bold leading-snug text-neutral-900">
             <Link
               href={`/products/${product.slug}`}
               className="focus-ring"
@@ -95,7 +95,7 @@ export const ProductCard = memo(function ProductCard({
           <div className="mt-auto pt-3">
             <div className="flex items-baseline justify-between gap-1">
               <strong
-                className={`block truncate text-lg sm:text-xl font-black tracking-tight ${product.hasPrice ? 'text-red-600' : 'text-slate-400'}`}
+                className={`block truncate text-lg sm:text-xl font-bold tracking-tight ${product.hasPrice ? 'text-neutral-950' : 'text-neutral-400'}`}
               >
                 {product.displayPrice}
               </strong>
@@ -103,13 +103,13 @@ export const ProductCard = memo(function ProductCard({
 
             <div className="mt-1 h-5">
               {product.inStock === false ? (
-                <span className="inline-block rounded-full bg-amber-50 border border-amber-200/80 px-2.5 py-0.5 text-3xs font-extrabold text-amber-800">
+                <span className="inline-block rounded-full bg-amber-50 border border-amber-200/80 px-2.5 py-0.5 text-3xs font-semibold text-amber-800">
                   Tạm hết hàng
                 </span>
               ) : product.inStock === true ? (
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 border border-emerald-200/80 px-2.5 py-0.5 text-2xs font-extrabold text-emerald-700 shadow-2xs">
-                  <span aria-hidden className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                  Sẵn hàng tại showroom
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-success-50 border border-success-200/80 px-2.5 py-0.5 text-2xs font-semibold text-success-700 shadow-2xs">
+                  <span aria-hidden className="size-1.5 rounded-full bg-success-500" />
+                  Còn hàng
                 </span>
               ) : null}
             </div>
@@ -120,7 +120,7 @@ export const ProductCard = memo(function ProductCard({
                 fullWidth
                 onClick={handleBuy}
                 disabled={!product.hasPrice || product.inStock === false}
-                className="relative z-10 mt-3.5 gap-1.5 rounded-2xl bg-gradient-to-r from-red-600 via-red-600 to-rose-600 px-4 py-3 text-xs font-black text-white shadow-lg shadow-red-600/25 border border-red-500/30 transition-all duration-300 hover:from-red-700 hover:to-rose-700 hover:shadow-xl hover:shadow-red-600/40 hover:-translate-y-0.5 active:scale-95 sm:text-sm disabled:border-slate-200 disabled:bg-slate-100 disabled:text-slate-400 disabled:shadow-none animate-shine"
+                className="relative z-10 mt-3.5 gap-1.5 px-4 text-xs sm:text-sm disabled:bg-neutral-100 disabled:text-neutral-400"
                 title={
                   product.inStock === false
                     ? 'Sản phẩm tạm hết hàng'

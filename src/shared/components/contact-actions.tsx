@@ -25,7 +25,7 @@ export function ContactActions({
       {/* Hotline Button: Vibrant Red CTA */}
       <a
         href={`tel:${STORE_CONTACT.primaryHotlineRaw}`}
-        className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-red-600 via-red-600 to-rose-600 px-5 py-2.5 text-xs sm:text-sm font-black text-white shadow-md shadow-red-600/30 border border-red-500/30 hover:from-red-700 hover:to-rose-700 hover:shadow-lg hover:-translate-y-0.5 active:scale-95 transition-all duration-200 focus-ring"
+        className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-red-600 via-red-600 to-red-600 px-5 py-2.5 text-xs sm:text-sm font-bold text-white shadow-md shadow-red-600/30 border border-red-500/30 hover:from-red-700 hover:to-red-700 hover:shadow-lg hover:-translate-y-0.5 active:scale-95 transition-all duration-200 focus-ring"
       >
         <Phone aria-hidden className="size-4 shrink-0 animate-phone-ring text-amber-300" />
         <span>{STORE_CONTACT.primaryHotline}</span>
@@ -48,8 +48,8 @@ export function ContactActions({
         href="/contact"
         className={
           dark
-            ? 'inline-flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-900/90 px-5 py-2.5 text-xs sm:text-sm font-bold text-slate-100 hover:border-slate-500 hover:bg-slate-800 hover:-translate-y-0.5 active:scale-95 transition-all duration-200 focus-ring'
-            : 'inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-xs sm:text-sm font-bold text-slate-900 shadow-2xs hover:border-slate-400 hover:bg-slate-50 hover:-translate-y-0.5 active:scale-95 transition-all duration-200 focus-ring'
+            ? 'inline-flex items-center gap-2 rounded-xl border border-neutral-700 bg-neutral-900/90 px-5 py-2.5 text-xs sm:text-sm font-bold text-neutral-100 hover:border-neutral-500 hover:bg-neutral-800 hover:-translate-y-0.5 active:scale-95 transition-all duration-200 focus-ring'
+            : 'inline-flex items-center gap-2 rounded-xl border border-neutral-300 bg-white px-5 py-2.5 text-xs sm:text-sm font-bold text-neutral-900 shadow-2xs hover:border-neutral-400 hover:bg-neutral-50 hover:-translate-y-0.5 active:scale-95 transition-all duration-200 focus-ring'
         }
       >
         <MapPin aria-hidden className="size-4 shrink-0 text-red-500" />

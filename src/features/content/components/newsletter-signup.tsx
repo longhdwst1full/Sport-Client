@@ -30,8 +30,8 @@ export function NewsletterSignup({ source, tone = 'light' }: { source: string; t
 
   if (mutation.isSuccess) {
     return (
-      <div role="status" className="inline-flex items-center gap-2 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-2 text-sm font-bold text-emerald-400 backdrop-blur-md shadow-lg animate-scale-up">
-        <CheckCircle2 aria-hidden className="size-5 shrink-0 text-emerald-400 animate-bounce" />
+      <div role="status" className="inline-flex items-center gap-2 rounded-2xl border border-success-500/30 bg-success-500/10 px-4 py-2 text-sm font-bold text-success-400 backdrop-blur-md shadow-lg animate-scale-up">
+        <CheckCircle2 aria-hidden className="size-5 shrink-0 text-success-400 animate-bounce" />
         <span>Đã đăng ký nhận tin thành công! Cảm ơn bạn.</span>
       </div>
     );
@@ -59,15 +59,15 @@ export function NewsletterSignup({ source, tone = 'light' }: { source: string; t
         placeholder="Nhập email của bạn..."
         className={
           dark
-            ? 'rounded-xl border-slate-700 bg-slate-900/90 text-white placeholder:text-slate-400 focus:border-red-500 focus:ring-2 focus:ring-red-500/30 font-medium'
-            : 'rounded-xl border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus:border-red-600 font-medium'
+            ? 'rounded-xl border-neutral-700 bg-neutral-900/90 text-white placeholder:text-neutral-400 focus:border-red-500 focus:ring-2 focus:ring-red-500/30 font-medium'
+            : 'rounded-xl border-neutral-300 bg-white text-neutral-900 placeholder:text-neutral-400 focus:border-red-600 font-medium'
         }
       />
       <HoneypotField value={website} onChange={setWebsite} />
       <Button
         type="submit"
         disabled={mutation.isPending}
-        className="shrink-0 whitespace-nowrap rounded-xl bg-gradient-to-r from-red-600 via-red-600 to-rose-600 px-6 text-sm font-black text-white shadow-md shadow-red-600/30 border border-red-500/30 hover:from-red-700 hover:to-rose-700 hover:shadow-lg hover:-translate-y-0.5 active:scale-95 transition-all duration-200"
+        className="shrink-0 whitespace-nowrap rounded-xl bg-gradient-to-r from-red-600 via-red-600 to-red-600 px-6 text-sm font-bold text-white shadow-md shadow-red-600/30 border border-red-500/30 hover:from-red-700 hover:to-red-700 hover:shadow-lg hover:-translate-y-0.5 active:scale-95 transition-all duration-200"
       >
         <span>{mutation.isPending ? 'Đang gửi…' : 'Nhận tin'}</span>
       </Button>

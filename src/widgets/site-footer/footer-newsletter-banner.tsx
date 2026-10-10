@@ -40,23 +40,23 @@ export function FooterNewsletterBanner({ banner: footerBanner }: { banner?: Bann
   return (
     <>
       {footerBanner && <FooterBannerStrip banner={footerBanner} />}
-      <section className="relative overflow-hidden border-t border-red-500/30 bg-gradient-to-r from-slate-950 via-slate-900 to-red-950/80 px-4 py-10 text-white sm:py-12 lg:px-10 shadow-xl">
+      <section className="relative overflow-hidden border-t border-red-500/30 bg-gradient-to-r from-neutral-950 via-neutral-900 to-red-950/80 px-4 py-10 text-white sm:py-12 lg:px-10 shadow-xl">
         <div className="pointer-events-none absolute -left-12 -top-12 size-56 rounded-full bg-red-600/20 blur-3xl" aria-hidden="true" />
         <div className="pointer-events-none absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-500/50 to-transparent" />
 
         <div className="relative z-10 page-container grid gap-8 px-0 md:grid-cols-2 md:items-center">
           <div>
-            <h2 className="text-xl font-black sm:text-2xl lg:text-3xl text-white tracking-tight">
+            <h2 className="text-xl font-bold sm:text-2xl lg:text-3xl text-white tracking-tight">
               Cần tư vấn chọn thiết bị?
             </h2>
-            <p className="mt-1.5 text-xs sm:text-sm font-medium text-slate-300">
+            <p className="mt-1.5 text-xs sm:text-sm font-medium text-neutral-300">
               Nhân viên {STORE_CONFIG.name} tư vấn trực tiếp 1:1, hỗ trợ {STORE_CONTACT.openingHoursShort}.
             </p>
             <ContactActions tone="dark" className="mt-4" />
           </div>
           <div>
             <h2 className="text-base font-semibold">Nhận ưu đãi & bài hướng dẫn tập</h2>
-            <p className="mb-3 mt-1 text-sm text-slate-300">Email về sản phẩm mới và khuyến mãi.</p>
+            <p className="mb-3 mt-1 text-sm text-neutral-300">Email về sản phẩm mới và khuyến mãi.</p>
             <NewsletterSignup source="footer" tone="dark" />
           </div>
         </div>

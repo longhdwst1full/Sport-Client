@@ -52,3 +52,12 @@ describe('apiFetcher', () => {
     expect(isCredentialEndpoint('/api/v1/catalog/products')).toBe(false);
   });
 });
+
+describe('apiClient params', () => {
+  it('serialize mảng query thành khoá lặp (brand=a&brand=b), không có []', async () => {
+    const { apiClient } = await import('./fetcher');
+    const uri = apiClient.getUri({ url: '/api/v1/catalog/products', params: { brand: ['a', 'b'], limit: 24 } });
+    expect(uri).toContain('brand=a&brand=b');
+    expect(uri).not.toContain('%5B%5D');
+  });
+});

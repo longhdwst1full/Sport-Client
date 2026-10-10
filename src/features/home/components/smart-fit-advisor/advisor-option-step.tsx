@@ -44,8 +44,8 @@ export function AdvisorOptionStep<T extends AdvisorOption>({
               aria-pressed={isSelected}
               className={`group flex flex-col justify-between rounded-2xl border p-4 text-left sm:p-5 transition-all duration-300 focus-ring ${
                 isSelected
-                  ? 'border-red-500 bg-slate-900 ring-2 ring-red-500/50 shadow-[0_0_25px_rgba(239,68,68,0.35)] -translate-y-1'
-                  : 'border-slate-800 bg-slate-900/90 hover:border-slate-600 hover:bg-slate-850 hover:shadow-lg hover:-translate-y-1'
+                  ? 'border-red-500 bg-neutral-900 ring-2 ring-red-500/50 shadow-[0_0_25px_rgba(239,68,68,0.35)] -translate-y-1'
+                  : 'border-neutral-800 bg-neutral-900/90 hover:border-neutral-600 hover:bg-neutral-800 hover:shadow-lg hover:-translate-y-1'
               }`}
             >
               {renderCard(option, isSelected)}
@@ -56,7 +56,7 @@ export function AdvisorOptionStep<T extends AdvisorOption>({
 
       <div className={`mt-8 flex items-center ${onBack ? 'justify-between' : 'justify-end'}`}>
         {onBack && (
-          <Button variant="secondary" onClick={onBack} className="px-5 border-slate-700 bg-slate-800 text-slate-200 hover:bg-slate-700 font-bold">
+          <Button variant="secondary" onClick={onBack} className="px-5 border-neutral-700 bg-neutral-800 text-neutral-200 hover:bg-neutral-700 font-bold">
             Quay lại
           </Button>
         )}
@@ -64,7 +64,7 @@ export function AdvisorOptionStep<T extends AdvisorOption>({
           variant="cta"
           size="lg"
           onClick={onNext}
-          className="px-6 text-sm gap-2 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 text-white font-extrabold shadow-md shadow-red-600/30 hover:from-red-700 hover:to-rose-700 hover:shadow-lg hover:shadow-red-600/40"
+          className="px-6 text-sm gap-2 rounded-xl bg-gradient-to-r from-red-600 to-red-600 text-white font-semibold shadow-md shadow-red-600/30 hover:from-red-700 hover:to-red-700 hover:shadow-lg hover:shadow-red-600/40"
         >
           <span>{nextLabel}</span>
           <NextIcon className="size-4" aria-hidden="true" />
