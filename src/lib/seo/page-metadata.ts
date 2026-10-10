@@ -75,7 +75,26 @@ export interface PageMetadataInput {
  * `canonical: '/'` và mọi trang con kế thừa, nghĩa là báo với Google rằng mọi trang đều là bản sao
  * của trang chủ.
  */
-export function buildPageMetadata(input: PageMetadataInput): Metadata {
+/** Google cắt title ~60 ký tự (đã gồm `| Bảo An Sport`) và description ~160 ký tự trên kết quả tìm kiếm. */
+const SEO_TITLE_MAX = 55;
+const SEO_DESCRIPTION_MAX = 160;
+
+/** Cắt ở ranh giới từ, thêm "…"; chuỗi đủ ngắn giữ nguyên. */
+export function clampSeoText(text: string | undefined, max: number): string | undefined {
+  const value = text?.replace(/\s+/g, ' ').trim();
+  if (!value || value.length <= max) return value;
+  const cut = value.slice(0, max - 1);
+  const atWord = cut.slice(0, cut.lastIndexOf(' ') > max * 0.6 ? cut.lastIndexOf(' ') : cut.length);
+  return `${atWord.replace(/[\s,.;:–-]+$/, '')}…`;
+}
+
+export function buildPageMetadata(rawInput: PageMetadataInput): Metadata {
+  // Tiêu đề/mô tả bài CMS có thể rất dài (bài chính sách 74/284 ký tự): kẹp một chỗ cho mọi trang.
+  const input = {
+    ...rawInput,
+    title: clampSeoText(rawInput.title, SEO_TITLE_MAX) ?? rawInput.title,
+    description: clampSeoText(rawInput.description, SEO_DESCRIPTION_MAX),
+  };
   const socialTitle = `${input.title} | ${SITE_NAME}`;
   const ownImages = input.images?.filter(Boolean);
   const images = ownImages?.length ? ownImages : [DEFAULT_OG_IMAGE.url];

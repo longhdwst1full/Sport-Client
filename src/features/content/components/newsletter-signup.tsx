@@ -5,7 +5,7 @@ import { useMutation } from '@tanstack/react-query';
 import { CheckCircle2, Sparkles } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { Button } from '@/foundation/components/buttons';
-import { TextInput } from '@/foundation/components/field-system';
+import { TextInput, HoneypotField } from '@/foundation/components/field-system';
 import { createNewsletterSubscription } from '@/generated/api/content/content';
 import { apiErrorMessage } from '@/lib/api/error-message';
 
@@ -48,6 +48,7 @@ export function NewsletterSignup({ source, tone = 'light' }: { source: string; t
       <label htmlFor={inputId} className="sr-only">Email nhận tin</label>
       <TextInput
         id={inputId}
+        size="md"
         type="email"
         required
         maxLength={254}
@@ -62,9 +63,7 @@ export function NewsletterSignup({ source, tone = 'light' }: { source: string; t
             : 'rounded-xl border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus:border-red-600 font-medium'
         }
       />
-      <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
-        <input tabIndex={-1} autoComplete="off" value={website} onChange={(event) => setWebsite(event.target.value)} />
-      </div>
+      <HoneypotField value={website} onChange={setWebsite} />
       <Button
         type="submit"
         disabled={mutation.isPending}

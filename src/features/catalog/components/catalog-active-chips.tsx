@@ -70,7 +70,7 @@ export function CatalogActiveChips({
           className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${CHIP_TONE[chip.tone].chip}`}
           onRemove={chip.onRemove}
           removeAriaLabel={chip.removeAriaLabel}
-          removeClassName={`rounded-full p-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-1 ${CHIP_TONE[chip.tone].remove}`}
+          removeClassName={`-my-1 -mr-1.5 grid min-h-6 min-w-6 place-items-center rounded-full p-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-1 ${CHIP_TONE[chip.tone].remove}`}
         >
           <span>{chip.label}</span>
         </Chip>

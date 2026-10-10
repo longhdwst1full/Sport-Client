@@ -6,7 +6,7 @@ import { CheckCircle2, Send } from 'lucide-react';
 import { useCustomerAuth } from '@/features/auth';
 import { InlineAlert } from '@/foundation/components/feedback';
 import { Button } from '@/foundation/components/buttons';
-import { Field, Select, Textarea, TextInput } from '@/foundation/components/field-system';
+import { Field, Select, Textarea, TextInput, HoneypotField } from '@/foundation/components/field-system';
 import { STORE_CONFIG, STORE_CONTACT } from '@/shared/constants';
 import { useCreateSupportRequest } from '../hooks/use-create-support-request';
 import { useCreateConsultationRequest } from '../hooks/use-create-consultation-request';
@@ -236,13 +236,7 @@ export function ConsultationForm() {
             <span>{pending ? 'Đang gửi...' : 'Gửi yêu cầu tư vấn'}</span>
           </Button>
           {errorMessage && <InlineAlert role="alert" className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">{errorMessage}</InlineAlert>}
-          {/* Honeypot: ẩn khỏi người dùng và trình đọc màn hình, không tự điền. */}
-          <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
-            <label>
-              Website
-              <input tabIndex={-1} autoComplete="off" value={website} onChange={(e) => setWebsite(e.target.value)} />
-            </label>
-          </div>
+          <HoneypotField value={website} onChange={setWebsite} />
         </form>
       )}
     </div>
