@@ -127,14 +127,9 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-  async rewrites() {
-    return [
-      {
-        source: '/api/v1/:path*',
-        destination: `${process.env.INTERNAL_API_URL || 'https://sport-api-doc.vercel.app'}/api/v1/:path*`,
-      },
-    ];
-  },
+  // Không còn rewrite `/api/v1/*` thẳng tới backend: route `app/api/v1/[...path]` proxy có lọc header,
+  // gắn secret và IP khách (rewrite chuyển nguyên header backend và không thêm được secret).
+
 };
 
 export default nextConfig;

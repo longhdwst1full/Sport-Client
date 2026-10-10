@@ -1,4 +1,5 @@
 import axios, { type AxiosRequestConfig } from 'axios';
+import { STOREFRONT_PROXY_SECRET_HEADER, backendOrigin } from './server/backend-origin';
 import type { TokenPairDto } from '@/generated/api/auth/auth.schemas';
 import {
   clearCustomerAuthTokens,
@@ -21,7 +22,9 @@ import {
  * nào — máy dev, CI, preview — là âm thầm gọi thẳng vào hệ thống thật. Môi trường triển khai luôn
  * khai biến này (`.env.production`), nên hạ mặc định xuống local không đổi hành vi khi deploy.
  */
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
+// Trình duyệt luôn dùng baseURL '' (same-origin qua proxy Next `app/api/v1/[...path]`); server đọc địa chỉ
+// backend lúc chạy qua `backendOrigin()` — không nhúng biến `NEXT_PUBLIC_*` vào bundle client.
+const API_URL = '';
 
 export class ApiError<T = unknown> extends Error {
   constructor(
@@ -34,13 +37,13 @@ export class ApiError<T = unknown> extends Error {
 }
 
 /**
- * Browser luôn đi same-origin qua Next rewrite `/api/v1/:path*` để refresh cookie HttpOnly là
- * first-party và không phụ thuộc CORS/cookie third-party. Server Component vẫn gọi API nội bộ
- * trực tiếp bằng `NEXT_PUBLIC_API_URL`, tránh vòng qua public origin của Storefront.
+ * Browser luôn đi same-origin qua proxy Next `/api/v1/*` để refresh cookie HttpOnly là first-party và
+ * không phụ thuộc CORS/cookie third-party. Server Component gọi backend trực tiếp bằng `backendOrigin()`
+ * (biến server `API_URL`), tránh vòng qua public origin của Storefront.
  */
 export function resolveApiBaseURL(): string {
   if (typeof window !== 'undefined') return '';
-  return API_URL;
+  return backendOrigin();
 }
 
 /** @internal Chỉ export cho test transport. Feature phải đi qua `apiFetcher`/generated SDK. */
@@ -56,6 +59,9 @@ export const apiClient = axios.create({
 
 apiClient.interceptors.request.use((config) => {
   config.baseURL = resolveApiBaseURL();
+  // Server component gọi thẳng backend: kèm secret để backend nhận ra storefront (không có ở trình duyệt).
+  const proxySecret = typeof window === 'undefined' ? process.env.STOREFRONT_PROXY_SECRET : undefined;
+  if (proxySecret) config.headers.set(STOREFRONT_PROXY_SECRET_HEADER, proxySecret);
   return config;
 });
 
