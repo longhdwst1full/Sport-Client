@@ -45,6 +45,7 @@ export function NewsletterSignup({ source, tone = 'light' }: { source: string; t
       <label htmlFor={inputId} className="sr-only">Email nhận tin</label>
       <TextInput
         id={inputId}
+        size="md"
         type="email"
         required
         maxLength={254}

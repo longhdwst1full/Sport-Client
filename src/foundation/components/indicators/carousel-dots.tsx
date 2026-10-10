@@ -36,7 +36,7 @@ export function CarouselDots({
           key={keyFor ? keyFor(index) : index}
           type="button"
           onClick={() => onSelect(index)}
-          className="group grid place-items-center rounded-full p-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+          className="group grid min-h-6 min-w-6 place-items-center rounded-full p-1 focus-ring-inverse"
           aria-label={ariaLabelFor ? ariaLabelFor(index) : `Chuyển tới slide ${index + 1}`}
           aria-current={index === activeIndex ? 'true' : undefined}
         >

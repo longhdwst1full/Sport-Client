@@ -131,7 +131,7 @@ export function HeroSlider({
                   )}
 
                   {slide.subtitle && (
-                    <p className="mt-3 text-xs leading-relaxed text-neutral-300 sm:text-sm sm:leading-6 line-clamp-2 sm:line-clamp-3">
+                    <p className="mt-3 line-clamp-3 text-xs leading-relaxed text-neutral-300 sm:text-sm sm:leading-6">
                       {slide.subtitle}
                     </p>
                   )}

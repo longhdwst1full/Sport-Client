@@ -20,7 +20,7 @@ const fontSans = Be_Vietnam_Pro({
 
 const DEFAULT_TITLE = 'Bảo An Sport — Dụng Cụ Thể Thao Chính Hãng Giá Tốt Nhất';
 const DEFAULT_DESC =
-  'Bảo An Sport chuyên cung cấp dụng cụ thể thao, thiết bị thể dục và thể hình. Máy chạy bộ, xe đạp tập, giàn tạ đa năng, dụng cụ võ thuật, bóng bàn, bóng rổ. Sản phẩm đa dạng, giá tốt, giao hàng toàn quốc. Hotline: 0939 987 456.';
+  'Dụng cụ thể thao, thiết bị thể hình chính hãng: máy chạy bộ, xe đạp tập, giàn tạ, bóng bàn, võ thuật. Giao và lắp đặt toàn quốc.';
 
 export const viewport: Viewport = {
   // Trùng `theme_color` của manifest (brand-600) để thanh trạng thái không đổi màu khi mở app đã cài.

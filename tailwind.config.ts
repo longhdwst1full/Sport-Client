@@ -59,7 +59,7 @@ export default {
       // DESIGN TOKENS — nguồn duy nhất cho cỡ chữ nhỏ, bo góc lớn và giãn chữ nhãn. Không viết
       // `text-[11px]`, `rounded-[28px]`, `tracking-[0.2em]` trong component (`20-design-tokens.md`).
       fontSize: {
-        '3xs': ['0.625rem', { lineHeight: '0.875rem' }], // 10px — badge rất nhỏ
+        '3xs': ['0.6875rem', { lineHeight: '0.875rem' }], // 11px — badge rất nhỏ (tối thiểu dễ đọc trên mobile)
         '2xs': ['0.6875rem', { lineHeight: '1rem' }], // 11px — metadata, helper
       },
       // Bo góc tối đa 16px: thương mại thể thao cần nét gọn, không mềm kiểu app fintech. Ghi đè `3xl`

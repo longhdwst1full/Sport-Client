@@ -3,6 +3,18 @@
 @tailwind utilities;
 
 /*
+ * iOS Safari tự phóng to trang khi focus ô nhập có chữ < 16px. Chặn ở MỘT chỗ cho mọi input/select/
+ * textarea trên màn hình hẹp (kể cả nơi truyền `text-xs` riêng); `!important` vì phải thắng utility.
+ */
+@media (max-width: 639px) {
+  input:not([type='checkbox']):not([type='radio']):not([type='range']),
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/*
  * STYLE DÙNG CHUNG — một chỗ sửa, áp cho mọi nơi (`.agent/rules/20-design-tokens.md`).
  * Nằm ở layer `components` nên utility viết thêm trong component (vd. `p-6`, `shadow-sm`,
  * `focus-visible:ring-white`) vẫn ghi đè được.
