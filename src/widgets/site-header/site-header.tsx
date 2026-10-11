@@ -65,14 +65,14 @@ export function SiteHeader({ initialCategories }: SiteHeaderProps = {}) {
             aria-label="Bảo An Sport - Trang chủ"
           >
             <span className="sr-only">Bảo An Sport</span>
-            <div className="relative h-10 w-36 xs:h-11 xs:w-44 sm:h-12 sm:w-56">
+            <div className="flex h-10 w-36 xs:h-11 xs:w-44 sm:h-12 sm:w-56 items-center">
               <Image
                 src="/images/logo.png"
                 alt="Bảo An Sport — Dụng Cụ Thể Thao Chính Hãng"
-                fill
+                width={224}
+                height={48}
                 priority
-                sizes="(max-width: 374px) 144px, (max-width: 640px) 176px, 224px"
-                className="object-contain object-left"
+                className="h-full w-auto object-contain object-left"
               />
             </div>
           </Link>

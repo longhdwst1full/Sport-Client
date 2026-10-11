@@ -102,15 +102,13 @@ export function SiteFooter({ categories }: { categories?: readonly FooterCategor
       <div className="relative mx-auto grid max-w-7xl grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1.1fr] [&>*]:min-w-0">
         <div className="space-y-4">
           <div className="inline-flex rounded-xl bg-white px-3 py-2 shadow-md">
-            <div className="relative h-9 w-44">
-              <Image
-                src="/images/logo.png"
-                alt="Bảo An Sport — Dụng Cụ Thể Thao Chính Hãng"
-                fill
-                sizes="176px"
-                className="object-contain"
-              />
-            </div>
+            <Image
+              src="/images/logo.png"
+              alt="Bảo An Sport — Dụng Cụ Thể Thao Chính Hãng"
+              width={176}
+              height={36}
+              className="h-9 w-auto object-contain"
+            />
           </div>
 
           <p className="max-w-md text-sm leading-relaxed text-neutral-300 font-medium">
@@ -132,13 +130,13 @@ export function SiteFooter({ categories }: { categories?: readonly FooterCategor
               className="group inline-flex items-center gap-3 rounded-lg transition hover:opacity-90 focus-visible:outline-white"
               title="Website đã thông báo Bộ Công Thương"
             >
-              <div className="relative h-12 w-36 overflow-hidden rounded-lg bg-white/10 p-1 border border-white/20">
+              <div className="flex h-12 w-36 items-center justify-center overflow-hidden rounded-lg bg-white/10 p-1 border border-white/20">
                 <Image
                   src="/images/bo-cong-thuong.png"
                   alt="Đã thông báo Bộ Công Thương"
-                  fill
-                  sizes="144px"
-                  className="object-contain p-1"
+                  width={144}
+                  height={48}
+                  className="max-h-10 w-auto object-contain"
                 />
               </div>
               <div className="text-xs text-neutral-300 leading-tight">

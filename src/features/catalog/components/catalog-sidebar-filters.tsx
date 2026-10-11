@@ -1,6 +1,7 @@
 'use client';
 
-import { RotateCcw, Tag, Boxes, Award, PackageCheck } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { RotateCcw, Tag, Boxes, Award, PackageCheck, Search, X, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@/foundation/components/buttons';
 import { Skeleton } from '@/foundation/components/feedback';
 import type { CatalogBrandFacetDto } from '@/generated/api/catalog/catalog.schemas';
@@ -82,6 +83,35 @@ export function CatalogFilterGroups({
   isTabsPending = false,
 }: Omit<CatalogSidebarFiltersProps, 'hasActiveFilters' | 'onResetFilters'> & { variant: 'sidebar' | 'sheet' }) {
   const isSidebar = variant === 'sidebar';
+
+  const [brandSearch, setBrandSearch] = useState('');
+  const [showAllBrands, setShowAllBrands] = useState(false);
+
+  const INITIAL_BRAND_COUNT = 8;
+  const normalizedSearch = brandSearch.trim().toLowerCase();
+
+  const filteredBrands = useMemo(() => {
+    if (!normalizedSearch) return brands;
+    return brands.filter(
+      (b) =>
+        b.name.toLowerCase().includes(normalizedSearch) ||
+        b.slug.toLowerCase().includes(normalizedSearch),
+    );
+  }, [brands, normalizedSearch]);
+
+  const displayedBrands = useMemo(() => {
+    if (normalizedSearch || showAllBrands) {
+      return filteredBrands;
+    }
+    const initialSlice = filteredBrands.slice(0, INITIAL_BRAND_COUNT);
+    if (activeBrand && !initialSlice.some((b) => b.slug === activeBrand)) {
+      const activeItem = filteredBrands.find((b) => b.slug === activeBrand);
+      if (activeItem) {
+        return [...initialSlice, activeItem];
+      }
+    }
+    return initialSlice;
+  }, [filteredBrands, normalizedSearch, showAllBrands, activeBrand]);
 
   // `tabs[0]` là "Tất cả" (slug null) từ `useCategoryTabs`.
   const categoryButtons = tabs.map((tab) => {
@@ -209,39 +239,119 @@ export function CatalogFilterGroups({
       {/* Brand Facet — số sản phẩm do API đếm theo bộ lọc hiện tại */}
       {brands.length > 0 && (
         <div className={isSidebar ? 'border-t border-neutral-100 pt-5' : undefined}>
-          {isSidebar ? (
-            <h3 className={SIDEBAR_HEADING}>
-              <Award aria-hidden className="size-3.5 text-neutral-900" />
-              <span>Thương hiệu</span>
-            </h3>
-          ) : (
-            <h4 className={SHEET_HEADING}>Thương hiệu</h4>
-          )}
-          <div className={isSidebar ? 'space-y-1' : 'flex flex-wrap gap-2'} role="group" aria-label="Thương hiệu">
-            {brands.map((brand) => {
-              const isSelected = activeBrand === brand.slug;
-              return (
-                <button
-                  key={brand.slug}
-                  type="button"
-                  aria-pressed={isSelected}
-                  onClick={() => onSelectBrand(isSelected ? null : brand.slug)}
-                  className={
-                    isSidebar
-                      ? `flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-xs font-medium transition ${FOCUS_RING} ${
-                          isSelected ? 'bg-neutral-50 font-semibold text-neutral-950 ring-1 ring-neutral-900/30' : 'text-neutral-700 hover:bg-neutral-100'
-                        }`
-                      : `rounded-full px-3.5 py-2 text-xs font-semibold transition ${FOCUS_RING} ${
-                          isSelected ? 'bg-neutral-900 text-white' : 'border border-neutral-200 bg-white text-neutral-700'
-                        }`
-                  }
-                >
-                  <span className="truncate">{brand.name}</span>
-                  {isSidebar && <span className="ml-2 text-3xs text-neutral-500">{brand.count}</span>}
-                </button>
-              );
-            })}
+          <div className="flex items-center justify-between mb-2">
+            {isSidebar ? (
+              <h3 className={`${SIDEBAR_HEADING} mb-0`}>
+                <Award aria-hidden className="size-3.5 text-neutral-900" />
+                <span>Thương hiệu</span>
+              </h3>
+            ) : (
+              <h4 className={`${SHEET_HEADING} mb-0`}>Thương hiệu</h4>
+            )}
+            {brands.length > INITIAL_BRAND_COUNT && (
+              <span className="text-3xs font-semibold text-neutral-600">
+                {brands.length} thương hiệu
+              </span>
+            )}
           </div>
+
+          {/* Ô tìm kiếm nhanh thương hiệu */}
+          {brands.length > 5 && (
+            <div className="relative mb-2.5">
+              <Search
+                aria-hidden
+                className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-neutral-600"
+              />
+              <input
+                type="text"
+                value={brandSearch}
+                onChange={(e) => setBrandSearch(e.target.value)}
+                placeholder="Tìm thương hiệu..."
+                aria-label="Tìm thương hiệu"
+                className="w-full rounded-lg border border-neutral-200 bg-neutral-50 py-1.5 pl-8 pr-7 text-xs text-neutral-900 placeholder:text-neutral-600 transition focus:border-neutral-900 focus:bg-white focus:outline-none"
+              />
+              {brandSearch && (
+                <button
+                  type="button"
+                  onClick={() => setBrandSearch('')}
+                  aria-label="Xóa từ khóa tìm thương hiệu"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-0.5 text-neutral-600 hover:text-neutral-700 focus-visible:outline-neutral-900"
+                >
+                  <X className="size-3" aria-hidden />
+                </button>
+              )}
+            </div>
+          )}
+
+          {displayedBrands.length === 0 ? (
+            <p className="py-2 text-center text-xs text-neutral-600">
+              Không tìm thấy thương hiệu phù hợp
+            </p>
+          ) : (
+            <div
+              className={isSidebar ? 'space-y-1' : 'flex flex-wrap gap-2'}
+              role="group"
+              aria-label="Thương hiệu"
+            >
+              {displayedBrands.map((brand) => {
+                const isSelected = activeBrand === brand.slug;
+                return (
+                  <button
+                    key={brand.slug}
+                    type="button"
+                    aria-pressed={isSelected}
+                    onClick={() => onSelectBrand(isSelected ? null : brand.slug)}
+                    className={
+                      isSidebar
+                        ? `flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-xs font-medium transition ${FOCUS_RING} ${
+                            isSelected
+                              ? 'bg-neutral-100 font-bold text-neutral-950 ring-1 ring-neutral-300 shadow-2xs'
+                              : 'text-neutral-700 hover:bg-neutral-100/80 hover:text-neutral-900'
+                          }`
+                        : `rounded-full px-3.5 py-2 text-xs font-semibold transition ${FOCUS_RING} ${
+                            isSelected
+                              ? 'bg-neutral-900 text-white shadow-2xs'
+                              : 'border border-neutral-200 bg-white text-neutral-700 hover:bg-neutral-50'
+                          }`
+                    }
+                  >
+                    <span className="truncate">{brand.name}</span>
+                    {isSidebar && (
+                      <span className={`ml-2 text-3xs font-semibold ${isSelected ? 'text-neutral-900' : 'text-neutral-600'}`}>
+                        {brand.count}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Nút Xem thêm / Thu gọn khi danh sách nhiều hơn INITIAL_BRAND_COUNT và không đang gõ search */}
+          {filteredBrands.length > INITIAL_BRAND_COUNT && !normalizedSearch && (
+            <div className={isSidebar ? 'pt-1.5' : 'pt-2'}>
+              <button
+                type="button"
+                onClick={() => setShowAllBrands((prev) => !prev)}
+                className={
+                  isSidebar
+                    ? 'flex w-full items-center justify-center gap-1 rounded-lg py-1.5 text-xs font-bold text-neutral-700 transition hover:bg-neutral-100 hover:text-neutral-950'
+                    : 'inline-flex items-center gap-1 rounded-full border border-neutral-300 bg-neutral-100 px-3.5 py-1.5 text-xs font-bold text-neutral-700 transition hover:bg-neutral-200 hover:text-neutral-900'
+                }
+              >
+                <span>
+                  {showAllBrands
+                    ? 'Thu gọn'
+                    : `Xem thêm (${filteredBrands.length - INITIAL_BRAND_COUNT})`}
+                </span>
+                {showAllBrands ? (
+                  <ChevronUp className="size-3.5" aria-hidden />
+                ) : (
+                  <ChevronDown className="size-3.5" aria-hidden />
+                )}
+              </button>
+            </div>
+          )}
         </div>
       )}
 

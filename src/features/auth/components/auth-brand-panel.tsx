@@ -108,13 +108,13 @@ export function AuthBrandPanel({ variant }: AuthBrandPanelProps) {
       {/* Top Bar: Brand Logo & Return Link */}
       <div className="relative z-10 flex items-center justify-between">
         <Link href="/" aria-label="Bảo An Sport — Trang chủ" className="group inline-flex items-center gap-3 rounded-lg focus-ring focus-visible:ring-offset-neutral-950">
-          <div className="relative h-9 w-40 transition-transform group-hover:scale-105">
+          <div className="flex h-9 w-40 items-center transition-transform group-hover:scale-105">
             <Image
               src="/images/logo.png"
               alt="Bảo An Sport — Dụng Cụ Thể Thao Chính Hãng"
-              fill
-              sizes="160px"
-              className="object-contain object-left"
+              width={160}
+              height={36}
+              className="h-full w-auto object-contain object-left"
             />
           </div>
         </Link>

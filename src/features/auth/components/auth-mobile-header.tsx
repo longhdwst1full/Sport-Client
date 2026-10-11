@@ -11,14 +11,14 @@ export function AuthMobileHeader() {
       {/* Mobile Header Brand & Back */}
       <div className="mb-6 flex items-center justify-between lg:hidden">
         <Link href="/" aria-label="Bảo An Sport — Trang chủ" className="inline-flex items-center rounded-lg focus-ring-tight">
-          <div className="relative h-9 w-40">
+          <div className="flex h-9 w-40 items-center">
             <Image
               src="/images/logo.png"
               alt="Bảo An Sport"
-              fill
+              width={160}
+              height={36}
               priority
-              sizes="160px"
-              className="object-contain object-left"
+              className="h-full w-auto object-contain object-left"
             />
           </div>
         </Link>
