@@ -61,15 +61,18 @@ function ProductCard({
           >
             {ASSISTANT_COPY.viewProduct}
           </Link>
-          {card.quickAdd && (
+          {card.inStock !== false && (
             <Button
               size="sm"
-              onClick={() => quickAdd.add(card)}
+              onClick={() => {
+                onNavigate();
+                quickAdd.buyNow(card);
+              }}
               className="gap-1 rounded-lg px-2.5 text-2xs font-bold"
-              aria-label={`${ASSISTANT_COPY.addToCart}: ${card.name}`}
+              aria-label={`${ASSISTANT_COPY.buyNow}: ${card.name}`}
             >
               <ShoppingCart className="size-3.5" aria-hidden />
-              {ASSISTANT_COPY.addToCart}
+              {ASSISTANT_COPY.buyNow}
             </Button>
           )}
         </div>

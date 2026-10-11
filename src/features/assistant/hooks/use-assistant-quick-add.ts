@@ -1,21 +1,28 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useCartActions } from '@/features/cart';
-import { useToast } from '@/shared/components/global-toast';
 import { toQuickAddCartItem } from '../model/assistant-quick-add';
 import type { AssistantProductCardView } from '../model/assistant.types';
 
-/** "Thêm vào giỏ" từ thẻ sản phẩm của trợ lý, dùng thẳng `productId`/`variantId` của thẻ (không gọi thêm Catalog). */
+/**
+ * "Mua ngay" từ thẻ sản phẩm của trợ lý, cùng ngữ nghĩa `useCardBuyNow` của Catalog: thẻ có biến thể mặc
+ * định còn hàng (`quickAdd`) thì thêm 1 vào giỏ bằng thẳng `productId`/`variantId` của thẻ rồi sang checkout
+ * `buyNow`; không có thì mở trang sản phẩm để khách tự chọn biến thể.
+ */
 export function useAssistantQuickAdd() {
+  const router = useRouter();
   const { addItem } = useCartActions();
-  const toast = useToast();
 
-  const add = (card: AssistantProductCardView) => {
+  const buyNow = (card: AssistantProductCardView) => {
     const item = toQuickAddCartItem(card);
-    if (!item) return;
+    if (!item) {
+      router.push(`/products/${encodeURIComponent(card.slug)}`);
+      return;
+    }
     addItem(item);
-    toast.cart('Đã thêm vào giỏ hàng', item.name);
+    router.push(`/checkout?buyNow=${encodeURIComponent(item.variantId)}`);
   };
 
-  return { add };
+  return { buyNow };
 }

@@ -67,5 +67,5 @@ export const ASSISTANT_COPY = {
   inStock: 'Còn hàng',
   outOfStock: 'Hết hàng',
   viewProduct: 'Xem sản phẩm',
-  addToCart: 'Thêm vào giỏ',
+  buyNow: 'Mua ngay',
 } as const;
