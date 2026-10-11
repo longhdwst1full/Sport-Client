@@ -14,8 +14,9 @@ import { buildPageMetadata } from '@/lib/seo/page-metadata';
 import { serializeJsonLd } from '@/lib/seo/json-ld';
 import { getActiveBannerViews, getPublicCategories } from '../../_data/public-data';
 
-// ISR 2 phút: cây danh mục và số sản phẩm đổi trong ngày, không cần gọi API mỗi lượt xem.
-export const revalidate = 120;
+// ISR 5 phút (= layout storefront và cache cây danh mục): danh mục và số sản phẩm đổi trong ngày,
+// không cần dựng lại mỗi 2 phút (tốn Active CPU của Vercel).
+export const revalidate = 300;
 
 // Không build trước slug nào; trả mảng rỗng để Next render lần đầu theo yêu cầu rồi cache theo
 // `revalidate` (ISR). Thiếu hàm này route `[slug]` bị coi là dynamic và bỏ qua `revalidate`.

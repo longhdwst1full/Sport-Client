@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic';
  * `POST /api/revalidate` với header `x-revalidate-secret: <REVALIDATE_SECRET>` (hoặc
  * `Authorization: Bearer <REVALIDATE_SECRET>`) và body `{ "resource": "post"|"product"|"category"|"all",
  * "slug"?: string }`. Không gọi thì nội dung mới vẫn hiện sau cửa sổ `revalidate` của từng trang
- * (2–5 phút).
+ * (5 phút).
  *
  * SECURITY: secret chỉ là biến server (`REVALIDATE_SECRET`, không có tiền tố `NEXT_PUBLIC_`).
  * Chưa cấu hình thì endpoint tắt hẳn (503), không chạy ở chế độ mở.
