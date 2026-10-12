@@ -163,6 +163,18 @@ describe('apiFetcher — xoay token khi 401', () => {
     expect(window.localStorage.getItem(SESSION_HINT_KEY)).toBeNull();
   });
 
+  it('refresh 403 (Origin bị Backend từ chối) ⇒ xoá phiên, không kẹt trạng thái đăng nhập giả', async () => {
+    const ctx = await setup([(config) => respond(config, 403, { code: 'FORBIDDEN' })]);
+    ctx.store.saveCustomerAuthTokens(tokens('access-1', 'refresh-1'));
+
+    const error = await ctx.get().catch((reason: unknown) => reason);
+
+    // Phiên chết ⇒ trả 401 gốc như nhánh 401 để UI về trạng thái chưa đăng nhập.
+    expect((error as InstanceType<typeof ctx.fetcher.ApiError>).status).toBe(401);
+    expect(ctx.store.readCustomerAuthTokens()).toBeUndefined();
+    expect(window.localStorage.getItem(SESSION_HINT_KEY)).toBeNull();
+  });
+
   it.each([500, 503, 429])('refresh %i ⇒ giữ phiên, trả lỗi refresh dạng ApiError', async (status) => {
     const ctx = await setup([(config) => respond(config, status, { code: 'INTERNAL_ERROR' })]);
     ctx.store.saveCustomerAuthTokens(tokens('access-1', 'refresh-1'));

@@ -75,12 +75,16 @@ function isRefreshConflict(error: ApiError): boolean {
 }
 
 /**
- * Chỉ 401 từ `/auth/refresh` là phiên chết thật (`AUTH_REFRESH_INVALID|REUSED|MISSING`, hoặc
- * `UNAUTHORIZED` của backend cũ). Mạng lỗi, 429, 5xx, timeout là sự cố tạm thời: xoá token lúc đó
- * sẽ đăng xuất khách ở MỌI tab (cờ phiên nằm ở localStorage) vì một lần API chập chờn.
+ * Phiên chết thật khi `/auth/refresh` trả:
+ * - 401 (`AUTH_REFRESH_INVALID|REUSED|MISSING`, hoặc `UNAUTHORIZED` của backend cũ);
+ * - 403: Backend từ chối Origin của lệnh refresh bằng cookie (domain storefront chưa nằm trong
+ *   `CORS_ORIGINS`). Gọi lại không bao giờ qua, nên giữ cờ phiên chỉ làm UI "đăng nhập giả" và mọi
+ *   request bảo vệ lặp 401 → refresh → 403 ở mỗi lần refetch.
+ * Mạng lỗi, 429, 5xx, timeout là sự cố tạm thời: xoá token lúc đó sẽ đăng xuất khách ở MỌI tab
+ * (cờ phiên nằm ở localStorage) vì một lần API chập chờn.
  */
 function isTerminalRefreshFailure(error: ApiError): boolean {
-  return error.status === 401;
+  return error.status === 401 || error.status === 403;
 }
 
 function currentAccessToken(): string | undefined {
