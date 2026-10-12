@@ -1,8 +1,8 @@
 # Storefront Content — maintenance note
 
-> **Document version:** 2.6.0
+> **Document version:** 2.7.0
 >
-> **Last updated:** 2026-10-06
+> **Last updated:** 2026-10-12
 >
 > **Change summary:** JSON-LD `Article` + `BreadcrumbList` cho `/news/[slug]` và `/chinh-sach/[slug]` (dựng từ view model, `publishedAtIso` thêm vào mapper). Trước đó: Ảnh bìa bài viết qua `CoverImage` (rỗng/lỗi → ảnh thay thế dùng chung); og:image bài viết dùng bản JPEG 1200×630 của Cloudinary (`lib/seo/og-image.ts`). Trước đó: Thêm banner CMS-02 (`listActiveBanners`): HOME_HERO/HOME_PROMO trên trang chủ, FOOTER trong layout, CATEGORY_TOP trên trang danh mục; không có banner thì giao diện giữ nguyên.
 
@@ -48,6 +48,8 @@ Chưa dùng: `getPublishedPost` (trang chi tiết `/news/[slug]`).
 - `/news/[slug]`, `/chinh-sach`, `/chinh-sach/[slug]` dùng ISR 300s (`generateStaticParams` rỗng + React `cache()`); chỉ API 404 mới thành `notFound`, lỗi tạm thời ném ra để ISR giữ bản tốt trước đó.
 - Bài vừa đăng/sửa hiện ngay khi API gọi `POST /api/revalidate` với `{ "resource": "post", "slug": "<slug>" }` và header `x-revalidate-secret` (`src/app/api/revalidate/route.ts`). Không gọi thì chậm tối đa 5 phút (ISR) + 5 phút (cache SW cho `GET /content/posts`).
 - Client hooks dùng `CACHE_POLICY.LOOKUP` (không refetch khi quay lại tab).
+- `PolicyBody` hiển thị thân bài chính sách (Markdown tối giản `## `/`- ` → tiêu đề/gạch đầu dòng, không render HTML) cho cả trang `/chinh-sach/<slug>` và `PolicyDialogLink`.
+- `PolicyDialogLink`: link mở modal đọc chính sách tại chỗ (tải bài khi mở, lỗi thì đưa link trang đầy đủ, modal qua portal để không bật checkbox chứa nó). Route `/checkout` ghép vào ô đồng ý điều khoản vì `checkout` không được import `content`.
 - Lọc theo loại bài (`postType`) và loại trang chính sách chạy trên client **trên toàn bộ danh sách**: `listPublishedPosts` không phân trang, nên kết quả đúng. Khi API thêm phân trang, phải chuyển bộ lọc sang tham số `postType` của API.
 
 ## Banner (CMS-02)
@@ -84,6 +86,7 @@ TanStack Query. Không mirror dữ liệu bài viết vào Redux hay `useState`.
 
 | Version | Date | Change summary |
 | --- | --- | --- |
+| 2.7.0 | 2026-10-12 | Thêm `PolicyBody` (hiện tiêu đề/gạch đầu dòng thay ký tự Markdown thô) và `PolicyDialogLink` (modal chính sách ở checkout). |
 | 2.6.0 | 2026-10-09 | `NewsletterSignup` gọi `createNewsletterSubscription` (honeypot, `source`); tab tin tức cố định `EDITORIAL_POST_TYPES`; danh sách không hiện "phút đọc" (summary không có body); CTA bài viết dùng `ContactActions`. |
 | 2.4.0 | 2026-10-06 | `/news` server-first + island `NewsListFeed`; `ContentStories` bỏ fetch trùng; `BannerPicture` art direction một ảnh; `/chinh-sach` ném lỗi lúc chạy (giữ bản ISR tốt), `[slug]` gọi song song. |
 | 2.3.0 | 2026-10-03 | `CoverImage` fallback ảnh bìa, og:image JPEG 1200×630 cho Cloudinary. |

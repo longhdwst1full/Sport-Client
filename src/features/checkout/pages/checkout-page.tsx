@@ -9,6 +9,7 @@ import { useToast } from '@/shared/components/global-toast';
 import { usePublicNumberParameter } from '@/features/site-config';
 import { toOrderDetailView } from '@/features/orders';
 import { CheckoutOrderSummary } from '../components/checkout-order-summary';
+import type { CheckoutPolicyLinks } from '../model/checkout-policy';
 import { CheckoutSuccess } from '../components/checkout-success';
 import { CheckoutEmptyCart } from '../components/checkout-empty-cart';
 import { CheckoutShippingInfoSection } from '../components/sections/checkout-shipping-info-section';
@@ -22,7 +23,7 @@ import { useCheckoutSavedAddresses } from '../hooks/use-checkout-saved-addresses
 import { usePlaceOrder } from '../hooks/use-place-order';
 import { CheckoutPaymentMethod } from '@/generated/api/checkout/checkout.schemas';
 
-export function CheckoutPage() {
+export function CheckoutPage({ policyLinks }: { policyLinks?: CheckoutPolicyLinks } = {}) {
   // Bán kính giao miễn phí do Admin cấu hình; 10 km là giá trị mặc định của API khi chưa tải được.
   const freeRadiusKm = usePublicNumberParameter('SHIPPING_FREE_RADIUS_KM', 10);
   const router = useRouter();
@@ -166,6 +167,7 @@ export function CheckoutPage() {
             showSubmit={true}
             acceptedTerms={form.acceptedTerms}
             setAcceptedTerms={form.setAcceptedTerms}
+            policyLinks={policyLinks}
             submitDisabled={busy || redirectingToVnpay}
             submitLabel={
               redirectingToVnpay

@@ -3,6 +3,7 @@ import { ArrowLeft, CalendarDays } from 'lucide-react';
 import { buttonVariants } from '@/foundation/components/buttons';
 import { Breadcrumb } from '@/foundation/components/navigation';
 import type { PolicyDetailView, PolicySummaryView } from '../model/policy.mapper';
+import { PolicyBody } from '../components/policy-body';
 import { buildArticleJsonLd, buildBreadcrumbListJsonLd, serializeJsonLd } from '@/lib/seo/json-ld';
 
 export function PolicyDetailPage({
@@ -48,11 +49,11 @@ export function PolicyDetailPage({
               <CalendarDays className="size-3.5" aria-hidden="true" /> Cập nhật {policy.updatedLabel}
             </p>
 
-            <div className="mt-8 space-y-4 text-base leading-8 text-neutral-700">
-              {policy.paragraphs.map((paragraph, index) => (
-                <p key={index}>{paragraph}</p>
-              ))}
-            </div>
+            <PolicyBody
+              paragraphs={policy.paragraphs}
+              className="mt-8 space-y-4 text-base leading-8 text-neutral-700"
+              headingClassName="pt-4 text-lg font-bold text-ink"
+            />
 
             <div className="mt-10 border-t border-neutral-100 pt-6">
               <Link

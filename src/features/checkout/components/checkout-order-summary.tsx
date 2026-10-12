@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { CheckCircle2, ShieldCheck } from 'lucide-react';
 import type { ReactNode } from 'react';
+import { CHECKOUT_POLICY_LABEL, POLICY_LINK_CLASS, type CheckoutPolicyLinks } from '../model/checkout-policy';
 import { Button } from '@/foundation/components/buttons';
 import { Checkbox } from '@/foundation/components/field-system';
 import { Spinner } from '@/foundation/components/feedback';
@@ -33,7 +34,13 @@ interface CheckoutOrderSummaryProps {
   /** Ô đồng ý điều khoản nằm ngay trên nút đặt hàng; việc chặn khi chưa tick vẫn do `usePlaceOrder` lo. */
   acceptedTerms?: boolean;
   setAcceptedTerms?: (value: boolean) => void;
+  /**
+   * Link điều khoản/đổi trả mở dạng modal, do route truyền vào (`PolicyDialogLink` của `content`;
+   * `checkout` không được import `content`). Không truyền thì dùng link mở tab mới như cũ.
+   */
+  policyLinks?: CheckoutPolicyLinks;
 }
+
 
 export function CheckoutOrderSummary({
   items,
@@ -49,6 +56,7 @@ export function CheckoutOrderSummary({
   submitLabel = 'Đặt hàng',
   acceptedTerms = false,
   setAcceptedTerms,
+  policyLinks,
 }: CheckoutOrderSummaryProps) {
   // CONTRACT: hai trạng thái khác nhau cùng "chưa có số phí".
   // - SHOP_ARRANGED (`shippingFeePending`): báo giá QUOTED, shippingTotal = 0 nhưng KHÔNG miễn phí —
@@ -135,13 +143,17 @@ export function CheckoutOrderSummary({
             label={
               <span className="text-xs leading-relaxed">
                 Tôi đã đọc và đồng ý với{' '}
-                <Link href={STORE_POLICY_PAGES.TERMS.href} target="_blank" className="font-bold text-neutral-900 underline-offset-2 hover:underline">
-                  {STORE_POLICY_PAGES.TERMS.title.toLowerCase()}
-                </Link>{' '}
+                {policyLinks?.terms ?? (
+                  <Link href={STORE_POLICY_PAGES.TERMS.href} target="_blank" className={POLICY_LINK_CLASS}>
+                    {CHECKOUT_POLICY_LABEL.TERMS}
+                  </Link>
+                )}{' '}
                 và{' '}
-                <Link href={STORE_POLICY_PAGES.RETURNS.href} target="_blank" className="font-bold text-neutral-900 underline-offset-2 hover:underline">
-                  chính sách đổi trả & bảo hành
-                </Link>{' '}
+                {policyLinks?.returns ?? (
+                  <Link href={STORE_POLICY_PAGES.RETURNS.href} target="_blank" className={POLICY_LINK_CLASS}>
+                    {CHECKOUT_POLICY_LABEL.RETURNS}
+                  </Link>
+                )}{' '}
                 của Bảo An Sport.
               </span>
             }
