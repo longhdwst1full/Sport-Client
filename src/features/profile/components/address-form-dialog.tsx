@@ -1,8 +1,9 @@
 import { X } from 'lucide-react';
-import { useId, useRef } from 'react';
+import { useId, useRef, useState } from 'react';
 import { useDialogA11y } from '@/foundation/components/overlay/use-dialog-a11y';
 import { Button } from '@/foundation/components/buttons';
-import { Checkbox, Field, TextInput } from '@/foundation/components/field-system';
+import { Checkbox, Field, FieldError, TextInput } from '@/foundation/components/field-system';
+import { phoneError } from '@/shared/validation';
 import { VietnamAddressSelector } from '@/features/address';
 import type { AddressFormValues, AddressView } from '../model/address.mapper';
 import { PROFILE_LABEL_CLASS, PROFILE_SUBMIT_CLASS } from './profile-form-field';
@@ -32,6 +33,8 @@ export function AddressFormDialog({
   const dialogRef = useRef<HTMLDivElement | null>(null);
   const fieldId = useId();
   useDialogA11y(dialogRef, { onClose, disableClose: addressMutating, trapFocus: true });
+  const [phoneTouched, setPhoneTouched] = useState(false);
+  const phoneMessage = phoneTouched ? phoneError(form.phone) : undefined;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm animate-in fade-in duration-200">
@@ -58,7 +61,7 @@ export function AddressFormDialog({
           </Button>
         </div>
 
-        <form onSubmit={onSubmit} className="mt-5 space-y-4">
+        <form onSubmit={(e) => { setPhoneTouched(true); onSubmit(e); }} className="mt-5 space-y-4">
           <div className="grid gap-3 sm:grid-cols-2">
             <div>
               <Field label="Tên người nhận *" labelClassName={PROFILE_LABEL_CLASS}>
@@ -84,12 +87,18 @@ export function AddressFormDialog({
                   required
                   autoComplete="tel"
                   value={form.phone}
+                  inputMode="tel"
+                  maxLength={20}
                   onChange={(e) => onFormChange({ phone: e.target.value })}
+                  onBlur={() => setPhoneTouched(true)}
+                  invalid={Boolean(phoneMessage)}
+                  aria-describedby={phoneMessage ? `${fieldId}-phone-error` : undefined}
                   placeholder="0912 345 678"
                   size="md"
                   className="mt-1.5 font-medium"
                 />
               </Field>
+              <FieldError id={`${fieldId}-phone-error`} message={phoneMessage} />
             </div>
           </div>
 

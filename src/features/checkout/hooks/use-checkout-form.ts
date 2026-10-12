@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { EMPTY_SELECTED_ADDRESS, type SelectedAddressData } from '@/features/address';
+import { emailError, phoneError } from '@/shared/validation';
 import type { CheckoutPaymentMethod, ConfirmCheckoutDto } from '@/generated/api/checkout/checkout.schemas';
 
 /** Trạng thái form nhận hàng + lựa chọn giao/thanh toán, và payload báo giá dựng từ đúng các giá trị đó. */
@@ -26,6 +27,13 @@ export function useCheckoutForm() {
   // Đổi `key` để bộ chọn địa chỉ nạp lại dữ liệu khi khách chọn một địa chỉ đã lưu.
   const [addressFormKey, setAddressFormKey] = useState(0);
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
+  // Chỉ hiện lỗi SĐT/email sau khi khách rời ô (hoặc bấm đặt hàng), không báo đỏ khi đang gõ dở.
+  const [touched, setTouched] = useState({ phone: false, email: false });
+  const markTouched = (field: keyof typeof touched) =>
+    setTouched((current) => (current[field] ? current : { ...current, [field]: true }));
+  const touchAll = () => setTouched({ phone: true, email: true });
+  const phoneInvalid = phoneError(phone);
+  const emailInvalid = emailError(email);
 
   const buildInput = () => ({
     recipient: {
@@ -57,8 +65,11 @@ export function useCheckoutForm() {
   // Đủ người nhận + địa chỉ tới phường/xã thì tự báo giá: khách thấy phí giao (miễn phí shop tự giao
   // trong 10 km khi đã chia sẻ vị trí, hoặc phí GHN) mà không phải bấm "Kiểm tra". Dùng đúng API
   // báo giá hiện có nên số hiển thị là số Backend sẽ chốt.
+  // SĐT/email sai thì không báo giá: Backend chuẩn hoá SĐT khi báo giá và trả lỗi, khách chỉ thấy
+  // "chưa có phí" thay vì biết ô nào sai.
+  const contactValid = !phoneInvalid && !emailInvalid;
   const readyToQuote = Boolean(
-    name.trim() && phone.trim() && address.streetAddress.trim()
+    name.trim() && contactValid && address.streetAddress.trim()
     && address.provinceCode && address.districtCode && address.wardCode,
   );
 
@@ -74,6 +85,11 @@ export function useCheckoutForm() {
     acceptedTerms, setAcceptedTerms,
     addressFormKey, setAddressFormKey,
     selectedAddressId, setSelectedAddressId,
+    phoneError: touched.phone ? phoneInvalid : undefined,
+    emailError: touched.email ? emailInvalid : undefined,
+    contactError: phoneInvalid ?? emailInvalid,
+    markTouched,
+    touchAll,
     buildInput,
     confirmSelection,
     readyToQuote,

@@ -4,7 +4,8 @@ import { useId, useState } from 'react';
 import { Save } from 'lucide-react';
 import type { CustomerProfileDto } from '@/generated/api/customer/customer.schemas';
 import { InlineAlert } from '@/foundation/components/feedback';
-import { Checkbox, Field, TextInput } from '@/foundation/components/field-system';
+import { Checkbox, Field, FieldError, TextInput } from '@/foundation/components/field-system';
+import { emailError, phoneError } from '@/shared/validation';
 import { PROFILE_LABEL_CLASS, ProfileSubmitButton } from './profile-form-field';
 import { useUpdateProfile } from '../hooks/use-update-profile';
 
@@ -21,12 +22,18 @@ export function ProfileInfoForm({ profile }: { profile: CustomerProfileDto }) {
   }));
   const { mutation: updateProfile, notice: profileNotice, error: profileError } = useUpdateProfile();
   const fieldId = useId();
+  const [touched, setTouched] = useState({ email: false, phone: false });
+  // Hồ sơ cũ có thể chưa có SĐT/email: chỉ bắt buộc định dạng khi khách nhập.
+  const emailMessage = touched.email ? emailError(form.email) : undefined;
+  const phoneMessage = touched.phone ? phoneError(form.phone, { required: false }) : undefined;
 
   return (
     <form
       className="space-y-4"
       onSubmit={(event) => {
         event.preventDefault();
+        setTouched({ email: true, phone: true });
+        if (emailError(form.email) || phoneError(form.phone, { required: false })) return;
         updateProfile.mutate({
           data: {
             // Version đọc từ hồ sơ đang xem: hai tab mở cùng lúc thì tab cũ nhận lỗi thay vì
@@ -65,10 +72,14 @@ export function ProfileInfoForm({ profile }: { profile: CustomerProfileDto }) {
               maxLength={255}
               value={form.email}
               onChange={(event) => setForm((c) => ({ ...c, email: event.target.value }))}
+              onBlur={() => setTouched((c) => ({ ...c, email: true }))}
+              invalid={Boolean(emailMessage)}
+              aria-describedby={emailMessage ? `${fieldId}-email-error` : undefined}
               size="md"
               className="mt-1.5"
             />
           </Field>
+          <FieldError id={`${fieldId}-email-error`} message={emailMessage} />
         </div>
         <div>
           <Field label="Số điện thoại" labelClassName={PROFILE_LABEL_CLASS}>
@@ -78,11 +89,16 @@ export function ProfileInfoForm({ profile }: { profile: CustomerProfileDto }) {
               autoComplete="tel"
               maxLength={32}
               value={form.phone}
+              inputMode="tel"
               onChange={(event) => setForm((c) => ({ ...c, phone: event.target.value }))}
+              onBlur={() => setTouched((c) => ({ ...c, phone: true }))}
+              invalid={Boolean(phoneMessage)}
+              aria-describedby={phoneMessage ? `${fieldId}-phone-error` : undefined}
               size="md"
               className="mt-1.5"
             />
           </Field>
+          <FieldError id={`${fieldId}-phone-error`} message={phoneMessage} />
         </div>
       </div>
 

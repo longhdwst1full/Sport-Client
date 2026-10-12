@@ -28,7 +28,7 @@ export function CheckoutPage() {
   const router = useRouter();
   const { removeItem } = useCartActions();
   const { toast } = useToast();
-  const { isAuthenticated, isLoaded } = useCustomerAuth();
+  const { isAuthenticated, isLoaded, customer } = useCustomerAuth();
   const { effectiveItems, localSubtotal, cartHydrated } = useCheckoutCart();
 
   const form = useCheckoutForm();
@@ -50,6 +50,7 @@ export function CheckoutPage() {
     form,
     isLoaded,
     isAuthenticated,
+    customer,
     invalidateQuote,
   });
   useAutoQuote({ form, checkoutQuote, effectiveItems, isLoaded, isAuthenticated, placedOrder });

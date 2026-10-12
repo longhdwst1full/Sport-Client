@@ -3,7 +3,7 @@ import { VietnamAddressSelector } from '@/features/address';
 import type { CustomerAddressDto } from '@/generated/api/customer/customer.schemas';
 import type { CheckoutForm } from '../../hooks/use-checkout-form';
 import { Button } from '@/foundation/components/buttons';
-import { Field, Textarea, TextInput } from '@/foundation/components/field-system';
+import { Field, FieldError, Textarea, TextInput } from '@/foundation/components/field-system';
 import { CheckoutStepSection, optionClass } from './checkout-step-section';
 
 const FIELD_LABEL = 'block text-xs font-bold text-neutral-700';
@@ -26,7 +26,7 @@ export function CheckoutShippingInfoSection({
   useCurrentLocation: () => void;
   freeRadiusKm: number;
 }) {
-  const { name, setName, phone, setPhone, email, setEmail, note, setNote, address, setAddress, coordinates, addressFormKey, selectedAddressId } = form;
+  const { name, setName, phone, setPhone, email, setEmail, note, setNote, address, setAddress, coordinates, addressFormKey, selectedAddressId, phoneError, emailError, markTouched } = form;
 
   return (
     <CheckoutStepSection step={1} icon={MapPin} title="Thông tin giao hàng" description="Người nhận và địa chỉ nhận hàng tận nơi">
@@ -91,10 +91,15 @@ export function CheckoutShippingInfoSection({
               type="tel"
               inputMode="tel"
               autoComplete="tel"
+              maxLength={20}
               onChange={(e) => { setPhone(e.target.value); invalidateQuote(); }}
+              onBlur={() => markTouched('phone')}
+              invalid={Boolean(phoneError)}
+              aria-describedby={phoneError ? 'checkout-phone-error' : undefined}
               className="mt-1.5"
             />
           </Field>
+          <FieldError id="checkout-phone-error" message={phoneError} />
         </div>
         <div className="sm:col-span-2">
           <Field label="Email (nhận mã đơn và thông báo trạng thái giao hàng)" labelClassName={FIELD_LABEL}>
@@ -104,10 +109,16 @@ export function CheckoutShippingInfoSection({
               placeholder="email@example.com"
               value={email}
               autoComplete="email"
+              inputMode="email"
+              maxLength={254}
               onChange={(e) => { setEmail(e.target.value); invalidateQuote(); }}
+              onBlur={() => markTouched('email')}
+              invalid={Boolean(emailError)}
+              aria-describedby={emailError ? 'checkout-email-error' : undefined}
               className="mt-1.5"
             />
           </Field>
+          <FieldError id="checkout-email-error" message={emailError} />
         </div>
       </div>
 

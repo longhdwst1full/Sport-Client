@@ -117,6 +117,11 @@ export function usePlaceOrder({
     setError('');
 
     if (!addressValid) {
+      form.touchAll();
+      if (form.name.trim() && form.contactError) {
+        block('Thông tin liên hệ chưa đúng', form.contactError);
+        return;
+      }
       block('Thiếu thông tin nhận hàng', 'Vui lòng điền họ tên, số điện thoại và chọn đầy đủ địa chỉ giao hàng (Tỉnh, Huyện, Phường/Xã).');
       return;
     }

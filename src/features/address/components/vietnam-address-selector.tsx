@@ -200,8 +200,7 @@ export function VietnamAddressSelector({
     streetAddress,
   ]);
 
-  const handleProvinceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const code = e.target.value || null;
+  const handleProvinceChange = (code: string | null) => {
     const found = provinces.find((p) => p.code === code);
     setSelectedProvinceCode(code);
     setSelectedProvinceName(found?.name ?? '');
@@ -211,8 +210,7 @@ export function VietnamAddressSelector({
     setSelectedWardName('');
   };
 
-  const handleDistrictChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const code = e.target.value || null;
+  const handleDistrictChange = (code: string | null) => {
     const found = districts.find((d) => d.code === code);
     setSelectedDistrictCode(code);
     setSelectedDistrictName(found?.name ?? '');
@@ -220,8 +218,7 @@ export function VietnamAddressSelector({
     setSelectedWardName('');
   };
 
-  const handleWardChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const code = e.target.value || null;
+  const handleWardChange = (code: string | null) => {
     const found = wards.find((w) => w.code === code);
     setSelectedWardCode(code);
     setSelectedWardName(found?.name ?? '');
@@ -243,7 +240,7 @@ export function VietnamAddressSelector({
           onChange={handleProvinceChange}
           disabled={loadingProvinces}
           isLoading={loadingProvinces}
-          emptyOptionLabel={loadingProvinces ? 'Đang tải tỉnh thành...' : 'Chọn Tỉnh/Thành phố'}
+          emptyOptionLabel={loadingProvinces ? 'Đang tải tỉnh thành...' : 'Gõ để tìm Tỉnh/Thành phố'}
           options={provinces}
           error={provincesError ? 'Không tải được danh sách tỉnh/thành.' : undefined}
           onRetry={() => setProvincesAttempt((n) => n + 1)}
@@ -262,7 +259,7 @@ export function VietnamAddressSelector({
               ? 'Đang tải quận huyện...'
               : !selectedProvinceCode
               ? 'Chọn Tỉnh/TP trước'
-              : 'Chọn Quận/Huyện'
+              : 'Gõ để tìm Quận/Huyện'
           }
           options={districts}
           error={districtsError ? 'Không tải được danh sách quận/huyện.' : undefined}
@@ -282,7 +279,7 @@ export function VietnamAddressSelector({
               ? 'Đang tải phường xã...'
               : !selectedDistrictCode
               ? 'Chọn Quận/Huyện trước'
-              : 'Chọn Phường/Xã'
+              : 'Gõ để tìm Phường/Xã'
           }
           options={wards}
           error={wardsError ? 'Không tải được danh sách phường/xã.' : undefined}

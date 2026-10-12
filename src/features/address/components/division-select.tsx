@@ -1,8 +1,8 @@
-import { useId } from 'react';
+import { useId, useMemo } from 'react';
 import { RefreshCw } from 'lucide-react';
 import { Button } from '@/foundation/components/buttons';
 import { InlineAlert, Spinner } from '@/foundation/components/feedback';
-import { Field, Select } from '@/foundation/components/field-system';
+import { Combobox, Field } from '@/foundation/components/field-system';
 
 interface DivisionOption {
   code: string;
@@ -13,7 +13,7 @@ interface DivisionSelectProps {
   label: string;
   required: boolean;
   value: string | null;
-  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  onChange: (code: string | null) => void;
   disabled: boolean;
   isLoading: boolean;
   emptyOptionLabel: string;
@@ -37,6 +37,7 @@ export function DivisionSelect({
 }: DivisionSelectProps) {
   const selectId = useId();
   const errorId = `${selectId}-error`;
+  const comboOptions = useMemo(() => options.map((o) => ({ value: o.code, label: o.name })), [options]);
 
   return (
     <div>
@@ -46,26 +47,21 @@ export function DivisionSelect({
         htmlFor={selectId}
       >
         <div className="relative mt-1.5">
-          <Select
-            size="md"
+          <Combobox
             id={selectId}
-            value={value ?? ''}
+            value={value}
+            options={comboOptions}
             onChange={onChange}
+            placeholder={emptyOptionLabel}
+            emptyText={`Không tìm thấy ${label.toLowerCase()} phù hợp`}
             required={required}
             disabled={disabled}
             invalid={Boolean(error)}
             aria-describedby={error ? errorId : undefined}
             aria-busy={isLoading || undefined}
-            className="font-semibold text-neutral-800"
-          >
-            <option value="">{emptyOptionLabel}</option>
-            {options.map((o) => (
-              <option key={o.code} value={o.code}>
-                {o.name}
-              </option>
-            ))}
-          </Select>
-          {/* Đang tải luôn kèm `disabled` (nền slate-50) → spinner phủ lên mũi tên của Select. */}
+            className="font-semibold text-neutral-800 placeholder:font-medium"
+          />
+          {/* Đang tải luôn kèm `disabled` (nền neutral-50) → spinner phủ lên mũi tên của ô chọn. */}
           {isLoading && (
             <span className="pointer-events-none absolute right-2 top-1/2 grid size-6 -translate-y-1/2 place-items-center bg-neutral-50">
               <Spinner className="size-4 animate-spin text-neutral-900" />

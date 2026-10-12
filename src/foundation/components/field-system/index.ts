@@ -7,3 +7,6 @@ export { Checkbox, type CheckboxProps } from './checkbox';
 export { inputVariants, INPUT_SIZE, type InputSize, type InputVariantOptions } from './input-variants';
 export { SearchBox, type SearchBoxProps } from './search-box';
 export { HoneypotField } from './honeypot-field';
+export { FieldError } from './field-error';
+export { Combobox, type ComboboxProps } from './combobox';
+export { foldVietnamese, type ComboboxOption } from './combobox-filter';

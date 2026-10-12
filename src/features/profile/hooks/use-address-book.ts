@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { EMPTY_SELECTED_ADDRESS } from '@/features/address';
 import { useToast } from '@/shared/components/global-toast';
+import { CONTACT_ERROR, phoneError } from '@/shared/validation';
+import { apiErrorCode, apiErrorMessage } from '@/lib/api/error-message';
 import { useCustomerAddresses } from '../api/use-customer-addresses';
 import {
   toCreateAddressPayload,
@@ -61,16 +63,30 @@ export function useAddressBook(enabled: boolean, profileName: string, profilePho
     setIsAddressModalOpen(true);
   };
 
+  // `ApiError.message` chỉ là "Request failed with status …"; thông điệp thật nằm trong payload.
+  // `INVALID_PHONE` của Backend là tiếng Anh nên dịch theo mã.
   const reportAddressError = (fallback: string) => (error: unknown) => {
-    const message = error instanceof Error ? error.message : fallback;
+    const message = apiErrorCode(error) === 'INVALID_PHONE'
+      ? CONTACT_ERROR.PHONE_INVALID
+      : apiErrorMessage(error, fallback, { preferDetails: true });
     showError('Không thực hiện được', message);
   };
 
   const handleSaveAddress = async (e: React.FormEvent) => {
     e.preventDefault();
     const values = addressForm;
-    if (!values.location.streetAddress.trim() || values.location.provinceCode == null) {
-      showError('Thiếu thông tin', 'Vui lòng chọn Tỉnh/Thành và nhập số nhà, tên đường.');
+    if (!values.recipient.trim()) {
+      showError('Thiếu thông tin', 'Vui lòng nhập tên người nhận.');
+      return;
+    }
+    const invalidPhone = phoneError(values.phone);
+    if (invalidPhone) {
+      showError('Số điện thoại chưa đúng', invalidPhone);
+      return;
+    }
+    // Thiếu mã quận/phường thì hãng vận chuyển không tạo được vận đơn từ địa chỉ này.
+    if (!values.location.streetAddress.trim() || !values.location.provinceCode || !values.location.districtCode || !values.location.wardCode) {
+      showError('Thiếu thông tin', 'Vui lòng chọn đủ Tỉnh/Thành, Quận/Huyện, Phường/Xã và nhập số nhà, tên đường.');
       return;
     }
 

@@ -6,7 +6,8 @@ import { CheckCircle2, Send } from 'lucide-react';
 import { useCustomerAuth } from '@/features/auth';
 import { InlineAlert } from '@/foundation/components/feedback';
 import { Button } from '@/foundation/components/buttons';
-import { Field, Select, Textarea, TextInput, HoneypotField } from '@/foundation/components/field-system';
+import { Field, Select, Textarea, TextInput, HoneypotField, FieldError } from '@/foundation/components/field-system';
+import { emailError, phoneError } from '@/shared/validation';
 import { STORE_CONFIG, STORE_CONTACT } from '@/shared/constants';
 import { useCreateSupportRequest } from '../hooks/use-create-support-request';
 import { useCreateConsultationRequest } from '../hooks/use-create-consultation-request';
@@ -62,8 +63,14 @@ export function ConsultationForm() {
    * Khách vãng lai: `createConsultationRequest` (không cần đăng nhập) — phiếu vào chung hàng đợi
    * nhân viên, trả mã phiếu; API giới hạn 3 yêu cầu/SĐT/24 giờ.
    */
+  const [touched, setTouched] = useState({ phone: false, email: false });
+  const phoneMessage = touched.phone ? phoneError(form.phone) : undefined;
+  const emailMessage = touched.email ? emailError(form.email) : undefined;
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setTouched({ phone: true, email: true });
+    if (phoneError(form.phone) || emailError(form.email)) return;
     if (isAuthenticated) {
       create.submit({ subject, message });
       return;
@@ -151,11 +158,17 @@ export function ConsultationForm() {
                   autoComplete="tel"
                   value={form.phone}
                   id={`${fieldId}-phone`}
+                  inputMode="tel"
+                  maxLength={20}
                   onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                  onBlur={() => setTouched((c) => ({ ...c, phone: true }))}
+                  invalid={Boolean(phoneMessage)}
+                  aria-describedby={phoneMessage ? `${fieldId}-phone-error` : undefined}
                   placeholder="0912 345 678"
                   className="mt-1.5"
                 />
               </Field>
+              <FieldError id={`${fieldId}-phone-error`} message={phoneMessage} />
             </div>
             <div>
               <Field label="Email" labelClassName={LABEL_CLASS}>
@@ -165,11 +178,17 @@ export function ConsultationForm() {
                   autoComplete="email"
                   value={form.email}
                   id={`${fieldId}-email`}
+                  inputMode="email"
+                  maxLength={254}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  onBlur={() => setTouched((c) => ({ ...c, email: true }))}
+                  invalid={Boolean(emailMessage)}
+                  aria-describedby={emailMessage ? `${fieldId}-email-error` : undefined}
                   placeholder="email@example.com"
                   className="mt-1.5"
                 />
               </Field>
+              <FieldError id={`${fieldId}-email-error`} message={emailMessage} />
             </div>
           </div>
 
