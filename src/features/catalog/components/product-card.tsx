@@ -44,6 +44,8 @@ export const ProductCard = memo(function ProductCard({
   return (
     <Reveal
       as="article"
+      variant="zoom-in"
+      stagger
       rootMargin="-50px"
       className="group hover:-translate-y-1.5 hover:scale-[1.01] relative flex flex-col rounded-3xl border border-neutral-200/90 bg-white shadow-sm transition-all duration-300 hover:border-neutral-300 hover:shadow-xl hover:shadow-neutral-900/10 overflow-hidden"
     >

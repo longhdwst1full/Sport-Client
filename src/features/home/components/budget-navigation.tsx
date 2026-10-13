@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ChevronRight, Tag, Sparkles, ArrowRight } from 'lucide-react';
 import { priceRangeHref } from '@/features/catalog';
+import { Reveal } from '@/foundation/components/motion';
 
 interface BudgetTier {
   id: string;
@@ -65,7 +66,7 @@ export function BudgetNavigation({ quickLinks = [] }: BudgetNavigationProps) {
         <div className="pointer-events-none absolute -right-20 -top-20 size-72 rounded-full bg-gradient-to-br from-neutral-200/20 to-neutral-100/10 blur-3xl" aria-hidden="true" />
 
         {/* Header */}
-        <div className="relative z-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6 sm:mb-8">
+        <Reveal rootMargin="-60px" className="relative z-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6 sm:mb-8">
           <div>
             <div className="inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-neutral-100 px-3 py-0.5 text-xs font-bold uppercase tracking-wider text-neutral-700 shadow-2xs">
               <Sparkles className="size-3 text-neutral-600" aria-hidden="true" />
@@ -85,42 +86,43 @@ export function BudgetNavigation({ quickLinks = [] }: BudgetNavigationProps) {
             <span>Xem tất cả mức giá</span>
             <ChevronRight className="size-4 transition-transform group-hover:translate-x-1" />
           </Link>
-        </div>
+        </Reveal>
 
         {/* 4 Budget Cards Grid */}
         <div className="relative z-10 grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-5">
           {BUDGET_TIERS.map((tier) => (
-            <Link
-              key={tier.id}
-              href={priceRangeHref(tier.id)}
-              className={`group relative flex flex-col justify-between rounded-2xl border p-4 sm:p-6 transition-all duration-300 hover:-translate-y-1.5 ${tier.cardStyle}`}
-            >
-              <div>
-                <div className="flex items-center justify-between gap-2 mb-3">
-                  <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-2xs font-semibold tracking-wide shadow-2xs ${tier.badgeStyle}`}>
-                    <Tag className="size-3" aria-hidden="true" />
-                    {tier.tag}
-                  </span>
+            <Reveal key={tier.id} rootMargin="-60px" stagger className="flex">
+              <Link
+                href={priceRangeHref(tier.id)}
+                className={`group relative flex flex-1 flex-col justify-between rounded-2xl border p-4 sm:p-6 transition-all duration-300 hover:-translate-y-1.5 ${tier.cardStyle}`}
+              >
+                <div>
+                  <div className="flex items-center justify-between gap-2 mb-3">
+                    <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-2xs font-semibold tracking-wide shadow-2xs ${tier.badgeStyle}`}>
+                      <Tag className="size-3" aria-hidden="true" />
+                      {tier.tag}
+                    </span>
+                  </div>
+                  <strong className="block text-lg sm:text-xl font-bold text-neutral-900 group-hover:text-neutral-950">
+                    {tier.label}
+                  </strong>
+                  <p className="mt-1.5 text-xs text-neutral-600 font-medium leading-relaxed line-clamp-2 max-sm:hidden">
+                    {tier.sublabel}
+                  </p>
                 </div>
-                <strong className="block text-lg sm:text-xl font-bold text-neutral-900 group-hover:text-neutral-950">
-                  {tier.label}
-                </strong>
-                <p className="mt-1.5 text-xs text-neutral-600 font-medium leading-relaxed line-clamp-2 max-sm:hidden">
-                  {tier.sublabel}
-                </p>
-              </div>
 
-              <div className="mt-4 sm:mt-6 flex items-center justify-between border-t border-neutral-200/80 pt-3 text-xs font-bold text-neutral-700 group-hover:text-neutral-950 transition-colors">
-                <span>Xem danh sách</span>
-                <ArrowRight className={`size-4 transition-transform group-hover:translate-x-1.5 ${tier.arrowColor}`} />
-              </div>
-            </Link>
+                <div className="mt-4 sm:mt-6 flex items-center justify-between border-t border-neutral-200/80 pt-3 text-xs font-bold text-neutral-700 group-hover:text-neutral-950 transition-colors">
+                  <span>Xem danh sách</span>
+                  <ArrowRight className={`size-4 transition-transform group-hover:translate-x-1.5 ${tier.arrowColor}`} />
+                </div>
+              </Link>
+            </Reveal>
           ))}
         </div>
 
         {/* Popular Product Category Tag Pills */}
         {quickLinks.length > 0 && (
-          <div className="relative z-10 mt-6 pt-6 sm:mt-8 sm:pt-6 border-t border-neutral-100">
+          <Reveal variant="fade" rootMargin="-60px" delayMs={150} className="relative z-10 mt-6 pt-6 sm:mt-8 sm:pt-6 border-t border-neutral-100">
             <div className="flex items-center justify-between gap-3 mb-3.5">
               <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-neutral-800">
                 <Sparkles className="size-3.5 text-amber-500" />
@@ -146,7 +148,7 @@ export function BudgetNavigation({ quickLinks = [] }: BudgetNavigationProps) {
                 </Link>
               ))}
             </div>
-          </div>
+          </Reveal>
         )}
       </div>
     </section>

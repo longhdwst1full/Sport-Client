@@ -49,10 +49,11 @@ export function BenefitsStrip() {
   return (
     <section id="benefits" className="border-y border-neutral-200/80 bg-gradient-to-r from-neutral-50 via-white to-neutral-50 py-7">
       <div className="mx-auto grid max-w-7xl gap-4 px-4 sm:grid-cols-2 sm:px-6 lg:grid-cols-4 lg:px-8">
-        {BENEFITS.map(({ icon: Icon, title, description, tileBg, ringGlow }, idx) => (
+        {BENEFITS.map(({ icon: Icon, title, description, tileBg, ringGlow }) => (
           <Reveal
             key={title}
-            delayMs={idx * 80}
+            stagger
+            rootMargin="-40px"
             className="group hover:-translate-y-1 hover:scale-[1.02] flex items-start gap-4 rounded-2xl border border-neutral-200/80 bg-white p-4 shadow-xs transition-all duration-300 hover:border-neutral-300 hover:shadow-xl animate-shine"
           >
             <span

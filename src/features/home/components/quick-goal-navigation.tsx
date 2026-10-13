@@ -67,7 +67,7 @@ export function QuickGoalNavigation() {
   return (
     <section className="page-section">
       <div className="rounded-3xl border border-neutral-200/90 bg-gradient-to-b from-neutral-100/80 via-white to-neutral-100/60 p-6 sm:p-8 lg:p-10 shadow-sm">
-        <div className="mb-6 sm:mb-8">
+        <Reveal rootMargin="-60px" className="mb-6 sm:mb-8">
           <div>
             <div className="inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-neutral-50/80 px-3 py-0.5 text-xs font-bold uppercase tracking-wider text-neutral-700 shadow-2xs">
               <span className="size-1.5 rounded-full bg-neutral-600 animate-pulse" />
@@ -80,17 +80,17 @@ export function QuickGoalNavigation() {
               Chọn nhanh giải pháp phù hợp với diện tích phòng và nhu cầu rèn luyện của bạn
             </p>
           </div>
-        </div>
+        </Reveal>
 
         <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-          {GOALS.map((goal, idx) => {
+          {GOALS.map((goal) => {
             const Icon = goal.icon;
             return (
               <Reveal
                 key={goal.id}
-                delayMs={idx * 100}
-                durationMs={400}
-                offsetY={20}
+                variant="zoom-in"
+                stagger
+                rootMargin="-60px"
                 className="transition-transform duration-300 ease-out hover:-translate-y-1.5 hover:scale-[1.02] motion-reduce:transition-none"
               >
                 <Link

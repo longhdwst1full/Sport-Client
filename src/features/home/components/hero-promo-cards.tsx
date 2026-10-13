@@ -7,7 +7,7 @@ import { BANNER_DEFAULT_CTA_TEXT, BannerPicture, type BannerView } from '@/featu
 const MAX_PROMO_CARDS = 2;
 
 const CARD_CLASS =
-  'group relative overflow-hidden rounded-2xl border border-neutral-200/90 bg-gradient-to-br from-neutral-900 to-neutral-950 shadow-md transition hover:-translate-y-0.5 hover:shadow-xl min-h-[120px] sm:min-h-[210px] lg:min-h-[230px] focus-ring';
+  'group relative overflow-hidden rounded-2xl border border-neutral-200/90 bg-gradient-to-br from-neutral-900 to-neutral-950 shadow-md transition duration-300 ease-out hover:-translate-y-0.5 hover:shadow-xl min-h-[120px] sm:min-h-[210px] lg:min-h-[230px] focus-ring';
 
 function PromoBannerCard({ banner }: { banner: BannerView }) {
   const hasText = Boolean(banner.title || banner.subtitle);

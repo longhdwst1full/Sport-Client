@@ -11,6 +11,7 @@ import { Button } from '@/foundation/components/buttons';
 import { CategoryRailItem } from './category-rail-item';
 import type { CategoryRailView } from '@/features/catalog';
 import { useAutoplayAllowed } from '@/shared/hooks';
+import { Reveal } from '@/foundation/components/motion';
 
 const VIEW_ALL_CONTENT = (
   <>
@@ -112,7 +113,7 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
     >
       <div className="page-container">
         {/* Section Header with Navigation Controls */}
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6 sm:mb-8">
+        <Reveal rootMargin="-60px" className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6 sm:mb-8">
           <div>
             <div className="inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-neutral-50 px-3 py-0.5 text-xs font-bold uppercase tracking-wider text-neutral-700 shadow-2xs">
               <span className="size-1.5 rounded-full bg-neutral-900" />
@@ -135,10 +136,10 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
               {VIEW_ALL_CONTENT}
             </Link>
           </div>
-        </div>
+        </Reveal>
 
         {/* Circular Motion Slider Track */}
-        <div className="relative group/slider">
+        <Reveal variant="blur-in" durationMs={700} delayMs={120} rootMargin="-60px" className="relative group/slider">
           {/* Floating Left & Right Slider Navigation Arrows */}
           <Button
             variant="ghost"
@@ -195,7 +196,7 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
               </span>
             </div>
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

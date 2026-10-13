@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { CheckCircle2, Clock, MapPin, Phone, Star } from 'lucide-react';
 import { buttonVariants } from '@/foundation/components/buttons';
 import { IconList } from '@/foundation/components/structure';
+import { CountUp, Reveal } from '@/foundation/components/motion';
 import {
   STORE_CONTACT,
   STORE_MARKETING_STATS,
@@ -31,14 +32,14 @@ const OUTLINE_ON_DARK =
 export function TrustSocialProof() {
   return (
     <section className="page-section">
-      <div className="relative overflow-hidden rounded-3xl border border-neutral-800/90 bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-900 p-6 text-white sm:p-10 lg:p-12 shadow-2xl">
+      <Reveal variant="zoom-in" durationMs={700} offsetY={12} rootMargin="-60px" className="relative overflow-hidden rounded-3xl border border-neutral-800/90 bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-900 p-6 text-white sm:p-10 lg:p-12 shadow-2xl">
         {/* Rich Ambient Glow Backgrounds */}
         <div className="pointer-events-none absolute -left-20 -top-20 size-80 rounded-full bg-neutral-600/20 blur-3xl" aria-hidden />
         <div className="pointer-events-none absolute -right-20 -bottom-20 size-80 rounded-full bg-amber-500/15 blur-3xl" aria-hidden />
         <div className="pointer-events-none absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-neutral-500/40 to-transparent" />
 
         <div className="relative z-10 grid gap-10 lg:grid-cols-[1.1fr_.9fr] lg:items-center">
-          <div>
+          <Reveal variant="slide-right" durationMs={700} delayMs={150} rootMargin="-60px">
             <div className="inline-flex items-center gap-1.5 rounded-full border border-neutral-700 bg-neutral-800/70 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-neutral-200 backdrop-blur-md">
               <CheckCircle2 className="size-3.5 text-neutral-400" aria-hidden />
               <span>An tâm khi đầu tư thiết bị</span>
@@ -56,18 +57,18 @@ export function TrustSocialProof() {
               <div>
                 <div className="flex items-center gap-1.5">
                   <Star className="size-5 fill-amber-400 text-amber-400 drop-shadow-xs" aria-hidden />
-                  <span className="text-2xl font-bold text-white">{STORE_MARKETING_STATS.rating}</span>
+                  <CountUp value={STORE_MARKETING_STATS.rating} className="text-2xl font-bold text-white" />
                   <span className="text-xs font-bold text-neutral-400">/ 5.0</span>
                 </div>
                 <span className="mt-1 block text-xs text-neutral-400 font-medium">
-                  {STORE_MARKETING_STATS.reviewCount} đánh giá tin cậy
+                  <CountUp value={STORE_MARKETING_STATS.reviewCount} /> đánh giá tin cậy
                 </span>
               </div>
               {FACTS.map((fact) => (
                 <div key={fact.caption} className="flex items-center gap-6 sm:gap-8">
                   <span className="h-8 w-px bg-neutral-800" aria-hidden />
                   <div>
-                    <span className="block text-2xl font-bold text-white">{fact.value}</span>
+                    <CountUp value={fact.value} className="text-2xl font-bold text-white" />
                     <span className="mt-1 block text-xs text-neutral-400 font-medium">{fact.caption}</span>
                   </div>
                 </div>
@@ -80,10 +81,10 @@ export function TrustSocialProof() {
               className="mt-6 grid-cols-1 gap-3 text-xs sm:text-sm text-neutral-200 font-medium sm:grid-cols-2"
               iconClassName="text-success-400"
             />
-          </div>
+          </Reveal>
 
           {/* Showroom Box on the Right */}
-          <div className="flex flex-col gap-4 rounded-2xl border border-neutral-700/60 bg-neutral-900/80 p-6 backdrop-blur-xl shadow-xl sm:p-7">
+          <Reveal variant="slide-left" durationMs={700} delayMs={250} rootMargin="-60px" className="flex flex-col gap-4 rounded-2xl border border-neutral-700/60 bg-neutral-900/80 p-6 backdrop-blur-xl shadow-xl sm:p-7">
             <div className="flex items-center justify-between gap-3 border-b border-neutral-800/90 pb-4">
               <div className="flex items-center gap-2">
                 <div className="grid size-8 place-items-center rounded-lg bg-neutral-800 text-neutral-300 border border-neutral-700">
@@ -99,7 +100,7 @@ export function TrustSocialProof() {
 
             <div className="space-y-3 text-xs sm:text-sm">
               {STORE_SHOWROOMS.map((showroom) => (
-                <div key={showroom.id} className="rounded-xl border border-neutral-800/90 bg-neutral-950/70 p-4 transition hover:border-neutral-700">
+                <div key={showroom.id} className="rounded-xl border border-neutral-800/90 bg-neutral-950/70 p-4 transition duration-200 ease-out hover:-translate-y-0.5 hover:border-neutral-700 hover:bg-neutral-900/80 hover:shadow-lg hover:shadow-black/30">
                   <div className="flex items-center justify-between gap-2 mb-1">
                     <strong className="block font-bold text-white">
                       {showroom.city}: {showroom.name}
@@ -133,9 +134,9 @@ export function TrustSocialProof() {
                 <span>Chat Zalo tư vấn</span>
               </a>
             </div>
-          </div>
+          </Reveal>
         </div>
-      </div>
+      </Reveal>
     </section>
   );
 }

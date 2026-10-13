@@ -17,6 +17,7 @@ import { SmartFitAdvisorLazy } from '../components/smart-fit-advisor/smart-fit-a
 import { CategoryVisualShowcase } from '../components/category-visual-showcase';
 import { FlashSaleSection } from '@/features/promotions';
 import { STORE_CONFIG } from '@/shared/constants';
+import { Reveal } from '@/foundation/components/motion';
 
 /** Số thẻ "theo bộ môn" và số lối tắt nhóm sản phẩm; chọn theo `productCount` thật. */
 const SPORT_CARD_COUNT = 4;
@@ -26,6 +27,11 @@ const QUICK_LINK_COUNT = 8;
 
 /** Nhãn nhỏ trên tiêu đề khối, cùng kiểu `SectionHeading`. */
 const EYEBROW_CLASS = 'eyebrow text-neutral-900';
+
+/** Hiện dần khối dưới màn hình đầu khi cuộn tới (một lần); hero không reveal để giữ LCP. */
+const SECTION_REVEAL = { durationMs: 650, rootMargin: '-60px' } as const;
+/** Tiêu đề khối: trượt lên + vạch nhấn trước nhãn eyebrow được vẽ ra. */
+const HEADING_REVEAL = { ...SECTION_REVEAL, accent: true } as const;
 
 /** Bài viết đã đăng (trừ trang chính sách) cho slider; API lỗi thì slider dùng slide thương hiệu. */
 async function loadHeroPosts() {
@@ -106,13 +112,15 @@ export async function HomePage({
         {categoryRail.length > 0 ? <CategoryVisualShowcase items={categoryRail} /> : null}
 
         {/* 3. Flash sale — tự ẩn khi không có chiến dịch đang mở. */}
-        <FlashSaleSection />
+        <Reveal {...SECTION_REVEAL}>
+          <FlashSaleSection />
+        </Reveal>
 
         {/* 4. Sản phẩm nổi bật & bán chạy. */}
         {/* Một lối "xem tất cả" cho khối này: banner cuối lưới (sang /products); bỏ link danh mục ở đầu khối
             vì rail danh mục ngay phía trên đã có. */}
         <section id="products" className="page-section">
-          <div className="mb-6">
+          <Reveal {...HEADING_REVEAL} className="mb-6">
             <p className={EYEBROW_CLASS}>Thiết bị bán chạy</p>
             <h2 className="mt-2 text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-neutral-900">
               Sản Phẩm Nổi Bật & Bán Chạy
@@ -120,7 +128,7 @@ export async function HomePage({
             <p className="mt-1 text-xs sm:text-sm text-neutral-500 max-w-2xl">
               Khám phá trang thiết bị thể lực, cardio, bóng bàn, bóng rổ và võ thuật chính hãng được đông đảo khách hàng và huấn luyện viên tin chọn
             </p>
-          </div>
+          </Reveal>
 
           <ProductShowcase
             initialPage={showcase?.page}
@@ -134,28 +142,31 @@ export async function HomePage({
 
         {sportCards.length > 0 && (
           <section id="shop-by-sport" className="page-section">
-            <SectionHeading eyebrow="Tìm nhanh theo bộ môn" title="Bạn muốn tập luyện bộ môn nào?" />
+            <Reveal {...HEADING_REVEAL}>
+              <SectionHeading eyebrow="Tìm nhanh theo bộ môn" title="Bạn muốn tập luyện bộ môn nào?" />
+            </Reveal>
             {/* Thẻ sáng (không còn 4 khối tối liền nhau trước trust/smart-fit); mobile 2 cột gọn. */}
             <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
               {sportCards.map(({ slug, title, itemCountLabel, icon: Icon }) => (
-                <Link
-                  key={slug}
-                  href={`/category/${slug}`}
-                  className="group flex flex-col justify-between gap-3 rounded-2xl border border-neutral-200/80 bg-gradient-to-br from-white via-neutral-50/50 to-neutral-50 p-4 text-neutral-900 transition-all duration-300 hover:-translate-y-1 hover:border-neutral-300 hover:shadow-lg focus-ring sm:min-h-[160px] sm:p-6"
-                >
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="grid size-10 place-items-center rounded-xl bg-neutral-100 text-neutral-800 border border-neutral-200/80 transition-transform duration-300 group-hover:scale-110 sm:size-12">
-                      <Icon className="size-5 sm:size-6" aria-hidden="true" />
+                <Reveal key={slug} {...SECTION_REVEAL} variant="zoom-in" stagger className="flex">
+                  <Link
+                    href={`/category/${slug}`}
+                    className="group flex flex-col justify-between gap-3 rounded-2xl border border-neutral-200/80 bg-gradient-to-br from-white via-neutral-50/50 to-neutral-50 p-4 text-neutral-900 transition-all duration-300 hover:-translate-y-1 hover:border-neutral-300 hover:shadow-lg focus-ring sm:min-h-[160px] sm:p-6 flex-1"
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="grid size-10 place-items-center rounded-xl bg-neutral-100 text-neutral-800 border border-neutral-200/80 transition-transform duration-300 group-hover:scale-110 sm:size-12">
+                        <Icon className="size-5 sm:size-6" aria-hidden="true" />
+                      </div>
+                      <span className="rounded-full bg-white/90 border border-neutral-200/70 px-2.5 py-0.5 text-2xs font-bold text-neutral-600 shadow-2xs sm:text-xs">
+                        {itemCountLabel}
+                      </span>
                     </div>
-                    <span className="rounded-full bg-white/90 border border-neutral-200/70 px-2.5 py-0.5 text-2xs font-bold text-neutral-600 shadow-2xs sm:text-xs">
-                      {itemCountLabel}
-                    </span>
-                  </div>
 
-                  <div>
-                    <h3 className="text-sm font-bold leading-snug sm:text-xl text-neutral-900 group-hover:text-neutral-950 transition-colors">{title}</h3>
-                  </div>
-                </Link>
+                    <div>
+                      <h3 className="text-sm font-bold leading-snug sm:text-xl text-neutral-900 group-hover:text-neutral-950 transition-colors">{title}</h3>
+                    </div>
+                  </Link>
+                </Reveal>
               ))}
             </div>
           </section>
@@ -183,7 +194,9 @@ export async function HomePage({
         {/* 8. Tin tức — chỉ hiển thị khi có bài viết thật. */}
         {heroPosts.length > 0 && (
           <section id="stories" className="page-section">
-            <SectionHeading eyebrow="Kiến thức luyện tập" title="Bài viết mới" />
+            <Reveal {...HEADING_REVEAL}>
+              <SectionHeading eyebrow="Kiến thức luyện tập" title="Bài viết mới" />
+            </Reveal>
             <ContentStories initialPosts={heroPosts} />
           </section>
         )}

@@ -13,6 +13,7 @@ import {
 import { useContentStories } from '../hooks/use-content-stories';
 import { Button } from '@/foundation/components/buttons';
 import { Skeleton } from '@/foundation/components/feedback';
+import { Reveal } from '@/foundation/components/motion';
 import { CONTENT_POST_TYPE_LABELS, type ContentPostView, EDITORIAL_POST_TYPES } from '../model/content-post.mapper';
 
 const ALL_CATEGORY = 'ALL';
@@ -93,16 +94,21 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
 
       {/* Grid of Articles */}
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-2">
-        {visibleArticles.map((post) => (
-          <article
+        {visibleArticles.map((post, index) => (
+          <Reveal
+            as="article"
             key={post.id}
+            variant={index % 2 === 0 ? 'slide-right' : 'slide-left'}
+            durationMs={700}
+            stagger={120}
+            rootMargin="-60px"
             className="group grid overflow-hidden rounded-4xl border border-neutral-200/90 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-neutral-900/40 hover:shadow-xl md:grid-cols-[1fr_1.2fr]"
           >
             {/* Image Thumbnail */}
             {/* Ảnh mobile theo tỷ lệ 16:9 (không còn khối 220px cao); ảnh thiếu/lỗi do `CoverImage` thay bằng placeholder. */}
             <Link
               href={`/news/${post.slug}`}
-              className="relative aspect-[16/9] overflow-hidden bg-neutral-50 block md:aspect-auto md:min-h-[220px]"
+              className="reveal-media relative aspect-[16/9] overflow-hidden bg-neutral-50 block md:aspect-auto md:min-h-[220px]"
               tabIndex={-1}
               aria-hidden="true"
             >
@@ -163,7 +169,7 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
                 </Link>
               </div>
             </div>
-          </article>
+          </Reveal>
         ))}
       </div>
 
