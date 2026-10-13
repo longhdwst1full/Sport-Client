@@ -37,7 +37,7 @@ Chưa dùng: `useLogoutCustomer`, `useRefreshCustomerToken`, `getCustomerCurrent
 
 ## Refresh token (thuộc `lib/api/fetcher.ts`)
 
-- Refresh đi qua cùng `apiClient` với mọi request ⇒ khi chạy trong browser luôn dùng baseURL rỗng và Next rewrite `/api/v1/:path*`. Server-side giữ `NEXT_PUBLIC_API_URL` để không gọi vòng qua public Storefront origin.
+- Refresh đi qua cùng `apiClient` với mọi request ⇒ khi chạy trong browser luôn dùng baseURL rỗng và proxy Next `app/api/v1/[...path]` (chuyển `Origin`/`Referer`, cookie và `set-cookie`). Server-side dùng `backendOrigin()` (biến server `API_URL`) để không gọi vòng qua public Storefront origin.
 - 401 ở request thường: nếu access token hiện tại khác token request đã dùng ⇒ thử lại bằng token hiện tại, không refresh. Ngược lại N request 401 song song chung một refresh (single-flight trong tab) và refresh chạy trong Web Lock `dctd-client-auth-refresh` (chéo tab, khi trình duyệt hỗ trợ). Sau khi lấy lock, đọc lại cookie: tab khác đã xoay thì dùng luôn.
 - Kết quả refresh: `401` (`AUTH_REFRESH_INVALID|REUSED|MISSING`, `UNAUTHORIZED` cũ) ⇒ xoá token + cờ phiên, trả 401 gốc. `409 AUTH_REFRESH_CONFLICT` ⇒ chờ 300ms thử lại đúng một lần. Mạng/429/5xx/timeout ⇒ giữ phiên, trả lỗi refresh (`ApiError`, mạng là status 0).
 - Mã lỗi/tên lock nằm ở `src/lib/api/constants.ts`. Test: `src/lib/api/fetcher.refresh.test.ts`.

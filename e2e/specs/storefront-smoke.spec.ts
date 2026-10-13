@@ -4,7 +4,7 @@ import { expect, test } from '@playwright/test';
  * Bộ khói cho Storefront: kiểm những đường đi khách thật sự dùng, không kiểm
  * chi tiết trình bày vì chúng đổi thường xuyên và sẽ làm test giòn.
  *
- * Cần API chạy ở `NEXT_PUBLIC_API_URL`. Thiếu API thì các trang phụ thuộc dữ liệu
+ * Cần API chạy ở `API_URL`. Thiếu API thì các trang phụ thuộc dữ liệu
  * sẽ rỗng — test nêu rõ điều đó thay vì báo lỗi mơ hồ.
  */
 

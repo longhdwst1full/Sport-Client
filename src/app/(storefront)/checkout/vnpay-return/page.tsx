@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { VnpayReturnPage } from '@/features/checkout';
 import { verifyVnpayReturn } from '@/generated/api/payments/payments';
 import type { VnpayReturnDto, VerifyVnpayReturnParams } from '@/generated/api/payments/payments.schemas';
+import { storefrontClientIpHeaders } from '@/lib/api/server/proxy-to-backend';
 import { toVnpayReturnView } from '@/features/checkout';
 
 export const revalidate = 0;
@@ -27,7 +28,8 @@ export default async function Page({
 
   let result: VnpayReturnDto;
   try {
-    result = await verifyVnpayReturn(query);
+    // Trang động theo từng khách: chuyển IP thật để giới hạn tần suất không gộp mọi lượt SSR vào IP server.
+    result = await verifyVnpayReturn(query, { headers: await storefrontClientIpHeaders() });
   } catch {
     result = {
       displayStatus: 'INVALID',

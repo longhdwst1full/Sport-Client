@@ -21,3 +21,16 @@ export const STOREFRONT_CLIENT_IP_HEADER = 'x-storefront-client-ip';
 export function storefrontProxySecret(): string | undefined {
   return process.env.STOREFRONT_PROXY_SECRET || undefined;
 }
+
+/** Chỉ ký tự IPv4/IPv6 (kể cả `::ffff:a.b.c.d`), tối đa 45 ký tự — chặn giá trị rác/chèn header. */
+const CLIENT_IP_PATTERN = /^[0-9a-fA-F:.]{2,45}$/;
+
+/**
+ * IP khách theo hạ tầng phía trước Next (Vercel đặt `x-forwarded-for`, phần tử đầu là khách; dự phòng
+ * `x-real-ip`). Dùng chung cho proxy route và lời gọi backend từ server component.
+ */
+export function clientIpFromHeaders(headers: Pick<Headers, 'get'>): string | undefined {
+  const forwarded = headers.get('x-forwarded-for')?.split(',')[0]?.trim();
+  const candidate = forwarded || headers.get('x-real-ip')?.trim();
+  return candidate && CLIENT_IP_PATTERN.test(candidate) ? candidate : undefined;
+}

@@ -5,7 +5,7 @@ import { defineConfig, devices } from '@playwright/test';
  *
  * Chạy trên API thật: trang chủ, danh mục và chi tiết sản phẩm render phía server
  * (App Router), nên `page.route` của Playwright không chặn được các lời gọi đó.
- * Mọi kịch bản vì thế đọc dữ liệu thật qua `NEXT_PUBLIC_API_URL`.
+ * Mọi kịch bản vì thế đọc dữ liệu thật qua `API_URL` (server-only, proxy `/api/v1/*`).
  *
  * Dùng cổng riêng thay vì 3000: máy phát triển thường đã có sẵn một server
  * ở 3000, chạy đè lên sẽ làm test đo nhầm bản build cũ.
@@ -59,8 +59,7 @@ export default defineConfig({
     },
   ],
 
-  // Build ngay trong lượt chạy để NEXT_PUBLIC_API_URL được đóng gói đúng API mục
-  // tiêu. Không chạy build/dev khác dùng `.next` song song với E2E.
+  // Build ngay trong lượt chạy để đo đúng bản build hiện tại (API_URL đọc lúc chạy). Không chạy build/dev khác dùng `.next` song song với E2E.
   // E2E_DEV=1 chỉ dùng khi cần debug UI nhanh.
   // CI có thể trỏ E2E_BASE_URL sang môi trường khác.
   webServer: process.env.E2E_BASE_URL
@@ -75,8 +74,7 @@ export default defineConfig({
         timeout: 360_000,
         env: {
           PORT: String(PORT),
-          NEXT_PUBLIC_API_URL: API_URL,
-          INTERNAL_API_URL: API_URL,
+          API_URL,
         },
       },
 });

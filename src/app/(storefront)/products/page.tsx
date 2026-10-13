@@ -1,5 +1,6 @@
 import { ProductsPage } from '@/features/catalog';
 import { buildPageMetadata } from '@/lib/seo/page-metadata';
+import { storefrontClientIpHeaders } from '@/lib/api/server/proxy-to-backend';
 import { getPublicCategories } from '../_data/public-data';
 
 // `/catalog` re-export metadata này nên canonical của nó cũng trỏ về `/products`.
@@ -16,5 +17,12 @@ export default async function Page({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  return <ProductsPage searchParams={searchParams} categories={await getPublicCategories()} />;
+  // Trang đã động (đọc `searchParams`) nên `headers()` không làm mất ISR; danh mục vẫn đi cache chung.
+  return (
+    <ProductsPage
+      searchParams={searchParams}
+      categories={await getPublicCategories()}
+      requestHeaders={await storefrontClientIpHeaders()}
+    />
+  );
 }

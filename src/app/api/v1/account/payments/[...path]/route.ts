@@ -1,4 +1,4 @@
-import { proxyToBackend } from '@/lib/api/server/proxy-to-backend';
+import { backendApiPath, proxyToBackend } from '@/lib/api/server/proxy-to-backend';
 
 /** Cổng vào duy nhất của trình duyệt cho thanh toán của khách đã đăng nhập. */
 export const dynamic = 'force-dynamic';
@@ -8,7 +8,7 @@ async function handle(
   { params }: { params: Promise<{ path: string[] }> },
 ): Promise<Response> {
   const { path } = await params;
-  return proxyToBackend(request, `/api/v1/account/payments/${path.join('/')}`);
+  return proxyToBackend(request, backendApiPath('/api/v1/account/payments', path));
 }
 
 export const GET = handle;

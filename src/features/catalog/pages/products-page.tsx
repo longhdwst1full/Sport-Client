@@ -22,15 +22,25 @@ const CATALOG_PROMISES = [
 
 export async function loadCatalogFirstPage(
   filters: CatalogListFilters,
-  { includeFacets = false }: { includeFacets?: boolean } = {},
+  {
+    includeFacets = false,
+    requestHeaders,
+  }: {
+    includeFacets?: boolean;
+    /** Header theo request (IP khách) — chỉ truyền từ trang động; trang ISR bỏ trống. */
+    requestHeaders?: Record<string, string>;
+  } = {},
 ): Promise<CatalogInitialPage | undefined> {
   try {
-    const page = await listCatalogProducts({
-      page: 1,
-      limit: CATALOG_PAGE_SIZE.SCOPED,
-      ...toListCatalogParams(filters),
-      ...(includeFacets ? { includeFacets: true } : {}),
-    });
+    const page = await listCatalogProducts(
+      {
+        page: 1,
+        limit: CATALOG_PAGE_SIZE.SCOPED,
+        ...toListCatalogParams(filters),
+        ...(includeFacets ? { includeFacets: true } : {}),
+      },
+      requestHeaders ? { headers: requestHeaders } : undefined,
+    );
     return { page, fetchedAt: Date.now(), filters };
   } catch {
     return undefined;
@@ -44,10 +54,13 @@ import { FlashSaleSection } from '@/features/promotions';
 export async function ProductsPage({
   searchParams,
   categories,
+  requestHeaders,
 }: {
   searchParams?: Promise<SearchParamsRecord>;
   /** Cây danh mục (cache dùng chung ở route) để tra tên danh mục đang lọc. */
   categories?: CatalogCategoryDto[];
+  /** Header theo request (IP khách) do route động truyền vào; feature không tự gọi `next/headers`. */
+  requestHeaders?: Record<string, string>;
 } = {}) {
   const query = (await searchParams) ?? {};
   const { filters } = parseCatalogUrlState((key) => {
@@ -55,7 +68,7 @@ export async function ProductsPage({
     return Array.isArray(value) ? value[0] : value;
   });
   // `includeFacets`: sidebar có sẵn danh sách thương hiệu ngay trong HTML đầu.
-  const initial = await loadCatalogFirstPage(filters, { includeFacets: true });
+  const initial = await loadCatalogFirstPage(filters, { includeFacets: true, requestHeaders });
   const initialCategoryName = categories?.find((item) => item.slug === filters.category)?.name;
 
   return (

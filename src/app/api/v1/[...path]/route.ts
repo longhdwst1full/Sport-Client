@@ -1,4 +1,4 @@
-import { proxyToBackend } from '@/lib/api/server/proxy-to-backend';
+import { backendApiPath, proxyToBackend } from '@/lib/api/server/proxy-to-backend';
 
 /**
  * Cổng vào duy nhất của trình duyệt cho mọi API `/api/v1/**` (thay rewrite thẳng tới backend):
@@ -6,12 +6,15 @@ import { proxyToBackend } from '@/lib/api/server/proxy-to-backend';
  * Lọc header hai chiều, gắn secret + IP khách cho backend (xem `proxy-to-backend.ts`).
  */
 export const dynamic = 'force-dynamic';
-/** Checkout/đặt đơn đo được ~10 giây ở backend; fetcher cho phép tới 30 giây. */
-export const maxDuration = 30;
+/**
+ * Lượt chat trợ lý chờ tới 90 giây (`ASSISTANT_SEND_TIMEOUT_MS`); proxy tự cắt ở 85 giây (`UPSTREAM_TIMEOUT_MS`).
+ * Giá trị phải là literal (Next đọc tĩnh) và không vượt hạn mức gói Vercel.
+ */
+export const maxDuration = 90;
 
 async function handle(request: Request, { params }: { params: Promise<{ path: string[] }> }): Promise<Response> {
   const { path } = await params;
-  return proxyToBackend(request, `/api/v1/${path.map(encodeURIComponent).join('/')}`);
+  return proxyToBackend(request, backendApiPath('/api/v1', path));
 }
 
 export const GET = handle;

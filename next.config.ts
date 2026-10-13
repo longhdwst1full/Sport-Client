@@ -18,7 +18,7 @@ const contentSecurityPolicyReportOnly = [
   "style-src 'self' 'unsafe-inline'",
   `img-src 'self' data: blob: ${IMAGE_HOSTS.join(' ')}`,
   "font-src 'self' data:",
-  // Trình duyệt gọi API cùng origin qua rewrite /api/v1; ảnh bằng chứng/review upload thẳng lên
+  // Trình duyệt gọi API cùng origin qua proxy route /api/v1; ảnh bằng chứng/review upload thẳng lên
   // Cloudinary bằng chữ ký từ API (`lib/api/signed-media-upload.ts`) — thiếu host này thì khi
   // chuyển sang enforce, mọi upload ảnh sẽ bị chặn.
   "connect-src 'self' https://api.cloudinary.com",

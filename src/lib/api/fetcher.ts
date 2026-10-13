@@ -18,9 +18,9 @@ import {
 /**
  * Mặc định trỏ API chạy máy local.
  *
- * Trước đây giá trị dự phòng là URL production: quên đặt `NEXT_PUBLIC_API_URL` ở bất kỳ môi trường
- * nào — máy dev, CI, preview — là âm thầm gọi thẳng vào hệ thống thật. Môi trường triển khai luôn
- * khai biến này (`.env.production`), nên hạ mặc định xuống local không đổi hành vi khi deploy.
+ * Trước đây giá trị dự phòng là URL production: quên đặt biến địa chỉ API ở bất kỳ môi trường nào —
+ * máy dev, CI, preview — là âm thầm gọi thẳng vào hệ thống thật. Môi trường triển khai luôn khai
+ * `API_URL` (`.env.production`), nên mặc định local trong `backendOrigin()` không đổi hành vi khi deploy.
  */
 // Trình duyệt luôn dùng baseURL '' (same-origin qua proxy Next `app/api/v1/[...path]`); server đọc địa chỉ
 // backend lúc chạy qua `backendOrigin()` — không nhúng biến `NEXT_PUBLIC_*` vào bundle client.
