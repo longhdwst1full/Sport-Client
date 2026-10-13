@@ -135,4 +135,6 @@ export const STORE_POLICY_PAGES = {
   RETURNS: { title: 'Chính sách đổi trả', href: '/chinh-sach/chinh-sach-doi-tra' },
   PAYMENT: { title: 'Phương thức thanh toán', href: '/chinh-sach/phuong-thuc-thanh-toan' },
   TERMS: { title: 'Điều khoản & quy định', href: '/chinh-sach/dieu-khoan-quy-dinh' },
+  /** Bản chuẩn; `chinh-sach-bao-mat-ca-nhan` (trùng) redirect 301 về đây trong `next.config.ts`. */
+  PRIVACY: { title: 'Bảo mật thông tin khách hàng', href: '/chinh-sach/bao-mat-thong-tin-khach-hang' },
 } as const;

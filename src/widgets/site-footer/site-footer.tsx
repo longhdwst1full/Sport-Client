@@ -8,7 +8,7 @@ import {
   Truck,
   Youtube,
 } from 'lucide-react';
-import { STORE_CONFIG, STORE_CONTACT, STORE_SHOWROOMS } from '@/shared/constants';
+import { STORE_CONFIG, STORE_CONTACT, STORE_POLICY_PAGES, STORE_SHOWROOMS } from '@/shared/constants';
 import { FooterLinkColumn, type FooterLinkItem } from './footer-link-column';
 import { ShowroomCard, type ShowroomCardData } from './showroom-card';
 
@@ -54,7 +54,7 @@ const POLICY_LINKS: FooterLinkItem[] = [
   { label: 'Vận chuyển & giao hàng', href: '/chinh-sach/van-chuyen-giao-hang' },
   { label: 'Chính sách bảo hành', href: '/chinh-sach/chinh-sach-bao-hanh' },
   { label: 'Chính sách đổi trả', href: '/chinh-sach/chinh-sach-doi-tra' },
-  { label: 'Bảo mật thông tin khách hàng', href: '/chinh-sach/bao-mat-thong-tin-khach-hang' },
+  { label: 'Bảo mật thông tin khách hàng', href: STORE_POLICY_PAGES.PRIVACY.href },
   { label: 'Tất cả thông tin & chính sách', href: '/chinh-sach' },
 ];
 

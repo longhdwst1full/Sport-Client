@@ -3,6 +3,7 @@ import Link from 'next/link';
 import type { UseFormReturn } from 'react-hook-form';
 import { ArrowRight, Check, Lock, Mail, Phone, User } from 'lucide-react';
 import { Button } from '@/foundation/components/buttons';
+import { STORE_POLICY_PAGES } from '@/shared/constants';
 import { Checkbox, PasswordInput, TextInput } from '@/foundation/components/field-system';
 import type { RegisterCustomerDto } from '@/generated/api/auth/auth.schemas';
 import { AUTH_INPUT_CLASS, AUTH_LEADING_ICON_CLASS, AUTH_SUBMIT_CLASS, AuthField } from './auth-field';
@@ -125,11 +126,11 @@ export function RegisterForm({ form, isPending, acceptedTerms, onAcceptedTermsCh
           label={
           <span className="text-xs font-medium text-neutral-600">
             Tôi đồng ý với{' '}
-            <Link href="/terms" className={TERMS_LINK_CLASS}>
+            <Link href={STORE_POLICY_PAGES.TERMS.href} className={TERMS_LINK_CLASS}>
               Điều khoản dịch vụ
             </Link>{' '}
             và{' '}
-            <Link href="/privacy" className={TERMS_LINK_CLASS}>
+            <Link href={STORE_POLICY_PAGES.PRIVACY.href} className={TERMS_LINK_CLASS}>
               Chính sách bảo mật
             </Link>{' '}
             của Bảo An Sport.

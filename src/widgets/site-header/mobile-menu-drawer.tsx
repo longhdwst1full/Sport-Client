@@ -167,7 +167,7 @@ export function MobileMenuDrawer({
               onClick={onClose}
             >
               <span className="flex items-center gap-2.5">
-                Combo Home Gym Trọn Gói
+                Tất cả sản phẩm
               </span>
               <span className="rounded-full bg-amber-400 px-2 py-0.5 text-3xs font-bold uppercase text-neutral-950">
                 Hot
