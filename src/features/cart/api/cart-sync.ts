@@ -6,6 +6,8 @@ import {
   removeGuestCartItem,
   setAccountCartItem,
   setGuestCartItem,
+  updateAccountCartItem,
+  updateGuestCartItem,
 } from '@/generated/api/cart/cart';
 import type { CartDto } from '@/generated/api/cart/cart.schemas';
 import type { CartItem } from '../model/cart.slice';
@@ -78,8 +80,8 @@ const isUnavailableLine = (error: unknown) =>
   error instanceof ApiError && (error.status === 404 || error.status === 422);
 
 /**
- * Đưa giỏ server về đúng các dòng local: xoá dòng thừa, ghi dòng thiếu/khác số lượng (bỏ qua dòng
- * đã khớp để đỡ request). `lenient` bỏ qua dòng không còn bán được thay vì ném lỗi — dùng khi đăng
+ * Đưa giỏ server về đúng các dòng local: xoá dòng thừa, đổi số lượng dòng đã có bằng `update` (PATCH theo
+ * id dòng), thêm dòng thiếu bằng `set` (bỏ qua dòng đã khớp để đỡ request). `lenient` bỏ qua dòng không còn bán được thay vì ném lỗi — dùng khi đăng
  * nhập/đồng bộ nền, để một món ngừng bán không làm hỏng cả giỏ.
  */
 async function reconcile(
@@ -88,6 +90,7 @@ async function reconcile(
   write: {
     remove: (itemId: string, version: number) => Promise<CartDto>;
     set: (line: CartLine, version: number) => Promise<CartDto>;
+    update: (itemId: string, quantity: number, version: number) => Promise<CartDto>;
   },
   mode: LineWriteMode,
 ): Promise<CartDto> {
@@ -101,7 +104,9 @@ async function reconcile(
     const existing = current.items.find(({ productVariantId }) => productVariantId === line.variantId);
     if (existing?.quantity === line.quantity) continue;
     try {
-      current = await write.set(line, current.version);
+      current = existing
+        ? await write.update(existing.id, line.quantity, current.version)
+        : await write.set(line, current.version);
     } catch (error) {
       if (isUnavailableLine(error)) unavailable.push(line.variantId);
       else if (mode === 'strict') throw error;
@@ -117,6 +122,8 @@ export async function syncGuestCart(lines: CartLine[], mode: LineWriteMode = 'st
     remove: (itemId, version) => removeGuestCartItem(itemId, { expectedCartVersion: version }, guestHeaders(state.cartToken)),
     set: (line, version) =>
       setGuestCartItem({ productVariantId: line.variantId, quantity: line.quantity, expectedCartVersion: version }, guestHeaders(state.cartToken)),
+    update: (itemId, quantity, version) =>
+      updateGuestCartItem(itemId, { quantity, expectedCartVersion: version }, guestHeaders(state.cartToken)),
   }, mode);
   return { cartToken: state.cartToken };
 }
@@ -126,6 +133,8 @@ export async function syncAccountCart(lines: CartLine[], mode: LineWriteMode = '
     remove: (itemId: string, version: number) => removeAccountCartItem(itemId, { expectedCartVersion: version }),
     set: (line: CartLine, version: number) =>
       setAccountCartItem({ productVariantId: line.variantId, quantity: line.quantity, expectedCartVersion: version }),
+    update: (itemId: string, quantity: number, version: number) =>
+      updateAccountCartItem(itemId, { quantity, expectedCartVersion: version }),
   };
   try {
     return await reconcile(await getAccountCart(), lines, write, mode);

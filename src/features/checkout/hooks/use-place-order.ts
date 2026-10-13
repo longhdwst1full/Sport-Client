@@ -7,7 +7,7 @@ import { getAccountPayment, getGuestPayment } from '@/generated/api/payments/pay
 import { apiErrorCode } from '@/lib/api/error-message';
 import { confirmCheckout, placeOrder, prepareCheckout, type CheckoutContext } from '../api/checkout.workflow';
 import { resolveCheckoutQuoteGate } from '../model/checkout-quote-gate';
-import type { CheckoutFlowDeps, Toast } from './use-checkout-quote';
+import { RESERVATION_RELEASE_REASON, type CheckoutFlowDeps, type Toast } from './use-checkout-quote';
 
 /**
  * Mã 409 của bước xác nhận nghĩa là "báo giá lại rồi xác nhận": lựa chọn cần phí hãng mà phiên chưa có,
@@ -42,6 +42,8 @@ export function usePlaceOrder({
     setError,
     confirmIdempotencyKey,
     orderIdempotencyKey,
+    heldReservation,
+    releaseHeldReservation,
     retryQuote,
     handleCheckoutError,
   } = checkoutQuote;
@@ -83,12 +85,15 @@ export function usePlaceOrder({
   ): Promise<{ context: CheckoutContext; checkoutToken: string } | undefined> => {
     const selection = form.confirmSelection();
     try {
-      await confirmCheckout(currentContext, checkoutToken, confirmIdempotencyKey.current!, selection);
+      const reservation = await confirmCheckout(currentContext, checkoutToken, confirmIdempotencyKey.current!, selection);
+      heldReservation.current = { context: currentContext, reservationToken: reservation.reservationToken };
       return { context: currentContext, checkoutToken };
     } catch (caught) {
       const code = apiErrorCode(caught);
       if (!code || !REQUOTE_ERROR_CODES.has(code)) throw caught;
     }
+    // Phiên cũ sắp bị thay: trả hàng của lần xác nhận trước (nếu có) để không giữ trùng hai phiên.
+    releaseHeldReservation(RESERVATION_RELEASE_REASON.QUOTE_CHANGED);
     // Lượt báo giá tự động đang chờ (nếu có) không được ghi đè báo giá vừa lấy ở đây.
     quoteSeq.current += 1;
     const prepared = await prepareCheckout(
@@ -105,7 +110,8 @@ export function usePlaceOrder({
       block('Cần tư vấn cước vận chuyển', 'Đơn hàng cần nhân viên tư vấn cước gửi xe riêng. Vui lòng bấm kiểm tra lại phí sau khi đã thống nhất.');
       return undefined;
     }
-    await confirmCheckout(prepared.context, prepared.quote.checkoutToken, confirmIdempotencyKey.current, selection);
+    const reservation = await confirmCheckout(prepared.context, prepared.quote.checkoutToken, confirmIdempotencyKey.current, selection);
+    heldReservation.current = { context: prepared.context, reservationToken: reservation.reservationToken };
     return { context: prepared.context, checkoutToken: prepared.quote.checkoutToken };
   };
 
@@ -165,6 +171,8 @@ export function usePlaceOrder({
       const confirmed = await confirmWithRequote(context, quote.checkoutToken);
       if (!confirmed) return;
       const order = await placeOrder(confirmed.context, confirmed.checkoutToken, orderIdempotencyKey.current);
+      // Order đã sở hữu reservation: không được trả hàng khi rời trang/chuyển VNPay.
+      heldReservation.current = undefined;
       // Xoá đúng các sản phẩm đã thanh toán khỏi giỏ hàng
       effectiveItems.forEach((item) => removeItem(item.variantId));
       if (paymentMethod === 'VNPAY' && (await redirectToVnpay(order))) return;

@@ -7,7 +7,7 @@ import type { CheckoutQuoteDto } from '@/generated/api/checkout/checkout.schemas
 import type { OrderDetailDto } from '@/generated/api/orders/orders.schemas';
 import { apiErrorCode, apiErrorMessage } from '@/lib/api/error-message';
 import type { useToast } from '@/shared/components/global-toast';
-import { prepareCheckout, reloadCheckout, type CheckoutContext } from '../api/checkout.workflow';
+import { prepareCheckout, releaseCheckoutReservation, reloadCheckout, type CheckoutContext } from '../api/checkout.workflow';
 import { toCheckoutQuoteView, type CheckoutQuoteView } from '../model/checkout.mapper';
 import type { CheckoutForm } from './use-checkout-form';
 
@@ -21,6 +21,12 @@ export interface CheckoutFlowDeps {
   isLoaded: boolean;
   isAuthenticated: boolean;
 }
+
+/** Lý do trả hàng gửi Backend (3–500 ký tự, ghi audit). */
+export const RESERVATION_RELEASE_REASON = {
+  QUOTE_CHANGED: 'Khách đổi thông tin đơn trước khi đặt hàng',
+  LEFT_CHECKOUT: 'Khách rời trang thanh toán trước khi đặt hàng',
+} as const;
 
 /** Tiền tố mã lỗi suất flash của API (`FLASH_SALE_*`, kể cả `FLASH_SALE_QUOTA_HOLD_EXPIRED`). */
 const FLASH_SALE_ERROR_PREFIX = 'FLASH_SALE_';
@@ -53,6 +59,9 @@ export function useCheckoutQuote({
   // IDEMPOTENCY: Retry cùng ý định phải dùng lại key; tạo key mới sau timeout mạng có thể biến retry thành lệnh thứ hai.
   const confirmIdempotencyKey = useRef<string | undefined>(undefined);
   const orderIdempotencyKey = useRef<string | undefined>(undefined);
+  // Reservation đã xác nhận (đang giữ hàng) mà chưa thành Order. Giữ nguyên khi đặt đơn lỗi để thử lại
+  // cùng khoá; chỉ trả khi phiên bị bỏ (báo giá bị huỷ hoặc rời trang). Đặt đơn xong thì xoá ref.
+  const heldReservation = useRef<{ context: CheckoutContext; reservationToken: string } | undefined>(undefined);
   // Mỗi lượt báo giá tự động mang một số thứ tự; phản hồi của lượt cũ (khách đã sửa địa chỉ) bị bỏ.
   const quoteSeq = useRef(0);
   const [autoQuoting, setAutoQuoting] = useState(false);
@@ -63,7 +72,20 @@ export function useCheckoutQuote({
   // tóm tắt nhảy. Đặt đơn vẫn chỉ dùng `quote` mới.
   const [staleQuoteView, setStaleQuoteView] = useState<CheckoutQuoteView>();
 
+  /** Fire-and-forget: lỗi mạng/409 chỉ bỏ qua, worker TTL vẫn tự trả hàng khi hết hạn giữ. */
+  const releaseHeldReservation = (reason: string) => {
+    const held = heldReservation.current;
+    if (!held) return;
+    heldReservation.current = undefined;
+    void releaseCheckoutReservation(held.context, held.reservationToken, reason).catch(() => undefined);
+  };
+
+  // Rời trang checkout (điều hướng trong app) với phiên đã giữ hàng nhưng chưa đặt đơn: trả hàng ngay
+  // thay vì chờ TTL 30 phút — báo giá chỉ nằm trong state trang nên không thể quay lại đặt tiếp.
+  useEffect(() => () => releaseHeldReservation(RESERVATION_RELEASE_REASON.LEFT_CHECKOUT), []);
+
   const invalidateQuote = (keepDisplay = false) => {
+    releaseHeldReservation(RESERVATION_RELEASE_REASON.QUOTE_CHANGED);
     setStaleQuoteView(keepDisplay ? quoteView ?? staleQuoteView : undefined);
     quoteSeq.current += 1;
     setAutoQuoting(false);
@@ -144,6 +166,8 @@ export function useCheckoutQuote({
     context, setContext,
     confirmIdempotencyKey,
     orderIdempotencyKey,
+    heldReservation,
+    releaseHeldReservation,
     quoteSeq,
     autoQuoting, setAutoQuoting,
     busy, setBusy,

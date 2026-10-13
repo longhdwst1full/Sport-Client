@@ -406,6 +406,7 @@ components:
         quantity:
           type: number
           minimum: 1
+          maximum: 999
           example: 2
         expectedCartVersion:
           type: number
@@ -421,6 +422,7 @@ components:
         quantity:
           type: number
           minimum: 1
+          maximum: 999
           example: 2
         expectedCartVersion:
           type: number

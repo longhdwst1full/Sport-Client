@@ -14,6 +14,10 @@ export type CartItem = {
 
 type CartState = { items: CartItem[] };
 
+/** Khớp contract cart (`quantity` minimum 1, maximum 999). */
+const MAX_LINE_QUANTITY = 999;
+const clampQuantity = (quantity: number) => Math.min(MAX_LINE_QUANTITY, Math.max(1, quantity));
+
 const initialState: CartState = { items: [] };
 
 export const cartSlice = createSlice({
@@ -26,12 +30,12 @@ export const cartSlice = createSlice({
     ) => {
       const qty = action.payload.quantity ?? 1;
       const existing = state.items.find((item) => item.variantId === action.payload.variantId);
-      if (existing) existing.quantity += qty;
-      else state.items.push({ ...action.payload, quantity: qty });
+      if (existing) existing.quantity = clampQuantity(existing.quantity + qty);
+      else state.items.push({ ...action.payload, quantity: clampQuantity(qty) });
     },
     updateQuantity: (state, action: PayloadAction<{ variantId: string; quantity: number }>) => {
       const item = state.items.find((i) => i.variantId === action.payload.variantId);
-      if (item) item.quantity = Math.max(1, action.payload.quantity);
+      if (item) item.quantity = clampQuantity(action.payload.quantity);
     },
     removeCartItem: (state, action: PayloadAction<string>) => {
       state.items = state.items.filter((i) => i.variantId !== action.payload);

@@ -5,6 +5,8 @@ import {
   getGuestCheckoutQuote,
   quoteAccountCheckout,
   quoteGuestCheckout,
+  releaseAccountReservation,
+  releaseGuestReservation,
 } from '@/generated/api/checkout/checkout';
 import type { CheckoutQuoteDto, ConfirmCheckoutDto, CreateCheckoutQuoteDto, ReservationDto } from '@/generated/api/checkout/checkout.schemas';
 import { placeAccountOrder, placeGuestOrder } from '@/generated/api/orders/orders';
@@ -81,6 +83,23 @@ export async function placeOrder(
     ...order,
     guestAccessPersisted: saveGuestOrderAccessToken(order.orderNo, order.guestAccessToken),
   };
+}
+
+/**
+ * Trả hàng đang giữ (reservation ACTIVE) khi khách bỏ phiên đã xác nhận mà chưa đặt đơn: đổi thông tin
+ * giao hàng/lựa chọn rồi báo giá lại, hoặc rời trang checkout. Không gọi sau khi đặt đơn — Order đã sở
+ * hữu reservation (Backend trả 409 cho reservation đã COMMITTED).
+ */
+export async function releaseCheckoutReservation(
+  context: CheckoutContext,
+  reservationToken: string,
+  reason: string,
+): Promise<void> {
+  if (context.mode === 'ACCOUNT') {
+    await releaseAccountReservation(reservationToken, { reason }, { timeout: CHECKOUT_TIMEOUT_MS });
+    return;
+  }
+  await releaseGuestReservation(reservationToken, { reason }, guestHeaders(context.cartToken));
 }
 
 export async function reloadCheckout(
