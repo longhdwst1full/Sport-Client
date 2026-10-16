@@ -43,6 +43,35 @@ const nextConfig: NextConfig = {
   },
   // Nén HTTP (gzip) do `next start` tự làm; trên Vercel CDN nén thay. Giữ mặc định `compress: true`.
   poweredByHeader: false,
+  experimental: {
+    /**
+     * Barrel `@/features/<name>` chỉ gồm re-export. Server component (layout nhóm storefront lấy
+     * `toMegaMenuEntries`, `_data/public-data` lấy `toActiveBannerViews`…) import barrel thì Next coi MỌI
+     * component 'use client' mà barrel re-export là client reference của route đó — layout kéo cả bộ lọc
+     * catalog, khung mua hàng, gallery, tin tức, flash-sale vào JS của mọi trang. Tối ưu barrel của Next
+     * viết lại import thành chỉ các tên thật sự dùng (khớp theo chuỗi import, nên áp được cho alias `@/`).
+     */
+    optimizePackageImports: [
+      '@/features/address',
+      '@/features/assistant',
+      '@/features/auth',
+      '@/features/cart',
+      '@/features/catalog',
+      '@/features/checkout',
+      '@/features/content',
+      '@/features/home',
+      '@/features/orders',
+      '@/features/profile',
+      '@/features/promotions',
+      '@/features/returns',
+      '@/features/reviews',
+      '@/features/site-config',
+      '@/features/support',
+      // SDK Orval (`src/generated/api/*`) import hook từ barrel react-query; server component dùng hàm
+      // request của SDK nên mọi hook 'use client' của react-query thành client reference của route.
+      '@tanstack/react-query',
+    ],
+  },
   images: {
     /**
      * Ảnh catalog gốc (baoansport.vn) là JPEG 20–250 KB mỗi ảnh — 12 thẻ trang chủ ≈ 1,5 MB, trong

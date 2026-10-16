@@ -2,10 +2,17 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import { useProductSearch } from '@/features/catalog';
-import { useDebounce } from '@/shared/hooks';
+import { preloadOnIdle, useDebounce } from '@/shared/hooks';
 import { SearchInput } from './search-input';
-import { SuggestionPopover } from './suggestion-popover';
+
+// Popover chỉ hiện sau khi focus/gõ (`isOpen` ban đầu false) nên tách khỏi bundle đầu trang của mọi
+// route; chunk tải sẵn lúc trình duyệt rảnh nên lần focus đầu vẫn mở ngay như trước.
+const loadSuggestionPopover = () => import('./suggestion-popover');
+const SuggestionPopover = dynamic(() => loadSuggestionPopover().then((mod) => mod.SuggestionPopover), {
+  ssr: false,
+});
 
 interface AutocompleteSearchProps {
   placeholder?: string;
@@ -27,6 +34,8 @@ export function AutocompleteSearch({
 
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => preloadOnIdle(loadSuggestionPopover), []);
 
   // Gọi Backend theo giá trị đã hoãn: mỗi phím gõ một lượt gọi là quá nhiều cho một lần tìm.
   const debouncedQuery = useDebounce(query, 300);
