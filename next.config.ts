@@ -1,10 +1,10 @@
 import type { NextConfig } from 'next';
 
 /**
- * SECURITY: CSP chạy ở chế độ Report-Only — chỉ báo vi phạm trong console, KHÔNG chặn. Theo dõi
- * vi phạm một thời gian rồi mới đổi key sang `Content-Security-Policy` để enforce.
+ * SECURITY: CSP enforce từ 2026-10-16 (trước đó chạy Report-Only để theo dõi vi phạm).
  * `'unsafe-inline'` ở script/style là bắt buộc vì Next inline script hydrate và style; muốn bỏ phải
- * dùng nonce (middleware), nên để dành bước sau.
+ * dùng nonce (middleware), nên để dành bước sau. `'unsafe-eval'` chỉ bật khi `next dev` (React Refresh
+ * dùng eval); bản build production không cần.
  */
 const IMAGE_HOSTS = [
   'https://res.cloudinary.com',
@@ -12,17 +12,21 @@ const IMAGE_HOSTS = [
   'https://baoansport.vn',
   'https://www.baoansport.vn',
 ];
-const contentSecurityPolicyReportOnly = [
+const contentSecurityPolicy = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'",
+  `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === 'development' ? " 'unsafe-eval'" : ''}`,
   "style-src 'self' 'unsafe-inline'",
-  `img-src 'self' data: blob: ${IMAGE_HOSTS.join(' ')}`,
+  // `https:`: mô tả sản phẩm/bài viết là rich text soạn bằng CKEditor, sanitizer ở API
+  // (`api/src/common/text/rich-text.ts`) cho phép `<img>` với MỌI URL https — chỉ liệt kê IMAGE_HOSTS
+  // thì ảnh chèn từ host khác trong nội dung sẽ bị chặn khi enforce.
+  `img-src 'self' data: blob: ${IMAGE_HOSTS.join(' ')} https:`,
+  // Be Vietnam Pro qua `next/font/google` được self-host lúc build nên chỉ cần 'self'.
   "font-src 'self' data:",
   // Trình duyệt gọi API cùng origin qua proxy route /api/v1; ảnh bằng chứng/review upload thẳng lên
-  // Cloudinary bằng chữ ký từ API (`lib/api/signed-media-upload.ts`) — thiếu host này thì khi
-  // chuyển sang enforce, mọi upload ảnh sẽ bị chặn.
+  // Cloudinary bằng chữ ký từ API (`lib/api/signed-media-upload.ts`) — thiếu host này thì mọi upload
+  // ảnh bị chặn.
   "connect-src 'self' https://api.cloudinary.com",
-  // Video YouTube trong mô tả sản phẩm (đã sanitize).
+  // Video YouTube trong mô tả sản phẩm (sanitizer chỉ giữ iframe youtube(-nocookie).com/embed/).
   'frame-src https://www.youtube.com https://www.youtube-nocookie.com',
   "worker-src 'self'",
   "manifest-src 'self'",
@@ -82,7 +86,7 @@ const nextConfig: NextConfig = {
     return [
       {
         // SECURITY: header bảo mật cho mọi route. VNPay là redirect top-level (window.location.assign)
-        // nên không cần mở connect-src/form-action cho domain cổng thanh toán.
+        // nên không cần mở connect-src/form-action cho domain cổng thanh toán (CSP không chặn điều hướng).
         source: '/:path*',
         headers: [
           { key: 'X-Content-Type-Options', value: 'nosniff' },
@@ -99,7 +103,7 @@ const nextConfig: NextConfig = {
           // subdomain phải HTTPS, nên chỉ đăng ký sau khi đã rà toàn bộ subdomain. `*.vercel.app` nằm
           // trong TLD `.app` vốn đã preload sẵn.
           { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
-          { key: 'Content-Security-Policy-Report-Only', value: contentSecurityPolicyReportOnly },
+          { key: 'Content-Security-Policy', value: contentSecurityPolicy },
         ],
       },
       {
