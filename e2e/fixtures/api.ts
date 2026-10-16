@@ -6,6 +6,14 @@ import type { APIRequestContext } from '@playwright/test';
  */
 export const API_URL = process.env.E2E_API_URL ?? 'https://sport-api-doc.vercel.app';
 
+/**
+ * Backend bật `STOREFRONT_PROXY_ENFORCE` thì gọi thẳng không kèm secret bị 403; test runner đóng vai
+ * server storefront nên gửi cùng secret với `next start` (đọc từ env, không ghi vào repo).
+ */
+const PROXY_HEADERS: Record<string, string> = process.env.STOREFRONT_PROXY_SECRET
+  ? { 'x-storefront-proxy-secret': process.env.STOREFRONT_PROXY_SECRET }
+  : {};
+
 export interface CatalogProduct {
   id: string;
   name: string;
@@ -18,9 +26,12 @@ export interface CatalogProduct {
 export async function fetchProducts(
   request: APIRequestContext,
   limit = 5,
+  options: { inStock?: boolean } = {},
 ): Promise<CatalogProduct[]> {
+  const inStock = options.inStock ? '&inStock=true' : '';
   const response = await request.get(
-    `${API_URL}/api/v1/catalog/products?page=1&limit=${limit}`,
+    `${API_URL}/api/v1/catalog/products?page=1&limit=${limit}${inStock}`,
+    { headers: PROXY_HEADERS },
   );
   if (!response.ok()) throw new Error(`Catalog API lỗi ${response.status()} — cần API chạy ở ${API_URL}`);
   const body = (await response.json()) as { items: CatalogProduct[] };
@@ -28,8 +39,9 @@ export async function fetchProducts(
   return body.items;
 }
 
+/** Sản phẩm còn hàng: dữ liệu thật có thể có sản phẩm hết hàng đứng đầu, nút "Thêm vào giỏ" khi đó bị khoá. */
 export async function firstProduct(request: APIRequestContext): Promise<CatalogProduct> {
-  return (await fetchProducts(request, 1))[0];
+  return (await fetchProducts(request, 1, { inStock: true }))[0];
 }
 
 /** Storefront chỉ trả danh mục đang bán, không có trường `status` như Admin. */
@@ -40,14 +52,14 @@ export interface CatalogCategory {
 }
 
 export async function fetchCategories(request: APIRequestContext): Promise<CatalogCategory[]> {
-  const response = await request.get(`${API_URL}/api/v1/catalog/categories`);
+  const response = await request.get(`${API_URL}/api/v1/catalog/categories`, { headers: PROXY_HEADERS });
   if (!response.ok()) throw new Error(`Category API lỗi ${response.status()}`);
   const body = (await response.json()) as { items: CatalogCategory[] };
   return body.items ?? [];
 }
 
 export async function fetchPosts(request: APIRequestContext): Promise<{ slug: string; title: string }[]> {
-  const response = await request.get(`${API_URL}/api/v1/content/posts?page=1&limit=5`);
+  const response = await request.get(`${API_URL}/api/v1/content/posts?page=1&limit=5`, { headers: PROXY_HEADERS });
   if (!response.ok()) return [];
   const body = (await response.json()) as { items?: { slug: string; title: string }[] };
   return body.items ?? [];

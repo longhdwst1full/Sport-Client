@@ -15,7 +15,8 @@ test.describe('CLIENT CHECKOUT — Thanh toán & Đặt hàng', () => {
   test('CLI-CHK-02: Form thanh toán có các trường thông tin nhận hàng', async ({ page }) => {
     // Thêm sản phẩm vào giỏ trước khi vào checkout
     const storefront = new StorefrontPage(page);
-    await storefront.goto('/products');
+    // Lọc còn hàng: sản phẩm hết hàng đứng đầu danh sách thật thì nút thêm giỏ bị khoá.
+    await storefront.goto('/products?instock=1');
 
     const addBtn = storefront.addToCartCards().first();
     if (await addBtn.isVisible({ timeout: 5_000 }).catch(() => false)) {
