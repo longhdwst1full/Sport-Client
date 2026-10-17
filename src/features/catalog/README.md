@@ -1,10 +1,10 @@
 # Storefront Catalog — maintenance note
 
-> **Document version:** 1.8.0
+> **Document version:** 1.9.0
 >
 > **Last updated:** 2026-10-17
 >
-> **Change summary:** Thẻ sản phẩm: nút giỏ icon + "Mua ngay"; trang lưới 12 sản phẩm (BCNN 2/3/4 cột) và ẩn hàng lẻ khi còn trang sau; PDP flash có đồng hồ, thanh suất, giá flash ở danh sách phiên bản.
+> **Change summary:** Thẻ sản phẩm hiện giá flash sống (badge -X%, giá gạch); PDP ưu tiên giá flash sống, vượt suất → giá thường + toast; JSON-LD khai giá flash + `priceValidUntil`.
 
 ## Phạm vi và ranh giới
 
@@ -55,6 +55,7 @@
 
 | Version | Date | Change summary | Source |
 | --- | --- | --- | --- |
+| 1.9.0 | 2026-10-17 | `VariantFlashPriceProvider` (route group cấp từ promotions); `ProductCard` giá flash; giỏ nhận giá flash từ thẻ; PDP: dữ liệu sống thắng ISR, vượt suất tính giá thường + cảnh báo/toast; JSON-LD giá flash thấp nhất + `priceValidUntil`. |  |
 | 1.8.0 | 2026-10-17 | `ProductCard.onAddToCart` (`useCardAddToCart`); `CATALOG_PAGE_SIZE` 12, `trimToFullRows` khi còn trang; sản phẩm liên quan lưới 2/4 cột; PDP: `useFlashCountdown`, thanh suất, `VariantSelector` hiện giá flash. | CLIENT-20261017-CATALOG-GRID |
 | 1.7.0 | 2026-10-17 | PDP nhận `flashPrices` (route map từ promotions) và hiện giá flash cho biến thể đang chọn; hết giờ (so sau khi mount) thì về giá niêm yết. Checkout vẫn báo giá lại. | CLIENT-20261017-PDP-FLASH-PRICE |
 | 1.6.0 | 2026-10-09 | Lọc server-side theo thương hiệu (`?brand=` → `brand[]`, facet `includeFacets`) và còn hàng (`?instock=1` → `inStock`) qua `toListCatalogParams`; khoảng giá dùng chung với trang chủ (`?price=<id>`); chip hiện tên danh mục; `/category` chỉ danh mục gốc + chip con; `/products` bỏ Suspense để lưới nằm trước footer trong HTML. | CLIENT-20261009-CATALOG-FILTERS |

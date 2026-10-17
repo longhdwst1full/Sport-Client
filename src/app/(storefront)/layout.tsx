@@ -3,6 +3,7 @@ import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { toMegaMenuEntries } from '@/features/catalog';
 import { BannerPlacement } from '@/generated/api/content/content.schemas';
 import { getActiveBannerViews, getPublicCategories } from './_data/public-data';
+import { FlashPriceBridge } from './_components/flash-price-bridge';
 
 // Route group so every storefront-shell page (header/footer) shares one layout
 // instance instead of each page rendering <StorefrontLayout> itself.
@@ -25,7 +26,8 @@ export default async function StorefrontRouteGroupLayout({ children }: { childre
       categories={categories ? toMegaMenuEntries(categories) : undefined}
       footerBanner={footerBanners[0]}
     >
-      {children}
+      {/* Giá flash sống cho thẻ sản phẩm và trang chi tiết (catalog ← promotions). */}
+      <FlashPriceBridge>{children}</FlashPriceBridge>
     </StorefrontLayout>
   );
 }

@@ -8,6 +8,7 @@ import { ShoppingCart, Zap, Sparkles } from 'lucide-react';
 import { Button } from '@/foundation/components/buttons';
 import { Skeleton } from '@/foundation/components/feedback';
 import type { ProductShowcaseItem } from '../model/product.mapper';
+import { activeFlashPrice, useLiveVariantFlashPrices } from '../hooks/use-variant-flash-prices';
 
 export interface ProductCardProps {
   product: ProductShowcaseItem;
@@ -29,6 +30,10 @@ export const ProductCard = memo(function ProductCard({
   priority = false,
 }: ProductCardProps) {
   const unavailable = !product.hasPrice || product.inStock === false;
+  // Giá flash của biến thể mặc định (biến thể mà nút giỏ/Mua ngay đưa vào giỏ). Chỉ có sau khi query
+  // flash sale client về, nên SSR và lần hydrate đầu luôn là giá niêm yết.
+  const flashPrices = useLiveVariantFlashPrices();
+  const flash = product.isSellable ? activeFlashPrice(flashPrices, product.defaultVariantId) : undefined;
   const handleBuy = (e: React.MouseEvent) => {
     // Confetti chỉ tải khi khách bấm mua (dynamic import), không nằm trong JS tải trang.
     void import('canvas-confetti').then(({ default: confetti }) =>
@@ -77,6 +82,13 @@ export const ProductCard = memo(function ProductCard({
               Combo trọn bộ
             </span>
           )}
+
+          {flash && (
+            <span className="pointer-events-none absolute right-3 top-3 inline-flex items-center gap-0.5 rounded-full bg-brand-600 px-2 py-0.5 text-2xs font-bold text-white shadow-sm">
+              <Zap aria-hidden className="size-3 fill-amber-300 text-amber-300" />
+              {flash.discountPercent !== null ? `-${flash.discountPercent}%` : 'Flash sale'}
+            </span>
+          )}
         </Link>
 
         {/* Content details */}
@@ -97,12 +109,23 @@ export const ProductCard = memo(function ProductCard({
 
           {/* Price, stock & CTA */}
           <div className="mt-auto pt-3">
-            <div className="flex items-baseline justify-between gap-1">
-              <strong
-                className={`block truncate text-lg sm:text-xl font-bold tracking-tight ${product.hasPrice ? 'text-neutral-950' : 'text-neutral-400'}`}
-              >
-                {product.displayPrice}
-              </strong>
+            <div className="flex min-w-0 items-baseline gap-1.5">
+              {flash ? (
+                <>
+                  <strong className="block truncate text-lg font-bold tracking-tight text-brand-600 sm:text-xl">
+                    {flash.priceLabel}
+                  </strong>
+                  <span className="truncate text-xs text-neutral-400 line-through">
+                    {flash.originalPriceLabel ?? product.displayPrice}
+                  </span>
+                </>
+              ) : (
+                <strong
+                  className={`block truncate text-lg sm:text-xl font-bold tracking-tight ${product.hasPrice ? 'text-neutral-950' : 'text-neutral-400'}`}
+                >
+                  {product.displayPrice}
+                </strong>
+              )}
             </div>
 
             <div className="mt-1 h-5">

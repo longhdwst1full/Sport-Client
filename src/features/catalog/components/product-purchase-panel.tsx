@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useCartActions } from '@/features/cart';
 import type { ProductPurchaseView } from '../model/product.mapper';
 import type { VariantFlashPrices } from '../model/variant-flash-price';
+import { useLiveVariantFlashPrices } from '../hooks/use-variant-flash-prices';
 import { useIsMounted } from '@/shared/hooks';
 import { useToast } from '@/shared/components/global-toast';
 import { ProductPriceHeader } from './product-price-header';
@@ -24,7 +25,7 @@ export function ProductPurchasePanel({
 }) {
   const { addItem } = useCartActions();
   const router = useRouter();
-  const { cart: toastCart } = useToast();
+  const { cart: toastCart, toast } = useToast();
   const isMounted = useIsMounted();
 
   const variants = product.variants;
@@ -64,14 +65,21 @@ export function ProductPurchasePanel({
   // Không có giá thì không có "giá 0": giỏ và checkout sẽ báo giá lệch hẳn với màn này.
   // Giá flash của biến thể đang chọn. HTML ISR có thể cũ tới vài phút: sau khi mount mới so mốc kết
   // thúc với đồng hồ máy (trước đó giữ như server render để không lệch hydrate). Checkout vẫn báo giá lại.
+  // Query flash sale client (sống) thắng dữ liệu route (ISR, có thể cũ vài phút): chiến dịch vừa mở
+  // hiện ngay, vừa đóng/hết suất thì bỏ. Chưa có dữ liệu sống thì dùng bản server.
+  const liveFlashPrices = useLiveVariantFlashPrices();
+  const sourceFlashPrices = liveFlashPrices ?? flashPrices;
   const activeFlashPrices = useMemo(() => {
-    if (!flashPrices || !isMounted) return flashPrices;
+    if (!sourceFlashPrices || !isMounted) return sourceFlashPrices;
     const now = Date.now();
-    return Object.fromEntries(Object.entries(flashPrices).filter(([, deal]) => deal.endsAtMs > now));
-  }, [flashPrices, isMounted]);
+    return Object.fromEntries(Object.entries(sourceFlashPrices).filter(([, deal]) => deal.endsAtMs > now));
+  }, [sourceFlashPrices, isMounted]);
   const flash = selectedVariant?.sellable ? activeFlashPrices?.[selectedVariant.id] : undefined;
-  const price = selectedVariant?.sellable ? (flash?.price ?? selectedVariant.priceAmount) : null;
+  // INVARIANT (khớp checkout): số lượng vượt số suất còn lại → cả dòng tính giá thường.
+  const flashApplies = Boolean(flash && quantity <= flash.availableQuantity);
+  const price = selectedVariant?.sellable ? (flashApplies && flash ? flash.price : selectedVariant.priceAmount) : null;
   const priceLabel = flash?.priceLabel ?? selectedVariant?.priceLabel;
+  const payablePriceLabel = flashApplies ? priceLabel : selectedVariant?.priceLabel;
   const canAdd = Boolean(selectedVariant?.sellable && price !== null);
   // Hết hàng vẫn hiện giá (có giá thật) nhưng khoá mua: không đưa hàng không có sẵn vào checkout.
   const outOfStock = selectedVariant?.inStock === false && selectedVariant.priceAmount !== null;
@@ -93,8 +101,19 @@ export function ProductPurchasePanel({
     return true;
   };
 
+  /** Mua vượt số suất flash: báo rõ cả dòng tính giá thường (checkout cũng tính vậy). */
+  const warnFlashExceeded = () => {
+    if (!flash || flashApplies) return;
+    toast({
+      type: 'warning',
+      title: 'Vượt số suất flash sale',
+      message: `Chỉ còn ${flash.availableQuantity} suất giá flash. Mua ${quantity} sản phẩm sẽ tính giá thường cho cả dòng — chọn ${flash.availableQuantity} để giữ giá flash.`,
+    });
+  };
+
   const handleAddToCart = () => {
     if (!addSelectedToCart() || !selectedVariant) return;
+    warnFlashExceeded();
     setIsAddedToast(true);
     toastCart('Đã thêm vào giỏ hàng', `${product.name} (${selectedVariant.name}) x${quantity}`);
     clearTimeout(toastTimerRef.current);
@@ -103,6 +122,7 @@ export function ProductPurchasePanel({
 
   const handleBuyNow = () => {
     if (!addSelectedToCart() || !selectedVariant) return;
+    warnFlashExceeded();
     router.push(`/checkout?buyNow=${selectedVariant.id}`);
   };
 
@@ -118,6 +138,9 @@ export function ProductPurchasePanel({
         inStock={selectedVariant?.inStock === true}
         priceLabel={priceLabel}
         flash={flash}
+        flashExceeded={Boolean(flash) && !flashApplies}
+        regularPriceLabel={selectedVariant?.priceLabel}
+        onKeepFlashQuantity={flash ? () => setQuantity(flash.availableQuantity) : undefined}
       />
 
       <hr className="border-neutral-100" />
@@ -147,7 +170,7 @@ export function ProductPurchasePanel({
 
       <StickyBuyBar
         visible={showStickyBar}
-        priceLabel={priceLabel ?? 'Liên hệ báo giá'}
+        priceLabel={payablePriceLabel ?? 'Liên hệ báo giá'}
         canAdd={canAdd}
         outOfStock={outOfStock}
         onAddToCart={handleAddToCart}

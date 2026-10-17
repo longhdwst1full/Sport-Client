@@ -54,6 +54,11 @@ describe('buildProductJsonLd', () => {
     expect(ld.aggregateRating).toMatchObject({ ratingValue: 4.6, reviewCount: 3 });
   });
 
+  it('giá khuyến mãi kèm priceValidUntil', () => {
+    const ld = buildProductJsonLd({ name: 'A', path: '/products/a', price: 900000, priceValidUntil: '2026-10-18' });
+    expect(ld.offers).toMatchObject({ price: '900000', priceValidUntil: '2026-10-18' });
+  });
+
   it('không khai offers/rating/availability khi thiếu dữ liệu', () => {
     const ld = buildProductJsonLd({ name: 'A', path: '/products/a', price: '0', rating: { value: 0, count: 0 } });
     expect(ld).not.toHaveProperty('offers');

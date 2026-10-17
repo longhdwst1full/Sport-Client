@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { FlashSaleItemDto, PublicFlashSaleListDto } from '@/generated/api/promotions/promotions.schemas';
-import { toVariantFlashPrices } from './flash-sale.mapper';
+import { toFlashSaleCampaignView, toVariantFlashPriceMap, toVariantFlashPrices } from './flash-sale.mapper';
 
 function item(overrides: Partial<FlashSaleItemDto>): FlashSaleItemDto {
   return {
@@ -62,5 +62,17 @@ describe('toVariantFlashPrices', () => {
 
   it('không có dữ liệu → rỗng', () => {
     expect(toVariantFlashPrices(undefined, 'may-chay-bo')).toEqual({});
+  });
+});
+
+describe('toVariantFlashPriceMap', () => {
+  it('không truyền slug → gom mọi sản phẩm (cho thẻ sản phẩm ở lưới)', () => {
+    const dto = list({
+      endsAt: '2026-10-18T00:00:00.000Z',
+      items: [item({}), item({ id: '2', productVariantId: '20', productSlug: 'khac', salePrice: '500000', regularPrice: null })],
+    });
+    const prices = toVariantFlashPriceMap(dto.items.map(toFlashSaleCampaignView));
+    expect(Object.keys(prices).sort()).toEqual(['10', '20']);
+    expect(prices['20']).toMatchObject({ price: 500_000, originalPriceLabel: null, discountPercent: null });
   });
 });

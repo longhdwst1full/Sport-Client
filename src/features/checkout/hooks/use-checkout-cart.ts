@@ -2,13 +2,14 @@
 
 import { useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { useCartHydrated, useCartItems } from '@/features/cart';
+import { useCartHydrated, useCartItems, useCartLinePricing } from '@/features/cart';
 
 /** Dòng giỏ được thanh toán ở lượt này (mua ngay / chọn một phần giỏ / cả giỏ) và tạm tính trên máy. */
 export function useCheckoutCart() {
   const searchParams = useSearchParams();
   const items = useCartItems();
   const cartHydrated = useCartHydrated();
+  const priceLine = useCartLinePricing();
 
   const buyNowParam = searchParams.get('buyNow');
   const itemsParam = searchParams.get('items');
@@ -28,8 +29,8 @@ export function useCheckoutCart() {
   }, [items, buyNowParam, itemsParam]);
 
   const localSubtotal = useMemo(
-    () => effectiveItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
-    [effectiveItems]
+    () => effectiveItems.reduce((sum, item) => sum + priceLine(item).lineTotal, 0),
+    [effectiveItems, priceLine]
   );
 
   return { effectiveItems, localSubtotal, cartHydrated };

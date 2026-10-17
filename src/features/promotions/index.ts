@@ -10,6 +10,8 @@ export {
   toFlashSaleCampaignView,
   toFlashSaleDealView,
   toVariantFlashPrices,
+  toVariantFlashPriceMap,
+  toVariantFlashQuotaMap,
   type FlashSaleCampaignView,
   type FlashSaleInitialData,
   type VariantFlashPriceView,

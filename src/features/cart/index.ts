@@ -13,6 +13,8 @@ export {
 } from './model/cart.slice';
 export { readPersistedCart } from './model/cart.saga';
 export { useCartItems, useCartActions } from './hooks/use-cart';
+export { CartPromoPriceProvider, useCartLinePricing } from './hooks/use-cart-line-pricing';
+export type { CartLinePrice, CartPromoPrice, CartPromoPrices } from './model/cart-promo-price';
 export { useCartHydrated, CartHydrationContext } from './hooks/use-cart-hydrated';
 export {
   hasPendingGuestCartMerge,

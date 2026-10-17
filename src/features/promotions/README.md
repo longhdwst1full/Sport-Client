@@ -1,10 +1,10 @@
 # Storefront Promotions — maintenance note
 
-> **Document version:** 2.4.0
+> **Document version:** 2.5.0
 >
 > **Last updated:** 2026-10-17
 >
-> **Change summary:** Khối flash sale trang chủ chỉ hiện số suất chia hết 4 (phần dư ở `/flash-sale`); nhãn "Flash sale" nền trắng chữ đỏ.
+> **Change summary:** `toVariantFlashPriceMap` (mọi sản phẩm) và `toVariantFlashQuotaMap` (cả suất đã hết) cho bridge giá flash ở route group.
 
 ## Phạm vi
 
@@ -63,6 +63,7 @@ Không được đổi thông điệp UI thành "đã giữ suất" cho tới kh
 
 | Version | Date | Change summary |
 | --- | --- | --- |
+| 2.5.0 | 2026-10-17 | `toVariantFlashPriceMap`, `toVariantFlashQuotaMap`; `toVariantFlashPrices` dùng lại map chung. |
 | 2.4.0 | 2026-10-17 | `trimToFullRows(deals, 4)` ở khối trang chủ; nhãn tương phản cao; "Kết thúc sau" không xuống dòng; `soldPercent` trong `toVariantFlashPrices`. |
 | 2.3.0 | 2026-10-17 | Đếm ngược có ô "Ngày" (trước hiện "32 : 26 : 15" khi còn > 24 giờ), component `FlashSaleCountdownTimer` + test `flash-sale-countdown.test.ts`; dải tiêu đề khối flash sale gradient brand, đồng hồ trong khung riêng. |
 | 2.2.0 | 2026-10-17 | Thẻ suất: ảnh → chi tiết, nút giỏ icon + "Mua ngay" (checkout `buyNow`), nhãn Hot/Sắp hết; `FlashSaleSection` nhận `initialData` (route lấy qua `getActiveFlashSales`, cache 60s) + `aboveTheFold`; `toVariantFlashPrices` cấp giá flash theo biến thể cho PDP. |

@@ -48,7 +48,13 @@ export function toBreadcrumbJsonLd(items: ReadonlyArray<{ label: string; href?: 
  * mở bán (`hasPrice`), tồn kho theo `inStock` của API, ảnh từ media ACTIVE thật (không dùng ảnh
  * thay thế của dự án). Chưa có điểm đánh giá trong contract chi tiết nên không khai `aggregateRating`.
  */
-export function toProductJsonLd(product: ProductDetailDto, brand: string | null, hasPrice: boolean) {
+export function toProductJsonLd(
+  product: ProductDetailDto,
+  brand: string | null,
+  hasPrice: boolean,
+  /** Giá flash thấp nhất đang mở: khai đúng giá khách thấy, kèm hạn của giá. */
+  flash?: { price: number; endsAtMs: number },
+) {
   const images = (product.media ?? [])
     .filter((item) => item.status === ProductMediaStatus.ACTIVE && item.secureUrl)
     .sort((left, right) =>
@@ -64,8 +70,9 @@ export function toProductJsonLd(product: ProductDetailDto, brand: string | null,
     description: product.shortDescription,
     sku: product.productNo || product.slug,
     brand,
-    price: hasPrice ? product.minPrice : null,
+    price: hasPrice ? (flash?.price ?? product.minPrice) : null,
     priceCurrency: product.currency,
+    priceValidUntil: hasPrice && flash ? new Date(flash.endsAtMs).toISOString().slice(0, 10) : undefined,
     inStock: product.inStock,
   });
 }

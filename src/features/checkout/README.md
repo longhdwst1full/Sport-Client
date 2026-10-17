@@ -1,10 +1,10 @@
 # Storefront checkout — maintenance note
 
-> **Document version:** 2.0.0
+> **Document version:** 2.1.0
 >
 > **Last updated:** 2026-10-17
 >
-> **Change summary:** Modal điều khoản bắt đọc hết (cuộn tới cuối) mới đóng/đồng ý; bấm đặt hàng khi chưa đồng ý → mở modal, "Đồng ý & đặt hàng" = tích ô + đặt tiếp.
+> **Change summary:** Tạm tính và danh sách hàng ở checkout dùng `useCartLinePricing` (luật vượt suất flash).
 
 ## Luồng 3 bước (2026-09-26)
 
@@ -95,6 +95,7 @@ Checkout chỉ được import `orders`, `address`, `site-config` (và `auth`, `
 
 | Version | Date | Change summary | Source |
 | --- | --- | --- | --- |
+| 2.1.0 | 2026-10-17 | Tạm tính/dòng hàng theo `useCartLinePricing`; dòng vượt suất flash có ghi chú "tính giá thường". |  |
 | 2.0.0 | 2026-10-17 | `CheckoutPolicyDialog`: nội dung chính sách là slot route (`PolicyArticles`), phải cuộn tới cuối mới đóng/đồng ý; `usePlaceOrder({ onTermsRequired })` mở modal thay cho thông báo chặn, `submitAfterAgree` tích ô rồi đặt hàng tiếp. Bỏ `CheckoutPolicyLinks`. |  |
 | 1.9.0 | 2026-10-09 | Phí một lần theo địa chỉ + giỏ; thanh toán/"Nhờ shop gửi" không báo giá lại, lựa chọn cuối gửi kèm confirm; tự báo giá lại + xác nhận lại một lần khi `CHECKOUT_REQUOTE_REQUIRED`/`CHECKOUT_QUOTE_EXPIRED`. | Owner requirement 2026-10-09 |
 | 1.8.0 | 2026-10-09 | Đổi phương thức thanh toán giữ phí/tổng cũ (mờ) trong lúc báo giá lại thay vì xoá về "Đang tính phí". | Checkout payment requote UX |

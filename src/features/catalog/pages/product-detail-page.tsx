@@ -61,7 +61,13 @@ export function ProductDetailPage({ product, slug, relatedCategorySlug, flashPri
   // Có biến thể mở bán mới khai `offers`; `minPrice` có thể thuộc biến thể đã ngừng bán.
   const hasPrice =
     hasOfferPrice(product.minPrice) && purchaseView.variants.some(({ sellable }) => sellable);
-  const productJsonLd = toProductJsonLd(product, brand, hasPrice);
+  // Giá flash thấp nhất trong các biến thể mở bán (route lấy lúc render, cùng chu kỳ ISR).
+  const sellableIds = new Set(purchaseView.variants.filter(({ sellable }) => sellable).map(({ id }) => id));
+  const lowestFlash = Object.entries(flashPrices ?? {})
+    .filter(([variantId]) => sellableIds.has(variantId))
+    .map(([, deal]) => deal)
+    .sort((left, right) => left.price - right.price)[0];
+  const productJsonLd = toProductJsonLd(product, brand, hasPrice, lowestFlash);
   // Breadcrumb hiển thị và JSON-LD dùng chung một danh sách (qua danh mục chính) để không lệch nhau.
   const breadcrumbItems = toProductBreadcrumbItems(product, relatedCategorySlug);
   const breadcrumbJsonLd = toBreadcrumbJsonLd(breadcrumbItems);

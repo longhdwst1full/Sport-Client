@@ -6,6 +6,7 @@ import { QuantityStepper } from '@/foundation/components/indicators';
 import { formatVnd } from '@/shared/format/money';
 import { PRODUCT_PLACEHOLDER_IMAGE } from '@/shared/constants';
 import type { CartItem } from '../model/cart.slice';
+import type { CartLinePrice } from '../model/cart-promo-price';
 
 interface CartItemRowProps {
   item: CartItem;
@@ -14,6 +15,10 @@ interface CartItemRowProps {
   onDecrementQuantity: () => void;
   onIncrementQuantity: () => void;
   onRemove: () => void;
+  /** Đơn giá/thành tiền đã áp luật suất flash (`useCartLinePricing`). */
+  linePrice: CartLinePrice;
+  /** Đưa số lượng về mức còn hưởng giá flash. */
+  onKeepPromoQuantity: (quantity: number) => void;
 }
 
 export function CartItemRow({
@@ -23,6 +28,8 @@ export function CartItemRow({
   onDecrementQuantity,
   onIncrementQuantity,
   onRemove,
+  linePrice,
+  onKeepPromoQuantity,
 }: CartItemRowProps) {
   return (
     <div className="flex items-center gap-3 rounded-2xl border border-ink/5 bg-white p-4 shadow-sm sm:gap-5 sm:p-5">
@@ -89,8 +96,31 @@ export function CartItemRow({
             valueClassName="min-w-[2rem] text-center text-sm font-bold"
           />
           {/* Price */}
-          <strong className="text-sm text-neutral-950 sm:text-base">{formatVnd(item.price * item.quantity)}</strong>
+          <div className="text-right">
+            {linePrice.promo === 'applied' && (
+              <span className="block text-2xs font-bold uppercase text-brand-600">Giá flash sale</span>
+            )}
+            <strong className={`text-sm sm:text-base ${linePrice.promo === 'applied' ? 'text-brand-600' : 'text-neutral-950'}`}>
+              {formatVnd(linePrice.lineTotal)}
+            </strong>
+          </div>
         </div>
+        {linePrice.promo === 'exceeded' && (
+          <div role="status" className="mt-3 rounded-xl bg-amber-50 px-3 py-2 text-xs leading-5 text-amber-900">
+            {linePrice.promoMaxQuantity
+              ? `Giá flash chỉ áp dụng khi mua tối đa ${linePrice.promoMaxQuantity} sản phẩm. Số lượng hiện tại tính giá thường ${formatVnd(linePrice.unitPrice)}/sp.`
+              : `Đã hết suất flash sale, sản phẩm tính giá thường ${formatVnd(linePrice.unitPrice)}/sp.`}
+            {linePrice.promoMaxQuantity ? (
+              <button
+                type="button"
+                onClick={() => onKeepPromoQuantity(linePrice.promoMaxQuantity!)}
+                className="ml-1 font-bold text-amber-950 underline underline-offset-2 focus-ring-tight rounded"
+              >
+                Giảm về {linePrice.promoMaxQuantity} để giữ giá flash
+              </button>
+            ) : null}
+          </div>
+        )}
       </div>
     </div>
   );

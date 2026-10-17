@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useCartActions } from '@/features/cart';
 import { useToast } from '@/shared/components/global-toast';
 import type { ProductShowcaseItem } from '../model/product.mapper';
+import { activeFlashPrice, useLiveVariantFlashPrices } from './use-variant-flash-prices';
 
 /**
  * Thêm 1 biến thể mặc định của thẻ vào giỏ; `false` khi thẻ chưa đủ dữ liệu biến thể (nơi gọi mở
@@ -12,9 +13,12 @@ import type { ProductShowcaseItem } from '../model/product.mapper';
  */
 function useAddDefaultVariant() {
   const { addItem } = useCartActions();
+  const flashPrices = useLiveVariantFlashPrices();
   return useCallback(
     (product: ProductShowcaseItem) => {
       if (!product.isSellable || !product.defaultVariantId || !product.defaultVariantSku) return false;
+      // Giá hiển thị trong giỏ khớp giá thẻ đang hiện (flash nếu có); checkout vẫn báo giá lại.
+      const flash = activeFlashPrice(flashPrices, product.defaultVariantId);
       addItem({
         productId: product.id,
         variantId: product.defaultVariantId,
@@ -23,12 +27,12 @@ function useAddDefaultVariant() {
         name: product.name,
         slug: product.slug,
         imageUrl: product.imageUrl,
-        price: product.numericPrice,
+        price: flash?.price ?? product.numericPrice,
         quantity: 1,
       });
       return true;
     },
-    [addItem],
+    [addItem, flashPrices],
   );
 }
 

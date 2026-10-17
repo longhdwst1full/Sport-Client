@@ -7,7 +7,7 @@ import { Button } from '@/foundation/components/buttons';
 import { Checkbox } from '@/foundation/components/field-system';
 import { Spinner } from '@/foundation/components/feedback';
 import { DescriptionList, type DescriptionItem } from '@/foundation/components/structure';
-import type { CartItem } from '@/features/cart';
+import { useCartLinePricing, type CartItem } from '@/features/cart';
 import type { CheckoutQuoteView } from '../model/checkout.mapper';
 import { formatVnd } from '@/shared/format/money';
 import { PRODUCT_PLACEHOLDER_IMAGE, STORE_POLICY_PAGES } from '@/shared/constants';
@@ -55,6 +55,7 @@ export function CheckoutOrderSummary({
   setAcceptedTerms,
   onOpenPolicies,
 }: CheckoutOrderSummaryProps) {
+  const priceLine = useCartLinePricing();
   // CONTRACT: hai trạng thái khác nhau cùng "chưa có số phí".
   // - SHOP_ARRANGED (`shippingFeePending`): báo giá QUOTED, shippingTotal = 0 nhưng KHÔNG miễn phí —
   //   hiện "Shop báo riêng" chứ không phải 0 ₫, và khách vẫn đặt được đơn.
@@ -92,7 +93,9 @@ export function CheckoutOrderSummary({
           <Link href="/cart" className="-my-2 inline-flex min-h-11 items-center px-2 text-xs font-bold text-neutral-900 hover:underline">Chỉnh sửa</Link>
         </div>
         <div className="mt-4 max-h-72 space-y-3 overflow-auto">
-          {items.map((item) => (
+          {items.map((item) => {
+            const line = priceLine(item);
+            return (
             <div key={item.variantId} className="flex items-center gap-3">
               <div className="relative size-12 shrink-0 overflow-hidden rounded-xl border bg-neutral-50">
                 <Image src={item.imageUrl || PRODUCT_PLACEHOLDER_IMAGE} alt={item.name} fill sizes="48px" className="object-contain p-1" />
@@ -100,10 +103,16 @@ export function CheckoutOrderSummary({
               <div className="min-w-0 flex-1">
                 <p className="truncate text-xs font-bold text-neutral-900">{item.name}</p>
                 <p className="text-xs text-neutral-500">{item.sku} · ×{item.quantity}</p>
+                {line.promo === 'exceeded' && (
+                  <p className="text-2xs font-semibold text-amber-700">
+                    {line.promoMaxQuantity ? `Vượt ${line.promoMaxQuantity} suất flash: tính giá thường` : 'Hết suất flash: tính giá thường'}
+                  </p>
+                )}
               </div>
-              <strong className="shrink-0 text-xs">{formatVnd(item.price * item.quantity)}</strong>
+              <strong className={`shrink-0 text-xs ${line.promo === 'applied' ? 'text-brand-600' : ''}`}>{formatVnd(line.lineTotal)}</strong>
             </div>
-          ))}
+            );
+          })}
         </div>
         <div className="mt-5 space-y-3 border-t pt-4 text-sm">
           <DescriptionList

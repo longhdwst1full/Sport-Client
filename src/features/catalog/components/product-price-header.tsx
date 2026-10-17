@@ -12,13 +12,41 @@ interface ProductPriceHeaderProps {
   priceLabel: string | undefined;
   /** Giá flash đang mở của biến thể đang chọn; `priceLabel` khi đó đã là giá flash. */
   flash?: VariantFlashPrice;
+  /** Số lượng đang chọn vượt số suất còn lại: cả dòng sẽ tính giá thường. */
+  flashExceeded?: boolean;
+  regularPriceLabel?: string;
+  onKeepFlashQuantity?: () => void;
 }
 
-export function ProductPriceHeader({ canAdd, outOfStock, inStock, priceLabel, flash }: ProductPriceHeaderProps) {
+export function ProductPriceHeader({
+  canAdd,
+  outOfStock,
+  inStock,
+  priceLabel,
+  flash,
+  flashExceeded = false,
+  regularPriceLabel,
+  onKeepFlashQuantity,
+}: ProductPriceHeaderProps) {
   if (flash && canAdd && priceLabel) {
     return (
       <div>
         <FlashPriceBlock flash={flash} priceLabel={priceLabel} />
+        {flashExceeded && (
+          <p role="status" className="mt-3 rounded-xl bg-amber-50 px-3 py-2 text-xs leading-5 text-amber-900">
+            Giá flash chỉ áp dụng khi mua tối đa {flash.availableQuantity} sản phẩm. Số lượng đang chọn sẽ tính giá
+            thường{regularPriceLabel ? ` ${regularPriceLabel}/sp` : ''} cho cả đơn.
+            {onKeepFlashQuantity && (
+              <button
+                type="button"
+                onClick={onKeepFlashQuantity}
+                className="ml-1 rounded font-bold text-amber-950 underline underline-offset-2 focus-ring-tight"
+              >
+                Chọn {flash.availableQuantity} để giữ giá flash
+              </button>
+            )}
+          </p>
+        )}
         <ProductAvailability inStock={inStock} outOfStock={outOfStock} />
       </div>
     );

@@ -52,6 +52,8 @@ export interface ProductJsonLdInput {
   price?: string | number | null;
   /** Mã tiền tệ ISO 4217; mặc định VND. */
   priceCurrency?: string;
+  /** Hạn của giá khuyến mãi (YYYY-MM-DD), vd. ngày kết thúc flash sale. */
+  priceValidUntil?: string;
   /** `undefined` = API không báo tồn kho → không khai `availability`. */
   inStock?: boolean;
   /** Chỉ khai khi có ít nhất một đánh giá thật. */
@@ -88,6 +90,7 @@ export function buildProductJsonLd(input: ProductJsonLdInput) {
             url,
             price,
             priceCurrency: input.priceCurrency ?? 'VND',
+            ...(input.priceValidUntil ? { priceValidUntil: input.priceValidUntil } : {}),
             itemCondition: 'https://schema.org/NewCondition',
             ...(input.inStock === undefined
               ? {}

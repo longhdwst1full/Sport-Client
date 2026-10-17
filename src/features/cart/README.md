@@ -1,10 +1,10 @@
 # Storefront Cart — maintenance note
 
-> **Document version:** 2.1.0
+> **Document version:** 2.2.0
 >
-> **Last updated:** 2026-10-06
+> **Last updated:** 2026-10-17
 >
-> **Change summary:** Ghi rõ giỏ chỉ hiển thị tạm tính; phí vận chuyển và tổng thanh toán do bước checkout báo giá.
+> **Change summary:** Giỏ tính lại dòng theo suất flash sống (`CartPromoPriceProvider`, `useCartLinePricing`): vượt số suất → cả dòng giá thường (khớp checkout), cảnh báo + toast + nút giữ giá flash.
 
 ## Phạm vi
 
@@ -70,6 +70,7 @@ Persist allowlist: `productId, variantId, sku, productType, name, price, quantit
 
 | Version | Date | Change summary |
 | --- | --- | --- |
+| 2.2.0 | 2026-10-17 | Thêm `resolveCartLinePrice` (luật vượt suất của `CheckoutService.snapshotItems`), `CartPromoPriceProvider`/`useCartLinePricing`; dòng giỏ hiện giá flash/giá thường, cảnh báo và nút "Giảm về N để giữ giá flash", toast khi vượt ngưỡng. |
 | 2.1.0 | 2026-10-06 | Giỏ hiển thị tạm tính; phí vận chuyển/tổng thanh toán ở checkout. |
 | 2.0.0 | 2026-09-28 | Đồng bộ account cart đa thiết bị; merge guest rồi pull server cart sau auth. |
 | 1.1.0 | 2026-09-14 | Gộp guest cart vào account khi auth. |

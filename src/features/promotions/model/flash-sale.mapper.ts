@@ -86,20 +86,20 @@ export interface VariantFlashPriceView {
 }
 
 /**
- * Giá flash theo `variantId` của một sản phẩm. Catalog chỉ trả giá niêm yết, còn checkout tự áp giá
- * flash theo biến thể (`resolveActiveDeals`), nên trang chi tiết phải lấy giá flash từ đây mới khớp
- * số tiền ở bước báo giá. Bỏ suất đã hết; một biến thể ở nhiều chiến dịch thì lấy chiến dịch kết thúc
- * sớm nhất (API đã sắp theo `endsAt`).
+ * Giá flash theo `variantId`. Catalog chỉ trả giá niêm yết, còn checkout tự áp giá flash theo biến thể
+ * (`resolveActiveDeals`), nên nơi hiển thị giá phải lấy giá flash từ đây mới khớp số tiền ở bước báo
+ * giá. Bỏ suất đã hết; một biến thể ở nhiều chiến dịch thì lấy chiến dịch kết thúc sớm nhất (API đã
+ * sắp theo `endsAt`). `productSlug` lọc riêng một sản phẩm (trang chi tiết).
  */
-export function toVariantFlashPrices(
-  dto: PublicFlashSaleListDto | undefined,
-  productSlug: string,
+export function toVariantFlashPriceMap(
+  campaigns: readonly FlashSaleCampaignView[],
+  productSlug?: string,
 ): Record<string, VariantFlashPriceView> {
   const result: Record<string, VariantFlashPriceView> = {};
-  for (const campaign of dto?.items ?? []) {
-    const view = toFlashSaleCampaignView(campaign);
-    for (const deal of view.deals) {
-      if (deal.slug !== productSlug || deal.availableQuantity <= 0 || result[deal.variantId]) continue;
+  for (const campaign of campaigns) {
+    for (const deal of campaign.deals) {
+      if (productSlug && deal.slug !== productSlug) continue;
+      if (deal.availableQuantity <= 0 || result[deal.variantId]) continue;
       result[deal.variantId] = {
         price: deal.price,
         priceLabel: formatVnd(deal.price),
@@ -107,9 +107,42 @@ export function toVariantFlashPrices(
         discountPercent: deal.discountPercent,
         availableQuantity: deal.availableQuantity,
         soldPercent: deal.soldPercent,
-        endsAtMs: view.endsAtMs,
+        endsAtMs: campaign.endsAtMs,
       };
     }
   }
   return result;
+}
+
+/** Suất flash theo biến thể cho giỏ hàng: gồm cả suất đã hết (0) để giỏ biết dòng không còn giá flash. */
+export interface VariantFlashQuotaView {
+  price: number;
+  regularPrice: number | null;
+  maxQuantity: number;
+  endsAtMs: number;
+}
+
+/** Giỏ/checkout dùng để tính lại dòng theo luật "vượt suất → cả dòng giá thường" của checkout. */
+export function toVariantFlashQuotaMap(campaigns: readonly FlashSaleCampaignView[]): Record<string, VariantFlashQuotaView> {
+  const result: Record<string, VariantFlashQuotaView> = {};
+  for (const campaign of campaigns) {
+    for (const deal of campaign.deals) {
+      if (result[deal.variantId]) continue;
+      result[deal.variantId] = {
+        price: deal.price,
+        regularPrice: deal.originalPrice,
+        maxQuantity: Math.max(0, deal.availableQuantity),
+        endsAtMs: campaign.endsAtMs,
+      };
+    }
+  }
+  return result;
+}
+
+/** Bản server (route trang chi tiết): từ DTO danh sách chiến dịch. */
+export function toVariantFlashPrices(
+  dto: PublicFlashSaleListDto | undefined,
+  productSlug: string,
+): Record<string, VariantFlashPriceView> {
+  return toVariantFlashPriceMap((dto?.items ?? []).map(toFlashSaleCampaignView), productSlug);
 }

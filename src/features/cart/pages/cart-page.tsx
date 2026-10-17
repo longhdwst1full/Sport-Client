@@ -2,6 +2,7 @@
 
 import { useMemo, useState, useEffect } from 'react';
 import { useCartActions, useCartItems } from '../hooks/use-cart';
+import { useCartLinePricing } from '../hooks/use-cart-line-pricing';
 import { useCartHydrated } from '../hooks/use-cart-hydrated';
 import { Button } from '@/foundation/components/buttons';
 import { Skeleton } from '@/foundation/components/feedback';
@@ -14,6 +15,7 @@ import { CartSummary } from '../components/cart-summary';
 
 export function CartPage() {
   const { removeItem, clear, updateQuantity: setQuantity } = useCartActions();
+  const priceLine = useCartLinePricing();
   const { toast } = useToast();
   const items = useCartItems();
   // Chưa đọc xong giỏ đã lưu thì chưa biết giỏ rỗng hay không: hiện khung chờ, không nháy "Giỏ hàng trống".
@@ -52,8 +54,8 @@ export function CartPage() {
   };
 
   const subtotal = useMemo(
-    () => selectedItems.reduce((sum, i) => sum + i.price * i.quantity, 0),
-    [selectedItems]
+    () => selectedItems.reduce((sum, i) => sum + priceLine(i).lineTotal, 0),
+    [selectedItems, priceLine]
   );
 
   const handleRemoveItem = (variantId: string, name: string) => {
@@ -141,8 +143,22 @@ export function CartPage() {
                   isSelected={selectedSet.has(item.variantId)}
                   onToggleSelect={() => toggleSelectItem(item.variantId)}
                   onDecrementQuantity={() => setQuantity(item.variantId, item.quantity - 1)}
-                  onIncrementQuantity={() => setQuantity(item.variantId, item.quantity + 1)}
+                  onIncrementQuantity={() => {
+                    setQuantity(item.variantId, item.quantity + 1);
+                    // Vừa vượt số suất flash: báo một lần lúc chuyển ngưỡng, không báo mỗi lần bấm.
+                    const before = priceLine(item);
+                    const after = priceLine({ ...item, quantity: item.quantity + 1 });
+                    if (before.promo === 'applied' && after.promo === 'exceeded') {
+                      toast({
+                        type: 'warning',
+                        title: 'Vượt số suất flash sale',
+                        message: `Chỉ còn ${after.promoMaxQuantity} suất giá flash cho ${item.name}. Số lượng hiện tại tính giá thường cho cả dòng.`,
+                      });
+                    }
+                  }}
                   onRemove={() => handleRemoveItem(item.variantId, item.name)}
+                  linePrice={priceLine(item)}
+                  onKeepPromoQuantity={(quantity) => setQuantity(item.variantId, quantity)}
                 />
               ))}
             </div>
