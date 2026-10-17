@@ -106,10 +106,6 @@ export function FlashSaleDealCard({
           </span>
         </div>
 
-        {deal.perCustomerLimit !== null ? (
-          <p className="mt-1.5 text-2xs font-medium text-neutral-500">Tối đa {deal.perCustomerLimit} sản phẩm/khách</p>
-        ) : null}
-
         <div className="mt-auto flex items-center gap-2 pt-3">
           <Button
             variant="outline"

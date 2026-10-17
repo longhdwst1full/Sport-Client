@@ -40,9 +40,7 @@ export function ProductPriceHeader({ canAdd, outOfStock, inStock, priceLabel, fl
               ) : null}
             </div>
             <p className="mt-1.5 text-xs font-semibold text-neutral-600">
-              Còn {flash.availableQuantity} suất
-              {flash.perCustomerLimit !== null ? ` · Tối đa ${flash.perCustomerLimit} sản phẩm/khách` : ''} · Giá được
-              xác nhận lại ở bước đặt hàng
+              Còn {flash.availableQuantity} suất · Giá được xác nhận lại ở bước đặt hàng
             </p>
           </div>
         </div>

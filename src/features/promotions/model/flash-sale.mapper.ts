@@ -23,7 +23,6 @@ export interface FlashSaleDealView {
   availableQuantity: number;
   /** Phần trăm đã bán, dùng cho thanh tiến trình. */
   soldPercent: number;
-  perCustomerLimit: number | null;
 }
 
 export interface FlashSaleCampaignView {
@@ -60,7 +59,6 @@ export function toFlashSaleDealView(dto: FlashSaleItemDto): FlashSaleDealView {
     soldQuantity: dto.soldQuantity,
     availableQuantity: dto.availableQuantity,
     soldPercent: dto.quota > 0 ? Math.min(Math.round((dto.soldQuantity / dto.quota) * 100), 100) : 0,
-    perCustomerLimit: dto.perCustomerLimit ?? null,
   };
 }
 
@@ -81,7 +79,6 @@ export interface VariantFlashPriceView {
   originalPriceLabel: string | null;
   discountPercent: number | null;
   availableQuantity: number;
-  perCustomerLimit: number | null;
   /** Mốc kết thúc theo giờ server (epoch ms); client ẩn giá flash khi đã qua. */
   endsAtMs: number;
 }
@@ -107,7 +104,6 @@ export function toVariantFlashPrices(
         originalPriceLabel: deal.originalPrice !== null ? formatVnd(deal.originalPrice) : null,
         discountPercent: deal.discountPercent,
         availableQuantity: deal.availableQuantity,
-        perCustomerLimit: deal.perCustomerLimit,
         endsAtMs: view.endsAtMs,
       };
     }

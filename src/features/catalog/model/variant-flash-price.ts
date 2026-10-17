@@ -9,7 +9,6 @@ export interface VariantFlashPrice {
   originalPriceLabel: string | null;
   discountPercent: number | null;
   availableQuantity: number;
-  perCustomerLimit: number | null;
   /** Epoch ms theo giờ server; qua mốc này thì quay về giá niêm yết. */
   endsAtMs: number;
 }

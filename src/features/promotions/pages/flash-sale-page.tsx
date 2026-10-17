@@ -5,6 +5,7 @@ import { ArrowRight, Clock, Flame, RefreshCw } from 'lucide-react';
 import { Button, buttonVariants } from '@/foundation/components/buttons';
 import { EmptyState } from '@/foundation/components/feedback';
 import { Breadcrumb } from '@/foundation/components/navigation';
+import { FlashSaleCountdownTimer } from '../components/flash-sale-countdown';
 import { FLASH_SALE_FOCUS_RING, FlashSaleDealCard, FlashSaleDealCardSkeleton } from '../components/flash-sale-deal-card';
 import { useFlashSale } from '../hooks/use-flash-sale';
 import { useFlashSaleCart } from '../hooks/use-flash-sale-cart';
@@ -12,10 +13,6 @@ import { useFlashSaleCart } from '../hooks/use-flash-sale-cart';
 const PILL = `rounded-full px-5 ${FLASH_SALE_FOCUS_RING}`;
 const PRODUCTS_HREF = '/products';
 const PRODUCTS_LABEL = 'Xem tất cả sản phẩm';
-
-function pad(value: number): string {
-  return String(value).padStart(2, '0');
-}
 
 export function FlashSalePage() {
   const { addToCart, buyNow } = useFlashSaleCart();
@@ -42,25 +39,12 @@ export function FlashSalePage() {
             </div>
 
             {countdown.finished ? null : (
-              <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
-                <span className="flex items-center gap-1.5 text-xs font-semibold text-neutral-500">
+              <div className="flex items-center justify-between gap-4 rounded-2xl border border-brand-100 bg-brand-50 px-4 py-3 md:justify-start">
+                <span className="flex items-center gap-1.5 text-xs font-semibold text-brand-700">
                   <Clock className="size-4" aria-hidden="true" />
-                  Kết thúc trong:
+                  Kết thúc sau
                 </span>
-                <div
-                  className="flex items-center gap-1.5 font-mono text-sm font-bold sm:text-base"
-                  role="timer"
-                  aria-label={`Còn ${countdown.hours} giờ ${countdown.minutes} phút`}
-                >
-                  {[countdown.hours, countdown.minutes, countdown.seconds].map((value, index) => (
-                    <span key={index} className="contents">
-                      {index > 0 ? <span className="font-bold text-neutral-400" aria-hidden="true">:</span> : null}
-                      <span className="grid size-9 place-items-center rounded-lg bg-neutral-950 text-white sm:size-10">
-                        {pad(value)}
-                      </span>
-                    </span>
-                  ))}
-                </div>
+                <FlashSaleCountdownTimer countdown={countdown} tone="light" />
               </div>
             )}
           </div>

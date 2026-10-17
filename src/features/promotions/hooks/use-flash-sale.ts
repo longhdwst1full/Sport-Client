@@ -8,26 +8,13 @@ import {
   toFlashSaleCampaignView,
   type FlashSaleCampaignView,
 } from '../model/flash-sale.mapper';
+import {
+  FLASH_SALE_COUNTDOWN_ZERO,
+  splitRemaining,
+  type FlashSaleCountdown,
+} from '../model/flash-sale-countdown';
 
-export interface FlashSaleCountdown {
-  hours: number;
-  minutes: number;
-  seconds: number;
-  finished: boolean;
-}
-
-const ZERO: FlashSaleCountdown = { hours: 0, minutes: 0, seconds: 0, finished: true };
-
-function splitRemaining(remainingMs: number): FlashSaleCountdown {
-  if (remainingMs <= 0) return ZERO;
-  const totalSeconds = Math.floor(remainingMs / 1000);
-  return {
-    hours: Math.floor(totalSeconds / 3600),
-    minutes: Math.floor((totalSeconds % 3600) / 60),
-    seconds: totalSeconds % 60,
-    finished: false,
-  };
-}
+export type { FlashSaleCountdown } from '../model/flash-sale-countdown';
 
 /**
  * Dữ liệu chiến dịch, KHÔNG có đồng hồ — cho lối vào (header, menu, banner) chỉ cần biết có chương
@@ -98,7 +85,7 @@ export function useFlashSale({ initialData }: { initialData?: PublicFlashSaleLis
 } {
   const { campaigns, serverTime, refetch, isPending, isError } = useFlashSaleCampaigns({ live: true, initialData });
   const clockOffsetRef = useRef(0);
-  const [countdown, setCountdown] = useState<FlashSaleCountdown>(ZERO);
+  const [countdown, setCountdown] = useState<FlashSaleCountdown>(FLASH_SALE_COUNTDOWN_ZERO);
 
   // Đồng hồ đếm ngược bám chiến dịch kết thúc sớm nhất (API đã sắp theo endsAt).
   const campaign = campaigns[0];
@@ -112,7 +99,7 @@ export function useFlashSale({ initialData }: { initialData?: PublicFlashSaleLis
 
   useEffect(() => {
     if (!endsAtMs) {
-      setCountdown(ZERO);
+      setCountdown(FLASH_SALE_COUNTDOWN_ZERO);
       return;
     }
     let expiredHandled = false;

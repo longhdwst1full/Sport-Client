@@ -3,16 +3,13 @@
 import Link from 'next/link';
 import { ArrowRight, Flame, Zap } from 'lucide-react';
 import type { PublicFlashSaleListDto } from '@/generated/api/promotions/promotions.schemas';
+import { FlashSaleCountdownTimer } from './flash-sale-countdown';
 import { FlashSaleDealCard } from './flash-sale-deal-card';
 import { useFlashSale } from '../hooks/use-flash-sale';
 import { useFlashSaleCart } from '../hooks/use-flash-sale-cart';
 
 /** Số thẻ đầu được `priority` khi khối nằm ở màn hình đầu (2 cột mobile → hàng đầu). */
 const PRIORITY_CARD_COUNT = 2;
-
-function pad(value: number): string {
-  return String(value).padStart(2, '0');
-}
 
 export function FlashSaleSection({
   initialData,
@@ -35,45 +32,42 @@ export function FlashSaleSection({
       <div className="page-container">
         <div className="overflow-hidden rounded-2xl border border-brand-200 bg-white shadow-sm">
           {/* Dải tiêu đề đỏ nhận diện flash sale + đồng hồ đếm ngược theo giờ server. */}
-          <div className="flex flex-col gap-3 bg-brand-600 px-4 py-4 text-white sm:flex-row sm:items-center sm:justify-between sm:px-6">
-            <div className="min-w-0">
-              <p className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-eyebrow text-amber-300">
-                <Zap className="size-4 fill-amber-300" aria-hidden="true" />
-                Flash sale
-                <span className="relative ml-1 flex size-2" aria-hidden="true">
-                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-amber-300 opacity-75" />
-                  <span className="relative inline-flex size-2 rounded-full bg-amber-300" />
-                </span>
-                Đang diễn ra
-              </p>
-              <h2 id="flash-sale-heading" className="mt-1 flex items-center gap-2 text-xl font-bold leading-tight sm:text-2xl">
-                <Flame className="size-6 shrink-0 animate-bounce text-amber-300" aria-hidden="true" />
-                <span className="truncate">{campaign.name}</span>
-              </h2>
-              {campaign.description ? (
-                <p className="mt-1 line-clamp-1 text-sm text-white/85">{campaign.description}</p>
-              ) : null}
-            </div>
-
-            {countdown.finished ? null : (
-              <div className="flex shrink-0 items-center gap-2">
-                <span className="text-xs font-semibold text-white/85">Kết thúc sau</span>
-                <div
-                  className="flex items-center gap-1 font-mono text-base font-bold sm:text-lg"
-                  role="timer"
-                  aria-label={`Còn ${countdown.hours} giờ ${countdown.minutes} phút`}
-                >
-                  {[countdown.hours, countdown.minutes, countdown.seconds].map((value, index) => (
-                    <span key={index} className="contents">
-                      {index > 0 ? <span className="text-white/70" aria-hidden="true">:</span> : null}
-                      <span className="grid h-9 min-w-9 place-items-center rounded-lg bg-white px-1 text-brand-700 shadow-sm sm:h-10 sm:min-w-10">
-                        {pad(value)}
-                      </span>
-                    </span>
-                  ))}
-                </div>
+          <div className="relative overflow-hidden bg-gradient-to-br from-brand-500 via-brand-600 to-brand-700 px-4 py-4 text-white sm:px-6 sm:py-5">
+            {/* Vệt sáng trang trí, không bắt sự kiện. */}
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute -right-16 -top-20 size-56 rounded-full bg-white/10 blur-2xl"
+            />
+            <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="min-w-0">
+                <p className="inline-flex items-center gap-1.5 rounded-full bg-black/15 px-2.5 py-1 text-2xs font-bold uppercase tracking-eyebrow text-amber-300">
+                  <Zap className="size-3.5 fill-amber-300" aria-hidden="true" />
+                  Flash sale
+                  <span className="relative ml-0.5 flex size-2" aria-hidden="true">
+                    <span className="absolute inline-flex size-full animate-ping rounded-full bg-amber-300 opacity-75" />
+                    <span className="relative inline-flex size-2 rounded-full bg-amber-300" />
+                  </span>
+                  <span className="text-white/90">Đang diễn ra</span>
+                </p>
+                <h2 id="flash-sale-heading" className="mt-2 flex items-center gap-2 text-xl font-bold leading-tight sm:text-2xl">
+                  <Flame className="size-6 shrink-0 text-amber-300" aria-hidden="true" />
+                  <span className="truncate">{campaign.name}</span>
+                </h2>
+                {campaign.description ? (
+                  <p className="mt-1 line-clamp-1 text-sm text-white/85">{campaign.description}</p>
+                ) : null}
               </div>
-            )}
+
+              {countdown.finished ? null : (
+                <div className="flex shrink-0 items-center justify-between gap-3 rounded-xl bg-black/15 px-3 py-2.5 sm:justify-start">
+                  <span className="text-xs font-semibold leading-tight text-white/90">
+                    Kết thúc
+                    <br className="hidden sm:block" /> sau
+                  </span>
+                  <FlashSaleCountdownTimer countdown={countdown} tone="onBrand" />
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3 p-3 sm:gap-4 sm:p-5 lg:grid-cols-4">
