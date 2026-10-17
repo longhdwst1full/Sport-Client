@@ -42,6 +42,8 @@ export function toLocalCartItems(cart: CartDto): CartItem[] {
     name: item.name === item.productName ? item.productName : `${item.productName} — ${item.name}`,
     imageUrl: item.imageUrl ?? undefined,
     price: Number(item.unitPricePreview ?? 0),
+    // Giá preview của giỏ server là giá niêm yết hiện hành (không áp flash).
+    regularPrice: item.unitPricePreview ? Number(item.unitPricePreview) : undefined,
     quantity: item.quantity,
   }));
 }

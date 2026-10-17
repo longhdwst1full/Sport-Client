@@ -32,26 +32,29 @@ export interface CartLinePrice {
  * INVARIANT (khớp `CheckoutService.snapshotItems`): giá flash áp cho tối đa số suất còn lại; phần vượt
  * tách thành phần giá thường (checkout trả hai dòng). `price` của dòng giỏ là ảnh chụp lúc thêm (có thể
  * là giá flash), nên phần giá thường dùng `regularPrice` của suất.
- * Chưa có dữ liệu suất (`promos` null), biến thể không trong chiến dịch hoặc đã hết giờ → giữ ảnh chụp;
- * số cuối cùng luôn do báo giá checkout chốt.
+ * Biến thể không trong chiến dịch hoặc đã hết giờ → giá niêm yết đã lưu (`regularPrice`, nếu có); chưa có
+ * dữ liệu suất (`promos` null) → giữ ảnh chụp. Số cuối cùng luôn do báo giá checkout chốt.
  */
 export function resolveCartLinePrice(
-  item: { variantId: string; price: number; quantity: number },
+  item: { variantId: string; price: number; quantity: number; regularPrice?: number },
   promos: CartPromoPrices | null,
   now: number,
 ): CartLinePrice {
   const promo = promos?.[item.variantId];
   if (!promo || promo.endsAtMs <= now) {
+    // Đã biết danh sách suất (`promos` khác null) mà biến thể không còn suất → chiến dịch đã đóng: dòng thêm
+    // với giá flash về giá niêm yết. Chưa biết (null) → giữ ảnh chụp, tránh nháy giá lúc đang tải.
+    const unit = promos ? (item.regularPrice ?? item.price) : item.price;
     return {
-      lineTotal: item.price * item.quantity,
+      lineTotal: unit * item.quantity,
       promo: null,
       flashQuantity: 0,
-      flashUnitPrice: item.price,
+      flashUnitPrice: unit,
       regularQuantity: item.quantity,
-      regularUnitPrice: item.price,
+      regularUnitPrice: unit,
     };
   }
-  const regularUnitPrice = promo.regularPrice ?? item.price;
+  const regularUnitPrice = promo.regularPrice ?? item.regularPrice ?? item.price;
   const flashQuantity = Math.min(Math.max(promo.maxQuantity, 0), item.quantity);
   const regularQuantity = item.quantity - flashQuantity;
   return {

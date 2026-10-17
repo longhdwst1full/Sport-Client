@@ -28,6 +28,7 @@ function useAddDefaultVariant() {
         slug: product.slug,
         imageUrl: product.imageUrl,
         price: flash?.price ?? product.numericPrice,
+        regularPrice: product.numericPrice || undefined,
         quantity: 1,
       });
       return true;

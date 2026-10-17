@@ -1,10 +1,10 @@
 # Storefront Cart — maintenance note
 
-> **Document version:** 2.3.0
+> **Document version:** 2.4.0
 >
 > **Last updated:** 2026-10-17
 >
-> **Change summary:** Vượt suất flash: giỏ tách 2 phần (trong suất giá flash + phần dư giá gốc) khớp checkout tách dòng; bỏ nút "giữ giá flash"; toast nêu số lượng mỗi phần.
+> **Change summary:** `CartItem.regularPrice` (giá niêm yết lúc thêm, lưu localStorage); chiến dịch đóng → dòng thêm với giá flash về giá niêm yết; sửa hydration làm rơi `slug`.
 
 ## Phạm vi
 
@@ -70,6 +70,7 @@ Persist allowlist: `productId, variantId, sku, productType, name, price, quantit
 
 | Version | Date | Change summary |
 | --- | --- | --- |
+| 2.4.0 | 2026-10-17 | `CartItem.regularPrice` (giá niêm yết lúc thêm, lưu localStorage); chiến dịch đóng → dòng thêm với giá flash về giá niêm yết; sửa hydration làm rơi `slug`. |
 | 2.3.0 | 2026-10-17 | Vượt suất flash: giỏ tách 2 phần (trong suất giá flash + phần dư giá gốc) khớp checkout tách dòng; bỏ nút "giữ giá flash"; toast nêu số lượng mỗi phần. |
 | 2.2.0 | 2026-10-17 | Thêm `resolveCartLinePrice` (luật vượt suất của `CheckoutService.snapshotItems`), `CartPromoPriceProvider`/`useCartLinePricing`; dòng giỏ hiện giá flash/giá thường, cảnh báo và nút "Giảm về N để giữ giá flash", toast khi vượt ngưỡng. |
 | 2.1.0 | 2026-10-06 | Giỏ hiển thị tạm tính; phí vận chuyển/tổng thanh toán ở checkout. |

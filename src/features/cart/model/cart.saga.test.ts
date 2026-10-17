@@ -16,9 +16,21 @@ describe('readPersistedCart', () => {
             sku: 'TA-5KG',
             productType: 'STANDARD',
             name: 'Tạ tay',
-            price: 450_000,
+            slug: 'ta-tay',
+            price: 400_000,
+            regularPrice: 450_000,
             quantity: 2,
             customerEmail: 'x@y.z',
+          },
+          {
+            productId: 'product-3',
+            variantId: 'variant-3',
+            sku: 'BONG',
+            productType: 'STANDARD',
+            name: 'Bóng',
+            price: 100_000,
+            regularPrice: 'abc',
+            quantity: 1,
           },
           { productId: 'product-2', name: 'Thảm', price: 200_000 },
         ]),
@@ -33,9 +45,13 @@ describe('readPersistedCart', () => {
         sku: 'TA-5KG',
         productType: 'STANDARD',
         name: 'Tạ tay',
-        price: 450_000,
+        slug: 'ta-tay',
+        price: 400_000,
+        regularPrice: 450_000,
         quantity: 2,
       },
+      // regularPrice sai kiểu bị bỏ, dòng vẫn giữ.
+      { productId: 'product-3', variantId: 'variant-3', sku: 'BONG', productType: 'STANDARD', name: 'Bóng', price: 100_000, quantity: 1 },
     ]);
     expect(removeItem).not.toHaveBeenCalled();
   });

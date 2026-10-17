@@ -104,6 +104,7 @@ export function ProductPurchasePanel({
       slug: product.slug,
       imageUrl: product.imageUrl ?? undefined,
       price,
+      regularPrice: selectedVariant.priceAmount ?? undefined,
       quantity,
     });
     return true;

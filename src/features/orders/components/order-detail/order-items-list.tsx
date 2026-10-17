@@ -7,15 +7,14 @@ import { ORDER_STATUS } from '../../model/order.constants';
 
 import { Button } from '@/foundation/components/buttons';
 
-type ReorderItem = { id: string; sku: string; productName: string; imageUrl: string | null; quantity: number };
-
 export type OrderItemsListProps = {
   view: OrderDetailView | undefined;
   order: OrderDetailDto;
   isAuthenticated: boolean;
   submittedReviewItems: Set<string>;
   onReview: (item: { id: string; productName: string }) => void;
-  onReorderItem: (item: ReorderItem, unitPrice: number) => void;
+  /** Mua lại một dòng (theo id dòng đơn). */
+  onReorderItem: (orderItemId: string) => void;
 };
 
 /** Nút phụ nhỏ của dòng sản phẩm (đánh giá / mua lại): giữ vùng chạm 44px. */
@@ -89,7 +88,7 @@ export function OrderItemsList({
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => onReorderItem(item, Number(order.items.find((i) => i.id === item.id)?.unitPrice) || 0)}
+                  onClick={() => onReorderItem(item.id)}
                   className={`${ITEM_ACTION_CLASS} border-neutral-200 text-neutral-700 hover:border-neutral-200 hover:bg-neutral-50 hover:text-neutral-700`}
                   title="Thêm vào giỏ hàng để mua lại"
                 >

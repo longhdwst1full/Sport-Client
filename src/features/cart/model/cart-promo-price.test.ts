@@ -31,4 +31,14 @@ describe('resolveCartLinePrice', () => {
     expect(resolveCartLinePrice({ variantId: 'v1', price: 80, quantity: 4 }, promos, NOW + 5).lineTotal).toBe(320);
     expect(resolveCartLinePrice({ variantId: 'v1', price: 80, quantity: 4 }, null, NOW).lineTotal).toBe(320);
   });
+
+  it('chiến dịch đã đóng (biến thể không còn trong danh sách suất) → về giá niêm yết đã lưu', () => {
+    const item = { variantId: 'v1', price: 80, regularPrice: 100, quantity: 2 };
+    expect(resolveCartLinePrice(item, {}, NOW)).toMatchObject({ lineTotal: 200, promo: null });
+    // Chưa tải danh sách suất: giữ ảnh chụp, không nháy giá.
+    expect(resolveCartLinePrice(item, null, NOW).lineTotal).toBe(160);
+    // Suất không có giá thường → dùng giá niêm yết đã lưu cho phần vượt suất.
+    const noRegular = { v1: { ...promos.v1, regularPrice: null } };
+    expect(resolveCartLinePrice({ ...item, quantity: 3 }, noRegular, NOW).lineTotal).toBe(2 * 80 + 100);
+  });
 });

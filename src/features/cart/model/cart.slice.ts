@@ -8,7 +8,13 @@ export type CartItem = {
   name: string;
   slug?: string;
   imageUrl?: string;
+  /** Ảnh chụp giá lúc thêm (có thể là giá flash). Chỉ để hiển thị; checkout báo giá lại. */
   price: number;
+  /**
+   * Giá niêm yết lúc thêm. Dòng thêm với giá flash cần nó để hiện đúng giá khi suất hết/chiến dịch đóng
+   * (`resolveCartLinePrice`). Thiếu (giỏ cũ, mua lại) → dùng `price`.
+   */
+  regularPrice?: number;
   quantity: number;
 };
 
@@ -30,7 +36,10 @@ export const cartSlice = createSlice({
     ) => {
       const qty = action.payload.quantity ?? 1;
       const existing = state.items.find((item) => item.variantId === action.payload.variantId);
-      if (existing) existing.quantity = clampQuantity(existing.quantity + qty);
+      if (existing) {
+        existing.quantity = clampQuantity(existing.quantity + qty);
+        if (action.payload.regularPrice !== undefined) existing.regularPrice = action.payload.regularPrice;
+      }
       else state.items.push({ ...action.payload, quantity: clampQuantity(qty) });
     },
     updateQuantity: (state, action: PayloadAction<{ variantId: string; quantity: number }>) => {

@@ -11,7 +11,7 @@ export function CartPromoPriceProvider({ prices, children }: { prices: CartPromo
 }
 
 /** Hàm tính đơn giá/thành tiền của một dòng theo đúng luật suất flash của checkout. */
-export function useCartLinePricing(): (item: { variantId: string; price: number; quantity: number }) => CartLinePrice {
+export function useCartLinePricing(): (item: { variantId: string; price: number; quantity: number; regularPrice?: number }) => CartLinePrice {
   const promos = useContext(CartPromoPriceContext);
   return useCallback((item) => resolveCartLinePrice(item, promos, Date.now()), [promos]);
 }

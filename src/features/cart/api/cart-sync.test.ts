@@ -66,6 +66,7 @@ describe('cart sync across devices', () => {
       name: 'Tạ tay — Mặc định',
       imageUrl: undefined,
       price: 450000,
+      regularPrice: 450000,
       quantity: 2,
     }]);
   });

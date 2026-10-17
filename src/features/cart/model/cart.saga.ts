@@ -22,13 +22,16 @@ const cartStore = createBrowserStore<CartItem[]>(CART_STORAGE_KEY, {
     Array.isArray(parsed)
       ? parsed
           .filter(isCartItem)
-          .map(({ productId, variantId, sku, productType, name, price, quantity, imageUrl }) => ({
+          .map(({ productId, variantId, sku, productType, name, slug, price, regularPrice, quantity, imageUrl }) => ({
             productId,
             variantId,
             sku,
             productType,
             name,
+            // `slug` từng bị bỏ khi đọc lại: link dòng giỏ rơi về `/products/<productId>` sau khi tải lại trang.
+            slug: typeof slug === 'string' && slug ? slug : undefined,
             price,
+            regularPrice: typeof regularPrice === 'number' && Number.isFinite(regularPrice) && regularPrice > 0 ? regularPrice : undefined,
             quantity,
             imageUrl,
           }))

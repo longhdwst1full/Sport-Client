@@ -25,6 +25,7 @@ export function useFlashSaleCart() {
         sku: deal.sku,
         productType: 'STANDARD',
         price: deal.price,
+        regularPrice: deal.originalPrice ?? undefined,
         quantity: 1,
         imageUrl: deal.imageUrl ?? undefined,
         slug: deal.slug,
