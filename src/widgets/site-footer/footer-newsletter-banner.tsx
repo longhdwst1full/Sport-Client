@@ -50,7 +50,7 @@ export function FooterNewsletterBanner({ banner: footerBanner }: { banner?: Bann
               Cần tư vấn chọn thiết bị?
             </h2>
             <p className="mt-1.5 text-xs sm:text-sm font-medium text-neutral-300">
-              Nhân viên {STORE_CONFIG.name} tư vấn trực tiếp 1:1, hỗ trợ {STORE_CONTACT.openingHoursShort}.
+              Nhân viên {STORE_CONFIG.name} tư vấn trực tiếp, hỗ trợ {STORE_CONTACT.openingHoursShort}.
             </p>
             <ContactActions tone="dark" className="mt-4" />
           </div>
