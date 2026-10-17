@@ -92,8 +92,17 @@ export async function ProductsPage({
             </p>
           </div>
 
-          {/* Thin Trust Benefits Bar */}
-          <ul className="mt-5 grid grid-cols-2 gap-2 rounded-2xl border border-neutral-200/90 bg-white p-1.5 shadow-2xs lg:grid-cols-4">
+
+          {/* Interactive Products Catalog View */}
+          <div className="mt-6">
+            {/* Không bọc Suspense: route đọc `searchParams` nên luôn render động, `useSearchParams` có sẵn
+                ở server. Bọc Suspense làm lưới bị stream SAU footer trong HTML (crawler đọc footer trước
+                sản phẩm) dù trên màn hình vẫn đúng thứ tự. */}
+            <ProductsCatalogView initial={initial} initialCategoryName={initialCategoryName} />
+          </div>
+
+          {/* Cam kết dịch vụ: đặt sau lưới để sản phẩm lên trước, khách xem xong mới đọc cam kết. */}
+          <ul className="mt-12 grid grid-cols-2 gap-2 rounded-2xl border border-neutral-200/90 bg-white p-1.5 shadow-2xs lg:grid-cols-4">
             {CATALOG_PROMISES.map(({ href, icon: Icon, label, iconClassName }) => (
               <li key={href}>
                 <Link
@@ -106,14 +115,6 @@ export async function ProductsPage({
               </li>
             ))}
           </ul>
-
-          {/* Interactive Products Catalog View */}
-          <div className="mt-10">
-            {/* Không bọc Suspense: route đọc `searchParams` nên luôn render động, `useSearchParams` có sẵn
-                ở server. Bọc Suspense làm lưới bị stream SAU footer trong HTML (crawler đọc footer trước
-                sản phẩm) dù trên màn hình vẫn đúng thứ tự. */}
-            <ProductsCatalogView initial={initial} initialCategoryName={initialCategoryName} />
-          </div>
 
           {/* Flash Deals Banner for Catalog */}
           <div className="mt-16 overflow-hidden rounded-4xl">

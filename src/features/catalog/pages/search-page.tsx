@@ -99,7 +99,7 @@ function SearchPageSkeleton() {
         <Skeleton className="mb-6 h-4 w-48 rounded" />
         <Skeleton className="h-32 rounded-3xl" />
         <div className="mt-10 grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3 lg:grid-cols-4">
-          {Array.from({ length: 8 }, (_, i) => (
+          {Array.from({ length: 12 }, (_, i) => (
             <ProductCardSkeleton key={i} />
           ))}
         </div>

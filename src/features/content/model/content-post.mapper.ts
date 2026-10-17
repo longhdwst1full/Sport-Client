@@ -46,7 +46,11 @@ export const EDITORIAL_POST_TYPES = ['PRODUCT_GUIDE', 'TRAINING_GUIDE', 'NEWS'] 
  * Số bài mỗi lượt tải của `/news` (server lấy trang 1, client "Xem thêm" các trang sau); khớp lưới
  * 3 cột x 4 hàng. Đặt ở model, không ở hook `'use client'`, để route server import được giá trị thật.
  */
-export const NEWS_PAGE_SIZE = 12;
+/**
+ * 13 = 1 bài nổi bật + 12 bài lưới (BCNN của 2/3 cột): trang đầu lấp đủ hàng. Các lần "Xem thêm"
+ * sau, `trimToFullRows` ẩn hàng lẻ tới khi tải hết.
+ */
+export const NEWS_PAGE_SIZE = 13;
 
 /** Bỏ trang chính sách (có route riêng) khỏi danh sách bài viết. */
 export function toNewsPostViews(items: ContentPostSummaryDto[]): ContentPostView[] {

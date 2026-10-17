@@ -5,11 +5,14 @@ import Link from 'next/link';
 import { ArrowRight, Calendar, ChevronRight, Clock, RefreshCw } from 'lucide-react';
 import { Button } from '@/foundation/components/buttons';
 import { EmptyState, Skeleton, SkeletonText } from '@/foundation/components/feedback';
+import { trimToFullRows } from '@/shared/grid/full-rows';
 import { CoverImage } from './cover-image';
 import { usePaginatedContentPosts } from '../hooks/use-paginated-content-posts';
 import { CONTENT_POST_TYPE_LABELS, type ContentPostView, EDITORIAL_POST_TYPES } from '../model/content-post.mapper';
 
 const ALL_CATEGORY = 'ALL';
+/** BCNN số cột 2/3 của lưới bài viết. */
+const NEWS_GRID_ROW_MULTIPLE = 6;
 const FOCUS_RING =
   'focus-ring';
 
@@ -37,7 +40,8 @@ export function NewsListFeed({
 
   const featured = selectedCat === ALL_CATEGORY ? articles[0] : undefined;
   // Bài nổi bật đã hiện to ở trên thì lưới không lặp lại nó.
-  const gridItems = featured ? filtered.slice(1) : filtered;
+  // Lưới 2/3 cột: còn trang sau thì ẩn hàng lẻ cuối (hiện lại khi tải thêm).
+  const gridItems = trimToFullRows(featured ? filtered.slice(1) : filtered, NEWS_GRID_ROW_MULTIPLE, hasMore);
 
   return (
     <>

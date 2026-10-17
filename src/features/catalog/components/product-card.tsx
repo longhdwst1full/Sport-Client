@@ -4,7 +4,7 @@ import { Reveal } from '@/foundation/components/motion';
 import React, { memo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Zap, Sparkles } from 'lucide-react';
+import { ShoppingCart, Zap, Sparkles } from 'lucide-react';
 import { Button } from '@/foundation/components/buttons';
 import { Skeleton } from '@/foundation/components/feedback';
 import type { ProductShowcaseItem } from '../model/product.mapper';
@@ -12,6 +12,8 @@ import type { ProductShowcaseItem } from '../model/product.mapper';
 export interface ProductCardProps {
   product: ProductShowcaseItem;
   onBuyNow?: (product: ProductShowcaseItem, e: React.MouseEvent) => void;
+  /** Có thì hiện nút giỏ dạng icon cạnh "Mua ngay". */
+  onAddToCart?: (product: ProductShowcaseItem, e: React.MouseEvent) => void;
   priority?: boolean;
 }
 
@@ -23,8 +25,10 @@ export interface ProductCardProps {
 export const ProductCard = memo(function ProductCard({
   product,
   onBuyNow,
+  onAddToCart,
   priority = false,
 }: ProductCardProps) {
+  const unavailable = !product.hasPrice || product.inStock === false;
   const handleBuy = (e: React.MouseEvent) => {
     // Confetti chỉ tải khi khách bấm mua (dynamic import), không nằm trong JS tải trang.
     void import('canvas-confetti').then(({ default: confetti }) =>
@@ -115,26 +119,40 @@ export const ProductCard = memo(function ProductCard({
             </div>
 
             {onBuyNow && (
-              <Button
-                variant="cta"
-                fullWidth
-                onClick={handleBuy}
-                disabled={!product.hasPrice || product.inStock === false}
-                className="relative z-10 mt-3.5 gap-1.5 px-4 text-xs sm:text-sm disabled:bg-neutral-100 disabled:text-neutral-400"
-                title={
-                  product.inStock === false
-                    ? 'Sản phẩm tạm hết hàng'
-                    : !product.hasPrice
-                      ? 'Sản phẩm chưa có giá'
-                      : product.isSellable
-                        ? 'Mua ngay'
-                        : 'Mở chi tiết để chọn phiên bản'
-                }
-                aria-label={`Mua ngay ${product.name}`}
-              >
-                <Zap aria-hidden className="size-4 fill-amber-300 text-amber-300 drop-shadow-xs shrink-0 animate-bounce" />
-                <span>{product.inStock === false ? 'Tạm hết hàng' : 'Mua ngay'}</span>
-              </Button>
+              <div className="relative z-10 mt-3.5 flex items-center gap-2">
+                {onAddToCart && (
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={(e) => onAddToCart(product, e)}
+                    disabled={unavailable}
+                    className="shrink-0"
+                    title={product.isSellable ? 'Thêm vào giỏ' : 'Mở chi tiết để chọn phiên bản'}
+                    aria-label={`Thêm ${product.name} vào giỏ`}
+                  >
+                    <ShoppingCart aria-hidden className="size-4" />
+                  </Button>
+                )}
+                <Button
+                  variant="cta"
+                  onClick={handleBuy}
+                  disabled={unavailable}
+                  className="h-11 min-w-0 flex-1 gap-1 px-2 text-xs font-bold sm:text-sm disabled:bg-neutral-100 disabled:text-neutral-400"
+                  title={
+                    product.inStock === false
+                      ? 'Sản phẩm tạm hết hàng'
+                      : !product.hasPrice
+                        ? 'Sản phẩm chưa có giá'
+                        : product.isSellable
+                          ? 'Mua ngay'
+                          : 'Mở chi tiết để chọn phiên bản'
+                  }
+                  aria-label={`Mua ngay ${product.name}`}
+                >
+                  <Zap aria-hidden className="hidden size-4 shrink-0 sm:block" />
+                  <span className="truncate">{product.inStock === false ? 'Tạm hết hàng' : 'Mua ngay'}</span>
+                </Button>
+              </div>
             )}
           </div>
         </div>

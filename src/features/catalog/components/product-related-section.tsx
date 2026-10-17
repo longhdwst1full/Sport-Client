@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, Sparkles, Zap } from 'lucide-react';
 import { buttonVariants } from '@/foundation/components/buttons';
-import { useCardBuyNow } from '../hooks/use-card-buy-now';
+import { useCardAddToCart, useCardBuyNow } from '../hooks/use-card-buy-now';
 import { ProductCard, ProductCardSkeleton } from './product-card';
 import { useProductShowcase } from '../hooks/use-product-showcase';
 
@@ -30,6 +30,7 @@ export function ProductRelatedSection({
   categorySlug?: string;
 }) {
   const handleBuyNow = useCardBuyNow();
+  const handleAddToCart = useCardAddToCart();
   // Lấy dư một sản phẩm vì sản phẩm đang xem có thể nằm trong trang đầu của chính danh mục đó.
   const { products, isPending, isError } = useProductShowcase(categorySlug, undefined, {
     pageSize: RELATED_LIMIT + 1,
@@ -71,7 +72,8 @@ export function ProductRelatedSection({
         </Link>
       </div>
 
-      <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3 lg:grid-cols-4">
+      {/* 4 thẻ: 2 hoặc 4 cột (không có bước 3 cột, sẽ lẻ 1 thẻ). */}
+      <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
         {isPending
           ? Array.from({ length: 4 }, (_, index) => <ProductCardSkeleton key={index} />)
           : related.map((product) => (
@@ -79,6 +81,7 @@ export function ProductRelatedSection({
                 key={product.id}
                 product={product}
                 onBuyNow={handleBuyNow}
+                onAddToCart={handleAddToCart}
               />
             ))}
       </div>

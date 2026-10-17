@@ -14,7 +14,11 @@ import { PRODUCT_PLACEHOLDER_IMAGE } from '@/shared/constants';
  * thay vì nới `limit`. Đặt ở model (không có `'use client'`) để server component trang chủ
  * lấy trước đúng trang đầu mà hook client sẽ dùng.
  */
-export const CATALOG_PAGE_SIZE = { SHOWCASE: 8, SCOPED: 9, MAX: 100 } as const;
+/**
+ * 12 = BCNN của 2/3/4 cột (lưới sản phẩm đổi số cột theo màn hình): mỗi trang và mỗi lần "Xem thêm"
+ * đều lấp đầy hàng, không còn thẻ lẻ loi xuống dòng (8/9 trước đây lẻ ở lưới 3 hoặc 4 cột).
+ */
+export const CATALOG_PAGE_SIZE = { SHOWCASE: 12, SCOPED: 12, MAX: 100 } as const;
 
 /**
  * Giá tối thiểu có bán được không. Null/rỗng/0 đều là "chưa có bảng giá hiệu lực":

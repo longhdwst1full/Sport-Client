@@ -5,7 +5,8 @@ import { ChevronDown, RotateCcw, Search } from 'lucide-react';
 import { Button } from '@/foundation/components/buttons';
 import { EmptyState, InlineAlert } from '@/foundation/components/feedback';
 import type { ProductShowcaseItem } from '../../model/product.mapper';
-import { useCardBuyNow } from '../../hooks/use-card-buy-now';
+import { trimToFullRows } from '@/shared/grid/full-rows';
+import { useCardAddToCart, useCardBuyNow } from '../../hooks/use-card-buy-now';
 import { ProductCard, ProductCardSkeleton } from '../product-card';
 
 /** Props trạng thái trùng tên với kết quả `useProductShowcase` để nơi gọi spread thẳng. */
@@ -30,6 +31,8 @@ interface CatalogProductGridProps {
 }
 
 const GRID_CLASS = 'grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 xl:grid-cols-4';
+/** BCNN số cột 2/3/4 của mọi lưới sản phẩm dùng component này; cũng là số thẻ khung chờ. */
+const FULL_ROW_MULTIPLE = 12;
 
 export function CatalogProductGrid({
   isPending,
@@ -48,13 +51,16 @@ export function CatalogProductGrid({
   emptyState,
 }: CatalogProductGridProps) {
   const onBuyNow = useCardBuyNow();
+  const onAddToCart = useCardAddToCart();
   const hasProducts = products.length > 0;
+  // Còn trang sau thì không để thẻ lẻ ở hàng cuối; hết hàng thì hiện đủ.
+  const visibleProducts = trimToFullRows(products, FULL_ROW_MULTIPLE, hasMore);
 
   // RULE-SKEL-05: skeleton chỉ khi chưa có gì để hiện; có dữ liệu thì giữ lưới.
   if (!hasProducts && isPending) {
     return (
       <div className={gridClassName} role="status" aria-label="Đang tải danh sách sản phẩm">
-        {Array.from({ length: 8 }, (_, index) => (
+        {Array.from({ length: FULL_ROW_MULTIPLE }, (_, index) => (
           <ProductCardSkeleton key={index} />
         ))}
       </div>
@@ -123,8 +129,8 @@ export function CatalogProductGrid({
         className={`${gridClassName} transition-opacity ${isShowingPreviousResults ? 'opacity-60' : ''}`}
         aria-busy={isShowingPreviousResults}
       >
-        {products.map((product) => (
-          <ProductCard key={product.id} product={product} onBuyNow={onBuyNow} />
+        {visibleProducts.map((product) => (
+          <ProductCard key={product.id} product={product} onBuyNow={onBuyNow} onAddToCart={onAddToCart} />
         ))}
       </div>
 
@@ -132,7 +138,7 @@ export function CatalogProductGrid({
         <div className="mt-10 flex flex-col items-center gap-4">
           {isLoadingMore && (
             <div className={`${gridClassName} w-full`} aria-hidden="true">
-              {Array.from({ length: 4 }, (_, i) => (
+              {Array.from({ length: FULL_ROW_MULTIPLE }, (_, i) => (
                 <ProductCardSkeleton key={i} />
               ))}
             </div>
