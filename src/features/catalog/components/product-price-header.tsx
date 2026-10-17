@@ -1,7 +1,8 @@
 import Link from 'next/link';
-import { Zap } from 'lucide-react';
+import { Flame, Zap } from 'lucide-react';
 import { STORE_POLICY_FACTS, STORE_POLICY_PAGES } from '@/shared/constants';
 import { formatFlashEnd, type VariantFlashPrice } from '../model/variant-flash-price';
+import { useFlashCountdown } from '../hooks/use-flash-countdown';
 
 interface ProductPriceHeaderProps {
   canAdd: boolean;
@@ -17,33 +18,7 @@ export function ProductPriceHeader({ canAdd, outOfStock, inStock, priceLabel, fl
   if (flash && canAdd && priceLabel) {
     return (
       <div>
-        <div className="overflow-hidden rounded-2xl border border-brand-200 bg-brand-50">
-          <div className="flex items-center justify-between gap-2 bg-brand-600 px-4 py-2 text-white">
-            <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-eyebrow">
-              <Zap className="size-4 fill-amber-300 text-amber-300" aria-hidden="true" />
-              Flash sale
-            </span>
-            <span className="text-xs font-semibold text-white/90">Kết thúc {formatFlashEnd(flash.endsAtMs)}</span>
-          </div>
-          <div className="px-4 py-3">
-            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-              <strong className="break-words text-2xl font-bold text-brand-600 min-[400px]:text-3xl sm:text-4xl">
-                {priceLabel}
-              </strong>
-              {flash.originalPriceLabel ? (
-                <span className="text-base text-neutral-400 line-through">{flash.originalPriceLabel}</span>
-              ) : null}
-              {flash.discountPercent !== null ? (
-                <span className="rounded-full bg-brand-600 px-2 py-0.5 text-xs font-bold text-white">
-                  -{flash.discountPercent}%
-                </span>
-              ) : null}
-            </div>
-            <p className="mt-1.5 text-xs font-semibold text-neutral-600">
-              Còn {flash.availableQuantity} suất · Giá được xác nhận lại ở bước đặt hàng
-            </p>
-          </div>
-        </div>
+        <FlashPriceBlock flash={flash} priceLabel={priceLabel} />
         <ProductAvailability inStock={inStock} outOfStock={outOfStock} />
       </div>
     );
@@ -93,5 +68,87 @@ function ProductAvailability({ inStock, outOfStock }: { inStock: boolean; outOfS
         </span>
       </div>
     </>
+  );
+}
+
+function pad(value: number): string {
+  return String(value).padStart(2, '0');
+}
+
+/** Khối giá flash: dải đỏ + đồng hồ đếm ngược, giá flash/giá gạch/% giảm, thanh suất đã bán. */
+function FlashPriceBlock({ flash, priceLabel }: { flash: VariantFlashPrice; priceLabel: string }) {
+  const countdown = useFlashCountdown(flash.endsAtMs);
+  const units = countdown
+    ? [
+        ...(countdown.days > 0 ? [{ value: countdown.days, label: 'ngày' }] : []),
+        { value: countdown.hours, label: 'giờ' },
+        { value: countdown.minutes, label: 'phút' },
+        { value: countdown.seconds, label: 'giây' },
+      ]
+    : [];
+
+  return (
+    <div className="overflow-hidden rounded-2xl border border-brand-200 bg-gradient-to-b from-brand-50 to-white">
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 bg-brand-600 px-4 py-2.5 text-white">
+        <span className="inline-flex items-center gap-1.5 whitespace-nowrap text-sm font-bold uppercase tracking-eyebrow">
+          <Zap className="size-4 fill-amber-300 text-amber-300" aria-hidden="true" />
+          Flash sale
+        </span>
+        <div className="flex items-center gap-2 whitespace-nowrap">
+          <span className="text-xs font-semibold text-white/90">Kết thúc sau</span>
+          {countdown ? (
+            <span
+              className="flex items-center gap-1 font-mono text-sm font-bold"
+              role="timer"
+              aria-label={units.map(({ value, label }) => `${value} ${label}`).join(' ')}
+            >
+              {units.map(({ value, label }, index) => (
+                <span key={label} className="contents">
+                  {index > 0 ? <span className="text-white/70" aria-hidden="true">:</span> : null}
+                  <span className="grid h-7 min-w-7 place-items-center rounded-md bg-white px-1 text-brand-700" title={label}>
+                    {pad(value)}
+                  </span>
+                </span>
+              ))}
+            </span>
+          ) : (
+            <span className="text-xs font-bold">{formatFlashEnd(flash.endsAtMs)}</span>
+          )}
+        </div>
+      </div>
+
+      <div className="px-4 py-4">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+          <strong className="break-words text-3xl font-bold leading-none text-brand-600 sm:text-4xl">{priceLabel}</strong>
+          {flash.discountPercent !== null ? (
+            <span className="rounded-md bg-brand-600 px-2 py-1 text-sm font-bold leading-none text-white">
+              -{flash.discountPercent}%
+            </span>
+          ) : null}
+        </div>
+        {flash.originalPriceLabel ? (
+          <p className="mt-2 text-sm text-neutral-500">
+            Giá thường <span className="text-neutral-400 line-through">{flash.originalPriceLabel}</span>
+          </p>
+        ) : null}
+
+        <div
+          className="relative mt-3 h-5 w-full overflow-hidden rounded-full bg-brand-100"
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={flash.soldPercent}
+          aria-label={`Đã bán ${flash.soldPercent}% suất`}
+        >
+          <div className="h-full rounded-full bg-brand-500" style={{ width: `${Math.max(flash.soldPercent, 6)}%` }} />
+          <span className="absolute inset-0 flex items-center justify-center gap-1 text-2xs font-bold text-neutral-950">
+            <Flame className="size-3 text-brand-700" aria-hidden="true" />
+            Còn {flash.availableQuantity} suất · Đã bán {flash.soldPercent}%
+          </span>
+        </div>
+
+        <p className="mt-2 text-xs text-neutral-500">Giá được xác nhận lại ở bước đặt hàng</p>
+      </div>
+    </div>
   );
 }

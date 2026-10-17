@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCartActions } from '@/features/cart';
 import type { ProductPurchaseView } from '../model/product.mapper';
@@ -64,8 +64,12 @@ export function ProductPurchasePanel({
   // Không có giá thì không có "giá 0": giỏ và checkout sẽ báo giá lệch hẳn với màn này.
   // Giá flash của biến thể đang chọn. HTML ISR có thể cũ tới vài phút: sau khi mount mới so mốc kết
   // thúc với đồng hồ máy (trước đó giữ như server render để không lệch hydrate). Checkout vẫn báo giá lại.
-  const flashCandidate = selectedVariant?.sellable ? flashPrices?.[selectedVariant.id] : undefined;
-  const flash = flashCandidate && (!isMounted || flashCandidate.endsAtMs > Date.now()) ? flashCandidate : undefined;
+  const activeFlashPrices = useMemo(() => {
+    if (!flashPrices || !isMounted) return flashPrices;
+    const now = Date.now();
+    return Object.fromEntries(Object.entries(flashPrices).filter(([, deal]) => deal.endsAtMs > now));
+  }, [flashPrices, isMounted]);
+  const flash = selectedVariant?.sellable ? activeFlashPrices?.[selectedVariant.id] : undefined;
   const price = selectedVariant?.sellable ? (flash?.price ?? selectedVariant.priceAmount) : null;
   const priceLabel = flash?.priceLabel ?? selectedVariant?.priceLabel;
   const canAdd = Boolean(selectedVariant?.sellable && price !== null);
@@ -120,6 +124,7 @@ export function ProductPurchasePanel({
 
       {/* Variant Selector */}
       <VariantSelector
+        flashPrices={activeFlashPrices}
         variants={variants}
         selectedVariantId={selectedVariant?.id}
         onSelectVariant={setSelectedVariantId}

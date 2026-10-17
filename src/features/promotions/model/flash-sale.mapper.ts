@@ -79,6 +79,8 @@ export interface VariantFlashPriceView {
   originalPriceLabel: string | null;
   discountPercent: number | null;
   availableQuantity: number;
+  /** Phần trăm suất đã bán (thanh tiến trình). */
+  soldPercent: number;
   /** Mốc kết thúc theo giờ server (epoch ms); client ẩn giá flash khi đã qua. */
   endsAtMs: number;
 }
@@ -104,6 +106,7 @@ export function toVariantFlashPrices(
         originalPriceLabel: deal.originalPrice !== null ? formatVnd(deal.originalPrice) : null,
         discountPercent: deal.discountPercent,
         availableQuantity: deal.availableQuantity,
+        soldPercent: deal.soldPercent,
         endsAtMs: view.endsAtMs,
       };
     }

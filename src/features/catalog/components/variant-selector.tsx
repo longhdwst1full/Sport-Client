@@ -1,13 +1,16 @@
-import { Check } from 'lucide-react';
+import { Check, Zap } from 'lucide-react';
 import type { ProductVariantOptionView } from '../model/product.mapper';
+import type { VariantFlashPrices } from '../model/variant-flash-price';
 
 interface VariantSelectorProps {
   variants: ProductVariantOptionView[];
   selectedVariantId: string | undefined;
   onSelectVariant: (variantId: string) => void;
+  /** Giá flash đang mở theo biến thể; có thì hiện giá flash thay giá niêm yết. */
+  flashPrices?: VariantFlashPrices;
 }
 
-export function VariantSelector({ variants, selectedVariantId, onSelectVariant }: VariantSelectorProps) {
+export function VariantSelector({ variants, selectedVariantId, onSelectVariant, flashPrices }: VariantSelectorProps) {
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
@@ -21,6 +24,7 @@ export function VariantSelector({ variants, selectedVariantId, onSelectVariant }
       <div className="mt-3 grid gap-2.5">
         {variants.map((variant) => {
           const isSelected = variant.id === selectedVariantId;
+          const flash = variant.sellable ? flashPrices?.[variant.id] : undefined;
 
           return (
             <button
@@ -50,9 +54,20 @@ export function VariantSelector({ variants, selectedVariantId, onSelectVariant }
                 </div>
               </div>
               <div className="shrink-0 text-right">
-                <strong className="block text-sm font-bold text-ink">
-                  {variant.priceAmount !== null ? variant.priceLabel : 'Liên hệ'}
-                </strong>
+                {flash ? (
+                  <>
+                    <span className="inline-flex items-center gap-0.5 rounded-full bg-brand-600 px-1.5 py-0.5 text-3xs font-bold uppercase text-white">
+                      <Zap aria-hidden className="size-2.5 fill-amber-300 text-amber-300" />
+                      Flash
+                    </span>
+                    <strong className="mt-0.5 block text-sm font-bold text-brand-600">{flash.priceLabel}</strong>
+                    <span className="block text-2xs text-neutral-400 line-through">{variant.priceLabel}</span>
+                  </>
+                ) : (
+                  <strong className="block text-sm font-bold text-ink">
+                    {variant.priceAmount !== null ? variant.priceLabel : 'Liên hệ'}
+                  </strong>
+                )}
                 {!variant.sellable && (
                   <span className="text-2xs text-neutral-500">
                     {variant.inStock === false && variant.priceAmount !== null ? 'Tạm hết hàng' : 'Chưa mở bán online'}

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 import { BenefitsStrip } from '@/widgets/benefits-strip/benefits-strip';
 import { SectionHeading } from '@/foundation/components/structure/section-heading';
 import { ProductShowcase, toCategoryCardView, toCategoryRailView } from '@/features/catalog';
@@ -109,7 +110,7 @@ export async function HomePage({
 
         {/* Thứ tự: flash sale (nếu đang chạy) hoặc hero → rail danh mục → bán chạy → khối danh mục
             → tin cậy/showroom → tin tức. */}
-        {/* 1. Có flash sale đang chạy thì khối flash sale thay banner; không thì hero (banner CMS + bài viết). */}
+        {/* 1. Có flash sale đang chạy thì khối flash sale đứng đầu, hero (banner CMS + bài viết) ngay dưới; không thì chỉ hero. */}
         <HomeTopSection
           initialFlashSales={flashSales}
           banner={<HeroBannerSlider posts={heroPosts} heroBanners={heroBanners} promoBanners={promoBanners} />}
@@ -147,25 +148,31 @@ export async function HomePage({
             <Reveal {...HEADING_REVEAL}>
               <SectionHeading eyebrow="Tìm nhanh theo bộ môn" title="Bạn muốn tập luyện bộ môn nào?" />
             </Reveal>
-            {/* Thẻ sáng (không còn 4 khối tối liền nhau trước trust/smart-fit); mobile 2 cột gọn. */}
+            {/* Thẻ sáng: ô icon đỏ nhận diện, icon lớn mờ làm nền góc, "Xem ngay" trượt khi hover; mobile 2 cột. */}
             <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
               {sportCards.map(({ slug, title, itemCountLabel, icon: Icon }) => (
                 <Reveal key={slug} {...SECTION_REVEAL} variant="zoom-in" stagger className="flex">
                   <Link
                     href={`/category/${slug}`}
-                    className="group flex flex-col justify-between gap-3 rounded-2xl border border-neutral-200/80 bg-gradient-to-br from-white via-neutral-50/50 to-neutral-50 p-4 text-neutral-900 transition-all duration-300 hover:-translate-y-1 hover:border-neutral-300 hover:shadow-lg focus-ring sm:min-h-[160px] sm:p-6 flex-1"
+                    className="group relative flex flex-1 flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-white p-4 transition-all duration-300 hover:-translate-y-1 hover:border-brand-200 hover:shadow-card focus-ring sm:min-h-[180px] sm:p-6"
                   >
-                    <div className="flex items-center justify-between gap-2">
-                      <div className="grid size-10 place-items-center rounded-xl bg-neutral-100 text-neutral-800 border border-neutral-200/80 transition-transform duration-300 group-hover:scale-110 sm:size-12">
-                        <Icon className="size-5 sm:size-6" aria-hidden="true" />
-                      </div>
-                      <span className="rounded-full bg-white/90 border border-neutral-200/70 px-2.5 py-0.5 text-2xs font-bold text-neutral-600 shadow-2xs sm:text-xs">
-                        {itemCountLabel}
-                      </span>
+                    <Icon
+                      aria-hidden="true"
+                      className="pointer-events-none absolute -bottom-5 -right-5 size-24 text-neutral-100 transition-all duration-500 group-hover:-rotate-12 group-hover:scale-110 group-hover:text-brand-50 sm:size-32"
+                    />
+                    <span className="absolute inset-x-0 top-0 h-1 origin-left scale-x-0 bg-brand-600 transition-transform duration-300 group-hover:scale-x-100" aria-hidden="true" />
+
+                    <div className="relative grid size-11 place-items-center rounded-xl bg-brand-50 text-brand-600 transition-colors duration-300 group-hover:bg-brand-600 group-hover:text-white sm:size-14">
+                      <Icon className="size-5 sm:size-7" aria-hidden="true" />
                     </div>
 
-                    <div>
-                      <h3 className="text-sm font-bold leading-snug sm:text-xl text-neutral-900 group-hover:text-neutral-950 transition-colors">{title}</h3>
+                    <div className="relative mt-4 flex flex-1 flex-col sm:mt-6">
+                      <h3 className="text-sm font-bold leading-snug text-neutral-950 sm:text-lg">{title}</h3>
+                      <p className="mt-1 text-xs font-medium text-neutral-500 sm:text-sm">{itemCountLabel}</p>
+                      <span className="mt-auto inline-flex items-center gap-1 pt-3 text-xs font-semibold text-brand-700 sm:text-sm">
+                        Xem ngay
+                        <ArrowRight className="size-3.5 transition-transform duration-300 group-hover:translate-x-1 sm:size-4" aria-hidden="true" />
+                      </span>
                     </div>
                   </Link>
                 </Reveal>

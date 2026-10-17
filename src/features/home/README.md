@@ -1,10 +1,10 @@
 # Storefront Home — maintenance note
 
-> **Document version:** 2.2.0
+> **Document version:** 2.3.0
 >
 > **Last updated:** 2026-10-17
 >
-> **Change summary:** Có flash sale đang chạy thì `HomeTopSection` đưa khối flash sale lên đầu thay hero; không có thì hero như cũ.
+> **Change summary:** Có flash sale thì khối flash sale đứng đầu, hero ngay dưới; thẻ "theo bộ môn" làm lại.
 
 ## Phạm vi
 
@@ -65,6 +65,7 @@ Hero không có bài viết lẫn flash sale thì hiển thị một slide thư�
 
 | Version | Date | Change summary |
 | --- | --- | --- |
+| 2.3.0 | 2026-10-17 | `HomeTopSection` giữ hero dưới khối flash sale; thẻ bộ môn: ô icon đỏ, icon nền, "Xem ngay". |
 | 2.2.0 | 2026-10-17 | `HomeTopSection`: flash sale đang chạy thay hero ở đầu trang (server quyết định lần render đầu từ `getActiveFlashSales`, client theo query mới nhất); bỏ khối flash sale ở vị trí thứ 3. |
 | 2.0.0 | 2026-09-25 | Xoá mock: hero/bộ môn/lối tắt từ API; gỡ voucher popup, planner, training guide. |
 | 1.1.0 | 2026-09-25 | Gỡ stats/brand partners giả, SSR trang 1 lưới sản phẩm, sửa link `/catalog?…`/`/#products`. |
