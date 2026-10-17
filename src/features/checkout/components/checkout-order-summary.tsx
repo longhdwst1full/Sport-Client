@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { CheckCircle2, ShieldCheck } from 'lucide-react';
 import type { ReactNode } from 'react';
-import { CHECKOUT_POLICY_LABEL, POLICY_LINK_CLASS, type CheckoutPolicyLinks } from '../model/checkout-policy';
+import { CHECKOUT_POLICY_LABEL, POLICY_LINK_CLASS } from '../model/checkout-policy';
 import { Button } from '@/foundation/components/buttons';
 import { Checkbox } from '@/foundation/components/field-system';
 import { Spinner } from '@/foundation/components/feedback';
@@ -34,11 +34,8 @@ interface CheckoutOrderSummaryProps {
   /** Ô đồng ý điều khoản nằm ngay trên nút đặt hàng; việc chặn khi chưa tick vẫn do `usePlaceOrder` lo. */
   acceptedTerms?: boolean;
   setAcceptedTerms?: (value: boolean) => void;
-  /**
-   * Link điều khoản/đổi trả mở dạng modal, do route truyền vào (`PolicyDialogLink` của `content`;
-   * `checkout` không được import `content`). Không truyền thì dùng link mở tab mới như cũ.
-   */
-  policyLinks?: CheckoutPolicyLinks;
+  /** Mở modal đọc điều khoản (checkout có nội dung chính sách); không có thì link mở tab mới. */
+  onOpenPolicies?: () => void;
 }
 
 
@@ -56,7 +53,7 @@ export function CheckoutOrderSummary({
   submitLabel = 'Đặt hàng',
   acceptedTerms = false,
   setAcceptedTerms,
-  policyLinks,
+  onOpenPolicies,
 }: CheckoutOrderSummaryProps) {
   // CONTRACT: hai trạng thái khác nhau cùng "chưa có số phí".
   // - SHOP_ARRANGED (`shippingFeePending`): báo giá QUOTED, shippingTotal = 0 nhưng KHÔNG miễn phí —
@@ -143,17 +140,13 @@ export function CheckoutOrderSummary({
             label={
               <span className="text-xs leading-relaxed">
                 Tôi đã đọc và đồng ý với{' '}
-                {policyLinks?.terms ?? (
-                  <Link href={STORE_POLICY_PAGES.TERMS.href} target="_blank" className={POLICY_LINK_CLASS}>
-                    {CHECKOUT_POLICY_LABEL.TERMS}
-                  </Link>
-                )}{' '}
+                <PolicyLink href={STORE_POLICY_PAGES.TERMS.href} onOpen={onOpenPolicies}>
+                  {CHECKOUT_POLICY_LABEL.TERMS}
+                </PolicyLink>{' '}
                 và{' '}
-                {policyLinks?.returns ?? (
-                  <Link href={STORE_POLICY_PAGES.RETURNS.href} target="_blank" className={POLICY_LINK_CLASS}>
-                    {CHECKOUT_POLICY_LABEL.RETURNS}
-                  </Link>
-                )}{' '}
+                <PolicyLink href={STORE_POLICY_PAGES.RETURNS.href} onOpen={onOpenPolicies}>
+                  {CHECKOUT_POLICY_LABEL.RETURNS}
+                </PolicyLink>{' '}
                 của Bảo An Sport.
               </span>
             }
@@ -181,7 +174,7 @@ export function CheckoutOrderSummary({
               </span>
               <strong className="block truncate text-lg font-bold text-neutral-900">{mobileTotalLabel}</strong>
               {setAcceptedTerms && !acceptedTerms && (
-                <span className="block text-2xs font-semibold text-amber-700">Đánh dấu đồng ý điều khoản để đặt hàng</span>
+                <span className="block text-2xs font-semibold text-amber-700">Cần đọc & đồng ý điều khoản khi đặt hàng</span>
               )}
             </div>
             <Button type="submit" variant="cta" size="lg" disabled={submitIsDisabled} className={`shrink-0 px-5 ${SUBMIT_CLASS}`}>
@@ -192,5 +185,29 @@ export function CheckoutOrderSummary({
         </div>
       )}
     </aside>
+  );
+}
+
+/** Link chính sách trong nhãn ô đồng ý: mở modal (chặn bật/tắt ô vì nằm trong `<label>`) hoặc tab mới. */
+function PolicyLink({ href, onOpen, children }: { href: string; onOpen?: () => void; children: ReactNode }) {
+  if (!onOpen) {
+    return (
+      <Link href={href} target="_blank" className={POLICY_LINK_CLASS}>
+        {children}
+      </Link>
+    );
+  }
+  return (
+    <button
+      type="button"
+      aria-haspopup="dialog"
+      className={POLICY_LINK_CLASS}
+      onClick={(event) => {
+        event.preventDefault();
+        onOpen();
+      }}
+    >
+      {children}
+    </button>
   );
 }

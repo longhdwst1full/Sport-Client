@@ -1,10 +1,10 @@
 # Storefront Content — maintenance note
 
-> **Document version:** 2.7.0
+> **Document version:** 2.8.0
 >
-> **Last updated:** 2026-10-12
+> **Last updated:** 2026-10-17
 >
-> **Change summary:** JSON-LD `Article` + `BreadcrumbList` cho `/news/[slug]` và `/chinh-sach/[slug]` (dựng từ view model, `publishedAtIso` thêm vào mapper). Trước đó: Ảnh bìa bài viết qua `CoverImage` (rỗng/lỗi → ảnh thay thế dùng chung); og:image bài viết dùng bản JPEG 1200×630 của Cloudinary (`lib/seo/og-image.ts`). Trước đó: Thêm banner CMS-02 (`listActiveBanners`): HOME_HERO/HOME_PROMO trên trang chủ, FOOTER trong layout, CATEGORY_TOP trên trang danh mục; không có banner thì giao diện giữ nguyên.
+> **Change summary:** `PolicyArticles` (nội dung nhiều bài chính sách, tải lười) thay `PolicyDialogLink`/`PolicyDialog`.
 
 ## Phạm vi
 
@@ -86,6 +86,7 @@ TanStack Query. Không mirror dữ liệu bài viết vào Redux hay `useState`.
 
 | Version | Date | Change summary |
 | --- | --- | --- |
+| 2.8.0 | 2026-10-17 | Thêm `PolicyArticles` + `PolicyArticlesBody` (đánh dấu `aria-busy` khi đang tải) cho modal đồng ý ở checkout; gỡ `PolicyDialogLink`, `PolicyDialog`. |
 | 2.7.0 | 2026-10-12 | Thêm `PolicyBody` (hiện tiêu đề/gạch đầu dòng thay ký tự Markdown thô) và `PolicyDialogLink` (modal chính sách ở checkout). |
 | 2.6.0 | 2026-10-09 | `NewsletterSignup` gọi `createNewsletterSubscription` (honeypot, `source`); tab tin tức cố định `EDITORIAL_POST_TYPES`; danh sách không hiện "phút đọc" (summary không có body); CTA bài viết dùng `ContactActions`. |
 | 2.4.0 | 2026-10-06 | `/news` server-first + island `NewsListFeed`; `ContentStories` bỏ fetch trùng; `BannerPicture` art direction một ảnh; `/chinh-sach` ném lỗi lúc chạy (giữ bản ISR tốt), `[slug]` gọi song song. |

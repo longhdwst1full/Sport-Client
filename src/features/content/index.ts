@@ -12,4 +12,4 @@ export { loadActiveBanners, toActiveBannerViews } from './api/active-banners';
 export { BannerPicture } from './components/banner-picture';
 export { CategoryTopBanners } from './components/category-top-banners';
 export { NewsletterSignup } from './components/newsletter-signup';
-export { PolicyDialogLink } from './components/policy-dialog-link';
+export { PolicyArticles, type PolicyArticleRef } from './components/policy-articles';

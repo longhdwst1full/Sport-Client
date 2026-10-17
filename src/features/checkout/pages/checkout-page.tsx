@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, type ReactNode } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { CheckoutSkeleton } from '../components/checkout-skeleton';
@@ -9,7 +10,7 @@ import { useToast } from '@/shared/components/global-toast';
 import { usePublicNumberParameter } from '@/features/site-config';
 import { toOrderDetailView } from '@/features/orders';
 import { CheckoutOrderSummary } from '../components/checkout-order-summary';
-import type { CheckoutPolicyLinks } from '../model/checkout-policy';
+import { CheckoutPolicyDialog } from '../components/checkout-policy-dialog';
 import { CheckoutSuccess } from '../components/checkout-success';
 import { CheckoutEmptyCart } from '../components/checkout-empty-cart';
 import { CheckoutShippingInfoSection } from '../components/sections/checkout-shipping-info-section';
@@ -23,7 +24,15 @@ import { useCheckoutSavedAddresses } from '../hooks/use-checkout-saved-addresses
 import { usePlaceOrder } from '../hooks/use-place-order';
 import { CheckoutPaymentMethod } from '@/generated/api/checkout/checkout.schemas';
 
-export function CheckoutPage({ policyLinks }: { policyLinks?: CheckoutPolicyLinks } = {}) {
+/** Modal điều khoản: mở để đọc (link) hoặc từ nút đặt hàng khi chưa đồng ý ("Đồng ý" = đặt hàng tiếp). */
+type PolicyDialogMode = 'read' | 'submit';
+
+export function CheckoutPage({
+  policyContent,
+}: {
+  /** Nội dung điều khoản + chính sách đổi trả do route ghép (`checkout` không import `content`). */
+  policyContent?: ReactNode;
+} = {}) {
   // Bán kính giao miễn phí do Admin cấu hình; 10 km là giá trị mặc định của API khi chưa tải được.
   const freeRadiusKm = usePublicNumberParameter('SHIPPING_FREE_RADIUS_KM', 10);
   const router = useRouter();
@@ -36,7 +45,8 @@ export function CheckoutPage({ policyLinks }: { policyLinks?: CheckoutPolicyLink
   const { shopArranged, paymentMethod } = form;
   const checkoutQuote = useCheckoutQuote({ form, removeItem, toast });
   const { quote, displayQuoteView, refreshingQuote, busy, error, autoQuoting, quotePending, invalidateQuote, retryQuote, refreshConsultedQuote, setError, confirmIdempotencyKey } = checkoutQuote;
-  const { placedOrder, redirectingToVnpay, submit } = usePlaceOrder({
+  const [policyDialog, setPolicyDialog] = useState<PolicyDialogMode | null>(null);
+  const { placedOrder, redirectingToVnpay, submit, submitAfterAgree } = usePlaceOrder({
     form,
     checkoutQuote,
     effectiveItems,
@@ -44,6 +54,7 @@ export function CheckoutPage({ policyLinks }: { policyLinks?: CheckoutPolicyLink
     isAuthenticated,
     removeItem,
     toast,
+    onTermsRequired: policyContent ? () => setPolicyDialog('submit') : undefined,
   });
   // Effect điền sẵn sổ địa chỉ phải đăng ký trước effect báo giá tự động (effect chạy theo thứ tự gọi
   // hook): nó tăng `quoteSeq` trước để lượt báo giá không bắt đầu trên form sắp bị thay địa chỉ.
@@ -167,7 +178,7 @@ export function CheckoutPage({ policyLinks }: { policyLinks?: CheckoutPolicyLink
             showSubmit={true}
             acceptedTerms={form.acceptedTerms}
             setAcceptedTerms={form.setAcceptedTerms}
-            policyLinks={policyLinks}
+            onOpenPolicies={policyContent ? () => setPolicyDialog('read') : undefined}
             submitDisabled={busy || redirectingToVnpay}
             submitLabel={
               redirectingToVnpay
@@ -180,6 +191,21 @@ export function CheckoutPage({ policyLinks }: { policyLinks?: CheckoutPolicyLink
             }
           />
         </form>
+
+        {policyDialog && policyContent && (
+          <CheckoutPolicyDialog
+            content={policyContent}
+            alreadyAccepted={form.acceptedTerms}
+            agreeLabel={policyDialog === 'submit' ? 'Đồng ý & đặt hàng' : 'Tôi đồng ý'}
+            onClose={() => setPolicyDialog(null)}
+            onAgree={() => {
+              const mode = policyDialog;
+              setPolicyDialog(null);
+              if (mode === 'submit') submitAfterAgree();
+              else form.setAcceptedTerms(true);
+            }}
+          />
+        )}
       </main>
   );
 }

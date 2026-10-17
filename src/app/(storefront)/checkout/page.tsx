@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
-import { CHECKOUT_POLICY_LABEL, CheckoutPage, CheckoutSkeleton, POLICY_LINK_CLASS } from '@/features/checkout';
-import { PolicyDialogLink } from '@/features/content';
+import { CheckoutPage, CheckoutSkeleton } from '@/features/checkout';
+import { PolicyArticles } from '@/features/content';
 import { NOINDEX_ROBOTS } from '@/lib/seo/page-metadata';
 import { STORE_POLICY_PAGES } from '@/shared/constants';
 
@@ -10,25 +10,18 @@ export const dynamic = 'force-dynamic';
 
 const slugOf = (href: string) => href.slice(href.lastIndexOf('/') + 1);
 
+/** Điều khoản dịch vụ + chính sách đổi trả: nội dung modal đồng ý ở checkout. */
+const CHECKOUT_POLICIES = [STORE_POLICY_PAGES.TERMS, STORE_POLICY_PAGES.RETURNS].map(({ href, title }) => ({
+  slug: slugOf(href),
+  title,
+}));
+
 export const metadata = { title: 'Đặt hàng & Thanh toán', robots: NOINDEX_ROBOTS };
 export default function Page() {
-  // `checkout` không import `content`; route ghép link chính sách dạng modal vào ô đồng ý điều khoản.
-  const policyLinks = {
-    terms: (
-      <PolicyDialogLink slug={slugOf(STORE_POLICY_PAGES.TERMS.href)} title={STORE_POLICY_PAGES.TERMS.title} className={POLICY_LINK_CLASS}>
-        {CHECKOUT_POLICY_LABEL.TERMS}
-      </PolicyDialogLink>
-    ),
-    returns: (
-      <PolicyDialogLink slug={slugOf(STORE_POLICY_PAGES.RETURNS.href)} title={STORE_POLICY_PAGES.RETURNS.title} className={POLICY_LINK_CLASS}>
-        {CHECKOUT_POLICY_LABEL.RETURNS}
-      </PolicyDialogLink>
-    ),
-  };
-
+  // `checkout` không import `content`; route ghép nội dung chính sách vào modal đồng ý điều khoản.
   return (
     <Suspense fallback={<CheckoutSkeleton />}>
-      <CheckoutPage policyLinks={policyLinks} />
+      <CheckoutPage policyContent={<PolicyArticles policies={CHECKOUT_POLICIES} />} />
     </Suspense>
   );
 }

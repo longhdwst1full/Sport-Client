@@ -24,7 +24,13 @@ export function usePlaceOrder({
   isAuthenticated,
   removeItem,
   toast,
-}: CheckoutFlowDeps & { removeItem: (variantId: string) => void; toast: Toast }) {
+  onTermsRequired,
+}: CheckoutFlowDeps & {
+  removeItem: (variantId: string) => void;
+  toast: Toast;
+  /** Chưa tích đồng ý khi bấm đặt hàng: mở modal điều khoản thay vì chặn bằng thông báo. */
+  onTermsRequired?: () => void;
+}) {
   const [placedOrder, setPlacedOrder] = useState<OrderDetailDto>();
   const [redirectingToVnpay, setRedirectingToVnpay] = useState(false);
 
@@ -115,8 +121,11 @@ export function usePlaceOrder({
     return { context: prepared.context, checkoutToken: prepared.quote.checkoutToken };
   };
 
-  const submit = async (event: FormEvent) => {
-    event.preventDefault();
+  /**
+   * `termsJustAccepted`: khách vừa bấm "Đồng ý" trong modal — `setAcceptedTerms(true)` chưa kịp vào
+   * state của lượt render này nên truyền thẳng vào.
+   */
+  const run = async (termsJustAccepted: boolean) => {
     if (!isLoaded || busy) return;
     // Giữ lỗi báo giá trước khi xoá khung lỗi, để báo đúng lý do nếu chưa có phí.
     const quoteError = error;
@@ -159,7 +168,11 @@ export function usePlaceOrder({
       return;
     }
 
-    if (!acceptedTerms) {
+    if (!acceptedTerms && !termsJustAccepted) {
+      if (onTermsRequired) {
+        onTermsRequired();
+        return;
+      }
       block('Chưa đồng ý điều khoản', 'Vui lòng đánh dấu đồng ý với Điều khoản dịch vụ và Chính sách đổi trả trước khi đặt hàng.');
       return;
     }
@@ -193,5 +206,16 @@ export function usePlaceOrder({
     }
   };
 
-  return { placedOrder, redirectingToVnpay, submit };
+  const submit = (event: FormEvent) => {
+    event.preventDefault();
+    void run(false);
+  };
+
+  /** "Đồng ý" trong modal mở từ nút đặt hàng: tích ô đồng ý rồi đặt hàng tiếp. */
+  const submitAfterAgree = () => {
+    form.setAcceptedTerms(true);
+    void run(true);
+  };
+
+  return { placedOrder, redirectingToVnpay, submit, submitAfterAgree };
 }
