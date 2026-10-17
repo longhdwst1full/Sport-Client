@@ -1,5 +1,3 @@
-'use client';
-
 import { Reveal } from '@/foundation/components/motion';
 import Link from 'next/link';
 import { Building2, Dumbbell, Flame, Home, MoveUpRight } from 'lucide-react';

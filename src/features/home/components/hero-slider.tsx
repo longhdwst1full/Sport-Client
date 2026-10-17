@@ -1,9 +1,8 @@
-import Image from 'next/image';
+import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { ArrowRight, ChevronLeft, ChevronRight, Zap } from 'lucide-react';
 import { Button, buttonVariants } from '@/foundation/components/buttons';
 import { CarouselDots } from '@/foundation/components/indicators';
-import { BannerPicture } from '@/features/content';
 
 /** Vòng focus trắng trên nền tối của hero. */
 const HERO_FOCUS = 'focus-visible:ring-white focus-visible:ring-offset-neutral-900';
@@ -26,8 +25,13 @@ export interface HeroSlide {
   mobileImageUrl?: string | null;
 }
 
+/** Phần chữ/nút của slide (client cần để đổi slide); ảnh nền đã render sẵn ở server. */
+export type HeroSlideContent = Omit<HeroSlide, 'imageUrl' | 'mobileImageUrl'>;
+
 interface HeroSliderProps {
-  slides: HeroSlide[];
+  slides: HeroSlideContent[];
+  /** Ảnh nền từng slide (cùng chỉ số với `slides`), render ở server; null khi slide không có ảnh. */
+  backgrounds: ReactNode[];
   activeIndex: number;
   onPrev: () => void;
   onNext: () => void;
@@ -41,6 +45,7 @@ interface HeroSliderProps {
 
 export function HeroSlider({
   slides,
+  backgrounds,
   activeIndex,
   onPrev,
   onNext,
@@ -70,36 +75,8 @@ export function HeroSlider({
             }`}
             aria-hidden={!isActive}
           >
-            {/* Background Image */}
-            {slide.imageUrl && (
-              <div className="relative size-full">
-                {slide.mobileImageUrl ? (
-                  <BannerPicture
-                    banner={{
-                      desktopImageUrl: slide.imageUrl,
-                      mobileImageUrl: slide.mobileImageUrl,
-                    }}
-                    alt=""
-                    priority={index === 0}
-                    sizes="(max-width: 1024px) 100vw, 66vw"
-                    className="object-cover object-center transition duration-500 group-hover:scale-105"
-                  />
-                ) : (
-                  <Image
-                    src={slide.imageUrl}
-                    alt=""
-                    fill
-                    priority={index === 0}
-                    sizes="(max-width: 1024px) 100vw, 66vw"
-                    className="object-cover object-center transition duration-500 group-hover:scale-105"
-                  />
-                )}
-                {/* Gradient Overlay for high text readability */}
-                {hasText && (
-                  <div className="absolute inset-0 bg-gradient-to-r from-neutral-950/90 via-neutral-950/65 to-transparent sm:from-neutral-950/95 sm:via-neutral-950/50" />
-                )}
-              </div>
-            )}
+            {/* Background Image (server render, `HeroBannerSlider`) */}
+            {backgrounds[index]}
 
             {/* Banner chỉ có ảnh: cả slide là liên kết, không vẽ khối chữ/nút rỗng. */}
             {!hasText && slide.ctaLink && (
