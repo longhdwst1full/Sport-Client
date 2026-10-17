@@ -1,7 +1,12 @@
 import type {
   FlashSaleItemDto,
   PublicFlashSaleCampaignDto,
+  PublicFlashSaleListDto,
 } from '@/generated/api/promotions/promotions.schemas';
+import { formatVnd } from '@/shared/format/money';
+
+/** Danh sách chiến dịch server lấy sẵn (route) để truyền xuống khối/trang client. */
+export type FlashSaleInitialData = PublicFlashSaleListDto;
 
 export interface FlashSaleDealView {
   id: string;
@@ -67,4 +72,45 @@ export function toFlashSaleCampaignView(dto: PublicFlashSaleCampaignDto): FlashS
     endsAtMs: new Date(dto.endsAt).getTime(),
     deals: dto.items.map(toFlashSaleDealView),
   };
+}
+
+/** Giá flash đang mở của một biến thể, cho trang chi tiết sản phẩm. */
+export interface VariantFlashPriceView {
+  price: number;
+  priceLabel: string;
+  originalPriceLabel: string | null;
+  discountPercent: number | null;
+  availableQuantity: number;
+  perCustomerLimit: number | null;
+  /** Mốc kết thúc theo giờ server (epoch ms); client ẩn giá flash khi đã qua. */
+  endsAtMs: number;
+}
+
+/**
+ * Giá flash theo `variantId` của một sản phẩm. Catalog chỉ trả giá niêm yết, còn checkout tự áp giá
+ * flash theo biến thể (`resolveActiveDeals`), nên trang chi tiết phải lấy giá flash từ đây mới khớp
+ * số tiền ở bước báo giá. Bỏ suất đã hết; một biến thể ở nhiều chiến dịch thì lấy chiến dịch kết thúc
+ * sớm nhất (API đã sắp theo `endsAt`).
+ */
+export function toVariantFlashPrices(
+  dto: PublicFlashSaleListDto | undefined,
+  productSlug: string,
+): Record<string, VariantFlashPriceView> {
+  const result: Record<string, VariantFlashPriceView> = {};
+  for (const campaign of dto?.items ?? []) {
+    const view = toFlashSaleCampaignView(campaign);
+    for (const deal of view.deals) {
+      if (deal.slug !== productSlug || deal.availableQuantity <= 0 || result[deal.variantId]) continue;
+      result[deal.variantId] = {
+        price: deal.price,
+        priceLabel: formatVnd(deal.price),
+        originalPriceLabel: deal.originalPrice !== null ? formatVnd(deal.originalPrice) : null,
+        discountPercent: deal.discountPercent,
+        availableQuantity: deal.availableQuantity,
+        perCustomerLimit: deal.perCustomerLimit,
+        endsAtMs: view.endsAtMs,
+      };
+    }
+  }
+  return result;
 }

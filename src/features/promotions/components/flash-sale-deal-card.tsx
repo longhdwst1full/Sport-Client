@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { ShoppingBag } from 'lucide-react';
+import { Flame, ShoppingCart, Zap } from 'lucide-react';
 import { Button } from '@/foundation/components/buttons';
 import { Skeleton } from '@/foundation/components/feedback';
 import { formatVnd } from '@/shared/format/money';
@@ -13,112 +13,144 @@ import type { FlashSaleDealView } from '../model/flash-sale.mapper';
 export const FLASH_SALE_FOCUS_RING =
   'focus-ring';
 
+/** Đã bán từ mức này thì gắn nhãn "Hot" / "Sắp hết". */
+const HOT_SOLD_PERCENT = 50;
+
 export function FlashSaleDealCard({
   deal,
-  onQuickAdd,
+  onAddToCart,
+  onBuyNow,
+  priority = false,
 }: {
   deal: FlashSaleDealView;
-  onQuickAdd: (deal: FlashSaleDealView, event: React.MouseEvent) => void;
+  onAddToCart: (deal: FlashSaleDealView) => void;
+  onBuyNow: (deal: FlashSaleDealView) => void;
+  /** Ảnh nằm trong màn hình đầu (khối flash sale thay hero trang chủ). */
+  priority?: boolean;
 }) {
   const soldOut = deal.availableQuantity <= 0;
+  const almostGone = !soldOut && deal.soldPercent >= HOT_SOLD_PERCENT;
 
   return (
-    <div className="group card-interactive flex flex-col">
-      <Link href={`/products/${deal.slug}`} className={`relative aspect-[4/3] overflow-hidden bg-neutral-50 ${FLASH_SALE_FOCUS_RING}`} aria-label={`Xem chi tiết ${deal.name}`}>
+    <div className="group card-interactive flex flex-col border-brand-100 hover:border-brand-300">
+      {/* Bấm ảnh luôn sang trang chi tiết; nút mua nằm ngoài link. */}
+      <Link
+        href={`/products/${deal.slug}`}
+        className={`relative aspect-square overflow-hidden bg-neutral-50 ${FLASH_SALE_FOCUS_RING}`}
+        aria-label={`Xem chi tiết ${deal.name}`}
+      >
         {deal.imageUrl ? (
           <Image
             src={deal.imageUrl}
             alt={deal.name}
             fill
+            priority={priority}
             sizes="(max-width: 1024px) 50vw, 25vw"
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            className={`object-contain p-2 transition-transform duration-500 group-hover:scale-105 ${soldOut ? 'opacity-50 grayscale' : ''}`}
           />
         ) : (
           <div className="absolute inset-0 grid place-items-center text-xs font-semibold text-neutral-400">
             Chưa có ảnh
           </div>
         )}
-        <div className="absolute inset-x-2 top-2 flex flex-wrap items-center justify-between gap-1 sm:inset-x-3 sm:top-3">
-          <span className="rounded-full bg-white/90 px-2 py-0.5 text-xs font-semibold text-neutral-900 sm:px-2.5">
-            {soldOut ? 'Hết suất' : `Còn ${deal.availableQuantity} suất`}
+        {deal.discountPercent !== null ? (
+          <span className="absolute left-0 top-2 inline-flex items-center gap-0.5 rounded-r-full bg-brand-600 py-1 pl-2 pr-2.5 text-xs font-bold text-white shadow-sm sm:top-3 sm:text-sm">
+            <Zap className="size-3.5 fill-amber-300 text-amber-300" aria-hidden="true" />-{deal.discountPercent}%
           </span>
-          {deal.discountPercent !== null ? (
-            <span className="rounded-full bg-brand-600 px-2 py-0.5 text-xs font-bold text-white">
-              -{deal.discountPercent}%
-            </span>
-          ) : null}
-        </div>
+        ) : null}
+        {almostGone ? (
+          <span className="absolute right-2 top-2 inline-flex items-center gap-0.5 rounded-full bg-amber-400 px-2 py-0.5 text-2xs font-bold uppercase text-neutral-950 sm:right-3 sm:top-3">
+            <Flame className="size-3" aria-hidden="true" />
+            Hot
+          </span>
+        ) : null}
+        {soldOut ? (
+          <span className="absolute inset-x-0 bottom-0 bg-neutral-950/75 py-1.5 text-center text-xs font-bold uppercase text-white">
+            Đã hết suất
+          </span>
+        ) : null}
       </Link>
 
-      <div className="flex flex-1 flex-col p-3 sm:p-5">
-        <h3 className="line-clamp-2 min-h-[44px] text-sm font-semibold text-neutral-950">
-          <Link href={`/products/${deal.slug}`} className={`rounded ${FLASH_SALE_FOCUS_RING}`}>{deal.name}</Link>
+      <div className="flex flex-1 flex-col p-3 sm:p-4">
+        <h3 className="line-clamp-2 min-h-[2.5rem] text-sm font-semibold leading-5 text-neutral-950">
+          <Link href={`/products/${deal.slug}`} className={`rounded hover:text-brand-700 ${FLASH_SALE_FOCUS_RING}`}>
+            {deal.name}
+          </Link>
         </h3>
 
-        <div className="mt-3 flex flex-wrap items-baseline gap-x-2 sm:mt-4">
+        <div className="mt-2 flex flex-wrap items-baseline gap-x-2">
           <PriceText
             label={formatVnd(deal.price)}
-            className="text-base font-bold text-brand-600 sm:text-xl"
+            className="text-lg font-bold text-brand-600 sm:text-xl"
             strikeLabel={deal.originalPrice !== null ? formatVnd(deal.originalPrice) : null}
             strikeClassName="text-xs text-neutral-400 line-through"
           />
         </div>
 
-        <div className="mt-4">
-          <div className="flex justify-between text-xs font-bold">
-            <span className="text-neutral-500">
-              Đã bán {deal.soldQuantity}/{deal.soldQuantity + deal.availableQuantity}
-            </span>
-            <span className="text-brand-600">{deal.soldPercent}%</span>
-          </div>
+        {/* Thanh suất kiểu "đang cháy hàng": nhãn nằm trong thanh. */}
+        <div
+          className="relative mt-3 h-5 w-full overflow-hidden rounded-full bg-brand-100"
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={deal.soldPercent}
+          aria-label={`Đã bán ${deal.soldPercent}% suất`}
+        >
           <div
-            className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-neutral-100"
-            role="progressbar"
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-valuenow={deal.soldPercent}
-            aria-label={`Đã bán ${deal.soldPercent}% suất`}
-          >
-            <div
-              className="h-full rounded-full bg-brand-600 transition-all duration-500"
-              style={{ width: `${deal.soldPercent}%` }}
-            />
-          </div>
+            className="h-full rounded-full bg-brand-500 transition-all duration-500"
+            style={{ width: `${Math.max(deal.soldPercent, soldOut ? 100 : 8)}%` }}
+          />
+          <span className="absolute inset-0 flex items-center justify-center gap-1 text-2xs font-bold text-neutral-950">
+            {almostGone ? <Flame className="size-3 text-brand-700" aria-hidden="true" /> : null}
+            {soldOut ? 'Hết suất' : almostGone ? `Sắp hết · còn ${deal.availableQuantity}` : `Đã bán ${deal.soldQuantity}`}
+          </span>
         </div>
 
         {deal.perCustomerLimit !== null ? (
-          <p className="mt-2 text-xs font-semibold text-neutral-500">
-            Tối đa {deal.perCustomerLimit} sản phẩm mỗi khách
-          </p>
+          <p className="mt-1.5 text-2xs font-medium text-neutral-500">Tối đa {deal.perCustomerLimit} sản phẩm/khách</p>
         ) : null}
 
-        <Button
-          variant="outline"
-          fullWidth
-          disabled={soldOut}
-          onClick={(event) => onQuickAdd(deal, event)}
-          className="mt-4 h-auto min-h-11 px-2 text-xs sm:mt-5"
-        >
-          <ShoppingBag className="size-3.5" aria-hidden="true" />
-          {soldOut ? 'Hết suất' : 'Thêm vào giỏ'}
-          <span className="sr-only">: {deal.name}</span>
-        </Button>
+        <div className="mt-auto flex items-center gap-2 pt-3">
+          <Button
+            variant="outline"
+            size="icon"
+            disabled={soldOut}
+            onClick={() => onAddToCart(deal)}
+            aria-label={`Thêm ${deal.name} vào giỏ`}
+            title="Thêm vào giỏ"
+            className="shrink-0"
+          >
+            <ShoppingCart className="size-4" aria-hidden="true" />
+          </Button>
+          <Button
+            variant="cta"
+            disabled={soldOut}
+            onClick={() => onBuyNow(deal)}
+            className="h-11 min-w-0 flex-1 gap-1 px-2 text-xs font-bold sm:text-sm"
+          >
+            <Zap className="hidden size-4 shrink-0 sm:block" aria-hidden="true" />
+            <span className="truncate">{soldOut ? 'Hết suất' : 'Mua ngay'}</span>
+            <span className="sr-only">: {deal.name}</span>
+          </Button>
+        </div>
       </div>
     </div>
   );
 }
 
-/** Khung chờ cùng kích thước thẻ suất bán (ảnh 4/3 + thân thẻ) để lưới không nhảy khi dữ liệu về. */
+/** Khung chờ cùng kích thước thẻ suất bán (ảnh vuông + thân thẻ) để lưới không nhảy khi dữ liệu về. */
 export function FlashSaleDealCardSkeleton() {
   return (
     <div className="flex flex-col overflow-hidden card-interactive" aria-hidden>
-      <Skeleton className="aspect-[4/3] w-full rounded-none" />
-      <div className="flex flex-1 flex-col p-3 sm:p-5">
-        <Skeleton className="h-[44px] w-full" />
-        <Skeleton className="mt-3 h-6 w-2/3 sm:mt-4 sm:h-7" />
-        <Skeleton className="mt-4 h-3 w-full" />
-        <Skeleton className="mt-1.5 h-2 w-full rounded-full" />
-        <Skeleton className="mt-4 h-11 w-full sm:mt-5" />
+      <Skeleton className="aspect-square w-full rounded-none" />
+      <div className="flex flex-1 flex-col p-3 sm:p-4">
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="mt-2 h-7 w-2/3" />
+        <Skeleton className="mt-3 h-5 w-full rounded-full" />
+        <div className="mt-auto flex gap-2 pt-3">
+          <Skeleton className="size-11 shrink-0" />
+          <Skeleton className="h-11 flex-1" />
+        </div>
       </div>
     </div>
   );

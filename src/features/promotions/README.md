@@ -1,10 +1,10 @@
 # Storefront Promotions — maintenance note
 
-> **Document version:** 2.1.0
+> **Document version:** 2.2.0
 >
-> **Last updated:** 2026-09-13
+> **Last updated:** 2026-10-17
 >
-> **Change summary:** Bỏ toàn bộ mock; flash sale lấy từ API thật với đếm ngược theo giờ server.
+> **Change summary:** Thẻ suất: ảnh → chi tiết, nút giỏ dạng icon + "Mua ngay" (`useFlashSaleCart`), nhãn Hot/Sắp hết; khối flash sale nhận `initialData` server (SSR) và có thể thay hero trang chủ; `toVariantFlashPrices` cho giá flash ở trang chi tiết.
 
 ## Phạm vi
 
@@ -61,6 +61,7 @@ Không được đổi thông điệp UI thành "đã giữ suất" cho tới kh
 
 | Version | Date | Change summary |
 | --- | --- | --- |
+| 2.2.0 | 2026-10-17 | Thẻ suất: ảnh → chi tiết, nút giỏ icon + "Mua ngay" (checkout `buyNow`), nhãn Hot/Sắp hết; `FlashSaleSection` nhận `initialData` (route lấy qua `getActiveFlashSales`, cache 60s) + `aboveTheFold`; `toVariantFlashPrices` cấp giá flash theo biến thể cho PDP. |
 | 2.1.0 | 2026-10-06 | Khối flash sale trang chủ giữ chỗ bằng `FlashSaleDealCardSkeleton` khi tải lần đầu (chống CLS), ẩn khi không có chiến dịch; trang `/flash-sale` có nút "Thử lại" (`retry`); màu theo brand đỏ + amber. |
 | 2.0.0 | 2026-09-13 | Nối API thật, gỡ `flash-sale.mock.ts`, đếm ngược theo giờ server. |
 | 1.0.0 | 2026-09-13 | Tạo note, gắn nhãn non-production. |

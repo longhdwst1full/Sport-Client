@@ -4,6 +4,8 @@ import { toActiveBannerViews, type BannerView } from '@/features/content';
 import { listCatalogCategories } from '@/generated/api/catalog/catalog';
 import type { CatalogCategoryDto } from '@/generated/api/catalog/catalog.schemas';
 import { listActiveBanners } from '@/generated/api/content/content';
+import { listPublicFlashSales } from '@/generated/api/promotions/promotions';
+import type { PublicFlashSaleListDto } from '@/generated/api/promotions/promotions.schemas';
 import { PUBLIC_DATA_TAGS } from './public-data-tags';
 import type { BannerPlacement } from '@/generated/api/content/content.schemas';
 
@@ -37,6 +39,27 @@ const cachedBanners = unstable_cache(
   ['public-content-banners-v1'],
   { revalidate: PUBLIC_DATA_REVALIDATE_SECONDS, tags: [PUBLIC_DATA_TAGS.banners] },
 );
+
+/**
+ * Flash sale đổi nhanh hơn (suất còn lại, chiến dịch mở/đóng) nên cửa sổ ngắn hơn. Đây chỉ là dữ liệu
+ * hiển thị ban đầu: client tự tải lại theo giờ server, checkout báo giá lại giá flash thật.
+ */
+const FLASH_SALE_REVALIDATE_SECONDS = 60;
+
+const cachedFlashSales = unstable_cache(
+  async (): Promise<PublicFlashSaleListDto> => listPublicFlashSales(),
+  ['public-flash-sales-v1'],
+  { revalidate: FLASH_SALE_REVALIDATE_SECONDS, tags: [PUBLIC_DATA_TAGS.flashSales] },
+);
+
+/** Chiến dịch flash sale đang chạy; lỗi → `undefined` (trang vẫn hiển thị giá niêm yết/hero). */
+export const getActiveFlashSales = cache(async (): Promise<PublicFlashSaleListDto | undefined> => {
+  try {
+    return await cachedFlashSales();
+  } catch {
+    return undefined;
+  }
+});
 
 /** Cây danh mục công khai; API lỗi → `undefined` để nơi gọi tự quyết dự phòng. */
 export const getPublicCategories = cache(async (): Promise<CatalogCategoryDto[] | undefined> => {

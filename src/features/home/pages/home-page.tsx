@@ -15,7 +15,8 @@ import { BudgetNavigation } from '../components/budget-navigation';
 import { TrustSocialProof } from '../components/trust-social-proof';
 import { SmartFitAdvisorLazy } from '../components/smart-fit-advisor/smart-fit-advisor-lazy';
 import { CategoryVisualShowcase } from '../components/category-visual-showcase';
-import { FlashSaleSection } from '@/features/promotions';
+import type { FlashSaleInitialData } from '@/features/promotions';
+import { HomeTopSection } from '../components/home-top-section';
 import { STORE_CONFIG } from '@/shared/constants';
 import { Reveal } from '@/foundation/components/motion';
 
@@ -66,10 +67,13 @@ export async function HomePage({
   categories,
   heroBanners,
   promoBanners,
+  flashSales,
 }: {
   categories: CatalogCategoryDto[];
   heroBanners: BannerView[];
   promoBanners: BannerView[];
+  /** Chiến dịch flash sale đang chạy (server lấy sẵn); có thì flash sale thay hero ở đầu trang. */
+  flashSales?: FlashSaleInitialData;
 }) {
   const [heroPosts, showcase] = await Promise.all([loadHeroPosts(), loadShowcaseFirstPage()]);
   // Rail chỉ lấy danh mục gốc có sản phẩm (tối đa 8) thay vì toàn bộ ~60 danh mục kể cả lá.
@@ -103,20 +107,18 @@ export async function HomePage({
           {STORE_CONFIG.name} — {STORE_CONFIG.tagline}
         </h1>
 
-        {/* Thứ tự tham chiếu elipsport/thegioididong: hero → rail danh mục → flash sale → bán chạy
-            → khối danh mục → tin cậy/showroom → tin tức. */}
-        {/* 1. Hero: banner CMS (nếu có) + bài viết thật + flash sale đang chạy. */}
-        <HeroBannerSlider posts={heroPosts} heroBanners={heroBanners} promoBanners={promoBanners} />
+        {/* Thứ tự: flash sale (nếu đang chạy) hoặc hero → rail danh mục → bán chạy → khối danh mục
+            → tin cậy/showroom → tin tức. */}
+        {/* 1. Có flash sale đang chạy thì khối flash sale thay banner; không thì hero (banner CMS + bài viết). */}
+        <HomeTopSection
+          initialFlashSales={flashSales}
+          banner={<HeroBannerSlider posts={heroPosts} heroBanners={heroBanners} promoBanners={promoBanners} />}
+        />
 
         {/* 2. Rail icon danh mục (dữ liệu thật từ API). */}
         {categoryRail.length > 0 ? <CategoryVisualShowcase items={categoryRail} /> : null}
 
-        {/* 3. Flash sale — tự ẩn khi không có chiến dịch đang mở. */}
-        <Reveal {...SECTION_REVEAL}>
-          <FlashSaleSection />
-        </Reveal>
-
-        {/* 4. Sản phẩm nổi bật & bán chạy. */}
+        {/* 3. Sản phẩm nổi bật & bán chạy. */}
         {/* Một lối "xem tất cả" cho khối này: banner cuối lưới (sang /products); bỏ link danh mục ở đầu khối
             vì rail danh mục ngay phía trên đã có. */}
         <section id="products" className="page-section">
@@ -136,7 +138,7 @@ export async function HomePage({
           />
         </section>
 
-        {/* 5. Khối danh mục: theo mục tiêu tập, theo bộ môn (danh mục gốc), theo ngân sách/nhóm con.
+        {/* 4. Khối danh mục: theo mục tiêu tập, theo bộ môn (danh mục gốc), theo ngân sách/nhóm con.
             QuickGoal và Budget giữ riêng: dữ liệu và mục đích khác nhau, gộp không đơn giản. */}
         <QuickGoalNavigation />
 
@@ -174,7 +176,7 @@ export async function HomePage({
 
         <BudgetNavigation quickLinks={quickLinks} />
 
-        {/* 6. Cam kết dịch vụ + bằng chứng tin cậy & hệ thống showroom. */}
+        {/* 5. Cam kết dịch vụ + bằng chứng tin cậy & hệ thống showroom. */}
         <BenefitsStrip />
 
         <TrustSocialProof />
@@ -188,10 +190,10 @@ export async function HomePage({
         {/* Đã gỡ dải "thương hiệu đồng hành" và bộ đếm số liệu (showroom, khách hàng, sản phẩm):
             cả hai là số liệu/đối tác viết cứng, không có nguồn dữ liệu nào xác nhận. */}
 
-        {/* 7. Smart Fit Advisor — wizard client nặng, lazy-load dưới màn hình đầu (placeholder SSR giữ chiều cao). */}
+        {/* 6. Smart Fit Advisor — wizard client nặng, lazy-load dưới màn hình đầu (placeholder SSR giữ chiều cao). */}
         <SmartFitAdvisorLazy />
 
-        {/* 8. Tin tức — chỉ hiển thị khi có bài viết thật. */}
+        {/* 7. Tin tức — chỉ hiển thị khi có bài viết thật. */}
         {heroPosts.length > 0 && (
           <section id="stories" className="page-section">
             <Reveal {...HEADING_REVEAL}>

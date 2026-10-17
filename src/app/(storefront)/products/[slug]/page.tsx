@@ -3,11 +3,12 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { ProductDetailPage } from '@/features/catalog/pages/product-detail-page';
 import { toProductSeoDescription } from '@/features/catalog';
+import { toVariantFlashPrices } from '@/features/promotions';
 import { getCatalogProduct } from '@/generated/api/catalog/catalog';
 import { ApiError } from '@/lib/api/fetcher';
 import { buildPageMetadata } from '@/lib/seo/page-metadata';
 import { toOgImageUrl } from '@/lib/seo/og-image';
-import { getPublicCategories } from '../../_data/public-data';
+import { getActiveFlashSales, getPublicCategories } from '../../_data/public-data';
 
 // ISR 5 phút (= layout storefront và cache dữ liệu công khai; Next lấy giá trị nhỏ nhất): trang public
 // đọc nhiều, giá ở đây chỉ để tham khảo vì bước báo giá checkout luôn tính lại. 120s trước đây làm
@@ -63,6 +64,8 @@ export default async function ProductDetailRoute({
   // Danh mục không phụ thuộc sản phẩm: tải song song thay vì chờ sản phẩm xong mới gọi.
   // `loadCategories` không bao giờ reject nên lỗi của `loadProduct` vẫn đi đúng nhánh dưới.
   const categoriesPromise = loadCategories();
+  // Không bao giờ reject (lỗi → undefined = không có giá flash).
+  const flashSalesPromise = getActiveFlashSales();
   let product: Awaited<ReturnType<typeof getCatalogProduct>>;
   try {
     [product] = await Promise.all([loadProduct(slug), categoriesPromise]);
@@ -78,5 +81,15 @@ export default async function ProductDetailRoute({
     ? (await categoriesPromise)?.find((item) => item.name === primaryCategory)?.slug
     : undefined;
 
-  return <ProductDetailPage product={product} slug={slug} relatedCategorySlug={relatedCategorySlug} />;
+  // Catalog chỉ có giá niêm yết; checkout áp giá flash theo biến thể nên trang phải hiện cùng giá đó.
+  const flashPrices = toVariantFlashPrices(await flashSalesPromise, product.slug);
+
+  return (
+    <ProductDetailPage
+      product={product}
+      slug={slug}
+      relatedCategorySlug={relatedCategorySlug}
+      flashPrices={flashPrices}
+    />
+  );
 }

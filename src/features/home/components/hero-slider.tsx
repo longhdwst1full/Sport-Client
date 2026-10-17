@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, ChevronLeft, ChevronRight, Flame, Zap } from 'lucide-react';
+import { ArrowRight, ChevronLeft, ChevronRight, Zap } from 'lucide-react';
 import { Button, buttonVariants } from '@/foundation/components/buttons';
 import { CarouselDots } from '@/foundation/components/indicators';
 import { BannerPicture } from '@/features/content';
@@ -29,7 +29,6 @@ export interface HeroSlide {
 interface HeroSliderProps {
   slides: HeroSlide[];
   activeIndex: number;
-  hasCampaign: boolean;
   onPrev: () => void;
   onNext: () => void;
   onSelect: (index: number) => void;
@@ -43,7 +42,6 @@ interface HeroSliderProps {
 export function HeroSlider({
   slides,
   activeIndex,
-  hasCampaign,
   onPrev,
   onNext,
   onSelect,
@@ -150,20 +148,6 @@ export function HeroSlider({
                       >
                         <span>{slide.ctaText}</span>
                         <ArrowRight className="size-4" aria-hidden="true" />
-                      </Link>
-                    )}
-                    {/* Không có chiến dịch nào đang chạy thì không dẫn khách tới khu vực trống. */}
-                    {hasCampaign && slide.ctaLink !== '/flash-sale' && (
-                      <Link
-                        href="/flash-sale"
-                        tabIndex={isActive ? undefined : -1}
-                        className={buttonVariants({
-                          variant: 'ghost',
-                          className: `h-auto gap-1.5 border border-white/20 bg-white/10 px-4 py-2.5 text-xs font-bold text-white backdrop-blur hover:bg-white/20 sm:py-3 sm:text-sm ${HERO_FOCUS}`,
-                        })}
-                      >
-                        <Flame className="size-4 text-amber-400" aria-hidden="true" />
-                        <span>Flash Sale</span>
                       </Link>
                     )}
                   </div>

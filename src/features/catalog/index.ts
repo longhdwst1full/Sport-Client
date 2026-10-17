@@ -22,6 +22,7 @@ export { useMegaMenuCategories } from './hooks/use-mega-menu-categories';
 export { toMegaMenuEntries, type MegaMenuEntry } from './model/mega-menu.mapper';
 export { useProductSearch } from './hooks/use-product-search';
 export * from './model/product.mapper';
+export type { VariantFlashPrice, VariantFlashPrices } from './model/variant-flash-price';
 export {
   toProductSeoDescription,
   toCategorySeoDescription,

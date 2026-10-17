@@ -1,102 +1,103 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, Clock, Flame } from 'lucide-react';
-import { useCartActions } from '@/features/cart';
-import { Skeleton } from '@/foundation/components/feedback';
+import { ArrowRight, Flame, Zap } from 'lucide-react';
+import type { PublicFlashSaleListDto } from '@/generated/api/promotions/promotions.schemas';
 import { FlashSaleDealCard } from './flash-sale-deal-card';
 import { useFlashSale } from '../hooks/use-flash-sale';
-import type { FlashSaleDealView } from '../model/flash-sale.mapper';
+import { useFlashSaleCart } from '../hooks/use-flash-sale-cart';
 
-export function FlashSaleSection() {
-  const { addItem } = useCartActions();
-  const { campaign, countdown } = useFlashSale();
+/** Số thẻ đầu được `priority` khi khối nằm ở màn hình đầu (2 cột mobile → hàng đầu). */
+const PRIORITY_CARD_COUNT = 2;
 
-  const handleQuickAdd = (item: FlashSaleDealView, e: React.MouseEvent) => {
-    e.preventDefault();
-    // SKU và variantId lấy từ suất flash thật; giá phải trả cuối cùng vẫn do
-    // checkout xác thực lại với server (`07-state-tools-performance.md`).
-    addItem({
-        variantId: item.variantId,
-        productId: item.variantId,
-        name: item.name,
-        sku: item.sku,
-        productType: 'STANDARD',
-        price: item.price,
-        quantity: 1,
-        imageUrl: item.imageUrl ?? undefined,
-        slug: item.slug,
-      });
-  };
+function pad(value: number): string {
+  return String(value).padStart(2, '0');
+}
 
-  const format2Digits = (num: number) => String(num).padStart(2, '0');
+export function FlashSaleSection({
+  initialData,
+  aboveTheFold = false,
+}: {
+  /** Danh sách server lấy sẵn để HTML SSR có khối ngay (trang chủ). */
+  initialData?: PublicFlashSaleListDto;
+  /** Khối thay hero ở đầu trang: ảnh hàng đầu tải ưu tiên (LCP). */
+  aboveTheFold?: boolean;
+}) {
+  const { campaign, countdown } = useFlashSale({ initialData });
+  const { addToCart, buyNow } = useFlashSaleCart();
 
   // Không giữ chỗ bằng skeleton: phần lớn thời gian KHÔNG có chiến dịch, khi đó một skeleton ~1000px
   // rồi biến mất là cú dịch layout lớn nhất trang. Chỉ hiện khi đã có chiến dịch đang chạy.
   if (!campaign || campaign.deals.length === 0) return null;
 
   return (
-    <section
-      className="bg-white py-12 sm:py-16"
-      aria-labelledby="flash-sale-heading"
-    >
+    <section className="bg-brand-50/60 py-6 sm:py-10" aria-labelledby="flash-sale-heading">
       <div className="page-container">
-        {/* Header with Flame & Live Countdown */}
-        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between border-b border-neutral-200 pb-6">
-          <div>
-            <div className="eyebrow inline-flex items-center gap-1.5 text-brand-600">
-              <Flame className="size-4" aria-hidden="true" />
-              Flash sale
+        <div className="overflow-hidden rounded-2xl border border-brand-200 bg-white shadow-sm">
+          {/* Dải tiêu đề đỏ nhận diện flash sale + đồng hồ đếm ngược theo giờ server. */}
+          <div className="flex flex-col gap-3 bg-brand-600 px-4 py-4 text-white sm:flex-row sm:items-center sm:justify-between sm:px-6">
+            <div className="min-w-0">
+              <p className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-eyebrow text-amber-300">
+                <Zap className="size-4 fill-amber-300" aria-hidden="true" />
+                Flash sale
+                <span className="relative ml-1 flex size-2" aria-hidden="true">
+                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-amber-300 opacity-75" />
+                  <span className="relative inline-flex size-2 rounded-full bg-amber-300" />
+                </span>
+                Đang diễn ra
+              </p>
+              <h2 id="flash-sale-heading" className="mt-1 flex items-center gap-2 text-xl font-bold leading-tight sm:text-2xl">
+                <Flame className="size-6 shrink-0 animate-bounce text-amber-300" aria-hidden="true" />
+                <span className="truncate">{campaign.name}</span>
+              </h2>
+              {campaign.description ? (
+                <p className="mt-1 line-clamp-1 text-sm text-white/85">{campaign.description}</p>
+              ) : null}
             </div>
-            <h2 id="flash-sale-heading" className="heading-page mt-2">
-              {campaign?.name ?? 'Flash Sale Thiết Bị Hôm Nay'}
-            </h2>
-            <p className="mt-1.5 text-sm text-neutral-600">
-              {campaign?.description ?? 'Số lượng ưu đãi có hạn theo từng suất bán.'}
-            </p>
+
+            {countdown.finished ? null : (
+              <div className="flex shrink-0 items-center gap-2">
+                <span className="text-xs font-semibold text-white/85">Kết thúc sau</span>
+                <div
+                  className="flex items-center gap-1 font-mono text-base font-bold sm:text-lg"
+                  role="timer"
+                  aria-label={`Còn ${countdown.hours} giờ ${countdown.minutes} phút`}
+                >
+                  {[countdown.hours, countdown.minutes, countdown.seconds].map((value, index) => (
+                    <span key={index} className="contents">
+                      {index > 0 ? <span className="text-white/70" aria-hidden="true">:</span> : null}
+                      <span className="grid h-9 min-w-9 place-items-center rounded-lg bg-white px-1 text-brand-700 shadow-sm sm:h-10 sm:min-w-10">
+                        {pad(value)}
+                      </span>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
-          {/* Countdown Clock Box */}
-          <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
-            <span className="flex items-center gap-1.5 text-xs font-semibold text-neutral-500">
-              <Clock className="size-4" aria-hidden="true" />
-              Kết thúc trong:
-            </span>
-            <div
-              className="flex items-center gap-1.5 font-mono text-sm sm:text-base font-bold"
-              role="timer"
-              aria-label={`Còn ${countdown.hours} giờ ${countdown.minutes} phút`}
+          <div className="grid grid-cols-2 gap-3 p-3 sm:gap-4 sm:p-5 lg:grid-cols-4">
+            {campaign.deals.map((deal, index) => (
+              <FlashSaleDealCard
+                key={deal.id}
+                deal={deal}
+                onAddToCart={addToCart}
+                onBuyNow={buyNow}
+                priority={aboveTheFold && index < PRIORITY_CARD_COUNT}
+              />
+            ))}
+          </div>
+
+          <div className="border-t border-brand-100 px-4 py-3 text-center">
+            <Link
+              href="/flash-sale"
+              className="focus-ring inline-flex items-center gap-1.5 rounded text-sm font-semibold text-brand-700 underline-offset-4 hover:underline"
             >
-              <span className="grid size-9 sm:size-10 place-items-center rounded-lg bg-neutral-950 text-white">
-                {format2Digits(countdown.hours)}
-              </span>
-              <span className="text-neutral-400 font-bold" aria-hidden="true">:</span>
-              <span className="grid size-9 sm:size-10 place-items-center rounded-lg bg-neutral-950 text-white">
-                {format2Digits(countdown.minutes)}
-              </span>
-              <span className="text-neutral-400 font-bold" aria-hidden="true">:</span>
-              <span className="grid size-9 sm:size-10 place-items-center rounded-lg bg-neutral-950 text-white">
-                {format2Digits(countdown.seconds)}
-              </span>
-            </div>
+              Xem tất cả suất flash sale <ArrowRight className="size-4" aria-hidden="true" />
+            </Link>
           </div>
-        </div>
-
-        {/* Product Cards Grid */}
-        <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
-          {campaign.deals.map((deal) => (
-            <FlashSaleDealCard key={deal.id} deal={deal} onQuickAdd={handleQuickAdd} />
-          ))}
-        </div>
-
-        <div className="mt-8 text-center">
-          <Link href="/flash-sale" className="focus-ring inline-flex items-center gap-1.5 rounded text-sm font-semibold text-neutral-950 underline-offset-4 hover:underline">
-            Xem tất cả suất flash sale <ArrowRight className="size-4" aria-hidden="true" />
-          </Link>
         </div>
       </div>
     </section>
   );
 }
-
-/** Cùng khung với section thật (header + lưới 4 thẻ) để giữ chỗ trong lúc tải lần đầu. */

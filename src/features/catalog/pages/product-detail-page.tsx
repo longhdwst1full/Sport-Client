@@ -17,14 +17,17 @@ import { Breadcrumb } from '@/foundation/components/navigation';
 import { toBreadcrumbJsonLd, toProductBreadcrumbItems, toProductJsonLd } from '../model/product-json-ld';
 import { serializeJsonLd } from '@/lib/seo/json-ld';
 import { ProductDescriptionCollapsible } from '../components/product-description-collapsible';
+import type { VariantFlashPrices } from '../model/variant-flash-price';
 
 interface ProductDetailPageProps {
   product: ProductDetailDto;
   slug: string;
   relatedCategorySlug: string | undefined;
+  /** Giá flash đang mở theo biến thể (route lấy từ promotions); rỗng khi không có chiến dịch. */
+  flashPrices?: VariantFlashPrices;
 }
 
-export function ProductDetailPage({ product, slug, relatedCategorySlug }: ProductDetailPageProps) {
+export function ProductDetailPage({ product, slug, relatedCategorySlug, flashPrices }: ProductDetailPageProps) {
   // CONTRACT: `ProductDetailDto` chưa có trường thông số kỹ thuật. Bản trước
   // hiển thị một bảng cố định cho MỌI sản phẩm — gồm cả tải trọng, kích thước và
   // chứng nhận CE/EN957 — tức là công bố thông số và chứng nhận không có thật.
@@ -125,7 +128,7 @@ export function ProductDetailPage({ product, slug, relatedCategorySlug }: Produc
 
           {/* Sticky Purchase Panel + Technical Specs */}
           <div className="space-y-6 lg:sticky lg:top-24 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-start">
-            <ProductPurchasePanel product={purchaseView} />
+            <ProductPurchasePanel product={purchaseView} flashPrices={flashPrices} />
 
             {/* Technical Specifications Table directly under price/purchase box */}
             <ProductSpecifications specs={TECH_SPECS} initialLimit={5} />

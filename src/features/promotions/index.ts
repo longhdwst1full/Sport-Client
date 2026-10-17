@@ -9,6 +9,9 @@ export {
 export {
   toFlashSaleCampaignView,
   toFlashSaleDealView,
+  toVariantFlashPrices,
   type FlashSaleCampaignView,
+  type FlashSaleInitialData,
+  type VariantFlashPriceView,
   type FlashSaleDealView,
 } from './model/flash-sale.mapper';

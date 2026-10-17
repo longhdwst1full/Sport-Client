@@ -5,10 +5,9 @@ import { ArrowRight, Clock, Flame, RefreshCw } from 'lucide-react';
 import { Button, buttonVariants } from '@/foundation/components/buttons';
 import { EmptyState } from '@/foundation/components/feedback';
 import { Breadcrumb } from '@/foundation/components/navigation';
-import { useCartActions } from '@/features/cart';
 import { FLASH_SALE_FOCUS_RING, FlashSaleDealCard, FlashSaleDealCardSkeleton } from '../components/flash-sale-deal-card';
 import { useFlashSale } from '../hooks/use-flash-sale';
-import type { FlashSaleDealView } from '../model/flash-sale.mapper';
+import { useFlashSaleCart } from '../hooks/use-flash-sale-cart';
 
 const PILL = `rounded-full px-5 ${FLASH_SALE_FOCUS_RING}`;
 const PRODUCTS_HREF = '/products';
@@ -19,23 +18,8 @@ function pad(value: number): string {
 }
 
 export function FlashSalePage() {
-  const { addItem } = useCartActions();
+  const { addToCart, buyNow } = useFlashSaleCart();
   const { campaigns, countdown, isPending, isError, retry } = useFlashSale();
-
-  const handleQuickAdd = (deal: FlashSaleDealView, event: React.MouseEvent) => {
-    event.preventDefault();
-    addItem({
-        variantId: deal.variantId,
-        productId: deal.variantId,
-        name: deal.name,
-        sku: deal.sku,
-        productType: 'STANDARD',
-        price: deal.price,
-        quantity: 1,
-        imageUrl: deal.imageUrl ?? undefined,
-        slug: deal.slug,
-      });
-  };
 
   return (
       <div className="bg-white pb-20 pt-8 text-neutral-950">
@@ -139,7 +123,7 @@ export function FlashSalePage() {
                 </div>
                 <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
                   {campaign.deals.map((deal) => (
-                    <FlashSaleDealCard key={deal.id} deal={deal} onQuickAdd={handleQuickAdd} />
+                    <FlashSaleDealCard key={deal.id} deal={deal} onAddToCart={addToCart} onBuyNow={buyNow} />
                   ))}
                 </div>
               </section>

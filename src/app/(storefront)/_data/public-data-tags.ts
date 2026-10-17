@@ -2,4 +2,5 @@
 export const PUBLIC_DATA_TAGS = {
   categories: 'public:catalog-categories',
   banners: 'public:content-banners',
+  flashSales: 'public:flash-sales',
 } as const;

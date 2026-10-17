@@ -1,6 +1,6 @@
 import { HomePage as StorefrontHomePage } from '@/features/home';
 import { BannerPlacement } from '@/generated/api/content/content.schemas';
-import { getActiveBannerViews, getPublicCategories } from './_data/public-data';
+import { getActiveBannerViews, getActiveFlashSales, getPublicCategories } from './_data/public-data';
 
 // Rail danh mục lấy từ API lúc render; ISR 5 phút để trang chủ không bị
 // đóng băng dữ liệu build-time (`01-next-rendering.md`).
@@ -10,10 +10,18 @@ export const revalidate = 300;
 export const metadata = { alternates: { canonical: '/' } };
 
 export default async function HomePage() {
-  const [categories, heroBanners, promoBanners] = await Promise.all([
+  const [categories, heroBanners, promoBanners, flashSales] = await Promise.all([
     getPublicCategories(),
     getActiveBannerViews(BannerPlacement.HOME_HERO),
     getActiveBannerViews(BannerPlacement.HOME_PROMO),
+    getActiveFlashSales(),
   ]);
-  return <StorefrontHomePage categories={categories ?? []} heroBanners={heroBanners} promoBanners={promoBanners} />;
+  return (
+    <StorefrontHomePage
+      categories={categories ?? []}
+      heroBanners={heroBanners}
+      promoBanners={promoBanners}
+      flashSales={flashSales}
+    />
+  );
 }

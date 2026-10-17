@@ -4,6 +4,8 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCartActions } from '@/features/cart';
 import type { ProductPurchaseView } from '../model/product.mapper';
+import type { VariantFlashPrices } from '../model/variant-flash-price';
+import { useIsMounted } from '@/shared/hooks';
 import { useToast } from '@/shared/components/global-toast';
 import { ProductPriceHeader } from './product-price-header';
 import { VariantSelector } from './variant-selector';
@@ -13,10 +15,17 @@ import { StorePolicyLinks } from './store-policy-links';
 
 const ADDED_TOAST_MS = 2500;
 
-export function ProductPurchasePanel({ product }: { product: ProductPurchaseView }) {
+export function ProductPurchasePanel({
+  product,
+  flashPrices,
+}: {
+  product: ProductPurchaseView;
+  flashPrices?: VariantFlashPrices;
+}) {
   const { addItem } = useCartActions();
   const router = useRouter();
   const { cart: toastCart } = useToast();
+  const isMounted = useIsMounted();
 
   const variants = product.variants;
   // Mặc định chọn biến thể bán được đầu tiên; chọn biến thể chưa có giá làm mặc định là
@@ -53,7 +62,12 @@ export function ProductPurchasePanel({ product }: { product: ProductPurchaseView
   const selectedVariant = variants.find(({ id }) => id === selectedVariantId) ?? variants[0];
   // INVARIANT: chỉ đưa vào giỏ biến thể ACTIVE có giá hiệu lực (`sellable` do mapper tính).
   // Không có giá thì không có "giá 0": giỏ và checkout sẽ báo giá lệch hẳn với màn này.
-  const price = selectedVariant?.sellable ? selectedVariant.priceAmount : null;
+  // Giá flash của biến thể đang chọn. HTML ISR có thể cũ tới vài phút: sau khi mount mới so mốc kết
+  // thúc với đồng hồ máy (trước đó giữ như server render để không lệch hydrate). Checkout vẫn báo giá lại.
+  const flashCandidate = selectedVariant?.sellable ? flashPrices?.[selectedVariant.id] : undefined;
+  const flash = flashCandidate && (!isMounted || flashCandidate.endsAtMs > Date.now()) ? flashCandidate : undefined;
+  const price = selectedVariant?.sellable ? (flash?.price ?? selectedVariant.priceAmount) : null;
+  const priceLabel = flash?.priceLabel ?? selectedVariant?.priceLabel;
   const canAdd = Boolean(selectedVariant?.sellable && price !== null);
   // Hết hàng vẫn hiện giá (có giá thật) nhưng khoá mua: không đưa hàng không có sẵn vào checkout.
   const outOfStock = selectedVariant?.inStock === false && selectedVariant.priceAmount !== null;
@@ -98,7 +112,8 @@ export function ProductPurchasePanel({ product }: { product: ProductPurchaseView
         canAdd={canAdd}
         outOfStock={outOfStock}
         inStock={selectedVariant?.inStock === true}
-        priceLabel={selectedVariant?.priceLabel}
+        priceLabel={priceLabel}
+        flash={flash}
       />
 
       <hr className="border-neutral-100" />
@@ -127,7 +142,7 @@ export function ProductPurchasePanel({ product }: { product: ProductPurchaseView
 
       <StickyBuyBar
         visible={showStickyBar}
-        priceLabel={selectedVariant?.priceLabel ?? 'Liên hệ báo giá'}
+        priceLabel={priceLabel ?? 'Liên hệ báo giá'}
         canAdd={canAdd}
         outOfStock={outOfStock}
         onAddToCart={handleAddToCart}

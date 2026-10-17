@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useIsMounted } from '@/shared/hooks';
 import { useListPublicFlashSales } from '@/generated/api/promotions/promotions';
+import type { PublicFlashSaleListDto } from '@/generated/api/promotions/promotions.schemas';
 import {
   toFlashSaleCampaignView,
   type FlashSaleCampaignView,
@@ -38,7 +39,18 @@ function splitRemaining(remainingMs: number): FlashSaleCountdown {
  * không cần chính xác từng giây ở đây — giá và suất luôn được server chốt lại ở bước báo giá checkout;
  * hết giờ thì `useFlashSale` chủ động refetch.
  */
-export function useFlashSaleCampaigns({ live = false }: { live?: boolean } = {}): {
+export function useFlashSaleCampaigns({
+  live = false,
+  initialData,
+}: {
+  live?: boolean;
+  /**
+   * Danh sách server lấy sẵn (trang chủ, ISR) để HTML SSR có khối flash sale thay vì trống tới khi
+   * query client chạy. Chỉ dùng tới khi query có dữ liệu thật; không ghi vào cache vì header đã tạo
+   * query trước. `serverTime` của nó có thể cũ theo ISR nên không dùng chỉnh đồng hồ.
+   */
+  initialData?: PublicFlashSaleListDto;
+} = {}): {
   campaigns: FlashSaleCampaignView[];
   serverTime: string | undefined;
   refetch: () => Promise<unknown>;
@@ -51,10 +63,8 @@ export function useFlashSaleCampaigns({ live = false }: { live?: boolean } = {})
     // `live`: nơi hiển thị suất/đồng hồ (khối và trang flash sale) vẫn cập nhật khi khách quay lại tab.
     query: { enabled: isMounted, staleTime: live ? 30_000 : 60_000, refetchOnWindowFocus: live },
   });
-  const campaigns = useMemo(
-    () => (query.data?.items ?? []).map(toFlashSaleCampaignView),
-    [query.data],
-  );
+  const source = query.data ?? initialData;
+  const campaigns = useMemo(() => (source?.items ?? []).map(toFlashSaleCampaignView), [source]);
   const { refetch } = query;
   // `cancelRefetch: false`: nhiều đồng hồ cùng chạm 0 trong một giây thì dùng chung lượt đang bay,
   // không huỷ lượt kia rồi gọi lại (mặc định của react-query sinh ra N request cho N component).
@@ -77,7 +87,7 @@ export function useFlashSaleCampaigns({ live = false }: { live?: boolean } = {})
  * không kéo dài được chương trình. Khi đếm về 0, hook refetch để server xác nhận
  * lại thay vì client tự quyết định đã hết hạn.
  */
-export function useFlashSale(): {
+export function useFlashSale({ initialData }: { initialData?: PublicFlashSaleListDto } = {}): {
   campaign: FlashSaleCampaignView | undefined;
   campaigns: FlashSaleCampaignView[];
   countdown: FlashSaleCountdown;
@@ -86,7 +96,7 @@ export function useFlashSale(): {
   /** Tải lại thủ công (nút "Thử lại" ở trạng thái lỗi). */
   retry: () => Promise<unknown>;
 } {
-  const { campaigns, serverTime, refetch, isPending, isError } = useFlashSaleCampaigns({ live: true });
+  const { campaigns, serverTime, refetch, isPending, isError } = useFlashSaleCampaigns({ live: true, initialData });
   const clockOffsetRef = useRef(0);
   const [countdown, setCountdown] = useState<FlashSaleCountdown>(ZERO);
 

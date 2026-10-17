@@ -1,10 +1,10 @@
 # Storefront Home — maintenance note
 
-> **Document version:** 2.1.0
+> **Document version:** 2.2.0
 >
-> **Last updated:** 2026-10-06
+> **Last updated:** 2026-10-17
 >
-> **Change summary:** Trang chủ tự render `<main>`; sắp lại thứ tự section (hero → rail → flash sale → bán chạy → khối danh mục → tin cậy → tin tức); `SmartFitAdvisor` lazy-load qua `SmartFitAdvisorLazy` (`next/dynamic`, `ssr: false`, placeholder cùng `SMART_FIT_CARD_MIN_HEIGHT`). Trước đó: Bỏ toàn bộ mock trang chủ: hero dựng từ bài viết + flash sale thật, thẻ bộ môn/lối tắt từ cây danh mục; gỡ popup voucher, planner, training guide, stats, brand partners.
+> **Change summary:** Có flash sale đang chạy thì `HomeTopSection` đưa khối flash sale lên đầu thay hero; không có thì hero như cũ.
 
 ## Phạm vi
 
@@ -65,6 +65,7 @@ Hero không có bài viết lẫn flash sale thì hiển thị một slide thư�
 
 | Version | Date | Change summary |
 | --- | --- | --- |
+| 2.2.0 | 2026-10-17 | `HomeTopSection`: flash sale đang chạy thay hero ở đầu trang (server quyết định lần render đầu từ `getActiveFlashSales`, client theo query mới nhất); bỏ khối flash sale ở vị trí thứ 3. |
 | 2.0.0 | 2026-09-25 | Xoá mock: hero/bộ môn/lối tắt từ API; gỡ voucher popup, planner, training guide. |
 | 1.1.0 | 2026-09-25 | Gỡ stats/brand partners giả, SSR trang 1 lưới sản phẩm, sửa link `/catalog?…`/`/#products`. |
 | 1.0.0 | 2026-09-13 | Tạo note; rail danh mục sang API thật, `/` bật ISR 5 phút. |
