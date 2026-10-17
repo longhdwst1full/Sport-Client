@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 import { Be_Vietnam_Pro } from 'next/font/google';
+import { Analytics } from '@vercel/analytics/next';
 import { absoluteUrl, DEFAULT_OG_IMAGE, SITE_NAME, SITE_URL } from '@/lib/seo/page-metadata';
 import { ORGANIZATION_ID, serializeJsonLd, WEBSITE_ID } from '@/lib/seo/json-ld';
 import { STORE_CONFIG, STORE_CONTACT, STORE_SHOWROOMS } from '@/shared/constants';
@@ -189,6 +190,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
           dangerouslySetInnerHTML={{ __html: serializeJsonLd(SITE_JSON_LD) }}
         />
         <Providers>{children}</Providers>
+        <Analytics />
       </body>
     </html>
   );
