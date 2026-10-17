@@ -1,10 +1,10 @@
 # Storefront checkout — maintenance note
 
-> **Document version:** 2.1.0
+> **Document version:** 2.2.0
 >
 > **Last updated:** 2026-10-17
 >
-> **Change summary:** Tạm tính và danh sách hàng ở checkout dùng `useCartLinePricing` (luật vượt suất flash).
+> **Change summary:** Dòng hàng hiện "N giá flash + M giá gốc"; `CheckoutLineView.flashSale` từ contract `CheckoutQuoteItemDto.flashSale`.
 
 ## Luồng 3 bước (2026-09-26)
 
@@ -95,6 +95,7 @@ Checkout chỉ được import `orders`, `address`, `site-config` (và `auth`, `
 
 | Version | Date | Change summary | Source |
 | --- | --- | --- | --- |
+| 2.2.0 | 2026-10-17 | Dòng hàng hiện "N giá flash + M giá gốc"; `CheckoutLineView.flashSale` từ contract `CheckoutQuoteItemDto.flashSale`. |  |
 | 2.1.0 | 2026-10-17 | Tạm tính/dòng hàng theo `useCartLinePricing`; dòng vượt suất flash có ghi chú "tính giá thường". |  |
 | 2.0.0 | 2026-10-17 | `CheckoutPolicyDialog`: nội dung chính sách là slot route (`PolicyArticles`), phải cuộn tới cuối mới đóng/đồng ý; `usePlaceOrder({ onTermsRequired })` mở modal thay cho thông báo chặn, `submitAfterAgree` tích ô rồi đặt hàng tiếp. Bỏ `CheckoutPolicyLinks`. |  |
 | 1.9.0 | 2026-10-09 | Phí một lần theo địa chỉ + giỏ; thanh toán/"Nhờ shop gửi" không báo giá lại, lựa chọn cuối gửi kèm confirm; tự báo giá lại + xác nhận lại một lần khi `CHECKOUT_REQUOTE_REQUIRED`/`CHECKOUT_QUOTE_EXPIRED`. | Owner requirement 2026-10-09 |

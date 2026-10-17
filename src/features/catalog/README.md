@@ -1,10 +1,10 @@
 # Storefront Catalog — maintenance note
 
-> **Document version:** 1.9.0
+> **Document version:** 1.10.0
 >
 > **Last updated:** 2026-10-17
 >
-> **Change summary:** Thẻ sản phẩm hiện giá flash sống (badge -X%, giá gạch); PDP ưu tiên giá flash sống, vượt suất → giá thường + toast; JSON-LD khai giá flash + `priceValidUntil`.
+> **Change summary:** PDP: vượt suất flash hiện "N × giá flash + M × giá gốc = tổng" và toast tương ứng (khớp checkout tách dòng).
 
 ## Phạm vi và ranh giới
 
@@ -55,6 +55,7 @@
 
 | Version | Date | Change summary | Source |
 | --- | --- | --- | --- |
+| 1.10.0 | 2026-10-17 | PDP: vượt suất flash hiện "N × giá flash + M × giá gốc = tổng" và toast tương ứng (khớp checkout tách dòng). |  |
 | 1.9.0 | 2026-10-17 | `VariantFlashPriceProvider` (route group cấp từ promotions); `ProductCard` giá flash; giỏ nhận giá flash từ thẻ; PDP: dữ liệu sống thắng ISR, vượt suất tính giá thường + cảnh báo/toast; JSON-LD giá flash thấp nhất + `priceValidUntil`. |  |
 | 1.8.0 | 2026-10-17 | `ProductCard.onAddToCart` (`useCardAddToCart`); `CATALOG_PAGE_SIZE` 12, `trimToFullRows` khi còn trang; sản phẩm liên quan lưới 2/4 cột; PDP: `useFlashCountdown`, thanh suất, `VariantSelector` hiện giá flash. | CLIENT-20261017-CATALOG-GRID |
 | 1.7.0 | 2026-10-17 | PDP nhận `flashPrices` (route map từ promotions) và hiện giá flash cho biến thể đang chọn; hết giờ (so sau khi mount) thì về giá niêm yết. Checkout vẫn báo giá lại. | CLIENT-20261017-PDP-FLASH-PRICE |

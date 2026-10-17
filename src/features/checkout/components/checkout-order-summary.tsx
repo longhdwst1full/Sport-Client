@@ -103,13 +103,16 @@ export function CheckoutOrderSummary({
               <div className="min-w-0 flex-1">
                 <p className="truncate text-xs font-bold text-neutral-900">{item.name}</p>
                 <p className="text-xs text-neutral-500">{item.sku} · ×{item.quantity}</p>
-                {line.promo === 'exceeded' && (
-                  <p className="text-2xs font-semibold text-amber-700">
-                    {line.promoMaxQuantity ? `Vượt ${line.promoMaxQuantity} suất flash: tính giá thường` : 'Hết suất flash: tính giá thường'}
+                {line.promo === 'split' && (
+                  <p className="text-2xs font-semibold text-brand-700">
+                    {line.flashQuantity} giá flash + {line.regularQuantity} giá gốc
                   </p>
                 )}
+                {line.promo === 'soldOut' && <p className="text-2xs font-semibold text-amber-700">Hết suất flash: tính giá gốc</p>}
               </div>
-              <strong className={`shrink-0 text-xs ${line.promo === 'applied' ? 'text-brand-600' : ''}`}>{formatVnd(line.lineTotal)}</strong>
+              <strong className={`shrink-0 text-xs ${line.promo === 'applied' || line.promo === 'split' ? 'text-brand-600' : ''}`}>
+                {formatVnd(line.lineTotal)}
+              </strong>
             </div>
             );
           })}

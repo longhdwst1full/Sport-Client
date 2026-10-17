@@ -148,17 +148,16 @@ export function CartPage() {
                     // Vừa vượt số suất flash: báo một lần lúc chuyển ngưỡng, không báo mỗi lần bấm.
                     const before = priceLine(item);
                     const after = priceLine({ ...item, quantity: item.quantity + 1 });
-                    if (before.promo === 'applied' && after.promo === 'exceeded') {
+                    if (before.promo === 'applied' && after.promo === 'split') {
                       toast({
-                        type: 'warning',
+                        type: 'info',
                         title: 'Vượt số suất flash sale',
-                        message: `Chỉ còn ${after.promoMaxQuantity} suất giá flash cho ${item.name}. Số lượng hiện tại tính giá thường cho cả dòng.`,
+                        message: `${item.name}: ${after.flashQuantity} sản phẩm giá flash, ${after.regularQuantity} sản phẩm còn lại tính giá gốc.`,
                       });
                     }
                   }}
                   onRemove={() => handleRemoveItem(item.variantId, item.name)}
                   linePrice={priceLine(item)}
-                  onKeepPromoQuantity={(quantity) => setQuantity(item.variantId, quantity)}
                 />
               ))}
             </div>

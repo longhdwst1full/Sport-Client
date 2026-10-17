@@ -14,20 +14,26 @@ export interface CartPromoPrice {
 export type CartPromoPrices = Readonly<Record<string, CartPromoPrice>>;
 
 export interface CartLinePrice {
-  unitPrice: number;
   lineTotal: number;
-  /** `applied`: đang hưởng giá suất; `exceeded`: số lượng vượt số suất còn lại → cả dòng tính giá thường. */
-  promo: 'applied' | 'exceeded' | null;
-  /** Số lượng tối đa còn hưởng giá suất (chỉ có khi `promo` khác null). */
-  promoMaxQuantity?: number;
+  /**
+   * `applied`: cả dòng giá suất; `split`: vượt số suất → phần trong suất giá flash + phần dư giá thường;
+   * `soldOut`: hết suất, cả dòng giá thường; `null`: không có suất.
+   */
+  promo: 'applied' | 'split' | 'soldOut' | null;
+  /** Số lượng + đơn giá phần giá flash (0 khi không hưởng). */
+  flashQuantity: number;
+  flashUnitPrice: number;
+  /** Số lượng + đơn giá phần giá thường. */
+  regularQuantity: number;
+  regularUnitPrice: number;
 }
 
 /**
- * INVARIANT (khớp `CheckoutService.snapshotItems`): giá flash chỉ áp khi số suất còn lại ≥ số lượng CẢ
- * dòng; thiếu thì cả dòng tính giá thường, không chia nửa flash nửa thường. `price` của dòng là ảnh chụp
- * lúc thêm vào giỏ (có thể là giá flash), nên khi vượt suất phải đổi sang `regularPrice`.
- * Chưa có dữ liệu suất (`promos` null) hoặc biến thể không trong chiến dịch → giữ ảnh chụp; số cuối
- * cùng luôn do báo giá checkout chốt.
+ * INVARIANT (khớp `CheckoutService.snapshotItems`): giá flash áp cho tối đa số suất còn lại; phần vượt
+ * tách thành phần giá thường (checkout trả hai dòng). `price` của dòng giỏ là ảnh chụp lúc thêm (có thể
+ * là giá flash), nên phần giá thường dùng `regularPrice` của suất.
+ * Chưa có dữ liệu suất (`promos` null), biến thể không trong chiến dịch hoặc đã hết giờ → giữ ảnh chụp;
+ * số cuối cùng luôn do báo giá checkout chốt.
  */
 export function resolveCartLinePrice(
   item: { variantId: string; price: number; quantity: number },
@@ -36,11 +42,24 @@ export function resolveCartLinePrice(
 ): CartLinePrice {
   const promo = promos?.[item.variantId];
   if (!promo || promo.endsAtMs <= now) {
-    return { unitPrice: item.price, lineTotal: item.price * item.quantity, promo: null };
+    return {
+      lineTotal: item.price * item.quantity,
+      promo: null,
+      flashQuantity: 0,
+      flashUnitPrice: item.price,
+      regularQuantity: item.quantity,
+      regularUnitPrice: item.price,
+    };
   }
-  if (item.quantity <= promo.maxQuantity) {
-    return { unitPrice: promo.price, lineTotal: promo.price * item.quantity, promo: 'applied', promoMaxQuantity: promo.maxQuantity };
-  }
-  const unitPrice = promo.regularPrice ?? item.price;
-  return { unitPrice, lineTotal: unitPrice * item.quantity, promo: 'exceeded', promoMaxQuantity: promo.maxQuantity };
+  const regularUnitPrice = promo.regularPrice ?? item.price;
+  const flashQuantity = Math.min(Math.max(promo.maxQuantity, 0), item.quantity);
+  const regularQuantity = item.quantity - flashQuantity;
+  return {
+    lineTotal: flashQuantity * promo.price + regularQuantity * regularUnitPrice,
+    promo: flashQuantity === 0 ? 'soldOut' : regularQuantity === 0 ? 'applied' : 'split',
+    flashQuantity,
+    flashUnitPrice: promo.price,
+    regularQuantity,
+    regularUnitPrice,
+  };
 }

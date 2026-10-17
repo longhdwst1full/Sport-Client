@@ -76,10 +76,18 @@ export function ProductPurchasePanel({
   }, [sourceFlashPrices, isMounted]);
   const flash = selectedVariant?.sellable ? activeFlashPrices?.[selectedVariant.id] : undefined;
   // INVARIANT (khớp checkout): số lượng vượt số suất còn lại → cả dòng tính giá thường.
-  const flashApplies = Boolean(flash && quantity <= flash.availableQuantity);
-  const price = selectedVariant?.sellable ? (flashApplies && flash ? flash.price : selectedVariant.priceAmount) : null;
+  // INVARIANT (khớp checkout `snapshotItems`): vượt số suất còn lại → phần trong suất giá flash, phần dư
+  // giá thường (checkout tách hai dòng). Giỏ lưu giá flash làm ảnh chụp; giỏ/checkout tự tách khi hiển thị.
+  const flashSplit =
+    flash && selectedVariant && quantity > flash.availableQuantity && selectedVariant.priceAmount !== null
+      ? {
+          flashQuantity: flash.availableQuantity,
+          regularQuantity: quantity - flash.availableQuantity,
+          total: flash.availableQuantity * flash.price + (quantity - flash.availableQuantity) * selectedVariant.priceAmount,
+        }
+      : undefined;
+  const price = selectedVariant?.sellable ? (flash?.price ?? selectedVariant.priceAmount) : null;
   const priceLabel = flash?.priceLabel ?? selectedVariant?.priceLabel;
-  const payablePriceLabel = flashApplies ? priceLabel : selectedVariant?.priceLabel;
   const canAdd = Boolean(selectedVariant?.sellable && price !== null);
   // Hết hàng vẫn hiện giá (có giá thật) nhưng khoá mua: không đưa hàng không có sẵn vào checkout.
   const outOfStock = selectedVariant?.inStock === false && selectedVariant.priceAmount !== null;
@@ -101,13 +109,13 @@ export function ProductPurchasePanel({
     return true;
   };
 
-  /** Mua vượt số suất flash: báo rõ cả dòng tính giá thường (checkout cũng tính vậy). */
+  /** Mua vượt số suất flash: báo phần nào giá flash, phần nào giá gốc (checkout tách dòng y vậy). */
   const warnFlashExceeded = () => {
-    if (!flash || flashApplies) return;
+    if (!flashSplit) return;
     toast({
-      type: 'warning',
+      type: 'info',
       title: 'Vượt số suất flash sale',
-      message: `Chỉ còn ${flash.availableQuantity} suất giá flash. Mua ${quantity} sản phẩm sẽ tính giá thường cho cả dòng — chọn ${flash.availableQuantity} để giữ giá flash.`,
+      message: `${flashSplit.flashQuantity} sản phẩm giá flash, ${flashSplit.regularQuantity} sản phẩm còn lại tính giá gốc.`,
     });
   };
 
@@ -138,9 +146,8 @@ export function ProductPurchasePanel({
         inStock={selectedVariant?.inStock === true}
         priceLabel={priceLabel}
         flash={flash}
-        flashExceeded={Boolean(flash) && !flashApplies}
+        flashSplit={flashSplit}
         regularPriceLabel={selectedVariant?.priceLabel}
-        onKeepFlashQuantity={flash ? () => setQuantity(flash.availableQuantity) : undefined}
       />
 
       <hr className="border-neutral-100" />
@@ -170,7 +177,7 @@ export function ProductPurchasePanel({
 
       <StickyBuyBar
         visible={showStickyBar}
-        priceLabel={payablePriceLabel ?? 'Liên hệ báo giá'}
+        priceLabel={priceLabel ?? 'Liên hệ báo giá'}
         canAdd={canAdd}
         outOfStock={outOfStock}
         onAddToCart={handleAddToCart}

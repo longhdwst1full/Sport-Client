@@ -3,6 +3,7 @@ import { Flame, Zap } from 'lucide-react';
 import { STORE_POLICY_FACTS, STORE_POLICY_PAGES } from '@/shared/constants';
 import { formatFlashEnd, type VariantFlashPrice } from '../model/variant-flash-price';
 import { useFlashCountdown } from '../hooks/use-flash-countdown';
+import { formatVnd } from '@/shared/format/money';
 
 interface ProductPriceHeaderProps {
   canAdd: boolean;
@@ -12,10 +13,9 @@ interface ProductPriceHeaderProps {
   priceLabel: string | undefined;
   /** Giá flash đang mở của biến thể đang chọn; `priceLabel` khi đó đã là giá flash. */
   flash?: VariantFlashPrice;
-  /** Số lượng đang chọn vượt số suất còn lại: cả dòng sẽ tính giá thường. */
-  flashExceeded?: boolean;
+  /** Số lượng đang chọn vượt số suất còn lại: phần trong suất giá flash, phần dư giá gốc. */
+  flashSplit?: { flashQuantity: number; regularQuantity: number; total: number };
   regularPriceLabel?: string;
-  onKeepFlashQuantity?: () => void;
 }
 
 export function ProductPriceHeader({
@@ -24,27 +24,21 @@ export function ProductPriceHeader({
   inStock,
   priceLabel,
   flash,
-  flashExceeded = false,
+  flashSplit,
   regularPriceLabel,
-  onKeepFlashQuantity,
 }: ProductPriceHeaderProps) {
   if (flash && canAdd && priceLabel) {
     return (
       <div>
         <FlashPriceBlock flash={flash} priceLabel={priceLabel} />
-        {flashExceeded && (
-          <p role="status" className="mt-3 rounded-xl bg-amber-50 px-3 py-2 text-xs leading-5 text-amber-900">
-            Giá flash chỉ áp dụng khi mua tối đa {flash.availableQuantity} sản phẩm. Số lượng đang chọn sẽ tính giá
-            thường{regularPriceLabel ? ` ${regularPriceLabel}/sp` : ''} cho cả đơn.
-            {onKeepFlashQuantity && (
-              <button
-                type="button"
-                onClick={onKeepFlashQuantity}
-                className="ml-1 rounded font-bold text-amber-950 underline underline-offset-2 focus-ring-tight"
-              >
-                Chọn {flash.availableQuantity} để giữ giá flash
-              </button>
-            )}
+        {flashSplit && (
+          <p role="status" className="mt-3 rounded-xl bg-brand-50 px-3 py-2 text-xs leading-5 text-neutral-800">
+            Chỉ còn {flashSplit.flashQuantity} suất giá flash:{' '}
+            <span className="font-bold text-brand-700">
+              {flashSplit.flashQuantity} × {priceLabel}
+            </span>{' '}
+            + {flashSplit.regularQuantity} × {regularPriceLabel ?? 'giá gốc'} ={' '}
+            <span className="font-bold text-neutral-950">{formatVnd(flashSplit.total)}</span>
           </p>
         )}
         <ProductAvailability inStock={inStock} outOfStock={outOfStock} />

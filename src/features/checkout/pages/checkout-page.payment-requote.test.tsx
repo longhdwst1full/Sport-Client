@@ -21,9 +21,12 @@ vi.mock('next/navigation', () => ({
 vi.mock('@/features/cart', () => ({
   useCartActions: () => ({ addItem: vi.fn(), removeItem: vi.fn(), updateQuantity: vi.fn(), clear: vi.fn() }),
   useCartLinePricing: () => (item: { price: number; quantity: number }) => ({
-    unitPrice: item.price,
     lineTotal: item.price * item.quantity,
     promo: null,
+    flashQuantity: 0,
+    flashUnitPrice: item.price,
+    regularQuantity: item.quantity,
+    regularUnitPrice: item.price,
   }),
   useCartItems: () => [{
     variantId: 'v1',

@@ -21,6 +21,8 @@ export interface CheckoutLineView {
   quantity: number;
   unitPriceLabel: string;
   lineTotalLabel: string;
+  /** Dòng giá flash; vượt suất thì cùng biến thể có thêm một dòng giá thường. */
+  flashSale: boolean;
 }
 
 export interface CheckoutQuoteView {
@@ -83,6 +85,7 @@ export function toCheckoutQuoteView(dto: CheckoutQuoteDto): CheckoutQuoteView {
       quantity: item.quantity,
       unitPriceLabel: vndMoney.format(Number(item.unitPrice)),
       lineTotalLabel: vndMoney.format(Number(item.lineTotal)),
+      flashSale: item.flashSale,
     })),
   };
 }
