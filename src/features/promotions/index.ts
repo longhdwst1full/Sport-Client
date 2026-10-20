@@ -1,5 +1,6 @@
 export { FlashSalePage } from './pages/flash-sale-page';
 export { FlashSaleSection } from './components/flash-sale-section';
+export { FlashSaleSectionLazy } from './components/flash-sale-section-lazy';
 export { FlashSaleDealCard } from './components/flash-sale-deal-card';
 export { useFlashSale, useFlashSaleCampaigns } from './hooks/use-flash-sale';
 export {

@@ -13,7 +13,7 @@ import {
 import { useContentStories } from '../hooks/use-content-stories';
 import { Button } from '@/foundation/components/buttons';
 import { ToggleChip } from '@/foundation/components/tabs-chips';
-import { Skeleton } from '@/foundation/components/feedback';
+import { ContentStoriesSkeleton } from './content-stories-skeleton';
 import { Reveal } from '@/foundation/components/motion';
 import { CONTENT_POST_TYPE_LABELS, type ContentPostView, EDITORIAL_POST_TYPES } from '../model/content-post.mapper';
 
@@ -42,22 +42,7 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
     : displayedArticles.slice(0, FEATURED_COUNT);
   const hiddenCount = displayedArticles.length - visibleArticles.length;
 
-  if (isPending && allArticles.length === 0) {
-    return (
-      <div className="grid gap-6 sm:grid-cols-2">
-        {Array.from({ length: 2 }, (_, index) => (
-          <div key={index} className="grid overflow-hidden rounded-4xl border border-neutral-200/90 bg-white md:grid-cols-[1fr_1.2fr]">
-            <Skeleton className="aspect-[16/9] bg-neutral-100 md:aspect-auto md:min-h-[220px]" />
-            <div className="space-y-3 p-5 sm:p-6">
-              <Skeleton className="h-4 w-24 bg-neutral-100" />
-              <Skeleton className="h-6 w-3/4 bg-neutral-100" />
-              <Skeleton className="h-12 w-full bg-neutral-100" />
-            </div>
-          </div>
-        ))}
-      </div>
-    );
-  }
+  if (isPending && allArticles.length === 0) return <ContentStoriesSkeleton />;
 
   // Không có bài viết thì ẩn hẳn khối, không hiển thị thanh lọc rỗng hay nhãn (0)
   if (allArticles.length === 0) return null;

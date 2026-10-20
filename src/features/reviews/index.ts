@@ -1,5 +1,6 @@
 export { ProductReviewSection } from './components/product-review-section';
 export { ProductReviews } from './components/product-reviews';
+export { ProductReviewsLazy } from './components/product-reviews-lazy';
 export { ReviewFormDialog } from './components/review-form-dialog';
 export { useProductReviews } from './hooks/use-product-reviews';
 export {

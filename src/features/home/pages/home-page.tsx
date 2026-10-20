@@ -2,14 +2,14 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { BenefitsStrip } from '@/widgets/benefits-strip/benefits-strip';
 import { SectionHeading } from '@/foundation/components/structure/section-heading';
-import { ProductShowcase, toCategoryCardView, toCategoryRailView } from '@/features/catalog';
+import { ProductShowcaseLazy, toCategoryCardView, toCategoryRailView } from '@/features/catalog';
 import { CATALOG_PAGE_SIZE } from '@/features/catalog';
 import { listCatalogProducts } from '@/generated/api/catalog/catalog';
 import type { CatalogCategoryDto } from '@/generated/api/catalog/catalog.schemas';
 import { listPublishedPosts } from '@/generated/api/content/content';
-import { ContentStories } from '@/features/content';
+import { ContentStoriesLazy } from '@/features/content';
 import { POLICY_POST_TYPE, toContentPostView, type BannerView } from '@/features/content';
-import { ProductReviews } from '@/features/reviews';
+import { ProductReviewsLazy } from '@/features/reviews';
 import { HeroBannerSlider } from '../components/hero-banner-slider';
 import { QuickGoalNavigation } from '../components/quick-goal-navigation';
 import { BudgetNavigation } from '../components/budget-navigation';
@@ -133,7 +133,7 @@ export async function HomePage({
             </p>
           </Reveal>
 
-          <ProductShowcase
+          <ProductShowcaseLazy
             initialPage={showcase?.page}
             initialPageFetchedAt={showcase?.fetchedAt}
           />
@@ -191,7 +191,7 @@ export async function HomePage({
         {/* Đánh giá sản phẩm — `ProductReviews` trả null khi chưa có đánh giá; `empty:hidden` để
             section rỗng không còn chiếm 128–160px padding trước footer. */}
         <section className="page-section empty:hidden">
-          {featuredProductSlug ? <ProductReviews productSlug={featuredProductSlug} /> : null}
+          {featuredProductSlug ? <ProductReviewsLazy productSlug={featuredProductSlug} /> : null}
         </section>
 
         {/* Đã gỡ dải "thương hiệu đồng hành" và bộ đếm số liệu (showroom, khách hàng, sản phẩm):
@@ -206,7 +206,7 @@ export async function HomePage({
             <Reveal {...HEADING_REVEAL}>
               <SectionHeading eyebrow="Kiến thức luyện tập" title="Bài viết mới" />
             </Reveal>
-            <ContentStories initialPosts={heroPosts} />
+            <ContentStoriesLazy initialPosts={heroPosts} />
           </section>
         )}
     </main>

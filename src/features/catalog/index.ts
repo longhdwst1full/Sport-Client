@@ -2,6 +2,7 @@ export { ProductsPage, loadCatalogFirstPage } from './pages/products-page';
 export { CategoryListPage } from './pages/category-list-page';
 export { SearchPage } from './pages/search-page';
 export { ProductShowcase } from './components/product-showcase';
+export { ProductShowcaseLazy } from './components/product-showcase-lazy';
 export { ProductPurchasePanel } from './components/product-purchase-panel';
 export { ProductRelatedSection } from './components/product-related-section';
 export { ProductImageGallery } from './components/product-image-gallery';

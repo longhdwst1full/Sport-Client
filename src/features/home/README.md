@@ -1,10 +1,10 @@
 # Storefront Home — maintenance note
 
-> **Document version:** 2.3.0
+> **Document version:** 2.4.0
 >
-> **Last updated:** 2026-10-17
+> **Last updated:** 2026-10-20
 >
-> **Change summary:** Có flash sale thì khối flash sale đứng đầu, hero ngay dưới; thẻ "theo bộ môn" làm lại.
+> **Change summary:** Island client nặng của `/` (flash sale, lưới sản phẩm, đánh giá, bài viết) tách chunk bằng bản `*Lazy`; First Load JS `/` 188 kB → 138 kB.
 
 ## Phạm vi
 
@@ -17,6 +17,8 @@
 `pages/home-page.tsx` là **server component async** — tự lấy danh mục, bài viết và trang 1 sản phẩm rồi truyền xuống. Chỉ 2 component cần tương tác mới là client: `hero-banner-slider` (slide + flash sale theo giờ server) và `category-visual-showcase`.
 
 `smart-fit-advisor` chỉ được import qua `SmartFitAdvisorLazy` (barrel không xuất bản tĩnh): import tĩnh từ server component kéo cả wizard vào First Load JS của `/`. Đổi bố cục wizard thì đo lại `SMART_FIT_CARD_MIN_HEIGHT` để tránh CLS.
+
+Các island dùng Query/giỏ hàng chỉ được import qua bản lazy (`next/dynamic`, vẫn SSR): `ProductShowcaseLazy`, `ProductReviewsLazy`, `ContentStoriesLazy` (barrel của catalog/reviews/content) và `HomeFlashSaleSlot` (dynamic trong `home-top-section.tsx`, bên trong dùng `FlashSaleSectionLazy`). Import tĩnh bản thường từ trang chủ kéo lại TanStack/axios/Redux/thẻ sản phẩm vào First Load JS của `/`. Khung chờ của bản lazy chỉ hiện khi điều hướng phía client trước khi chunk về, phải cùng lưới với khối thật.
 
 Không được biến `home-page.tsx` thành `'use client'` để tiện quản lý loading (`RULE-SKEL-06`).
 
@@ -65,6 +67,7 @@ Hero không có bài viết lẫn flash sale thì hiển thị một slide thư�
 
 | Version | Date | Change summary |
 | --- | --- | --- |
+| 2.4.0 | 2026-10-20 | Tách chunk flash sale/lưới sản phẩm/đánh giá/bài viết bằng bản `*Lazy` (vẫn SSR); First Load JS `/` 188 kB → 138 kB. |
 | 2.3.0 | 2026-10-17 | `HomeTopSection` giữ hero dưới khối flash sale; thẻ bộ môn: ô icon đỏ, icon nền, "Xem ngay". |
 | 2.2.0 | 2026-10-17 | `HomeTopSection`: flash sale đang chạy thay hero ở đầu trang (server quyết định lần render đầu từ `getActiveFlashSales`, client theo query mới nhất); bỏ khối flash sale ở vị trí thứ 3. |
 | 2.0.0 | 2026-09-25 | Xoá mock: hero/bộ môn/lối tắt từ API; gỡ voucher popup, planner, training guide. |
