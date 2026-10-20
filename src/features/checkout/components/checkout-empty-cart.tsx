@@ -16,7 +16,7 @@ export function CheckoutEmptyCart() {
         </h1>
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-[1fr_380px]">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_380px]">
         <div className="rounded-3xl border border-dashed border-neutral-300 bg-white p-8 text-center sm:p-12 shadow-sm">
           <div className="mx-auto grid size-16 place-items-center rounded-2xl bg-amber-50 text-amber-600">
             <Truck className="size-8" />

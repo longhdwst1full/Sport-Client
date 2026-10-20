@@ -114,7 +114,7 @@ export function CartPage() {
         </div>
 
         {!hydrated ? (
-          <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_380px]" role="status" aria-label="Đang tải giỏ hàng">
+          <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_380px]" role="status" aria-label="Đang tải giỏ hàng">
             <div className="space-y-4">
               <Skeleton className="h-14 rounded-2xl" />
               {Array.from({ length: 2 }, (_, i) => (
@@ -126,7 +126,7 @@ export function CartPage() {
         ) : items.length === 0 ? (
           <CartEmpty />
         ) : (
-          <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_380px]">
+          <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_380px]">
             {/* Cart Items List */}
             <div className="space-y-4">
               {/* Select All Checkbox Bar */}
