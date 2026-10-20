@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react';
 import { RotateCcw, Tag, Boxes, Award, PackageCheck, Search, X, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@/foundation/components/buttons';
 import { Skeleton } from '@/foundation/components/feedback';
+import { ToggleChip } from '@/foundation/components/tabs-chips';
 import type { CatalogBrandFacetDto } from '@/generated/api/catalog/catalog.schemas';
 import type { CategoryTabView } from '../hooks/use-category-tabs';
 
@@ -178,19 +179,14 @@ export function CatalogFilterGroups({
         </div>
       </label>
     ) : (
-      <button
+      <ToggleChip
         key={range.id}
-        type="button"
+        selected={isSelected}
         onClick={() => onSelectPriceRange(range.id)}
-        aria-pressed={isSelected}
-        className={`rounded-xl border p-2.5 text-center text-xs font-semibold transition ${FOCUS_RING} ${
-          isSelected
-            ? 'border-selected-border bg-selected text-on-selected'
-            : 'border-control-border bg-control text-on-control hover:bg-control-hover'
-        }`}
+        className="h-auto justify-center rounded-xl p-2.5 text-center"
       >
         {range.label}
-      </button>
+      </ToggleChip>
     );
   });
 
@@ -330,26 +326,21 @@ export function CatalogFilterGroups({
           {/* Nút Xem thêm / Thu gọn khi danh sách nhiều hơn INITIAL_BRAND_COUNT và không đang gõ search */}
           {filteredBrands.length > INITIAL_BRAND_COUNT && !normalizedSearch && (
             <div className={isSidebar ? 'pt-1.5' : 'pt-2'}>
-              <button
-                type="button"
+              <Button
+                variant={isSidebar ? 'ghost' : 'secondary'}
+                size="sm"
+                fullWidth={isSidebar}
+                aria-expanded={showAllBrands}
                 onClick={() => setShowAllBrands((prev) => !prev)}
-                className={
-                  isSidebar
-                    ? 'flex w-full items-center justify-center gap-1 rounded-lg py-1.5 text-xs font-bold text-neutral-700 transition hover:bg-neutral-100 hover:text-neutral-950'
-                    : 'inline-flex items-center gap-1 rounded-full border border-neutral-300 bg-neutral-100 px-3.5 py-1.5 text-xs font-bold text-neutral-700 transition hover:bg-neutral-200 hover:text-neutral-900'
-                }
+                rightIcon={showAllBrands ? <ChevronUp aria-hidden /> : <ChevronDown aria-hidden />}
+                className={isSidebar ? 'h-8 gap-1 rounded-lg text-xs' : 'h-8 gap-1 rounded-full px-3.5 text-xs'}
               >
                 <span>
                   {showAllBrands
                     ? 'Thu gọn'
                     : `Xem thêm (${filteredBrands.length - INITIAL_BRAND_COUNT})`}
                 </span>
-                {showAllBrands ? (
-                  <ChevronUp className="size-3.5" aria-hidden />
-                ) : (
-                  <ChevronDown className="size-3.5" aria-hidden />
-                )}
-              </button>
+              </Button>
             </div>
           )}
         </div>

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { LogIn, SendHorizontal, X } from 'lucide-react';
 import { useCreateSupportRequest } from '@/features/support';
 import { Button, buttonVariants } from '@/foundation/components/buttons';
-import { InlineAlert, Spinner } from '@/foundation/components/feedback';
+import { InlineAlert } from '@/foundation/components/feedback';
 import { Field, Textarea } from '@/foundation/components/field-system';
 import { ASSISTANT_COPY, ASSISTANT_HANDOFF_SUBJECT } from '../model/assistant.constants';
 import { AssistantTicketCard } from './assistant-cards';
@@ -90,10 +90,11 @@ export function AssistantHandoff({
             <Button
               type="submit"
               size="sm"
-              disabled={!trimmed || create.isPending}
+              disabled={!trimmed}
+              loading={create.isPending}
+              leftIcon={<SendHorizontal aria-hidden />}
               className="gap-1.5 rounded-lg px-3 text-xs font-bold"
             >
-              {create.isPending ? <Spinner className="size-3.5 animate-spin" /> : <SendHorizontal className="size-3.5" aria-hidden />}
               Gửi cho nhân viên
             </Button>
           </div>

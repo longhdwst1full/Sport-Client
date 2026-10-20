@@ -217,11 +217,12 @@ export function AssistantDialog({ chat, onClose }: { chat: AssistantChatState; o
             <Button
               type="submit"
               size="icon"
-              disabled={inputDisabled || !draft.trim()}
+              disabled={!draft.trim()}
+              loading={chat.isSending}
               aria-label="Gửi tin nhắn"
               className="shrink-0 rounded-2xl disabled:opacity-40"
             >
-              {chat.isSending ? <Spinner className="size-4.5 animate-spin" /> : <SendHorizontal className="size-4.5" aria-hidden />}
+              <SendHorizontal aria-hidden />
             </Button>
           </div>
           </Field>

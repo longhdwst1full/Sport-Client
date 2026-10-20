@@ -1,7 +1,7 @@
 import { AlertTriangle, X } from 'lucide-react';
 import { Button } from '@/foundation/components/buttons';
-import { Spinner } from '@/foundation/components/feedback';
 import { Field, Textarea } from '@/foundation/components/field-system';
+import { ToggleChip } from '@/foundation/components/tabs-chips';
 import type { useCancelOrder } from '../../hooks/use-cancel-order';
 import { apiErrorMessage } from '@/lib/api/error-message';
 import { ORDER_LOAD_ERROR_MESSAGE } from '../../model/order.constants';
@@ -51,18 +51,14 @@ export function OrderCancelDialog({
           </label>
           <div className="mt-2 flex flex-wrap gap-1.5">
             {CANCEL_REASONS.map((preset) => (
-              <button
+              <ToggleChip
                 key={preset}
-                type="button"
+                selected={reason === preset}
                 onClick={() => setReason(preset)}
-                className={`rounded-lg px-2.5 py-1 text-2xs font-medium transition ${
-                  reason === preset
-                    ? 'border border-selected-border bg-selected text-on-selected font-bold'
-                    : 'border border-control-border bg-control text-on-control hover:border-control-border-strong hover:bg-control-hover'
-                }`}
+                className={`h-auto rounded-lg px-2.5 py-1 text-2xs ${reason === preset ? 'font-bold' : 'font-medium'}`}
               >
                 {preset}
-              </button>
+              </ToggleChip>
             ))}
           </div>
         </div>
@@ -101,11 +97,12 @@ export function OrderCancelDialog({
           </Button>
           <Button
             variant="danger"
-            disabled={cancel.isPending || reason.trim().length < 3}
+            disabled={reason.trim().length < 3}
+            loading={cancel.isPending}
+            leftIcon={<X aria-hidden />}
             onClick={() => cancel.mutate()}
             className="gap-1.5 px-5 text-xs shadow-sm"
           >
-            {cancel.isPending ? <Spinner className="size-4 animate-spin" /> : <X className="size-4" />}
             {cancel.isPending ? 'Đang hủy...' : 'Xác nhận hủy đơn'}
           </Button>
         </div>

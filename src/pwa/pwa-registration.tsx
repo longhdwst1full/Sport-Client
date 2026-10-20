@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { Button } from '@/foundation/components/buttons';
 
 export function PwaRegistration() {
   const [isOnline, setIsOnline] = useState(true);
@@ -90,12 +91,9 @@ export function PwaRegistration() {
           role="status"
         >
           <span>Đã có phiên bản mới của Bảo An Sport.</span>
-          <button
-            className="shrink-0 rounded-full bg-white px-4 py-2 font-bold text-ink"
-            onClick={updateNow}
-          >
+          <Button variant="static" size="sm" className="shrink-0 rounded-full px-4" onClick={updateNow}>
             Cập nhật
-          </button>
+          </Button>
         </div>
       )}
     </>

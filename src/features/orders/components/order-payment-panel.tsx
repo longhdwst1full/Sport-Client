@@ -1,7 +1,7 @@
 'use client';
 
 import { Banknote, CreditCard, CheckCircle2, Clock3, ImageUp } from 'lucide-react';
-import { ErrorState, InlineAlert, Skeleton, SkeletonText, Spinner } from '@/foundation/components/feedback';
+import { ErrorState, InlineAlert, Skeleton, SkeletonText } from '@/foundation/components/feedback';
 import { Field, Textarea } from '@/foundation/components/field-system';
 import { Card } from '@/foundation/components/structure';
 import { Button, CopyButton, buttonVariants } from '@/foundation/components/buttons';
@@ -224,11 +224,12 @@ export function OrderPaymentPanel({
           <Button
             variant="primary"
             fullWidth
-            disabled={!file || submit.isPending}
+            disabled={!file}
+            loading={submit.isPending}
+            leftIcon={<ImageUp aria-hidden />}
             onClick={() => submit.mutate()}
             className="mt-4 text-xs font-bold shadow-sm"
           >
-            {submit.isPending ? <Spinner className="size-4 animate-spin" /> : <ImageUp className="size-4" />}
             {submit.isPending ? 'Đang tải ảnh và gửi...' : 'Gửi xác nhận chuyển khoản'}
           </Button>
         </div>

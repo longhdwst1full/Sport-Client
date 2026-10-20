@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { AlertTriangle, CheckCircle2, KeyRound } from 'lucide-react';
 import { useResetCustomerPassword } from '@/generated/api/auth/auth';
 import { apiErrorMessage } from '@/lib/api/error-message';
-import { InlineAlert, Spinner } from '@/foundation/components/feedback';
+import { InlineAlert } from '@/foundation/components/feedback';
 import { Button } from '@/foundation/components/buttons';
 import { Field, TextInput } from '@/foundation/components/field-system';
 import { AuthRecoveryMain, RECOVERY_LABEL_CLASS } from '../components/auth-field';
@@ -128,14 +128,10 @@ export function ResetPasswordPage() {
           type="submit"
           size="md"
           fullWidth
-          disabled={reset.isPending}
+          loading={reset.isPending}
+          leftIcon={<KeyRound aria-hidden />}
           className="mt-5 font-bold"
         >
-          {reset.isPending ? (
-            <Spinner className="size-4 animate-spin" />
-          ) : (
-            <KeyRound className="size-4" aria-hidden />
-          )}
           Đặt lại mật khẩu
         </Button>
       </form>

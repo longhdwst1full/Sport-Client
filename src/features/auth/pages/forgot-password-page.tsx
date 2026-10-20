@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { ArrowLeft, MailCheck, Send } from 'lucide-react';
-import { Spinner } from '@/foundation/components/feedback';
 import { useRequestCustomerPasswordReset } from '@/generated/api/auth/auth';
 import { Button } from '@/foundation/components/buttons';
 import { Field, TextInput } from '@/foundation/components/field-system';
@@ -84,14 +83,10 @@ export function ForgotPasswordPage() {
             type="submit"
             size="md"
             fullWidth
-            disabled={request.isPending}
+            loading={request.isPending}
+            leftIcon={<Send aria-hidden />}
             className="mt-5 font-bold"
           >
-            {request.isPending ? (
-              <Spinner className="size-4 animate-spin" />
-            ) : (
-              <Send className="size-4" aria-hidden />
-            )}
             Gửi đường dẫn đặt lại
           </Button>
         </form>
