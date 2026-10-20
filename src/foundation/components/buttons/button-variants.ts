@@ -12,7 +12,7 @@ import { twMerge } from 'tailwind-merge';
  * Nền đặc, không gradient; không ghi đè màu bằng `className` — thiếu kiểu thì thêm biến thể ở đây.
  */
 export const BUTTON_VARIANT = {
-  primary: 'bg-action text-on-action hover:bg-action-hover active:bg-action-pressed',
+  primary: 'btn-shine bg-action text-on-action hover:bg-action-hover active:bg-action-pressed',
   secondary:
     'border border-control-border bg-control text-on-control hover:border-control-border-strong hover:bg-control-hover active:bg-control-pressed',
   static: 'bg-white text-on-control hover:bg-control-hover active:bg-control-pressed',

@@ -102,7 +102,8 @@
     margin-right: 0.625rem;
     vertical-align: middle;
     border-radius: 9999px;
-    background: currentColor;
+    /* Gạch nhấn chuyển màu đỏ thương hiệu → đỏ nhạt (trước là màu chữ đặc). */
+    background: linear-gradient(90deg, var(--color-action), #fca9a4);
     transform-origin: left center;
   }
   .reveal[data-shown][data-reveal-accent] .eyebrow::before {
@@ -139,6 +140,34 @@
   /* Nhãn nhỏ viết hoa phía trên tiêu đề khối. */
   .eyebrow {
     @apply text-xs font-semibold uppercase tracking-eyebrow;
+  }
+  /*
+   * Dải màu thương hiệu chạy chậm (đầu footer, đáy thanh thông báo). Chỉ dùng họ đỏ của logo; chuyển động
+   * tự tắt khi người dùng chọn giảm chuyển động (khối Reduced Motion bên dưới).
+   */
+  .brand-gradient-bar {
+    background: linear-gradient(90deg, #b2221f, #e83734, #fca9a4, #e83734, #b2221f);
+    background-size: 200% 100%;
+    animation: gradient-pan 8s linear infinite;
+  }
+  /* Vệt sáng lướt qua nút chính khi hover — chỉ khi hover, không chạy liên tục. */
+  .btn-shine {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .btn-shine::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / 0.28) 50%, transparent 70%);
+    transform: translateX(-120%);
+    pointer-events: none;
+  }
+  .btn-shine:not(:disabled):hover::after {
+    transform: translateX(120%);
+    transition: transform 650ms ease;
   }
 }
 
@@ -367,6 +396,15 @@ html {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
+@keyframes gradient-pan {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
 .skeleton-shimmer {
   background: linear-gradient(90deg, #e5e5e5 25%, #f0f0f0 50%, #e5e5e5 75%);
   background-size: 200% 100%;

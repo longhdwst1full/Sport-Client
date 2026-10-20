@@ -4,6 +4,7 @@ import {
   BannerPicture,
   type BannerView,
 } from '@/features/content';
+import { Headphones, MailOpen } from 'lucide-react';
 import { PromoBanner } from '@/foundation/components/structure';
 import { ContactActions } from '@/shared/components/contact-actions';
 import { STORE_CONFIG, STORE_CONTACT } from '@/shared/constants';
@@ -11,7 +12,7 @@ import { STORE_CONFIG, STORE_CONTACT } from '@/shared/constants';
 /** Dải banner FOOTER ngay trên khối nhận tin; chỉ lấy banner đầu (API đã sắp theo `sortOrder`). */
 function FooterBannerStrip({ banner }: { banner: BannerView }) {
   return (
-    <div className="bg-neutral-900 px-4 pt-10 sm:px-6 lg:px-8">
+    <div className="bg-neutral-50 px-4 pt-10 sm:px-6 lg:px-8">
       <PromoBanner
         href={banner.targetUrl}
         title={banner.title}
@@ -40,24 +41,31 @@ export function FooterNewsletterBanner({ banner: footerBanner }: { banner?: Bann
   return (
     <>
       {footerBanner && <FooterBannerStrip banner={footerBanner} />}
-      <section className="relative overflow-hidden border-t border-neutral-800 bg-gradient-to-b from-neutral-900 via-neutral-950 to-neutral-950 px-4 py-10 text-white sm:py-12 lg:px-10 shadow-xl">
-        <div className="pointer-events-none absolute -left-12 -top-12 size-56 rounded-full bg-neutral-800/20 blur-3xl" aria-hidden="true" />
-        <div className="pointer-events-none absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-neutral-700/50 to-transparent" />
-
-        <div className="relative z-10 page-container grid gap-8 px-0 md:grid-cols-2 md:items-center">
-          <div>
-            <h2 className="text-xl font-bold sm:text-2xl lg:text-3xl text-white tracking-tight">
-              Cần tư vấn chọn thiết bị?
-            </h2>
-            <p className="mt-1.5 text-xs sm:text-sm font-medium text-neutral-300">
-              Nhân viên {STORE_CONFIG.name} tư vấn trực tiếp, hỗ trợ {STORE_CONTACT.openingHoursShort}.
-            </p>
-            <ContactActions tone="dark" className="mt-4" />
+      {/* Nền sáng, hai thẻ: tách hẳn khỏi footer tối bên dưới (trước đây cùng gradient đen nên dính thành một khối). */}
+      <section aria-label="Tư vấn và nhận tin" className="border-t border-neutral-200 bg-gradient-to-br from-brand-50/70 via-white to-neutral-50 py-10 sm:py-12">
+        <div className="page-container grid gap-4 md:grid-cols-2">
+          <div className="flex gap-4 rounded-2xl border border-neutral-200 bg-white p-5 sm:p-6">
+            <span className="hidden size-12 shrink-0 place-items-center rounded-2xl bg-brand-50 text-brand-600 sm:grid" aria-hidden="true">
+              <Headphones className="size-6" />
+            </span>
+            <div className="min-w-0">
+              <h2 className="text-lg font-bold tracking-tight text-neutral-950 sm:text-xl">Cần tư vấn chọn thiết bị?</h2>
+              <p className="mt-1 text-sm text-neutral-600">
+                Nhân viên {STORE_CONFIG.name} tư vấn trực tiếp, hỗ trợ {STORE_CONTACT.openingHoursShort}.
+              </p>
+              {/* Mobile: nút giãn đều chiều ngang; từ sm trở lên co theo nội dung. */}
+              <ContactActions className="mt-4 [&>*]:grow sm:[&>*]:grow-0" />
+            </div>
           </div>
-          <div>
-            <h2 className="text-base font-semibold">Nhận ưu đãi & bài hướng dẫn tập</h2>
-            <p className="mb-3 mt-1 text-sm text-neutral-300">Email về sản phẩm mới và khuyến mãi.</p>
-            <NewsletterSignup source="footer" tone="dark" />
+          <div className="flex gap-4 rounded-2xl border border-brand-100 bg-brand-50/60 p-5 sm:p-6">
+            <span className="hidden size-12 shrink-0 place-items-center rounded-2xl bg-white text-brand-600 shadow-2xs sm:grid" aria-hidden="true">
+              <MailOpen className="size-6" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <h2 className="text-lg font-bold tracking-tight text-neutral-950 sm:text-xl">Nhận ưu đãi & bài hướng dẫn tập</h2>
+              <p className="mb-4 mt-1 text-sm text-neutral-600">Email về sản phẩm mới và khuyến mãi. Huỷ đăng ký bất cứ lúc nào.</p>
+              <NewsletterSignup source="footer" />
+            </div>
           </div>
         </div>
       </section>

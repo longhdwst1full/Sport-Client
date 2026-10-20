@@ -25,6 +25,7 @@ export function AnnouncementTicker() {
 
   return (
     <div ref={rootRef} className="relative overflow-hidden bg-neutral-800 px-3 py-2 text-center text-xs font-bold uppercase tracking-[.08em] text-white/90 sm:px-4 sm:tracking-[.12em]">
+      <div aria-hidden="true" className="brand-gradient-bar absolute inset-x-0 bottom-0 h-0.5" />
       <div className="mx-auto flex max-w-7xl items-center justify-between">
         <div className="hidden items-center gap-2 text-xs font-semibold normal-case tracking-normal text-neutral-300 xl:flex">
           <span aria-hidden className="inline-block size-2 rounded-full bg-success-400" />

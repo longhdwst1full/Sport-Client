@@ -190,7 +190,8 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
           dangerouslySetInnerHTML={{ __html: serializeJsonLd(SITE_JSON_LD) }}
         />
         <Providers>{children}</Providers>
-        <Analytics />
+        {/* Script `/_vercel/insights` chỉ có trên Vercel: ngoài Vercel (local, CI) bỏ để không lỗi 404 console. */}
+        {process.env.VERCEL ? <Analytics /> : null}
       </body>
     </html>
   );

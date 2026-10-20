@@ -62,7 +62,7 @@ export function NewsletterSignup({ source, tone = 'light' }: { source: string; t
         className={
           dark
             ? 'rounded-xl border-neutral-700 bg-neutral-900/90 text-white placeholder:text-neutral-400 focus:border-white focus:ring-2 focus:ring-white/20 font-medium'
-            : 'rounded-xl border-neutral-300 bg-white text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-900 focus:ring-2 focus:ring-neutral-900/20 font-medium'
+            : 'h-11 rounded-2xl border-control-border bg-white font-medium text-neutral-900 placeholder:text-neutral-500 focus:border-action focus:ring-2 focus:ring-brand-100'
         }
       />
       <HoneypotField value={website} onChange={setWebsite} />

@@ -34,29 +34,28 @@ export function ContactActions({
         <span>{STORE_CONTACT.primaryHotline}</span>
       </a>
 
-      {/* Zalo Button: Brand Zalo Blue */}
+      {/* Zalo: màu nhận diện của Zalo (ngoại lệ bên thứ ba của RULE-DS-01), cùng khung/cỡ với nút còn lại. */}
       <a
         href={STORE_CONTACT.zaloUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center gap-2 rounded-lg bg-[#0068FF] px-5 py-2.5 text-xs sm:text-sm font-bold text-white shadow-md shadow-[#0068FF]/25 border border-[#0068FF]/30 hover:bg-[#0052cc] hover:shadow-lg hover:-translate-y-0.5 active:scale-95 transition-all duration-200 focus-ring"
+        className={buttonVariants({
+          className: 'gap-2 bg-[#0068FF] px-5 text-xs font-bold text-white hover:bg-[#0052cc] active:bg-[#0047b3] sm:text-sm',
+        })}
       >
         <MessageCircle aria-hidden className="size-4 shrink-0" />
         <span>Nhắn Zalo</span>
         <span className="sr-only"> (mở tab mới)</span>
       </a>
 
-      {/* Showroom / Contact Button */}
       <Link
         href="/contact"
         className={buttonVariants({
-          variant: 'secondary',
-          className: dark
-            ? 'border-neutral-700 bg-neutral-900/90 text-neutral-100 hover:bg-neutral-800 px-5 gap-2 text-xs sm:text-sm font-bold'
-            : 'border-neutral-300 bg-white text-neutral-900 hover:bg-neutral-50 px-5 gap-2 text-xs sm:text-sm font-bold',
+          variant: dark ? 'static' : 'secondary',
+          className: 'gap-2 px-5 text-xs font-bold sm:text-sm',
         })}
       >
-        <MapPin aria-hidden className="size-4 shrink-0 text-neutral-500" />
+        <MapPin aria-hidden className="size-4 shrink-0" />
         <span>{contactLabel}</span>
       </Link>
     </div>
