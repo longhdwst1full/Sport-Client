@@ -55,3 +55,18 @@ describe('order bill view', () => {
     expect(toOrderDetailView({ ...base, shippingTotal: '30000' } as OrderDetailDto).isShippingFree).toBe(false);
   });
 });
+
+describe('order lines', () => {
+  it('mua vượt suất flash: cùng sản phẩm hai dòng, chỉ dòng có suất được đánh dấu giá flash', () => {
+    const item = (id: string, unitPrice: string, flashSale: boolean) => ({
+      id, lineNo: Number(id), productVariantId: '7', productId: '3', productSlug: 'ta-tay', itemType: 'STANDARD',
+      sku: 'SKU-7', productName: 'Tạ tay', variantName: '5kg', imageUrl: null, quantity: 2, unitPrice,
+      lineTotal: String(Number(unitPrice) * 2), flashSale, components: [],
+    });
+    const view = toOrderDetailView({ ...base, items: [item('1', '400000', true), item('2', '500000', false)] } as OrderDetailDto);
+    expect(view.items.map(({ id, flashSale }) => ({ id, flashSale }))).toEqual([
+      { id: '1', flashSale: true },
+      { id: '2', flashSale: false },
+    ]);
+  });
+});

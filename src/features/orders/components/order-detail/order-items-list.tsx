@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { CheckCircle2, MessageSquarePlus, RotateCcw } from 'lucide-react';
+import { CheckCircle2, MessageSquarePlus, RotateCcw, Zap } from 'lucide-react';
 import type { OrderDetailDto } from '@/generated/api/orders/orders.schemas';
 import { PRODUCT_PLACEHOLDER_IMAGE } from '@/shared/constants';
 import type { OrderDetailView } from '../../model/order.mapper';
@@ -56,8 +56,14 @@ export function OrderItemsList({
                 </span>
               )}
               <span className="font-mono text-xs text-neutral-400">SKU: {item.sku}</span>
+              {item.flashSale && (
+                <span className="inline-flex items-center gap-0.5 rounded-full bg-brand-600 px-2 py-0.5 text-2xs font-bold text-white">
+                  <Zap aria-hidden className="size-3 fill-amber-300 text-amber-300" />
+                  Giá flash
+                </span>
+              )}
             </div>
-            <p className="mt-1.5 text-xs text-neutral-600 font-medium">
+            <p className={`mt-1.5 text-xs font-medium ${item.flashSale ? 'text-brand-600' : 'text-neutral-600'}`}>
               {item.unitPriceLabel} × {item.quantity}
             </p>
           </div>

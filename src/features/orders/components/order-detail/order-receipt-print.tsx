@@ -53,6 +53,7 @@ export function OrderReceiptPrint({ order }: { order: OrderDetailDto }) {
                 <td>
                   {item.productName}
                   {item.variantName && <div className="print-receipt__muted">{item.variantName} · {item.sku}</div>}
+                  {item.flashSale && <div className="print-receipt__muted">Giá flash sale</div>}
                 </td>
                 <td>{item.quantity}</td>
                 <td>{formatVnd(Number(item.unitPrice))}</td>

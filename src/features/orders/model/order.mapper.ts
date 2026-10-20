@@ -20,6 +20,8 @@ export interface OrderLineView {
   quantity: number;
   unitPriceLabel: string;
   lineTotalLabel: string;
+  /** Dòng giá flash sale; mua vượt suất thì cùng sản phẩm có thêm một dòng giá thường. */
+  flashSale: boolean;
 }
 
 export type OrderMilestoneState = 'done' | 'current' | 'todo' | 'failed';
@@ -355,6 +357,7 @@ export function toOrderDetailView(dto: OrderDetailDto): OrderDetailView {
       quantity: item.quantity,
       unitPriceLabel: money(item.unitPrice),
       lineTotalLabel: money(item.lineTotal),
+      flashSale: item.flashSale,
     })),
     milestones: toOrderMilestones(dto),
     shipment: shipmentView,
