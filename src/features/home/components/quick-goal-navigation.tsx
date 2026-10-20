@@ -9,10 +9,15 @@ interface GoalItem {
   subtitle: string;
   badge: string;
   href: string;
-  gradient: string;
-  iconColor: string;
-  badgeStyle: string;
 }
+
+/**
+ * Một kiểu cho mọi thẻ mục tiêu (bảng màu logo, `20-design-tokens.md`): ô icon xám trung tính, hover nhấn
+ * đỏ thương hiệu; trước đây mỗi mục tiêu một màu (amber/xanh) không mang nghĩa trạng thái.
+ */
+const GOAL_ICON_TILE =
+  'border-neutral-200 bg-neutral-50 text-neutral-800 group-hover:border-brand-200 group-hover:bg-brand-50 group-hover:text-brand-600';
+const GOAL_BADGE = 'border-neutral-200 bg-neutral-50 text-neutral-700';
 
 const GOALS: GoalItem[] = [
   {
@@ -22,9 +27,6 @@ const GOALS: GoalItem[] = [
     subtitle: 'Máy chạy, xe đạp, ghế tập & tạ tay gọn gàng',
     badge: 'Phổ biến nhất',
     href: '/products?category=may-tap-the-duc',
-    gradient: 'hover:border-neutral-300 hover:shadow-xl hover:shadow-neutral-900/5',
-    iconColor: 'bg-neutral-100 text-neutral-800 border-neutral-200/80 group-hover:bg-neutral-900 group-hover:text-white',
-    badgeStyle: 'bg-neutral-100 text-neutral-700 border-neutral-200/80',
   },
   {
     id: 'strength',
@@ -33,9 +35,6 @@ const GOALS: GoalItem[] = [
     subtitle: 'Giàn tạ đa năng, tạ khối & khung gánh an toàn',
     badge: 'Chuyên sâu',
     href: '/products?category=dung-cu-tap-gym',
-    gradient: 'hover:border-neutral-300 hover:shadow-xl hover:shadow-neutral-900/5',
-    iconColor: 'bg-neutral-100 text-neutral-800 border-neutral-200/80 group-hover:bg-neutral-900 group-hover:text-white',
-    badgeStyle: 'bg-neutral-100 text-neutral-700 border-neutral-200/80',
   },
   {
     id: 'cardio',
@@ -44,9 +43,6 @@ const GOALS: GoalItem[] = [
     subtitle: 'Máy chạy bộ cao cấp, xe đạp tập & cardio',
     badge: 'Hiệu quả cao',
     href: '/products?category=may-chay-bo',
-    gradient: 'hover:border-neutral-300 hover:shadow-xl hover:shadow-neutral-900/5',
-    iconColor: 'bg-amber-50 text-amber-700 border-amber-200/80 group-hover:bg-amber-600 group-hover:text-white',
-    badgeStyle: 'bg-amber-50 text-amber-700 border-amber-200/80',
   },
   {
     id: 'commercial',
@@ -55,22 +51,16 @@ const GOALS: GoalItem[] = [
     subtitle: 'Tư vấn thiết kế & combo thiết bị cho dự án',
     badge: 'Hỗ trợ trọn gói',
     href: '/contact',
-    gradient: 'hover:border-neutral-300 hover:shadow-xl hover:shadow-neutral-900/5',
-    iconColor: 'bg-success-50 text-success-700 border-success-200/80 group-hover:bg-success-600 group-hover:text-white',
-    badgeStyle: 'bg-success-50 text-success-700 border-success-200/80',
   },
 ];
 
 export function QuickGoalNavigation() {
   return (
     <section className="page-section">
-      <div className="rounded-3xl border border-neutral-200/90 bg-gradient-to-b from-neutral-100/80 via-white to-neutral-100/60 p-6 sm:p-8 lg:p-10 shadow-sm">
+      <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-6 sm:p-8 lg:p-10">
         <Reveal rootMargin="-60px" className="mb-6 sm:mb-8">
           <div>
-            <div className="inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-neutral-50/80 px-3 py-0.5 text-xs font-bold uppercase tracking-wider text-neutral-700 shadow-2xs">
-              <span className="size-1.5 rounded-full bg-neutral-600 animate-pulse" />
-              Định hướng tập luyện
-            </div>
+            <p className="eyebrow text-neutral-900">Định hướng tập luyện</p>
             <h2 className="mt-2.5 text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-neutral-900">
               Bạn Đang Tìm Thiết Bị Cho Mục Tiêu Nào?
             </h2>
@@ -93,16 +83,16 @@ export function QuickGoalNavigation() {
               >
                 <Link
                   href={goal.href}
-                  className={`group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-neutral-200/90 bg-white p-5 sm:p-6 transition-all duration-300 focus-ring animate-shine h-full ${goal.gradient}`}
+                  className="card-interactive group relative flex h-full flex-col justify-between p-5 sm:p-6 focus-ring"
                 >
                   <div>
                     <div className="flex items-center justify-between gap-2 mb-4">
                       <div
-                        className={`grid size-12 sm:size-14 place-items-center rounded-2xl border text-xl transition-all duration-300 group-hover:scale-110 shadow-xs ${goal.iconColor}`}
+                        className={`grid size-12 sm:size-14 place-items-center rounded-2xl border text-xl transition-all duration-300 group-hover:scale-110 shadow-xs ${GOAL_ICON_TILE}`}
                       >
                         <Icon className="size-6 sm:size-7" aria-hidden="true" />
                       </div>
-                      <span className={`hidden rounded-full border px-3 py-0.5 text-xs font-bold sm:inline shadow-2xs ${goal.badgeStyle}`}>
+                      <span className={`hidden rounded-full border px-3 py-0.5 text-xs font-bold sm:inline shadow-2xs ${GOAL_BADGE}`}>
                         {goal.badge}
                       </span>
                     </div>

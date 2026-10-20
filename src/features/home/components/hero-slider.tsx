@@ -6,8 +6,8 @@ import { CarouselDots } from '@/foundation/components/indicators';
 
 /** Vòng focus trắng trên nền tối của hero. */
 const HERO_FOCUS = 'focus-visible:ring-white focus-visible:ring-offset-neutral-900';
-/** Nút tròn nổi trên ảnh (mũi tên, dừng/chạy): nền đen mờ, chữ trắng. */
-const HERO_ROUND_BUTTON = `absolute z-20 rounded-full bg-black/40 text-white backdrop-blur ${HERO_FOCUS}`;
+/** Nút tròn nổi trên ảnh (mũi tên): biến thể `static` (nền sáng trên nền tối); className chỉ định vị/bo tròn. */
+const HERO_ROUND_BUTTON = `absolute z-20 rounded-full shadow-md ${HERO_FOCUS}`;
 
 export interface HeroSlide {
   id: string;
@@ -117,10 +117,10 @@ export function HeroSlider({
                       <Link
                         href={slide.ctaLink}
                         tabIndex={isActive ? undefined : -1}
-                        // Nút trắng trên ảnh tối: nút than (primary) gần như chìm vào lớp phủ đen của slide.
+                        // Nút sáng trên ảnh tối (`static`, RULE-DS-04); className chỉ chỉnh kích thước/vòng focus.
                         className={buttonVariants({
                           variant: 'static',
-                          className: `h-auto px-5 py-2.5 text-xs font-bold uppercase tracking-wide sm:px-6 sm:py-3 sm:text-sm ${HERO_FOCUS}`,
+                          className: `px-5 sm:h-12 sm:px-6 ${HERO_FOCUS}`,
                         })}
                       >
                         <span>{slide.ctaText}</span>
@@ -146,10 +146,10 @@ export function HeroSlider({
           ).map(({ label, onClick, Icon, position }) => (
             <Button
               key={label}
-              variant="ghost"
+              variant="static"
               size="icon"
               onClick={onClick}
-              className={`${HERO_ROUND_BUTTON} ${position} top-1/2 hidden -translate-y-1/2 opacity-70 sm:grid hover:bg-white hover:text-neutral-950 group-hover:opacity-100 focus-visible:opacity-100`}
+              className={`${HERO_ROUND_BUTTON} ${position} top-1/2 hidden -translate-y-1/2 opacity-80 sm:grid group-hover:opacity-100 focus-visible:opacity-100`}
               aria-label={label}
             >
               <Icon className="size-5" aria-hidden="true" />

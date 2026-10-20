@@ -98,11 +98,8 @@ export function AuthBrandPanel({ variant }: AuthBrandPanelProps) {
           sizes="(min-width: 1280px) 58vw, 50vw"
           className={`object-cover object-center ${content.imageBrightness} contrast-125 saturate-75 transition-transform duration-1000 scale-105`}
         />
-        {/* Rich gradient layers */}
-        <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/75 to-neutral-900/40" />
-        <div className="absolute inset-0 bg-gradient-to-r from-neutral-950/90 via-transparent to-transparent" />
-        <div className="pointer-events-none absolute -left-20 -top-20 size-96 rounded-full bg-neutral-900/20 blur-[130px]" />
-        <div className="pointer-events-none absolute -bottom-20 right-10 size-96 rounded-full bg-neutral-950/20 blur-[140px]" />
+        {/* Lớp phủ đặc một màu (không gradient) giữ chữ trắng đọc rõ trên ảnh. */}
+        <div className="absolute inset-0 bg-neutral-950/70" />
       </div>
 
       {/* Top Bar: Brand Logo & Return Link */}
@@ -137,7 +134,7 @@ export function AuthBrandPanel({ variant }: AuthBrandPanelProps) {
 
         <h2 className="mt-3 text-2xl font-bold leading-tight text-white xl:text-3xl">
           {content.headline} <br className="hidden xl:inline" />
-          <span className="bg-gradient-to-r from-neutral-300 via-neutral-300 to-neutral-50 bg-clip-text text-transparent">
+          <span className="text-neutral-300">
             {content.highlight}
           </span>
         </h2>

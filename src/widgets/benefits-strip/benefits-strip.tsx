@@ -7,49 +7,40 @@ const BENEFITS: Array<{
   icon: LucideIcon;
   title: string;
   description: string;
-  tileBg: string;
-  iconColor: string;
-  ringGlow: string;
 }> = [
   {
     icon: Truck,
     title: 'Giao & lắp rõ ràng',
     description: 'Xác nhận phí và thời gian trước khi chốt.',
-    tileBg: 'bg-neutral-500/10 border-neutral-300 text-neutral-600',
-    iconColor: 'text-neutral-600',
-    ringGlow: 'group-hover:ring-neutral-400/40',
   },
   {
     icon: BadgeCheck,
     title: 'Giá minh bạch',
     description: 'Giá niêm yết đã bao gồm VAT.',
-    tileBg: 'bg-success-500/10 border-success-300 text-success-600',
-    iconColor: 'text-success-600',
-    ringGlow: 'group-hover:ring-success-400/40',
   },
   {
     icon: Headphones,
     title: 'Tư vấn theo không gian',
     description: 'Cân đối mục tiêu, diện tích và ngân sách.',
-    tileBg: 'bg-amber-500/10 border-amber-300 text-amber-600',
-    iconColor: 'text-amber-600',
-    ringGlow: 'group-hover:ring-amber-400/40',
   },
   {
     icon: RotateCcw,
     title: 'Đổi trả rõ ràng',
     description: 'Kiểm tra và xử lý theo từng sản phẩm.',
-    tileBg: 'bg-sky-500/10 border-sky-300 text-sky-600',
-    iconColor: 'text-sky-600',
-    ringGlow: 'group-hover:ring-sky-400/40',
   },
 ];
 
+/**
+ * Một kiểu ô icon cho cả bốn cam kết (bảng màu logo, `20-design-tokens.md`): nền xám nhạt, icon đỏ thương
+ * hiệu. Trước đây mỗi ô một màu (xanh/amber/sky) không mang nghĩa trạng thái.
+ */
+const BENEFIT_ICON_TILE = 'border-neutral-200 bg-neutral-50 text-brand-600 group-hover:border-brand-200 group-hover:bg-brand-50';
+
 export function BenefitsStrip() {
   return (
-    <section id="benefits" className="border-y border-neutral-200/80 bg-gradient-to-r from-neutral-50 via-white to-neutral-50 py-7">
+    <section id="benefits" className="border-y border-neutral-200 bg-neutral-50 py-7">
       <div className="mx-auto grid max-w-7xl gap-4 px-4 sm:grid-cols-2 sm:px-6 lg:grid-cols-4 lg:px-8">
-        {BENEFITS.map(({ icon: Icon, title, description, tileBg, ringGlow }) => (
+        {BENEFITS.map(({ icon: Icon, title, description }) => (
           <Reveal
             key={title}
             stagger
@@ -57,7 +48,7 @@ export function BenefitsStrip() {
             className="group hover:-translate-y-1 hover:scale-[1.02] flex items-start gap-4 rounded-2xl border border-neutral-200/80 bg-white p-4 shadow-xs transition-all duration-300 hover:border-neutral-300 hover:shadow-xl animate-shine"
           >
             <span
-              className={`grid size-12 shrink-0 place-items-center rounded-2xl border ${tileBg} shadow-xs transition-all duration-300 group-hover:scale-110 group-hover:ring-4 ${ringGlow}`}
+              className={`grid size-12 shrink-0 place-items-center rounded-2xl border transition-colors duration-300 ${BENEFIT_ICON_TILE}`}
             >
               <Icon className="size-6 transition-transform duration-300 group-hover:rotate-12" aria-hidden="true" />
             </span>

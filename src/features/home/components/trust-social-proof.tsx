@@ -26,8 +26,8 @@ const FACTS = [
   { value: '100%', caption: 'Hàng chính hãng' },
 ];
 
-const OUTLINE_ON_DARK =
-  'focus-ring-inverse border-white/20 bg-white/5 text-white hover:border-white/60 hover:bg-white/10';
+/** Nút trên khối tối: màu theo biến thể `buttonVariants`, className chỉ chỉnh bố cục + vòng focus nền tối. */
+const DARK_BLOCK_BUTTON_LAYOUT = 'flex-1 whitespace-nowrap px-5 focus-ring-inverse focus-visible:ring-offset-neutral-950';
 
 export function TrustSocialProof() {
   return (
@@ -122,16 +122,17 @@ export function TrustSocialProof() {
             </div>
 
             <div className="flex flex-wrap gap-3 pt-2">
-              <Link href="/contact" className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 text-xs sm:text-sm font-bold text-neutral-950 shadow-md transition hover:bg-neutral-100 active:scale-95 whitespace-nowrap">
+              <Link href="/contact" className={buttonVariants({ variant: 'static', className: DARK_BLOCK_BUTTON_LAYOUT })}>
                 <span>Xem chỉ đường</span>
               </Link>
               <a
                 href={STORE_CONTACT.zaloUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-neutral-400/30 bg-neutral-500/15 px-5 py-3 text-xs sm:text-sm font-bold text-neutral-200 backdrop-blur-sm transition hover:bg-neutral-500/25 active:scale-95 whitespace-nowrap"
+                className={buttonVariants({ variant: 'primary', className: DARK_BLOCK_BUTTON_LAYOUT })}
               >
                 <span>Chat Zalo tư vấn</span>
+                <span className="sr-only"> (mở tab mới)</span>
               </a>
             </div>
           </Reveal>
