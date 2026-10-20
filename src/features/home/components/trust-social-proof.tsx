@@ -106,7 +106,7 @@ export function TrustSocialProof() {
                       {showroom.city}: {showroom.name}
                     </strong>
                     <span className="rounded-md bg-amber-500/20 border border-amber-400/30 text-amber-300 text-2xs font-semibold px-2 py-0.5 shrink-0">
-                      {showroom.id === 'hanoi' ? 'Trụ sở' : 'Chi nhánh'}
+                      {showroom.isHeadquarter ? 'Trụ sở' : 'Chi nhánh'}
                     </span>
                   </div>
                   <p className="mb-2 leading-relaxed text-neutral-400 text-xs font-medium">{showroom.address}</p>
