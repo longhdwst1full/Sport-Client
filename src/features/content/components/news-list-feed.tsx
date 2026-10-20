@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Calendar, ChevronRight, Clock, RefreshCw } from 'lucide-react';
 import { Button } from '@/foundation/components/buttons';
+import { ToggleChip } from '@/foundation/components/tabs-chips';
 import { EmptyState, Skeleton, SkeletonText } from '@/foundation/components/feedback';
 import { trimToFullRows } from '@/shared/grid/full-rows';
 import { CoverImage } from './cover-image';
@@ -49,19 +50,9 @@ export function NewsListFeed({
       {categories.length > 2 && (
         <div className="mt-8 flex flex-wrap gap-2" role="group" aria-label="Lọc theo loại bài viết">
           {categories.map((cat) => (
-            <Button
-              key={cat}
-              variant={selectedCat === cat ? 'primary' : 'outline'}
-              onClick={() => setSelectedCat(cat)}
-              aria-pressed={selectedCat === cat}
-              className={`rounded-full px-5 text-xs font-bold ${FOCUS_RING} ${
-                selectedCat === cat
-                  ? 'shadow-md shadow-red-500/20'
-                  : 'border-neutral-200 bg-white text-neutral-700 hover:border-neutral-300 hover:bg-neutral-50'
-              }`}
-            >
+            <ToggleChip key={cat} selected={selectedCat === cat} onClick={() => setSelectedCat(cat)} className="px-5">
               {cat === ALL_CATEGORY ? 'Tất cả' : (CONTENT_POST_TYPE_LABELS[cat] ?? cat)}
-            </Button>
+            </ToggleChip>
           ))}
         </div>
       )}
@@ -236,10 +227,10 @@ export function NewsListFeed({
       {!isPending && !isError && selectedCat === ALL_CATEGORY && hasMore && (
         <div className="mt-12 flex justify-center">
           <Button
-            variant="outline"
+            variant="secondary"
             onClick={loadMore}
             disabled={isLoadingMore}
-            className={`rounded-full border-neutral-200 px-8 font-bold text-neutral-700 shadow-sm hover:border-neutral-400 disabled:opacity-60 ${FOCUS_RING}`}
+            className={`rounded-full px-8 font-bold shadow-sm disabled:opacity-60 ${FOCUS_RING}`}
           >
             {isLoadingMore ? 'Đang tải…' : 'Xem thêm'}
           </Button>

@@ -7,6 +7,7 @@ import { buttonVariants } from '@/foundation/components/buttons';
 import { useCategoryTabs } from '../hooks/use-category-tabs';
 import { useProductShowcase } from '../hooks/use-product-showcase';
 import type { ProductListResponseDto } from '@/generated/api/catalog/catalog.schemas';
+import { ToggleChip } from '@/foundation/components/tabs-chips';
 import { CatalogProductGrid } from './catalog/catalog-product-grid';
 
 const GRID_CLASS = 'grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3 lg:grid-cols-4';
@@ -44,19 +45,9 @@ export function ProductShowcase({
           {tabs.map((tab) => {
             const isActive = activeTabSlug === tab.slug;
             return (
-              <button
-                key={tab.slug ?? 'all'}
-                type="button"
-                aria-pressed={isActive}
-                onClick={() => setActiveTabSlug(tab.slug)}
-                className={`rounded-full px-4 py-2 text-xs font-bold transition-all duration-200 focus-ring ${
-                  isActive
-                    ? 'bg-neutral-900 text-white shadow-xs'
-                    : 'border border-neutral-200 bg-white text-neutral-700 hover:border-neutral-300 hover:bg-neutral-50'
-                }`}
-              >
+              <ToggleChip key={tab.slug ?? 'all'} selected={isActive} onClick={() => setActiveTabSlug(tab.slug)}>
                 {tab.label}
-              </button>
+              </ToggleChip>
             );
           })}
         </div>
@@ -81,13 +72,13 @@ export function ProductShowcase({
                 <Link href="/products" className={buttonVariants({ variant: 'primary', size: 'sm', className: 'rounded-full font-bold shadow-sm' })}>
                   Xem tất cả sản phẩm
                 </Link>
-                <Link href="/category/may-chay-bo" className={buttonVariants({ variant: 'outline', size: 'sm', className: 'rounded-full font-bold' })}>
+                <Link href="/category/may-chay-bo" className={buttonVariants({ variant: 'secondary', size: 'sm', className: 'rounded-full font-bold' })}>
                   Máy chạy bộ
                 </Link>
-                <Link href="/category/xe-dap-tap" className={buttonVariants({ variant: 'outline', size: 'sm', className: 'rounded-full font-bold' })}>
+                <Link href="/category/xe-dap-tap" className={buttonVariants({ variant: 'secondary', size: 'sm', className: 'rounded-full font-bold' })}>
                   Xe đạp tập
                 </Link>
-                <Link href="/category/ghe-tap-ta" className={buttonVariants({ variant: 'outline', size: 'sm', className: 'rounded-full font-bold' })}>
+                <Link href="/category/ghe-tap-ta" className={buttonVariants({ variant: 'secondary', size: 'sm', className: 'rounded-full font-bold' })}>
                   Ghế tập tạ
                 </Link>
               </div>
@@ -109,7 +100,7 @@ export function ProductShowcase({
         </div>
         <Link
           href="/products"
-          className={buttonVariants({ className: 'shrink-0 rounded-full px-6 text-xs font-bold shadow-sm' })}
+          className={buttonVariants({ variant: 'secondary', className: 'shrink-0 px-6 text-xs font-bold' })}
         >
           <span>Khám phá toàn bộ danh mục</span>
           <ArrowRight aria-hidden className="size-3.5" />

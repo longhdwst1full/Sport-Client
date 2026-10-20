@@ -10,6 +10,30 @@ export default {
       // Xám dùng họ `neutral` mặc định của Tailwind (trung tính như xám logo #4D4D4F). Đổi tông xám
       // toàn site: khai `neutral: {...}` tại đây — component không dùng slate/stone/gray/zinc.
       colors: {
+        // Vai trò của nút/điều khiển — giá trị ở `:root` trong globals.css (một chỗ đổi bộ màu nút).
+        action: {
+          DEFAULT: 'var(--color-action)',
+          hover: 'var(--color-action-hover)',
+          pressed: 'var(--color-action-pressed)',
+        },
+        'on-action': 'var(--color-on-action)',
+        control: {
+          DEFAULT: 'var(--color-control)',
+          hover: 'var(--color-control-hover)',
+          pressed: 'var(--color-control-pressed)',
+          border: 'var(--color-control-border)',
+          'border-strong': 'var(--color-control-border-strong)',
+          disabled: 'var(--color-control-disabled)',
+        },
+        'on-control': {
+          DEFAULT: 'var(--color-on-control)',
+          disabled: 'var(--color-on-control-disabled)',
+        },
+        selected: {
+          DEFAULT: 'var(--color-selected)',
+          border: 'var(--color-selected-border)',
+        },
+        'on-selected': 'var(--color-on-selected)',
         ink: '#171717', // neutral-900: xám than trung tính như chữ "BẢO AN" trong logo (#4D4D4F), không ngả xanh
         cream: '#fafafa', // neutral-50
         // Đỏ thương hiệu lấy đúng từ logo (#E83734, hue ~0°). Bản trước ngả đỏ thẫm/hồng (#cf222e, hue 355°)

@@ -54,10 +54,10 @@ export function CatalogMobileFilterDrawer({
         <div className="flex items-center gap-3 border-t border-neutral-100 pt-4">
           {hasActiveFilters && (
             <Button
-              variant="outline"
+              variant="secondary"
               size="lg"
               onClick={onResetFilters}
-              className="flex-1 gap-1.5 rounded-2xl border-neutral-200 px-0 text-xs font-bold text-neutral-700 hover:border-neutral-200 hover:bg-neutral-50 hover:text-neutral-700"
+              className="flex-1 gap-1.5 rounded-2xl px-0 text-xs font-bold"
             >
               <RotateCcw aria-hidden className="size-3.5" />
               <span>Đặt lại</span>

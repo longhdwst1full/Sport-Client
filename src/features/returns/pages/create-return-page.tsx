@@ -196,7 +196,7 @@ export function CreateReturnPage({ orderNo }: { orderNo: string }) {
               </InlineAlert>
             )}
             <div className="flex flex-col-reverse gap-3 sm:flex-row sm:flex-wrap sm:justify-between">
-              <Link href={`/orders/${encodeURIComponent(orderNo)}`} className={buttonVariants({ variant: 'outline', className: 'border-neutral-200 font-bold text-neutral-700' })}>Quay lại đơn</Link>
+              <Link href={`/orders/${encodeURIComponent(orderNo)}`} className={buttonVariants({ variant: 'secondary', className: 'font-bold' })}>Quay lại đơn</Link>
               <Button type="submit" variant="primary" disabled={!canSubmit} className="px-5 font-bold">
                 {submit.isPending ? 'Đang gửi...' : uploading ? 'Đang tải ảnh...' : 'Gửi yêu cầu'}
               </Button>

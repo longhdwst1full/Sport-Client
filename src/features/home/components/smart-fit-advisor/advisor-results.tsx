@@ -51,7 +51,7 @@ export function AdvisorResults({ recommendation, goalLabel, spaceLabel, budgetLa
             target="_blank"
             rel="noopener noreferrer"
             className={buttonVariants({
-              variant: 'cta',
+              variant: 'primary',
               className: 'px-5',
             })}
           >

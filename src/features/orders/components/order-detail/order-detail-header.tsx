@@ -32,15 +32,15 @@ export function OrderDetailHeader({
         {isAuthenticated && (
           <Link
             href="/orders"
-            className={buttonVariants({ variant: 'outline', className: 'gap-1.5 border-neutral-200/80 px-3.5 text-xs font-bold text-neutral-700 shadow-sm' })}
+            className={buttonVariants({ variant: 'secondary', className: 'gap-1.5 px-3.5 text-xs font-bold' })}
           >
             <ArrowLeft className="size-3.5" /> Danh sách đơn
           </Link>
         )}
         <Button
-          variant="outline"
+          variant="secondary"
           onClick={onOpenSupport}
-          className="gap-1.5 border-neutral-200 bg-neutral-50/70 px-3.5 text-xs font-bold text-neutral-950 hover:bg-neutral-100"
+          className="gap-1.5 px-3.5 text-xs font-bold"
         >
           <Headphones aria-hidden className="size-3.5 text-neutral-900" /> Cần hỗ trợ?
         </Button>

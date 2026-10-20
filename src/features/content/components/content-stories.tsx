@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { useContentStories } from '../hooks/use-content-stories';
 import { Button } from '@/foundation/components/buttons';
+import { ToggleChip } from '@/foundation/components/tabs-chips';
 import { Skeleton } from '@/foundation/components/feedback';
 import { Reveal } from '@/foundation/components/motion';
 import { CONTENT_POST_TYPE_LABELS, type ContentPostView, EDITORIAL_POST_TYPES } from '../model/content-post.mapper';
@@ -67,19 +68,9 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex flex-wrap items-center gap-2">
           {categories.map((cat) => (
-            <Button
-              key={cat}
-              variant={activeCat === cat ? 'primary' : 'outline'}
-              onClick={() => setActiveCat(cat)}
-              aria-pressed={activeCat === cat}
-              className={`text-xs font-bold ${
-                activeCat === cat
-                  ? 'bg-neutral-800 shadow-sm'
-                  : 'border-neutral-200 text-neutral-600 hover:border-neutral-300 hover:bg-neutral-50 hover:text-neutral-600'
-              }`}
-            >
+            <ToggleChip key={cat} selected={activeCat === cat} onClick={() => setActiveCat(cat)}>
               {cat === ALL_CATEGORY ? 'Tất cả' : (CONTENT_POST_TYPE_LABELS[cat] ?? cat)}
-            </Button>
+            </ToggleChip>
           ))}
         </div>
 
@@ -175,7 +166,7 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
 
       {hiddenCount > 0 && (
         <div className="mt-8 flex justify-center">
-          <Button variant="outline" onClick={() => setExpanded(true)} className="rounded-full px-6">
+          <Button variant="secondary" onClick={() => setExpanded(true)} className="rounded-full px-6">
             <span>Xem thêm</span>
             <ChevronDown className="size-4" aria-hidden="true" />
           </Button>

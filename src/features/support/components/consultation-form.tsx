@@ -245,7 +245,7 @@ export function ConsultationForm() {
 
           <Button
             type="submit"
-            variant="cta"
+            variant="primary"
             size="lg"
             fullWidth
             disabled={pending}

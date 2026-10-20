@@ -63,7 +63,7 @@ export function ProductRelatedSection({
         <Link
           href={categorySlug ? `/category/${categorySlug}` : '/products'}
           className={buttonVariants({
-            variant: 'outline',
+            variant: 'secondary',
             className:
               'shrink-0 gap-1.5 self-start rounded-full border-neutral-200 text-xs font-bold text-neutral-700 shadow-2xs hover:border-neutral-900 hover:bg-neutral-50 sm:self-auto',
           })}

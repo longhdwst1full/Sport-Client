@@ -97,7 +97,7 @@ export function CreateSupportRequestPage() {
             <InlineAlert as="p" role="alert" className="rounded-2xl border border-red-200 bg-red-50 p-3 text-xs font-semibold text-red-800">{create.errorMessage}</InlineAlert>
           )}
           <div className="flex justify-end gap-3">
-            <Link href={SUPPORT_ROUTES.list} className={buttonVariants({ variant: 'outline', className: 'px-5 text-xs font-bold text-neutral-700' })}>Huỷ</Link>
+            <Link href={SUPPORT_ROUTES.list} className={buttonVariants({ variant: 'secondary', className: 'px-5 text-xs font-bold' })}>Huỷ</Link>
             <Button
               type="submit"
               disabled={!canSubmit}

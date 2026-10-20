@@ -47,7 +47,7 @@ export function RouteErrorContent({ digest, onRetry }: { digest?: string; onRetr
         </Button>
         <Link
           href="/"
-          className={buttonVariants({ variant: 'outline', size: 'lg', className: 'font-bold' })}
+          className={buttonVariants({ variant: 'secondary', size: 'lg', className: 'font-bold' })}
         >
           <Home aria-hidden className="size-4" />
           Về trang chủ

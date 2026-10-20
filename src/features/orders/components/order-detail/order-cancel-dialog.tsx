@@ -57,8 +57,8 @@ export function OrderCancelDialog({
                 onClick={() => setReason(preset)}
                 className={`rounded-lg px-2.5 py-1 text-2xs font-medium transition ${
                   reason === preset
-                    ? 'bg-neutral-900 text-white font-bold'
-                    : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
+                    ? 'border border-selected-border bg-selected text-on-selected font-bold'
+                    : 'border border-control-border bg-control text-on-control hover:border-control-border-strong hover:bg-control-hover'
                 }`}
               >
                 {preset}
@@ -96,7 +96,7 @@ export function OrderCancelDialog({
         )}
 
         <div className="mt-6 flex justify-end gap-3">
-          <Button variant="outline" disabled={cancel.isPending} onClick={closeCancel} className="px-5 text-xs">
+          <Button variant="secondary" disabled={cancel.isPending} onClick={closeCancel} className="px-5 text-xs">
             Đóng
           </Button>
           <Button

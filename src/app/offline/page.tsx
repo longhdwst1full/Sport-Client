@@ -20,7 +20,7 @@ export default function OfflinePage() {
           <Button variant="primary" size="lg" onClick={() => window.location.reload()} className="px-5 text-sm font-bold">
             <RotateCw aria-hidden className="size-4" /> Thử kết nối lại
           </Button>
-          <Link href="/" className={buttonVariants({ variant: 'outline', size: 'lg', className: 'px-5 text-sm font-bold' })}>
+          <Link href="/" className={buttonVariants({ variant: 'secondary', size: 'lg', className: 'px-5 text-sm font-bold' })}>
             <Home aria-hidden className="size-4" /> Trang chủ đã lưu
           </Link>
         </div>

@@ -1,30 +1,27 @@
 import { twMerge } from 'tailwind-merge';
 
 /**
- * Ba tầng nút (`20-design-tokens.md` RULE-DS-04):
- * - `cta`: cam hành động, CHỈ cho chuyển đổi (Mua ngay, Thêm vào giỏ, Đặt hàng, Gửi tư vấn). Chữ than
- *   trên cam (#FF5A1F) đạt 5.7:1 — chữ trắng chỉ 3.1:1, không đạt AA.
- * - `primary` (than) cho hành động chính không phải mua; `secondary`/`outline` trắng viền mảnh.
- * - `link`/`ghost` cho "Xem tất cả →", "Đọc thêm →" — loại nên dùng nhiều nhất ở trang chủ.
- * Nền đặc, không gradient, không bóng màu.
+ * Bộ nút theo mẫu dragon-web-v2 (`20-design-tokens.md` RULE-DS-04) — ít biến thể, màu đi qua token vai
+ * trò (`--color-action`, `--color-control`… ở `globals.css`), không viết thẳng mã màu:
+ * - `primary`: đỏ thương hiệu, chữ trắng (5.05:1) — MỌI hành động chính: Mua ngay, Đặt hàng, Tìm kiếm,
+ *   Gửi, Thử lại. Mỗi vùng chỉ một nút primary.
+ * - `secondary`: nền trắng, viền xám ấm, chữ than — hành động phụ: Thêm vào giỏ, Xem thêm, Huỷ bỏ chọn.
+ * - `static`: nút sáng đặt trên nền tối (hero, banner, khối tối, footer).
+ * - `ghost` / `link`: nút chữ, không khung ("Xem tất cả →").
+ * - `danger` / `dangerOutline`: chỉ cho huỷ/xoá.
+ * Nền đặc, không gradient; không ghi đè màu bằng `className` — thiếu kiểu thì thêm biến thể ở đây.
  */
 export const BUTTON_VARIANT = {
-  cta: 'bg-accent-500 text-neutral-950 hover:bg-accent-600 active:bg-accent-700 active:text-white',
-  primary: 'bg-neutral-900 text-white hover:bg-neutral-800 active:bg-neutral-950',
-  secondary: 'border border-neutral-300 bg-white text-neutral-900 hover:border-neutral-900 hover:bg-neutral-50',
-  outline: 'border border-neutral-300 bg-white text-neutral-900 hover:border-neutral-900 hover:bg-neutral-50',
-  ghost: 'text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900',
+  primary: 'bg-action text-on-action hover:bg-action-hover active:bg-action-pressed',
+  secondary:
+    'border border-control-border bg-control text-on-control hover:border-control-border-strong hover:bg-control-hover active:bg-control-pressed',
+  static: 'bg-white text-on-control hover:bg-control-hover active:bg-control-pressed',
+  ghost: 'text-on-control hover:bg-control-hover active:bg-control-pressed',
   danger: 'bg-red-600 text-white hover:bg-red-700 active:bg-red-800',
-  success: 'bg-success-600 text-white hover:bg-success-700',
-  warning: 'bg-amber-400 text-neutral-950 hover:bg-amber-300',
   /** Viền đỏ nhạt cho hành động huỷ/xoá không phải hành động chính. */
   dangerOutline: 'border border-red-200 bg-white text-red-700 hover:border-red-400 hover:bg-red-50 hover:text-red-800',
-  /** Than đậm hơn `primary` cho nền sáng cần nhấn mạnh. */
-  dark: 'bg-neutral-950 text-white hover:bg-neutral-800',
-  /** Nút trên nền tối (hero, banner, footer). */
-  inverse: 'bg-white text-neutral-900 hover:bg-neutral-100',
   /** Nút dạng chữ/link: không nền, không chiều cao cố định (size bị bỏ qua). */
-  link: 'h-auto px-0 text-neutral-900 underline-offset-4 hover:underline',
+  link: 'h-auto px-0 text-on-control underline-offset-4 hover:underline',
 } as const;
 
 export const BUTTON_SIZE = {
@@ -46,8 +43,14 @@ export interface ButtonVariantOptions {
   className?: string;
 }
 
+/**
+ * Bo 16px (thẻ) như Dragon; icon trong nút luôn 16px, không co. Disabled dùng MỘT kiểu chung (nền/ chữ xám
+ * ấm) thay vì làm mờ — nút mờ 50% trên ảnh/nền màu đọc không ra.
+ */
 const BUTTON_BASE =
-  'inline-flex items-center justify-center gap-2 rounded-lg font-semibold transition-colors duration-150 active:scale-[0.98] focus-ring disabled:cursor-not-allowed disabled:opacity-50 select-none';
+  'inline-flex items-center justify-center gap-2 rounded-2xl font-semibold transition-colors duration-150 active:scale-[0.98] focus-ring select-none [&_svg]:size-4 [&_svg]:shrink-0 disabled:cursor-not-allowed disabled:border-transparent disabled:bg-control-disabled disabled:text-on-control-disabled';
+/** Nút chữ không có nền: disabled chỉ đổi màu chữ. */
+const LINK_DISABLED = 'disabled:bg-transparent';
 
 /**
  * Chuỗi class của nút trong design system — hàm thuần để `<Link className={buttonVariants(...)}>` dùng
@@ -57,5 +60,12 @@ const BUTTON_BASE =
 export function buttonVariants({ variant = 'primary', size = 'md', fullWidth = false, className }: ButtonVariantOptions = {}): string {
   // `link` không có khung nút nên bỏ class kích thước (chiều cao/padding) để nó nằm gọn trong dòng chữ.
   const sizeClass = variant === 'link' ? '' : BUTTON_SIZE[size];
-  return twMerge(BUTTON_BASE, sizeClass, BUTTON_VARIANT[variant], fullWidth && 'w-full', className);
+  return twMerge(
+    BUTTON_BASE,
+    sizeClass,
+    BUTTON_VARIANT[variant],
+    (variant === 'link' || variant === 'ghost') && LINK_DISABLED,
+    fullWidth && 'w-full',
+    className,
+  );
 }

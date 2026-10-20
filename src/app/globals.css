@@ -147,6 +147,26 @@
 
 :root {
   color-scheme: light;
+  /*
+   * Token theo VAI TRÒ của nút/điều khiển (học từ dragon-web-v2: màu gốc → vai trò → thành phần). Đổi bộ
+   * màu nút = sửa ở đây; component dùng tên vai trò qua Tailwind (`bg-action`, `text-on-action`,
+   * `border-control`…), không viết thẳng `brand-600`/`neutral-900`. Xám pha ấm theo đỏ thương hiệu.
+   */
+  --color-action: #d42a27; /* brand-600 — chữ trắng 5.05:1 */
+  --color-action-hover: #b2221f; /* brand-700 */
+  --color-action-pressed: #921f1d; /* brand-800 */
+  --color-on-action: #ffffff;
+  --color-control: #ffffff; /* nền nút phụ */
+  --color-control-hover: #f6f1f0;
+  --color-control-pressed: #ece5e4;
+  --color-control-border: #e5dcdb;
+  --color-control-border-strong: #c9bdbb;
+  --color-on-control: #1f1a19; /* chữ nút phụ — 16:1 trên trắng */
+  --color-control-disabled: #f2eeed;
+  --color-on-control-disabled: #a59a98;
+  --color-selected: #fef3f2; /* chip/lựa chọn đang bật — brand-50 */
+  --color-selected-border: #fca9a4; /* brand-300 */
+  --color-on-selected: #b2221f; /* brand-700 — 6.15:1 trên brand-50 */
   /* DC design tokens: shared visual language with admin-client/dragon-web. */
   --dc-primary-50: #fafafa;
   --dc-primary-100: #f5f5f5;

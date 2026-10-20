@@ -132,9 +132,9 @@ export function CatalogMobileControlBar({
   return (
     <div className="mb-6 flex items-center justify-between gap-2 lg:hidden">
       <Button
-        variant="outline"
+        variant="secondary"
         onClick={onOpenFilters}
-        className="h-10 border-neutral-200 text-xs font-bold text-neutral-700 shadow-xs hover:border-neutral-900 hover:text-neutral-700"
+        className="h-10 text-xs font-bold shadow-xs"
         aria-label={activeFilterCount > 0 ? `Bộ lọc, đang áp dụng ${activeFilterCount}` : 'Bộ lọc'}
       >
         <SlidersHorizontal aria-hidden className="size-3.5 text-neutral-900" />

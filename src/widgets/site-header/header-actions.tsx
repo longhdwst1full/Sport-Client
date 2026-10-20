@@ -27,10 +27,10 @@ export function HeaderActions({
     <div className="flex shrink-0 items-center gap-2 sm:gap-2.5">
       {/* Mobile Search Toggle */}
       <Button
-        variant="outline"
+        variant="secondary"
         size="icon"
         onClick={onToggleSearch}
-        className="border-neutral-200 text-neutral-700 transition hover:border-neutral-200 hover:bg-neutral-100 hover:text-neutral-700 lg:hidden"
+        className="transition lg:hidden"
         aria-label="Tìm sản phẩm"
       >
         <Search aria-hidden className="size-4.5" />
@@ -85,9 +85,9 @@ export function HeaderActions({
 
       {/* Mobile Menu Toggle */}
       <Button
-        variant="outline"
+        variant="secondary"
         size="icon"
-        className="border-neutral-200 text-neutral-700 transition hover:border-neutral-200 hover:bg-neutral-100 hover:text-neutral-700 lg:hidden"
+        className="transition lg:hidden"
         aria-label={mobileMenuOpen ? 'Đóng menu' : 'Mở menu'}
         aria-expanded={mobileMenuOpen}
         onClick={onToggleMobileMenu}

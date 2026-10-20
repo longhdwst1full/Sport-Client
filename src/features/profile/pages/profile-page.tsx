@@ -170,8 +170,8 @@ export function ProfilePage() {
                   onClick={() => selectTab(id)}
                   className={`inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full px-4 py-2 text-xs font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--dc-primary-600)] focus-visible:ring-offset-2 ${
                     activeTab === id
-                      ? 'bg-[var(--dc-primary-700)] text-white shadow-sm'
-                      : 'border border-[var(--dc-border)] bg-white text-[var(--dc-text-secondary)]'
+                      ? 'border border-selected-border bg-selected text-on-selected'
+                      : 'border border-control-border bg-control text-on-control hover:border-control-border-strong hover:bg-control-hover'
                   }`}
                 >
                   <Icon className="size-4" aria-hidden />
@@ -221,10 +221,10 @@ export function ProfilePage() {
           </div>
 
           <Button
-            variant="outline"
+            variant="dangerOutline"
             fullWidth
             onClick={handleLogout}
-            className="mt-6 h-auto rounded-2xl border-red-200 py-3 font-bold text-red-600 hover:border-red-200 hover:bg-red-50 hover:text-red-600 focus-visible:ring-red-500 lg:hidden"
+            className="mt-6 h-auto py-3 font-bold lg:hidden"
           >
             Đăng xuất
           </Button>

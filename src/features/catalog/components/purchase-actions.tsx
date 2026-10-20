@@ -81,7 +81,7 @@ export function PurchaseActions({
       {/* CTA Buttons (Add to Cart + Buy Now) */}
       <div ref={ctaRef} className="grid gap-3 sm:grid-cols-2">
         <Button
-          variant="outline"
+          variant="secondary"
           size="lg"
           disabled={!canAdd}
           onClick={onAddToCart}
@@ -92,7 +92,7 @@ export function PurchaseActions({
         </Button>
 
         <Button
-          variant="cta"
+          variant="primary"
           size="lg"
           disabled={!canAdd}
           onClick={onBuyNow}
@@ -132,7 +132,7 @@ export function StickyBuyBar({ visible, priceLabel, canAdd, outOfStock, onAddToC
           {canAdd || outOfStock ? priceLabel : 'Liên hệ báo giá'}
         </strong>
         <Button
-          variant="outline"
+          variant="secondary"
           disabled={!canAdd}
           onClick={onAddToCart}
           className={`${PRIMARY_OUTLINE_CTA} gap-1.5 border px-3 text-xs`}
@@ -140,7 +140,7 @@ export function StickyBuyBar({ visible, priceLabel, canAdd, outOfStock, onAddToC
           <ShoppingBag aria-hidden className="size-4" />
           <span>{canAdd ? 'Thêm vào giỏ' : outOfStock ? 'Tạm hết hàng' : 'Liên hệ'}</span>
         </Button>
-        <Button variant="cta" disabled={!canAdd} onClick={onBuyNow} className="gap-1.5 text-xs font-bold">
+        <Button variant="primary" disabled={!canAdd} onClick={onBuyNow} className="gap-1.5 text-xs font-bold">
           <Zap aria-hidden className="size-4 fill-current" />
           <span>Mua ngay</span>
         </Button>

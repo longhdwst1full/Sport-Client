@@ -52,7 +52,7 @@ export function ProductDescriptionCollapsible({
       {/* Expand / Collapse Button */}
       <div className="mt-4 flex justify-center pt-2">
         <Button
-          variant="outline"
+          variant="secondary"
           size="sm"
           onClick={() => setIsExpanded((prev) => !prev)}
           className="rounded-full px-5 text-xs font-bold text-neutral-800 hover:border-neutral-400 hover:bg-neutral-50 shadow-2xs"

@@ -73,9 +73,9 @@ export const SearchBox = forwardRef<HTMLInputElement, SearchBoxProps>(function S
         type="submit"
         variant="primary"
         size="sm"
-        className="my-1 mr-1.5 inline-flex shrink-0 items-center gap-1.5 rounded-full px-4 text-xs font-bold tracking-tight shadow-md sm:px-5"
+        className="my-1 mr-1.5 inline-flex shrink-0 items-center gap-1.5 rounded-full px-4 text-xs font-bold tracking-tight sm:px-5"
       >
-        {submitIcon && <Search aria-hidden className="size-3.5 text-white" />}
+        {submitIcon && <Search aria-hidden className="size-3.5" />}
         <span>{submitLabel}</span>
       </Button>
     </form>

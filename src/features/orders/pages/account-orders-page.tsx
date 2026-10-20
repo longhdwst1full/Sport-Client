@@ -51,7 +51,7 @@ export function AccountOrdersPage() {
             actions={
               <div className="mt-5 flex flex-wrap justify-center gap-3">
                 <Link href="/login" className={buttonVariants({ variant: 'primary', className: 'px-5 font-bold' })}>Đăng nhập</Link>
-                <Link href={GUEST_LOOKUP_ROUTE} className={buttonVariants({ variant: 'outline', className: 'border-neutral-200 px-5 font-bold text-neutral-700' })}>Tra cứu đơn bằng email</Link>
+                <Link href={GUEST_LOOKUP_ROUTE} className={buttonVariants({ variant: 'secondary', className: 'px-5 font-bold' })}>Tra cứu đơn bằng email</Link>
               </div>
             }
           />

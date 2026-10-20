@@ -61,7 +61,7 @@ export function AdvisorOptionStep<T extends AdvisorOption>({
           </Button>
         )}
         <Button
-          variant="inverse"
+          variant="static"
           size="lg"
           onClick={onNext}
           className="gap-2 px-6 text-sm font-bold shadow-md"

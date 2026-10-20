@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { buttonVariants } from '@/foundation/components/buttons';
 import { ChevronLeft, ChevronRight, LifeBuoy } from 'lucide-react';
 import { Button } from '@/foundation/components/buttons';
 import { InlineAlert, Skeleton } from '@/foundation/components/feedback';
@@ -34,7 +35,7 @@ export function AccountSupportTicketsPage() {
           <p className="mt-2 text-sm text-neutral-600">Theo dõi các yêu cầu hỗ trợ bạn đã gửi và phản hồi của nhân viên.</p>
         </div>
         {isAuthenticated && (
-          <Link href={SUPPORT_ROUTES.create} className="rounded-xl bg-neutral-900 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-neutral-800 focus-ring">
+          <Link href={SUPPORT_ROUTES.create} className={buttonVariants({ className: 'px-4' })}>
             Tạo yêu cầu hỗ trợ
           </Link>
         )}
@@ -91,9 +92,9 @@ export function AccountSupportTicketsPage() {
       )}
       {isAuthenticated && hasData && totalPages > 1 && (
         <nav className="mt-7 flex items-center justify-center gap-3" aria-label="Phân trang yêu cầu hỗ trợ">
-          <Button variant="outline" size="icon" disabled={page === 1 || isFetching} onClick={() => setPage((value) => Math.max(1, value - 1))} aria-label="Trang trước"><ChevronLeft className="size-4" aria-hidden /></Button>
+          <Button variant="secondary" size="icon" disabled={page === 1 || isFetching} onClick={() => setPage((value) => Math.max(1, value - 1))} aria-label="Trang trước"><ChevronLeft className="size-4" aria-hidden /></Button>
           <span className="text-sm font-bold text-neutral-700">Trang {page} / {totalPages}</span>
-          <Button variant="outline" size="icon" disabled={page >= totalPages || isFetching} onClick={() => setPage((value) => value + 1)} aria-label="Trang sau"><ChevronRight className="size-4" aria-hidden /></Button>
+          <Button variant="secondary" size="icon" disabled={page >= totalPages || isFetching} onClick={() => setPage((value) => value + 1)} aria-label="Trang sau"><ChevronRight className="size-4" aria-hidden /></Button>
         </nav>
       )}
     </main>

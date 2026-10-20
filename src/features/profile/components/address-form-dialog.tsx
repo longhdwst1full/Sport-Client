@@ -124,10 +124,10 @@ export function AddressFormDialog({
           {/* Modal Footer Buttons */}
           <div className="mt-6 flex justify-end gap-3 border-t border-neutral-100 pt-4">
             <Button
-              variant="outline"
+              variant="secondary"
               size="md"
               onClick={onClose}
-              className="h-auto border-neutral-200 py-2.5 text-xs font-bold text-neutral-600 hover:border-neutral-200 hover:bg-neutral-50 hover:text-neutral-600"
+              className="h-auto py-2.5 text-xs font-bold"
             >
               Hủy bỏ
             </Button>

@@ -60,7 +60,7 @@ export function PolicyDetailPage({
                 href="/chinh-sach"
                 className={buttonVariants({
                   variant: 'ghost',
-                  className: 'rounded-full bg-neutral-100 px-5 text-xs font-bold text-ink hover:bg-neutral-50 hover:text-neutral-900',
+                  className: 'rounded-full px-5 text-xs font-bold text-ink',
                 })}
               >
                 <ArrowLeft className="size-4" aria-hidden="true" /> Tất cả chính sách

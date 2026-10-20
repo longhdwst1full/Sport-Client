@@ -16,7 +16,7 @@ description: Style or restyle DCTD storefront UI (colors, buttons, cards, spacin
 | Kiểu nút | `src/foundation/components/buttons/button-variants.ts` |
 | Hotline, giờ, cam kết chính sách | `src/shared/constants/store.ts` |
 
-Logo: đỏ `#E83734` + xám than `#4D4D4F`. Nút chuyển đổi = `cta` (cam #FF5A1F, chữ than); hành động khác = `primary` than / `secondary` / `link`; giá thường màu than, đỏ chỉ cho giá sale/khuyến mãi; `red` cho lỗi/huỷ. Trang trắng, tối đa một khối tối trên trang chủ.
+Logo: đỏ `#E83734` + xám than `#4D4D4F`. Nút: `primary` đỏ thương hiệu chữ trắng cho hành động chính (kể cả Tìm kiếm), `secondary` trắng viền xám ấm cho hành động phụ, `static` trên nền tối, `ghost`/`link`; màu nút qua token vai trò (`action`, `control`, `selected` ở `globals.css`), chip chọn dùng `ToggleChip`; giá thường màu than, đỏ chỉ cho giá sale/khuyến mãi; `red` cho lỗi/huỷ. Trang trắng, tối đa một khối tối trên trang chủ.
 
 ## Quy trình
 

@@ -64,13 +64,13 @@ export function OrderSupportDialog({
             <span className="text-3xs uppercase font-bold text-neutral-400 block">Mã đơn hàng cần đọc khi gọi</span>
             <strong className="font-mono text-sm font-bold text-neutral-900">#{orderNo}</strong>
           </div>
-          <Button variant="outline" size="sm" onClick={() => onCopyOrderNo(orderNo)} className="rounded-lg px-2.5 text-xs">
+          <Button variant="secondary" size="sm" onClick={() => onCopyOrderNo(orderNo)} className="rounded-lg px-2.5 text-xs">
             {copiedOrderNo ? 'Đã sao chép' : 'Sao chép'}
           </Button>
         </div>
 
         <div className="mt-5 flex justify-end">
-          <Button variant="outline" onClick={onClose} className="px-5 text-xs">
+          <Button variant="secondary" onClick={onClose} className="px-5 text-xs">
             Đóng
           </Button>
         </div>

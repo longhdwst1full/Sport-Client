@@ -103,9 +103,10 @@ export function CartPage() {
           </h1>
           {hydrated && items.length > 0 && (
             <Button
-              variant="ghost"
+              variant="dangerOutline"
+              size="sm"
               onClick={handleClearCart}
-              className="rounded px-2 text-xs font-bold text-red-700 hover:bg-transparent hover:text-red-800"
+              className="px-3 text-xs font-bold"
             >
               Xóa tất cả
             </Button>

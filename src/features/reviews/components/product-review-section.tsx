@@ -119,7 +119,7 @@ export function ProductReviewSection({
                 return (
                   <Button
                     key={filter.id}
-                    variant={active ? 'primary' : 'outline'}
+                    variant={active ? 'primary' : 'secondary'}
                     size="sm"
                     onClick={() => setActiveFilter(filter.id)}
                     aria-pressed={active}

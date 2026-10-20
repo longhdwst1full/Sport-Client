@@ -37,7 +37,7 @@ export function CheckoutSuccess({ order }: CheckoutSuccessProps) {
           </Link>
           <Link
             href={`/orders/${order.orderNo}`}
-            className={buttonVariants({ variant: 'outline', className: 'px-5 font-bold' })}
+            className={buttonVariants({ variant: 'secondary', className: 'px-5 font-bold' })}
           >
             Xem đơn hàng
           </Link>

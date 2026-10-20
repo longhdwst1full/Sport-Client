@@ -1,10 +1,10 @@
 # Storefront document versioning
 
-> **Rule version:** 2.3.0
+> **Rule version:** 2.4.0
 >
-> **Last updated:** 2026-10-09
+> **Last updated:** 2026-10-20
 >
-> **Change summary:** Thêm `20-design-tokens.md`, `21-trust-content.md`, `22-server-data-cache.md` và skill `storefront-ui-design`.
+> **Change summary:** `20-design-tokens.md`: bộ nút theo mẫu dragon-web-v2 (primary đỏ chữ trắng, secondary, static…), token vai trò `action`/`control`/`selected`, `ToggleChip`; bỏ nút cam `cta`.
 
 Áp dụng cho `_features/`, `_plans/`, `_prompts/` và tài liệu Storefront/PWA. Markdown viết tay phải có version, ngày, change summary và revision history khi cập nhật có ý nghĩa.
 
@@ -14,6 +14,7 @@ Không chỉnh tay `contracts/` hoặc `src/generated/api`. Thay đổi cache/of
 
 | Version | Date | Change summary | Source / Change ID |
 | --- | --- | --- | --- |
+| 2.4.0 | 2026-10-20 | Bộ nút mới theo dragon-web-v2: 7 biến thể, token vai trò ở `:root`, chip chọn `ToggleChip`; nút chính đỏ thương hiệu chữ trắng thay cho cam chữ than. | Rà soát màu nút 2026-10-20 |
 | 2.3.0 | 2026-10-09 | Thêm `20-design-tokens.md` (màu theo logo, token, class dùng chung), `21-trust-content.md` (cam kết một nguồn), `22-server-data-cache.md` (`unstable_cache` + tag); skill `storefront-ui-design`. | UI/UX audit 09/10/2026 |
 | 2.2.0 | 2026-09-13 | Thêm `13-foundation-components.md`, `14-shared-module.md`, `15-core-infrastructure.md`, `16-react-hooks.md`, `17-image-usage.md`, `18-list-page-pattern.md`, `19-openapi-spec-management.md`. | `_plans/refactor-base-v1.md` Phase 1 |
 | 2.1.0 | 2026-09-13 | Thêm `RULE_INDEX.md`, `02a-contract-change-workflow.md`, `09-data-transformation.md`, `12-skeleton-loading.md`, `99-rule-maintenance.md`. | Kế thừa `dragonx-employer-web/.agent/rules` |

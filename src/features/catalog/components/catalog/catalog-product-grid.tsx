@@ -144,7 +144,7 @@ export function CatalogProductGrid({
             </div>
           )}
           <Button
-            variant="outline"
+            variant="secondary"
             onClick={loadMore}
             disabled={isLoadingMore}
             className="rounded-full px-6 disabled:opacity-60"

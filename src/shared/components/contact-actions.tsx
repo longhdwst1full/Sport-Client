@@ -26,7 +26,7 @@ export function ContactActions({
       <a
         href={`tel:${STORE_CONTACT.primaryHotlineRaw}`}
         className={buttonVariants({
-          variant: dark ? 'inverse' : 'primary',
+          variant: dark ? 'static' : 'primary',
           className: 'px-5 gap-2 text-xs sm:text-sm font-bold',
         })}
       >
@@ -50,7 +50,7 @@ export function ContactActions({
       <Link
         href="/contact"
         className={buttonVariants({
-          variant: 'outline',
+          variant: 'secondary',
           className: dark
             ? 'border-neutral-700 bg-neutral-900/90 text-neutral-100 hover:bg-neutral-800 px-5 gap-2 text-xs sm:text-sm font-bold'
             : 'border-neutral-300 bg-white text-neutral-900 hover:bg-neutral-50 px-5 gap-2 text-xs sm:text-sm font-bold',

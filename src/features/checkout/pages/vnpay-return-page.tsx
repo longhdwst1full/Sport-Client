@@ -62,7 +62,7 @@ export function VnpayReturnPage({ result }: { result: VnpayReturnView }) {
             </Link>
             <Link
               href="/"
-              className={buttonVariants({ variant: 'ghost', className: 'rounded-full bg-neutral-100 px-6 font-bold text-neutral-800 hover:bg-neutral-200' })}
+              className={buttonVariants({ variant: 'secondary', className: 'rounded-full px-6 font-bold' })}
             >
               Về trang chủ
             </Link>

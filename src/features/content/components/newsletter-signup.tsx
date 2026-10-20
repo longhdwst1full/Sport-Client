@@ -68,7 +68,7 @@ export function NewsletterSignup({ source, tone = 'light' }: { source: string; t
       <HoneypotField value={website} onChange={setWebsite} />
       <Button
         type="submit"
-        variant={dark ? 'inverse' : 'primary'}
+        variant={dark ? 'static' : 'primary'}
         disabled={mutation.isPending}
         className="shrink-0 whitespace-nowrap px-5"
       >

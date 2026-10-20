@@ -39,7 +39,7 @@ import { formatDateTime } from '@/shared/format/date-time';
 
 const PRIMARY_ACTION = buttonVariants({ variant: 'primary', className: 'px-5 font-bold shadow-sm' });
 const DANGER_ACTION = buttonVariants({ variant: 'danger', className: 'px-5 font-bold shadow-sm' });
-const HOME_ACTION = buttonVariants({ variant: 'outline', className: 'px-5 font-bold text-neutral-700' });
+const HOME_ACTION = buttonVariants({ variant: 'secondary', className: 'px-5 font-bold' });
 
 export function OrderDetailPage({ orderNo }: { orderNo: string }) {
   // Hook tải đơn gọi trước hook hủy đơn: effect thu hồi mã truy cập vãng lai giữ nguyên thứ tự chạy cũ.

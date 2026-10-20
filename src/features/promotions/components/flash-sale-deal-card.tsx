@@ -108,7 +108,7 @@ export function FlashSaleDealCard({
 
         <div className="mt-auto flex items-center gap-2 pt-3">
           <Button
-            variant="outline"
+            variant="secondary"
             size="icon"
             disabled={soldOut}
             onClick={() => onAddToCart(deal)}
@@ -119,7 +119,7 @@ export function FlashSaleDealCard({
             <ShoppingCart className="size-4" aria-hidden="true" />
           </Button>
           <Button
-            variant="cta"
+            variant="primary"
             disabled={soldOut}
             onClick={() => onBuyNow(deal)}
             className="h-11 min-w-0 flex-1 gap-1 px-2 text-xs font-bold sm:text-sm"

@@ -26,7 +26,7 @@ export function CartEmpty() {
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link
               href="/products"
-              className={buttonVariants({ size: 'lg', className: 'rounded-full px-7 font-bold shadow-lg shadow-neutral-900/20' })}
+              className={buttonVariants({ size: 'lg', className: 'rounded-full px-7 font-bold' })}
             >
               <ArrowLeft aria-hidden className="size-4" /> Tiếp tục mua sắm
             </Link>

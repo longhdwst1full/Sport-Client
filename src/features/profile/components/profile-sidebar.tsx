@@ -31,8 +31,8 @@ const SHOPPING_LINKS: ReadonlyArray<{ href: string; label: string; icon: LucideI
 const navItemClass = (active: boolean) =>
   `flex w-full items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--dc-primary-600)] ${
     active
-      ? 'bg-[var(--dc-primary-50)] text-[var(--dc-primary-700)]'
-      : 'text-[var(--dc-text-secondary)] hover:bg-[var(--dc-canvas)] hover:text-[var(--dc-text-primary)]'
+      ? 'bg-selected text-on-selected'
+      : 'text-[var(--dc-text-secondary)] hover:bg-control-hover hover:text-on-control'
   }`;
 
 interface ProfileSidebarProps {

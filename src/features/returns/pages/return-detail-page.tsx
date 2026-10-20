@@ -174,7 +174,7 @@ export function ReturnDetailPage({ returnNo }: { returnNo: string }) {
             </div>
 
             <div className="mt-6 flex flex-wrap justify-between gap-3">
-              <Link href="/returns" className={buttonVariants({ variant: 'outline', className: 'border-neutral-200 font-bold text-neutral-700' })}>Danh sách yêu cầu</Link>
+              <Link href="/returns" className={buttonVariants({ variant: 'secondary', className: 'font-bold' })}>Danh sách yêu cầu</Link>
               {canCancel(detail.status) && (
                 <Button variant="dangerOutline" onClick={() => setShowCancel(true)} aria-expanded={showCancel} className="font-bold focus-visible:ring-red-500">Huỷ yêu cầu</Button>
               )}
@@ -198,7 +198,7 @@ export function ReturnDetailPage({ returnNo }: { returnNo: string }) {
                   <Button variant="danger" disabled={cancel.isPending || reason.trim().length < 5} onClick={() => cancel.mutate()} className="font-bold focus-visible:ring-red-500">
                     {cancel.isPending ? 'Đang huỷ...' : 'Xác nhận huỷ'}
                   </Button>
-                  <Button variant="outline" disabled={cancel.isPending} onClick={() => { cancel.reset(); setShowCancel(false); }} className="border-neutral-200 font-bold text-neutral-700">Đóng</Button>
+                  <Button variant="secondary" disabled={cancel.isPending} onClick={() => { cancel.reset(); setShowCancel(false); }} className="border-neutral-200 font-bold text-neutral-700">Đóng</Button>
                 </div>
                 <p id="return-cancel-reason-hint" className="mt-2 text-xs text-red-800">Lý do ít nhất 5 ký tự.</p>
               </section>

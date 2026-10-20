@@ -31,14 +31,14 @@ export function NotFoundContent() {
       <div className="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
         <Link
           href="/"
-          className={buttonVariants({ variant: 'primary', size: 'lg', className: 'font-bold shadow-md shadow-red-600/20' })}
+          className={buttonVariants({ variant: 'primary', size: 'lg', className: 'font-bold' })}
         >
           <Home aria-hidden className="size-4" />
           Về trang chủ
         </Link>
         <Link
           href="/category"
-          className={buttonVariants({ variant: 'outline', size: 'lg', className: 'font-bold border-neutral-300' })}
+          className={buttonVariants({ variant: 'secondary', size: 'lg', className: 'font-bold' })}
         >
           <LayoutGrid aria-hidden className="size-4" />
           Khám phá danh mục

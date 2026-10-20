@@ -145,7 +145,7 @@ export const ProductCard = memo(function ProductCard({
               <div className="relative z-10 mt-3.5 flex items-center gap-2">
                 {onAddToCart && (
                   <Button
-                    variant="outline"
+                    variant="secondary"
                     size="icon"
                     onClick={(e) => onAddToCart(product, e)}
                     disabled={unavailable}
@@ -157,10 +157,10 @@ export const ProductCard = memo(function ProductCard({
                   </Button>
                 )}
                 <Button
-                  variant="cta"
+                  variant="primary"
                   onClick={handleBuy}
                   disabled={unavailable}
-                  className="h-11 min-w-0 flex-1 gap-1 px-2 text-xs font-bold sm:text-sm disabled:bg-neutral-100 disabled:text-neutral-400"
+                  className="h-11 min-w-0 flex-1 gap-1 px-2 text-xs font-bold sm:text-sm"
                   title={
                     product.inStock === false
                       ? 'Sản phẩm tạm hết hàng'

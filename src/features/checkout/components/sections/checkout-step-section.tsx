@@ -2,7 +2,7 @@ import type { ComponentType, ReactNode, SVGProps } from 'react';
 
 /** Thẻ lựa chọn (địa chỉ, phương thức giao/thanh toán) dùng chung cho các section. */
 export const optionClass = (selected: boolean) =>
-  `rounded-2xl border p-4 text-left transition ${selected ? 'border-neutral-900 bg-neutral-50 ring-1 ring-neutral-900' : 'border-neutral-200 hover:border-neutral-300'} focus-ring`;
+  `rounded-2xl border p-4 text-left transition ${selected ? 'border-selected-border bg-selected ring-1 ring-selected-border' : 'border-control-border bg-control hover:border-control-border-strong'} focus-ring`;
 
 /** Khung chung cho các bước 1–3 của checkout: thẻ trắng + số bước + tiêu đề có icon + mô tả ngắn. */
 export function CheckoutStepSection({

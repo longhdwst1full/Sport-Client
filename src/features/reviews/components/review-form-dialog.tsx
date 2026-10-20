@@ -101,7 +101,7 @@ export function ReviewFormDialog({
             <h2 id="review-dialog-title" className="mt-1 text-xl font-bold text-neutral-950">{productName}</h2>
             <p className="mt-1 text-sm text-neutral-500">Đánh giá được hiển thị ngay sau khi gửi.</p>
           </div>
-          <Button variant="ghost" size="icon" onClick={onClose} disabled={submitting} className="size-9 shrink-0 rounded-full bg-neutral-100 text-neutral-600" aria-label="Đóng"><X aria-hidden className="size-4" /></Button>
+          <Button variant="ghost" size="icon" onClick={onClose} disabled={submitting} className="size-9 shrink-0 rounded-full" aria-label="Đóng"><X aria-hidden className="size-4" /></Button>
         </div>
 
         <form onSubmit={submit} className="mt-6 space-y-5">
@@ -151,7 +151,7 @@ export function ReviewFormDialog({
 
           {error && <InlineAlert as="p" role="alert" className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-800">{error}</InlineAlert>}
           <div className="flex justify-end gap-3 border-t border-neutral-100 pt-5">
-            <Button variant="outline" onClick={onClose} disabled={submitting} className="px-5">Hủy</Button>
+            <Button variant="secondary" onClick={onClose} disabled={submitting} className="px-5">Hủy</Button>
             <Button type="submit" variant="primary" loading={submitting} disabled={uploading} className="px-5">
               Gửi đánh giá
             </Button>

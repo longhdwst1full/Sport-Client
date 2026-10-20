@@ -66,7 +66,7 @@ export function SocialLoginButtons({ dividerText, toastTitles, toastMessages }: 
         {SOCIAL_PROVIDERS.map(({ key, label, icon }) => (
           <Button
             key={key}
-            variant="outline"
+            variant="secondary"
             onClick={() => toast({ title: toastTitles[key], message: toastMessages[key] })}
             className="h-9 sm:h-10 border-neutral-200 px-2 text-xs font-bold text-neutral-700 shadow-2xs hover:border-neutral-300 hover:bg-neutral-50 hover:text-neutral-700 focus-visible:ring-offset-0"
           >

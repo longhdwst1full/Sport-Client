@@ -126,11 +126,11 @@ export function CatalogFilterGroups({
           isSidebar
             ? `flex w-full items-center justify-between rounded-xl px-3.5 py-2 text-left text-xs font-bold transition ${FOCUS_RING} ${
                 isSelected
-                  ? 'bg-neutral-100 text-neutral-950 font-bold border-l-4 border-l-neutral-900 ring-1 ring-neutral-200/80 shadow-2xs'
-                  : 'text-neutral-700 hover:bg-neutral-100/80 hover:text-neutral-900'
+                  ? 'bg-selected text-on-selected font-bold border-l-4 border-l-action'
+                  : 'text-neutral-700 hover:bg-control-hover hover:text-on-control'
               }`
             : `rounded-full px-4 py-2 text-xs font-semibold transition ${FOCUS_RING} ${
-                isSelected ? 'bg-neutral-900 text-white shadow-xs' : 'border border-neutral-200 bg-neutral-50 text-neutral-700 hover:border-neutral-300'
+                isSelected ? 'border border-selected-border bg-selected text-on-selected' : 'border border-control-border bg-control text-on-control hover:border-control-border-strong hover:bg-control-hover'
               }`
         }
       >
@@ -161,8 +161,8 @@ export function CatalogFilterGroups({
         key={range.id}
         className={`flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-xs font-bold transition ${
           isSelected
-            ? 'bg-neutral-100 text-neutral-950 font-bold ring-1 ring-neutral-200'
-            : 'text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900'
+            ? 'bg-selected text-on-selected font-bold ring-1 ring-selected-border'
+            : 'text-neutral-700 hover:bg-control-hover hover:text-on-control'
         }`}
       >
         <div className="flex items-center gap-2.5">
@@ -172,7 +172,7 @@ export function CatalogFilterGroups({
             value={range.id}
             checked={isSelected}
             onChange={() => onSelectPriceRange(range.id)}
-            className={`size-4 cursor-pointer border-neutral-300 accent-neutral-900 ${FOCUS_RING}`}
+            className={`size-4 cursor-pointer border-neutral-300 accent-[var(--color-action)] ${FOCUS_RING}`}
           />
           <span>{range.label}</span>
         </div>
@@ -185,8 +185,8 @@ export function CatalogFilterGroups({
         aria-pressed={isSelected}
         className={`rounded-xl border p-2.5 text-center text-xs font-semibold transition ${FOCUS_RING} ${
           isSelected
-            ? 'border-neutral-900 bg-neutral-900 text-white shadow-2xs'
-            : 'border-neutral-200 bg-white text-neutral-700 hover:bg-neutral-50'
+            ? 'border-selected-border bg-selected text-on-selected'
+            : 'border-control-border bg-control text-on-control hover:bg-control-hover'
         }`}
       >
         {range.label}
@@ -305,13 +305,13 @@ export function CatalogFilterGroups({
                       isSidebar
                         ? `flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-xs font-medium transition ${FOCUS_RING} ${
                             isSelected
-                              ? 'bg-neutral-100 font-bold text-neutral-950 ring-1 ring-neutral-300 shadow-2xs'
-                              : 'text-neutral-700 hover:bg-neutral-100/80 hover:text-neutral-900'
+                              ? 'bg-selected font-bold text-on-selected ring-1 ring-selected-border'
+                              : 'text-neutral-700 hover:bg-control-hover hover:text-on-control'
                           }`
                         : `rounded-full px-3.5 py-2 text-xs font-semibold transition ${FOCUS_RING} ${
                             isSelected
-                              ? 'bg-neutral-900 text-white shadow-2xs'
-                              : 'border border-neutral-200 bg-white text-neutral-700 hover:bg-neutral-50'
+                              ? 'border border-selected-border bg-selected text-on-selected'
+                              : 'border border-control-border bg-control text-on-control hover:border-control-border-strong hover:bg-control-hover'
                           }`
                     }
                   >

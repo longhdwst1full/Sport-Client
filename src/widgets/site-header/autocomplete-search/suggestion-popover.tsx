@@ -142,11 +142,11 @@ export function SuggestionPopover({
           {/* Footer "Xem tất cả kết quả" action */}
           <div className="mt-1.5 border-t border-neutral-100 pt-1.5">
             <Button
-              variant="outline"
+              variant="secondary"
               size="sm"
               fullWidth
               onClick={onSearchSubmit}
-              className="h-auto gap-1.5 rounded-lg border-neutral-200 bg-neutral-50 py-2.5 text-xs font-bold text-neutral-900 hover:border-neutral-200 hover:bg-neutral-50 hover:text-neutral-950"
+              className="h-auto gap-1.5 rounded-lg py-2.5 text-xs font-bold"
             >
               <span>Xem tất cả kết quả cho "{query.trim()}"</span>
               <ChevronRight aria-hidden className="size-3.5" />

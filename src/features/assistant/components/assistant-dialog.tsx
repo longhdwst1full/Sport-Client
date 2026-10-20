@@ -72,7 +72,7 @@ export function AssistantDialog({ chat, onClose }: { chat: AssistantChatState; o
       className="flex h-full w-full flex-col overflow-hidden bg-white shadow-2xl outline-none sm:h-[min(620px,calc(100dvh-7rem))] sm:w-[380px] sm:rounded-3xl sm:border sm:border-neutral-200 animate-fade-in-up"
     >
       <div ref={containerRef} id={ASSISTANT_DIALOG_ID} className="flex h-full min-h-0 flex-col" onKeyDown={trapTab}>
-        <header className="flex items-center justify-between gap-2 bg-neutral-800 px-4 pb-2 pt-[max(0.5rem,env(safe-area-inset-top))] text-white sm:py-3">
+        <header className="flex items-center justify-between gap-2 bg-brand-600 px-4 pb-2 pt-[max(0.5rem,env(safe-area-inset-top))] text-white sm:py-3">
           <div className="flex min-w-0 items-center gap-2">
             <span className="grid size-8 place-items-center rounded-full bg-white/15" aria-hidden><Bot className="size-4.5" /></span>
             <h2 id={TITLE_ID} className="truncate text-sm font-bold">{ASSISTANT_TITLE}</h2>

@@ -153,8 +153,8 @@ export function ArticleDetailPage({
               <Link
                 href="/news"
                 className={buttonVariants({
-                  variant: 'outline',
-                  className: 'rounded-full border-neutral-200 px-5 text-xs font-bold text-neutral-700 shadow-2xs hover:border-neutral-900 hover:bg-neutral-50',
+                  variant: 'secondary',
+                  className: 'rounded-full px-5 text-xs font-bold shadow-2xs',
                 })}
               >
                 <ArrowLeft className="size-4" aria-hidden="true" />

@@ -48,7 +48,7 @@ export function ProductSpecifications({
       {hasMore && (
         <div className="mt-5 flex justify-center">
           <Button
-            variant="outline"
+            variant="secondary"
             size="sm"
             onClick={() => setIsExpanded((prev) => !prev)}
             aria-expanded={isExpanded}

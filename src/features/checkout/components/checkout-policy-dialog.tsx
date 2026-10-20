@@ -109,7 +109,7 @@ export function CheckoutPolicyDialog({
             <Button variant="ghost" size="md" onClick={onClose} className="px-4">
               Đóng
             </Button>
-            <Button variant="cta" size="md" onClick={onAgree} className="flex-1 px-6 font-bold sm:flex-none">
+            <Button variant="primary" size="md" onClick={onAgree} className="flex-1 px-6 font-bold sm:flex-none">
               <CheckCircle2 className="size-4" aria-hidden />
               {agreeLabel}
             </Button>

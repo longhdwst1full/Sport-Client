@@ -58,7 +58,7 @@ export function CartSummary({
         onClick={onCheckoutClick}
         aria-disabled={selectedCount === 0}
         className={buttonVariants({
-          variant: 'cta',
+          variant: 'primary',
           size: 'lg',
           fullWidth: true,
           className: `mt-6 rounded-full font-bold ${

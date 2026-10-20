@@ -119,7 +119,7 @@ export function HeroSlider({
                         tabIndex={isActive ? undefined : -1}
                         // Nút trắng trên ảnh tối: nút than (primary) gần như chìm vào lớp phủ đen của slide.
                         className={buttonVariants({
-                          variant: 'inverse',
+                          variant: 'static',
                           className: `h-auto px-5 py-2.5 text-xs font-bold uppercase tracking-wide sm:px-6 sm:py-3 sm:text-sm ${HERO_FOCUS}`,
                         })}
                       >

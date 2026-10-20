@@ -19,10 +19,10 @@ export function OrderDeliveryAddressCard({
       description="Thông tin nhận kiện hàng"
       action={
         <Button
-          variant="outline"
+          variant="secondary"
           size="sm"
           onClick={onCopyAddress}
-          className="gap-1 rounded-lg border-neutral-200 px-2.5 text-xs font-medium text-neutral-600 hover:border-neutral-200 hover:bg-neutral-50 hover:text-neutral-600"
+          className="gap-1 rounded-lg px-2.5 text-xs font-medium"
           title="Sao chép toàn bộ thông tin người nhận"
           aria-label={copiedAddress ? 'Đã sao chép thông tin người nhận' : 'Sao chép toàn bộ thông tin người nhận'}
         >

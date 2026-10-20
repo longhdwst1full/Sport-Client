@@ -80,7 +80,7 @@ export function OrderItemsList({
                   </span>
                 ) : (
                   <Button
-                    variant="outline"
+                    variant="secondary"
                     size="sm"
                     onClick={() => onReview({ id: item.id, productName: item.productName })}
                     className={`${ITEM_ACTION_CLASS} border-neutral-200 text-neutral-900 hover:bg-neutral-50`}
@@ -92,7 +92,7 @@ export function OrderItemsList({
 
               {order.status === ORDER_STATUS.COMPLETED && (
                 <Button
-                  variant="outline"
+                  variant="secondary"
                   size="sm"
                   onClick={() => onReorderItem(item.id)}
                   className={`${ITEM_ACTION_CLASS} border-neutral-200 text-neutral-700 hover:border-neutral-200 hover:bg-neutral-50 hover:text-neutral-700`}

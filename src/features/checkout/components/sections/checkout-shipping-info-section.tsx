@@ -59,10 +59,10 @@ export function CheckoutShippingInfoSection({
             </button>
           ))}
           <Button
-            variant="outline"
+            variant="secondary"
             fullWidth
             onClick={onDeliverToOtherAddress}
-            className="rounded-2xl border-dashed p-3 text-xs font-bold text-neutral-900 hover:border-neutral-400 hover:bg-neutral-50/50"
+            className="rounded-2xl border-dashed p-3 text-xs font-bold"
           >
             + Giao tới địa chỉ khác
           </Button>

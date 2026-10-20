@@ -33,8 +33,8 @@ export function VariantSelector({ variants, selectedVariantId, onSelectVariant, 
               aria-pressed={isSelected}
               className={`relative flex items-center justify-between gap-3 rounded-2xl border p-4 text-left transition focus-ring ${
                 isSelected
-                  ? 'border-neutral-900 bg-neutral-50/50 shadow-sm ring-2 ring-neutral-900/20'
-                  : 'border-neutral-200/80 bg-white hover:border-neutral-300 hover:bg-neutral-50/50'
+                  ? 'border-selected-border bg-selected ring-1 ring-selected-border'
+                  : 'border-control-border bg-control hover:border-control-border-strong hover:bg-control-hover'
               }`}
               onClick={() => onSelectVariant(variant.id)}
             >
@@ -42,8 +42,8 @@ export function VariantSelector({ variants, selectedVariantId, onSelectVariant, 
                 <div
                   className={`grid size-5 shrink-0 place-items-center rounded-full border transition ${
                     isSelected
-                      ? 'border-neutral-900 bg-neutral-900 text-white'
-                      : 'border-neutral-300 bg-white'
+                      ? 'border-action bg-action text-on-action'
+                      : 'border-control-border-strong bg-white'
                   }`}
                 >
                   {isSelected && <Check aria-hidden className="size-3 stroke-[3]" />}

@@ -15,8 +15,10 @@ Màu, cỡ, bo góc và style lặp khai **một chỗ**; component chỉ dùng 
 
 | Vai trò | Token | Ghi chú |
 | --- | --- | --- |
-| Nút chuyển đổi (Mua ngay, Thêm vào giỏ, Đặt hàng, Gửi tư vấn) | `Button variant="cta"` = `accent-500` #FF5A1F, **chữ than** | Chữ trắng trên cam chỉ 3.1:1 — cấm |
-| Hành động khác (tìm, lọc, thử lại, xem) | `primary` (than) · `secondary`/`outline` · `link` | Trang chủ ưu tiên `link` "Xem tất cả →" |
+| Hành động chính (Mua ngay, Đặt hàng, Tìm kiếm, Gửi, Thử lại) | `Button variant="primary"` = token `action` (brand-600 #D42A27), **chữ trắng** 5.05:1 | Mỗi vùng một nút primary; không còn nút cam/đen |
+| Hành động phụ (Thêm vào giỏ, Xem thêm, Khám phá) | `secondary` (trắng, viền `control-border` xám ấm) · `ghost`/`link` | Trang chủ ưu tiên `link` "Xem tất cả →" |
+| Nút trên nền tối | `static` | |
+| Chip/ô lựa chọn đang bật | `ToggleChip` / token `selected` (nền brand-50, viền brand-300, chữ brand-700) | Không dùng nền đen cho trạng thái chọn |
 | Giá thường | `text-neutral-950` | Giá KHÔNG tô đỏ/cam |
 | Giá sale, % giảm, flash sale, nhận diện | `brand-*` (gốc #E83734 của logo); giá gốc `neutral-400 line-through` | Không dùng cho nút |
 | Lỗi, huỷ/xoá | `red-*`, `variant="danger"` / `dangerOutline` | |
@@ -29,7 +31,7 @@ Màu, cỡ, bo góc và style lặp khai **một chỗ**; component chỉ dùng 
 <button className="bg-gradient-to-r from-red-600 to-red-700">Mua ngay</button>
 <div className="bg-sky-50 text-slate-600 border-rose-200" />
 // ✅
-<Button variant="cta">Mua ngay</Button>
+<Button variant="primary">Mua ngay</Button>
 <div className="bg-neutral-50 text-neutral-600 border-red-200" />
 ```
 
@@ -44,7 +46,7 @@ và hex tuỳ ý `bg-[#…]` — trừ màu nhận diện bên thứ ba (Faceboo
 | `rounded-[24px]` … `rounded-[36px]` | `rounded-2xl` (16) |
 | `tracking-[0.2em]` | `tracking-eyebrow` |
 
-Bo góc tối đa 16px: `lg` 8 (nút, ô nhập) · `xl` 12 (thẻ) · `2xl` 16 (khối lớn, modal) · `full` (pill). `3xl`/`4xl` bị ghi đè về 16px trong config.
+Bo góc tối đa 16px: `lg` 8 (ô nhập) · `xl` 12 (thẻ) · `2xl` 16 (nút, khối lớn, modal) · `full` (pill, chip). `3xl`/`4xl` bị ghi đè về 16px trong config.
 
 ## RULE-DS-03: Style lặp dùng class chung (P0)
 
@@ -71,6 +73,12 @@ Một chuỗi class lặp ≥ 3 file → thêm class vào `@layer components` ho
 ```
 
 Nền đặc, không gradient/bóng màu trên nút. Vùng chạm ≥ 44px (`size="md"` trở lên trên mobile).
+
+Biến thể (theo mẫu dragon-web-v2): `primary` · `secondary` · `static` · `ghost` · `link` · `danger` · `dangerOutline`. Màu
+nút chỉ đi qua token vai trò ở `:root` (`globals.css`: `--color-action*`, `--color-control*`, `--color-selected*`)
+và tên Tailwind tương ứng (`bg-action`, `text-on-action`, `border-control-border`, `bg-selected`…). Bo 16px,
+icon trong nút 16px, disabled một kiểu chung (`control-disabled`). `className` không được ghi đè màu nút —
+thiếu kiểu thì thêm biến thể/token.
 
 ## RULE-DS-05: Nền và thẻ tiết chế (P0)
 

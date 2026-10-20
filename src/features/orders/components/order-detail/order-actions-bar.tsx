@@ -41,16 +41,16 @@ export function OrderActionsBar({
 
           {orderStatus === ORDER_STATUS.COMPLETED && (
             <Button
-              variant="outline"
+              variant="secondary"
               onClick={onReorderAll}
-              className={`${ACTION_CLASS} border-neutral-300 bg-neutral-50 text-neutral-950 hover:bg-neutral-100`}
+              className={`${ACTION_CLASS}`}
             >
               <RotateCcw aria-hidden className="size-3.5 text-neutral-900" /> Mua lại cả đơn
             </Button>
           )}
 
           {onPrintReceipt && orderStatus !== ORDER_STATUS.CANCELLED && (
-            <Button variant="outline" onClick={onPrintReceipt} className={`${ACTION_CLASS} shadow-sm`}>
+            <Button variant="secondary" onClick={onPrintReceipt} className={`${ACTION_CLASS} shadow-sm`}>
               <Printer aria-hidden className="size-3.5" /> In biên lai
             </Button>
           )}
@@ -58,7 +58,7 @@ export function OrderActionsBar({
           {isAuthenticated && (
             <Link
               href="/orders"
-              className={buttonVariants({ variant: 'outline', className: `${ACTION_CLASS} shadow-sm` })}
+              className={buttonVariants({ variant: 'secondary', className: `${ACTION_CLASS} shadow-sm` })}
             >
               <ArrowLeft aria-hidden className="size-3.5" /> Danh sách đơn
             </Link>
@@ -68,14 +68,14 @@ export function OrderActionsBar({
         <div className="flex items-center gap-2">
           {canCancel ? (
             <Button
-              variant="outline"
+              variant="dangerOutline"
               onClick={onOpenCancel}
-              className={`${ACTION_CLASS} gap-1.5 border-red-200 bg-red-50/70 text-red-700 hover:border-red-300 hover:bg-red-100 hover:text-red-700`}
+              className={`${ACTION_CLASS} gap-1.5`}
             >
               <X aria-hidden className="size-3.5" /> Hủy đơn hàng
             </Button>
           ) : orderStatus !== ORDER_STATUS.CANCELLED ? (
-            <Button variant="outline" onClick={onOpenSupport} className={`${ACTION_CLASS} gap-1.5 bg-neutral-50 hover:bg-neutral-100`}>
+            <Button variant="secondary" onClick={onOpenSupport} className={`${ACTION_CLASS} gap-1.5`}>
               <Headphones aria-hidden className="size-3.5 text-neutral-900" /> Cần hỗ trợ về đơn này?
             </Button>
           ) : null}

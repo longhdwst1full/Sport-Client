@@ -46,13 +46,13 @@ export function CheckoutEmptyCart() {
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link
               href="/products"
-              className={buttonVariants({ variant: 'primary', className: 'rounded-full px-6 font-bold shadow-md shadow-neutral-900/20' })}
+              className={buttonVariants({ variant: 'primary', className: 'rounded-full px-6 font-bold' })}
             >
               <span>Tiếp tục mua sắm</span>
             </Link>
             <Link
               href="/cart"
-              className={buttonVariants({ variant: 'outline', className: 'rounded-full px-6 font-bold' })}
+              className={buttonVariants({ variant: 'secondary', className: 'rounded-full px-6 font-bold' })}
             >
               <span>Về giỏ hàng</span>
             </Link>

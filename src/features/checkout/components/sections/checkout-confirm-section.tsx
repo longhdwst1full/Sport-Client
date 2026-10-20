@@ -29,10 +29,10 @@ export function CheckoutConfirmSection({
             Đơn hàng hiện chỉ tính tiền sản phẩm. Nhân viên sẽ liên hệ thông báo cước gửi xe; bấm kiểm tra lại phí sau khi đã thống nhất để đặt hàng.
           </p>
           <Button
-            variant="warning"
+            variant="secondary"
             onClick={refreshConsultedQuote}
             disabled={busy}
-            className="shrink-0 text-xs font-bold focus-visible:ring-amber-500"
+            className="shrink-0 text-xs font-bold"
           >
             {busy ? 'Đang kiểm tra...' : 'Kiểm tra lại phí'}
           </Button>

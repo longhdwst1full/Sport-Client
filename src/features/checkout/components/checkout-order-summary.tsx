@@ -165,7 +165,7 @@ export function CheckoutOrderSummary({
           />
         )}
         {showSubmit && (
-          <Button type="submit" variant="cta" size="lg" fullWidth disabled={submitIsDisabled} className={`mt-4 hidden lg:flex ${SUBMIT_CLASS}`}>
+          <Button type="submit" variant="primary" size="lg" fullWidth disabled={submitIsDisabled} className={`mt-4 hidden lg:flex ${SUBMIT_CLASS}`}>
             {busy ? <Spinner className="size-5 animate-spin" /> : <CheckCircle2 aria-hidden className="size-5" />}
             {busy ? 'Đang xử lý...' : submitLabel}
           </Button>
@@ -189,7 +189,7 @@ export function CheckoutOrderSummary({
                 <span className="block text-2xs font-semibold text-amber-700">Cần đọc & đồng ý điều khoản khi đặt hàng</span>
               )}
             </div>
-            <Button type="submit" variant="cta" size="lg" disabled={submitIsDisabled} className={`shrink-0 px-5 ${SUBMIT_CLASS}`}>
+            <Button type="submit" variant="primary" size="lg" disabled={submitIsDisabled} className={`shrink-0 px-5 ${SUBMIT_CLASS}`}>
               {busy ? <Spinner className="size-5 animate-spin" /> : null}
               {busy ? 'Đang xử lý...' : submitLabel}
             </Button>
