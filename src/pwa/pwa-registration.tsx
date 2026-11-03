@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button } from '@/foundation/components/buttons';
+import { PwaInstallPrompt } from './pwa-install-prompt';
 
 export function PwaRegistration() {
   const [isOnline, setIsOnline] = useState(true);
@@ -75,6 +76,7 @@ export function PwaRegistration() {
 
   return (
     <>
+      {isOnline && !updateReady && <PwaInstallPrompt />}
       {!isOnline && (
         <div
           // Góc dưới trái, chừa cột nút nổi bên phải: không che header sticky (top-0 z-50).

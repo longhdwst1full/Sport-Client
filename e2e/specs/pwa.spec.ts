@@ -1,6 +1,39 @@
 import { expect, test } from '@playwright/test';
 
 test.describe('PWA — manifest, offline và reset', () => {
+  test('PWA-04: hướng dẫn iPadOS và không hiện khi đang ở màn chẩn đoán', async ({ page }) => {
+    await page.addInitScript(() => {
+      Object.defineProperty(navigator, 'userAgent', { value: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15) AppleWebKit/605.1.15 Version/18.0 Safari/605.1.15' });
+      Object.defineProperty(navigator, 'platform', { value: 'MacIntel' });
+      Object.defineProperty(navigator, 'maxTouchPoints', { value: 5 });
+    });
+    await page.goto('/contact');
+    const promotion = page.getByRole('complementary', { name: 'Cài đặt ứng dụng Bảo An Sport' });
+    await expect(promotion).toContainText('Chia sẻ → Thêm vào Màn hình chính');
+    await promotion.getByRole('link', { name: 'Hướng dẫn cài đặt' }).click();
+    await expect(page.getByRole('heading', { name: 'Cài Bảo An Sport trên điện thoại / máy tính bảng' })).toBeVisible();
+    await expect(promotion).toHaveCount(0);
+  });
+
+  test('PWA-05: Chromium install event mở prompt chỉ khi bấm và ẩn sau cài', async ({ page }) => {
+    await page.goto('/contact');
+    await page.waitForLoadState('networkidle');
+    // Synthetic event verifies our UI lifecycle, not actual browser installation eligibility.
+    await page.evaluate(() => {
+      const event = new Event('beforeinstallprompt', { cancelable: true });
+      Object.assign(event, {
+        prompt: () => { document.documentElement.dataset.installRequested = 'true'; return Promise.resolve(); },
+        userChoice: Promise.resolve({ outcome: 'accepted' }),
+      });
+      window.dispatchEvent(event);
+    });
+    const install = page.getByRole('button', { name: 'Cài ứng dụng', exact: true });
+    await expect(install).toBeVisible();
+    await expect(page.locator('html')).not.toHaveAttribute('data-install-requested');
+    await install.click();
+    await expect(page.locator('html')).toHaveAttribute('data-install-requested', 'true');
+    await expect(install).toHaveCount(0);
+  });
   test('PWA-01: manifest khai icon PNG 192/512 truy cập được', async ({ request }) => {
     const response = await request.get('/manifest.webmanifest');
     expect(response.ok()).toBe(true);

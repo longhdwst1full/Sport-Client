@@ -1,10 +1,10 @@
 # Storefront PWA — maintenance note
 
-> **Document version:** 1.3.0
+> **Document version:** 1.4.0
 >
-> **Last updated:** 2026-09-27
+> **Last updated:** 2026-11-03
 >
-> **Change summary:** Tách luật định tuyến worker ra `public/sw-routing.js` có unit test; cache v4 theo nhóm (shell/static/images/pages/api), SWR có giới hạn tuổi cho API tham chiếu công khai, dọn cache khi đăng xuất, icon maskable/apple-touch.
+> **Change summary:** CLIENT-20261103-PWA-INSTALL: bổ sung UI cài Chromium, hướng dẫn iPhone/iPadOS và mở trình duyệt ngoài cho in-app browser. `/pwa` có hướng dẫn cố định; ẩn promotion khi standalone, đã đóng trong tab, offline/update hoặc ở luồng nhạy cảm. Không đổi worker/cache/API.
 
 ## Phạm vi và cache contract
 
@@ -27,6 +27,25 @@
 - Reset: trang `/pwa` (`resetPwaAndReload`) hoặc message `CLEAR_CACHES` / `CLEAR_SESSION_CACHES` gửi tới worker.
 - Không queue cart/checkout/payment/order mutation. Mọi mutation commerce vẫn online-only và không tự retry.
 
+## Cài đặt và giới hạn trình duyệt
+
+- `PwaInstallPrompt` là client island bên trong `PwaRegistration`; không đổi server rendering của catalog.
+- Android/Chromium: chỉ hiện nút **Cài ứng dụng** sau `beforeinstallprompt`, giữ event trong memory và gọi đúng một lần từ click. Không tự bật prompt hay coi việc truy cập là đã cài. Browser từ chối thì tôn trọng; prompt lỗi chuyển sang hướng dẫn.
+- iPhone/iPad: hướng dẫn Safari → Chia sẻ → Thêm vào Màn hình chính. iPadOS có UA Mac được nhận diện bằng `MacIntel` + touch. Không chờ `beforeinstallprompt` trên iOS.
+- In-app browser Facebook/Zalo/TikTok…: phát hiện best-effort bằng UA, hướng dẫn mở Safari/Chrome ngoài app; không bảo đảm nhận diện mọi WebView.
+- `display-mode: standalone`, iOS `navigator.standalone` và `appinstalled` ẩn lời mời. Đóng thông báo chỉ lưu boolean trong session store qua `core/storage`, không chứa PII/token.
+- Không phủ promotion lên checkout/payment/profile/auth/orders/returns hoặc `/pwa`; không đổi cache class A/B/C, không queue mutation. Giữ thông báo offline và cập nhật hiện tại ưu tiên hơn lời mời cài.
+- `/pwa` luôn có hướng dẫn khi browser không cung cấp event hoặc người dùng đã đóng banner. Không hứa có APK, push notification hay mua hàng offline.
+- Production kiểm tra ngày 2026-11-03: `https://sport-client-ten.vercel.app/manifest.webmanifest`, `/sw.js`, `/icon-192.png`, `/icon-512.png` đều HTTP 200. Source cũ thiếu install UI, không phải thiếu manifest/icon.
+- Hộp thoại native do browser quyết định; test mô phỏng event chỉ chứng minh vòng đời UI. Cần UAT cài thật trên Android Chrome, Safari iPhone/iPad, HTTPS sau deploy.
+
+## Bằng chứng kiểm tra 2026-11-03
+
+- Production Chromium CDP: manifest errors `[]`, installability errors `[]`, secure context `true`.
+- `yarn lint`: pass. `yarn test`: 58 files / 432 tests pass. `yarn build`: pass; prerender có cảnh báo API đọc công khai trả 403 từ môi trường hiện tại, không phải lỗi install/SW và chưa xử lý trong task này.
+- Production build chạy local cổng 3199, Playwright `e2e/specs/pwa.spec.ts`: 5/5 pass (manifest/icon, offline checkout, scoped reset, hướng dẫn iPadOS, Chromium synthetic install event).
+- Không seed/migrate/ghi dữ liệu DB, không sửa generated SDK bằng tay, chưa deploy và chưa kiểm chứng cài native trên thiết bị thật.
+
 ## Checklist khi sửa
 
 - [ ] Tăng cache version nếu thay đổi asset/cache semantics.
@@ -38,6 +57,7 @@
 
 | Version | Date | Change summary | Source |
 | --- | --- | --- | --- |
+| 1.4.0 | 2026-11-03 | Install promotion Chromium/iOS/in-app, hướng dẫn `/pwa`, session dismissal; giữ worker/cache và commerce online-only. | CLIENT-20261103-PWA-INSTALL |
 | 1.3.0 | 2026-09-27 | `sw-routing.js` + unit test, cache v4 theo nhóm, SWR API tham chiếu, cache trang biên tập, dọn cache khi đăng xuất, icon maskable/apple-touch. | CLIENT-20260927-CACHE-PWA-SEO |
 | 1.2.0 | 2026-09-18 | Reset chỉ unregister worker của Storefront; thêm ca kiểm thử PWA. | E2E review |
 | 1.1.0 | 2026-09-18 | Thêm PNG icon 192/512, đưa vào public shell, tăng cache v3. | B7 — PWA installability |
