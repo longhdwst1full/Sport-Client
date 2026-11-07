@@ -19,6 +19,16 @@ describe('inputVariants', () => {
   it('merges caller className last', () => {
     expect(inputVariants({ className: 'rounded-full' })).not.toContain('rounded-xl');
   });
+
+  it('uses real focus utilities without the unsupported custom-class opacity modifier', () => {
+    const classes = inputVariants();
+    expect(classes).toContain('focus-visible:outline-none');
+    expect(classes).toContain('focus-visible:ring-2');
+    expect(classes).toContain('focus-visible:ring-neutral-900/10');
+    expect(classes).toContain('focus-visible:ring-offset-0');
+    expect(classes).not.toContain('focus-ring-tight/');
+    expect(inputVariants({ invalid: true })).toContain('focus-visible:ring-red-500/30');
+  });
 });
 
 describe('resolveInputClassName', () => {

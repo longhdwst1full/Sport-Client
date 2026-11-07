@@ -260,11 +260,13 @@ html {
   text-wrap: balance;
 }
 
-/* Vòng focus bàn phím mặc định (brand-500) cho mọi phần tử tương tác chưa tự khai báo ring.
-   Phần tử có `outline-none`/`outline-hidden` (utilities, khai báo sau) tự lo focus-within/ring riêng. */
-:focus-visible {
-  outline: 2px solid #171717;
-  outline-offset: 2px;
+@layer base {
+  /* Fallback cho bàn phím, không chồng lên ring riêng của input/nút/link.
+     Đặt ở base và specificity thấp để component/utilities luôn có thể ghi đè. */
+  :where(:focus-visible) {
+    outline: 2px solid #171717;
+    outline-offset: 2px;
+  }
 }
 
 @layer utilities {
