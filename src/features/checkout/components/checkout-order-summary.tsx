@@ -7,7 +7,7 @@ import { Button } from '@/foundation/components/buttons';
 import { Checkbox } from '@/foundation/components/field-system';
 import { Spinner } from '@/foundation/components/feedback';
 import { DescriptionList, type DescriptionItem } from '@/foundation/components/structure';
-import { useCartLinePricing, type CartItem } from '@/features/cart';
+import { FreeShippingProgress, useCartLinePricing, useFreeShippingThreshold, type CartItem } from '@/features/cart';
 import type { CheckoutQuoteView } from '../model/checkout.mapper';
 import { formatVnd } from '@/shared/format/money';
 import { PRODUCT_PLACEHOLDER_IMAGE, STORE_POLICY_PAGES } from '@/shared/constants';
@@ -56,6 +56,7 @@ export function CheckoutOrderSummary({
   onOpenPolicies,
 }: CheckoutOrderSummaryProps) {
   const priceLine = useCartLinePricing();
+  const freeShippingThreshold = useFreeShippingThreshold();
   // CONTRACT: hai trạng thái khác nhau cùng "chưa có số phí".
   // - SHOP_ARRANGED (`shippingFeePending`): báo giá QUOTED, shippingTotal = 0 nhưng KHÔNG miễn phí —
   //   hiện "Shop báo riêng" chứ không phải 0 ₫, và khách vẫn đặt được đơn.
@@ -136,6 +137,8 @@ export function CheckoutOrderSummary({
               items={[totalRow]}
             />
           )}
+          {/* "Nhờ shop gửi"/chờ tư vấn: phí nằm ngoài hệ thống, ngưỡng miễn phí không áp dụng nên không nhắc. */}
+          {!shippingPending && <FreeShippingProgress subtotal={localSubtotal} threshold={freeShippingThreshold} />}
           {shippingPending && (
             <p className="rounded-xl bg-amber-50 p-3 text-xs leading-5 text-amber-900">
               {consultationPending

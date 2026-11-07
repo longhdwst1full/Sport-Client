@@ -86,6 +86,9 @@ export function CheckoutDeliveryMethodSection({
                       </span>
                     )}
                   </div>
+                  {!quoteView.shippingFeePending && quoteView.freeDeliveryReasonLabel && (
+                    <p className="text-2xs font-semibold text-success-700">{quoteView.freeDeliveryReasonLabel}</p>
+                  )}
                   <p className="text-2xs font-medium text-neutral-500">
                     Dự kiến nhận hàng: <strong className="font-bold text-neutral-700">{quoteView.etaLabel}</strong>
                   </p>

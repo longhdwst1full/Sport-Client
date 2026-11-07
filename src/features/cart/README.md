@@ -73,6 +73,11 @@ Persist allowlist: `productId, variantId, sku, productType, name, price, quantit
 - Slice: `addCartItem` có `availableQuantity` thì kẹp tổng (kể cả cộng dồn) về số đó và bỏ qua khi = 0; `updateQuantity` chỉ kẹp 999 — trang giỏ tự kẹp theo số mới nhất.
 - Trang giỏ: nút + khoá khi chạm max, gõ tay vượt thì kẹp + toast; dòng `quantity > availableQuantity` hiện cảnh báo đỏ và nút "Đặt hàng" khoá tới khi khách sửa/xoá dòng đã chọn đó.
 
+## Nhắc miễn phí giao theo ngưỡng (2026-11-07)
+
+- Ngưỡng `SHIPPING_FREE_ORDER_MIN_AMOUNT` (tham số công khai, 0 = tắt) do `site-config` đọc; `cart` là kernel nên không import `site-config` — route giỏ/checkout bọc `FreeShippingBridge` (`app/(storefront)/_components`) cấp số qua `FreeShippingThresholdProvider`/`useFreeShippingThreshold`.
+- `FreeShippingProgress` (giỏ + tóm tắt checkout) chỉ là NHẮC theo tạm tính client; có miễn phí hay không do báo giá checkout (`freeDeliveryReason = ORDER_AMOUNT_THRESHOLD`) quyết định.
+
 ## Revision history
 
 | Version | Date | Change summary |

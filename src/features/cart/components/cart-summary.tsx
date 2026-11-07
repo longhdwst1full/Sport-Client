@@ -4,6 +4,8 @@ import { buttonVariants } from '@/foundation/components/buttons';
 import { DescriptionList, IconList, type IconListItem } from '@/foundation/components/structure';
 import { formatVnd } from '@/shared/format/money';
 import { STORE_POLICY_FACTS } from '@/shared/constants';
+import { useFreeShippingThreshold } from '../hooks/use-free-shipping-threshold';
+import { FreeShippingProgress } from './free-shipping-progress';
 
 const TRUST_COMMITMENTS: IconListItem[] = [
   // Cam kết lấy từ `STORE_POLICY_FACTS` (khớp CMS); bản trước ghi "7 ngày", "bảo hành 24T".
@@ -30,6 +32,7 @@ export function CartSummary({
   blocked = false,
 }: CartSummaryProps) {
   const enabled = selectedCount > 0 && !blocked;
+  const freeShippingMinAmount = useFreeShippingThreshold();
   return (
     <aside className="h-fit surface-card p-6 shadow-sm lg:sticky lg:top-40">
       <h2 className="text-lg font-bold text-neutral-900">Tóm tắt đơn hàng</h2>
@@ -54,6 +57,7 @@ export function CartSummary({
         <p className="text-xs text-neutral-500">
           Chưa gồm phí vận chuyển và khuyến mãi. Tổng thanh toán chính xác hiển thị ở bước thanh toán.
         </p>
+        {selectedCount > 0 && <FreeShippingProgress subtotal={subtotal} threshold={freeShippingMinAmount} />}
       </div>
 
       {/* Checkout Button: "Đặt hàng" */}

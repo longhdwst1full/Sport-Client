@@ -11,3 +11,13 @@ export function usePublicNumberParameter(code: string, fallback: number): number
   const value = raw === undefined ? Number.NaN : Number(raw);
   return Number.isFinite(value) ? value : fallback;
 }
+
+/**
+ * Ngưỡng tiền hàng được miễn phí giao (`SHIPPING_FREE_ORDER_MIN_AMOUNT`, VND).
+ *
+ * Fallback 0 = ẩn mọi nhắc miễn phí khi chưa tải được: hiển thị sai ngưỡng (Admin có thể đã tắt)
+ * nguy hiểm hơn tạm không hiển thị. Phí thật vẫn do báo giá checkout quyết định.
+ */
+export function useFreeShippingMinAmount(): number {
+  return usePublicNumberParameter('SHIPPING_FREE_ORDER_MIN_AMOUNT', 0);
+}

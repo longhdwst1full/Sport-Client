@@ -365,8 +365,9 @@ components:
           enum:
             - BRANCH_DISTRICT
             - WITHIN_RADIUS
+            - ORDER_AMOUNT_THRESHOLD
           nullable: true
-          description: Chỉ có khi shippingMethod = BRANCH_FREE.
+          description: Vì sao khách không trả phí giao. BRANCH_DISTRICT/WITHIN_RADIUS đi với shippingMethod = BRANCH_FREE; ORDER_AMOUNT_THRESHOLD (tiền hàng đạt SHIPPING_FREE_ORDER_MIN_AMOUNT) giữ phương thức hãng, shippingTotal = 0.00. null khi không miễn phí.
         shippingProvider:
           type: string
           nullable: true
@@ -526,7 +527,9 @@ components:
           enum:
             - BRANCH_DISTRICT
             - WITHIN_RADIUS
+            - ORDER_AMOUNT_THRESHOLD
           nullable: true
+          description: Vì sao miễn phí giao; ORDER_AMOUNT_THRESHOLD có thể đi với deliveryMode = CARRIER (shop chịu cước hãng).
         shippingFeePending:
           type: boolean
           description: "true khi SHOP_ARRANGED: phí do shop báo và thu riêng."

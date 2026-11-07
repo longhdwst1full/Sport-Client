@@ -14,6 +14,13 @@ export const shippingMethodLabels: Record<string, string> = {
   MANUAL_EXTERNAL: 'Shop gửi, cước báo riêng',
 };
 
+/** Nhãn lý do miễn phí giao (`FreeDeliveryReason`); khoá theo enum generated để thiếu lý do mới là lỗi tsc. */
+export const freeDeliveryReasonLabels: Record<NonNullable<CheckoutQuoteDto['freeDeliveryReason']>, string> = {
+  BRANCH_DISTRICT: 'Khu vực shop giao miễn phí',
+  WITHIN_RADIUS: 'Trong bán kính giao miễn phí',
+  ORDER_AMOUNT_THRESHOLD: 'Đơn đạt mức miễn phí giao hàng',
+};
+
 export interface CheckoutLineView {
   productVariantId: string;
   sku: string;
@@ -31,6 +38,8 @@ export interface CheckoutQuoteView {
   branchName: string;
   shippingMethodCode: string;
   shippingMethodLabel: string;
+  /** Vì sao khách không trả phí giao; null khi không miễn phí. */
+  freeDeliveryReasonLabel: string | null;
   itemSubtotalLabel: string;
   shippingTotalLabel: string;
   /** Null khi Backend ẩn phí (chờ tư vấn); 0 nghĩa là miễn phí thật. */
@@ -65,6 +74,7 @@ export function toCheckoutQuoteView(dto: CheckoutQuoteDto): CheckoutQuoteView {
     branchName: dto.branchName,
     shippingMethodCode: dto.shippingMethod,
     shippingMethodLabel: shippingMethodLabels[dto.shippingMethod] ?? dto.shippingMethod,
+    freeDeliveryReasonLabel: dto.freeDeliveryReason ? freeDeliveryReasonLabels[dto.freeDeliveryReason] ?? null : null,
     itemSubtotalLabel: money(dto.itemSubtotal),
     shippingTotalLabel: money(dto.shippingTotal),
     shippingTotalAmount: dto.shippingTotal === null || dto.shippingTotal === undefined

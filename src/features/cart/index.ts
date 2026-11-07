@@ -24,6 +24,9 @@ export {
 export { CartPromoPriceProvider, useCartLinePricing } from './hooks/use-cart-line-pricing';
 export type { CartLinePrice, CartPromoPrice, CartPromoPrices } from './model/cart-promo-price';
 export { useCartHydrated, CartHydrationContext } from './hooks/use-cart-hydrated';
+export { FreeShippingProgress } from './components/free-shipping-progress';
+export { FreeShippingThresholdProvider, useFreeShippingThreshold } from './hooks/use-free-shipping-threshold';
+export { freeShippingProgress } from './model/free-shipping';
 export {
   hasPendingGuestCartMerge,
   pullAccountCart,

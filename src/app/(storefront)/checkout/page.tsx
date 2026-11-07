@@ -3,6 +3,7 @@ import { CheckoutPage, CheckoutSkeleton } from '@/features/checkout';
 import { PolicyArticles } from '@/features/content';
 import { NOINDEX_ROBOTS } from '@/lib/seo/page-metadata';
 import { STORE_POLICY_PAGES } from '@/shared/constants';
+import { FreeShippingBridge } from '../_components/free-shipping-bridge';
 
 // SECURITY: trang tài khoản/mật khẩu không được CDN hay trình duyệt lưu đệm — `force-dynamic` để Next gửi
 // `Cache-Control: private, no-cache, no-store` thay cho bản prerender `public`.
@@ -21,7 +22,9 @@ export default function Page() {
   // `checkout` không import `content`; route ghép nội dung chính sách vào modal đồng ý điều khoản.
   return (
     <Suspense fallback={<CheckoutSkeleton />}>
-      <CheckoutPage policyContent={<PolicyArticles policies={CHECKOUT_POLICIES} />} />
+      <FreeShippingBridge>
+        <CheckoutPage policyContent={<PolicyArticles policies={CHECKOUT_POLICIES} />} />
+      </FreeShippingBridge>
     </Suspense>
   );
 }

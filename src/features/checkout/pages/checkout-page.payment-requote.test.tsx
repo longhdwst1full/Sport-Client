@@ -20,6 +20,9 @@ vi.mock('next/navigation', () => ({
 
 vi.mock('@/features/cart', () => ({
   useCartActions: () => ({ addItem: vi.fn(), removeItem: vi.fn(), updateQuantity: vi.fn(), clear: vi.fn() }),
+  // 0 = tắt ngưỡng miễn phí giao: test này chỉ khoá luồng báo giá, không phải nhắc ngưỡng.
+  useFreeShippingThreshold: () => 0,
+  FreeShippingProgress: () => null,
   useCartLinePricing: () => (item: { price: number; quantity: number }) => ({
     lineTotal: item.price * item.quantity,
     promo: null,
