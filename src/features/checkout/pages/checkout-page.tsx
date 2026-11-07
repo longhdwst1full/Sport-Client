@@ -76,19 +76,6 @@ export function CheckoutPage({
     if (confirmIdempotencyKey.current) invalidateQuote(true);
   };
 
-  const useCurrentLocation = () => {
-    if (!navigator.geolocation) return setError('Trình duyệt không hỗ trợ xác định vị trí.');
-    navigator.geolocation.getCurrentPosition(
-      ({ coords }) => {
-        form.setCoordinates({ latitude: coords.latitude, longitude: coords.longitude });
-        invalidateQuote();
-        toast({ type: 'success', title: 'Đã lấy vị trí', message: 'Sẽ ưu tiên chi nhánh đủ hàng gần nhất.' });
-      },
-      () => setError('Không lấy được vị trí. Hệ thống vẫn có thể báo phí theo địa chỉ.'),
-      { timeout: 8000 },
-    );
-  };
-
   if (!cartHydrated) {
     return (
         <CheckoutSkeleton />
@@ -133,8 +120,6 @@ export function CheckoutPage({
               applySavedAddress={applySavedAddress}
               onDeliverToOtherAddress={deliverToOtherAddress}
               invalidateQuote={invalidateQuote}
-              useCurrentLocation={useCurrentLocation}
-              freeRadiusKm={freeRadiusKm}
             />
 
             <CheckoutDeliveryMethodSection

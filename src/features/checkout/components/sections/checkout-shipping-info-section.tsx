@@ -1,4 +1,4 @@
-import { LocateFixed, MapPin } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 import { VietnamAddressSelector } from '@/features/address';
 import type { CustomerAddressDto } from '@/generated/api/customer/customer.schemas';
 import type { CheckoutForm } from '../../hooks/use-checkout-form';
@@ -8,25 +8,21 @@ import { CheckoutStepSection, optionClass } from './checkout-step-section';
 
 const FIELD_LABEL = 'block text-xs font-bold text-neutral-700';
 
-/** Bước 1: người nhận, sổ địa chỉ (khách đã đăng nhập), địa chỉ hành chính, vị trí và ghi chú giao hàng. */
+/** Bước 1: người nhận, sổ địa chỉ (khách đã đăng nhập), địa chỉ hành chính và ghi chú giao hàng. */
 export function CheckoutShippingInfoSection({
   form,
   savedAddresses,
   applySavedAddress,
   onDeliverToOtherAddress,
   invalidateQuote,
-  useCurrentLocation,
-  freeRadiusKm,
 }: {
   form: CheckoutForm;
   savedAddresses: CustomerAddressDto[] | undefined;
   applySavedAddress: (saved: CustomerAddressDto) => void;
   onDeliverToOtherAddress: () => void;
   invalidateQuote: () => void;
-  useCurrentLocation: () => void;
-  freeRadiusKm: number;
 }) {
-  const { name, setName, phone, setPhone, email, setEmail, note, setNote, address, setAddress, coordinates, addressFormKey, selectedAddressId, phoneError, emailError, markTouched } = form;
+  const { name, setName, phone, setPhone, email, setEmail, note, setNote, address, setAddress, addressFormKey, selectedAddressId, phoneError, emailError, markTouched } = form;
 
   return (
     <CheckoutStepSection step={1} icon={MapPin} title="Thông tin giao hàng" description="Người nhận và địa chỉ nhận hàng tận nơi">
@@ -129,21 +125,6 @@ export function CheckoutShippingInfoSection({
           onChange={(value) => { setAddress(value); invalidateQuote(); }}
           required
         />
-      </div>
-
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-        <button
-          type="button"
-          onClick={useCurrentLocation}
-          className={`inline-flex min-h-11 items-center gap-2 rounded-xl border px-3.5 py-2 text-left text-xs font-bold transition focus-ring ${
-            coordinates
-              ? 'border-success-200 bg-success-50 text-success-800 hover:bg-success-100'
-              : 'border-neutral-200 bg-neutral-50/50 text-neutral-950 hover:bg-neutral-100'
-          }`}
-        >
-          <LocateFixed aria-hidden className={`size-4 shrink-0 ${coordinates ? 'text-success-600' : 'text-neutral-900'}`} />
-          <span>{coordinates ? 'Đã lấy vị trí của bạn' : `Định vị vị trí hiện tại (Miễn phí nếu dưới ${freeRadiusKm} km)`}</span>
-        </button>
       </div>
 
       <div className="mt-4">

@@ -12,7 +12,6 @@ export function useCheckoutForm() {
   const [email, setEmail] = useState('');
   const [note, setNote] = useState('');
   const [address, setAddress] = useState<SelectedAddressData>(EMPTY_SELECTED_ADDRESS);
-  const [coordinates, setCoordinates] = useState<{ latitude: number; longitude: number }>();
   const [paymentMethod, setPaymentMethod] = useState<CheckoutPaymentMethod>('COD');
   /**
    * "Nhờ shop tư vấn & gửi chành": shop tự sắp xếp nhà xe và báo/thu cước riêng ngoài hệ thống.
@@ -47,7 +46,6 @@ export function useCheckoutForm() {
       provinceCode: address.provinceCode ?? '',
       districtCode: address.districtCode ?? undefined,
       wardCode: address.wardCode ?? undefined,
-      ...coordinates,
     },
     // CONTRACT: phí tính một lần theo địa chỉ + giỏ (Backend báo giá GHN với `cod_value = 0`), nên
     // phương thức thanh toán ở đây chỉ là giá trị khởi tạo của phiên; lựa chọn cuối đi theo bước xác nhận.
@@ -79,7 +77,6 @@ export function useCheckoutForm() {
     email, setEmail,
     note, setNote,
     address, setAddress,
-    coordinates, setCoordinates,
     paymentMethod, setPaymentMethod,
     shopArranged, setShopArranged,
     acceptedTerms, setAcceptedTerms,

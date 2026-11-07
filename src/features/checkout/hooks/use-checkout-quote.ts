@@ -195,7 +195,7 @@ export function useAutoQuote({
 }: CheckoutFlowDeps & { placedOrder: OrderDetailDto | undefined }) {
   // CONTRACT (owner 2026-10-09): phí tính một lần theo địa chỉ + giỏ. Phương thức thanh toán và "Nhờ shop
   // gửi" KHÔNG nằm trong deps: đổi chúng không gọi API, lựa chọn cuối đi kèm bước xác nhận.
-  const { readyToQuote, name, phone, email, note, address, coordinates, buildInput } = form;
+  const { readyToQuote, name, phone, email, note, address, buildInput } = form;
   const { quote, quoteSeq, setAutoQuoting, setError, setQuote, setContext, handleCheckoutError } = checkoutQuote;
   useEffect(() => {
     if (!isLoaded || !readyToQuote || quote || placedOrder || !effectiveItems.length) return;
@@ -222,5 +222,5 @@ export function useAutoQuote({
     return () => clearTimeout(timer);
     // buildInput đọc đúng các state liệt kê dưới đây; thêm hàm vào deps sẽ báo giá lại mỗi lần render.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoaded, readyToQuote, quote, placedOrder, effectiveItems, isAuthenticated, name, phone, email, note, address, coordinates]);
+  }, [isLoaded, readyToQuote, quote, placedOrder, effectiveItems, isAuthenticated, name, phone, email, note, address]);
 }

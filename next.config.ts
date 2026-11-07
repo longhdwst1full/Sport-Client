@@ -121,8 +121,7 @@ const nextConfig: NextConfig = {
           { key: 'X-Content-Type-Options', value: 'nosniff' },
           { key: 'X-Frame-Options', value: 'DENY' },
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-          // geolocation=(self): checkout dùng navigator.geolocation để lấy vị trí giao hàng.
-          { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=(self), payment=(), usb=()' },
+          { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=(), payment=(), usb=()' },
           { key: 'Cross-Origin-Opener-Policy', value: 'same-origin' },
           // Site khác không được nhúng tài nguyên của storefront. KHÔNG bật COEP `require-corp`: nó chặn
           // ảnh Cloudinary/baoansport.vn/Unsplash và iframe YouTube nếu nguồn không trả CORP, trong khi
