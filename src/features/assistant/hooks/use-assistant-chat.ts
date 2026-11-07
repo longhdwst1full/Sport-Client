@@ -264,6 +264,8 @@ export function useAssistantChat({ enabled }: { enabled: boolean }) {
       !isAuthenticated &&
       !orderLookupGrant &&
       mentionsOrder(pending?.content ?? [...messages].reverse().find((message) => message.role === 'USER')?.content),
+    /** Trợ lý tra được đơn: khách đăng nhập, hoặc khách ẩn danh đã có grant tra đơn OTP trong tab. */
+    canAskOrderStatus: isAuthenticated || Boolean(orderLookupGrant),
     isHandedOff: lastTurn?.status === 'HANDED_OFF',
     send,
     discardPending: () => {

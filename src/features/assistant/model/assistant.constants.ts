@@ -46,6 +46,26 @@ export const ASSISTANT_HEADERS = {
   ORDER_LOOKUP_TOKEN: 'x-order-lookup-token',
 } as const;
 
+/**
+ * Gợi ý câu hỏi hiện dưới lời chào khi hội thoại chưa có tin của khách. Mỗi câu nằm trong phạm vi tool khách của API
+ * (`api/src/modules/assistant/tools/client-tools.ts`), ghi ở `tool`:
+ * - Không có gợi ý "đang giảm giá": chưa có tool lọc khuyến mãi.
+ * - Không hỏi "phí giao hàng về <tỉnh>": `calculate_shipping` cần chi nhánh của hội thoại mà Storefront chưa gửi
+ *   `branchId`; hỏi giao hàng/lắp đặt chung đi qua `search_knowledge`.
+ * - `orderLookup: true`: khách ẩn danh chưa có grant tra đơn thì chip dẫn tới `/orders/lookup` thay vì gửi (trợ lý
+ *   không tra đơn khi thiếu grant, gửi chỉ tốn lượt).
+ */
+export const ASSISTANT_SUGGESTIONS = [
+  { id: 'treadmill-family', content: 'Gợi ý máy chạy bộ cho gia đình', tool: 'search_products' },
+  { id: 'exercise-bike-budget', content: 'Xe đạp tập dưới 5 triệu', tool: 'search_products' },
+  { id: 'table-tennis-compare', content: 'So sánh các mẫu bàn bóng bàn', tool: 'compare_products' },
+  { id: 'return-policy', content: 'Chính sách đổi trả thế nào?', tool: 'get_return_policy' },
+  { id: 'delivery-install', content: 'Shop có giao hàng và lắp đặt tận nơi không?', tool: 'search_knowledge' },
+  { id: 'my-order', content: 'Tra cứu đơn hàng của tôi', tool: 'get_my_order_status', orderLookup: true },
+] as const;
+
+export type AssistantSuggestion = (typeof ASSISTANT_SUGGESTIONS)[number];
+
 export const ASSISTANT_HANDOFF_SUBJECT = 'Chuyển nhân viên từ trợ lý mua sắm';
 
 export const ASSISTANT_COPY = {
@@ -68,4 +88,5 @@ export const ASSISTANT_COPY = {
   outOfStock: 'Hết hàng',
   viewProduct: 'Xem sản phẩm',
   buyNow: 'Mua ngay',
+  suggestionsLabel: 'Gợi ý câu hỏi',
 } as const;

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { AlertTriangle, Bot, RotateCw, SendHorizontal, X } from 'lucide-react';
 import { GUEST_LOOKUP_ROUTE } from '@/features/orders';
 import { Modal } from '@/foundation/components/overlay';
-import { Button } from '@/foundation/components/buttons';
+import { Button, buttonVariants } from '@/foundation/components/buttons';
 import { InlineAlert, Skeleton, Spinner } from '@/foundation/components/feedback';
 import { Field, Textarea } from '@/foundation/components/field-system';
 import { STORE_CONTACT } from '@/shared/constants';
@@ -14,6 +14,7 @@ import {
   ASSISTANT_COPY,
   ASSISTANT_DIALOG_ID,
   ASSISTANT_MESSAGE_MAX_LENGTH,
+  ASSISTANT_SUGGESTIONS,
   ASSISTANT_TITLE,
 } from '../model/assistant.constants';
 import { assistantErrorMessage, isAssistantQuotaExceeded } from '../model/assistant-error';
@@ -22,6 +23,9 @@ import { AssistantMessage } from './assistant-message';
 
 /** Nút dạng link nằm trong dòng thông báo: kế thừa màu chữ của dòng, luôn gạch chân. */
 const INLINE_LINK_BUTTON = 'gap-1 rounded font-bold text-inherit underline focus-visible:ring-offset-0';
+
+/** Chip gợi ý: kiểu nút phụ, dạng pill, chữ nhỏ và xuống dòng được để không tràn panel 380px. */
+const SUGGESTION_CHIP = 'h-auto min-h-9 rounded-full px-3 py-1.5 text-left text-xs font-medium';
 
 const TITLE_ID = 'assistant-chat-title';
 const FOCUSABLE = 'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])';
@@ -37,6 +41,10 @@ export function AssistantDialog({ chat, onClose }: { chat: AssistantChatState; o
   const listEndRef = useRef<HTMLLIElement | null>(null);
   // Trạng thái tạm ngưng không khoá ô nhập: 503 có thể hết sau vài phút, khách thử lại được mà không phải tải lại trang.
   const inputDisabled = chat.isSending;
+
+  // Chỉ hiện khi hội thoại chưa có tin của khách (kể cả tin đang gửi) và lịch sử đã tải xong.
+  const showSuggestions =
+    !chat.isHistoryLoading && !chat.pending && !chat.messages.some((message) => message.role === 'USER');
 
   const messageCount = chat.messages.length + (chat.pending ? 1 : 0);
   useEffect(() => {
@@ -111,6 +119,38 @@ export function AssistantDialog({ chat, onClose }: { chat: AssistantChatState; o
             <span className="mt-0.5 grid size-7 shrink-0 place-items-center rounded-full bg-neutral-100 text-neutral-900" aria-hidden><Bot className="size-4" /></span>
             <p className="max-w-[85%] rounded-2xl rounded-tl-md bg-neutral-100 px-3.5 py-2.5 text-sm text-neutral-800">{ASSISTANT_COPY.greeting}</p>
           </li>
+          {showSuggestions && (
+            <li className="pl-9">
+              <ul className="flex flex-wrap gap-2" aria-label={ASSISTANT_COPY.suggestionsLabel}>
+                {ASSISTANT_SUGGESTIONS.map((suggestion) => (
+                  <li key={suggestion.id}>
+                    {'orderLookup' in suggestion && !chat.canAskOrderStatus ? (
+                      // Khách ẩn danh chưa có grant: dẫn tới luồng tra cứu đơn bằng email thay vì gửi (trợ lý không tra được).
+                      <Link
+                        href={GUEST_LOOKUP_ROUTE}
+                        onClick={onClose}
+                        aria-label={`${suggestion.content}: ${ASSISTANT_COPY.orderLookupLink}`}
+                        className={buttonVariants({ variant: 'secondary', size: 'sm', className: SUGGESTION_CHIP })}
+                      >
+                        {suggestion.content}
+                      </Link>
+                    ) : (
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        disabled={chat.isSending}
+                        onClick={() => void chat.send(suggestion.content)}
+                        aria-label={`Hỏi trợ lý: ${suggestion.content}`}
+                        className={SUGGESTION_CHIP}
+                      >
+                        {suggestion.content}
+                      </Button>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </li>
+          )}
           {chat.isHistoryLoading && (
             <li className="space-y-3" aria-busy="true" aria-label="Đang tải lịch sử trò chuyện">
               <Skeleton className="ml-auto h-10 w-2/3 rounded-2xl" />

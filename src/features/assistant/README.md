@@ -1,10 +1,10 @@
 # Storefront Assistant — maintenance note
 
-> **Document version:** 1.2.1
+> **Document version:** 1.3.0
 >
-> **Last updated:** 2026-10-02
+> **Last updated:** 2026-11-07
 >
-> **Change summary:** Sửa mô tả `ASSISTANT_TURN_IN_PROGRESS`: giữ khoá idempotency và chờ lượt gốc (tối đa 90 giây), không bỏ khoá. Trước đó: Dòng giỏ dùng `productType` của thẻ; khách ẩn danh gửi grant tra đơn OTP qua header `x-order-lookup-token` (không bao giờ trong nội dung) và được gợi ý tra cứu đơn khi hỏi về đơn; map `ASSISTANT_ORDER_LOOKUP_TOKEN_INVALID`.
+> **Change summary:** Thêm chip gợi ý câu hỏi dưới lời chào (`ASSISTANT_SUGGESTIONS`), gửi qua `send` của hook; chip đơn hàng của khách ẩn danh chưa có grant dẫn tới `/orders/lookup`. Trước đó: Sửa mô tả `ASSISTANT_TURN_IN_PROGRESS`: giữ khoá idempotency và chờ lượt gốc (tối đa 90 giây), không bỏ khoá. Trước đó: Dòng giỏ dùng `productType` của thẻ; khách ẩn danh gửi grant tra đơn OTP qua header `x-order-lookup-token` (không bao giờ trong nội dung) và được gợi ý tra cứu đơn khi hỏi về đơn; map `ASSISTANT_ORDER_LOOKUP_TOKEN_INVALID`.
 
 ## Phạm vi
 
@@ -31,6 +31,13 @@
 `assistant.mapper.ts` là nơi duy nhất đọc field của `ChatMessageDto`/`ChatCardDto`.
 
 "Thêm vào giỏ" (`model/assistant-quick-add.ts` + `use-assistant-quick-add.ts`): dòng giỏ dựng thẳng từ `productId` và biến thể mặc định `variantId` của thẻ. INVARIANT: nút chỉ hiện khi biến thể mặc định có trong `variants`, `inStock === true` (không nhận `null`), có giá > 0 và sản phẩm không báo hết hàng; còn lại chỉ có "Xem sản phẩm". Dòng giỏ mang `productType` (STANDARD/BUNDLE) của thẻ.
+
+## Gợi ý câu hỏi
+
+- `ASSISTANT_SUGGESTIONS` (`assistant.constants.ts`, `as const`) — mỗi câu ghi tool khách của API trả lời được. Hiện khi chưa có tin `USER`, không có tin đang gửi và lịch sử đã tải xong; ẩn ngay khi khách gửi.
+- Bấm chip gọi đúng `chat.send(content)` (cùng khoá idempotency, cùng chặn gửi trùng); chip `disabled` khi `isSending`.
+- Chip "Tra cứu đơn hàng của tôi": khách đăng nhập hoặc ẩn danh đã có grant (`canAskOrderStatus`) thì gửi; ẩn danh chưa có grant thì là link tới `/orders/lookup` (không tốn lượt).
+- Không có gợi ý giảm giá (chưa có tool khuyến mãi) hay phí giao về tỉnh (`calculate_shipping` cần `branchId` hội thoại mà Storefront chưa gửi); chưa có gợi ý theo trang vì widget không có ngữ cảnh sản phẩm đang xem.
 
 ## State owner
 
@@ -77,6 +84,7 @@ Chuyển nhân viên bắt buộc đăng nhập (V1.0): khách ẩn danh chỉ t
 
 | Version | Date | Change summary | Source |
 | --- | --- | --- | --- |
+| 1.3.0 | 2026-11-07 | Chip gợi ý câu hỏi khi hội thoại trống; `canAskOrderStatus` cho chip tra đơn. | Storefront assistant suggestions |
 | 1.2.1 | 2026-10-02 | Sửa: TURN_IN_PROGRESS giữ khoá idempotency và chờ lượt gốc (tối đa 90 giây). | commit b72d92a |
 | 1.2.0 | 2026-09-30 | `productType` vào dòng giỏ; grant tra đơn qua header; gợi ý tra cứu đơn. | feat/assistant-v1 (V1.1 guest lookup) |
 | 1.1.0 | 2026-09-29 | Thêm vào giỏ theo `productId`/`variantId` của thẻ, bỏ cạnh `catalog`; mã lỗi mới và quota ẩn danh. | feat/assistant-v1 review fixes |
