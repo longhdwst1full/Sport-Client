@@ -4,7 +4,7 @@ import { useState, type ReactNode } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { CheckoutSkeleton } from '../components/checkout-skeleton';
-import { useCartActions } from '@/features/cart';
+import { isOverStock, useCartActions, useCartStockLimits, type CartItem } from '@/features/cart';
 import { useCustomerAuth } from '@/features/auth';
 import { useToast } from '@/shared/components/global-toast';
 import { usePublicNumberParameter } from '@/features/site-config';
@@ -24,6 +24,9 @@ import { useCheckoutSavedAddresses } from '../hooks/use-checkout-saved-addresses
 import { usePlaceOrder } from '../hooks/use-place-order';
 import { CheckoutPaymentMethod } from '@/generated/api/checkout/checkout.schemas';
 
+/** Mảng rỗng ổn định: chặn báo giá tự động mà không đổi deps effect mỗi lần render. */
+const NO_ITEMS: CartItem[] = [];
+
 /** Modal điều khoản: mở để đọc (link) hoặc từ nút đặt hàng khi chưa đồng ý ("Đồng ý" = đặt hàng tiếp). */
 type PolicyDialogMode = 'read' | 'submit';
 
@@ -40,6 +43,11 @@ export function CheckoutPage({
   const { toast } = useToast();
   const { isAuthenticated, isLoaded, customer } = useCustomerAuth();
   const { effectiveItems, localSubtotal, cartHydrated } = useCheckoutCart();
+  const stockOf = useCartStockLimits(effectiveItems);
+  // INVARIANT: dòng vượt số đặt được (API `availableQuantity`) thì không báo giá/đặt đơn — khách sửa ở giỏ.
+  // Chỉ chặn khi BIẾT số; không biết thì để báo giá/giữ hàng của backend quyết định như trước.
+  const overStockItems = effectiveItems.filter((item) => isOverStock(item.quantity, stockOf(item)));
+  const stockBlocked = overStockItems.length > 0;
 
   const form = useCheckoutForm();
   const { shopArranged, paymentMethod } = form;
@@ -65,7 +73,7 @@ export function CheckoutPage({
     customer,
     invalidateQuote,
   });
-  useAutoQuote({ form, checkoutQuote, effectiveItems, isLoaded, isAuthenticated, placedOrder });
+  useAutoQuote({ form, checkoutQuote, effectiveItems: stockBlocked ? NO_ITEMS : effectiveItems, isLoaded, isAuthenticated, placedOrder });
 
   /**
    * Đổi phương thức thanh toán / "Nhờ shop gửi": phí tính một lần theo địa chỉ + giỏ nên KHÔNG gọi API.
@@ -111,6 +119,26 @@ export function CheckoutPage({
             </div>
           </div>
         </div>
+
+        {stockBlocked && (
+          <div role="alert" data-testid="checkout-overstock" className="mb-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-900">
+            <p className="font-bold">Một số sản phẩm vượt số lượng còn có thể đặt:</p>
+            <ul className="mt-2 list-disc space-y-1 pl-5">
+              {overStockItems.map((item) => {
+                const available = stockOf(item) ?? 0;
+                return (
+                  <li key={item.variantId}>
+                    {item.name}: bạn chọn {item.quantity},{' '}
+                    {available === 0 ? 'sản phẩm đã hết hàng' : `chỉ còn ${available}`}.
+                  </li>
+                );
+              })}
+            </ul>
+            <Link href="/cart" className="mt-3 inline-flex min-h-11 items-center font-bold underline">
+              Quay lại giỏ hàng để sửa số lượng
+            </Link>
+          </div>
+        )}
 
         <form onSubmit={submit} className="grid grid-cols-1 gap-6 sm:gap-8 lg:grid-cols-[minmax(0,1fr)_400px] [&>*]:min-w-0">
           <div className="min-w-0 space-y-6">
@@ -164,9 +192,11 @@ export function CheckoutPage({
             acceptedTerms={form.acceptedTerms}
             setAcceptedTerms={form.setAcceptedTerms}
             onOpenPolicies={policyContent ? () => setPolicyDialog('read') : undefined}
-            submitDisabled={busy || redirectingToVnpay}
+            submitDisabled={busy || redirectingToVnpay || stockBlocked}
             submitLabel={
-              redirectingToVnpay
+              stockBlocked
+                ? 'Sửa số lượng để đặt hàng'
+                : redirectingToVnpay
                 ? 'Đang chuyển sang VNPay...'
                 : busy
                 ? 'Đang xử lý...'

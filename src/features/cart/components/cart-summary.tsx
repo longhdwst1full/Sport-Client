@@ -18,6 +18,8 @@ interface CartSummaryProps {
   subtotal: number;
   checkoutHref: string;
   onCheckoutClick: (e: React.MouseEvent) => void;
+  /** Có dòng đã chọn vượt số đặt được: nút "Đặt hàng" khoá tới khi khách sửa. */
+  blocked?: boolean;
 }
 
 export function CartSummary({
@@ -25,7 +27,9 @@ export function CartSummary({
   subtotal,
   checkoutHref,
   onCheckoutClick,
+  blocked = false,
 }: CartSummaryProps) {
+  const enabled = selectedCount > 0 && !blocked;
   return (
     <aside className="h-fit surface-card p-6 shadow-sm lg:sticky lg:top-40">
       <h2 className="text-lg font-bold text-neutral-900">Tóm tắt đơn hàng</h2>
@@ -56,13 +60,13 @@ export function CartSummary({
       <Link
         href={checkoutHref}
         onClick={onCheckoutClick}
-        aria-disabled={selectedCount === 0}
+        aria-disabled={!enabled}
         className={buttonVariants({
           variant: 'primary',
           size: 'lg',
           fullWidth: true,
           className: `mt-6 rounded-full font-bold ${
-            selectedCount > 0
+            enabled
               ? ''
               : 'cursor-not-allowed bg-neutral-200 text-neutral-500 hover:bg-neutral-200'
           }`,
@@ -70,6 +74,11 @@ export function CartSummary({
       >
         Đặt hàng {selectedCount > 0 ? `(${selectedCount})` : ''}
       </Link>
+      {blocked && (
+        <p role="alert" className="mt-3 text-center text-xs font-semibold text-red-700">
+          Có sản phẩm vượt số lượng còn lại. Vui lòng sửa trước khi đặt hàng.
+        </p>
+      )}
       <Link
         href="/products"
         className="mt-3 block rounded py-2 text-center text-xs font-semibold text-neutral-600 transition hover:text-neutral-900 focus-ring-tight"

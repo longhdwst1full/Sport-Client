@@ -40,4 +40,33 @@ describe('cartSlice', () => {
     expect(second.items).toHaveLength(2);
     expect(second.items.map((item) => item.variantId)).toEqual(['variant-5kg', 'variant-10kg']);
   });
+
+  it('never lets a line exceed the known availableQuantity, even when merging with an existing line', () => {
+    const product = {
+      productId: 'product-1',
+      variantId: 'variant-1',
+      sku: 'TA-5KG',
+      productType: 'STANDARD' as const,
+      name: 'Tạ tay',
+      price: 450_000,
+    };
+    const first = cartSlice.reducer(undefined, addCartItem({ ...product, quantity: 2, availableQuantity: 3 }));
+    const merged = cartSlice.reducer(first, addCartItem({ ...product, quantity: 3, availableQuantity: 3 }));
+
+    expect(merged.items).toEqual([{ ...product, quantity: 3, availableQuantity: 3 }]);
+  });
+
+  it('does not add a variant known to be out of stock', () => {
+    const state = cartSlice.reducer(undefined, addCartItem({
+      productId: 'product-1',
+      variantId: 'variant-1',
+      sku: 'TA-5KG',
+      productType: 'STANDARD' as const,
+      name: 'Tạ tay',
+      price: 450_000,
+      availableQuantity: 0,
+    }));
+
+    expect(state.items).toEqual([]);
+  });
 });

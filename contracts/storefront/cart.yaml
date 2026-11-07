@@ -328,6 +328,12 @@ components:
         quantity:
           type: number
           minimum: 1
+        availableQuantity:
+          type: integer
+          minimum: 0
+          maximum: 999
+          example: 12
+          description: "Số lượng đặt được tối đa của SKU trong một đơn tại thời điểm đọc giỏ, cùng luật `availableQuantity` của getCatalogProduct (lớn nhất trên các kho chi nhánh đang hoạt động của tồn thực − đang giữ; combo theo thành phần thiếu nhất; trần 999). `quantity > availableQuantity` nghĩa là dòng vượt tồn: UI nên chặn đặt hàng. Chỉ là gợi ý; backend vẫn kiểm khi giữ hàng."
         unitPricePreview:
           type: string
           example: "890000.00"
@@ -350,6 +356,7 @@ components:
         - productName
         - productSlug
         - quantity
+        - availableQuantity
     GuestCartDto:
       type: object
       properties:

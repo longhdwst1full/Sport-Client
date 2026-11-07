@@ -60,6 +60,11 @@ export interface ProductVariantOptionView {
    * `false` thì không được vào giỏ/checkout — quyết định của chủ shop 2026-09-25.
    */
   inStock: boolean | null;
+  /**
+   * Số đặt được tối đa trong một đơn (API `availableQuantity`, trần 999); null khi API không trả (không chặn).
+   * Trang chi tiết có ISR nên số có thể cũ vài phút; checkout giữ hàng mới là chốt cuối.
+   */
+  availableQuantity: number | null;
   /** Rỗng với hàng thường; combo mới có danh sách linh kiện. */
   bundleComponents: BundleComponentView[];
 }
@@ -98,6 +103,7 @@ export function toProductPurchaseView(dto: ProductDetailDto): ProductPurchaseVie
         // INVARIANT: chỉ biến thể ACTIVE, có giá hiệu lực và không báo hết hàng mới được vào giỏ.
         sellable: amount !== null && variant.status === ProductVariantStatus.ACTIVE && variant.inStock !== false,
         inStock: variant.inStock ?? null,
+        availableQuantity: variant.availableQuantity ?? null,
         bundleComponents: (variant.bundle?.components ?? []).map((component) => ({
           componentVariantId: component.componentVariantId,
           componentSku: component.componentSku,

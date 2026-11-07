@@ -7,6 +7,7 @@ import { formatVnd } from '@/shared/format/money';
 import { PRODUCT_PLACEHOLDER_IMAGE } from '@/shared/constants';
 import type { CartItem } from '../model/cart.slice';
 import type { CartLinePrice } from '../model/cart-promo-price';
+import { isOverStock } from '../model/stock-limit';
 
 interface CartItemRowProps {
   item: CartItem;
@@ -14,6 +15,12 @@ interface CartItemRowProps {
   onToggleSelect: () => void;
   onDecrementQuantity: () => void;
   onIncrementQuantity: () => void;
+  /** Khách gõ số: nơi gọi kẹp về [1, maxQuantity] và báo nhẹ khi vượt. */
+  onCommitQuantity: (value: number) => void;
+  /** Số đặt được tối đa của dòng (`maxOrderableQuantity`); nút + khoá khi chạm. */
+  maxQuantity: number;
+  /** Số đặt được đã biết (undefined = chưa biết). Dòng vượt số này phải sửa trước khi đặt hàng. */
+  availableQuantity: number | undefined;
   onRemove: () => void;
   /** Đơn giá/thành tiền đã áp luật suất flash (`useCartLinePricing`). */
   linePrice: CartLinePrice;
@@ -25,9 +32,13 @@ export function CartItemRow({
   onToggleSelect,
   onDecrementQuantity,
   onIncrementQuantity,
+  onCommitQuantity,
+  maxQuantity,
+  availableQuantity,
   onRemove,
   linePrice,
 }: CartItemRowProps) {
+  const overStock = isOverStock(item.quantity, availableQuantity);
   return (
     <div className="flex items-center gap-3 rounded-2xl border border-ink/5 bg-white p-4 shadow-sm sm:gap-5 sm:p-5">
       {/* Selectbox */}
@@ -86,11 +97,13 @@ export function CartItemRow({
             value={item.quantity}
             onDecrement={onDecrementQuantity}
             onIncrement={onIncrementQuantity}
+            onValueCommit={onCommitQuantity}
             decrementDisabled={item.quantity <= 1}
+            incrementDisabled={item.quantity >= maxQuantity}
             wrapperClassName="flex items-center rounded-xl border border-ink/10"
             decrementClassName="grid size-10 place-items-center text-neutral-500 transition hover:text-ink disabled:opacity-30"
-            incrementClassName="grid size-10 place-items-center text-neutral-500 transition hover:text-ink"
-            valueClassName="min-w-[2rem] text-center text-sm font-bold"
+            incrementClassName="grid size-10 place-items-center text-neutral-500 transition hover:text-ink disabled:opacity-30"
+            valueClassName="w-10 min-w-[2rem] text-center text-sm font-bold"
           />
           {/* Price */}
           <div className="text-right">
@@ -104,6 +117,13 @@ export function CartItemRow({
             </strong>
           </div>
         </div>
+        {overStock && (
+          <p role="alert" data-testid="cart-line-overstock" className="mt-3 rounded-xl bg-red-50 px-3 py-2 text-xs leading-5 text-red-800">
+            {availableQuantity === 0
+              ? 'Sản phẩm này đã hết hàng. Vui lòng xoá khỏi giỏ để đặt hàng.'
+              : `Chỉ còn ${availableQuantity} sản phẩm có thể đặt. Vui lòng giảm số lượng để đặt hàng.`}
+          </p>
+        )}
         {linePrice.promo === 'split' && (
           <div role="status" className="mt-3 rounded-xl bg-brand-50 px-3 py-2 text-xs leading-5 text-neutral-800">
             <span className="font-bold text-brand-700">

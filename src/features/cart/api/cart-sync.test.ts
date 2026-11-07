@@ -42,6 +42,7 @@ const item = (variantId: string, quantity: number, extra: Partial<CartItemDto> =
   productName: 'Tạ tay',
   productSlug: 'ta-tay',
   quantity,
+  availableQuantity: 5,
   unitPricePreview: '450000.00',
   lineTotalPreview: null,
   imageUrl: null,
@@ -68,6 +69,7 @@ describe('cart sync across devices', () => {
       price: 450000,
       regularPrice: 450000,
       quantity: 2,
+      availableQuantity: 5,
     }]);
   });
 

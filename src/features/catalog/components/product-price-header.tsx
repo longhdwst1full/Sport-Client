@@ -4,12 +4,13 @@ import { STORE_POLICY_FACTS, STORE_POLICY_PAGES } from '@/shared/constants';
 import { formatFlashEnd, type VariantFlashPrice } from '../model/variant-flash-price';
 import { useFlashCountdown } from '../hooks/use-flash-countdown';
 import { formatVnd } from '@/shared/format/money';
+import type { StockLabel } from '../model/stock-label';
 
 interface ProductPriceHeaderProps {
   canAdd: boolean;
   outOfStock: boolean;
-  /** API xác nhận biến thể đang chọn còn hàng ở ít nhất một kho; `false` khi không biết. */
-  inStock: boolean;
+  /** Nhãn tồn của biến thể đang chọn (`stockLabel`); null khi hết hàng hoặc không biết. */
+  stock: StockLabel | null;
   priceLabel: string | undefined;
   /** Giá flash đang mở của biến thể đang chọn; `priceLabel` khi đó đã là giá flash. */
   flash?: VariantFlashPrice;
@@ -21,7 +22,7 @@ interface ProductPriceHeaderProps {
 export function ProductPriceHeader({
   canAdd,
   outOfStock,
-  inStock,
+  stock,
   priceLabel,
   flash,
   flashSplit,
@@ -41,7 +42,7 @@ export function ProductPriceHeader({
             <span className="font-bold text-neutral-950">{formatVnd(flashSplit.total)}</span>
           </p>
         )}
-        <ProductAvailability inStock={inStock} outOfStock={outOfStock} />
+        <ProductAvailability stock={stock} outOfStock={outOfStock} />
       </div>
     );
   }
@@ -66,20 +67,25 @@ export function ProductPriceHeader({
         </div>
       </div>
 
-      <ProductAvailability inStock={inStock} outOfStock={outOfStock} />
+      <ProductAvailability stock={stock} outOfStock={outOfStock} />
     </div>
   );
 }
 
-function ProductAvailability({ inStock, outOfStock }: { inStock: boolean; outOfStock: boolean }) {
+function ProductAvailability({ stock, outOfStock }: { stock: StockLabel | null; outOfStock: boolean }) {
   return (
     <>
-      {/* "Còn hàng" chỉ hiện khi API trả `inStock: true` cho biến thể đang chọn; không có số lượng tồn. */}
+      {/* Nhãn tồn từ API `availableQuantity` của biến thể đang chọn (luật hiển thị: `stockLabel`). */}
       <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-semibold text-neutral-600">
-        {inStock && !outOfStock && (
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-success-50 px-2.5 py-1 font-bold text-success-800">
-            <span aria-hidden className="size-1.5 rounded-full bg-success-600" />
-            Còn hàng
+        {stock && !outOfStock && (
+          <span
+            data-testid="stock-label"
+            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-bold ${
+              stock.tone === 'low' ? 'bg-amber-50 text-amber-800' : 'bg-success-50 text-success-800'
+            }`}
+          >
+            <span aria-hidden className={`size-1.5 rounded-full ${stock.tone === 'low' ? 'bg-amber-500' : 'bg-success-600'}`} />
+            {stock.text}
           </span>
         )}
         {/* GAP: chưa có bộ ước tính theo tỉnh trên trang sản phẩm (`estimateCheckoutShipping` đã có, chưa

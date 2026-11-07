@@ -45,6 +45,7 @@ export function toLocalCartItems(cart: CartDto): CartItem[] {
     // Giá preview của giỏ server là giá niêm yết hiện hành (không áp flash).
     regularPrice: item.unitPricePreview ? Number(item.unitPricePreview) : undefined,
     quantity: item.quantity,
+    availableQuantity: item.availableQuantity,
   }));
 }
 

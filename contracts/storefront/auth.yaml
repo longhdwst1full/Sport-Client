@@ -38,6 +38,12 @@ paths:
             application/json:
               schema:
                 $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
+        "429":
+          description: "RATE_LIMITED: vượt hạn mức theo phút hoặc theo giờ của IP"
+          content:
+            application/json:
+              schema:
+                $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
       summary: Register an active customer with email, phone, or both
       tags:
         - Storefront Auth

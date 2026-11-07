@@ -9,8 +9,12 @@ const PRIMARY_OUTLINE_CTA = 'font-bold';
 
 interface PurchaseActionsProps {
   quantity: number;
+  /** Số đặt được tối đa (`maxOrderableQuantity`); nút + khoá khi chạm. */
+  maxQuantity: number;
   onDecrementQuantity: () => void;
   onIncrementQuantity: () => void;
+  /** Khách gõ số: nơi gọi kẹp về [1, maxQuantity] và báo nhẹ khi vượt. */
+  onCommitQuantity: (value: number) => void;
   canAdd: boolean;
   outOfStock: boolean;
   isAddedToast: boolean;
@@ -22,8 +26,10 @@ interface PurchaseActionsProps {
 
 export function PurchaseActions({
   quantity,
+  maxQuantity,
   onDecrementQuantity,
   onIncrementQuantity,
+  onCommitQuantity,
   canAdd,
   outOfStock,
   isAddedToast,
@@ -40,11 +46,13 @@ export function PurchaseActions({
           value={quantity}
           onDecrement={onDecrementQuantity}
           onIncrement={onIncrementQuantity}
+          onValueCommit={onCommitQuantity}
+          incrementDisabled={!canAdd || quantity >= maxQuantity}
           wrapperClassName="flex items-center rounded-full border border-neutral-200 bg-neutral-50 p-1"
           decrementClassName={`grid size-10 place-items-center rounded-full bg-white text-ink shadow-sm transition hover:bg-neutral-200 ${
             quantity <= 1 ? 'opacity-40 cursor-not-allowed' : ''
           }`}
-          incrementClassName="grid size-10 place-items-center rounded-full bg-white text-ink shadow-sm transition hover:bg-neutral-200"
+          incrementClassName="grid size-10 place-items-center rounded-full bg-white text-ink shadow-sm transition hover:bg-neutral-200 disabled:cursor-not-allowed disabled:opacity-40"
           valueClassName="w-12 text-center text-sm font-semibold text-ink"
         />
       </div>

@@ -22,7 +22,7 @@ const cartStore = createBrowserStore<CartItem[]>(CART_STORAGE_KEY, {
     Array.isArray(parsed)
       ? parsed
           .filter(isCartItem)
-          .map(({ productId, variantId, sku, productType, name, slug, price, regularPrice, quantity, imageUrl }) => ({
+          .map(({ productId, variantId, sku, productType, name, slug, price, regularPrice, quantity, imageUrl, availableQuantity }) => ({
             productId,
             variantId,
             sku,
@@ -34,6 +34,10 @@ const cartStore = createBrowserStore<CartItem[]>(CART_STORAGE_KEY, {
             regularPrice: typeof regularPrice === 'number' && Number.isFinite(regularPrice) && regularPrice > 0 ? regularPrice : undefined,
             quantity,
             imageUrl,
+            availableQuantity:
+              typeof availableQuantity === 'number' && Number.isInteger(availableQuantity) && availableQuantity >= 0
+                ? availableQuantity
+                : undefined,
           }))
       : [],
 });

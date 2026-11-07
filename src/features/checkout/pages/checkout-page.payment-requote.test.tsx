@@ -37,7 +37,10 @@ vi.mock('@/features/cart', () => ({
     price: 100000,
   }],
   useCartHydrated: () => true,
+  useCartStockLimits: () => () => stockLimit.value,
+  isOverStock: (quantity: number, available: number | undefined) => available !== undefined && quantity > available,
 }));
+const stockLimit: { value: number | undefined } = vi.hoisted(() => ({ value: undefined }));
 
 vi.mock('@/features/auth', () => ({
   useCustomerAuth: () => ({ isAuthenticated: false, isLoaded: true }),
@@ -240,5 +243,24 @@ describe('CheckoutPage – phí giao tính một lần theo địa chỉ + giỏ
     expect(confirmCheckout.mock.calls[1][1]).toBe('tok-2');
     expect(confirmCheckout.mock.calls[1][2]).not.toBe(confirmCheckout.mock.calls[0][2]);
     expect(placeOrder.mock.calls[0][1]).toBe('tok-2');
+  });
+
+  it('dòng vượt số còn đặt được: báo lỗi, không báo giá, khoá nút đặt hàng', async () => {
+    stockLimit.value = 0;
+    try {
+      render(<CheckoutPage />);
+      fireEvent.change(screen.getByPlaceholderText('Họ và tên người nhận'), { target: { value: 'Nguyễn Test' } });
+      fireEvent.change(screen.getByPlaceholderText('Ví dụ: 0912345678'), { target: { value: '0912345678' } });
+      fireEvent.click(screen.getByText('chọn địa chỉ test'));
+      await flush();
+
+      expect(screen.getByTestId('checkout-overstock').textContent).toContain('sản phẩm đã hết hàng');
+      expect(prepareCheckout).not.toHaveBeenCalled();
+      const submits = screen.getAllByRole('button', { name: /Sửa số lượng để đặt hàng/ }) as HTMLButtonElement[];
+      expect(submits.length).toBeGreaterThan(0);
+      expect(submits.every((button) => button.disabled)).toBe(true);
+    } finally {
+      stockLimit.value = undefined;
+    }
   });
 });

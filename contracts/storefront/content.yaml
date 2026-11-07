@@ -141,7 +141,7 @@ paths:
               schema:
                 $ref: ./_components.yaml#/components/schemas/ErrorResponseDto
         "429":
-          description: Burst throttle theo IP
+          description: "RATE_LIMITED: vượt hạn mức theo phút hoặc theo giờ của IP"
           content:
             application/json:
               schema:

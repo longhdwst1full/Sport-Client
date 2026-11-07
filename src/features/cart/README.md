@@ -1,10 +1,10 @@
 # Storefront Cart — maintenance note
 
-> **Document version:** 2.4.0
+> **Document version:** 2.5.0
 >
-> **Last updated:** 2026-10-17
+> **Last updated:** 2026-11-07
 >
-> **Change summary:** `CartItem.regularPrice` (giá niêm yết lúc thêm, lưu localStorage); chiến dịch đóng → dòng thêm với giá flash về giá niêm yết; sửa hydration làm rơi `slug`.
+> **Change summary:** `CartItem.availableQuantity` (ảnh chụp) + `useCartStockLimits` (đọc giỏ server); dòng vượt tồn bị cảnh báo và khoá "Đặt hàng".
 
 ## Phạm vi
 
@@ -66,10 +66,18 @@ Persist allowlist: `productId, variantId, sku, productType, name, price, quantit
 - [ ] Không thêm field PII/thanh toán vào allowlist persist.
 - [ ] Đổi khoá lưu trữ phải có đường migrate, không được im lặng làm mất giỏ.
 
+## Chặn theo tồn (2026-11-07)
+
+- `model/stock-limit.ts`: `maxOrderableQuantity`, `clampToStock`, `isOverStock`, `MAX_LINE_QUANTITY` (999), `LOW_STOCK_THRESHOLD` (10) — dùng chung cho PDP, giỏ, checkout qua barrel.
+- Nguồn số đặt được của một dòng: `useCartStockLimits` đọc giỏ server (chỉ ĐỌC: `getAccountCart` khi đăng nhập, `getGuestCart` khi khách còn token) lấy `CartItemDto.availableQuantity`; SKU chưa có trên giỏ server rơi về ảnh chụp `CartItem.availableQuantity` (lưu lúc thêm từ PDP / tải giỏ tài khoản, có trong allowlist localStorage); không có cả hai thì không chặn. Không tạo giỏ khách mới chỉ để xem tồn.
+- Slice: `addCartItem` có `availableQuantity` thì kẹp tổng (kể cả cộng dồn) về số đó và bỏ qua khi = 0; `updateQuantity` chỉ kẹp 999 — trang giỏ tự kẹp theo số mới nhất.
+- Trang giỏ: nút + khoá khi chạm max, gõ tay vượt thì kẹp + toast; dòng `quantity > availableQuantity` hiện cảnh báo đỏ và nút "Đặt hàng" khoá tới khi khách sửa/xoá dòng đã chọn đó.
+
 ## Revision history
 
 | Version | Date | Change summary |
 | --- | --- | --- |
+| 2.5.0 | 2026-11-07 | `CartItem.availableQuantity` (ảnh chụp) + `useCartStockLimits` (đọc giỏ server); dòng vượt tồn bị cảnh báo và khoá "Đặt hàng". |
 | 2.4.0 | 2026-10-17 | `CartItem.regularPrice` (giá niêm yết lúc thêm, lưu localStorage); chiến dịch đóng → dòng thêm với giá flash về giá niêm yết; sửa hydration làm rơi `slug`. |
 | 2.3.0 | 2026-10-17 | Vượt suất flash: giỏ tách 2 phần (trong suất giá flash + phần dư giá gốc) khớp checkout tách dòng; bỏ nút "giữ giá flash"; toast nêu số lượng mỗi phần. |
 | 2.2.0 | 2026-10-17 | Thêm `resolveCartLinePrice` (luật vượt suất của `CheckoutService.snapshotItems`), `CartPromoPriceProvider`/`useCartLinePricing`; dòng giỏ hiện giá flash/giá thường, cảnh báo và nút "Giảm về N để giữ giá flash", toast khi vượt ngưỡng. |

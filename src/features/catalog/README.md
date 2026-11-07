@@ -1,10 +1,10 @@
 # Storefront Catalog — maintenance note
 
-> **Document version:** 1.10.0
+> **Document version:** 1.11.0
 >
-> **Last updated:** 2026-10-17
+> **Last updated:** 2026-11-07
 >
-> **Change summary:** PDP: vượt suất flash hiện "N × giá flash + M × giá gốc = tổng" và toast tương ứng (khớp checkout tách dòng).
+> **Change summary:** PDP hiển thị và chặn theo `availableQuantity` của API: nhãn tồn, bộ chọn số lượng kẹp max, hết hàng khoá mua.
 
 ## Phạm vi và ranh giới
 
@@ -21,7 +21,7 @@
 ## Bán được hay không
 
 - `model/product.mapper.ts` là nơi duy nhất quyết định: `hasOfferPrice` (null/0 = chưa có giá), `ProductShowcaseItem.isSellable` (có giá + SKU mặc định) và `ProductVariantOptionView.sellable` (biến thể ACTIVE có giá). Component không tự so `minPrice`.
-- Chưa có tồn kho trong contract: không hiển thị "còn hàng/có sẵn". Khi API bổ sung, thêm điều kiện vào hai helper trên.
+- Tồn kho trên PDP (2026-11-07): `ProductVariantOptionView.availableQuantity` = API `availableQuantity` (số đặt được trong MỘT đơn ở kho chi nhánh tốt nhất, đã trừ hàng giữ, trần 999). Nhãn do `model/stock-label.ts`: ≤ 10 "Chỉ còn N sản phẩm" (màu cảnh báo), 11–998 "Còn N sản phẩm", 999 (trần API) "Còn hàng"; API không trả số thì rơi về `inStock`. Bộ chọn số lượng max = `maxOrderableQuantity` (min(availableQuantity, 999)), nút + khoá khi chạm, gõ tay vượt thì kẹp về max kèm toast nhẹ; 0 = "Tạm hết hàng", khoá Thêm giỏ/Mua ngay. Thêm giỏ gửi kèm ảnh chụp `availableQuantity`; giỏ đã có sẵn thì tổng bị kẹp và có toast. Trang có ISR + API cache 60 s nên số có thể cũ vài phút: checkout giữ hàng mới là chốt cuối. Thẻ danh sách vẫn chỉ có `inStock`.
 - Không hiển thị giá gạch, % giảm, quà tặng, trả góp hay cam kết giao/bảo hành theo sản phẩm khi contract không có dữ liệu; purchase panel dẫn sang `STORE_POLICY_PAGES`.
 
 ## Phân trang và lọc
@@ -55,6 +55,7 @@
 
 | Version | Date | Change summary | Source |
 | --- | --- | --- | --- |
+| 1.11.0 | 2026-11-07 | PDP hiển thị và chặn theo `availableQuantity` của API: nhãn tồn, bộ chọn số lượng kẹp max, hết hàng khoá mua. | CLIENT-20261107-STOCK-LIMIT |
 | 1.10.0 | 2026-10-17 | PDP: vượt suất flash hiện "N × giá flash + M × giá gốc = tổng" và toast tương ứng (khớp checkout tách dòng). |  |
 | 1.9.0 | 2026-10-17 | `VariantFlashPriceProvider` (route group cấp từ promotions); `ProductCard` giá flash; giỏ nhận giá flash từ thẻ; PDP: dữ liệu sống thắng ISR, vượt suất tính giá thường + cảnh báo/toast; JSON-LD giá flash thấp nhất + `priceValidUntil`. |  |
 | 1.8.0 | 2026-10-17 | `ProductCard.onAddToCart` (`useCardAddToCart`); `CATALOG_PAGE_SIZE` 12, `trimToFullRows` khi còn trang; sản phẩm liên quan lưới 2/4 cột; PDP: `useFlashCountdown`, thanh suất, `VariantSelector` hiện giá flash. | CLIENT-20261017-CATALOG-GRID |

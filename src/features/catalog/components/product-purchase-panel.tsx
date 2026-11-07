@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { useCartActions } from '@/features/cart';
+import { clampToStock, maxOrderableQuantity, useCartActions, useCartItems } from '@/features/cart';
 import type { ProductPurchaseView } from '../model/product.mapper';
 import type { VariantFlashPrices } from '../model/variant-flash-price';
 import { useLiveVariantFlashPrices } from '../hooks/use-variant-flash-prices';
@@ -13,6 +13,7 @@ import { VariantSelector } from './variant-selector';
 import { BundleBreakdown } from './bundle-breakdown';
 import { PurchaseActions, StickyBuyBar } from './purchase-actions';
 import { StorePolicyLinks } from './store-policy-links';
+import { stockLabel } from '../model/stock-label';
 
 const ADDED_TOAST_MS = 2500;
 
@@ -24,6 +25,7 @@ export function ProductPurchasePanel({
   flashPrices?: VariantFlashPrices;
 }) {
   const { addItem } = useCartActions();
+  const cartItems = useCartItems();
   const router = useRouter();
   const { cart: toastCart, toast } = useToast();
   const isMounted = useIsMounted();
@@ -34,7 +36,7 @@ export function ProductPurchasePanel({
   const [selectedVariantId, setSelectedVariantId] = useState(
     () => (variants.find(({ sellable }) => sellable) ?? variants[0])?.id ?? '',
   );
-  const [quantity, setQuantity] = useState(1);
+  const [requestedQuantity, setQuantity] = useState(1);
   const [isAddedToast, setIsAddedToast] = useState(false);
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const ctaRef = useRef<HTMLDivElement>(null);
@@ -61,6 +63,11 @@ export function ProductPurchasePanel({
   useEffect(() => () => clearTimeout(toastTimerRef.current), []);
 
   const selectedVariant = variants.find(({ id }) => id === selectedVariantId) ?? variants[0];
+  // INVARIANT: số chọn không vượt số đặt được của biến thể đang chọn (API `availableQuantity`, trần 999).
+  // Tính dẫn xuất thay vì effect: đổi sang biến thể ít hàng hơn thì số chọn tự hạ ngay ở lần render đó.
+  const availableQuantity = selectedVariant?.availableQuantity ?? null;
+  const maxQuantity = maxOrderableQuantity(availableQuantity);
+  const quantity = Math.max(1, Math.min(requestedQuantity, maxQuantity));
   // INVARIANT: chỉ đưa vào giỏ biến thể ACTIVE có giá hiệu lực (`sellable` do mapper tính).
   // Không có giá thì không có "giá 0": giỏ và checkout sẽ báo giá lệch hẳn với màn này.
   // Giá flash của biến thể đang chọn. HTML ISR có thể cũ tới vài phút: sau khi mount mới so mốc kết
@@ -88,13 +95,23 @@ export function ProductPurchasePanel({
       : undefined;
   const price = selectedVariant?.sellable ? (flash?.price ?? selectedVariant.priceAmount) : null;
   const priceLabel = flash?.priceLabel ?? selectedVariant?.priceLabel;
-  const canAdd = Boolean(selectedVariant?.sellable && price !== null);
+  const canAdd = Boolean(selectedVariant?.sellable && price !== null && maxQuantity >= 1);
   // Hết hàng vẫn hiện giá (có giá thật) nhưng khoá mua: không đưa hàng không có sẵn vào checkout.
-  const outOfStock = selectedVariant?.inStock === false && selectedVariant.priceAmount !== null;
+  const outOfStock =
+    (selectedVariant?.inStock === false || availableQuantity === 0) && selectedVariant?.priceAmount !== null;
 
   /** Đưa biến thể đang chọn vào giỏ; trả `false` khi không mua được để hai nút dừng sớm. */
   const addSelectedToCart = () => {
     if (!selectedVariant || !canAdd || price === null) return false;
+    // Giỏ đã có sẵn biến thể này: slice kẹp tổng về số đặt được — báo để khách không tưởng đã thêm đủ.
+    const inCart = cartItems.find(({ variantId }) => variantId === selectedVariant.id)?.quantity ?? 0;
+    if (availableQuantity !== null && inCart + quantity > maxQuantity) {
+      toast({
+        type: 'info',
+        title: 'Đã chạm số lượng còn lại',
+        message: `Giỏ hàng đã có ${inCart}; chỉ còn ${maxQuantity} sản phẩm có thể đặt nên giỏ được giữ ở ${maxQuantity}.`,
+      });
+    }
     addItem({
       productId: product.id,
       variantId: selectedVariant.id,
@@ -106,6 +123,7 @@ export function ProductPurchasePanel({
       price,
       regularPrice: selectedVariant.priceAmount ?? undefined,
       quantity,
+      availableQuantity: availableQuantity ?? undefined,
     });
     return true;
   };
@@ -144,7 +162,7 @@ export function ProductPurchasePanel({
       <ProductPriceHeader
         canAdd={canAdd}
         outOfStock={outOfStock}
-        inStock={selectedVariant?.inStock === true}
+        stock={selectedVariant?.sellable ? stockLabel(availableQuantity, selectedVariant.inStock) : null}
         priceLabel={priceLabel}
         flash={flash}
         flashSplit={flashSplit}
@@ -166,8 +184,16 @@ export function ProductPurchasePanel({
 
       <PurchaseActions
         quantity={quantity}
-        onDecrementQuantity={() => setQuantity((q) => Math.max(1, q - 1))}
-        onIncrementQuantity={() => setQuantity((q) => q + 1)}
+        maxQuantity={maxQuantity}
+        onDecrementQuantity={() => setQuantity(Math.max(1, quantity - 1))}
+        onIncrementQuantity={() => setQuantity(Math.min(maxQuantity, quantity + 1))}
+        onCommitQuantity={(value) => {
+          const next = clampToStock(value, availableQuantity, quantity);
+          setQuantity(next.quantity);
+          if (next.clamped) {
+            toast({ type: 'info', title: 'Vượt số lượng còn lại', message: `Chỉ còn ${next.max} sản phẩm có thể đặt.` });
+          }
+        }}
         canAdd={canAdd}
         outOfStock={outOfStock}
         isAddedToast={isAddedToast}

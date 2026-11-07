@@ -1,4 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import { MAX_LINE_QUANTITY, maxOrderableQuantity } from './stock-limit';
 
 export type CartItem = {
   productId: string;
@@ -16,13 +17,16 @@ export type CartItem = {
    */
   regularPrice?: number;
   quantity: number;
+  /**
+   * Ảnh chụp số lượng đặt được (API `availableQuantity`) lúc thêm từ trang sản phẩm hoặc lúc tải giỏ
+   * server. Chỉ để UI chặn; giỏ/checkout ưu tiên số mới đọc từ server (`useCartStockLimits`).
+   */
+  availableQuantity?: number;
 };
 
 type CartState = { items: CartItem[] };
 
-/** Khớp contract cart (`quantity` minimum 1, maximum 999). */
-const MAX_LINE_QUANTITY = 999;
-const clampQuantity = (quantity: number) => Math.min(MAX_LINE_QUANTITY, Math.max(1, quantity));
+const clampQuantity = (quantity: number, max = MAX_LINE_QUANTITY) => Math.min(max, MAX_LINE_QUANTITY, Math.max(1, quantity));
 
 const initialState: CartState = { items: [] };
 
@@ -35,12 +39,18 @@ export const cartSlice = createSlice({
       action: PayloadAction<Omit<CartItem, 'quantity'> & { quantity?: number }>
     ) => {
       const qty = action.payload.quantity ?? 1;
+      const { availableQuantity } = action.payload;
+      // INVARIANT: biết tồn = 0 thì không thêm (trang sản phẩm đã khoá nút); biết tồn thì cộng dồn với
+      // dòng sẵn có cũng không vượt số đặt được.
+      if (availableQuantity !== undefined && maxOrderableQuantity(availableQuantity) < 1) return;
+      const max = maxOrderableQuantity(availableQuantity);
       const existing = state.items.find((item) => item.variantId === action.payload.variantId);
       if (existing) {
-        existing.quantity = clampQuantity(existing.quantity + qty);
+        existing.quantity = clampQuantity(existing.quantity + qty, max);
         if (action.payload.regularPrice !== undefined) existing.regularPrice = action.payload.regularPrice;
+        if (availableQuantity !== undefined) existing.availableQuantity = availableQuantity;
       }
-      else state.items.push({ ...action.payload, quantity: clampQuantity(qty) });
+      else state.items.push({ ...action.payload, quantity: clampQuantity(qty, max) });
     },
     updateQuantity: (state, action: PayloadAction<{ variantId: string; quantity: number }>) => {
       const item = state.items.find((i) => i.variantId === action.payload.variantId);

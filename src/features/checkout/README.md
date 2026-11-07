@@ -1,10 +1,10 @@
 # Storefront checkout — maintenance note
 
-> **Document version:** 2.2.0
+> **Document version:** 2.3.0
 >
-> **Last updated:** 2026-10-17
+> **Last updated:** 2026-11-07
 >
-> **Change summary:** Dòng hàng hiện "N giá flash + M giá gốc"; `CheckoutLineView.flashSale` từ contract `CheckoutQuoteItemDto.flashSale`.
+> **Change summary:** Dòng vượt `availableQuantity` hiện lỗi, không báo giá tự động, khoá nút đặt hàng.
 
 ## Luồng 3 bước (2026-09-26)
 
@@ -31,6 +31,7 @@ Chưa làm (cần Backend): gọi lại GHN khi đặt đơn và báo `SHIPPING_
 - `resolveCheckoutQuoteGate` là nơi duy nhất quyết định có cho đặt hàng: `CONSULTATION_PENDING` (chờ tư vấn cước) chặn, `shippingFeePending` không bao giờ chặn.
 - Thanh toán storefront chỉ còn `COD` và `VNPAY`; `BANK_TRANSFER` vẫn tồn tại ở Backend cho POS.
 - Sản phẩm `inStock = false` bị chặn từ catalog nên không vào được checkout; Backend vẫn là chốt chặn cuối.
+- Dòng có `quantity > availableQuantity` (số từ `useCartStockLimits` của cart) hiện khối lỗi `checkout-overstock`, không chạy báo giá tự động và khoá nút đặt hàng; khách quay lại giỏ để sửa. Không biết số thì không chặn; lỗi 409/422 hết hàng từ Backend xử lý như cũ.
 
 ## Phạm vi
 
@@ -95,6 +96,7 @@ Checkout chỉ được import `orders`, `address`, `site-config` (và `auth`, `
 
 | Version | Date | Change summary | Source |
 | --- | --- | --- | --- |
+| 2.3.0 | 2026-11-07 | Dòng vượt `availableQuantity` hiện lỗi, không báo giá tự động, khoá nút đặt hàng. | CLIENT-20261107-STOCK-LIMIT |
 | 2.2.0 | 2026-10-17 | Dòng hàng hiện "N giá flash + M giá gốc"; `CheckoutLineView.flashSale` từ contract `CheckoutQuoteItemDto.flashSale`. |  |
 | 2.1.0 | 2026-10-17 | Tạm tính/dòng hàng theo `useCartLinePricing`; dòng vượt suất flash có ghi chú "tính giá thường". |  |
 | 2.0.0 | 2026-10-17 | `CheckoutPolicyDialog`: nội dung chính sách là slot route (`PolicyArticles`), phải cuộn tới cuối mới đóng/đồng ý; `usePlaceOrder({ onTermsRequired })` mở modal thay cho thông báo chặn, `submitAfterAgree` tích ô rồi đặt hàng tiếp. Bỏ `CheckoutPolicyLinks`. |  |

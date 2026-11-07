@@ -4,6 +4,8 @@ import { useMemo, useState, useEffect } from 'react';
 import { useCartActions, useCartItems } from '../hooks/use-cart';
 import { useCartLinePricing } from '../hooks/use-cart-line-pricing';
 import { useCartHydrated } from '../hooks/use-cart-hydrated';
+import { useCartStockLimits } from '../hooks/use-cart-stock-limits';
+import { clampToStock, isOverStock, maxOrderableQuantity } from '../model/stock-limit';
 import { Button } from '@/foundation/components/buttons';
 import { Skeleton } from '@/foundation/components/feedback';
 import { Breadcrumb } from '@/foundation/components/navigation';
@@ -20,6 +22,7 @@ export function CartPage() {
   const items = useCartItems();
   // Chưa đọc xong giỏ đã lưu thì chưa biết giỏ rỗng hay không: hiện khung chờ, không nháy "Giỏ hàng trống".
   const hydrated = useCartHydrated();
+  const stockOf = useCartStockLimits(items);
 
   // Lựa chọn sản phẩm thanh toán trong giỏ hàng
   const [selectedVariantIds, setSelectedVariantIds] = useState<string[]>(() => items.map((i) => i.variantId));
@@ -38,6 +41,11 @@ export function CartPage() {
   const selectedSet = useMemo(() => new Set(selectedVariantIds), [selectedVariantIds]);
   const selectedItems = useMemo(() => items.filter((i) => selectedSet.has(i.variantId)), [items, selectedSet]);
   const isAllSelected = items.length > 0 && selectedItems.length === items.length;
+  // INVARIANT: không cho sang checkout khi một dòng đã chọn vượt số đặt được — backend cũng sẽ từ chối.
+  const overStockItems = useMemo(
+    () => selectedItems.filter((item) => isOverStock(item.quantity, stockOf(item))),
+    [selectedItems, stockOf]
+  );
 
   const toggleSelectAll = () => {
     if (isAllSelected) {
@@ -79,6 +87,15 @@ export function CartPage() {
   };
 
   const handleCheckoutClick = (e: React.MouseEvent) => {
+    if (overStockItems.length > 0) {
+      e.preventDefault();
+      toast({
+        type: 'warning',
+        title: 'Số lượng vượt hàng còn lại',
+        message: `Vui lòng giảm số lượng: ${overStockItems.map((i) => i.name).join(', ')}.`,
+      });
+      return;
+    }
     if (selectedItems.length === 0) {
       e.preventDefault();
       toast({
@@ -137,14 +154,27 @@ export function CartPage() {
                 selectedCount={selectedItems.length}
               />
 
-              {items.map((item) => (
+              {items.map((item) => {
+                const availableQuantity = stockOf(item);
+                const maxQuantity = maxOrderableQuantity(availableQuantity);
+                return (
                 <CartItemRow
                   key={item.variantId}
                   item={item}
                   isSelected={selectedSet.has(item.variantId)}
                   onToggleSelect={() => toggleSelectItem(item.variantId)}
                   onDecrementQuantity={() => setQuantity(item.variantId, item.quantity - 1)}
+                  maxQuantity={maxQuantity}
+                  availableQuantity={availableQuantity}
+                  onCommitQuantity={(value) => {
+                    const next = clampToStock(value, availableQuantity, item.quantity);
+                    setQuantity(item.variantId, next.quantity);
+                    if (next.clamped) {
+                      toast({ type: 'info', title: 'Vượt số lượng còn lại', message: `${item.name}: chỉ còn ${next.max} sản phẩm có thể đặt.` });
+                    }
+                  }}
                   onIncrementQuantity={() => {
+                    if (item.quantity >= maxQuantity) return;
                     setQuantity(item.variantId, item.quantity + 1);
                     // Vừa vượt số suất flash: báo một lần lúc chuyển ngưỡng, không báo mỗi lần bấm.
                     const before = priceLine(item);
@@ -160,7 +190,8 @@ export function CartPage() {
                   onRemove={() => handleRemoveItem(item.variantId, item.name)}
                   linePrice={priceLine(item)}
                 />
-              ))}
+                );
+              })}
             </div>
 
             {/* Order Summary */}
@@ -173,6 +204,7 @@ export function CartPage() {
                   : '#'
               }
               onCheckoutClick={handleCheckoutClick}
+              blocked={overStockItems.length > 0}
             />
           </div>
         )}
