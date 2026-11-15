@@ -1,4 +1,5 @@
 export { ProductsPage, loadCatalogFirstPage } from './pages/products-page';
+export { CatalogRouteSkeleton, ProductDetailRouteSkeleton } from './components/catalog-route-skeleton';
 export { CategoryListPage } from './pages/category-list-page';
 export { SearchPage } from './pages/search-page';
 export { ProductShowcase } from './components/product-showcase';

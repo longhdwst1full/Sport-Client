@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useId } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { useProductSearch } from '@/features/catalog';
@@ -27,6 +27,8 @@ export function AutocompleteSearch({
   isMobile = false,
   onCloseMobile,
 }: AutocompleteSearchProps) {
+  const searchId = useId();
+  const listboxId = `${searchId}-results`;
   const router = useRouter();
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
@@ -36,6 +38,9 @@ export function AutocompleteSearch({
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => preloadOnIdle(loadSuggestionPopover), []);
+  useEffect(() => {
+    if (isMobile) inputRef.current?.focus();
+  }, [isMobile]);
 
   // Gọi Backend theo giá trị đã hoãn: mỗi phím gõ một lượt gọi là quá nhiều cho một lần tìm.
   const debouncedQuery = useDebounce(query, 300);
@@ -70,6 +75,12 @@ export function AutocompleteSearch({
 
   // Keyboard navigation
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      setIsOpen(false);
+      onCloseMobile?.();
+      return;
+    }
     if (!isOpen || results.length === 0) return;
 
     if (e.key === 'ArrowDown') {
@@ -78,8 +89,6 @@ export function AutocompleteSearch({
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
       setSelectedIndex((prev) => (prev > 0 ? prev - 1 : results.length - 1));
-    } else if (e.key === 'Escape') {
-      setIsOpen(false);
     } else if (e.key === 'Enter') {
       if (selectedIndex >= 0 && selectedIndex < results.length) {
         e.preventDefault();
@@ -136,6 +145,7 @@ export function AutocompleteSearch({
     <div ref={containerRef} className={`relative w-full ${className}`}>
       {/* Search Bar - Modern Rounded Pill Design */}
       <SearchInput
+        listboxId={listboxId}
         inputRef={inputRef}
         query={query}
         onQueryChange={setQuery}
@@ -144,7 +154,7 @@ export function AutocompleteSearch({
         onSubmit={handleSearchSubmit}
         onClear={handleClear}
         placeholder={placeholder}
-        isOpen={isOpen}
+        isOpen={isOpen && results.length > 0}
         selectedIndex={selectedIndex}
         results={results}
       />
@@ -152,6 +162,7 @@ export function AutocompleteSearch({
       {/* Autocomplete Suggestions Popover Dropdown - Curved Rounded-3xl */}
       {isOpen && (
         <SuggestionPopover
+          listboxId={listboxId}
           query={query}
           isError={isError}
           isPending={isPending}

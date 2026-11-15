@@ -211,7 +211,7 @@ export function SiteFooter({ categories }: { categories?: readonly FooterCategor
         </div>
       </div>
 
-      <div className="mx-auto mt-8 flex max-w-7xl flex-col justify-between gap-3 border-t border-neutral-800 pt-6 text-xs text-neutral-500 sm:flex-row sm:items-center">
+      <div className="mx-auto mt-8 flex max-w-7xl flex-col justify-between gap-3 border-t border-neutral-800 pt-6 text-xs text-neutral-400 sm:flex-row sm:items-center">
         <div>
           © {new Date().getFullYear()} {STORE_CONFIG.legalName} ({STORE_CONFIG.name}). Chuyên cung cấp dụng cụ thể thao, thiết bị thể dục và thể hình chính hãng uy tín toàn quốc.
         </div>

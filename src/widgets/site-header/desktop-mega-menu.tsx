@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { ChevronDown } from 'lucide-react';
-import { useCallback, useRef, useState, type FocusEvent, type KeyboardEvent, type MouseEvent, type PointerEvent } from 'react';
+import { useCallback, useId, useRef, useState, type FocusEvent, type KeyboardEvent, type MouseEvent, type PointerEvent } from 'react';
 import type { MegaMenuEntry } from '@/features/catalog';
 import { MegaMenuPanel } from './mega-menu-panel';
 import { OverflowCategoryMenu } from './overflow-category-menu';
@@ -25,6 +25,7 @@ export function DesktopMegaMenu({
   hasFlashSaleCampaign,
   flashSaleMaxDiscountPercent,
 }: DesktopMegaMenuProps) {
+  const menuId = useId();
   const [activeMegaMenu, setActiveMegaMenu] = useState<string | null>(null);
   const megaMenuTimeout = useRef<ReturnType<typeof setTimeout>>(null);
 
@@ -73,8 +74,10 @@ export function DesktopMegaMenu({
   const handleGroupKeyDown = useCallback(
     (event: KeyboardEvent<HTMLElement>) => {
       if (event.key !== 'Escape') return;
-      closeNow();
+      event.preventDefault();
       event.currentTarget.querySelector<HTMLElement>('a, button')?.focus();
+      // Focus quay về trigger sẽ phát onFocus mở menu: đóng SAU focus để Escape không mở lại panel.
+      closeNow();
     },
     [closeNow],
   );
@@ -117,6 +120,8 @@ export function DesktopMegaMenu({
               >
                 <Link
                   href={cat.href}
+                  aria-expanded={hasSubmenu ? isOpen : undefined}
+                  aria-controls={isOpen ? `${menuId}-${catIdx}` : undefined}
                   onPointerDown={hasSubmenu ? (event) => handleTriggerPointerDown(event, cat.label) : undefined}
                   onClick={hasSubmenu ? (event) => handleTriggerClick(event, cat.label) : undefined}
                   className={`${NAV_ITEM_BASE} group ${isOpen ? NAV_ITEM_ACTIVE : NAV_ITEM_IDLE}`}
@@ -134,11 +139,13 @@ export function DesktopMegaMenu({
 
                 {/* Mega Dropdown */}
                 {isOpen && hasSubmenu && (
-                  <MegaMenuPanel
-                    category={cat}
-                    onMouseEnter={() => handleMegaMenuEnter(cat.label)}
-                    onMouseLeave={handleMegaMenuLeave}
-                  />
+                  <div id={`${menuId}-${catIdx}`}>
+                    <MegaMenuPanel
+                      category={cat}
+                      onMouseEnter={() => handleMegaMenuEnter(cat.label)}
+                      onMouseLeave={handleMegaMenuLeave}
+                    />
+                  </div>
                 )}
               </div>
             );

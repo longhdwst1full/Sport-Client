@@ -92,7 +92,7 @@ export const ProductCard = memo(function ProductCard({
 
         {/* Content details */}
         <div className="flex flex-1 flex-col p-4 sm:p-5">
-          <p className="truncate text-xs font-bold text-neutral-400 uppercase tracking-wider">
+          <p className="truncate text-xs font-bold text-neutral-600 uppercase tracking-wider">
             {[product.brand ?? 'Chính hãng', product.category].filter(Boolean).join(' · ')}
           </p>
 
@@ -114,13 +114,13 @@ export const ProductCard = memo(function ProductCard({
                   <strong className="block truncate text-lg font-bold tracking-tight text-brand-600 sm:text-xl">
                     {flash.priceLabel}
                   </strong>
-                  <span className="truncate text-xs text-neutral-400 line-through">
+                  <span className="truncate text-xs text-neutral-600 line-through">
                     {flash.originalPriceLabel ?? product.displayPrice}
                   </span>
                 </>
               ) : (
                 <strong
-                  className={`block truncate text-lg sm:text-xl font-bold tracking-tight ${product.hasPrice ? 'text-neutral-950' : 'text-neutral-400'}`}
+                  className={`block truncate text-lg sm:text-xl font-bold tracking-tight ${product.hasPrice ? 'text-neutral-950' : 'text-neutral-600'}`}
                 >
                   {product.displayPrice}
                 </strong>

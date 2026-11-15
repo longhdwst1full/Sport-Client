@@ -1,10 +1,10 @@
 # Storefront Catalog — maintenance note
 
-> **Document version:** 1.11.0
+> **Document version:** 1.12.0
 >
-> **Last updated:** 2026-11-07
+> **Last updated:** 2026-11-15
 >
-> **Change summary:** PDP hiển thị và chặn theo `availableQuantity` của API: nhãn tồn, bộ chọn số lượng kẹp max, hết hàng khoá mua.
+> **Change summary:** Server-first route loading cho /products, alias /catalog và /category/[slug]; fallback riêng cho PDP để không kế thừa skeleton lưới. Skeleton dùng foundation cùng bố cục responsive, không render lại shell. Ba màu chữ phụ trên ProductCard đổi neutral-400 → neutral-600; bật lại contrast gate trong E2E. Không đổi giá/tồn/API.
 
 ## Phạm vi và ranh giới
 
@@ -55,6 +55,7 @@
 
 | Version | Date | Change summary | Source |
 | --- | --- | --- | --- |
+| 1.12.0 | 2026-11-15 | Route skeleton server-first cho list/category/PDP, tăng contrast thẻ và bật color-contrast gate. | CLIENT-20261115-UX-A11Y |
 | 1.11.0 | 2026-11-07 | PDP hiển thị và chặn theo `availableQuantity` của API: nhãn tồn, bộ chọn số lượng kẹp max, hết hàng khoá mua. | CLIENT-20261107-STOCK-LIMIT |
 | 1.10.0 | 2026-10-17 | PDP: vượt suất flash hiện "N × giá flash + M × giá gốc = tổng" và toast tương ứng (khớp checkout tách dòng). |  |
 | 1.9.0 | 2026-10-17 | `VariantFlashPriceProvider` (route group cấp từ promotions); `ProductCard` giá flash; giỏ nhận giá flash từ thẻ; PDP: dữ liệu sống thắng ISR, vượt suất tính giá thường + cảnh báo/toast; JSON-LD giá flash thấp nhất + `priceValidUntil`. |  |

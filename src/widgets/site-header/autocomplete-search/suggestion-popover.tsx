@@ -16,6 +16,7 @@ const POPULAR_SUGGESTIONS = [
 ];
 
 interface SuggestionPopoverProps {
+  listboxId: string;
   query: string;
   isError: boolean;
   isPending: boolean;
@@ -31,6 +32,7 @@ interface SuggestionPopoverProps {
 }
 
 export function SuggestionPopover({
+  listboxId,
   query,
   isError,
   isPending,
@@ -123,7 +125,7 @@ export function SuggestionPopover({
 
           {/* Đang tìm lại thì giữ kết quả cũ và làm mờ, không nháy về khung xám. */}
           <div
-            id="product-search-listbox"
+            id={listboxId}
             role="listbox"
             aria-label="Gợi ý sản phẩm"
             className="mt-1 max-h-[360px] space-y-1 overflow-y-auto pr-0.5 scrollbar-thin"
@@ -131,6 +133,7 @@ export function SuggestionPopover({
             {results.map((product, index) => (
               <SuggestionItem
                 key={product.id}
+                id={`${listboxId}-option-${product.id}`}
                 product={product}
                 isSelected={selectedIndex === index}
                 onSelect={() => onSelectProduct(product.slug)}

@@ -110,11 +110,12 @@ export function SiteHeader({ initialCategories }: SiteHeaderProps = {}) {
         </div>
 
         {/* Mobile Search Overlay */}
-        {searchOpen && (
-          <div className="border-t border-neutral-100 bg-neutral-50 px-4 py-3 lg:hidden">
-            <AutocompleteSearch isMobile onCloseMobile={() => setSearchOpen(false)} />
-          </div>
-        )}
+        <div id="mobile-search-panel" hidden={!searchOpen} className="border-t border-neutral-100 bg-neutral-50 px-4 py-3 lg:hidden">
+          {searchOpen && <AutocompleteSearch isMobile onCloseMobile={() => {
+            setSearchOpen(false);
+            document.getElementById('mobile-search-trigger')?.focus();
+          }} />}
+        </div>
       </div>
 
       {/* Streamlined Desktop Navigation Bar with Integrated Mega Menus */}

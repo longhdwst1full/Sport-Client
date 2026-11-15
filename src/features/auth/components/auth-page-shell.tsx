@@ -55,7 +55,7 @@ export function AuthPageShell({
 
               <SocialLoginButtons {...social} />
 
-              <div className="mt-4 flex items-center justify-center gap-1.5 text-2xs text-neutral-400">
+              <div className="mt-4 flex items-center justify-center gap-1.5 text-2xs text-neutral-600">
                 <ShieldCheck className="size-3.5 text-success-600" aria-hidden />
                 <span>Thông tin tài khoản được truyền qua kết nối mã hoá (HTTPS)</span>
               </div>

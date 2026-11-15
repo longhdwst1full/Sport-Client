@@ -9,6 +9,7 @@ import { clampToStock, isOverStock, maxOrderableQuantity } from '../model/stock-
 import { Button } from '@/foundation/components/buttons';
 import { Skeleton } from '@/foundation/components/feedback';
 import { Breadcrumb } from '@/foundation/components/navigation';
+import { Modal } from '@/foundation/components/overlay';
 import { useToast } from '@/shared/components/global-toast';
 import { CartEmpty } from '../components/cart-empty';
 import { CartSelectAllBar } from '../components/cart-select-all-bar';
@@ -16,6 +17,7 @@ import { CartItemRow } from '../components/cart-item-row';
 import { CartSummary } from '../components/cart-summary';
 
 export function CartPage() {
+  const [clearConfirmationOpen, setClearConfirmationOpen] = useState(false);
   const { removeItem, clear, updateQuantity: setQuantity } = useCartActions();
   const priceLine = useCartLinePricing();
   const { toast } = useToast();
@@ -76,14 +78,9 @@ export function CartPage() {
   };
 
   const handleClearCart = () => {
-    if (window.confirm('Bạn có chắc chắn muốn xóa toàn bộ sản phẩm trong giỏ hàng?')) {
-      clear();
-      toast({
-        type: 'info',
-        title: 'Giỏ hàng trống',
-        message: 'Đã xóa tất cả sản phẩm.',
-      });
-    }
+    setClearConfirmationOpen(false);
+    clear();
+    toast({ type: 'info', title: 'Giỏ hàng trống', message: 'Đã xóa tất cả sản phẩm.' });
   };
 
   const handleCheckoutClick = (e: React.MouseEvent) => {
@@ -122,7 +119,7 @@ export function CartPage() {
             <Button
               variant="dangerOutline"
               size="sm"
-              onClick={handleClearCart}
+              onClick={() => setClearConfirmationOpen(true)}
               className="px-3 text-xs font-bold"
             >
               Xóa tất cả
@@ -207,6 +204,21 @@ export function CartPage() {
               blocked={overStockItems.length > 0}
             />
           </div>
+        )}
+        {clearConfirmationOpen && (
+          <Modal
+            labelledBy="clear-cart-title"
+            onClose={() => setClearConfirmationOpen(false)}
+            backdropClassName="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4"
+            className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl"
+          >
+            <h2 id="clear-cart-title" className="text-lg font-bold text-neutral-950">Xóa toàn bộ giỏ hàng?</h2>
+            <p className="mt-3 text-sm text-neutral-600">Tất cả sản phẩm sẽ được bỏ khỏi giỏ hàng. Bạn cần thêm lại nếu muốn mua tiếp.</p>
+            <div className="mt-6 flex justify-end gap-3">
+              <Button variant="secondary" onClick={() => setClearConfirmationOpen(false)}>Giữ giỏ hàng</Button>
+              <Button variant="danger" onClick={handleClearCart}>Xóa tất cả sản phẩm</Button>
+            </div>
+          </Modal>
         )}
       </main>
   );

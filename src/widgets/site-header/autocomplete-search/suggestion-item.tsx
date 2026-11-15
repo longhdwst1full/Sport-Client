@@ -3,16 +3,17 @@ import { Search } from 'lucide-react';
 import type { ProductSuggestionView } from '@/features/catalog';
 
 interface SuggestionItemProps {
+  id: string;
   product: ProductSuggestionView;
   isSelected: boolean;
   onSelect: () => void;
   onHover: () => void;
 }
 
-export function SuggestionItem({ product, isSelected, onSelect, onHover }: SuggestionItemProps) {
+export function SuggestionItem({ id, product, isSelected, onSelect, onHover }: SuggestionItemProps) {
   return (
     <div
-      id={`product-search-option-${product.id}`}
+      id={id}
       role="option"
       aria-selected={isSelected}
       onClick={onSelect}

@@ -3,6 +3,7 @@ import type { ProductSuggestionView } from '@/features/catalog';
 import { SearchBox } from '@/foundation/components/field-system';
 
 interface SearchInputProps {
+  listboxId: string;
   inputRef: RefObject<HTMLInputElement | null>;
   query: string;
   onQueryChange: (value: string) => void;
@@ -17,6 +18,7 @@ interface SearchInputProps {
 }
 
 export function SearchInput({
+  listboxId,
   inputRef,
   query,
   onQueryChange,
@@ -42,11 +44,11 @@ export function SearchInput({
       autoComplete="off"
       role="combobox"
       aria-expanded={isOpen}
-      aria-controls="product-search-listbox"
+      aria-controls={isOpen ? listboxId : undefined}
       aria-autocomplete="list"
       aria-activedescendant={
-        selectedIndex >= 0 && results[selectedIndex]
-          ? `product-search-option-${results[selectedIndex].id}`
+        isOpen && selectedIndex >= 0 && results[selectedIndex]
+          ? `${listboxId}-option-${results[selectedIndex].id}`
           : undefined
       }
     />

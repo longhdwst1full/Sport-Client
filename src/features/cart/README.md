@@ -1,10 +1,10 @@
 # Storefront Cart — maintenance note
 
-> **Document version:** 2.5.0
+> **Document version:** 2.6.0
 >
-> **Last updated:** 2026-11-07
+> **Last updated:** 2026-11-15
 >
-> **Change summary:** `CartItem.availableQuantity` (ảnh chụp) + `useCartStockLimits` (đọc giỏ server); dòng vượt tồn bị cảnh báo và khoá "Đặt hàng".
+> **Change summary:** Xóa tất cả dùng foundation Modal thay window.confirm; mặc định focus nút giữ giỏ, trap focus, Escape/hủy không xóa, xác nhận mới clear + toast. Regression bằng component tests. Không đổi persistence/API/tính tiền.
 
 ## Phạm vi
 
@@ -82,6 +82,7 @@ Persist allowlist: `productId, variantId, sku, productType, name, price, quantit
 
 | Version | Date | Change summary |
 | --- | --- | --- |
+| 2.6.0 | 2026-11-15 | Accessible Modal cho xóa toàn giỏ, focus an toàn và test xác nhận/hủy/Escape. |
 | 2.5.0 | 2026-11-07 | `CartItem.availableQuantity` (ảnh chụp) + `useCartStockLimits` (đọc giỏ server); dòng vượt tồn bị cảnh báo và khoá "Đặt hàng". |
 | 2.4.0 | 2026-10-17 | `CartItem.regularPrice` (giá niêm yết lúc thêm, lưu localStorage); chiến dịch đóng → dòng thêm với giá flash về giá niêm yết; sửa hydration làm rơi `slug`. |
 | 2.3.0 | 2026-10-17 | Vượt suất flash: giỏ tách 2 phần (trong suất giá flash + phần dư giá gốc) khớp checkout tách dòng; bỏ nút "giữ giá flash"; toast nêu số lượng mỗi phần. |

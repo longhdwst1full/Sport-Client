@@ -1,10 +1,10 @@
 # Storefront Auth — maintenance note
 
-> **Document version:** 1.3.1
+> **Document version:** 1.3.2
 >
-> **Last updated:** 2026-09-30
+> **Last updated:** 2026-11-15
 >
-> **Change summary:** Bắt buộc mọi request trình duyệt, gồm refresh token, đi same-origin qua Next rewrite ở local/preview/production; server-side vẫn gọi API trực tiếp.
+> **Change summary:** Tăng contrast tab chuyển login/register và dòng mô tả HTTPS theo kết quả axe browser; không đổi xác thực/transport.
 
 ## Phạm vi
 
@@ -60,6 +60,7 @@ Chưa dùng: `useLogoutCustomer`, `useRefreshCustomerToken`, `getCustomerCurrent
 
 | Version | Date | Change summary |
 | --- | --- | --- |
+| 1.3.2 | 2026-11-15 | Sửa contrast chữ phụ trên auth shell và mode switcher sau khi bật lại gate color-contrast. |
 | 1.3.1 | 2026-10-06 | UI: `AuthField` dùng `Field.labelAction` (prop `aside` → `labelAction`), `PasswordInput size/invalid` thay chuỗi class dựng sẵn (bỏ `authPasswordInputClassName`, `AUTH_PASSWORD_TOGGLE_CLASS`), checkbox → `Checkbox`. |
 | 1.3.0 | 2026-09-30 | Chuyển browser transport sang same-origin ở mọi môi trường; thêm regression test cho hostname production. |
 | 1.2.0 | 2026-09-26 | Ghi hành vi refresh mới: same-origin localhost, Web Lock chéo tab, chỉ xoá phiên khi refresh 401, 409 thử lại một lần, cookie là nguồn sự thật. |

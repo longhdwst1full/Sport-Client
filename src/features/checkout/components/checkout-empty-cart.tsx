@@ -68,7 +68,7 @@ export function CheckoutEmptyCart() {
               valueClassName="font-bold"
               items={[
                 { label: 'Tạm tính', value: '0 ₫' },
-                { label: 'Phí vận chuyển', value: 'Tính khi có hàng', valueClassName: 'font-normal text-neutral-400' },
+                { label: 'Phí vận chuyển', value: 'Tính khi có hàng', valueClassName: 'font-normal text-neutral-600' },
               ]}
             />
             <DescriptionList

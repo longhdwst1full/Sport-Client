@@ -102,8 +102,6 @@ function ToastCard({ item, onDismiss }: { item: ToastItem; onDismiss: (id: strin
 
   return (
     <div
-      role="status"
-      aria-live="polite"
       className={`pointer-events-auto relative overflow-hidden rounded-xl border bg-neutral-950/95 p-4 text-white shadow-2xl backdrop-blur-xl animate-in fade-in slide-in-from-top-4 ${config.border} ${config.glow}`}
     >
       <div className="flex items-start gap-3.5">
@@ -208,6 +206,13 @@ export function GlobalToastProvider({ children }: { children: React.ReactNode })
   return (
     <ToastContext.Provider value={{ toast, success, error, info, warning, cart, removeToast }}>
       {children}
+      {/* Live regions tồn tại trước khi có thông báo; không đọc lại nút đóng/đếm giờ của thẻ. */}
+      <div role="status" aria-live="polite" aria-atomic="false" aria-relevant="additions text" className="sr-only">
+        {toasts.filter((item) => item.type !== 'error').map((item) => <p key={item.id}>{item.title}{item.message ? `. ${item.message}` : ''}</p>)}
+      </div>
+      <div role="alert" aria-live="assertive" aria-atomic="false" aria-relevant="additions text" className="sr-only">
+        {toasts.filter((item) => item.type === 'error').map((item) => <p key={item.id}>{item.title}{item.message ? `. ${item.message}` : ''}</p>)}
+      </div>
       {/* Toast Overlay Container positioned at top-right for high visibility */}
       <aside
         aria-label="Thông báo hệ thống"

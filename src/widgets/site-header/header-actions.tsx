@@ -32,6 +32,9 @@ export function HeaderActions({
         onClick={onToggleSearch}
         className="transition lg:hidden"
         aria-label="Tìm sản phẩm"
+        id="mobile-search-trigger"
+        aria-expanded={searchOpen}
+        aria-controls="mobile-search-panel"
       >
         <Search aria-hidden className="size-4.5" />
       </Button>

@@ -1,10 +1,10 @@
 # Storefront checkout — maintenance note
 
-> **Document version:** 2.3.0
+> **Document version:** 2.3.1
 >
-> **Last updated:** 2026-11-07
+> **Last updated:** 2026-11-15
 >
-> **Change summary:** Dòng vượt `availableQuantity` hiện lỗi, không báo giá tự động, khoá nút đặt hàng.
+> **Change summary:** Sửa contrast chữ phí giao trong trạng thái giỏ rỗng (neutral-600), theo axe browser. Không đổi quote/payment/stock/API.
 
 ## Luồng 3 bước (2026-09-26)
 
@@ -96,6 +96,7 @@ Checkout chỉ được import `orders`, `address`, `site-config` (và `auth`, `
 
 | Version | Date | Change summary | Source |
 | --- | --- | --- | --- |
+| 2.3.1 | 2026-11-15 | Sửa contrast nhãn phí giao trong giỏ rỗng; không đổi nghiệp vụ. | CLIENT-20261115-UX-A11Y |
 | 2.3.0 | 2026-11-07 | Dòng vượt `availableQuantity` hiện lỗi, không báo giá tự động, khoá nút đặt hàng. | CLIENT-20261107-STOCK-LIMIT |
 | 2.2.0 | 2026-10-17 | Dòng hàng hiện "N giá flash + M giá gốc"; `CheckoutLineView.flashSale` từ contract `CheckoutQuoteItemDto.flashSale`. |  |
 | 2.1.0 | 2026-10-17 | Tạm tính/dòng hàng theo `useCartLinePricing`; dòng vượt suất flash có ghi chú "tính giá thường". |  |
