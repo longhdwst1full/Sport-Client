@@ -28,13 +28,13 @@ test.describe('PDP — Chi tiết sản phẩm', () => {
 
     await pdp.increaseQty().click();
     await pdp.increaseQty().click();
-    await expect(page.getByText('3', { exact: true }).first()).toBeVisible();
+    await expect(pdp.quantityInput()).toHaveValue('3');
 
     await pdp.decreaseQty().click();
     await pdp.decreaseQty().click();
     await pdp.decreaseQty().click();
     // Không cho xuống 0: số lượng nhỏ nhất bán được là 1.
-    await expect(page.getByText('0', { exact: true })).toHaveCount(0);
+    await expect(pdp.quantityInput()).toHaveValue('1');
   });
 
   test('PDP-04: thêm vào giỏ hiện xác nhận và cập nhật giỏ', async ({ page, request }) => {

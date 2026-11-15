@@ -6,6 +6,8 @@ export class ProductDetailPage extends StorefrontPage {
   readonly title = (): Locator => this.page.getByRole('heading', { level: 1 });
   readonly increaseQty = (): Locator => this.page.getByLabel('Tăng số lượng');
   readonly decreaseQty = (): Locator => this.page.getByLabel('Giảm số lượng');
+  /** Ô số lượng là input sửa được (QuantityStepper + onValueCommit), không phải chữ tĩnh. */
+  readonly quantityInput = (): Locator => this.page.getByRole('textbox', { name: 'Số lượng', exact: true }).first();
   readonly addToCart = (): Locator => this.page.getByRole('button', { name: 'Thêm vào giỏ' }).first();
   readonly buyNow = (): Locator => this.page.getByRole('button', { name: 'Mua ngay' }).first();
   readonly addedNotice = (): Locator =>
