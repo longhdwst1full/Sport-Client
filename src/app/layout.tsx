@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 import { Be_Vietnam_Pro } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import { absoluteUrl, DEFAULT_OG_IMAGE, SITE_NAME, SITE_URL } from '@/lib/seo/page-metadata';
 import { ORGANIZATION_ID, serializeJsonLd, WEBSITE_ID } from '@/lib/seo/json-ld';
 import { STORE_CONFIG, STORE_CONTACT, STORE_SHOWROOMS } from '@/shared/constants';
@@ -192,6 +193,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
         <Providers>{children}</Providers>
         {/* Script `/_vercel/insights` chỉ có trên Vercel: ngoài Vercel (local, CI) bỏ để không lỗi 404 console. */}
         {process.env.VERCEL ? <Analytics /> : null}
+        {process.env.VERCEL ? <SpeedInsights /> : null}
       </body>
     </html>
   );
