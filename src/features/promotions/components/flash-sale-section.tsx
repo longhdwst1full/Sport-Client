@@ -6,6 +6,7 @@ import type { PublicFlashSaleListDto } from '@/generated/api/promotions/promotio
 import { FlashSaleCountdownTimer } from './flash-sale-countdown';
 import { trimToFullRows } from '@/shared/grid/full-rows';
 import { FlashSaleDealCard } from './flash-sale-deal-card';
+import { FlashSaleDealSlider } from './flash-sale-deal-slider';
 import { useFlashSale } from '../hooks/use-flash-sale';
 import { useFlashSaleCart } from '../hooks/use-flash-sale-cart';
 
@@ -18,11 +19,14 @@ const PRIORITY_CARD_COUNT = 2;
 export function FlashSaleSection({
   initialData,
   aboveTheFold = false,
+  layout = 'grid',
 }: {
   /** Danh sách server lấy sẵn để HTML SSR có khối ngay (trang chủ). */
   initialData?: PublicFlashSaleListDto;
   /** Khối thay hero ở đầu trang: ảnh hàng đầu tải ưu tiên (LCP). */
   aboveTheFold?: boolean;
+  /** `slider`: dải trượt ngang tự chạy, hiện mọi suất (trang chủ); `grid`: lưới cắt theo hàng đủ. */
+  layout?: 'grid' | 'slider';
 }) {
   const { campaign, countdown } = useFlashSale({ initialData });
   const { addToCart, buyNow } = useFlashSaleCart();
@@ -72,17 +76,33 @@ export function FlashSaleSection({
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 p-3 sm:gap-4 sm:p-5 lg:grid-cols-4">
-            {trimToFullRows(campaign.deals, FULL_ROW_MULTIPLE).map((deal, index) => (
-              <FlashSaleDealCard
-                key={deal.id}
-                deal={deal}
-                onAddToCart={addToCart}
-                onBuyNow={buyNow}
-                priority={aboveTheFold && index < PRIORITY_CARD_COUNT}
-              />
-            ))}
-          </div>
+          {layout === 'slider' ? (
+            <div className="p-3 sm:p-5">
+              <FlashSaleDealSlider>
+                {campaign.deals.map((deal, index) => (
+                  <FlashSaleDealCard
+                    key={deal.id}
+                    deal={deal}
+                    onAddToCart={addToCart}
+                    onBuyNow={buyNow}
+                    priority={aboveTheFold && index < PRIORITY_CARD_COUNT}
+                  />
+                ))}
+              </FlashSaleDealSlider>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-3 p-3 sm:gap-4 sm:p-5 lg:grid-cols-4">
+              {trimToFullRows(campaign.deals, FULL_ROW_MULTIPLE).map((deal, index) => (
+                <FlashSaleDealCard
+                  key={deal.id}
+                  deal={deal}
+                  onAddToCart={addToCart}
+                  onBuyNow={buyNow}
+                  priority={aboveTheFold && index < PRIORITY_CARD_COUNT}
+                />
+              ))}
+            </div>
+          )}
 
           <div className="border-t border-brand-100 px-4 py-3 text-center">
             <Link

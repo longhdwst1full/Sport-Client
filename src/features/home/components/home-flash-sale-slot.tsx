@@ -11,5 +11,5 @@ export function HomeFlashSaleSlot({ initialFlashSales }: { initialFlashSales?: F
   const { campaigns } = useFlashSaleCampaigns({ initialData: initialFlashSales });
   const hasFlashSale = campaigns.some((campaign) => campaign.deals.length > 0);
 
-  return hasFlashSale ? <FlashSaleSectionLazy initialData={initialFlashSales} aboveTheFold /> : null;
+  return hasFlashSale ? <FlashSaleSectionLazy initialData={initialFlashSales} aboveTheFold layout="slider" /> : null;
 }
