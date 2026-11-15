@@ -20,7 +20,7 @@ Màu, cỡ, bo góc và style lặp khai **một chỗ**; component chỉ dùng 
 | Nút trên nền tối | `static` | |
 | Chip/ô lựa chọn đang bật | `ToggleChip` / token `selected` (nền brand-50, viền brand-300, chữ brand-700) | Không dùng nền đen cho trạng thái chọn |
 | Giá thường | `text-neutral-950` | Giá KHÔNG tô đỏ/cam |
-| Giá sale, % giảm, flash sale, nhận diện | `brand-*` (gốc #E83734 của logo); giá gốc `neutral-400 line-through` | Không dùng cho nút |
+| Giá sale, % giảm, flash sale, nhận diện | `brand-*` (gốc #E83734 của logo); giá gốc `neutral-600 line-through` (neutral-400 trượt contrast 4.5:1 trên nền trắng, axe chặn) | Không dùng cho nút |
 | Lỗi, huỷ/xoá | `red-*`, `variant="danger"` / `dangerOutline` | |
 | Thành công, còn hàng | `success-*` | Không trang trí |
 | Cảnh báo, sao đánh giá | `amber-*` | |
