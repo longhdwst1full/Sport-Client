@@ -40,10 +40,7 @@ export function checkoutLinesKey(items: ReadonlyArray<Pick<CartItem, 'variantId'
 }
 
 function messageOf(error: unknown): string {
-  return apiErrorMessage(
-    error,
-    error instanceof Error ? error.message : 'Không thể xử lý yêu cầu. Vui lòng thử lại.',
-  );
+  return apiErrorMessage(error, 'Không thể xử lý yêu cầu. Vui lòng thử lại.', { includeClientErrors: true });
 }
 
 /**

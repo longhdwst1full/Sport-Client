@@ -20,10 +20,7 @@ function RequiredMark() {
 }
 
 function messageOf(error: unknown): string {
-  return apiErrorMessage(
-    error,
-    error instanceof Error ? error.message : 'Không thể gửi đánh giá. Vui lòng thử lại.',
-  );
+  return apiErrorMessage(error, 'Không thể gửi đánh giá. Vui lòng thử lại.', { includeClientErrors: true });
 }
 
 export function ReviewFormDialog({

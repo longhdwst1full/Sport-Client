@@ -8,6 +8,7 @@ import { PaginationControls } from '@/shared/components/pagination-controls';
 import { OrderListSkeleton } from '../components/order-skeletons';
 import { useAccountOrders } from '../hooks/use-account-orders';
 import { GUEST_LOOKUP_ROUTE } from '../model/guest-order-lookup.constants';
+import { AccountPageMain } from '@/shared/components/account-page-main';
 
 export function AccountOrdersPage() {
   const {
@@ -27,7 +28,7 @@ export function AccountOrdersPage() {
   } = useAccountOrders();
 
   return (
-      <main className="mx-auto min-h-[60vh] max-w-6xl px-4 py-10 sm:px-6">
+      <AccountPageMain width="6xl">
         <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="eyebrow text-neutral-900">Tài khoản</p>
@@ -97,6 +98,6 @@ export function AccountOrdersPage() {
             ariaLabel="Phân trang đơn hàng"
           />
         )}
-      </main>
+      </AccountPageMain>
   );
 }

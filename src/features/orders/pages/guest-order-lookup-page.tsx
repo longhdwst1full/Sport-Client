@@ -7,6 +7,7 @@ import { InlineAlert } from '@/foundation/components/feedback';
 import { Field, TextInput } from '@/foundation/components/field-system';
 import { GUEST_LOOKUP_CODE_LENGTH, GUEST_LOOKUP_COPY } from '../model/guest-order-lookup.constants';
 import { useGuestOrderLookup } from '../hooks/use-guest-order-lookup';
+import { AccountPageMain } from '@/shared/components/account-page-main';
 
 const LABEL_CLASS = 'block text-xs font-bold text-neutral-800';
 const ERROR_ALERT_CLASS = 'rounded-2xl border border-red-200 bg-red-50 p-3 text-xs font-semibold text-red-800';
@@ -16,7 +17,7 @@ export function GuestOrderLookupPage({ initialOrderNo = '' }: { initialOrderNo?:
   const lookup = useGuestOrderLookup(initialOrderNo);
 
   return (
-    <main className="mx-auto min-h-[60vh] max-w-xl px-4 py-10 sm:px-6">
+    <AccountPageMain width="xl">
       <p className="eyebrow text-neutral-900">Khách vãng lai</p>
       <h1 className="heading-page mt-2">{GUEST_LOOKUP_COPY.title}</h1>
       <p className="mt-2 text-sm text-neutral-600">{GUEST_LOOKUP_COPY.intro}</p>
@@ -140,6 +141,6 @@ export function GuestOrderLookupPage({ initialOrderNo = '' }: { initialOrderNo?:
       <p className="mt-6 text-center text-xs text-neutral-500">
         Có tài khoản? <Link href="/login" className="font-bold text-neutral-900">Đăng nhập</Link> để xem toàn bộ đơn hàng.
       </p>
-    </main>
+    </AccountPageMain>
   );
 }

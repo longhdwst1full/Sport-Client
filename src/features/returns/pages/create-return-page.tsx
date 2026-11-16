@@ -17,6 +17,7 @@ import {
 } from '../model/return.constants';
 import { apiErrorMessage } from '@/lib/api/error-message';
 import { useCreateReturn } from '../hooks/use-create-return';
+import { AccountPageMain } from '@/shared/components/account-page-main';
 
 const reasonOptions = Object.entries(returnReasonLabels) as [CreateReturnFormState['reasonCode'], string][];
 
@@ -44,7 +45,7 @@ export function CreateReturnPage({ orderNo }: { orderNo: string }) {
   } = useCreateReturn(orderNo);
 
   return (
-      <main className="mx-auto min-h-[60vh] max-w-4xl px-4 py-10 sm:px-6">
+      <AccountPageMain width="4xl">
         <p className="eyebrow text-neutral-900">Đổi trả</p>
         <h1 className="heading-page mt-2">Yêu cầu trả hàng · <span className="break-all font-mono">{orderNo}</span></h1>
 
@@ -203,6 +204,6 @@ export function CreateReturnPage({ orderNo }: { orderNo: string }) {
             </div>
           </form>
         )}
-      </main>
+      </AccountPageMain>
   );
 }

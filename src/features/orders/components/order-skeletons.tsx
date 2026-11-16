@@ -1,27 +1,17 @@
-import { Skeleton, SkeletonText } from '@/foundation/components/feedback';
+import { Skeleton, SkeletonText, SummaryCardSkeleton } from '@/foundation/components/feedback';
 
 /** 5 thẻ đơn giữ đúng chiều cao thẻ thật trong lịch sử đơn (`12-skeleton-loading.md` RULE-SKEL-04). */
 export function OrderListSkeleton({ count = 5, label = 'Đang tải danh sách đơn hàng' }: { count?: number; label?: string }) {
   return (
     <div className="grid gap-4" role="status" aria-label={label}>
       {Array.from({ length: count }, (_, index) => (
-        <div key={index} className="surface-card p-5 shadow-sm">
-          <div className="flex flex-wrap items-start justify-between gap-4">
-            <div className="space-y-2">
-              <Skeleton className="h-4 w-36" />
-              <Skeleton className="h-3 w-52" />
-            </div>
-            <Skeleton className="h-6 w-24 rounded-full" />
-          </div>
-          <div className="mt-5 grid gap-3 border-t border-neutral-100 pt-4 sm:grid-cols-3">
-            {[0, 1, 2].map((cell) => (
-              <div key={cell} className="space-y-1.5">
-                <Skeleton className="h-3 w-16" />
-                <Skeleton className="h-4 w-28" />
-              </div>
-            ))}
-          </div>
-        </div>
+        <SummaryCardSkeleton
+          key={index}
+          cells={3}
+          titleClassName="h-4 w-36"
+          subtitleClassName="h-3 w-52"
+          badgeClassName="h-6 w-24 rounded-full"
+        />
       ))}
     </div>
   );

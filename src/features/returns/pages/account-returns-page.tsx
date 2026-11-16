@@ -14,6 +14,7 @@ import {
   returnStatusTone,
 } from '../model/return.constants';
 import { useAccountReturns } from '../hooks/use-account-returns';
+import { AccountPageMain } from '@/shared/components/account-page-main';
 
 export function AccountReturnsPage() {
   const {
@@ -31,7 +32,7 @@ export function AccountReturnsPage() {
   } = useAccountReturns();
 
   return (
-      <main className="mx-auto min-h-[60vh] max-w-6xl px-4 py-10 sm:px-6">
+      <AccountPageMain width="6xl">
         <div className="mb-7">
           <p className="eyebrow text-neutral-900">Tài khoản</p>
           <h1 className="heading-page mt-2">Yêu cầu đổi trả</h1>
@@ -98,6 +99,6 @@ export function AccountReturnsPage() {
             ariaLabel="Phân trang yêu cầu đổi trả"
           />
         )}
-      </main>
+      </AccountPageMain>
   );
 }

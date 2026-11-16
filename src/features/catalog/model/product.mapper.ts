@@ -3,7 +3,8 @@ import type {
   ProductListResponseDto,
   ProductSummaryDto,
 } from '@/generated/api/catalog/catalog.schemas';
-import { ProductMediaStatus, ProductVariantStatus } from '@/generated/api/catalog/catalog.schemas';
+import { ProductVariantStatus } from '@/generated/api/catalog/catalog.schemas';
+import { activeSortedMedia } from './product-media';
 import { vndMoney } from '@/shared/format/money';
 import { PRODUCT_PLACEHOLDER_IMAGE } from '@/shared/constants';
 
@@ -216,15 +217,7 @@ export interface ProductGalleryImageView {
  * ảnh stock bên ngoài vì khách sẽ tưởng đó là ảnh thật của sản phẩm.
  */
 export function toProductGalleryView(dto: ProductDetailDto): ProductGalleryImageView[] {
-  const media = (dto.media ?? [])
-    .filter((item) => item.status === ProductMediaStatus.ACTIVE && item.secureUrl)
-    .sort((left, right) =>
-      left.isPrimary === right.isPrimary
-        ? left.sortOrder - right.sortOrder
-        : left.isPrimary
-          ? -1
-          : 1,
-    );
+  const media = activeSortedMedia(dto.media);
   const seen = new Set<string>();
   const images: ProductGalleryImageView[] = [];
   for (const item of media) {

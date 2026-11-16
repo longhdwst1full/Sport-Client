@@ -1,5 +1,5 @@
 import type { ProductDetailDto } from '@/generated/api/catalog/catalog.schemas';
-import { ProductMediaStatus } from '@/generated/api/catalog/catalog.schemas';
+import { activeSortedMedia } from './product-media';
 import {
   buildBreadcrumbListJsonLd,
   buildProductJsonLd,
@@ -55,11 +55,7 @@ export function toProductJsonLd(
   /** Giá flash thấp nhất đang mở: khai đúng giá khách thấy, kèm hạn của giá. */
   flash?: { price: number; endsAtMs: number },
 ) {
-  const images = (product.media ?? [])
-    .filter((item) => item.status === ProductMediaStatus.ACTIVE && item.secureUrl)
-    .sort((left, right) =>
-      left.isPrimary === right.isPrimary ? left.sortOrder - right.sortOrder : left.isPrimary ? -1 : 1,
-    )
+  const images = activeSortedMedia(product.media)
     .map((item) => item.secureUrl);
   if (product.imageUrl && !images.includes(product.imageUrl)) images.push(product.imageUrl);
 

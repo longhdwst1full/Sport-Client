@@ -50,7 +50,7 @@ export function EvidencePicker({ orderNo, value, onChange, onUploadingChange, di
           latest.current = next;
           onChange(next);
         })
-        .catch((cause: unknown) => setError(apiErrorMessage(cause, cause instanceof Error ? cause.message : 'Tải ảnh thất bại.')))
+        .catch((cause: unknown) => setError(apiErrorMessage(cause, 'Tải ảnh thất bại.', { includeClientErrors: true })))
         .finally(() => track(-1));
     }
     if (inputRef.current) inputRef.current.value = '';

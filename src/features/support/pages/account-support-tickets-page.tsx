@@ -10,6 +10,7 @@ import { SupportLoginPrompt } from '../components/support-login-prompt';
 import { SupportTicketStatusBadge } from '../components/support-ticket-status-badge';
 import { SUPPORT_FIELD_LABELS, SUPPORT_ROUTES } from '../model/support-ticket.constants';
 import { useAccountSupportTickets } from '../hooks/use-account-support-tickets';
+import { AccountPageMain } from '@/shared/components/account-page-main';
 
 export function AccountSupportTicketsPage() {
   const {
@@ -27,7 +28,7 @@ export function AccountSupportTicketsPage() {
   } = useAccountSupportTickets();
 
   return (
-    <main className="mx-auto min-h-[60vh] max-w-6xl px-4 py-10 sm:px-6">
+    <AccountPageMain width="6xl">
       <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="eyebrow text-neutral-900">Tài khoản</p>
@@ -97,6 +98,6 @@ export function AccountSupportTicketsPage() {
           <Button variant="secondary" size="icon" disabled={page >= totalPages || isFetching} onClick={() => setPage((value) => value + 1)} aria-label="Trang sau"><ChevronRight className="size-4" aria-hidden /></Button>
         </nav>
       )}
-    </main>
+    </AccountPageMain>
   );
 }

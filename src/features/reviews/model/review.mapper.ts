@@ -1,4 +1,5 @@
 import type { ProductReviewDto } from '@/generated/api/reviews/reviews.schemas';
+import { formatDate } from '@/shared/format/date-time';
 
 export interface ReviewReplyView {
   authorName: string;
@@ -24,12 +25,6 @@ export interface RatingBreakdownRow {
   percent: number;
 }
 
-const dateFormatter = new Intl.DateTimeFormat('vi-VN', {
-  day: '2-digit',
-  month: '2-digit',
-  year: 'numeric',
-});
-
 export function toReviewView(dto: ProductReviewDto): ReviewView {
   // Chỉ hiện phản hồi chính thức từ cửa hàng, không hiện bình luận của khách khác.
   const officialReply = dto.comments.find((comment) => comment.authorType !== 'CUSTOMER');
@@ -40,13 +35,13 @@ export function toReviewView(dto: ProductReviewDto): ReviewView {
     title: dto.title,
     content: dto.content,
     verifiedPurchase: dto.verifiedPurchase,
-    dateLabel: dateFormatter.format(new Date(dto.createdAt)),
+    dateLabel: formatDate(dto.createdAt),
     media: dto.media.map((item) => ({ id: item.id, url: item.url, thumbnailUrl: item.thumbnailUrl })),
     reply: officialReply
       ? {
           authorName: officialReply.authorName,
           content: officialReply.content,
-          dateLabel: dateFormatter.format(new Date(officialReply.createdAt)),
+          dateLabel: formatDate(officialReply.createdAt),
         }
       : undefined,
   };

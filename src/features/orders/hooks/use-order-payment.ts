@@ -28,10 +28,9 @@ interface PendingUpload {
 }
 
 export function paymentErrorMessage(error: unknown): string {
-  const fallback = error instanceof Error && error.message
-    ? error.message
-    : 'Không xử lý được bằng chứng thanh toán. Vui lòng thử lại.';
-  return apiErrorMessage(error, fallback);
+  return apiErrorMessage(error, 'Không xử lý được bằng chứng thanh toán. Vui lòng thử lại.', {
+    includeClientErrors: true,
+  });
 }
 
 /**

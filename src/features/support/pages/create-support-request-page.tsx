@@ -17,6 +17,7 @@ import {
   SUPPORT_SUBJECT_MIN_LENGTH,
 } from '../model/support-ticket.constants';
 import { useCreateSupportRequest } from '../hooks/use-create-support-request';
+import { AccountPageMain } from '@/shared/components/account-page-main';
 
 const LABEL_CLASS = 'block text-xs font-bold text-neutral-800';
 
@@ -34,7 +35,7 @@ export function CreateSupportRequestPage() {
   const canSubmit = trimmedSubject.length >= SUPPORT_SUBJECT_MIN_LENGTH && trimmedMessage.length > 0 && !create.isPending;
 
   return (
-    <main className="mx-auto min-h-[60vh] max-w-3xl px-4 py-10 sm:px-6">
+    <AccountPageMain width="3xl">
       <nav className="mb-6 flex items-center gap-2 text-xs font-semibold text-neutral-500" aria-label="Breadcrumb">
         <Link href="/profile" className="hover:text-neutral-900 rounded focus-ring-tight">Tài khoản</Link>
         <span aria-hidden>/</span>
@@ -111,6 +112,6 @@ export function CreateSupportRequestPage() {
           </div>
         </form>
       )}
-    </main>
+    </AccountPageMain>
   );
 }

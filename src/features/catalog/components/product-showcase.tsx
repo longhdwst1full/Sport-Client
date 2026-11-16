@@ -10,6 +10,12 @@ import type { ProductListResponseDto } from '@/generated/api/catalog/catalog.sch
 import { ToggleChip } from '@/foundation/components/tabs-chips';
 import { CatalogProductGrid } from './catalog/catalog-product-grid';
 
+const QUICK_CATEGORIES = [
+  { href: '/category/may-chay-bo', label: 'Máy chạy bộ' },
+  { href: '/category/xe-dap-tap', label: 'Xe đạp tập' },
+  { href: '/category/ghe-tap-ta', label: 'Ghế tập tạ' },
+] as const;
+
 const GRID_CLASS = 'grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3 lg:grid-cols-4';
 
 export function ProductShowcase({
@@ -72,15 +78,11 @@ export function ProductShowcase({
                 <Link href="/products" className={buttonVariants({ variant: 'primary', size: 'sm', className: 'rounded-full font-bold shadow-sm' })}>
                   Xem tất cả sản phẩm
                 </Link>
-                <Link href="/category/may-chay-bo" className={buttonVariants({ variant: 'secondary', size: 'sm', className: 'rounded-full font-bold' })}>
-                  Máy chạy bộ
-                </Link>
-                <Link href="/category/xe-dap-tap" className={buttonVariants({ variant: 'secondary', size: 'sm', className: 'rounded-full font-bold' })}>
-                  Xe đạp tập
-                </Link>
-                <Link href="/category/ghe-tap-ta" className={buttonVariants({ variant: 'secondary', size: 'sm', className: 'rounded-full font-bold' })}>
-                  Ghế tập tạ
-                </Link>
+                {QUICK_CATEGORIES.map(({ href, label }) => (
+                  <Link key={href} href={href} className={buttonVariants({ variant: 'secondary', size: 'sm', className: 'rounded-full font-bold' })}>
+                    {label}
+                  </Link>
+                ))}
               </div>
             )}
           </div>

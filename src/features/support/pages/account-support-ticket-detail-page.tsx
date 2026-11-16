@@ -16,6 +16,7 @@ import {
   SUPPORT_ROUTES,
 } from '../model/support-ticket.constants';
 import { useAccountSupportTicket } from '../hooks/use-account-support-ticket';
+import { AccountPageMain } from '@/shared/components/account-page-main';
 
 export function AccountSupportTicketDetailPage({ ticketNo }: { ticketNo: string }) {
   const {
@@ -34,7 +35,7 @@ export function AccountSupportTicketDetailPage({ ticketNo }: { ticketNo: string 
   } = useAccountSupportTicket(ticketNo);
 
   return (
-    <main className="mx-auto min-h-[60vh] max-w-4xl px-4 py-10 sm:px-6">
+    <AccountPageMain width="4xl">
       <nav className="mb-6 flex items-center gap-2 text-xs font-semibold text-neutral-500" aria-label="Breadcrumb">
         <Link href="/profile" className="hover:text-neutral-900 rounded focus-ring-tight">Tài khoản</Link>
         <span aria-hidden>/</span>
@@ -158,6 +159,6 @@ export function AccountSupportTicketDetailPage({ ticketNo }: { ticketNo: string 
           </form>
         </>
       )}
-    </main>
+    </AccountPageMain>
   );
 }

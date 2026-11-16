@@ -21,6 +21,7 @@ import {
 } from '../model/return.constants';
 import { apiErrorMessage } from '@/lib/api/error-message';
 import { useReturnDetail } from '../hooks/use-return-detail';
+import { AccountPageMain } from '@/shared/components/account-page-main';
 
 const money = (value: string | number) => formatVnd(Number(value));
 
@@ -40,7 +41,7 @@ export function ReturnDetailPage({ returnNo }: { returnNo: string }) {
   } = useReturnDetail(returnNo);
 
   return (
-      <main className="mx-auto min-h-[60vh] max-w-5xl px-4 py-10 sm:px-6">
+      <AccountPageMain width="5xl">
         {(!isLoaded || (isAuthenticated && query.isLoading)) && (
           <ReturnDetailSkeleton />
         )}
@@ -205,6 +206,6 @@ export function ReturnDetailPage({ returnNo }: { returnNo: string }) {
             )}
           </>
         )}
-      </main>
+      </AccountPageMain>
   );
 }
