@@ -3,8 +3,15 @@
 import { Fragment, useState, useEffect, useRef, useCallback, type ReactNode } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/foundation/components/buttons';
-import { useAutoplayAllowed } from '@/shared/hooks';
+import { useAutoplayAllowed, usePauseOnInteraction } from '@/shared/hooks';
 import { Reveal } from '@/foundation/components/motion';
+
+/** Bước cuộn = bề rộng một thẻ + khoảng cách, đọc từ DOM để khớp mọi breakpoint (thẻ 160/190/200px). */
+function cardStepOf(el: HTMLElement): number {
+  const first = el.firstElementChild as HTMLElement | null;
+  const gap = Number.parseFloat(getComputedStyle(el).columnGap) || 0;
+  return first ? first.offsetWidth + gap : 210;
+}
 
 /**
  * Phần tương tác của rail danh mục: section (dừng autoplay khi hover/focus), nút cuộn, vòng cuộn vô hạn
@@ -17,7 +24,7 @@ export function CategoryRailCarousel({ header, items }: { header: ReactNode; ite
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const autoplay = useAutoplayAllowed(sectionRef);
-  const [isPaused, setIsPaused] = useState(false);
+  const { paused: isPaused, handlers } = usePauseOnInteraction();
   const [activeIndex, setActiveIndex] = useState(0);
 
   const checkScrollability = useCallback(() => {
@@ -25,7 +32,7 @@ export function CategoryRailCarousel({ header, items }: { header: ReactNode; ite
     if (!el || itemCount === 0) return;
 
     const { scrollLeft, scrollWidth, clientWidth } = el;
-    const cardStep = 210;
+    const cardStep = cardStepOf(el);
     const rawIndex = Math.round(scrollLeft / cardStep);
     const normalizedIndex = rawIndex % itemCount;
     setActiveIndex(normalizedIndex);
@@ -44,7 +51,7 @@ export function CategoryRailCarousel({ header, items }: { header: ReactNode; ite
     if (!el) return;
 
     // Start in the middle set for infinite circular scroll in both directions
-    const cardStep = 210;
+    const cardStep = cardStepOf(el);
     if (el.scrollLeft === 0 && itemCount > 0) {
       el.scrollLeft = itemCount * cardStep;
     }
@@ -81,7 +88,7 @@ export function CategoryRailCarousel({ header, items }: { header: ReactNode; ite
       const el = scrollContainerRef.current;
       if (!el) return;
 
-      const cardStep = 210;
+      const cardStep = cardStepOf(el);
       el.scrollBy({ left: cardStep, behavior: 'smooth' });
     }, 3200);
 
@@ -94,12 +101,7 @@ export function CategoryRailCarousel({ header, items }: { header: ReactNode; ite
       id="categories"
       className="py-10 sm:py-14 bg-gradient-to-b from-neutral-100/90 via-white to-neutral-100/70 border-y border-neutral-200/90"
       aria-label="Danh mục ngành hàng thể thao"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-      onFocus={() => setIsPaused(true)}
-      onBlur={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setIsPaused(false);
-      }}
+      {...handlers}
     >
       <div className="page-container">
         {header}

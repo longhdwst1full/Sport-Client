@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/foundation/components/buttons';
-import { useAutoplayAllowed } from '@/shared/hooks';
+import { useAutoplayAllowed, usePauseOnInteraction } from '@/shared/hooks';
 
 /** Thời gian giữa hai lần tự trượt. */
 const AUTOPLAY_INTERVAL_MS = 4000;
@@ -27,7 +27,7 @@ export function FlashSaleDealSlider({ children }: { children: ReactNode[] }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const regionRef = useRef<HTMLDivElement>(null);
   const autoplayAllowed = useAutoplayAllowed(regionRef);
-  const [paused, setPaused] = useState(false);
+  const { paused, handlers } = usePauseOnInteraction();
   const [overflowing, setOverflowing] = useState(false);
 
   useEffect(() => {
@@ -65,12 +65,7 @@ export function FlashSaleDealSlider({ children }: { children: ReactNode[] }) {
       role="region"
       aria-roledescription="carousel"
       aria-label="Các suất flash sale"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      onFocus={() => setPaused(true)}
-      onBlur={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setPaused(false);
-      }}
+      {...handlers}
     >
       {overflowing && (
         <Button variant="ghost" size="icon" onClick={() => slide(-1)} className={`${ARROW_CLASS} left-1`} aria-label="Suất trước">
