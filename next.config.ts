@@ -70,6 +70,8 @@ const nextConfig: NextConfig = {
       // SDK Orval (`src/generated/api/*`) import hook từ barrel react-query; server component dùng hàm
       // request của SDK nên mọi hook 'use client' của react-query thành client reference của route.
       '@tanstack/react-query',
+      // Icon: chỉ gói icon thật sự dùng (Next 15 đã mặc định nhưng khai rõ để không phụ thuộc phiên bản).
+      'lucide-react',
     ],
   },
   images: {

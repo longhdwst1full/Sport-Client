@@ -1,12 +1,18 @@
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useCatalogFilters, type CatalogInitialPage } from '../hooks/use-catalog-filters';
 import { CatalogSidebarFilters } from './catalog-sidebar-filters';
 import { CatalogActiveChips } from './catalog-active-chips';
-import { CatalogMobileFilterDrawer } from './catalog-mobile-filter-drawer';
+import dynamic from 'next/dynamic';
 import { CatalogMobileControlBar, CatalogSearchSortBar } from './catalog/catalog-query-controls';
 import { CatalogProductGrid } from './catalog/catalog-product-grid';
+
+/** Drawer chỉ mở khi khách bấm "Bộ lọc" (mobile): tách chunk, không tính vào JS tải trang. Đóng thì vốn render null. */
+const CatalogMobileFilterDrawer = dynamic(
+  () => import('./catalog-mobile-filter-drawer').then((m) => m.CatalogMobileFilterDrawer),
+  { ssr: false },
+);
 
 export function ProductsCatalogView({
   initial,
@@ -14,6 +20,7 @@ export function ProductsCatalogView({
 }: { initial?: CatalogInitialPage; initialCategoryName?: string } = {}) {
   // Mobile filter drawer state
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+  const closeMobileFilter = useCallback(() => setIsMobileFilterOpen(false), []);
 
   const { isTabsPending, activeFilterCount, list, filterProps, queryProps, chipsProps } =
     useCatalogFilters(initial, initialCategoryName);
@@ -53,12 +60,14 @@ export function ProductsCatalogView({
       </div>
 
       {/* MOBILE DRAWER BOTTOM-SHEET FILTER */}
-      <CatalogMobileFilterDrawer
-        isOpen={isMobileFilterOpen}
-        onClose={() => setIsMobileFilterOpen(false)}
-        {...filterProps}
-        totalProductsCount={list.products.length}
-      />
+      {isMobileFilterOpen && (
+        <CatalogMobileFilterDrawer
+          isOpen
+          onClose={closeMobileFilter}
+          {...filterProps}
+          totalProductsCount={list.products.length}
+        />
+      )}
     </section>
   );
 }

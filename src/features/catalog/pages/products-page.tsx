@@ -48,7 +48,7 @@ export async function loadCatalogFirstPage(
 }
 
 type SearchParamsRecord = Record<string, string | string[] | undefined>;
-import { FlashSaleSection } from '@/features/promotions';
+import { FlashSaleSectionLazy } from '@/features/promotions';
 
 
 export async function ProductsPage({
@@ -118,7 +118,7 @@ export async function ProductsPage({
 
           {/* Flash Deals Banner for Catalog */}
           <div className="mt-16 overflow-hidden rounded-4xl">
-            <FlashSaleSection />
+            <FlashSaleSectionLazy />
           </div>
         </div>
       </main>

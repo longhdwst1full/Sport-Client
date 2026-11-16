@@ -59,8 +59,23 @@ function appendMessages(current: ChatMessageListDto | undefined, added: ChatMess
   };
 }
 
-function wait(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+/** Chờ `ms`; bị huỷ giữa chừng thì dừng timer ngay và từ chối bằng `AbortError`. */
+function wait(ms: number, signal?: AbortSignal): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (signal?.aborted) {
+      reject(new DOMException('Aborted', 'AbortError'));
+      return;
+    }
+    const onAbort = () => {
+      clearTimeout(timer);
+      reject(new DOMException('Aborted', 'AbortError'));
+    };
+    const timer = setTimeout(() => {
+      signal?.removeEventListener('abort', onAbort);
+      resolve();
+    }, ms);
+    signal?.addEventListener('abort', onAbort, { once: true });
+  });
 }
 
 /** Trang mới nhất đã có câu trả lời cho tin USER cuối cùng (tin vừa gửi — widget chỉ gửi tuần tự từng tin). */
@@ -86,6 +101,13 @@ export function useAssistantChat({ enabled }: { enabled: boolean }) {
   const [pending, setPending] = useState<PendingAssistantMessage | null>(null);
   const [lastTurn, setLastTurn] = useState<{ handoffSuggested: boolean; status: ChatConversationStatus } | null>(null);
   const idempotencyRef = useRef<AssistantIdempotencyEntry | undefined>(undefined);
+  // Huỷ vòng chờ lượt "đang xử lý" khi đóng panel (`enabled` false) hoặc unmount: không poll nền tới MAX_WAIT_MS.
+  const pollAbortRef = useRef<AbortController | null>(null);
+  useEffect(() => {
+    const controller = new AbortController();
+    pollAbortRef.current = controller;
+    return () => controller.abort();
+  }, [enabled]);
 
   useEffect(() => {
     // SECURITY: đăng nhập/đăng xuất/đổi tài khoản thì bỏ hội thoại của tài khoản trước khỏi bộ nhớ widget.
@@ -175,14 +197,17 @@ export function useAssistantChat({ enabled }: { enabled: boolean }) {
       // sử tới khi tin USER cuối đã có câu trả lời (hoặc hết trần chờ), rồi gửi lại CÙNG khoá: API replay lượt gốc,
       // hoặc chạy lại lượt kẹt — không sinh lượt thứ hai, không trừ quota lần nữa.
       const deadline = Date.now() + ASSISTANT_TURN_POLL.MAX_WAIT_MS;
+      const signal = pollAbortRef.current?.signal;
       while (Date.now() < deadline) {
-        await wait(ASSISTANT_TURN_POLL.INTERVAL_MS);
+        await wait(ASSISTANT_TURN_POLL.INTERVAL_MS, signal);
         try {
           const page = await listChatMessages(targetId, HISTORY_PARAMS, {
             headers: assistantRequestHeaders(targetSessionKey),
           });
           if (lastUserMessageAnswered(page)) break;
-        } catch {
+          if (signal?.aborted) throw new DOMException('Aborted', 'AbortError');
+        } catch (error) {
+          if (signal?.aborted) throw error;
           // Lỗi tạm thời khi hỏi lịch sử: thử lại ở vòng sau, trần chờ vẫn giữ nguyên.
         }
       }

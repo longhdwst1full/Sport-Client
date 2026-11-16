@@ -135,4 +135,21 @@ describe('proxyToBackend', () => {
     expect(own.headers.get('location')).toBe('/api/v1/orders/guest/X?a=1');
     expect(external.headers.get('location')).toBe('https://sandbox.vnpayment.vn/pay?x=1');
   });
+
+  it('trần chờ theo đường dẫn: trợ lý 85 giây, API khác 30 giây', async () => {
+    const timeoutSpy = vi.spyOn(AbortSignal, 'timeout');
+    const fetchMock = vi.fn().mockImplementation(async () => upstream());
+    vi.stubGlobal('fetch', fetchMock);
+    await proxyToBackend(new Request('https://shop.test/api/v1/assistant/conversations/1/messages', { method: 'POST', body: '{}' }), '/api/v1/assistant/conversations/1/messages');
+    await proxyToBackend(new Request('https://shop.test/api/v1/catalog/products'), '/api/v1/catalog/products');
+    expect(timeoutSpy.mock.calls.map((c) => c[0])).toEqual([85_000, 30_000]);
+    timeoutSpy.mockRestore();
+  });
+
+  it('hết giờ chờ backend trả 504 UPSTREAM_TIMEOUT', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new DOMException('t', 'TimeoutError')));
+    const res = await proxyToBackend(new Request('https://shop.test/api/v1/shipping/quote'), '/api/v1/shipping/quote');
+    expect(res.status).toBe(504);
+    expect((await res.json()).code).toBe('UPSTREAM_TIMEOUT');
+  });
 });

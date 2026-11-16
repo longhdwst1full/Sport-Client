@@ -42,7 +42,14 @@ const FORWARDED_REQUEST_HEADERS = [
  * Trần chờ backend. Lượt chat trợ lý được phép tới 90 giây (`ASSISTANT_SEND_TIMEOUT_MS`), nên để thấp hơn
  * `maxDuration` của route một chút: hết giờ thì trả 504 có mã ổn định thay vì để nền tảng cắt hàm.
  */
-const UPSTREAM_TIMEOUT_MS = 85_000;
+const ASSISTANT_UPSTREAM_TIMEOUT_MS = 85_000;
+
+/** Trần cho API còn lại (kể cả báo giá vận chuyển/GHN có thể chậm): đủ rộng, nhưng không treo hàm tới 85 giây. */
+const DEFAULT_UPSTREAM_TIMEOUT_MS = 30_000;
+
+function upstreamTimeoutMs(pathname: string): number {
+  return pathname.toLowerCase().startsWith('/api/v1/assistant/') ? ASSISTANT_UPSTREAM_TIMEOUT_MS : DEFAULT_UPSTREAM_TIMEOUT_MS;
+}
 
 /**
  * Ghép đường dẫn backend từ segment catch-all của Next (đã decode): mã hoá lại từng segment để `/`, `?`, `#`
@@ -154,7 +161,7 @@ export async function proxyToBackend(request: Request, path: string): Promise<Re
       credentials: 'omit',
       cache: 'no-store',
       redirect: 'manual',
-      signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS),
+      signal: AbortSignal.timeout(upstreamTimeoutMs(target.pathname)),
     });
 
     const outgoing = new NextResponse(response.status === 204 || response.status === 304 ? null : response.body, {

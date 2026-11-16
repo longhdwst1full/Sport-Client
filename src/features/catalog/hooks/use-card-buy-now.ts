@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, type MouseEvent } from 'react';
+import { useCallback, useEffect, useRef, type MouseEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCartActions } from '@/features/cart';
 import { useToast } from '@/shared/components/global-toast';
@@ -14,9 +14,16 @@ import { activeFlashPrice, useLiveVariantFlashPrices } from './use-variant-flash
 function useAddDefaultVariant() {
   const { addItem } = useCartActions();
   const flashPrices = useLiveVariantFlashPrices();
+  // `useCartActions` trả object/hàm mới mỗi render và giá flash đổi theo query: giữ bản mới nhất trong ref
+  // để callback ổn định, `ProductCard` (memo) không bị render lại cả lưới khi cha render.
+  const latest = useRef({ addItem, flashPrices });
+  useEffect(() => {
+    latest.current = { addItem, flashPrices };
+  });
   return useCallback(
     (product: ProductShowcaseItem) => {
       if (!product.isSellable || !product.defaultVariantId || !product.defaultVariantSku) return false;
+      const { addItem, flashPrices } = latest.current;
       // Giá hiển thị trong giỏ khớp giá thẻ đang hiện (flash nếu có); checkout vẫn báo giá lại.
       const flash = activeFlashPrice(flashPrices, product.defaultVariantId);
       addItem({
@@ -33,7 +40,7 @@ function useAddDefaultVariant() {
       });
       return true;
     },
-    [addItem, flashPrices],
+    [],
   );
 }
 
@@ -65,6 +72,10 @@ export function useCardAddToCart() {
   const router = useRouter();
   const addDefaultVariant = useAddDefaultVariant();
   const { cart: toastCart } = useToast();
+  const toastRef = useRef(toastCart);
+  useEffect(() => {
+    toastRef.current = toastCart;
+  });
 
   return useCallback(
     (product: ProductShowcaseItem, e?: MouseEvent) => {
@@ -74,8 +85,8 @@ export function useCardAddToCart() {
         router.push(`/products/${product.slug}`);
         return;
       }
-      toastCart('Đã thêm vào giỏ hàng', product.name);
+      toastRef.current('Đã thêm vào giỏ hàng', product.name);
     },
-    [router, addDefaultVariant, toastCart],
+    [router, addDefaultVariant],
   );
 }

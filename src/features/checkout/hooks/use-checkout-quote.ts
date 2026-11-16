@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { CartItem } from '@/features/cart';
 import { restoreAccountCartFromDevice, UnavailableCartLinesError } from '@/features/cart';
 import type { CheckoutQuoteDto } from '@/generated/api/checkout/checkout.schemas';
@@ -85,12 +85,12 @@ export function useCheckoutQuote({
   const [staleQuoteView, setStaleQuoteView] = useState<CheckoutQuoteView>();
 
   /** Fire-and-forget: lỗi mạng/409 chỉ bỏ qua, worker TTL vẫn tự trả hàng khi hết hạn giữ. */
-  const releaseHeldReservation = (reason: string) => {
+  const releaseHeldReservation = useCallback((reason: string) => {
     const held = heldReservation.current;
     if (!held) return;
     heldReservation.current = undefined;
     void releaseCheckoutReservation(held.context, held.reservationToken, reason).catch(() => undefined);
-  };
+  }, []);
 
   // Rời trang checkout (điều hướng trong app) với phiên đã giữ hàng nhưng chưa đặt đơn: trả hàng ngay
   // thay vì chờ TTL 30 phút — báo giá chỉ nằm trong state trang nên không thể quay lại đặt tiếp.
@@ -104,7 +104,7 @@ export function useCheckoutQuote({
     [],
   );
 
-  const invalidateQuote = (keepDisplay = false) => {
+  const invalidateQuote = useCallback((keepDisplay = false) => {
     releaseHeldReservation(RESERVATION_RELEASE_REASON.QUOTE_CHANGED);
     setStaleQuoteView(keepDisplay ? quoteView ?? staleQuoteView : undefined);
     quoteSeq.current += 1;
@@ -115,10 +115,11 @@ export function useCheckoutQuote({
     confirmIdempotencyKey.current = undefined;
     orderIdempotencyKey.current = undefined;
     setError('');
-  };
+  }, [releaseHeldReservation, quoteView, staleQuoteView]);
 
   /** SKU trong giỏ trên máy không còn bán: bỏ khỏi giỏ để báo giá lại với các dòng còn lại. */
-  const handleCheckoutError = (caught: unknown) => {
+  const setAddress = form.setAddress;
+  const handleCheckoutError = useCallback((caught: unknown) => {
     setStaleQuoteView(undefined);
     if (caught instanceof UnavailableCartLinesError) {
       caught.variantIds.forEach((variantId) => removeItem(variantId));
@@ -127,7 +128,7 @@ export function useCheckoutQuote({
     // Bỏ báo giá + khoá idempotency rồi báo giá lại ngay để khách thấy giá mới và đặt tiếp, không bỏ đơn.
     if (apiErrorCode(caught)?.startsWith(FLASH_SALE_ERROR_PREFIX)) {
       invalidateQuote();
-      form.setAddress((current) => ({ ...current }));
+      setAddress((current) => ({ ...current }));
       toast({
         type: 'warning',
         title: 'Ưu đãi flash sale đã thay đổi',
@@ -142,17 +143,17 @@ export function useCheckoutQuote({
       title: 'Không thể xử lý đơn hàng',
       message: msg,
     });
-  };
+  }, [removeItem, toast, invalidateQuote, setAddress]);
 
   /** Lượt báo giá tự động lỗi (GHN timeout, mạng): khách bấm thử lại mà không phải sửa form. */
-  const retryQuote = () => {
+  const retryQuote = useCallback(() => {
     setStaleQuoteView(undefined);
     setError('');
     setQuote(undefined);
     quoteSeq.current += 1;
     // Đổi một dependency của effect báo giá để nó chạy lại ngay.
-    form.setAddress((current) => ({ ...current }));
-  };
+    setAddress((current) => ({ ...current }));
+  }, [setAddress]);
 
   const refreshConsultedQuote = async () => {
     if (!quote || !context || busy) return;
@@ -225,9 +226,7 @@ export function useAutoQuote({
   useEffect(() => {
     if (!quote || placedOrder || !effectiveItems.length) return;
     if (quotedLinesKey.current !== undefined && quotedLinesKey.current !== linesKey) invalidateQuote(true);
-    // invalidateQuote là closure mới mỗi render; chỉ cần chạy khi chữ ký dòng hoặc báo giá đổi.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [linesKey, quote, placedOrder]);
+  }, [linesKey, quote, placedOrder, effectiveItems.length, quotedLinesKey, invalidateQuote]);
   useEffect(() => {
     if (!isLoaded || !readyToQuote || quote || placedOrder || !effectiveItems.length) return;
     const seq = ++quoteSeq.current;

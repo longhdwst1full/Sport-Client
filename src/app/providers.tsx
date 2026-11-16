@@ -23,6 +23,7 @@ import {
 import dynamic from 'next/dynamic';
 import { clearSessionPwaCaches } from '@/pwa/session-caches';
 
+import { preloadOnIdle } from '@/shared/hooks/preload-on-idle';
 import { GlobalToastProvider } from '@/shared/components/global-toast';
 
 // Đăng ký service worker và hai thanh trạng thái (ngoại tuyến/có bản mới) không hiện gì ở lượt
@@ -48,6 +49,8 @@ function readAuthenticatedSubject(): string | undefined {
 
 export function Providers({ children }: { children: ReactNode }) {
   const [cartHydrated, setCartHydrated] = useState(false);
+  // PWA (đăng ký SW, thanh trạng thái) không quan trọng cho lần vẽ đầu: chỉ gắn + tải chunk khi trình duyệt rảnh.
+  const [pwaReady, setPwaReady] = useState(false);
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -62,6 +65,15 @@ export function Providers({ children }: { children: ReactNode }) {
           },
         },
       }),
+  );
+
+  useEffect(
+    () =>
+      preloadOnIdle(() => {
+        setPwaReady(true);
+        return Promise.resolve();
+      }),
+    [],
   );
 
   useEffect(() => {
@@ -146,7 +158,7 @@ export function Providers({ children }: { children: ReactNode }) {
         <CartHydrationContext.Provider value={cartHydrated}>
           <GlobalToastProvider>
             {children}
-            <PwaRegistration />
+            {pwaReady ? <PwaRegistration /> : null}
           </GlobalToastProvider>
         </CartHydrationContext.Provider>
       </QueryClientProvider>

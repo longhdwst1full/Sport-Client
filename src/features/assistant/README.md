@@ -1,10 +1,10 @@
 # Storefront Assistant — maintenance note
 
-> **Document version:** 1.3.0
+> **Document version:** 1.3.1
 >
-> **Last updated:** 2026-11-07
+> **Last updated:** 2026-11-16
 >
-> **Change summary:** Thêm chip gợi ý câu hỏi dưới lời chào (`ASSISTANT_SUGGESTIONS`), gửi qua `send` của hook; chip đơn hàng của khách ẩn danh chưa có grant dẫn tới `/orders/lookup`. Trước đó: Sửa mô tả `ASSISTANT_TURN_IN_PROGRESS`: giữ khoá idempotency và chờ lượt gốc (tối đa 90 giây), không bỏ khoá. Trước đó: Dòng giỏ dùng `productType` của thẻ; khách ẩn danh gửi grant tra đơn OTP qua header `x-order-lookup-token` (không bao giờ trong nội dung) và được gợi ý tra cứu đơn khi hỏi về đơn; map `ASSISTANT_ORDER_LOOKUP_TOKEN_INVALID`.
+> **Change summary:** Vòng chờ lượt "đang xử lý" có AbortController: đóng panel (`enabled` false) hoặc unmount thì dừng poll và timer ngay; vẫn giữ khoá idempotency. Trước đó: Thêm chip gợi ý câu hỏi dưới lời chào (`ASSISTANT_SUGGESTIONS`), gửi qua `send` của hook; chip đơn hàng của khách ẩn danh chưa có grant dẫn tới `/orders/lookup`. Trước đó: Sửa mô tả `ASSISTANT_TURN_IN_PROGRESS`: giữ khoá idempotency và chờ lượt gốc (tối đa 90 giây), không bỏ khoá. Trước đó: Dòng giỏ dùng `productType` của thẻ; khách ẩn danh gửi grant tra đơn OTP qua header `x-order-lookup-token` (không bao giờ trong nội dung) và được gợi ý tra cứu đơn khi hỏi về đơn; map `ASSISTANT_ORDER_LOOKUP_TOKEN_INVALID`.
 
 ## Phạm vi
 
@@ -84,6 +84,7 @@ Chuyển nhân viên bắt buộc đăng nhập (V1.0): khách ẩn danh chỉ t
 
 | Version | Date | Change summary | Source |
 | --- | --- | --- | --- |
+| 1.3.1 | 2026-11-16 | Huỷ vòng poll lịch sử sau TURN_IN_PROGRESS khi đóng panel/unmount (AbortController), không đổi luồng idempotency. | Perf pass 2026-11-16 |
 | 1.3.0 | 2026-11-07 | Chip gợi ý câu hỏi khi hội thoại trống; `canAskOrderStatus` cho chip tra đơn. | Storefront assistant suggestions |
 | 1.2.1 | 2026-10-02 | Sửa: TURN_IN_PROGRESS giữ khoá idempotency và chờ lượt gốc (tối đa 90 giây). | commit b72d92a |
 | 1.2.0 | 2026-09-30 | `productType` vào dòng giỏ; grant tra đơn qua header; gợi ý tra cứu đơn. | feat/assistant-v1 (V1.1 guest lookup) |
