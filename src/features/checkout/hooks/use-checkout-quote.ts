@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { CartItem } from '@/features/cart';
-import { UnavailableCartLinesError } from '@/features/cart';
+import { restoreAccountCartFromDevice, UnavailableCartLinesError } from '@/features/cart';
 import type { CheckoutQuoteDto } from '@/generated/api/checkout/checkout.schemas';
 import type { OrderDetailDto } from '@/generated/api/orders/orders.schemas';
 import { apiErrorCode, apiErrorMessage } from '@/lib/api/error-message';
@@ -82,7 +82,15 @@ export function useCheckoutQuote({
 
   // Rời trang checkout (điều hướng trong app) với phiên đã giữ hàng nhưng chưa đặt đơn: trả hàng ngay
   // thay vì chờ TTL 30 phút — báo giá chỉ nằm trong state trang nên không thể quay lại đặt tiếp.
-  useEffect(() => () => releaseHeldReservation(RESERVATION_RELEASE_REASON.LEFT_CHECKOUT), []);
+  // Cùng lúc đó, nếu báo giá đã cắt giỏ tài khoản (mua ngay / chọn một phần giỏ) thì đẩy lại các dòng còn
+  // lại ngay, để máy khác thấy đủ giỏ. Lỗi thì giữ cờ: lần mở app sau `Providers` khôi phục.
+  useEffect(
+    () => () => {
+      releaseHeldReservation(RESERVATION_RELEASE_REASON.LEFT_CHECKOUT);
+      void restoreAccountCartFromDevice().catch(() => undefined);
+    },
+    [],
+  );
 
   const invalidateQuote = (keepDisplay = false) => {
     releaseHeldReservation(RESERVATION_RELEASE_REASON.QUOTE_CHANGED);

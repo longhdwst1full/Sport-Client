@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, type FormEvent } from 'react';
+import { restoreAccountCartFromDevice } from '@/features/cart';
 import { paymentRequest, readGuestOrderAccessToken } from '@/features/orders';
 import type { OrderDetailDto } from '@/generated/api/orders/orders.schemas';
 import { getAccountPayment, getGuestPayment } from '@/generated/api/payments/payments';
@@ -188,6 +189,10 @@ export function usePlaceOrder({
       heldReservation.current = undefined;
       // Xoá đúng các sản phẩm đã thanh toán khỏi giỏ hàng
       effectiveItems.forEach((item) => removeItem(item.variantId));
+      // Đặt đơn chuyển giỏ tài khoản sang CONVERTED; các dòng khách không mua chỉ còn ở giỏ máy. Đẩy chúng lên
+      // TRƯỚC khi rời sang VNPay — lệnh ghi debounce của saga không kịp chạy khi trang chuyển ngay.
+      // Lỗi không chặn thanh toán: cờ khôi phục còn nguyên nên lần mở app sau sẽ thử lại.
+      if (confirmed.context.mode === 'ACCOUNT') await restoreAccountCartFromDevice().catch(() => undefined);
       if (paymentMethod === 'VNPAY' && (await redirectToVnpay(order))) return;
       setPlacedOrder(order);
       toast({

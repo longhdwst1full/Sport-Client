@@ -13,6 +13,8 @@ export const LocalStorageKey = {
   CART: 'dctd-storefront-cart-v2',
   /** Hội thoại trợ lý của khách ẩn danh: `conversationId` + `sessionKey` do server cấp. */
   ASSISTANT_SESSION: 'dctd-storefront-assistant-session-v1',
+  /** Cờ: checkout một phần đã cắt giỏ tài khoản trên server, giỏ trên máy phải được đẩy lại (`account-cart-restore`). */
+  ACCOUNT_CART_RESTORE_PENDING: 'dctd-storefront-account-cart-restore-v1',
 } as const;
 
 /** Key sessionStorage: dữ liệu chỉ sống trong tab hiện tại, tự mất khi đóng tab. */

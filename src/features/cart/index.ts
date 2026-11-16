@@ -39,3 +39,9 @@ export {
   UnavailableCartLinesError,
   type CartLine,
 } from './api/cart-sync';
+export {
+  clearAccountCartRestore,
+  hasPendingAccountCartRestore,
+  restoreAccountCartFromDevice,
+  syncAccountCartForCheckout,
+} from './api/account-cart-restore';

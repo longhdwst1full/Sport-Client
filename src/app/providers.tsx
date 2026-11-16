@@ -9,11 +9,14 @@ import { readCustomerAuthTokens } from '@/features/auth';
 import { isCustomerAuthenticated } from '@/core/auth/customer-auth-token.store';
 import {
   CartHydrationContext,
+  clearAccountCartRestore,
+  hasPendingAccountCartRestore,
   hasPendingGuestCartMerge,
   hydrateCart,
   pullAccountCart,
   readPersistedCart,
   resetCartForSignOut,
+  restoreAccountCartFromDevice,
   retryPendingGuestCartMerge,
 } from '@/features/cart';
 import dynamic from 'next/dynamic';
@@ -71,6 +74,15 @@ export function Providers({ children }: { children: ReactNode }) {
       void retryPendingGuestCartMerge(persistedItems).then((items) => {
         if (items) storefrontStore.dispatch(hydrateCart(items));
       });
+    } else if (hasPendingAccountCartRestore()) {
+      // Checkout một phần lần trước đã cắt giỏ server (bỏ ngang, đóng tab, hoặc chuyển VNPay trước khi kịp
+      // ghi lại): giỏ trên máy mới là bản đúng. Đẩy nó lên thay vì tải giỏ server về đè, nếu không các dòng
+      // khách không mua sẽ mất. Lỗi mạng thì giữ giỏ local và cờ để lần sau thử lại.
+      restoreAccountCartFromDevice()
+        .then((items) => {
+          if (items) storefrontStore.dispatch(hydrateCart(items));
+        })
+        .catch(() => undefined);
     } else {
       // Đang đăng nhập: giỏ tài khoản là nguồn chung giữa các máy, nên thay giỏ local bằng giỏ server.
       // Lỗi mạng thì giữ giỏ local; checkout vẫn đồng bộ lại trước khi báo giá.
@@ -99,6 +111,8 @@ export function Providers({ children }: { children: ReactNode }) {
         // SECURITY: giỏ trên máy lúc này là giỏ của tài khoản vừa rời đi; xoá để người dùng sau
         // (máy dùng chung) không thấy và không bị gộp nhầm vào tài khoản khác. Giỏ vẫn còn trên server.
         storefrontStore.dispatch(resetCartForSignOut());
+        // Giỏ máy vừa bị xoá: cờ khôi phục còn lại sẽ đẩy giỏ rỗng lên và xoá sạch giỏ của tài khoản kế tiếp.
+        clearAccountCartRestore();
         void clearSessionPwaCaches();
       }
       activeSubject = nextSubject;

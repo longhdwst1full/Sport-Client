@@ -1,10 +1,10 @@
 # Storefront Cart — maintenance note
 
-> **Document version:** 2.6.0
+> **Document version:** 2.7.0
 >
-> **Last updated:** 2026-11-15
+> **Last updated:** 2026-11-16
 >
-> **Change summary:** Xóa tất cả dùng foundation Modal thay window.confirm; mặc định focus nút giữ giỏ, trap focus, Escape/hủy không xóa, xác nhận mới clear + toast. Regression bằng component tests. Không đổi persistence/API/tính tiền.
+> **Change summary:** Sửa mất dòng giỏ tài khoản sau checkout một phần (mua ngay / chọn một phần giỏ): cờ `ACCOUNT_CART_RESTORE_PENDING` + `api/account-cart-restore.ts` đẩy giỏ máy lên lại khi rời checkout, trước khi sang VNPay và lúc mở app.
 
 ## Phạm vi
 
@@ -73,6 +73,23 @@ Persist allowlist: `productId, variantId, sku, productType, name, price, quantit
 - Slice: `addCartItem` có `availableQuantity` thì kẹp tổng (kể cả cộng dồn) về số đó và bỏ qua khi = 0; `updateQuantity` chỉ kẹp 999 — trang giỏ tự kẹp theo số mới nhất.
 - Trang giỏ: nút + khoá khi chạm max, gõ tay vượt thì kẹp + toast; dòng `quantity > availableQuantity` hiện cảnh báo đỏ và nút "Đặt hàng" khoá tới khi khách sửa/xoá dòng đã chọn đó.
 
+## Khôi phục giỏ tài khoản sau checkout một phần (2026-11-16)
+
+Báo giá tài khoản đọc **toàn bộ** giỏ server (contract `CreateCheckoutQuoteDto` không nhận danh sách dòng), nên "Mua ngay" hoặc chọn một phần giỏ phải cắt giỏ server còn đúng các dòng đang thanh toán. Trước bản sửa, các dòng còn lại bị mất:
+
+| Đường đi | Vì sao mất |
+| --- | --- |
+| Bỏ ngang checkout, mở lại app | `Providers` pull giỏ server (đã cắt) về đè giỏ máy |
+| Đặt đơn VNPay | Đặt đơn chuyển giỏ server sang `CONVERTED`; trang sang cổng trước khi lệnh ghi debounce 400ms kịp chạy |
+
+Cách sửa (`api/account-cart-restore.ts`):
+
+- `syncAccountCartForCheckout` (thay `syncAccountCart` ở `checkout.workflow`) đặt cờ `LocalStorageKey.ACCOUNT_CART_RESTORE_PENDING` **trước** khi cắt, chỉ khi giỏ máy có dòng ngoài lượt thanh toán.
+- `restoreAccountCartFromDevice` đẩy giỏ máy đã persist lên (lenient, local thắng) rồi bỏ cờ; lỗi mạng giữ cờ để thử lại. Gọi ở: rời trang checkout (unmount), sau khi đặt đơn tài khoản (trước khi sang VNPay), và `Providers` lúc mở app thay cho pull khi còn cờ.
+- Đăng xuất / đổi tài khoản bỏ cờ (`clearAccountCartRestore`): giỏ máy vừa bị xoá, đẩy nó lên sẽ xoá giỏ của tài khoản kế tiếp.
+
+Giới hạn còn lại: đăng xuất khi giỏ server đang bị cắt thì các dòng chưa đẩy lại vẫn mất (giỏ máy bị xoá, không còn phiên để ghi). Hướng triệt để là backend nhận danh sách dòng trong báo giá.
+
 ## Nhắc miễn phí giao theo ngưỡng (2026-11-07)
 
 - Ngưỡng `SHIPPING_FREE_ORDER_MIN_AMOUNT` (tham số công khai, 0 = tắt) do `site-config` đọc; `cart` là kernel nên không import `site-config` — route giỏ/checkout bọc `FreeShippingBridge` (`app/(storefront)/_components`) cấp số qua `FreeShippingThresholdProvider`/`useFreeShippingThreshold`.
@@ -82,6 +99,7 @@ Persist allowlist: `productId, variantId, sku, productType, name, price, quantit
 
 | Version | Date | Change summary |
 | --- | --- | --- |
+| 2.7.0 | 2026-11-16 | Khôi phục giỏ tài khoản sau checkout một phần (cờ + `account-cart-restore`), test ở `account-cart-restore.test.ts`. |
 | 2.6.0 | 2026-11-15 | Accessible Modal cho xóa toàn giỏ, focus an toàn và test xác nhận/hủy/Escape. |
 | 2.5.0 | 2026-11-07 | `CartItem.availableQuantity` (ảnh chụp) + `useCartStockLimits` (đọc giỏ server); dòng vượt tồn bị cảnh báo và khoá "Đặt hàng". |
 | 2.4.0 | 2026-10-17 | `CartItem.regularPrice` (giá niêm yết lúc thêm, lưu localStorage); chiến dịch đóng → dòng thêm với giá flash về giá niêm yết; sửa hydration làm rơi `slug`. |

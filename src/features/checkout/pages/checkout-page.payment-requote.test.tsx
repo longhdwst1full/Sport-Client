@@ -40,6 +40,8 @@ vi.mock('@/features/cart', () => ({
     price: 100000,
   }],
   useCartHydrated: () => true,
+  // Khôi phục giỏ tài khoản sau checkout một phần (đã test riêng ở cart); ở đây khách vãng lai nên no-op.
+  restoreAccountCartFromDevice: async () => undefined,
   useCartStockLimits: () => () => stockLimit.value,
   isOverStock: (quantity: number, available: number | undefined) => available !== undefined && quantity > available,
 }));

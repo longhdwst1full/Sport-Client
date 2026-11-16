@@ -11,7 +11,7 @@ import {
 import type { CheckoutQuoteDto, ConfirmCheckoutDto, CreateCheckoutQuoteDto, ReservationDto } from '@/generated/api/checkout/checkout.schemas';
 import { placeAccountOrder, placeGuestOrder } from '@/generated/api/orders/orders';
 import type { OrderDetailDto } from '@/generated/api/orders/orders.schemas';
-import { syncAccountCart, syncGuestCart } from '@/features/cart';
+import { syncAccountCartForCheckout, syncGuestCart } from '@/features/cart';
 import { saveGuestOrderAccessToken } from '@/features/orders';
 
 export type CheckoutLine = { variantId: string; quantity: number };
@@ -41,7 +41,9 @@ export async function prepareCheckout(
   idempotencyKey: string,
 ): Promise<{ quote: CheckoutQuoteDto; context: CheckoutContext }> {
   if (authenticated) {
-    await syncAccountCart(lines);
+    // Báo giá tài khoản đọc cả giỏ server, nên giỏ server bị cắt còn đúng `lines`. Khi đó cờ khôi phục được
+    // đặt để các dòng khách không mua được đẩy lại sau (`account-cart-restore.ts`).
+    await syncAccountCartForCheckout(lines);
     return {
       quote: await quoteAccountCheckout(input, { timeout: CHECKOUT_TIMEOUT_MS, headers: { 'idempotency-key': idempotencyKey } }),
       context: { mode: 'ACCOUNT' },
