@@ -27,6 +27,8 @@ export function PwaRegistration() {
       };
     }
 
+    // Unmount trước khi `register` resolve: không gắn interval/listener mà không ai dọn.
+    let disposed = false;
     let updateTimer: ReturnType<typeof setInterval> | undefined;
     let checkForUpdateHandler: (() => void) | undefined;
     const hadController = Boolean(navigator.serviceWorker.controller);
@@ -38,6 +40,7 @@ export function PwaRegistration() {
     void navigator.serviceWorker
       .register('/sw.js', { updateViaCache: 'none' })
       .then((registration) => {
+        if (disposed) return;
         registrationRef.current = registration;
         setUpdateReady(Boolean(registration.waiting));
         registration.addEventListener('updatefound', () => {
@@ -60,6 +63,7 @@ export function PwaRegistration() {
       .catch((error: unknown) => console.error('[PWA] Service worker registration failed', error));
 
     return () => {
+      disposed = true;
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
       navigator.serviceWorker.removeEventListener('controllerchange', handleControllerChange);

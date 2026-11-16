@@ -67,35 +67,50 @@ export function useFlashSaleCampaigns({
 }
 
 /**
- * Chiến dịch + đồng hồ đếm ngược — chỉ dùng ở nơi HIỂN THỊ đồng hồ (khối flash sale, trang flash sale).
- *
- * Đồng hồ đếm ngược chạy theo **giờ server**: `serverTime` trong response cho
- * biết độ lệch giữa máy khách và server, nên người dùng chỉnh đồng hồ máy cũng
- * không kéo dài được chương trình. Khi đếm về 0, hook refetch để server xác nhận
- * lại thay vì client tự quyết định đã hết hạn.
+ * Chiến dịch flash sale cho nơi HIỂN THỊ (khối flash sale, trang flash sale). KHÔNG giữ đồng hồ: state đổi
+ * mỗi giây làm render lại cả khối và mọi thẻ deal; đồng hồ nằm ở `FlashSaleLiveCountdown` (chỉ nó render
+ * lại mỗi giây, xem `useFlashSaleCountdown`). Hết giờ thì đồng hồ gọi `retry` để server xác nhận lại.
  */
 export function useFlashSale({ initialData }: { initialData?: PublicFlashSaleListDto } = {}): {
   campaign: FlashSaleCampaignView | undefined;
   campaigns: FlashSaleCampaignView[];
-  countdown: FlashSaleCountdown;
+  /** Thời gian server trả kèm danh sách; đồng hồ dùng để lệch giờ máy khách. */
+  serverTime: string | undefined;
   isPending: boolean;
   isError: boolean;
-  /** Tải lại thủ công (nút "Thử lại" ở trạng thái lỗi). */
+  /** Tải lại thủ công (nút "Thử lại") và khi đồng hồ đếm về 0. */
   retry: () => Promise<unknown>;
 } {
   const { campaigns, serverTime, refetch, isPending, isError } = useFlashSaleCampaigns({ live: true, initialData });
-  const clockOffsetRef = useRef(0);
-  const [countdown, setCountdown] = useState<FlashSaleCountdown>(FLASH_SALE_COUNTDOWN_ZERO);
+  // Đồng hồ bám chiến dịch kết thúc sớm nhất (API đã sắp theo endsAt).
+  return { campaign: campaigns[0], campaigns, serverTime, isPending, isError, retry: refetch };
+}
 
-  // Đồng hồ đếm ngược bám chiến dịch kết thúc sớm nhất (API đã sắp theo endsAt).
-  const campaign = campaigns[0];
+/**
+ * Đồng hồ đếm ngược theo **giờ server**: `serverTime` cho biết độ lệch giữa máy khách và server nên chỉnh
+ * đồng hồ máy không kéo dài được chương trình. Về 0 thì gọi `onExpired` một lần (refetch) thay vì tự quyết
+ * định đã hết hạn. Chỉ component dùng hook này render lại mỗi giây.
+ */
+export function useFlashSaleCountdown({
+  endsAtMs,
+  serverTime,
+  onExpired,
+}: {
+  endsAtMs: number | undefined;
+  serverTime: string | undefined;
+  onExpired: () => unknown;
+}): FlashSaleCountdown {
+  const [countdown, setCountdown] = useState<FlashSaleCountdown>(FLASH_SALE_COUNTDOWN_ZERO);
+  const clockOffsetRef = useRef(0);
+  const onExpiredRef = useRef(onExpired);
+  useEffect(() => {
+    onExpiredRef.current = onExpired;
+  }, [onExpired]);
 
   useEffect(() => {
     if (!serverTime) return;
     clockOffsetRef.current = new Date(serverTime).getTime() - Date.now();
   }, [serverTime]);
-
-  const endsAtMs = campaign?.endsAtMs;
 
   useEffect(() => {
     if (!endsAtMs) {
@@ -104,18 +119,17 @@ export function useFlashSale({ initialData }: { initialData?: PublicFlashSaleLis
     }
     let expiredHandled = false;
     const tick = () => {
-      const serverNow = Date.now() + clockOffsetRef.current;
-      const next = splitRemaining(endsAtMs - serverNow);
+      const next = splitRemaining(endsAtMs - (Date.now() + clockOffsetRef.current));
       setCountdown(next);
       if (next.finished && !expiredHandled) {
         expiredHandled = true;
-        void refetch();
+        void onExpiredRef.current();
       }
     };
     tick();
     const timer = setInterval(tick, 1000);
     return () => clearInterval(timer);
-  }, [endsAtMs, refetch]);
+  }, [endsAtMs]);
 
-  return { campaign, campaigns, countdown, isPending, isError, retry: refetch };
+  return countdown;
 }

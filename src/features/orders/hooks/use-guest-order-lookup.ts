@@ -28,11 +28,13 @@ export function useGuestOrderLookup(initialOrderNo = '') {
   const [now, setNow] = useState(() => Date.now());
 
   const secondsLeft = resendSecondsLeft(cooldownUntil, now);
+  // Phụ thuộc cờ `cooling`, không phải `secondsLeft`: số giây đổi mỗi giây sẽ huỷ và tạo lại interval mỗi giây.
+  const cooling = secondsLeft > 0;
   useEffect(() => {
-    if (secondsLeft <= 0) return;
+    if (!cooling) return;
     const timer = window.setInterval(() => setNow(Date.now()), 1000);
     return () => window.clearInterval(timer);
-  }, [secondsLeft]);
+  }, [cooling]);
 
   const trimmedOrderNo = orderNo.trim().toUpperCase();
   const trimmedEmail = email.trim();

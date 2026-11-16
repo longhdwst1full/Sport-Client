@@ -5,7 +5,7 @@ import { ArrowRight, Clock, Flame, RefreshCw } from 'lucide-react';
 import { Button, buttonVariants } from '@/foundation/components/buttons';
 import { EmptyState } from '@/foundation/components/feedback';
 import { Breadcrumb } from '@/foundation/components/navigation';
-import { FlashSaleCountdownTimer } from '../components/flash-sale-countdown';
+import { FlashSaleLiveCountdown } from '../components/flash-sale-countdown';
 import { FLASH_SALE_FOCUS_RING, FlashSaleDealCard, FlashSaleDealCardSkeleton } from '../components/flash-sale-deal-card';
 import { useFlashSale } from '../hooks/use-flash-sale';
 import { useFlashSaleCart } from '../hooks/use-flash-sale-cart';
@@ -16,7 +16,7 @@ const PRODUCTS_LABEL = 'Xem tất cả sản phẩm';
 
 export function FlashSalePage() {
   const { addToCart, buyNow } = useFlashSaleCart();
-  const { campaigns, countdown, isPending, isError, retry } = useFlashSale();
+  const { campaigns, serverTime, isPending, isError, retry } = useFlashSale();
 
   return (
       <div className="bg-white pb-20 pt-8 text-neutral-950">
@@ -38,15 +38,17 @@ export function FlashSalePage() {
               </p>
             </div>
 
-            {countdown.finished ? null : (
-              <div className="flex items-center justify-between gap-4 rounded-2xl border border-brand-100 bg-brand-50 px-4 py-3 md:justify-start">
-                <span className="flex items-center gap-1.5 text-xs font-semibold text-brand-700">
-                  <Clock className="size-4" aria-hidden="true" />
-                  Kết thúc sau
-                </span>
-                <FlashSaleCountdownTimer countdown={countdown} tone="light" />
-              </div>
-            )}
+            <FlashSaleLiveCountdown endsAtMs={campaigns[0]?.endsAtMs} serverTime={serverTime} onExpired={retry} tone="light">
+              {(timer) => (
+                <div className="flex items-center justify-between gap-4 rounded-2xl border border-brand-100 bg-brand-50 px-4 py-3 md:justify-start">
+                  <span className="flex items-center gap-1.5 text-xs font-semibold text-brand-700">
+                    <Clock className="size-4" aria-hidden="true" />
+                    Kết thúc sau
+                  </span>
+                  {timer}
+                </div>
+              )}
+            </FlashSaleLiveCountdown>
           </div>
 
           {isPending ? (

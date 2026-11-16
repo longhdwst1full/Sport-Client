@@ -1,4 +1,5 @@
-import { Fragment } from 'react';
+import { Fragment, type ReactNode } from 'react';
+import { useFlashSaleCountdown } from '../hooks/use-flash-sale';
 import { padTimeUnit, toCountdownLabel, type FlashSaleCountdown } from '../model/flash-sale-countdown';
 
 type Tone = 'onBrand' | 'light';
@@ -60,4 +61,26 @@ export function FlashSaleCountdownTimer({
       ))}
     </div>
   );
+}
+
+/**
+ * Đồng hồ sống: tự đếm mỗi giây nên cha (khối flash sale, các thẻ deal) không render lại. Về 0 thì không
+ * render gì (kể cả khung `children`) và gọi `onExpired`. `children` bọc đồng hồ bằng khung riêng của từng nơi.
+ */
+export function FlashSaleLiveCountdown({
+  endsAtMs,
+  serverTime,
+  onExpired,
+  tone,
+  children,
+}: {
+  endsAtMs: number | undefined;
+  serverTime: string | undefined;
+  onExpired: () => unknown;
+  tone: Tone;
+  children: (timer: ReactNode) => ReactNode;
+}) {
+  const countdown = useFlashSaleCountdown({ endsAtMs, serverTime, onExpired });
+  if (countdown.finished) return null;
+  return <>{children(<FlashSaleCountdownTimer countdown={countdown} tone={tone} />)}</>;
 }

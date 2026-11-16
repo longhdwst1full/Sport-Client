@@ -1,5 +1,6 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
@@ -12,18 +13,16 @@ import {
   getListAccountOrdersQueryKey,
 } from '@/generated/api/orders/orders';
 import { OrderReturnCta } from '@/features/returns';
-import { ReviewFormDialog } from '@/features/reviews';
+import { ReviewFormDialogLazy } from '@/features/reviews';
 import { OrderPaymentPanel } from '../components/order-payment-panel';
 import { OrderDetailSkeleton } from '../components/order-skeletons';
 import { OrderActionsBar } from '../components/order-detail/order-actions-bar';
-import { OrderCancelDialog } from '../components/order-detail/order-cancel-dialog';
 import { OrderDeliveryAddressCard } from '../components/order-detail/order-delivery-address-card';
 import { OrderDetailHeader } from '../components/order-detail/order-detail-header';
 import { OrderProductsCard } from '../components/order-detail/order-products-card';
 import { OrderShipmentSection } from '../components/order-detail/order-shipment-section';
 import { OrderStatusHero } from '../components/order-detail/order-status-hero';
 import { OrderSupportCard } from '../components/order-detail/order-support-card';
-import { OrderSupportDialog } from '../components/order-detail/order-support-dialog';
 import { OrderReceiptPrint } from '../components/order-detail/order-receipt-print';
 import { printOrderReceipt } from '../model/print-receipt';
 import { useCancelOrder } from '../hooks/use-cancel-order';
@@ -36,6 +35,16 @@ import { ORDER_LOAD_ERROR_MESSAGE } from '../model/order.constants';
 import { GUEST_LOOKUP_COPY, GUEST_LOOKUP_ROUTE } from '../model/guest-order-lookup.constants';
 import { guestLookupErrorMessage } from '../model/guest-order-lookup-error';
 import { formatDateTime } from '@/shared/format/date-time';
+
+// Dialog chỉ mở sau thao tác của khách (hủy đơn, liên hệ hỗ trợ): tách chunk khỏi First Load JS của trang đơn.
+const OrderCancelDialog = dynamic(
+  () => import('../components/order-detail/order-cancel-dialog').then((module) => module.OrderCancelDialog),
+  { loading: () => null },
+);
+const OrderSupportDialog = dynamic(
+  () => import('../components/order-detail/order-support-dialog').then((module) => module.OrderSupportDialog),
+  { loading: () => null },
+);
 
 const PRIMARY_ACTION = buttonVariants({ variant: 'primary', className: 'px-5 font-bold shadow-sm' });
 const DANGER_ACTION = buttonVariants({ variant: 'danger', className: 'px-5 font-bold shadow-sm' });
@@ -233,7 +242,7 @@ export function OrderDetailPage({ orderNo }: { orderNo: string }) {
       </main>
 
       {reviewingItem && (
-        <ReviewFormDialog
+        <ReviewFormDialogLazy
           orderItemId={reviewingItem.id}
           productName={reviewingItem.productName}
           onClose={() => setReviewingItem(undefined)}

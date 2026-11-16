@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, type ReactNode } from 'react';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { CheckoutSkeleton } from '../components/checkout-skeleton';
@@ -10,7 +11,6 @@ import { useToast } from '@/shared/components/global-toast';
 import { usePublicNumberParameter } from '@/features/site-config';
 import { toOrderDetailView } from '@/features/orders';
 import { CheckoutOrderSummary } from '../components/checkout-order-summary';
-import { CheckoutPolicyDialog } from '../components/checkout-policy-dialog';
 import { CheckoutSuccess } from '../components/checkout-success';
 import { CheckoutEmptyCart } from '../components/checkout-empty-cart';
 import { CheckoutShippingInfoSection } from '../components/sections/checkout-shipping-info-section';
@@ -23,6 +23,12 @@ import { useAutoQuote, useCheckoutQuote } from '../hooks/use-checkout-quote';
 import { useCheckoutSavedAddresses } from '../hooks/use-checkout-saved-addresses';
 import { usePlaceOrder } from '../hooks/use-place-order';
 import { CheckoutPaymentMethod } from '@/generated/api/checkout/checkout.schemas';
+
+// Điều khoản chỉ mở khi khách bấm đọc/đặt hàng lần đầu: tách chunk khỏi First Load JS của /checkout.
+const CheckoutPolicyDialog = dynamic(
+  () => import('../components/checkout-policy-dialog').then((module) => module.CheckoutPolicyDialog),
+  { loading: () => null },
+);
 
 /** Mảng rỗng ổn định: chặn báo giá tự động mà không đổi deps effect mỗi lần render. */
 const NO_ITEMS: CartItem[] = [];

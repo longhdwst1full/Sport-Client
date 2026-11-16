@@ -1,40 +1,13 @@
 'use client';
 
-import { yupResolver } from '@hookform/resolvers/yup';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import * as yup from 'yup';
 import type { RegisterCustomerDto } from '@/generated/api/auth/auth.schemas';
 import { useToast } from '@/shared/components/global-toast';
-import { CONTACT_ERROR, isEmail, isVietnamesePhone } from '@/shared/validation';
 import { RegisterForm } from '../components/register-form';
 import { AuthPageShell } from '../components/auth-page-shell';
 import { useRegister } from '../hooks/use-register';
-
-const optionalIdentity = () =>
-  yup
-    .string()
-    .trim()
-    .transform((value) => value || undefined)
-    .optional();
-
-const schema: yup.ObjectSchema<RegisterCustomerDto> = yup
-  .object({
-    displayName: yup.string().trim().required('Vui lòng nhập họ và tên của bạn').max(255),
-    email: optionalIdentity()
-      .max(255)
-      .test('email', CONTACT_ERROR.EMAIL_INVALID, (value) => !value || isEmail(value)),
-    phone: optionalIdentity()
-      .max(32)
-      .test('vn-phone', CONTACT_ERROR.PHONE_INVALID, (value) => !value || isVietnamesePhone(value)),
-    password: yup.string().required('Vui lòng nhập mật khẩu').min(8, 'Mật khẩu tối thiểu 8 ký tự').max(128),
-  })
-  .test('identity-required', 'Nhập email hoặc số điện thoại', function requireIdentity(value) {
-    return (
-      Boolean(value.email || value.phone) ||
-      this.createError({ path: 'email', message: 'Vui lòng cung cấp email hoặc số điện thoại' })
-    );
-  });
+import { registerResolver } from '../model/auth-form.validation';
 
 export function CustomerRegisterPage() {
   const { toast } = useToast();
@@ -42,7 +15,7 @@ export function CustomerRegisterPage() {
   const [acceptedTerms, setAcceptedTerms] = useState(true);
 
   const form = useForm<RegisterCustomerDto>({
-    resolver: yupResolver(schema),
+    resolver: registerResolver,
     defaultValues: { displayName: '', email: '', phone: '', password: '' },
   });
 

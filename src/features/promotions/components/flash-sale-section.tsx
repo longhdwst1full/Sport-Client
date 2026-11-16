@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { ArrowRight, Flame, Zap } from 'lucide-react';
 import type { PublicFlashSaleListDto } from '@/generated/api/promotions/promotions.schemas';
-import { FlashSaleCountdownTimer } from './flash-sale-countdown';
+import { FlashSaleLiveCountdown } from './flash-sale-countdown';
 import { trimToFullRows } from '@/shared/grid/full-rows';
 import { FlashSaleDealCard } from './flash-sale-deal-card';
 import { FlashSaleDealSlider } from './flash-sale-deal-slider';
@@ -28,7 +28,7 @@ export function FlashSaleSection({
   /** `slider`: dải trượt ngang tự chạy, hiện mọi suất (trang chủ); `grid`: lưới cắt theo hàng đủ. */
   layout?: 'grid' | 'slider';
 }) {
-  const { campaign, countdown } = useFlashSale({ initialData });
+  const { campaign, serverTime, retry } = useFlashSale({ initialData });
   const { addToCart, buyNow } = useFlashSaleCart();
 
   // Không giữ chỗ bằng skeleton: phần lớn thời gian KHÔNG có chiến dịch, khi đó một skeleton ~1000px
@@ -67,12 +67,14 @@ export function FlashSaleSection({
                 ) : null}
               </div>
 
-              {countdown.finished ? null : (
-                <div className="flex shrink-0 items-center justify-between gap-3 rounded-xl bg-black/15 px-3 py-2.5 sm:justify-start">
-                  <span className="whitespace-nowrap text-xs font-semibold text-white/90">Kết thúc sau</span>
-                  <FlashSaleCountdownTimer countdown={countdown} tone="onBrand" />
-                </div>
-              )}
+              <FlashSaleLiveCountdown endsAtMs={campaign.endsAtMs} serverTime={serverTime} onExpired={retry} tone="onBrand">
+                {(timer) => (
+                  <div className="flex shrink-0 items-center justify-between gap-3 rounded-xl bg-black/15 px-3 py-2.5 sm:justify-start">
+                    <span className="whitespace-nowrap text-xs font-semibold text-white/90">Kết thúc sau</span>
+                    {timer}
+                  </div>
+                )}
+              </FlashSaleLiveCountdown>
             </div>
           </div>
 

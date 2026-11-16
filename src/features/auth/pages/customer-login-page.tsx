@@ -1,24 +1,17 @@
 'use client';
 
-import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
-import * as yup from 'yup';
 import type { LoginDto } from '@/generated/api/auth/auth.schemas';
 import { LoginForm } from '../components/login-form';
 import { AuthPageShell } from '../components/auth-page-shell';
 import { useLogin } from '../hooks/use-login';
-
-const schema: yup.ObjectSchema<LoginDto> = yup.object({
-  identifier: yup.string().trim().required('Vui lòng nhập email hoặc số điện thoại').max(255),
-  password: yup.string().required('Vui lòng nhập mật khẩu').min(8, 'Mật khẩu tối thiểu 8 ký tự').max(128),
-  rememberMe: yup.boolean().optional(),
-});
+import { loginResolver } from '../model/auth-form.validation';
 
 export function CustomerLoginPage() {
   const { login, submitError, setSubmitError } = useLogin();
 
   const form = useForm<LoginDto>({
-    resolver: yupResolver(schema),
+    resolver: loginResolver,
     defaultValues: { identifier: '', password: '', rememberMe: true },
   });
 
