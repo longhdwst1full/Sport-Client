@@ -131,18 +131,11 @@ export const ProductCard = memo(function ProductCard({
             )}
           </div>
 
-          <div className="mt-1 h-5">
-            {product.inStock === false ? (
-              <span className="inline-flex items-center rounded-full border border-amber-200/80 bg-amber-50 px-2.5 py-0.5 text-3xs font-semibold text-amber-800">
-                Tạm hết hàng
-              </span>
-            ) : product.inStock === true ? (
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-success-200/80 bg-success-50 px-2.5 py-0.5 text-2xs font-semibold text-success-700">
-                <span aria-hidden className="size-1.5 rounded-full bg-success-500" />
-                Còn hàng
-              </span>
-            ) : null}
-          </div>
+          {product.inStock === false && (
+            <span className="mt-1 inline-flex items-center rounded-full border border-amber-200/80 bg-amber-50 px-2.5 py-0.5 text-3xs font-semibold text-amber-800">
+              Tạm hết hàng
+            </span>
+          )}
         </div>
 
         {onBuyNow && (
