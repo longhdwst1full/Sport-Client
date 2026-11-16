@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AlertTriangle, CheckCircle2, KeyRound } from 'lucide-react';
 import { useResetCustomerPassword } from '@/generated/api/auth/auth';
 import { apiErrorMessage } from '@/lib/api/error-message';
@@ -23,7 +23,15 @@ function messageOf(error: unknown): string {
  */
 export function ResetPasswordPage() {
   const router = useRouter();
-  const token = useSearchParams().get('token') ?? '';
+  const tokenInUrl = useSearchParams().get('token') ?? '';
+  // Giữ token trong state của trang rồi xoá khỏi thanh địa chỉ: URL còn token thì nó nằm lại trong lịch sử
+  // trình duyệt (máy dùng chung) và có thể bị chép/chia sẻ. Next đồng bộ `replaceState` vào
+  // `useSearchParams`, nên phải đọc token MỘT lần vào state trước khi xoá.
+  const [capturedToken] = useState(tokenInUrl);
+  const token = capturedToken || tokenInUrl;
+  useEffect(() => {
+    if (token) window.history.replaceState(window.history.state, '', window.location.pathname);
+  }, [token]);
   const [password, setPassword] = useState({ next: '', confirm: '' });
   const [localError, setLocalError] = useState<string>();
   const [done, setDone] = useState(false);

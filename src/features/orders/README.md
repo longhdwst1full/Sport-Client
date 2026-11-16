@@ -1,10 +1,10 @@
 # Storefront Orders — maintenance note
 
-> **Document version:** 1.10.0
+> **Document version:** 1.11.0
 >
-> **Last updated:** 2026-10-20
+> **Last updated:** 2026-11-16
 >
-> **Change summary:** Dòng đơn có nhãn "Giá flash" (`OrderItemDto.flashSale`) trên trang đơn và hoá đơn in — phân biệt dòng flash với dòng giá thường cùng sản phẩm.
+> **Change summary:** SECURITY: `redirectUrl` của cổng thanh toán chỉ được dùng khi là `https:` tới domain VNPay (`model/payment-redirect.ts`); URL khác → `null`, UI coi như cổng chưa sẵn sàng.
 
 ## Phạm vi và ranh giới
 
@@ -64,6 +64,7 @@ Orders chỉ được import `returns`, `reviews` (và `auth`, `cart`) qua barre
 
 | Version | Date | Change summary | Source |
 | --- | --- | --- | --- |
+| 1.11.0 | 2026-11-16 | SECURITY: `redirectUrl` của cổng thanh toán chỉ được dùng khi là `https:` tới domain VNPay (`model/payment-redirect.ts`); URL khác → `null`, UI coi như cổng chưa sẵn sàng. | Rà soát bảo mật 2026-11-16 |
 | 1.10.0 | 2026-10-20 | Dòng đơn có nhãn "Giá flash" (`OrderItemDto.flashSale`) trên trang đơn và hoá đơn in — phân biệt dòng flash với dòng giá thường cùng sản phẩm. |  |
 | 1.9.0 | 2026-10-17 | "Mua lại" dùng `productVariantId` của dòng đơn (trước dùng nhầm id dòng đơn làm id biến thể nên checkout không nhận); đơn có thể có 2 dòng cùng biến thể (flash + giá thường), giỏ gộp lại. |  |
 | 1.8.0 | 2026-10-06 | Hook idempotency về `src/shared/hooks`; upload minh chứng dùng `src/lib/api/signed-media-upload.ts`, lỗi upload là `ApiError` có message tiếng Việt (trước là message Axios tiếng Anh); `PaginationControls` dùng chung với Returns; chuyển UI sang primitive foundation. | feat/storefront-brand-ui-refresh (dedup) |

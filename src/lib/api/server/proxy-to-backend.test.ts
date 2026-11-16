@@ -97,4 +97,42 @@ describe('proxyToBackend', () => {
     expect(res.status).toBe(502);
     expect(await res.text()).not.toContain('be.internal');
   });
+
+  it.each(['/api/v1/admin/auth/login', '/api/v1/ADMIN/orders', '/api/v1/internal/jobs/run', '/api/v1/integrations/ghn/webhook', '/api/v1/health'])(
+    'không proxy API ngoài Storefront: %s → 404, không gọi backend',
+    async (path) => {
+      vi.stubEnv('API_URL', 'https://be.internal');
+      vi.stubEnv('STOREFRONT_PROXY_SECRET', 's'.repeat(32));
+      const fetchMock = vi.fn().mockResolvedValue(upstream());
+      vi.stubGlobal('fetch', fetchMock);
+
+      const response = await proxyToBackend(new Request(`https://shop.test${path}`, { method: 'POST' }), path);
+
+      expect(response.status).toBe(404);
+      expect(fetchMock).not.toHaveBeenCalled();
+    },
+  );
+
+  it('prefix gần giống vẫn đi qua (vd. /api/v1/administrators không phải /admin)', async () => {
+    vi.stubEnv('API_URL', 'https://be.internal');
+    const fetchMock = vi.fn().mockResolvedValue(upstream());
+    vi.stubGlobal('fetch', fetchMock);
+    await proxyToBackend(new Request('https://shop.test/api/v1/administrators'), '/api/v1/administrators');
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('Location trỏ về backend được đổi thành đường dẫn tương đối; URL ngoài giữ nguyên', async () => {
+    vi.stubEnv('API_URL', 'https://be.internal');
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(upstream({ status: 302, headers: [['location', 'https://be.internal/api/v1/orders/guest/X?a=1']] }))
+      .mockResolvedValueOnce(upstream({ status: 302, headers: [['location', 'https://sandbox.vnpayment.vn/pay?x=1']] }));
+    vi.stubGlobal('fetch', fetchMock);
+
+    const own = await proxyToBackend(new Request('https://shop.test/api/v1/orders/guest/X'), '/api/v1/orders/guest/X');
+    const external = await proxyToBackend(new Request('https://shop.test/api/v1/payments/vnpay/x'), '/api/v1/payments/vnpay/x');
+
+    expect(own.headers.get('location')).toBe('/api/v1/orders/guest/X?a=1');
+    expect(external.headers.get('location')).toBe('https://sandbox.vnpayment.vn/pay?x=1');
+  });
 });

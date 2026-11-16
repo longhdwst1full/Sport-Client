@@ -11,3 +11,4 @@ export * from './model/order.constants';
 export * from './model/guest-order-access.store';
 export * from './model/order.mapper';
 export { paymentRequest } from './api/payment-request';
+export { trustedPaymentRedirectUrl } from './model/payment-redirect';

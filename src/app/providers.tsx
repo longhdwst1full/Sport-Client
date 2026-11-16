@@ -7,6 +7,7 @@ import { Provider as ReduxProvider } from 'react-redux';
 import { storefrontStore } from '@/app/store/store';
 import { readCustomerAuthTokens } from '@/features/auth';
 import { isCustomerAuthenticated } from '@/core/auth/customer-auth-token.store';
+import { LocalStorageKey } from '@/core/storage';
 import {
   CartHydrationContext,
   clearAccountCartRestore,
@@ -90,6 +91,19 @@ export function Providers({ children }: { children: ReactNode }) {
         .then((items) => storefrontStore.dispatch(hydrateCart(items)))
         .catch(() => undefined);
     }
+  }, []);
+
+  useEffect(() => {
+    // Tab khác vừa đổi giỏ (saga ghi localStorage sau mỗi thao tác): nạp lại vào Redux của tab này. Không
+    // làm vậy thì thao tác kế tiếp ở tab này ghi state cũ đè localStorage và — khi đăng nhập — đè cả giỏ
+    // tài khoản (đồng bộ "local thắng"), làm mất món vừa thêm ở tab kia. `hydrateCart` không ghi lên server.
+    // Không lặp vô hạn: trình duyệt không phát `storage` khi ghi lại đúng giá trị đang có.
+    const syncCartFromOtherTab = (event: StorageEvent) => {
+      if (event.key !== LocalStorageKey.CART || event.storageArea !== window.localStorage) return;
+      storefrontStore.dispatch(hydrateCart(readPersistedCart()));
+    };
+    window.addEventListener('storage', syncCartFromOtherTab);
+    return () => window.removeEventListener('storage', syncCartFromOtherTab);
   }, []);
 
   useEffect(() => {

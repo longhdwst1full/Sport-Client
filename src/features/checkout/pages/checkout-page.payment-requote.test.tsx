@@ -31,14 +31,7 @@ vi.mock('@/features/cart', () => ({
     regularQuantity: item.quantity,
     regularUnitPrice: item.price,
   }),
-  useCartItems: () => [{
-    variantId: 'v1',
-    sku: 'TEST-SKU-01',
-    name: 'Sản phẩm kiểm thử',
-    imageUrl: null,
-    quantity: 1,
-    price: 100000,
-  }],
+  useCartItems: () => cartItems.value,
   useCartHydrated: () => true,
   // Khôi phục giỏ tài khoản sau checkout một phần (đã test riêng ở cart); ở đây khách vãng lai nên no-op.
   restoreAccountCartFromDevice: async () => undefined,
@@ -46,6 +39,11 @@ vi.mock('@/features/cart', () => ({
   isOverStock: (quantity: number, available: number | undefined) => available !== undefined && quantity > available,
 }));
 const stockLimit: { value: number | undefined } = vi.hoisted(() => ({ value: undefined }));
+const ONE_ITEM_CART = vi.hoisted(() => [
+  { variantId: 'v1', sku: 'TEST-SKU-01', name: 'Sản phẩm kiểm thử', imageUrl: null, quantity: 1, price: 100000 },
+]);
+// Giỏ đổi được giữa test (mô phỏng tab khác sửa giỏ → `hydrateCart`); mặc định 1 dòng v1 × 1.
+const cartItems = vi.hoisted(() => ({ value: ONE_ITEM_CART as Array<Record<string, unknown>> }));
 
 vi.mock('@/features/auth', () => ({
   useCustomerAuth: () => ({ isAuthenticated: false, isLoaded: true }),
@@ -110,6 +108,7 @@ vi.mock('@/generated/api/payments/payments', () => ({
 vi.mock('@/features/orders', () => ({
   paymentRequest: vi.fn(),
   readGuestOrderAccessToken: vi.fn(),
+  trustedPaymentRedirectUrl: (url: string | null | undefined) => url ?? null,
   toOrderDetailView: vi.fn(),
 }));
 vi.mock('@/shared/components/global-toast', () => ({ useToast: () => ({ toast: vi.fn() }) }));
@@ -144,6 +143,7 @@ function readyQuote(checkoutToken = 'tok-1') {
 afterEach(() => {
   cleanup();
   vi.clearAllMocks();
+  cartItems.value = ONE_ITEM_CART;
 });
 
 async function flush(ms = 800) {
@@ -267,5 +267,26 @@ describe('CheckoutPage – phí giao tính một lần theo địa chỉ + giỏ
     } finally {
       stockLimit.value = undefined;
     }
+  });
+  it('giỏ đổi sau báo giá (tab khác tăng số lượng): huỷ báo giá cũ, báo giá lại theo dòng mới, đặt đơn bằng token mới', async () => {
+    prepareCheckout
+      .mockResolvedValueOnce({ quote: readyQuote('tok-old'), context: { mode: 'GUEST', cartToken: 'ct-1' } })
+      .mockResolvedValueOnce({ quote: readyQuote('tok-new'), context: { mode: 'GUEST', cartToken: 'ct-1' } });
+    const view = render(<CheckoutPage />);
+    fireEvent.change(screen.getByPlaceholderText('Họ và tên người nhận'), { target: { value: 'Nguyễn Test' } });
+    fireEvent.change(screen.getByPlaceholderText('Ví dụ: 0912345678'), { target: { value: '0912345678' } });
+    fireEvent.click(screen.getByText('chọn địa chỉ test'));
+    await flush();
+    expect(prepareCheckout.mock.calls[0][0]).toEqual([{ variantId: 'v1', quantity: 1 }]);
+
+    cartItems.value = [{ ...ONE_ITEM_CART[0], quantity: 3 }];
+    view.rerender(<CheckoutPage />);
+    await flush();
+
+    expect(prepareCheckout).toHaveBeenCalledTimes(2);
+    expect(prepareCheckout.mock.calls[1][0]).toEqual([{ variantId: 'v1', quantity: 3 }]);
+    await submitOrder();
+    expect(confirmCheckout.mock.calls[0][1]).toBe('tok-new');
+    expect(placeOrder.mock.calls[0][1]).toBe('tok-new');
   });
 });

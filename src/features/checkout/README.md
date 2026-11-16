@@ -1,10 +1,10 @@
 # Storefront checkout — maintenance note
 
-> **Document version:** 2.3.1
+> **Document version:** 2.4.0
 >
-> **Last updated:** 2026-11-15
+> **Last updated:** 2026-11-16
 >
-> **Change summary:** Sửa contrast chữ phí giao trong trạng thái giỏ rỗng (neutral-600), theo axe browser. Không đổi quote/payment/stock/API.
+> **Change summary:** Báo giá gắn với chữ ký dòng giỏ (`checkoutLinesKey`): giỏ đổi sau báo giá (tab khác, xoá dòng) thì huỷ báo giá + trả hàng đang giữ rồi báo giá lại; `run()` chặn đặt đơn khi chữ ký lệch. Trước đó đơn được tạo theo dòng CŨ trong khi trang hiện dòng mới. Chỉ mở cổng thanh toán qua `trustedPaymentRedirectUrl`.
 
 ## Luồng 3 bước (2026-09-26)
 
@@ -96,6 +96,7 @@ Checkout chỉ được import `orders`, `address`, `site-config` (và `auth`, `
 
 | Version | Date | Change summary | Source |
 | --- | --- | --- | --- |
+| 2.4.0 | 2026-11-16 | Báo giá gắn với chữ ký dòng giỏ (`checkoutLinesKey`): giỏ đổi sau báo giá (tab khác, xoá dòng) thì huỷ báo giá + trả hàng đang giữ rồi báo giá lại; `run()` chặn đặt đơn khi chữ ký lệch. Trước đó đơn được tạo theo dòng CŨ trong khi trang hiện dòng mới. Chỉ mở cổng thanh toán qua `trustedPaymentRedirectUrl`. | Rà soát bảo mật/hiệu năng 2026-11-16 |
 | 2.3.1 | 2026-11-15 | Sửa contrast nhãn phí giao trong giỏ rỗng; không đổi nghiệp vụ. | CLIENT-20261115-UX-A11Y |
 | 2.3.0 | 2026-11-07 | Dòng vượt `availableQuantity` hiện lỗi, không báo giá tự động, khoá nút đặt hàng. | CLIENT-20261107-STOCK-LIMIT |
 | 2.2.0 | 2026-10-17 | Dòng hàng hiện "N giá flash + M giá gốc"; `CheckoutLineView.flashSale` từ contract `CheckoutQuoteItemDto.flashSale`. |  |

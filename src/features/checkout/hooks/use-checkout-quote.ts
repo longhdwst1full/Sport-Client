@@ -31,6 +31,14 @@ export const RESERVATION_RELEASE_REASON = {
 /** Tiền tố mã lỗi suất flash của API (`FLASH_SALE_*`, kể cả `FLASH_SALE_QUOTA_HOLD_EXPIRED`). */
 const FLASH_SALE_ERROR_PREFIX = 'FLASH_SALE_';
 
+/** Chữ ký các dòng (biến thể × số lượng) mà một báo giá được tính cho; thứ tự dòng không ảnh hưởng. */
+export function checkoutLinesKey(items: ReadonlyArray<Pick<CartItem, 'variantId' | 'quantity'>>): string {
+  return items
+    .map(({ variantId, quantity }) => `${variantId}:${quantity}`)
+    .sort()
+    .join(',');
+}
+
 function messageOf(error: unknown): string {
   return apiErrorMessage(
     error,
@@ -64,6 +72,10 @@ export function useCheckoutQuote({
   const heldReservation = useRef<{ context: CheckoutContext; reservationToken: string } | undefined>(undefined);
   // Mỗi lượt báo giá tự động mang một số thứ tự; phản hồi của lượt cũ (khách đã sửa địa chỉ) bị bỏ.
   const quoteSeq = useRef(0);
+  // Dòng giỏ mà `quote` hiện hành được tính cho. Giỏ đổi sau đó (tab khác qua sự kiện `storage`, xoá dòng…)
+  // thì báo giá cũ không còn khớp: confirm/place bằng token cũ sẽ tạo đơn theo dòng CŨ trong khi trang hiện
+  // dòng mới, rồi xoá cả dòng mới khỏi giỏ. Xem `useAutoQuote` (huỷ + báo giá lại) và `usePlaceOrder` (chặn).
+  const quotedLinesKey = useRef<string | undefined>(undefined);
   const [autoQuoting, setAutoQuoting] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -99,6 +111,7 @@ export function useCheckoutQuote({
     setAutoQuoting(false);
     setQuote(undefined);
     setContext(undefined);
+    quotedLinesKey.current = undefined;
     confirmIdempotencyKey.current = undefined;
     orderIdempotencyKey.current = undefined;
     setError('');
@@ -177,6 +190,7 @@ export function useCheckoutQuote({
     heldReservation,
     releaseHeldReservation,
     quoteSeq,
+    quotedLinesKey,
     autoQuoting, setAutoQuoting,
     busy, setBusy,
     error, setError,
@@ -204,7 +218,16 @@ export function useAutoQuote({
   // CONTRACT (owner 2026-10-09): phí tính một lần theo địa chỉ + giỏ. Phương thức thanh toán và "Nhờ shop
   // gửi" KHÔNG nằm trong deps: đổi chúng không gọi API, lựa chọn cuối đi kèm bước xác nhận.
   const { readyToQuote, name, phone, email, note, address, buildInput } = form;
-  const { quote, quoteSeq, setAutoQuoting, setError, setQuote, setContext, handleCheckoutError } = checkoutQuote;
+  const { quote, quoteSeq, quotedLinesKey, setAutoQuoting, setError, setQuote, setContext, handleCheckoutError, invalidateQuote } =
+    checkoutQuote;
+  const linesKey = checkoutLinesKey(effectiveItems);
+  // Giỏ đổi sau khi đã có báo giá: huỷ báo giá (trả hàng đang giữ, giữ số cũ mờ) để effect dưới báo giá lại.
+  useEffect(() => {
+    if (!quote || placedOrder || !effectiveItems.length) return;
+    if (quotedLinesKey.current !== undefined && quotedLinesKey.current !== linesKey) invalidateQuote(true);
+    // invalidateQuote là closure mới mỗi render; chỉ cần chạy khi chữ ký dòng hoặc báo giá đổi.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [linesKey, quote, placedOrder]);
   useEffect(() => {
     if (!isLoaded || !readyToQuote || quote || placedOrder || !effectiveItems.length) return;
     const seq = ++quoteSeq.current;
@@ -219,6 +242,7 @@ export function useAutoQuote({
           crypto.randomUUID(),
         );
         if (seq !== quoteSeq.current) return;
+        quotedLinesKey.current = linesKey;
         setQuote(prepared.quote);
         setContext(prepared.context);
       } catch (caught) {

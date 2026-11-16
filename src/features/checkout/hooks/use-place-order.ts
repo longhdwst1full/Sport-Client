@@ -2,13 +2,13 @@
 
 import { useState, type FormEvent } from 'react';
 import { restoreAccountCartFromDevice } from '@/features/cart';
-import { paymentRequest, readGuestOrderAccessToken } from '@/features/orders';
+import { paymentRequest, readGuestOrderAccessToken, trustedPaymentRedirectUrl } from '@/features/orders';
 import type { OrderDetailDto } from '@/generated/api/orders/orders.schemas';
 import { getAccountPayment, getGuestPayment } from '@/generated/api/payments/payments';
 import { apiErrorCode } from '@/lib/api/error-message';
 import { confirmCheckout, placeOrder, prepareCheckout, type CheckoutContext } from '../api/checkout.workflow';
 import { resolveCheckoutQuoteGate } from '../model/checkout-quote-gate';
-import { RESERVATION_RELEASE_REASON, type CheckoutFlowDeps, type Toast } from './use-checkout-quote';
+import { checkoutLinesKey, RESERVATION_RELEASE_REASON, type CheckoutFlowDeps, type Toast } from './use-checkout-quote';
 
 /**
  * Mã 409 của bước xác nhận nghĩa là "báo giá lại rồi xác nhận": lựa chọn cần phí hãng mà phiên chưa có,
@@ -42,6 +42,8 @@ export function usePlaceOrder({
     context,
     setContext,
     quoteSeq,
+    quotedLinesKey,
+    invalidateQuote,
     autoQuoting,
     busy,
     setBusy,
@@ -69,7 +71,8 @@ export function usePlaceOrder({
       const payment = isAuthenticated
         ? await getAccountPayment(order.orderNo, paymentRequest())
         : await getGuestPayment(order.orderNo, paymentRequest({ headers: { 'x-cart-token': readGuestOrderAccessToken(order.orderNo) ?? '' } }));
-      const url = payment.instruction?.redirectUrl;
+      // SECURITY: chỉ chuyển sang cổng VNPay https; URL khác coi như chưa mở được cổng (khách thanh toán lại ở trang đơn).
+      const url = trustedPaymentRedirectUrl(payment.instruction?.redirectUrl);
       if (url) {
         window.location.assign(url);
         return true;
@@ -109,6 +112,7 @@ export function usePlaceOrder({
       isAuthenticated,
       crypto.randomUUID(),
     );
+    quotedLinesKey.current = checkoutLinesKey(effectiveItems);
     setQuote(prepared.quote);
     setContext(prepared.context);
     confirmIdempotencyKey.current = crypto.randomUUID();
@@ -160,6 +164,13 @@ export function usePlaceOrder({
       const reason = gate.kind === 'QUOTE_FAILED' ? gate.reason : 'Vui lòng kiểm tra lại địa chỉ nhận hàng.';
       toast({ type: 'error', title: 'Chưa có phí vận chuyển', message: `${reason} Hệ thống đang thử tính lại phí.` });
       retryQuote();
+      return;
+    }
+
+    // Giỏ đã đổi sau báo giá (effect huỷ báo giá chưa kịp chạy): không đặt đơn theo dòng cũ, báo giá lại.
+    if (quotedLinesKey.current !== checkoutLinesKey(effectiveItems)) {
+      invalidateQuote(true);
+      toast({ type: 'info', title: 'Giỏ hàng vừa thay đổi', message: 'Hệ thống đang tính lại tổng tiền, vui lòng kiểm tra rồi bấm đặt hàng lại.' });
       return;
     }
 

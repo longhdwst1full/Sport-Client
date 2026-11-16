@@ -52,6 +52,14 @@ export function backendApiPath(prefix: string, segments: readonly string[]): str
   return `${prefix}/${segments.map(encodeURIComponent).join('/')}`;
 }
 
+/**
+ * SECURITY: nhóm API không thuộc Storefront (Admin, job nội bộ, webhook bên thứ ba, health). Storefront không
+ * gọi chúng (`contracts/storefront`), nên proxy không làm cầu nối: đi qua proxy chúng sẽ mang secret proxy +
+ * IP khách do proxy gắn (rate-limit theo IP của đăng nhập Admin dựa vào đó) và tốn thời gian chạy hàm.
+ * Admin gọi thẳng backend. Thêm prefix Storefront mới thì kiểm danh sách này.
+ */
+const NON_STOREFRONT_PREFIXES = ['/api/v1/admin', '/api/v1/internal', '/api/v1/integrations', '/api/v1/health'] as const;
+
 /** SECURITY: chỉ proxy vào `/api/v1/**` của đúng backend — chặn `.`/`..` (kể cả dạng `%2e`) thoát khỏi tiền tố. */
 function isAllowedTarget(path: string, target: URL, origin: string): boolean {
   const hasDotSegment = path
@@ -61,7 +69,9 @@ function isAllowedTarget(path: string, target: URL, origin: string): boolean {
       const decoded = segment.replace(/%2e/gi, '.');
       return decoded === '.' || decoded === '..';
     });
-  return !hasDotSegment && target.origin === new URL(origin).origin && target.pathname.startsWith('/api/v1/');
+  const pathname = target.pathname.toLowerCase();
+  const nonStorefront = NON_STOREFRONT_PREFIXES.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`));
+  return !hasDotSegment && !nonStorefront && target.origin === new URL(origin).origin && pathname.startsWith('/api/v1/');
 }
 
 /** Header backend → trình duyệt (`set-cookie` xử lý riêng vì có thể nhiều dòng). */
@@ -87,6 +97,19 @@ export async function storefrontClientIpHeaders(): Promise<Record<string, string
   if (!storefrontProxySecret()) return {};
   const ip = clientIpFromHeaders(await requestHeaders());
   return ip ? { [STOREFRONT_CLIENT_IP_HEADER]: ip } : {};
+}
+
+/**
+ * `Location` tuyệt đối trỏ về chính backend làm lộ địa chỉ backend (thứ proxy đang giấu): đổi về đường dẫn
+ * tương đối để trình duyệt đi tiếp qua proxy cùng origin. URL bên ngoài (vd. cổng thanh toán) giữ nguyên.
+ */
+function hideBackendOrigin(location: string, origin: string): string {
+  try {
+    const url = new URL(location, `${origin}/`);
+    return url.origin === new URL(origin).origin ? `${url.pathname}${url.search}${url.hash}` : location;
+  } catch {
+    return location;
+  }
 }
 
 export async function proxyToBackend(request: Request, path: string): Promise<Response> {
@@ -139,7 +162,7 @@ export async function proxyToBackend(request: Request, path: string): Promise<Re
     });
     for (const name of FORWARDED_RESPONSE_HEADERS) {
       const value = response.headers.get(name);
-      if (value) outgoing.headers.set(name, value);
+      if (value) outgoing.headers.set(name, name === 'location' ? hideBackendOrigin(value, origin) : value);
     }
     // Nhiều cookie (access + refresh) phải giữ thành nhiều dòng `set-cookie`; `get()` gộp bằng dấu phẩy.
     for (const cookie of response.headers.getSetCookie()) outgoing.headers.append('set-cookie', cookie);

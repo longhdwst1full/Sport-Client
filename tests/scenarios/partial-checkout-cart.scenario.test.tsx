@@ -81,7 +81,8 @@ vi.mock('next/dynamic', () => ({ default: () => () => null }));
 
 import { Providers } from '@/app/providers';
 import { storefrontStore } from '@/app/store/store';
-import { hydrateCart, removeCartItem, resetCartForSignOut } from '@/features/cart';
+import { hydrateCart, removeCartItem, resetCartForSignOut, updateQuantity } from '@/features/cart';
+import { LocalStorageKey } from '@/core/storage';
 import { placeOrder, prepareCheckout } from '@/features/checkout/api/checkout.workflow';
 
 const RECIPIENT = { paymentMethod: 'COD' } as unknown as CreateCheckoutQuoteDto;
@@ -160,6 +161,26 @@ describe('Kịch bản: khách đăng nhập thanh toán một phần giỏ', ()
 
     await waitFor(() => expect(deviceCart()).toEqual(['X']));
     expect(serverCartIds()).toEqual(['X']);
+  });
+
+  it('KB5 — hai tab: tab kia thêm D, tab này sửa số lượng A → không mất D (máy và server)', async () => {
+    customerHasThreeItems();
+    openApp();
+    await waitFor(() => expect(deviceCart()).toEqual(['A', 'B', 'C']));
+
+    // Tab kia thêm D: saga của tab đó ghi localStorage (và server), trình duyệt phát `storage` sang tab này.
+    const otherTabCart = [localItem('A'), localItem('B', 2), localItem('C'), localItem('D')];
+    window.localStorage.setItem(LocalStorageKey.CART, JSON.stringify(otherTabCart));
+    server.items.push({ variantId: 'D', quantity: 1 });
+    window.dispatchEvent(
+      new StorageEvent('storage', { key: LocalStorageKey.CART, storageArea: window.localStorage }),
+    );
+
+    storefrontStore.dispatch(updateQuantity({ variantId: 'A', quantity: 3 })); // tab này sửa A
+
+    await waitFor(() => expect(server.items.find((line) => line.variantId === 'A')?.quantity).toBe(3));
+    expect(deviceCart()).toEqual(['A', 'B', 'C', 'D']);
+    expect(serverCartIds()).toEqual(['A', 'B', 'C', 'D']);
   });
 
   it('KB4 — không checkout một phần: mở app vẫn tải giỏ server (thấy món thêm từ máy khác)', async () => {

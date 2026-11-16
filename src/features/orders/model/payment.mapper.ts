@@ -3,6 +3,7 @@ import { vndMoney } from '@/shared/format/money';
 import { formatDateTime } from '@/shared/format/date-time';
 import { paymentEvidenceStatusLabels, paymentProviderLabels, paymentStatusLabels } from './order.constants';
 import { paymentMethodLabels } from './order.mapper';
+import { trustedPaymentRedirectUrl } from './payment-redirect';
 
 export interface PaymentEvidenceView {
   id: string;
@@ -50,7 +51,8 @@ export function toPaymentDetailView(dto: PaymentDetailDto): PaymentDetailView {
     providerCode: dto.instruction.provider,
     providerLabel: paymentProviderLabels[dto.instruction.provider] ?? dto.instruction.provider,
     customerMessage: dto.instruction.customerMessage,
-    redirectUrl: dto.instruction.redirectUrl ?? null,
+    // URL không phải cổng VNPay https → null: nút thanh toán ẩn, UI báo cổng chưa sẵn sàng.
+    redirectUrl: trustedPaymentRedirectUrl(dto.instruction.redirectUrl),
     version: dto.version,
     evidences: dto.evidences.map((evidence) => ({
       id: evidence.id,

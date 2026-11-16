@@ -1,10 +1,10 @@
 # Storefront Cart — maintenance note
 
-> **Document version:** 2.7.0
+> **Document version:** 2.8.0
 >
 > **Last updated:** 2026-11-16
 >
-> **Change summary:** Sửa mất dòng giỏ tài khoản sau checkout một phần (mua ngay / chọn một phần giỏ): cờ `ACCOUNT_CART_RESTORE_PENDING` + `api/account-cart-restore.ts` đẩy giỏ máy lên lại khi rời checkout, trước khi sang VNPay và lúc mở app.
+> **Change summary:** Đồng bộ giỏ giữa nhiều tab: `Providers` nghe sự kiện `storage` của `LocalStorageKey.CART` và `hydrateCart` lại, để tab cũ không ghi đè (máy và giỏ tài khoản) món vừa thêm ở tab khác. Test KB5 ở `tests/scenarios/partial-checkout-cart.scenario.test.tsx`.
 
 ## Phạm vi
 
@@ -99,6 +99,7 @@ Giới hạn còn lại: đăng xuất khi giỏ server đang bị cắt thì c�
 
 | Version | Date | Change summary |
 | --- | --- | --- |
+| 2.8.0 | 2026-11-16 | Đồng bộ giỏ giữa nhiều tab: `Providers` nghe sự kiện `storage` của `LocalStorageKey.CART` và `hydrateCart` lại, để tab cũ không ghi đè (máy và giỏ tài khoản) món vừa thêm ở tab khác. Test KB5 ở `tests/scenarios/partial-checkout-cart.scenario.test.tsx`. |
 | 2.7.0 | 2026-11-16 | Khôi phục giỏ tài khoản sau checkout một phần (cờ + `account-cart-restore`), test ở `account-cart-restore.test.ts`. |
 | 2.6.0 | 2026-11-15 | Accessible Modal cho xóa toàn giỏ, focus an toàn và test xác nhận/hủy/Escape. |
 | 2.5.0 | 2026-11-07 | `CartItem.availableQuantity` (ảnh chụp) + `useCartStockLimits` (đọc giỏ server); dòng vượt tồn bị cảnh báo và khoá "Đặt hàng". |

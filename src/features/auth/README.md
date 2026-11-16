@@ -1,10 +1,10 @@
 # Storefront Auth — maintenance note
 
-> **Document version:** 1.3.2
+> **Document version:** 1.3.3
 >
-> **Last updated:** 2026-11-15
+> **Last updated:** 2026-11-16
 >
-> **Change summary:** Tăng contrast tab chuyển login/register và dòng mô tả HTTPS theo kết quả axe browser; không đổi xác thực/transport.
+> **Change summary:** Trang đặt lại mật khẩu giữ `token` trong state rồi xoá `?token=` khỏi thanh địa chỉ (không nằm lại trong lịch sử trình duyệt); Analytics/Speed Insights chỉ gửi URL không query (`app/vercel-insights.tsx`).
 
 ## Phạm vi
 
@@ -60,6 +60,7 @@ Chưa dùng: `useLogoutCustomer`, `useRefreshCustomerToken`, `getCustomerCurrent
 
 | Version | Date | Change summary |
 | --- | --- | --- |
+| 1.3.3 | 2026-11-16 | Trang đặt lại mật khẩu giữ `token` trong state rồi xoá `?token=` khỏi thanh địa chỉ (không nằm lại trong lịch sử trình duyệt); Analytics/Speed Insights chỉ gửi URL không query (`app/vercel-insights.tsx`). |
 | 1.3.2 | 2026-11-15 | Sửa contrast chữ phụ trên auth shell và mode switcher sau khi bật lại gate color-contrast. |
 | 1.3.1 | 2026-10-06 | UI: `AuthField` dùng `Field.labelAction` (prop `aside` → `labelAction`), `PasswordInput size/invalid` thay chuỗi class dựng sẵn (bỏ `authPasswordInputClassName`, `AUTH_PASSWORD_TOGGLE_CLASS`), checkbox → `Checkbox`. |
 | 1.3.0 | 2026-09-30 | Chuyển browser transport sang same-origin ở mọi môi trường; thêm regression test cho hostname production. |
