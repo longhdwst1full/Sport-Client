@@ -61,10 +61,9 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
 
         <Link
           href="/news"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-neutral-900 hover:underline rounded focus-ring"
+          className="text-xs font-semibold text-neutral-800 transition-colors hover:text-brand-600 hover:underline rounded focus-ring"
         >
-          <span>Xem tất cả bài viết</span>
-          <ArrowRight className="size-3.5" aria-hidden="true" />
+          <span>Xem tất cả</span>
         </Link>
       </div>
 
@@ -78,13 +77,12 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
             durationMs={700}
             stagger={120}
             rootMargin="-60px"
-            className="group grid overflow-hidden rounded-4xl border border-neutral-200/90 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-neutral-900/40 hover:shadow-xl md:grid-cols-[1fr_1.2fr]"
+            className="group grid overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-neutral-300 hover:shadow-card md:grid-cols-[1fr_1.2fr]"
           >
             {/* Image Thumbnail */}
-            {/* Ảnh mobile theo tỷ lệ 16:9 (không còn khối 220px cao); ảnh thiếu/lỗi do `CoverImage` thay bằng placeholder. */}
             <Link
               href={`/news/${post.slug}`}
-              className="reveal-media relative aspect-[16/9] overflow-hidden bg-neutral-50 block md:aspect-auto md:min-h-[220px]"
+              className="reveal-media relative aspect-[16/9] overflow-hidden bg-neutral-50 block md:aspect-auto md:min-h-[200px]"
               tabIndex={-1}
               aria-hidden="true"
             >
@@ -95,7 +93,7 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
                 sizes="(max-width: 768px) 100vw, 45vw"
                 className="object-cover transition duration-500 group-hover:scale-105"
               />
-              <div className="absolute left-3 top-3 rounded-full bg-neutral-900/85 px-3 py-1 text-xs font-bold uppercase tracking-wider text-neutral-300 backdrop-blur-md">
+              <div className="absolute left-3 top-3 rounded-full bg-neutral-900/85 px-2.5 py-1 text-2xs font-bold uppercase tracking-wider text-white backdrop-blur-md">
                 {post.categoryLabel}
               </div>
             </Link>
@@ -103,41 +101,30 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
             {/* Content Details */}
             <div className="flex flex-col justify-between p-5 sm:p-6">
               <div>
-                {/* Meta info: date, reading time */}
-                <div className="flex items-center gap-3 text-xs font-semibold text-neutral-400">
-                  <span className="flex items-center gap-1">
-                    <Calendar className="size-3" aria-hidden="true" />
-                    {post.publishedLabel}
-                  </span>
-                  {post.readTimeLabel && (
-                    <>
-                      <span aria-hidden="true">·</span>
-                      <span className="flex items-center gap-1">
-                        <Clock className="size-3" aria-hidden="true" />
-                        {post.readTimeLabel}
-                      </span>
-                    </>
-                  )}
+                {/* Meta info: date */}
+                <div className="flex items-center gap-1.5 text-xs text-neutral-400">
+                  <Calendar className="size-3.5 text-neutral-400" aria-hidden="true" />
+                  <span>{post.publishedLabel}</span>
                 </div>
 
                 {/* Title */}
-                <h3 className="mt-2.5 text-base font-bold leading-snug text-neutral-900 transition line-clamp-2 group-hover:text-neutral-900 sm:text-lg">
+                <h3 className="mt-2 text-base font-bold leading-snug text-neutral-900 transition line-clamp-2 group-hover:text-brand-600 sm:text-lg">
                   <Link href={`/news/${post.slug}`} className="rounded focus-ring">
                     {post.title}
                   </Link>
                 </h3>
 
                 {/* Excerpt */}
-                <p className="mt-2 text-xs leading-relaxed text-neutral-500 line-clamp-3">
+                <p className="mt-2 text-xs leading-relaxed text-neutral-500 line-clamp-2 sm:line-clamp-3">
                   {post.excerpt}
                 </p>
               </div>
 
-              {/* Bỏ dòng tác giả lặp "Bảo An Sport / Ban chuyên môn" ở mọi thẻ: API không có tác giả thật. */}
+              {/* Action link */}
               <div className="mt-4 flex justify-end">
                 <Link
                   href={`/news/${post.slug}`}
-                  className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-bold text-neutral-900 transition hover:bg-neutral-50 focus-ring"
+                  className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-semibold text-neutral-900 transition hover:text-brand-600 focus-ring"
                   aria-label={`Đọc chi tiết: ${post.title}`}
                 >
                   <span>Chi tiết</span>

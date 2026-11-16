@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Sparkles } from 'lucide-react';
 import { BenefitsStrip } from '@/widgets/benefits-strip/benefits-strip';
 import { SectionHeading } from '@/foundation/components/structure/section-heading';
 import { ProductShowcaseLazy, toCategoryCardView, toCategoryRailView } from '@/features/catalog';
@@ -148,35 +148,103 @@ export async function HomePage({
             <Reveal {...HEADING_REVEAL}>
               <SectionHeading eyebrow="Tìm nhanh theo bộ môn" title="Bạn muốn tập luyện bộ môn nào?" />
             </Reveal>
-            {/* Thẻ sáng: ô icon đỏ nhận diện, icon lớn mờ làm nền góc, "Xem ngay" trượt khi hover; mobile 2 cột. */}
-            <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-              {sportCards.map(({ slug, title, itemCountLabel, icon: Icon }) => (
-                <Reveal key={slug} {...SECTION_REVEAL} variant="zoom-in" stagger className="flex">
-                  <Link
-                    href={`/category/${slug}`}
-                    className="group relative flex flex-1 flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-white p-4 transition-all duration-300 hover:-translate-y-1 hover:border-brand-200 hover:shadow-card focus-ring sm:min-h-[180px] sm:p-6"
-                  >
-                    <Icon
-                      aria-hidden="true"
-                      className="pointer-events-none absolute -bottom-5 -right-5 size-24 text-neutral-100 transition-all duration-500 group-hover:-rotate-12 group-hover:scale-110 group-hover:text-brand-50 sm:size-32"
-                    />
-                    <span className="absolute inset-x-0 top-0 h-1 origin-left scale-x-0 bg-brand-600 transition-transform duration-300 group-hover:scale-x-100" aria-hidden="true" />
+            {/* Bento Grid: Khối 1 nổi bật mang phong cách thể thao tương phản cao, các khối kế tiếp bổ trợ nhịp nhàng */}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {sportCards.map(({ slug, title, itemCountLabel, icon: Icon }, index) => {
+                const isFeatured = index === 0;
+                const isWide = index === 3;
+                const colSpanClass = isFeatured
+                  ? 'sm:col-span-2 lg:col-span-2'
+                  : isWide
+                    ? 'sm:col-span-2 lg:col-span-2'
+                    : 'col-span-1';
 
-                    <div className="relative grid size-11 place-items-center rounded-xl bg-brand-50 text-brand-600 transition-colors duration-300 group-hover:bg-brand-600 group-hover:text-white sm:size-14">
-                      <Icon className="size-5 sm:size-7" aria-hidden="true" />
-                    </div>
+                return (
+                  <Reveal key={slug} {...SECTION_REVEAL} variant="zoom-in" stagger className={`flex ${colSpanClass}`}>
+                    <Link
+                      href={`/category/${slug}`}
+                      className={`group relative flex flex-1 flex-col justify-between overflow-hidden rounded-3xl border transition-all duration-300 hover:-translate-y-1.5 focus-ring ${
+                        isFeatured
+                          ? 'border-neutral-800 bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-800 p-6 text-white shadow-xl hover:border-brand-500 hover:shadow-brand-950/20 sm:p-7 min-h-[220px]'
+                          : 'border-neutral-200/90 bg-white p-5 text-neutral-900 shadow-sm hover:border-brand-300 hover:shadow-card sm:p-6 min-h-[190px]'
+                      }`}
+                    >
+                      {/* Ambient background decoration */}
+                      {isFeatured ? (
+                        <>
+                          <div
+                            className="pointer-events-none absolute -right-12 -top-12 size-52 rounded-full bg-brand-600/15 blur-3xl transition-opacity duration-500 group-hover:bg-brand-600/25"
+                            aria-hidden="true"
+                          />
+                          <Icon
+                            aria-hidden="true"
+                            className="pointer-events-none absolute -bottom-6 -right-6 size-36 text-white/5 transition-all duration-500 group-hover:-rotate-12 group-hover:scale-110 group-hover:text-brand-500/10 sm:size-44"
+                          />
+                          <span
+                            className="absolute inset-x-0 top-0 h-1 origin-left scale-x-0 bg-brand-500 transition-transform duration-300 group-hover:scale-x-100"
+                            aria-hidden="true"
+                          />
+                        </>
+                      ) : (
+                        <>
+                          <Icon
+                            aria-hidden="true"
+                            className="pointer-events-none absolute -bottom-5 -right-5 size-28 text-neutral-100 transition-all duration-500 group-hover:-rotate-12 group-hover:scale-110 group-hover:text-brand-50 sm:size-32"
+                          />
+                          <span
+                            className="absolute inset-x-0 top-0 h-1 origin-left scale-x-0 bg-brand-600 transition-transform duration-300 group-hover:scale-x-100"
+                            aria-hidden="true"
+                          />
+                        </>
+                      )}
 
-                    <div className="relative mt-4 flex flex-1 flex-col sm:mt-6">
-                      <h3 className="text-sm font-bold leading-snug text-neutral-950 sm:text-lg">{title}</h3>
-                      <p className="mt-1 text-xs font-medium text-neutral-500 sm:text-sm">{itemCountLabel}</p>
-                      <span className="mt-auto inline-flex items-center gap-1 pt-3 text-xs font-semibold text-brand-700 sm:text-sm">
-                        Xem ngay
-                        <ArrowRight className="size-3.5 transition-transform duration-300 group-hover:translate-x-1 sm:size-4" aria-hidden="true" />
-                      </span>
-                    </div>
-                  </Link>
-                </Reveal>
-              ))}
+                      <div className="relative">
+                        {isFeatured ? (
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-500/30 bg-brand-500/15 px-3 py-1 text-2xs font-bold uppercase tracking-wider text-brand-300">
+                              <Sparkles className="size-3 text-brand-400" />
+                              Bộ môn thịnh hành
+                            </span>
+                            <div className="grid size-11 place-items-center rounded-2xl bg-brand-600 text-white shadow-md shadow-brand-600/30 transition-transform duration-300 group-hover:scale-110 sm:size-12">
+                              <Icon className="size-5 sm:size-6" aria-hidden="true" />
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="grid size-11 place-items-center rounded-2xl bg-brand-50 text-brand-600 transition-colors duration-300 group-hover:bg-brand-600 group-hover:text-white sm:size-12">
+                            <Icon className="size-5 sm:size-6" aria-hidden="true" />
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="relative mt-6">
+                        <h3
+                          className={`font-bold leading-snug tracking-tight ${
+                            isFeatured ? 'text-lg text-white sm:text-xl' : 'text-base text-neutral-950 sm:text-lg'
+                          }`}
+                        >
+                          {title}
+                        </h3>
+                        <p className={`mt-1 text-xs font-medium ${isFeatured ? 'text-neutral-400' : 'text-neutral-500'}`}>
+                          {itemCountLabel}
+                        </p>
+                        <span
+                          className={`mt-4 inline-flex items-center gap-1.5 text-xs font-bold transition-all sm:text-sm ${
+                            isFeatured
+                              ? 'text-brand-400 group-hover:text-brand-300'
+                              : 'text-brand-700 group-hover:text-brand-600'
+                          }`}
+                        >
+                          {isFeatured ? 'Khám phá bộ sưu tập' : 'Xem ngay'}
+                          <ArrowRight
+                            className="size-3.5 transition-transform duration-300 group-hover:translate-x-1 sm:size-4"
+                            aria-hidden="true"
+                          />
+                        </span>
+                      </div>
+                    </Link>
+                  </Reveal>
+                );
+              })}
             </div>
           </section>
         )}
