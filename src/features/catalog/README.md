@@ -1,6 +1,6 @@
 # Storefront Catalog — maintenance note
 
-> **Document version:** 1.16.0 (1.16.0: `ProductCard`/skeleton dùng `Button` (primary/secondary icon, 44px), token màu/chữ, chung vỏ qua `product-card.styles.ts`; giữ phong cách thẻ. 1.14.0: view switcher `?view=list`, trên route ISR `/category/[slug]` HTML tĩnh luôn là lưới nên `?view=list` áp dụng sau hydrate; "Xoá bộ lọc" giữ `?view=list`)
+> **Document version:** 1.16.0 (1.16.0: `ProductCard`/skeleton dùng `Button` (primary/secondary icon, 44px), token màu/chữ, chung vỏ qua `product-card.styles.ts`, thêm dòng Hãng · Danh mục + hàng tồn kho `h-5` cố định (skeleton khớp); giữ bục ảnh có đệm + hover ảnh như cũ. 1.14.0: view switcher `?view=list`, trên route ISR `/category/[slug]` HTML tĩnh luôn là lưới nên `?view=list` áp dụng sau hydrate; "Xoá bộ lọc" giữ `?view=list`)
 >
 > **Last updated:** 2026-11-16
 >
@@ -59,7 +59,7 @@
 
 | Version | Date | Change summary | Source |
 | --- | --- | --- | --- |
-| 1.16.0 | 2026-11-16 | `ProductCard` + skeleton: nút qua `Button`, bỏ gradient/`font-black`, giá thường `neutral-950`, giá flash `brand-600`, chữ phụ `neutral-600`; vỏ/bục ảnh dùng chung `product-card.styles.ts` (CLS = 0). Giữ bố cục/hover cũ. | CLIENT-20261116-CARD-DS |
+| 1.16.0 | 2026-11-16 | `ProductCard` + skeleton: nút qua `Button`, bỏ gradient/`font-black`, giá thường `neutral-950`, giá flash `brand-600`, chữ phụ `neutral-600`; vỏ/bục ảnh dùng chung `product-card.styles.ts` (CLS = 0); thêm dòng Hãng · Danh mục và chip Còn hàng/Tạm hết hàng (hàng `h-5` cố định). Giữ bục ảnh đệm + hover cũ. | CLIENT-20261116-CARD-DS |
 | 1.15.0 | 2026-11-16 | Lọc giá tự do bằng thanh trượt hai tay + ô nhập (`?minPrice/?maxPrice`), giữ tương thích `?price=<id>`; chip giá hiện khoảng tự do. | CLIENT-20261116-PRICE-SLIDER |
 | 1.14.0 | 2026-11-16 | Chuyển Lưới/Danh sách ở danh mục: `?view=list` (hook `useCatalogViewMode`, `router.replace` scroll:false, giữ mọi param khác, không vào query key nên không tải lại), `ProductListItem` + skeleton cùng bố cục, `CatalogViewSwitcher` (aria-pressed, 44px). Chỉ dùng trường có thật trên DTO danh sách, không đánh giá/đã bán/thông số. | CLIENT-20261116-VIEW-SWITCH |
 | 1.13.0 | 2026-11-16 | Perf client JS: flash sale lazy ở /products, drawer lọc mobile dynamic, handler thẻ sản phẩm ổn định định danh. | CLIENT-20261116-PERF |

@@ -4,7 +4,7 @@ import { PRODUCT_CARD_SHELL, PRODUCT_CARD_STAGE } from './product-card.styles';
 /**
  * Khung chờ cùng hộp với `ProductCard` (RULE-SKEL-03, CLS = 0): chung vỏ/bục ảnh qua
  * `product-card.styles`, danh mục 1 dòng `text-xs`, tiêu đề 2 dòng `min-h-10`, mô tả `text-2xs`,
- * giá `h-7`, cụm nút `h-11` (nút `Button` md/icon 44px).
+ * giá `h-7` + hàng tồn kho `h-5`, cụm nút `h-11` (nút `Button` md/icon 44px).
  */
 export function ProductCardSkeleton({ withAction = true }: { withAction?: boolean } = {}) {
   return (
@@ -19,6 +19,7 @@ export function ProductCardSkeleton({ withAction = true }: { withAction?: boolea
         <Skeleton className="mt-1.5 h-4 w-36 rounded" />
         <div className="mt-auto pt-3.5">
           <Skeleton className="h-7 w-28 rounded" />
+          <div className="mt-1 h-5" />
         </div>
         {withAction && (
           <div className="mt-2.5 flex items-center gap-1.5 sm:gap-2">

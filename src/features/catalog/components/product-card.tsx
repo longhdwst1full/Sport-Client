@@ -97,7 +97,9 @@ export const ProductCard = memo(function ProductCard({
 
       {/* Thông tin */}
       <div className="flex flex-1 flex-col pt-3">
-        <p className="eyebrow line-clamp-1 text-neutral-600">{product.category}</p>
+        <p className="eyebrow line-clamp-1 text-neutral-600">
+          {[product.brand ?? 'Chính hãng', product.category].filter(Boolean).join(' · ')}
+        </p>
 
         <h3 className="mt-1 line-clamp-2 min-h-10 text-sm font-bold leading-snug text-neutral-950 transition-colors group-hover:text-brand-600 sm:text-base">
           <Link href={href} className="focus-ring">
@@ -129,11 +131,18 @@ export const ProductCard = memo(function ProductCard({
             )}
           </div>
 
-          {product.inStock === false && (
-            <span className="mt-1 inline-flex items-center rounded-full bg-neutral-100 px-2 py-0.5 text-3xs font-semibold text-neutral-600">
-              Tạm hết hàng
-            </span>
-          )}
+          <div className="mt-1 h-5">
+            {product.inStock === false ? (
+              <span className="inline-flex items-center rounded-full border border-amber-200/80 bg-amber-50 px-2.5 py-0.5 text-3xs font-semibold text-amber-800">
+                Tạm hết hàng
+              </span>
+            ) : product.inStock === true ? (
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-success-200/80 bg-success-50 px-2.5 py-0.5 text-2xs font-semibold text-success-700">
+                <span aria-hidden className="size-1.5 rounded-full bg-success-500" />
+                Còn hàng
+              </span>
+            ) : null}
+          </div>
         </div>
 
         {onBuyNow && (
