@@ -146,7 +146,9 @@ export function SiteFooter({ categories }: { categories?: readonly FooterCategor
             </a>
           </div>
 
-          <div className="flex gap-2.5 pt-2">
+          <div className="flex items-center gap-3 pt-3">
+            <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400">Kết nối</span>
+            <span aria-hidden className="h-px w-6 bg-neutral-700" />
             {SOCIAL_LINKS.map(({ icon: Icon, href, label, className }) => (
               <a
                 key={label}
@@ -154,7 +156,7 @@ export function SiteFooter({ categories }: { categories?: readonly FooterCategor
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`${label} (mở tab mới)`}
-                className={`grid size-11 place-items-center rounded-xl border border-neutral-800 bg-neutral-900 text-neutral-300 transition-colors duration-200 hover:text-white focus-visible:outline-white ${className}`}
+                className={`grid size-11 place-items-center rounded-full border border-white/10 bg-white/5 text-neutral-200 shadow-sm backdrop-blur-sm transition-all duration-200 hover:-translate-y-0.5 hover:text-white hover:shadow-lg focus-visible:outline-white ${className}`}
               >
                 <Icon aria-hidden className="size-5" />
               </a>

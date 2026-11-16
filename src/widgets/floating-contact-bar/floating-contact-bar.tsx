@@ -11,9 +11,12 @@ import { STORE_CONTACT } from '@/shared/constants';
  * Trang có thanh hành động dính đáy trên mobile: chi tiết sản phẩm (`[data-sticky-buy-bar]`) và checkout
  * (thanh "Đặt hàng"). Cụm nút nổi z-50 đè lên các thanh đó nên ẩn dưới `lg`; desktop giữ nguyên.
  */
-/** Nút nổi đồng bộ: nền trắng, viền mảnh, icon mang màu kênh — không nhiều khối màu đặc chen nhau. */
+/** Nút trong thanh nổi: tròn 44px, màu theo kênh; hover nâng nhẹ. Thanh chứa là khối tối kính mờ. */
 const FLOAT_BUTTON =
-  "group relative grid size-11 place-items-center rounded-full border border-neutral-200 bg-white text-neutral-700 shadow-lg shadow-neutral-900/10 transition hover:-translate-y-0.5 hover:border-neutral-300 hover:shadow-xl focus-ring";
+  "group relative grid size-11 place-items-center rounded-full text-white transition duration-200 hover:-translate-y-0.5 focus-ring-inverse";
+/** Nút "lên đầu trang" đứng riêng: nền trắng để nổi trên cả nền tối (footer) lẫn nền sáng. */
+const FLOAT_BUTTON_LIGHT =
+  "group relative grid size-11 place-items-center rounded-full border border-neutral-200 bg-white text-neutral-700 shadow-lg shadow-neutral-900/10 transition duration-200 hover:-translate-y-0.5 hover:border-neutral-300 hover:shadow-xl focus-ring";
 const FLOAT_TOOLTIP =
   'pointer-events-none absolute right-full mr-3 hidden whitespace-nowrap rounded-lg bg-neutral-900 px-2.5 py-1.5 text-xs font-semibold text-white opacity-0 shadow-lg transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100 sm:block';
 
@@ -42,26 +45,25 @@ export function FloatingContactBar() {
     // giữ nút Gọi (Zalo/Showroom có ở footer và menu) để cột nút không che nội dung màn hình hẹp.
     <div className={`fixed bottom-[calc(4.25rem+env(safe-area-inset-bottom))] right-3.5 z-50 ${hideOnMobile ? 'hidden lg:flex' : 'flex'} flex-col items-end gap-2 pointer-events-none sm:bottom-[4.75rem] sm:right-5`}>
       {/* Quick Action Buttons Group */}
-      <div className="flex flex-col items-end gap-2 pointer-events-auto">
+      <div className="flex flex-col items-center gap-1.5 rounded-full bg-neutral-900/90 p-1.5 shadow-xl shadow-neutral-900/25 ring-1 ring-white/10 backdrop-blur-md pointer-events-auto">
         {/* Zalo Chat Button */}
         <a
           href={STORE_CONTACT.zaloUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className={`hidden sm:grid ${FLOAT_BUTTON}`}
+          className={`hidden sm:grid bg-[#0068FF] hover:bg-[#0057D9] ${FLOAT_BUTTON}`}
           aria-label="Chat Zalo với tư vấn viên (mở tab mới)"
         >
           <span className={FLOAT_TOOLTIP}>
             Chat Zalo: {STORE_CONTACT.primaryHotline}
           </span>
-          <span className="absolute inset-0 rounded-full border border-neutral-400 animate-pulse-ring pointer-events-none" />
-          <MessageSquare aria-hidden className="size-5 text-neutral-600 animate-phone-vibrate" />
+          <MessageSquare aria-hidden className="size-5 animate-phone-vibrate" />
         </a>
 
         {/* Hotline Call Button */}
         <a
           href={`tel:${STORE_CONTACT.primaryHotlineRaw}`}
-          className={FLOAT_BUTTON}
+          className={`bg-success-600 hover:bg-success-700 ${FLOAT_BUTTON}`}
           aria-label={`Gọi hotline ${STORE_CONTACT.primaryHotline}`}
         >
           {/* Label Tooltip */}
@@ -69,23 +71,19 @@ export function FloatingContactBar() {
             Hotline: {STORE_CONTACT.primaryHotline}
           </span>
           <span className="absolute inset-0 rounded-full border border-success-400 animate-pulse-ring pointer-events-none" />
-          <span className="absolute -right-0.5 -top-0.5 flex size-2.5">
-            <span className="absolute inline-flex size-full animate-ping rounded-full bg-success-400 opacity-75" />
-            <span className="relative inline-flex size-2.5 rounded-full bg-success-500" />
-          </span>
-          <Phone aria-hidden className="size-5 text-success-600 animate-phone-ring" />
+          <Phone aria-hidden className="size-5 animate-phone-ring" />
         </a>
 
         {/* Showroom Locator */}
         <Link
           href="/contact"
-          className={`hidden sm:grid ${FLOAT_BUTTON}`}
+          className={`hidden sm:grid bg-white/10 hover:bg-white/20 ${FLOAT_BUTTON}`}
           aria-label="Tìm Showroom gần nhất"
         >
           <span className={FLOAT_TOOLTIP}>
             Showroom Bảo An Sport
           </span>
-          <MapPin aria-hidden className="size-5 text-neutral-700" />
+          <MapPin aria-hidden className="size-5" />
         </Link>
       </div>
 
@@ -93,7 +91,7 @@ export function FloatingContactBar() {
       {showBackToTop && (
         <Button
           onClick={scrollToTop}
-          className={`pointer-events-auto ${FLOAT_BUTTON}`}
+          className={`pointer-events-auto ${FLOAT_BUTTON_LIGHT}`}
           aria-label="Cuộn lên đầu trang"
         >
           <ArrowUp aria-hidden className="size-5" />
