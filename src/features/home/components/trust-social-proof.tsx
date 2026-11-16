@@ -41,8 +41,8 @@ const STAT_ITEMS = [
   {
     icon: Award,
     iconColor: 'text-brand-400',
-    primary: STORE_MARKETING_STATS.yearsLabel,
-    secondary: '',
+    primary: '10+',
+    secondary: 'Năm',
     caption: 'Kinh nghiệm phân phối',
   },
   {
@@ -90,10 +90,10 @@ export function TrustSocialProof() {
               <span>An tâm khi đầu tư thiết bị</span>
             </div>
 
-            {/* Main Heading with Gradient Highlight */}
-            <h2 className="mt-4 text-2xl font-black leading-tight tracking-tight text-white sm:text-3xl lg:text-4xl">
+            {/* Main Heading with Highlight */}
+            <h2 className="mt-4 text-2xl font-bold leading-tight tracking-tight text-white sm:text-3xl lg:text-4xl">
               Vì sao hơn{' '}
-              <span className="bg-gradient-to-r from-brand-400 via-rose-300 to-amber-300 bg-clip-text text-transparent">
+              <span className="text-amber-400">
                 {STORE_MARKETING_STATS.customers}
               </span>{' '}
               khách hàng tin chọn Bảo An Sport?
@@ -114,9 +114,9 @@ export function TrustSocialProof() {
                     key={stat.caption}
                     className="group relative overflow-hidden rounded-2xl border border-white/5 bg-white/[0.03] p-3.5 text-center backdrop-blur-md transition-all duration-300 hover:border-white/15 hover:bg-white/[0.06] sm:p-4"
                   >
-                    <div className="flex items-center justify-center gap-1.5">
-                      <Icon className={`size-4 sm:size-4.5 ${stat.iconColor} drop-shadow-xs`} aria-hidden="true" />
-                      <CountUp value={stat.primary} className="text-xl sm:text-2xl font-black text-white" />
+                    <div className="flex items-center justify-center gap-1.5 whitespace-nowrap">
+                      <Icon className={`size-4 sm:size-4.5 ${stat.iconColor} drop-shadow-xs shrink-0`} aria-hidden="true" />
+                      <CountUp value={stat.primary} className="text-xl sm:text-2xl font-bold text-white" />
                       {stat.secondary && (
                         <span className="text-2xs sm:text-xs font-bold text-neutral-400">{stat.secondary}</span>
                       )}

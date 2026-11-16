@@ -38,24 +38,29 @@ export function AssistantLauncher() {
 
   return (
     <>
-      <Button
-        onClick={() => {
-          setRequested(true);
-          setOpen((value) => !value);
-        }}
-        aria-haspopup="dialog"
-        aria-expanded={open}
-        aria-controls={open ? ASSISTANT_DIALOG_ID : undefined}
-        aria-label={open ? 'Đóng trợ lý mua sắm' : 'Mở trợ lý mua sắm'}
-        // Nút dưới cùng của cột nút nổi (FloatingContactBar xếp ngay phía trên), có safe-area iOS. Chỉ icon
-        // (tên nằm ở aria-label + tooltip) để không thành viên thuốc dài đè lên nội dung bên phải trang.
-        title={ASSISTANT_TITLE}
-        // Đỏ thương hiệu + viền trắng: nền than trùng màu footer nên nút chìm khi cuộn tới cuối trang.
-        variant="primary"
-        className={`fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-3.5 z-50 size-11 rounded-full p-0 shadow-lg shadow-neutral-900/25 ring-2 ring-white sm:bottom-6 sm:right-5 ${hideOnMobile ? 'hidden lg:inline-flex' : ''}`}
-      >
-        {open ? <X className="size-5" aria-hidden /> : <Bot className="size-5" aria-hidden />}
-      </Button>
+      <div className="group">
+        <span className="pointer-events-none fixed bottom-[calc(1.35rem+env(safe-area-inset-bottom))] right-16 z-50 hidden whitespace-nowrap rounded-lg bg-neutral-900 px-3 py-1.5 text-xs font-semibold text-white opacity-0 shadow-lg transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100 sm:bottom-[1.85rem] sm:right-18 sm:block">
+          {open ? 'Đóng trợ lý mua sắm' : ASSISTANT_TITLE}
+        </span>
+        <Button
+          onClick={() => {
+            setRequested(true);
+            setOpen((value) => !value);
+          }}
+          aria-haspopup="dialog"
+          aria-expanded={open}
+          aria-controls={open ? ASSISTANT_DIALOG_ID : undefined}
+          aria-label={open ? 'Đóng trợ lý mua sắm' : 'Mở trợ lý mua sắm'}
+          // Nút dưới cùng của cột nút nổi (FloatingContactBar xếp ngay phía trên), có safe-area iOS.
+          title={ASSISTANT_TITLE}
+          variant="primary"
+          className={`fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-3.5 z-50 size-11 rounded-full p-0 shadow-lg shadow-brand-600/30 ring-2 ring-white hover:scale-105 transition-transform duration-200 sm:bottom-6 sm:right-5 ${
+            hideOnMobile ? 'hidden lg:inline-flex' : ''
+          }`}
+        >
+          {open ? <X className="size-5" aria-hidden /> : <Bot className="size-5" aria-hidden />}
+        </Button>
+      </div>
       {requested && <AssistantPanelHost open={open} onClose={close} />}
     </>
   );

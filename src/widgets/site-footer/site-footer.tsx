@@ -1,35 +1,56 @@
 import Image from 'next/image';
 import {
   CreditCard,
-  Facebook,
   Mail,
-  MessageCircle,
   ShieldCheck,
   Truck,
-  Youtube,
 } from 'lucide-react';
 import { STORE_CONFIG, STORE_CONTACT, STORE_POLICY_PAGES, STORE_SHOWROOMS } from '@/shared/constants';
 import { FOOTER_HEADING_CLASS, FooterLinkColumn, type FooterLinkItem } from './footer-link-column';
 import { ShowroomCard, type ShowroomCardData } from './showroom-card';
 
+function FacebookIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+    </svg>
+  );
+}
+
+function YoutubeIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+    </svg>
+  );
+}
+
+function ZaloIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12.49 10.272v-.45h1.347v6.322h-.77a.576.576 0 0 1-.577-.573v.001a3.27 3.27 0 0 1-1.938.632a3.284 3.284 0 0 1-3.284-3.282a3.284 3.284 0 0 1 3.284-3.282a3.27 3.27 0 0 1 1.937.632zM6.919 7.79v.205c0 .382-.051.694-.3 1.06l-.03.034a8 8 0 0 0-.242.285L2.024 14.8h4.895v.768a.576.576 0 0 1-.577.576H0v-.362c0-.443.11-.641.25-.847L4.858 9.23H.192V7.79zm8.551 8.354a.48.48 0 0 1-.48-.48V7.79h1.441v8.354zM20.693 9.6a3.306 3.306 0 1 1 .002 6.612a3.306 3.306 0 0 1-.002-6.612m-10.14 5.253a1.932 1.932 0 1 0 0-3.863a1.932 1.932 0 0 0 0 3.863m10.14-.003a1.945 1.945 0 1 0 0-3.89a1.945 1.945 0 0 0 0 3.89" />
+    </svg>
+  );
+}
+
 const SOCIAL_LINKS = [
   {
-    icon: Facebook,
+    icon: FacebookIcon,
     href: STORE_CONTACT.facebookUrl,
     label: 'Facebook',
-    className: 'hover:border-[#1877F2] hover:bg-[#1877F2]',
+    className: 'hover:border-[#1877F2] hover:bg-[#1877F2] hover:shadow-[#1877F2]/25',
   },
   {
-    icon: Youtube,
+    icon: YoutubeIcon,
     href: STORE_CONTACT.youtubeUrl,
     label: 'YouTube',
-    className: 'hover:border-[#FF0000] hover:bg-[#FF0000]',
+    className: 'hover:border-[#FF0000] hover:bg-[#FF0000] hover:shadow-[#FF0000]/25',
   },
   {
-    icon: MessageCircle,
+    icon: ZaloIcon,
     href: STORE_CONTACT.zaloUrl,
     label: 'Zalo',
-    className: 'hover:border-[#0068FF] hover:bg-[#0068FF]',
+    className: 'hover:border-[#0068FF] hover:bg-[#0068FF] hover:shadow-[#0068FF]/25',
   },
 ];
 
@@ -146,9 +167,7 @@ export function SiteFooter({ categories }: { categories?: readonly FooterCategor
             </a>
           </div>
 
-          <div className="flex items-center gap-3 pt-3">
-            <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400">Kết nối</span>
-            <span aria-hidden className="h-px w-6 bg-neutral-800" />
+          <div className="flex items-center gap-2.5 pt-3">
             {SOCIAL_LINKS.map(({ icon: Icon, href, label, className }) => (
               <a
                 key={label}
@@ -156,9 +175,9 @@ export function SiteFooter({ categories }: { categories?: readonly FooterCategor
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`${label} (mở tab mới)`}
-                className={`grid size-11 place-items-center rounded-full border border-white/10 bg-white/5 text-neutral-200 transition duration-200 hover:-translate-y-0.5 hover:text-white focus-ring-inverse ${className}`}
+                className={`grid size-10 place-items-center rounded-full border border-neutral-800 bg-neutral-900/90 text-neutral-300 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:text-white hover:shadow-lg focus-ring-inverse ${className}`}
               >
-                <Icon aria-hidden className="size-5" />
+                <Icon className="size-4.5" />
               </a>
             ))}
           </div>
