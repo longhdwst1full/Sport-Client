@@ -8,6 +8,8 @@ import { useDebounce } from '@/shared/hooks';
 import { CATALOG_PAGE_SIZE } from '../model/product.mapper';
 import { ProductListSort } from '@/generated/api/catalog/catalog.schemas';
 import type { ProductListResponseDto } from '@/generated/api/catalog/catalog.schemas';
+import { formatVnd } from '@/shared/format/money';
+import { formatPriceRangeLabel } from '../model/catalog-price-range';
 import {
   PRICE_RANGES,
   parseCatalogUrlState,
@@ -40,7 +42,7 @@ export function useCatalogFilters(initial?: CatalogInitialPage, initialCategoryN
   const { tabs, nameBySlug, isPending: isTabsPending } = useCategoryTabs();
 
   // URL State Sync
-  const { activeTabSlug, activePriceRange, activeSort, urlSearch, activeBrand, inStockOnly, filters } = parseCatalogUrlState(
+  const { activeTabSlug, activePriceRange, priceMin, priceMax, activeSort, urlSearch, activeBrand, inStockOnly, filters } = parseCatalogUrlState(
     (key) => searchParams.get(key),
   );
 
@@ -55,7 +57,13 @@ export function useCatalogFilters(initial?: CatalogInitialPage, initialCategoryN
   };
 
   const setActiveTabSlug = (slug: string | null) => updateQuery({ category: slug });
-  const setActivePriceRange = (id: string) => updateQuery({ price: id === 'all' ? null : id });
+  // Khoảng giá tự do thay thế `?price=<id>` (xoá id cũ để hai nguồn không mâu thuẫn).
+  const setPriceRange = (min: number | null, max: number | null) =>
+    updateQuery({
+      price: null,
+      minPrice: min === null ? null : String(min),
+      maxPrice: max === null ? null : String(max),
+    });
   const setActiveBrand = (slug: string | null) => updateQuery({ brand: slug });
   const setInStockOnly = (value: boolean) => updateQuery({ instock: value ? '1' : null });
   const setActiveSort = (sort: ProductListSort) =>
@@ -99,33 +107,40 @@ export function useCatalogFilters(initial?: CatalogInitialPage, initialCategoryN
   }, [nameBySlug, tabs, activeTabSlug, initial?.filters.category, initialCategoryName]);
 
   const activePriceLabel = useMemo(() => {
-    if (activePriceRange === 'all') return null;
-    return PRICE_RANGES.find((p) => p.id === activePriceRange)?.label ?? null;
-  }, [activePriceRange]);
+    if (priceMin === null && priceMax === null) return null;
+    return (
+      PRICE_RANGES.find((p) => p.id === activePriceRange)?.label
+      ?? formatPriceRangeLabel(priceMin, priceMax, formatVnd)
+    );
+  }, [activePriceRange, priceMin, priceMax]);
 
   const activeBrandLabel = useMemo(() => {
     if (!activeBrand) return null;
     return list.brandFacets.find((facet) => facet.slug === activeBrand)?.name ?? activeBrand;
   }, [activeBrand, list.brandFacets]);
 
+  const hasPriceFilter = priceMin !== null || priceMax !== null;
+
   const hasActiveFilters =
     activeBrand !== null ||
     inStockOnly ||
     activeTabSlug !== null ||
-    activePriceRange !== 'all' ||
+    hasPriceFilter ||
     activeSort !== ProductListSort.NEWEST ||
     urlSearch !== '';
 
   const activeFilterCount =
     (activeTabSlug !== null ? 1 : 0) +
-    (activePriceRange !== 'all' ? 1 : 0) +
+    (hasPriceFilter ? 1 : 0) +
     (activeBrand !== null ? 1 : 0) +
     (inStockOnly ? 1 : 0) +
     (urlSearch !== '' ? 1 : 0);
 
   const handleResetFilters = () => {
     setSearchQuery('');
-    router.replace(pathname, { scroll: false });
+    // `?view=list` là tuỳ chọn hiển thị, không phải bộ lọc: xoá bộ lọc không được đổi chế độ xem của khách.
+    const keepView = searchParams.get('view') === 'list' ? '?view=list' : '';
+    router.replace(`${pathname}${keepView}`, { scroll: false });
   };
 
   // Trả theo nhóm props của từng component để view chỉ spread, không liệt kê lại từng trường.
@@ -138,9 +153,9 @@ export function useCatalogFilters(initial?: CatalogInitialPage, initialCategoryN
       tabs,
       activeTabSlug,
       onSelectCategory: setActiveTabSlug,
-      priceRanges: PRICE_RANGES,
-      activePriceRange,
-      onSelectPriceRange: setActivePriceRange,
+      priceMin,
+      priceMax,
+      onChangePriceRange: setPriceRange,
       brands: list.brandFacets,
       activeBrand,
       onSelectBrand: setActiveBrand,
@@ -159,7 +174,7 @@ export function useCatalogFilters(initial?: CatalogInitialPage, initialCategoryN
       categoryLabel: activeCategoryLabel,
       onClearCategory: () => setActiveTabSlug(null),
       priceLabel: activePriceLabel,
-      onClearPrice: () => setActivePriceRange('all'),
+      onClearPrice: () => setPriceRange(null, null),
       brandLabel: activeBrandLabel,
       onClearBrand: () => setActiveBrand(null),
       inStockOnly,

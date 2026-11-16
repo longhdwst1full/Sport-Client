@@ -26,6 +26,23 @@ describe('khoảng giá /products', () => {
   it('id lạ không lọc gì', () => {
     expect(parse('/products?price=2m-10m').filters.minPrice).toBeUndefined();
   });
+
+  it('?minPrice/?maxPrice tự do thắng ?price=, đảo khi min > max, bỏ giá trị rác', () => {
+    const custom = parse('/products?price=under-500k&minPrice=1000000&maxPrice=3000000');
+    expect(custom.activePriceRange).toBe('all');
+    expect(custom.filters).toMatchObject({ minPrice: '1000000', maxPrice: '3000000' });
+    expect(parse('/products?minPrice=9000000&maxPrice=1000000').filters).toMatchObject({
+      minPrice: '1000000',
+      maxPrice: '9000000',
+    });
+    const junk = parse('/products?minPrice=abc&maxPrice=-1').filters;
+    expect(junk.minPrice).toBeUndefined();
+    expect(junk.maxPrice).toBeUndefined();
+  });
+
+  it('khoảng giá khác nhau là bộ lọc khác', () => {
+    expect(isSameCatalogFilters(parse('/products?minPrice=1').filters, parse('/products?minPrice=2').filters)).toBe(false);
+  });
 });
 
 describe('thương hiệu & còn hàng', () => {

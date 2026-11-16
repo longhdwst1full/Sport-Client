@@ -1,8 +1,10 @@
 # Storefront Catalog — maintenance note
 
-> **Document version:** 1.13.0
+> **Document version:** 1.15.0 (1.14.0: view switcher `?view=list`, trên route ISR `/category/[slug]` HTML tĩnh luôn là lưới nên `?view=list` áp dụng sau hydrate; "Xoá bộ lọc" giữ `?view=list`)
 >
 > **Last updated:** 2026-11-16
+>
+> **Lọc giá (1.15.0):** thay nút khoảng giá cố định bằng `PriceRangeSlider` (2 `input[type=range]` + 2 ô nhập, miền 0–50 triệu, bước 100K, tay phải ở cuối = không giới hạn). URL: `?minPrice=&maxPrice=` (VND nguyên, tự do, min>max thì đảo) thắng `?price=<id>`; link ngân sách trang chủ `?price=<id>` vẫn chạy. Kéo debounce 300ms/commit khi thả; ghi URL xoá `price`. Logic thuần ở `model/catalog-price-range.ts`.
 >
 > **Perf (1.13.0):** `/products` dùng `FlashSaleSectionLazy`; drawer lọc mobile tách chunk (`next/dynamic`, chỉ mount khi mở); `useCardBuyNow`/`useCardAddToCart` trả callback ổn định (ref cho `addItem`, giá flash, toast) để `memo(ProductCard)` không render lại cả lưới.
 >
@@ -57,6 +59,8 @@
 
 | Version | Date | Change summary | Source |
 | --- | --- | --- | --- |
+| 1.15.0 | 2026-11-16 | Lọc giá tự do bằng thanh trượt hai tay + ô nhập (`?minPrice/?maxPrice`), giữ tương thích `?price=<id>`; chip giá hiện khoảng tự do. | CLIENT-20261116-PRICE-SLIDER |
+| 1.14.0 | 2026-11-16 | Chuyển Lưới/Danh sách ở danh mục: `?view=list` (hook `useCatalogViewMode`, `router.replace` scroll:false, giữ mọi param khác, không vào query key nên không tải lại), `ProductListItem` + skeleton cùng bố cục, `CatalogViewSwitcher` (aria-pressed, 44px). Chỉ dùng trường có thật trên DTO danh sách, không đánh giá/đã bán/thông số. | CLIENT-20261116-VIEW-SWITCH |
 | 1.13.0 | 2026-11-16 | Perf client JS: flash sale lazy ở /products, drawer lọc mobile dynamic, handler thẻ sản phẩm ổn định định danh. | CLIENT-20261116-PERF |
 | 1.12.0 | 2026-11-15 | Route skeleton server-first cho list/category/PDP, tăng contrast thẻ và bật color-contrast gate. | CLIENT-20261115-UX-A11Y |
 | 1.11.0 | 2026-11-07 | PDP hiển thị và chặn theo `availableQuantity` của API: nhãn tồn, bộ chọn số lượng kẹp max, hết hàng khoá mua. | CLIENT-20261107-STOCK-LIMIT |

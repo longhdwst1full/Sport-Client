@@ -4,9 +4,9 @@ import { useState, useMemo } from 'react';
 import { RotateCcw, Tag, Boxes, Award, PackageCheck, Search, X, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@/foundation/components/buttons';
 import { Skeleton } from '@/foundation/components/feedback';
-import { ToggleChip } from '@/foundation/components/tabs-chips';
 import type { CatalogBrandFacetDto } from '@/generated/api/catalog/catalog.schemas';
 import type { CategoryTabView } from '../hooks/use-category-tabs';
+import { PriceRangeSlider } from './price-range-slider';
 
 export interface PriceRangeOption {
   id: string;
@@ -19,9 +19,10 @@ export interface CatalogSidebarFiltersProps {
   tabs: CategoryTabView[];
   activeTabSlug: string | null;
   onSelectCategory: (slug: string | null) => void;
-  priceRanges: PriceRangeOption[];
-  activePriceRange: string;
-  onSelectPriceRange: (id: string) => void;
+  /** Khoảng giá hiệu lực (VND, `null` = không giới hạn phía đó); thanh trượt ghi lại qua `onChangePriceRange`. */
+  priceMin: number | null;
+  priceMax: number | null;
+  onChangePriceRange: (min: number | null, max: number | null) => void;
   /** Thương hiệu kèm số sản phẩm theo bộ lọc hiện tại (facet của API); rỗng thì ẩn nhóm. */
   brands: CatalogBrandFacetDto[];
   activeBrand: string | null;
@@ -73,9 +74,9 @@ export function CatalogFilterGroups({
   tabs,
   activeTabSlug,
   onSelectCategory,
-  priceRanges,
-  activePriceRange,
-  onSelectPriceRange,
+  priceMin,
+  priceMax,
+  onChangePriceRange,
   brands,
   activeBrand,
   onSelectBrand,
@@ -155,41 +156,6 @@ export function CatalogFilterGroups({
     );
   });
 
-  const priceOptions = priceRanges.map((range) => {
-    const isSelected = activePriceRange === range.id;
-    return isSidebar ? (
-      <label
-        key={range.id}
-        className={`flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-xs font-bold transition ${
-          isSelected
-            ? 'bg-selected text-on-selected font-bold ring-1 ring-selected-border'
-            : 'text-neutral-700 hover:bg-control-hover hover:text-on-control'
-        }`}
-      >
-        <div className="flex items-center gap-2.5">
-          <input
-            type="radio"
-            name="priceRange"
-            value={range.id}
-            checked={isSelected}
-            onChange={() => onSelectPriceRange(range.id)}
-            className={`size-4 cursor-pointer border-neutral-300 accent-[var(--color-action)] ${FOCUS_RING}`}
-          />
-          <span>{range.label}</span>
-        </div>
-      </label>
-    ) : (
-      <ToggleChip
-        key={range.id}
-        selected={isSelected}
-        onClick={() => onSelectPriceRange(range.id)}
-        className="h-auto justify-center rounded-xl p-2.5 text-center"
-      >
-        {range.label}
-      </ToggleChip>
-    );
-  });
-
   return (
     <>
       {/* Category Facet */}
@@ -223,13 +189,7 @@ export function CatalogFilterGroups({
         ) : (
           <h4 className={SHEET_HEADING}>Khoảng giá</h4>
         )}
-        {isSidebar ? (
-          <div className="space-y-1.5" role="radiogroup" aria-label="Khoảng giá">
-            {priceOptions}
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 gap-2">{priceOptions}</div>
-        )}
+        <PriceRangeSlider min={priceMin} max={priceMax} onChange={onChangePriceRange} />
       </div>
 
       {/* Brand Facet — số sản phẩm do API đếm theo bộ lọc hiện tại */}

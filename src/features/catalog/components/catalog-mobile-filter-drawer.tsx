@@ -38,7 +38,7 @@ export function CatalogMobileFilterDrawer({
             variant="ghost"
             size="icon"
             onClick={onClose}
-            className="size-9 rounded-full text-neutral-500"
+            className="size-11 rounded-full text-neutral-500"
             aria-label="Đóng bộ lọc"
           >
             <X aria-hidden className="size-5" />

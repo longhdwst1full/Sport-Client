@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useState } from 'react';
+import { useCatalogViewMode } from '../hooks/use-catalog-view-mode';
 import { useCatalogFilters, type CatalogInitialPage } from '../hooks/use-catalog-filters';
 import { CatalogSidebarFilters } from './catalog-sidebar-filters';
 import { CatalogActiveChips } from './catalog-active-chips';
@@ -24,12 +25,16 @@ export function ProductsCatalogView({
 
   const { isTabsPending, activeFilterCount, list, filterProps, queryProps, chipsProps } =
     useCatalogFilters(initial, initialCategoryName);
+  // Chế độ xem ở URL `?view=list`, không nằm trong bộ lọc/query key nên đổi chế độ không tải lại danh sách.
+  const { viewMode, setViewMode } = useCatalogViewMode();
 
   return (
     <section className="relative">
       {/* Mobile Sticky Control Bar */}
       <CatalogMobileControlBar
         {...queryProps}
+        viewMode={viewMode}
+        onViewModeChange={setViewMode}
         onOpenFilters={() => setIsMobileFilterOpen(true)}
         activeFilterCount={activeFilterCount}
       />
@@ -44,7 +49,12 @@ export function ProductsCatalogView({
         {/* RIGHT COLUMN: SEARCH, ACTIVE CHIPS, PRODUCT GRID */}
         <div className="flex-1 min-w-0">
           {/* Desktop Search & Sort Bar */}
-          <CatalogSearchSortBar {...queryProps} displayedCount={list.products.length} total={list.total} />
+          <CatalogSearchSortBar
+            {...queryProps}
+            viewMode={viewMode}
+            onViewModeChange={setViewMode}
+            displayedCount={list.products.length} total={list.total}
+          />
 
           {/* ACTIVE FILTER CHIPS */}
           <div className="mb-4">
@@ -53,6 +63,7 @@ export function ProductsCatalogView({
 
           <CatalogProductGrid
             {...list}
+            viewMode={viewMode}
             hasActiveFilters={filterProps.hasActiveFilters}
             onResetFilters={filterProps.onResetFilters}
           />

@@ -8,6 +8,9 @@ import type { ProductShowcaseItem } from '../../model/product.mapper';
 import { trimToFullRows } from '@/shared/grid/full-rows';
 import { useCardAddToCart, useCardBuyNow } from '../../hooks/use-card-buy-now';
 import { ProductCard, ProductCardSkeleton } from '../product-card';
+import { ProductListItem } from '../product-list-item';
+import { ProductListItemSkeleton } from '../product-list-item-skeleton';
+import type { CatalogViewMode } from '../../hooks/use-catalog-view-mode';
 
 /** Props trạng thái trùng tên với kết quả `useProductShowcase` để nơi gọi spread thẳng. */
 interface CatalogProductGridProps {
@@ -28,11 +31,16 @@ interface CatalogProductGridProps {
   errorTitle?: string;
   /** Thay khối "không tìm thấy" mặc định (vd. lưới trưng bày không có bộ lọc để xoá). */
   emptyState?: ReactNode;
+  /** Mặc định `grid`; `list` hiện thẻ ngang một cột (cùng dữ liệu, cùng trạng thái). */
+  viewMode?: CatalogViewMode;
 }
 
 const GRID_CLASS = 'grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 xl:grid-cols-4';
 /** BCNN số cột 2/3/4 của mọi lưới sản phẩm dùng component này; cũng là số thẻ khung chờ. */
 const FULL_ROW_MULTIPLE = 12;
+const LIST_CLASS = 'flex flex-col gap-3 sm:gap-4';
+/** Danh sách một cột: khung chờ vừa một màn hình, không cần bội số hàng. */
+const LIST_SKELETON_COUNT = 6;
 
 export function CatalogProductGrid({
   isPending,
@@ -49,20 +57,23 @@ export function CatalogProductGrid({
   gridClassName = GRID_CLASS,
   errorTitle = 'Không thể tải danh sách sản phẩm lúc này.',
   emptyState,
+  viewMode = 'grid',
 }: CatalogProductGridProps) {
+  const isList = viewMode === 'list';
+  const layoutClass = isList ? LIST_CLASS : gridClassName;
   const onBuyNow = useCardBuyNow();
   const onAddToCart = useCardAddToCart();
   const hasProducts = products.length > 0;
   // Còn trang sau thì không để thẻ lẻ ở hàng cuối; hết hàng thì hiện đủ.
-  const visibleProducts = trimToFullRows(products, FULL_ROW_MULTIPLE, hasMore);
+  const visibleProducts = isList ? products : trimToFullRows(products, FULL_ROW_MULTIPLE, hasMore);
 
   // RULE-SKEL-05: skeleton chỉ khi chưa có gì để hiện; có dữ liệu thì giữ lưới.
   if (!hasProducts && isPending) {
     return (
-      <div className={gridClassName} role="status" aria-label="Đang tải danh sách sản phẩm">
-        {Array.from({ length: FULL_ROW_MULTIPLE }, (_, index) => (
-          <ProductCardSkeleton key={index} />
-        ))}
+      <div className={layoutClass} role="status" aria-label="Đang tải danh sách sản phẩm">
+        {Array.from({ length: isList ? LIST_SKELETON_COUNT : FULL_ROW_MULTIPLE }, (_, index) =>
+          isList ? <ProductListItemSkeleton key={index} /> : <ProductCardSkeleton key={index} />,
+        )}
       </div>
     );
   }
@@ -126,21 +137,25 @@ export function CatalogProductGrid({
       )}
 
       <div
-        className={`${gridClassName} transition-opacity ${isShowingPreviousResults ? 'opacity-60' : ''}`}
+        className={`${layoutClass} transition-opacity ${isShowingPreviousResults ? 'opacity-60' : ''}`}
         aria-busy={isShowingPreviousResults}
       >
-        {visibleProducts.map((product) => (
-          <ProductCard key={product.id} product={product} onBuyNow={onBuyNow} onAddToCart={onAddToCart} />
-        ))}
+        {visibleProducts.map((product) =>
+          isList ? (
+            <ProductListItem key={product.id} product={product} onBuyNow={onBuyNow} onAddToCart={onAddToCart} />
+          ) : (
+            <ProductCard key={product.id} product={product} onBuyNow={onBuyNow} onAddToCart={onAddToCart} />
+          ),
+        )}
       </div>
 
       {hasMore && !isShowingPreviousResults && (
         <div className="mt-10 flex flex-col items-center gap-4">
           {isLoadingMore && (
-            <div className={`${gridClassName} w-full`} aria-hidden="true">
-              {Array.from({ length: FULL_ROW_MULTIPLE }, (_, i) => (
-                <ProductCardSkeleton key={i} />
-              ))}
+            <div className={`${layoutClass} w-full`} aria-hidden="true">
+              {Array.from({ length: isList ? LIST_SKELETON_COUNT : FULL_ROW_MULTIPLE }, (_, i) =>
+                isList ? <ProductListItemSkeleton key={i} /> : <ProductCardSkeleton key={i} />,
+              )}
             </div>
           )}
           <Button

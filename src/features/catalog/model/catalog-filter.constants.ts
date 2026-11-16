@@ -1,5 +1,6 @@
 import { ProductListSort } from '@/generated/api/catalog/catalog.schemas';
 import type { PriceRangeOption } from '../components/catalog-sidebar-filters';
+import { parsePriceParam } from './catalog-price-range';
 
 /**
  * Khoảng giá gửi thẳng lên API (`minPrice`/`maxPrice`, VND) để lọc trên toàn bộ catalog. Nguồn duy
@@ -53,9 +54,33 @@ export function toListCatalogParams(filters: CatalogListFilters) {
   };
 }
 
+/**
+ * Khoảng giá hiệu lực từ URL. Ưu tiên `?minPrice=&maxPrice=` (tự do, số nguyên VND; min>max thì đảo);
+ * không có thì dùng `?price=<id>` của link cũ/trang chủ. `presetId` chỉ có khi lấy từ `?price=`.
+ */
+export function resolvePriceBounds(get: (key: string) => string | null | undefined): {
+  min: number | null;
+  max: number | null;
+  presetId: string | null;
+} {
+  let min = parsePriceParam(get('minPrice'));
+  let max = parsePriceParam(get('maxPrice'));
+  if (min !== null || max !== null) {
+    if (min !== null && max !== null && min > max) [min, max] = [max, min];
+    if (min === 0) min = null;
+    return { min, max, presetId: null };
+  }
+  const preset = PRICE_RANGES.find((range) => range.id === get('price') && range.id !== 'all');
+  if (!preset) return { min: null, max: null, presetId: null };
+  return { min: parsePriceParam(preset.min), max: parsePriceParam(preset.max), presetId: preset.id };
+}
+
 export interface CatalogUrlState {
   activeTabSlug: string | null;
   activePriceRange: string;
+  /** Khoảng giá hiệu lực (từ `?minPrice/maxPrice` hoặc `?price=<id>`); `null` = không giới hạn phía đó. */
+  priceMin: number | null;
+  priceMax: number | null;
   activeSort: ProductListSort;
   urlSearch: string;
   activeBrand: string | null;
@@ -69,8 +94,7 @@ export interface CatalogUrlState {
  */
 export function parseCatalogUrlState(get: (key: string) => string | null | undefined): CatalogUrlState {
   const activeTabSlug = get('category') || null;
-  const priceParam = get('price') ?? null;
-  const priceRange = PRICE_RANGES.find((range) => range.id === priceParam && range.id !== 'all');
+  const price = resolvePriceBounds(get);
   const sortParam = get('sort') ?? null;
   const activeSort: ProductListSort = isSort(sortParam) ? sortParam : ProductListSort.NEWEST;
   const urlSearch = get('q') ?? '';
@@ -78,7 +102,9 @@ export function parseCatalogUrlState(get: (key: string) => string | null | undef
   const inStockOnly = get('instock') === '1';
   return {
     activeTabSlug,
-    activePriceRange: priceRange?.id ?? 'all',
+    activePriceRange: price.presetId ?? 'all',
+    priceMin: price.min,
+    priceMax: price.max,
     activeSort,
     urlSearch,
     activeBrand,
@@ -87,8 +113,8 @@ export function parseCatalogUrlState(get: (key: string) => string | null | undef
       category: activeTabSlug ?? undefined,
       search: urlSearch.trim() || undefined,
       sort: activeSort === ProductListSort.NEWEST ? undefined : activeSort,
-      minPrice: priceRange?.min,
-      maxPrice: priceRange?.max,
+      minPrice: price.min === null ? undefined : String(price.min),
+      maxPrice: price.max === null ? undefined : String(price.max),
       brand: activeBrand ?? undefined,
       inStock: inStockOnly || undefined,
     },

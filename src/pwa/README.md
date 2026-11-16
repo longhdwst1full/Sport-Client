@@ -1,15 +1,15 @@
 # Storefront PWA — maintenance note
 
-> **Document version:** 1.4.0
+> **Document version:** 1.5.0
 >
-> **Last updated:** 2026-11-03
+> **Last updated:** 2026-11-16
 >
-> **Change summary:** CLIENT-20261103-PWA-INSTALL: bổ sung UI cài Chromium, hướng dẫn iPhone/iPadOS và mở trình duyệt ngoài cho in-app browser. `/pwa` có hướng dẫn cố định; ẩn promotion khi standalone, đã đóng trong tab, offline/update hoặc ở luồng nhạy cảm. Không đổi worker/cache/API.
+> **Change summary:** Cache version `v4` → `v5`: `/offline` có hotline `STORE_CONTACT`; đổi `CACHE_VERSION` để trình duyệt cài lại worker và precache lại trang offline (người dùng cũ không kẹt bản không có hotline).
 
 ## Phạm vi và cache contract
 
 - `public/sw.js` nối Cache/Fetch API; **mọi luật** nằm trong `public/sw-routing.js` (hàm thuần, nạp bằng `importScripts`, test ở `src/pwa/sw-routing.test.ts`). `src/pwa/pwa-registration.tsx` chỉ đăng ký ở production, kiểm tra update và chỉ kích hoạt worker chờ sau khi người dùng bấm "Cập nhật" (`SKIP_WAITING`).
-- Cache `dctd-storefront-<nhóm>-v4`; activate chỉ xoá cache có prefix này mà không thuộc phiên bản hiện tại. Nhóm runtime bị cắt theo số entry (`CACHE_LIMITS`).
+- Cache `dctd-storefront-<nhóm>-v5`; activate chỉ xoá cache có prefix này mà không thuộc phiên bản hiện tại. Nhóm runtime bị cắt theo số entry (`CACHE_LIMITS`).
 
 | Nhóm | Chiến lược | Phạm vi |
 | --- | --- | --- |
@@ -57,6 +57,7 @@
 
 | Version | Date | Change summary | Source |
 | --- | --- | --- | --- |
+| 1.5.0 | 2026-11-16 | Cache `v4` → `v5`: `/offline` có hotline `STORE_CONTACT`; đổi `CACHE_VERSION` để worker được cài lại và precache lại trang offline. | Rà soát UX 2026-11-16 |
 | 1.4.0 | 2026-11-03 | Install promotion Chromium/iOS/in-app, hướng dẫn `/pwa`, session dismissal; giữ worker/cache và commerce online-only. | CLIENT-20261103-PWA-INSTALL |
 | 1.3.0 | 2026-09-27 | `sw-routing.js` + unit test, cache v4 theo nhóm, SWR API tham chiếu, cache trang biên tập, dọn cache khi đăng xuất, icon maskable/apple-touch. | CLIENT-20260927-CACHE-PWA-SEO |
 | 1.2.0 | 2026-09-18 | Reset chỉ unregister worker của Storefront; thêm ca kiểm thử PWA. | E2E review |

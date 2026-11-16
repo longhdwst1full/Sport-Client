@@ -1,10 +1,10 @@
 # Storefront Support — maintenance note
 
-> **Document version:** 3.2.0
+> **Document version:** 3.3.0
 >
-> **Last updated:** 2026-10-06
+> **Last updated:** 2026-11-16
 >
-> **Change summary:** Nhắn thêm trên phiếu (`addAccountSupportTicketMessage`) gửi `Idempotency-Key` bắt buộc theo mẫu dùng lại khoá khi cùng nội dung + version; map `SUPPORT_IDEMPOTENCY_KEY_INVALID`/`SUPPORT_IDEMPOTENCY_CONFLICT`.
+> **Change summary:** `/contact` thêm nút "Chỉ đường" (Google Maps, không iframe) cho từng showroom qua `model/maps-url.ts`. Trước đó: nhắn thêm trên phiếu (`addAccountSupportTicketMessage`) gửi `Idempotency-Key` bắt buộc theo mẫu dùng lại khoá khi cùng nội dung + version; map `SUPPORT_IDEMPOTENCY_KEY_INVALID`/`SUPPORT_IDEMPOTENCY_CONFLICT`.
 
 ## Phạm vi
 
@@ -64,6 +64,7 @@ Hotline/địa chỉ/giờ mở cửa lấy từ `@/shared/constants` (`STORE_CO
 
 | Version | Date | Change summary |
 | --- | --- | --- |
+| 3.3.0 | 2026-11-16 | Showroom: link "Chỉ đường" mở Google Maps (`buildMapsDirectionsUrl`, target=_blank, noopener noreferrer); không nhúng iframe vì CSP `frame-src`. |
 | 3.2.0 | 2026-10-09 | Form tư vấn: khách chưa đăng nhập gửi `createConsultationRequest` (idempotency-key, honeypot `website`, map 429/SĐT sai) thay cho mailto; khách đăng nhập vẫn `createSupportRequest`. Nhãn tác giả `GUEST`. |
 | 3.1.1 | 2026-10-06 | UI: form tư vấn, tạo/chi tiết/danh sách phiếu dùng primitive foundation (`Field`, `TextInput`, `Select`, `Textarea`, `Button`, `InlineAlert`, `DescriptionList`); không đổi hành vi. |
 | 3.1.0 | 2026-09-30 | Idempotency-Key cho nhắn thêm trên phiếu; map lỗi idempotency. |

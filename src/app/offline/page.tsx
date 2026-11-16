@@ -1,8 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { CloudOff, Home, RotateCw } from 'lucide-react';
+import { CloudOff, Home, Phone, RotateCw } from 'lucide-react';
 import { Button, buttonVariants } from '@/foundation/components/buttons';
+import { STORE_CONTACT } from '@/shared/constants';
 
 export default function OfflinePage() {
   return (
@@ -23,6 +24,16 @@ export default function OfflinePage() {
           <Link href="/" className={buttonVariants({ variant: 'secondary', size: 'lg', className: 'px-5 text-sm font-bold' })}>
             <Home aria-hidden className="size-4" /> Trang chủ đã lưu
           </Link>
+        </div>
+        <div className="mt-6 border-t border-neutral-100 pt-5">
+          <p className="text-sm text-neutral-600">Cần hỗ trợ gấp? Gọi ngay, không cần kết nối mạng.</p>
+          <a
+            href={`tel:${STORE_CONTACT.primaryHotlineRaw}`}
+            aria-label={`Gọi hotline ${STORE_CONTACT.primaryHotline}`}
+            className={buttonVariants({ variant: 'secondary', size: 'lg', className: 'mt-3 px-5 text-sm font-bold' })}
+          >
+            <Phone aria-hidden className="size-4" /> Hotline {STORE_CONTACT.primaryHotline}
+          </a>
         </div>
       </section>
     </main>

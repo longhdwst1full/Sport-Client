@@ -1,6 +1,7 @@
-import { Clock, MapPin, Phone } from 'lucide-react';
+import { Clock, MapPin, Navigation, Phone } from 'lucide-react';
 import { buttonVariants } from '@/foundation/components/buttons';
 import { STORE_SHOWROOMS } from '@/shared/constants';
+import { buildMapsDirectionsUrl } from '../model/maps-url';
 
 export function ShowroomList() {
   return (
@@ -30,7 +31,10 @@ export function ShowroomList() {
                   <span className="leading-relaxed">{s.address}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Phone className="size-4 shrink-0 text-neutral-700 animate-phone-ring" aria-hidden />
+                  <Phone
+                    className="size-4 shrink-0 text-neutral-700 animate-phone-ring"
+                    aria-hidden
+                  />
                   <strong className="text-neutral-900 font-semibold">{s.phone}</strong>
                 </div>
                 <div className="flex items-center gap-2">
@@ -40,18 +44,34 @@ export function ShowroomList() {
               </address>
             </div>
 
-            <a
-              href={`tel:${s.phoneRaw}`}
-              aria-label={`Gọi ${s.name}: ${s.phone}`}
-              className={buttonVariants({
-                variant: 'secondary',
-                fullWidth: true,
-                className: 'mt-6 gap-2 text-xs font-bold',
-              })}
-            >
-              <Phone className="size-4" aria-hidden="true" />
-              <span>Gọi showroom này</span>
-            </a>
+            <div className="mt-6 flex flex-col gap-2">
+              <a
+                href={buildMapsDirectionsUrl(s.address)}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Chỉ đường đến ${s.name} trên Google Maps (mở tab mới)`}
+                className={buttonVariants({
+                  variant: 'secondary',
+                  fullWidth: true,
+                  className: 'gap-2 text-xs font-bold',
+                })}
+              >
+                <Navigation className="size-4" aria-hidden="true" />
+                <span>Chỉ đường</span>
+              </a>
+              <a
+                href={`tel:${s.phoneRaw}`}
+                aria-label={`Gọi ${s.name}: ${s.phone}`}
+                className={buttonVariants({
+                  variant: 'secondary',
+                  fullWidth: true,
+                  className: 'gap-2 text-xs font-bold',
+                })}
+              >
+                <Phone className="size-4" aria-hidden="true" />
+                <span>Gọi showroom này</span>
+              </a>
+            </div>
           </div>
         ))}
       </div>

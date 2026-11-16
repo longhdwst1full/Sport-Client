@@ -4,6 +4,14 @@ import { Button } from '@/foundation/components/buttons';
 import { Field, Select, TextInput } from '@/foundation/components/field-system';
 import type { ProductListSort } from '@/generated/api/catalog/catalog.schemas';
 import { SORT_OPTIONS } from '../../model/catalog-filter.constants';
+import type { CatalogViewMode } from '../../hooks/use-catalog-view-mode';
+import { CatalogViewSwitcher } from './catalog-view-switcher';
+
+/** Chế độ xem do hook riêng `useCatalogViewMode` quản lý (URL `?view=`), tách khỏi bộ lọc. */
+export interface CatalogViewModeProps {
+  viewMode: CatalogViewMode;
+  onViewModeChange: (mode: CatalogViewMode) => void;
+}
 
 /** Trạng thái tìm/sắp xếp `useCatalogFilters` trả về, dùng chung cho thanh desktop và mobile. */
 export interface CatalogQueryState {
@@ -102,7 +110,10 @@ export function CatalogSearchSortBar({
   total,
   activeSort,
   onSortChange,
-}: Omit<CatalogQueryState, 'searchQuery' | 'onSearchQueryChange'> & { displayedCount: number; total: number }) {
+  viewMode,
+  onViewModeChange,
+}: Omit<CatalogQueryState, 'searchQuery' | 'onSearchQueryChange'> &
+  Partial<CatalogViewModeProps> & { displayedCount: number; total: number }) {
   return (
     <div className="hidden lg:flex items-center justify-between gap-4 mb-4 rounded-2xl border border-neutral-200/80 bg-white p-3 shadow-xs">
       <span className="text-xs font-medium text-neutral-600" aria-live="polite">
@@ -118,6 +129,9 @@ export function CatalogSearchSortBar({
           labelClassName="text-xs font-semibold text-neutral-600"
           className="shadow-2xs"
         />
+        {viewMode && onViewModeChange && (
+          <CatalogViewSwitcher value={viewMode} onChange={onViewModeChange} className="ml-2" />
+        )}
       </div>
     </div>
   );
@@ -128,9 +142,12 @@ export function CatalogMobileControlBar({
   activeFilterCount,
   activeSort,
   onSortChange,
-}: Omit<CatalogQueryState, 'searchQuery' | 'onSearchQueryChange'> & { onOpenFilters: () => void; activeFilterCount: number }) {
+  viewMode,
+  onViewModeChange,
+}: Omit<CatalogQueryState, 'searchQuery' | 'onSearchQueryChange'> &
+  Partial<CatalogViewModeProps> & { onOpenFilters: () => void; activeFilterCount: number }) {
   return (
-    <div className="mb-6 flex items-center justify-between gap-2 lg:hidden">
+    <div className="mb-6 flex flex-wrap items-center justify-between gap-2 lg:hidden">
       <Button
         variant="secondary"
         onClick={onOpenFilters}
@@ -154,6 +171,7 @@ export function CatalogMobileControlBar({
           labelClassName="text-2xs font-bold text-neutral-600"
           className="h-10 shadow-xs"
         />
+        {viewMode && onViewModeChange && <CatalogViewSwitcher value={viewMode} onChange={onViewModeChange} />}
       </div>
     </div>
   );

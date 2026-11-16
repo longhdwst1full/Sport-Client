@@ -10,7 +10,7 @@
   'use strict';
 
   var CACHE_PREFIX = 'dctd-storefront-';
-  var CACHE_VERSION = 'v4';
+  var CACHE_VERSION = 'v5';
 
   var CACHE_NAMES = {
     shell: CACHE_PREFIX + 'shell-' + CACHE_VERSION,
