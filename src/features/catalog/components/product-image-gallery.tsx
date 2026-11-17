@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react';
 import Image from 'next/image';
 import { ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
+import { PRODUCT_PLACEHOLDER_IMAGE } from '@/shared/constants';
 import type { ProductGalleryImageView } from '../model/product.mapper';
 
 /**
@@ -23,6 +24,10 @@ export function ProductImageGallery({
 }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isZooming, setIsZooming] = useState(false);
+  const [failedUrls, setFailedUrls] = useState<Record<string, boolean>>({});
+  const markFailed = (id: string) => {
+    setFailedUrls((prev) => (prev[id] ? prev : { ...prev, [id]: true }));
+  };
   const containerRef = useRef<HTMLDivElement>(null);
   const zoomLayerRef = useRef<HTMLDivElement>(null);
 
@@ -68,13 +73,14 @@ export function ProductImageGallery({
           {images.map((image, index) => (
             <Image
               key={image.id}
-              src={image.url}
+              src={failedUrls[image.id] ? PRODUCT_PLACEHOLDER_IMAGE : image.url}
               alt={image.alt}
               fill
               priority={index === 0}
               fetchPriority={index === 0 ? 'high' : 'low'}
               aria-hidden={index !== activeIndex}
               sizes="(max-width: 1024px) 100vw, (max-width: 1280px) 58vw, 740px"
+              onError={() => markFailed(image.id)}
               className={`object-contain p-4 sm:p-8 select-none transition-opacity duration-150 ${
                 index === activeIndex ? 'opacity-100' : 'opacity-0'
               }`}
@@ -126,10 +132,11 @@ export function ProductImageGallery({
                   }`}
                 >
                   <Image
-                    src={image.url}
+                    src={failedUrls[image.id] ? PRODUCT_PLACEHOLDER_IMAGE : image.url}
                     alt={image.alt}
                     fill
                     sizes="(max-width: 640px) 25vw, (max-width: 1024px) 16vw, 110px"
+                    onError={() => markFailed(image.id)}
                     className="object-contain p-1.5"
                   />
                 </button>

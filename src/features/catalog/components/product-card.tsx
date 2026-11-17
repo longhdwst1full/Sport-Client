@@ -1,11 +1,12 @@
 'use client';
 
-import React, { memo } from 'react';
+import React, { memo, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ShoppingCart, Zap, Sparkles } from 'lucide-react';
 import { Button } from '@/foundation/components/buttons';
 import { Reveal } from '@/foundation/components/motion';
+import { PRODUCT_PLACEHOLDER_IMAGE } from '@/shared/constants';
 import type { ProductShowcaseItem } from '../model/product.mapper';
 import { activeFlashPrice, useLiveVariantFlashPrices } from '../hooks/use-variant-flash-prices';
 import { PRODUCT_CARD_SHELL, PRODUCT_CARD_STAGE } from './product-card.styles';
@@ -39,6 +40,7 @@ export const ProductCard = memo(function ProductCard({
 }: ProductCardProps) {
   const unavailable = !product.hasPrice || product.inStock === false;
   const href = `/products/${product.slug}`;
+  const [imgSrc, setImgSrc] = useState(product.imageUrl);
 
   // Giá flash của biến thể mặc định (biến thể mà nút giỏ/Mua ngay đưa vào giỏ).
   const flashPrices = useLiveVariantFlashPrices();
@@ -69,11 +71,12 @@ export const ProductCard = memo(function ProductCard({
       <div className={`${PRODUCT_CARD_STAGE} bg-gradient-to-b from-neutral-100/80 via-neutral-50 to-neutral-100/70 p-2 sm:p-3`}>
         <Link href={href} className="relative block size-full focus-ring" tabIndex={-1} aria-hidden="true">
           <Image
-            src={product.imageUrl}
+            src={imgSrc}
             alt={product.name}
             fill
             sizes="(max-width: 767px) 50vw, (max-width: 1279px) 33vw, 320px"
             priority={priority}
+            onError={() => setImgSrc(PRODUCT_PLACEHOLDER_IMAGE)}
             className="object-contain p-2 transition-transform duration-500 ease-out group-hover:-translate-y-0.5 group-hover:scale-110"
           />
         </Link>

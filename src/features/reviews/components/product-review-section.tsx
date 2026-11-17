@@ -79,7 +79,15 @@ export function ProductReviewSection({
         ) : isError ? (
           <ErrorState as="div" {...NOTE_BLOCK} title="Không tải được đánh giá. Vui lòng thử lại sau ít phút." />
         ) : total === 0 ? (
-          <EmptyState {...NOTE_BLOCK} title="Sản phẩm chưa có đánh giá nào." />
+          <div className="mt-8 flex flex-col items-center justify-center rounded-3xl border border-dashed border-neutral-300 bg-neutral-50/50 p-8 text-center sm:p-10">
+            <div className="mb-3 grid size-12 place-items-center rounded-2xl bg-amber-50 text-amber-500 shadow-2xs">
+              <StarRow rating={5} className="size-5" />
+            </div>
+            <p className="text-base font-bold text-neutral-900">Chưa có đánh giá nào cho sản phẩm này</p>
+            <p className="mt-1.5 max-w-md text-xs sm:text-sm text-neutral-500 leading-relaxed">
+              Hãy là người đầu tiên trải nghiệm và chia sẻ cảm nhận thực tế về thiết bị để giúp cộng đồng có thêm góc nhìn khách quan!
+            </p>
+          </div>
         ) : (
           <>
             <div className="mt-8 grid gap-8 md:grid-cols-[240px_1fr]">

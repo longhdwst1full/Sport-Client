@@ -1,10 +1,11 @@
 'use client';
 
-import React, { memo } from 'react';
+import React, { memo, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ShoppingCart, Zap } from 'lucide-react';
 import { Button } from '@/foundation/components/buttons';
+import { PRODUCT_PLACEHOLDER_IMAGE } from '@/shared/constants';
 import type { ProductShowcaseItem } from '../model/product.mapper';
 import { activeFlashPrice, useLiveVariantFlashPrices } from '../hooks/use-variant-flash-prices';
 
@@ -30,6 +31,7 @@ export const ProductListItem = memo(function ProductListItem({
   const flashPrices = useLiveVariantFlashPrices();
   const flash = product.isSellable ? activeFlashPrice(flashPrices, product.defaultVariantId) : undefined;
   const href = `/products/${product.slug}`;
+  const [imgSrc, setImgSrc] = useState(product.imageUrl);
 
   return (
     <article className="flex gap-3 rounded-2xl border border-neutral-200/90 bg-white p-3 shadow-xs transition-shadow hover:shadow-md sm:gap-4 sm:p-4">
@@ -40,11 +42,12 @@ export const ProductListItem = memo(function ProductListItem({
         className="relative block aspect-square w-28 shrink-0 overflow-hidden rounded-xl bg-gradient-to-b from-neutral-50/80 via-white to-neutral-50/50 sm:w-40"
       >
         <Image
-          src={product.imageUrl}
+          src={imgSrc}
           alt={product.name}
           fill
           sizes="(max-width: 639px) 112px, 160px"
           priority={priority}
+          onError={() => setImgSrc(PRODUCT_PLACEHOLDER_IMAGE)}
           className="object-contain p-2"
         />
         {flash && (

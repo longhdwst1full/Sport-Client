@@ -110,26 +110,27 @@ export function ProductDetailPage({ product, slug, relatedCategorySlug, flashPri
         </div>
 
         {/* Main Product Stage
-         * Thứ tự DOM = thứ tự trên mobile: ảnh → giá/nút mua/thông số → mô tả/đánh giá, để khách thấy
-         * giá và nút mua ngay dưới ảnh thay vì phải cuộn qua mô tả dài (audit §15.1). Trên desktop grid
-         * đặt lại: cột trái ảnh + mô tả, cột phải khung mua dính (sticky) trải hai hàng.
+         * Thứ tự DOM = thứ tự trên mobile: ảnh → giá/nút mua → thông số/mô tả/đánh giá, để khách thấy
+         * giá và nút mua ngay dưới ảnh thay vì phải cuộn qua mô tả dài. Trên desktop grid
+         * đặt lại: cột trái rộng rãi gồm ảnh + bảng thông số + mô tả + đánh giá; cột phải khung mua dính (sticky)
+         * gọn gàng, không bị tràn màn hình.
          */}
-        <div className="page-container mt-4 grid gap-8 py-3 lg:grid-cols-[1.12fr_0.88fr] lg:grid-rows-[auto_1fr]">
-          {/* Product media is image-first. Heavy 3D rendering is intentionally excluded here. */}
-          <div className="overflow-hidden rounded-4xl border border-[var(--dc-border)] bg-white shadow-card">
+        <div className="page-container mt-4 grid gap-8 py-3 lg:grid-cols-[1.12fr_0.88fr]">
+          {/* Product media is image-first. */}
+          <div className="order-1 overflow-hidden rounded-4xl border border-[var(--dc-border)] bg-white shadow-card lg:col-start-1">
             <ProductImageGallery images={gallery} productName={product.name} />
           </div>
 
-          {/* Sticky Purchase Panel + Technical Specs */}
-          <div className="space-y-6 lg:sticky lg:top-24 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-start">
+          {/* Sticky Purchase Panel (Cột phải gọn gàng, vừa vặn khung nhìn) */}
+          <div className="order-2 lg:sticky lg:top-24 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-start">
             <ProductPurchasePanel product={purchaseView} flashPrices={flashPrices} />
-
-            {/* Technical Specifications Table directly under price/purchase box */}
-            <ProductSpecifications specs={TECH_SPECS} initialLimit={5} />
           </div>
 
-          {/* Product Story / Description + Reviews */}
-          <div className="space-y-8 lg:col-start-1">
+          {/* Main Column: Technical Specs + Story / Description + Reviews */}
+          <div className="order-3 space-y-8 lg:col-start-1">
+            {/* Technical Specifications Table trong cột chính rộng rãi */}
+            <ProductSpecifications specs={TECH_SPECS} initialLimit={6} />
+
             <ProductDescriptionCollapsible
               shortDescription={shortDescription}
               longDescriptionHtml={showLongDescription ? longDescriptionHtml : null}

@@ -20,6 +20,8 @@ interface CatalogProductGridProps {
   isShowingPreviousResults?: boolean;
   refetch: () => void;
   products: ProductShowcaseItem[];
+  /** Tổng số sản phẩm từ API để tính thanh tiến độ (progress bar) khi tải thêm. */
+  total?: number;
   hasActiveFilters?: boolean;
   onResetFilters?: () => void;
   hasMore: boolean;
@@ -48,6 +50,7 @@ export function CatalogProductGrid({
   isShowingPreviousResults = false,
   refetch,
   products,
+  total,
   hasActiveFilters = false,
   onResetFilters,
   hasMore,
@@ -150,7 +153,21 @@ export function CatalogProductGrid({
       </div>
 
       {hasMore && !isShowingPreviousResults && (
-        <div className="mt-10 flex flex-col items-center gap-4">
+        <div className="mt-10 flex flex-col items-center gap-3.5">
+          {total !== undefined && total > 0 && (
+            <div className="w-full max-w-xs text-center space-y-1.5">
+              <div className="text-xs font-semibold text-neutral-500">
+                Đang hiển thị <span className="font-bold text-neutral-900">{visibleProducts.length}</span> trên <span className="font-bold text-neutral-900">{total}</span> sản phẩm
+              </div>
+              <div className="h-1.5 w-full overflow-hidden rounded-full bg-neutral-200/80">
+                <div
+                  className="h-full rounded-full bg-neutral-900 transition-all duration-300"
+                  style={{ width: `${Math.min(100, Math.round((visibleProducts.length / total) * 100))}%` }}
+                />
+              </div>
+            </div>
+          )}
+
           {isLoadingMore && (
             <div className={`${layoutClass} w-full`} aria-hidden="true">
               {Array.from({ length: isList ? LIST_SKELETON_COUNT : FULL_ROW_MULTIPLE }, (_, i) =>
@@ -171,6 +188,13 @@ export function CatalogProductGrid({
                 : 'Xem thêm'}
             {!isLoadingMore && <ChevronDown className="size-4" aria-hidden="true" />}
           </Button>
+        </div>
+      )}
+
+      {!hasMore && hasProducts && !isShowingPreviousResults && total !== undefined && total > 0 && (
+        <div className="mt-12 flex flex-col items-center gap-2 text-center text-xs font-semibold text-neutral-400">
+          <div className="h-1 w-12 rounded-full bg-neutral-200" />
+          <span>Đã hiển thị toàn bộ {total} sản phẩm</span>
         </div>
       )}
     </>
