@@ -24,9 +24,6 @@ export function ContactPage() {
             <h1 className="mt-4 text-2xl font-bold text-ink sm:text-4xl lg:text-5xl">
               Ghé thăm showroom & Tư vấn chuyên sâu
             </h1>
-            <p className="mt-3 text-base text-neutral-600 sm:text-lg">
-              Trải nghiệm thực tế cảm giác cầm nắm, tải trọng thiết bị và nhận bản vẽ bố trí không gian tập Home Gym miễn phí từ chuyên gia.
-            </p>
           </div>
 
           <div className="mt-14 grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">

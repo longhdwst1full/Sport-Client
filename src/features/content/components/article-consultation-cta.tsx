@@ -12,7 +12,7 @@ export function ArticleConsultationCta() {
         Cần Chọn Thiết Bị Cho Phòng Tập Hoặc Gia Đình?
       </h2>
       <p className="mt-2 max-w-2xl text-xs sm:text-sm font-medium leading-relaxed text-neutral-600">
-        Nhân viên Bảo An Sport tư vấn theo diện tích, mục tiêu tập và ngân sách, kèm báo giá giao và lắp đặt tận nơi.
+        Tư vấn theo diện tích, mục tiêu và ngân sách, kèm báo giá giao và lắp đặt.
       </p>
       <ContactActions className="mt-6" contactLabel="Hệ thống showroom" />
     </aside>

@@ -54,11 +54,6 @@ export function ProductRelatedSection({
           <h2 className="mt-2 text-2xl font-bold tracking-tight text-neutral-900 sm:text-3xl">
             Sản phẩm liên quan
           </h2>
-          <p className="mt-1 text-sm text-neutral-600">
-            {categorySlug
-              ? 'Thiết bị khác trong cùng danh mục.'
-              : 'Một số thiết bị khác đang bán tại Bảo An Sport.'}
-          </p>
         </div>
         <Link
           href={categorySlug ? `/category/${categorySlug}` : '/products'}

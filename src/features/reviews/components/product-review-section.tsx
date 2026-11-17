@@ -63,9 +63,6 @@ export function ProductReviewSection({
         <h2 id="product-reviews-title" className="text-xl font-bold text-ink sm:text-2xl">
           Đánh giá từ khách hàng
         </h2>
-        <p className="mt-1 text-sm text-neutral-500">
-          Nhận xét về {productName} được hiển thị ngay sau khi khách gửi đánh giá.
-        </p>
 
         {isPending ? (
           <div className="mt-8 grid gap-8 md:grid-cols-[240px_1fr]">
@@ -85,7 +82,7 @@ export function ProductReviewSection({
             </div>
             <p className="text-base font-bold text-neutral-900">Chưa có đánh giá nào cho sản phẩm này</p>
             <p className="mt-1.5 max-w-md text-xs sm:text-sm text-neutral-500 leading-relaxed">
-              Hãy là người đầu tiên trải nghiệm và chia sẻ cảm nhận thực tế về thiết bị để giúp cộng đồng có thêm góc nhìn khách quan!
+              Hãy là người đầu tiên đánh giá sản phẩm này.
             </p>
           </div>
         ) : (
@@ -210,7 +207,7 @@ export function ProductReviewSection({
         <div className="mt-8 rounded-2xl border border-dashed border-neutral-300 bg-neutral-50/60 p-5 text-center">
           <p className="text-sm font-bold text-ink">Bạn đã mua sản phẩm này?</p>
           <p className="mt-1 text-xs text-neutral-500">
-            Mở đơn hàng đã hoàn tất, chọn sản phẩm và gửi đánh giá. Nội dung được hiển thị ngay sau khi gửi.
+            Mở đơn hàng đã hoàn tất, chọn sản phẩm và gửi đánh giá.
           </p>
         </div>
       </div>

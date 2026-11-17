@@ -80,9 +80,6 @@ export async function ProductsPage({
     : [{ label: 'Trang chủ', href: '/' }, { label: 'Tất cả sản phẩm' }];
 
   const pageTitle = initialCategoryName ? `${initialCategoryName} chính hãng` : 'Thiết bị & phụ kiện thể thao';
-  const pageDescription = initialCategoryName
-    ? `Khám phá các dòng sản phẩm ${initialCategoryName.toLowerCase()} chất lượng cao, bảo hành chính hãng, giao hàng & lắp đặt tận nơi toàn quốc.`
-    : 'Rèn luyện sức mạnh, cardio, bóng bàn, cầu lông, võ thuật và phụ kiện thể thao chính hãng.';
 
   return (
       <main className="bg-neutral-50/40 pb-20 pt-8">
@@ -100,9 +97,6 @@ export async function ProductsPage({
             <h1 className="mt-2.5 text-2xl font-bold tracking-tight text-neutral-950 sm:text-3xl lg:text-4xl">
               {pageTitle}
             </h1>
-            <p className="mt-1.5 text-xs sm:text-sm text-neutral-600 font-medium">
-              {pageDescription}
-            </p>
           </div>
 
 

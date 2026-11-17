@@ -32,9 +32,6 @@ export function NewsListPage({
           <h1 className="mt-3 text-3xl font-bold text-ink sm:text-5xl">
             Kiến thức tập luyện & Tin tức thể thao
           </h1>
-          <p className="mt-3 text-base text-neutral-600 sm:text-lg">
-            Tổng hợp bài viết phân tích kỹ thuật, cẩm nang chọn thiết bị tập gym, xe đạp tập, bàn bóng bàn và kinh nghiệm bảo dưỡng từ chuyên gia Bảo An Sport.
-          </p>
         </div>
 
         <NewsListFeed initialPosts={initialPosts} initialHasMore={initialHasMore} />

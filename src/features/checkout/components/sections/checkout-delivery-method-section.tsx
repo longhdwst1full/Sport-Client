@@ -116,7 +116,7 @@ export function CheckoutDeliveryMethodSection({
         >
           <strong className="text-sm font-bold text-neutral-900">Nhờ shop tư vấn & gửi chành</strong>
           <span className="mt-1.5 block text-xs leading-5 text-neutral-500">
-            Dành cho giàn tạ, máy khối lớn gửi xe khách / xe tải liên tỉnh. Bạn đặt hàng được ngay, shop sẽ gọi thống nhất cước gửi xe và thu riêng.
+            Cho giàn tạ, máy khối lớn gửi xe khách/xe tải. Đặt hàng được ngay; shop gọi thống nhất cước và thu riêng.
           </span>
           {shopArranged && (
             <div className="mt-3.5 border-t border-neutral-100 pt-3">

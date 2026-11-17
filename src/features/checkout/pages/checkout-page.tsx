@@ -119,9 +119,6 @@ export function CheckoutPage({
               <h1 className="mt-2 text-2xl font-bold tracking-tight text-neutral-950 sm:text-3xl">
                 Đặt hàng & Thanh toán
               </h1>
-              <p className="mt-1 text-sm text-neutral-500">
-                Vui lòng điền thông tin nhận hàng và chọn phương thức thanh toán phù hợp.
-              </p>
             </div>
           </div>
         </div>

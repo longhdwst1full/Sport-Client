@@ -34,7 +34,7 @@ export function FlashSalePage() {
               </div>
               <h1 className="mt-2 text-3xl font-bold sm:text-4xl">Flash Sale đang diễn ra</h1>
               <p className="mt-2 text-sm text-neutral-600">
-                Mỗi suất bán có số lượng giới hạn. Suất được giữ khi bạn thanh toán, không phải khi thêm vào giỏ.
+                Số suất có hạn; suất được giữ khi thanh toán, không phải khi thêm vào giỏ.
               </p>
             </div>
 

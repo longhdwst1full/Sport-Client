@@ -26,7 +26,7 @@ export function CheckoutConfirmSection({
       {consultation && (
         <div className="flex flex-col gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs sm:text-sm font-semibold text-amber-900">
-            Đơn hàng hiện chỉ tính tiền sản phẩm. Nhân viên sẽ liên hệ thông báo cước gửi xe; bấm kiểm tra lại phí sau khi đã thống nhất để đặt hàng.
+            Đơn hiện chỉ tính tiền sản phẩm. Nhân viên sẽ báo cước gửi xe; sau khi thống nhất, bấm kiểm tra lại phí để đặt hàng.
           </p>
           <Button
             variant="secondary"

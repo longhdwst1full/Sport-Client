@@ -142,8 +142,8 @@ export function CheckoutOrderSummary({
           {shippingPending && (
             <p className="rounded-xl bg-amber-50 p-3 text-xs leading-5 text-amber-900">
               {consultationPending
-                ? 'Đơn cần nhân viên tư vấn cước gửi xe. Shop sẽ liên hệ chốt phí rồi bạn bấm kiểm tra lại phí để đặt hàng.'
-                : 'Bạn đặt hàng được ngay. Phí vận chuyển sẽ được shop gọi báo và thu riêng khi gửi hàng, chưa gồm trong số tiền trên.'}
+                ? 'Shop sẽ liên hệ chốt cước gửi xe, sau đó bạn bấm kiểm tra lại phí.'
+                : 'Phí vận chuyển shop báo và thu riêng khi gửi hàng, chưa gồm trong số tiền trên.'}
             </p>
           )}
         </div>

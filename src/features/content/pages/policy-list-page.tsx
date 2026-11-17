@@ -28,10 +28,6 @@ export function PolicyListPage({
             <h1 className="text-3xl font-bold leading-tight text-ink sm:text-4xl">
               Thông tin và chính sách
             </h1>
-            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-neutral-600 sm:text-base">
-              Các quy định về bảo hành, đổi trả, vận chuyển, thanh toán và bảo mật thông tin khi mua
-              hàng tại Bảo An Sport.
-            </p>
           </header>
 
           {loadFailed ? (

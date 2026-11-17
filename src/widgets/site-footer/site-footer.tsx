@@ -131,7 +131,7 @@ export function SiteFooter({ categories }: { categories?: readonly FooterCategor
           </div>
 
           <p className="max-w-md text-sm leading-relaxed text-neutral-400">
-            Bảo An Sport chuyên cung cấp dụng cụ thể thao, thiết bị Gym, máy tập thể hình và phụ kiện chính hãng. Mẫu mã đa dạng, giao hàng toàn quốc, tư vấn tận tâm.
+            Dụng cụ thể thao, thiết bị gym và phụ kiện chính hãng. Giao hàng toàn quốc, tư vấn tận tâm.
           </p>
 
           <div className="space-y-1 border-l-2 border-neutral-800 pl-3 text-xs leading-relaxed text-neutral-400">

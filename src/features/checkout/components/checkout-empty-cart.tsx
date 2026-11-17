@@ -23,7 +23,7 @@ export function CheckoutEmptyCart() {
           </div>
           <h2 className="mt-4 text-xl font-bold text-neutral-900">Giỏ hàng của bạn đang trống</h2>
           <p className="mx-auto mt-2 max-w-md text-sm text-neutral-500 leading-relaxed">
-            Bạn chưa có sản phẩm nào trong giỏ để thực hiện thanh toán. Vui lòng chọn sản phẩm thể thao ưng ý trước khi hoàn tất đặt hàng.
+            Hãy chọn sản phẩm trước khi thanh toán.
           </p>
 
           {/* Payment Methods Info */}

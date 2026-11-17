@@ -22,7 +22,6 @@ export function CategoryVisualShowcase({ items }: { items: CategoryRailView[] })
           <SectionHeading
             eyebrow="Khám phá thiết bị"
             title="Danh Mục Thể Thao Nổi Bật"
-            description="Trang thiết bị và dụng cụ tập luyện chính hãng theo từng bộ môn chuyên biệt"
             action={
               <Link
                 href="/category"

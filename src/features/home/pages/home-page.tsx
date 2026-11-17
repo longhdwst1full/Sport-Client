@@ -124,7 +124,6 @@ export async function HomePage({
             <SectionHeading
               eyebrow="Thiết bị bán chạy"
               title="Sản Phẩm Nổi Bật & Bán Chạy"
-              description="Khám phá trang thiết bị thể lực, cardio, bóng bàn, bóng rổ và võ thuật chính hãng được đông đảo khách hàng và huấn luyện viên tin chọn"
             />
           </Reveal>
 
@@ -147,7 +146,6 @@ export async function HomePage({
               <SectionHeading
                 eyebrow="Bộ sưu tập chuyên sâu"
                 title="Trang Bị Chuẩn Thi Đấu & Rèn Luyện"
-                description="Bộ sưu tập thiết bị chuyên biệt cho từng bộ môn thể thao với độ hoàn thiện cao nhất"
               />
             </Reveal>
             {/* Bento Grid: Khối 1 nổi bật mang phong cách thể thao tương phản cao, các khối kế tiếp bổ trợ nhịp nhàng */}

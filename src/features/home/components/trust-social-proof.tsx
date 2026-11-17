@@ -97,10 +97,6 @@ export function TrustSocialProof() {
             </h2>
 
             {/* Description */}
-            <p className="mt-3.5 max-w-xl text-xs sm:text-sm leading-relaxed text-neutral-300/90 font-medium">
-              Thiết bị thể thao là khoản đầu tư cho sức khoẻ lâu dài. Không chỉ cung cấp sản phẩm chính hãng, Bảo An Sport
-              đồng hành cùng bạn từ khâu tư vấn không gian đến lắp đặt và bảo trì.
-            </p>
 
             {/* Stats Cards (Glassmorphic) */}
             <div className="mt-7 grid grid-cols-3 gap-3 sm:gap-4">

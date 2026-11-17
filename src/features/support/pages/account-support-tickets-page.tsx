@@ -33,7 +33,6 @@ export function AccountSupportTicketsPage() {
         <div>
           <p className="eyebrow text-neutral-900">Tài khoản</p>
           <h1 className="mt-2 text-3xl font-bold text-neutral-950">Hỗ trợ của tôi</h1>
-          <p className="mt-2 text-sm text-neutral-600">Theo dõi các yêu cầu hỗ trợ bạn đã gửi và phản hồi của nhân viên.</p>
         </div>
         {isAuthenticated && (
           <Link href={SUPPORT_ROUTES.create} className={buttonVariants({ className: 'px-4' })}>

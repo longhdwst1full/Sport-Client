@@ -24,7 +24,7 @@ export function NotFoundContent() {
       </h1>
 
       <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-neutral-600 sm:text-base">
-        Đường dẫn có thể đã được thay đổi hoặc sản phẩm/bài viết không còn tồn tại trên hệ thống. Bạn có thể quay về trang chủ hoặc khám phá các danh mục thể thao bên dưới.
+        Đường dẫn đã đổi hoặc nội dung không còn tồn tại.
       </p>
 
       {/* Action Buttons */}

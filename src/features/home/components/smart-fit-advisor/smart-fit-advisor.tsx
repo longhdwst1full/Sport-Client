@@ -120,7 +120,7 @@ export function SmartFitAdvisor() {
               Không Chỉ Bán Thiết Bị. Chúng Tôi Giúp Bạn Chọn Đúng.
             </h2>
             <p className="mt-2 text-sm text-neutral-600 font-medium max-w-2xl leading-relaxed">
-              Chỉ mất 30 giây để xác định cấu hình phòng tập chuẩn huấn luyện theo diện tích, mục tiêu và khả năng chi trả.
+              Trả lời vài câu hỏi để nhận gợi ý theo diện tích, mục tiêu và ngân sách.
             </p>
           </div>
 

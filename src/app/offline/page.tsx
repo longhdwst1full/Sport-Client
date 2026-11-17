@@ -15,7 +15,7 @@ export default function OfflinePage() {
         <p className="mt-6 eyebrow text-neutral-900">Bảo An Sport</p>
         <h1 className="mt-3 text-3xl font-bold">Bạn đang ngoại tuyến</h1>
         <p className="mt-4 text-sm leading-6 text-neutral-600">
-          Đơn hàng, tài khoản, tồn kho và thanh toán cần kết nối mạng để đảm bảo dữ liệu luôn chính xác và riêng tư.
+          Đơn hàng, tài khoản và thanh toán cần kết nối mạng.
         </p>
         <div className="mt-7 flex flex-wrap justify-center gap-3">
           <Button variant="primary" size="lg" onClick={() => window.location.reload()} className="px-5 text-sm font-bold">

@@ -30,9 +30,6 @@ export function AddressBookPanel({
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-neutral-100 pb-5">
         <div>
           <h2 className="text-xl font-bold text-neutral-900">Sổ địa chỉ nhận hàng</h2>
-          <p className="mt-1 text-xs text-neutral-500">
-            Quản lý các địa chỉ giao hàng và lắp đặt thiết bị tận nơi
-          </p>
         </div>
 
         <Button

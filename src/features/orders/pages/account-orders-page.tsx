@@ -33,7 +33,6 @@ export function AccountOrdersPage() {
           <div>
             <p className="eyebrow text-neutral-900">Tài khoản</p>
             <h1 className="heading-page mt-2">Đơn hàng của tôi</h1>
-            <p className="mt-2 text-sm text-neutral-600">Theo dõi trạng thái thanh toán, xử lý và giao hàng từ dữ liệu thực.</p>
           </div>
           <Link href="/products" className={buttonVariants({ variant: 'primary', className: 'font-bold' })}>Tiếp tục mua sắm</Link>
         </div>

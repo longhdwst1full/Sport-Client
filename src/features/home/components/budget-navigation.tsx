@@ -69,7 +69,6 @@ export function BudgetNavigation({ quickLinks = [] }: BudgetNavigationProps) {
           <SectionHeading
             eyebrow="Theo ngân sách"
             title="Tìm thiết bị theo mức ngân sách của bạn"
-            description="Dễ dàng lựa chọn giải pháp tập luyện phù hợp với khả năng chi trả và mục tiêu thể lực"
             action={
               /* Lối "xem tất cả" của khối trang chủ: biến thể `link` (RULE-DS-01). */
               <Link href="/products" className={buttonVariants({ variant: 'link', className: 'group shrink-0 gap-1.5' })}>

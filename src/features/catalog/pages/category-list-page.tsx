@@ -27,9 +27,6 @@ export function CategoryListPage({ categories }: { categories: CatalogCategoryDt
             <h1 className="mt-3 text-3xl font-bold text-ink sm:text-5xl">
               Danh mục thể thao &amp; Thiết bị chuyên nghiệp
             </h1>
-            <p className="mt-3 text-base text-neutral-600 sm:text-lg">
-              Lựa chọn đúng môn tập bạn theo đuổi để xem các thiết bị, phụ kiện và combo được tuyển chọn kỹ lưỡng.
-            </p>
           </div>
 
           <div className="mt-12">
@@ -39,7 +36,7 @@ export function CategoryListPage({ categories }: { categories: CatalogCategoryDt
               <div className="rounded-4xl border border-dashed border-neutral-300 bg-white p-12 text-center">
                 <h2 className="text-lg font-bold text-ink">Chưa có danh mục nào để hiển thị</h2>
                 <p className="mt-2 text-sm text-neutral-500">
-                  Danh mục đang được cập nhật. Bạn có thể xem toàn bộ sản phẩm trong lúc chờ.
+                  Danh mục đang được cập nhật.
                 </p>
                 <Link
                   href="/products"

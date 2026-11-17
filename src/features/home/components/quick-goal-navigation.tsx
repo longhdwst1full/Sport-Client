@@ -63,7 +63,6 @@ export function QuickGoalNavigation() {
           <SectionHeading
             eyebrow="Định hướng tập luyện"
             title="Bạn Đang Tìm Thiết Bị Cho Mục Tiêu Nào?"
-            description="Chọn nhanh giải pháp phù hợp với diện tích phòng và nhu cầu rèn luyện của bạn"
           />
         </Reveal>
 
