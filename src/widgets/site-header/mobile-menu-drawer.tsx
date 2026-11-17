@@ -190,18 +190,7 @@ export function MobileMenuDrawer({
               </Link>
             )}
 
-            <Link
-              href="/products"
-              className="flex items-center justify-between rounded-xl px-3 py-3 text-sm font-bold text-neutral-800 hover:bg-neutral-50 hover:text-neutral-900 transition"
-              onClick={onClose}
-            >
-              <span className="flex items-center gap-2.5">
-                Tất cả sản phẩm
-              </span>
-              <span className="rounded-full bg-amber-400 px-2 py-0.5 text-3xs font-bold uppercase text-neutral-950">
-                Hot
-              </span>
-            </Link>
+            {/* "Tất cả sản phẩm" đã có ở nhóm Điều hướng phía trên; không lặp lại ở đây. */}
 
             <Link
               href="/news"

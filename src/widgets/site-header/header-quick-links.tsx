@@ -42,12 +42,7 @@ export function HeaderQuickLinks({
         </Link>
       )}
 
-      {/* Chưa có danh mục/bộ lọc combo trong API: nhãn "Combo Home Gym" cũ dẫn tới toàn bộ sản phẩm.
-          Không tô "đang xem": mục "Sản phẩm" bên trái đã tô cho /products, tô cả hai là thừa. */}
-      <Link href="/products" className={QUICK_LINK}>
-        <span>Tất cả sản phẩm</span>
-      </Link>
-
+      {/* Không lặp "Tất cả sản phẩm": mục "Sản phẩm" bên trái đã dẫn tới /products. */}
       <Link
         href="/news"
         aria-current={isNavHrefActive(pathname, '/news') ? 'page' : undefined}
