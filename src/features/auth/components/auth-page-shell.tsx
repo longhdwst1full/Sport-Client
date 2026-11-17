@@ -1,28 +1,24 @@
-import type { ComponentProps, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { ShieldCheck } from 'lucide-react';
 import { InlineAlert } from '@/foundation/components/feedback';
 import { AuthBrandPanel } from './auth-brand-panel';
 import { AuthMobileHeader } from './auth-mobile-header';
 import { AuthModeSwitcher } from './auth-mode-switcher';
-import { SocialLoginButtons } from './social-login-buttons';
 
 /**
- * Khung chung của trang đăng nhập/đăng ký: panel thương hiệu, thẻ form, switcher, lỗi gửi form,
- * đăng nhập mạng xã hội và dòng cam kết bảo mật. Trang chỉ cấp tiêu đề và form.
+ * Khung chung của trang đăng nhập/đăng ký: panel thương hiệu, thẻ form, switcher, lỗi gửi form và dòng cam kết bảo mật. Trang chỉ cấp tiêu đề và form.
  */
 export function AuthPageShell({
   variant,
   title,
   subtitle,
   submitError,
-  social,
   children,
 }: {
   variant: 'login' | 'register';
   title: string;
   subtitle: string;
   submitError?: string;
-  social: ComponentProps<typeof SocialLoginButtons>;
   children: ReactNode;
 }) {
   return (
@@ -52,8 +48,6 @@ export function AuthPageShell({
               )}
 
               {children}
-
-              <SocialLoginButtons {...social} />
 
               <div className="mt-4 flex items-center justify-center gap-1.5 text-2xs text-neutral-600">
                 <ShieldCheck className="size-3.5 text-success-600" aria-hidden />

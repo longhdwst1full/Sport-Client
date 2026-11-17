@@ -21,19 +21,6 @@ export function CustomerLoginPage() {
       title="Đăng nhập"
       subtitle="Chào mừng bạn quay lại! Nhập email hoặc số điện thoại để tiếp tục mua sắm và theo dõi đơn hàng."
       submitError={submitError}
-      social={{
-        dividerText: 'Hoặc tiếp tục với',
-        toastTitles: {
-          google: 'Đăng nhập Google',
-          zalo: 'Đăng nhập Zalo',
-          facebook: 'Đăng nhập Facebook',
-        },
-        toastMessages: {
-          google: 'Hệ thống đang tích hợp cổng Google One-Tap.',
-          zalo: 'Hệ thống đang mở liên kết xác thực qua Zalo OA.',
-          facebook: 'Cổng đăng nhập qua Facebook đã sẵn sàng kết nối.',
-        },
-      }}
     >
       <LoginForm
         form={form}

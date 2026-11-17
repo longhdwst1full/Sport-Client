@@ -25,19 +25,6 @@ export function CustomerRegisterPage() {
       title="Đăng ký tài khoản"
       subtitle="Tạo tài khoản hội viên nhanh chóng trong 10 giây để nhận trọn bộ ưu đãi và quản lý bảo hành."
       submitError={submitError}
-      social={{
-        dividerText: 'Hoặc đăng ký nhanh với',
-        toastTitles: {
-          google: 'Đăng ký Google',
-          zalo: 'Đăng ký Zalo',
-          facebook: 'Đăng ký Facebook',
-        },
-        toastMessages: {
-          google: 'Hệ thống đang tích hợp cổng Google One-Tap.',
-          zalo: 'Hệ thống đang mở liên kết xác thực qua Zalo OA.',
-          facebook: 'Cổng đăng ký qua Facebook đã sẵn sàng kết nối.',
-        },
-      }}
     >
       <RegisterForm
         form={form}
