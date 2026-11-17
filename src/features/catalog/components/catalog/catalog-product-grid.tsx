@@ -42,8 +42,8 @@ interface CatalogProductGridProps {
   viewMode?: CatalogViewMode;
 }
 
-const GRID_CLASS = 'grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 xl:grid-cols-4';
-/** BCNN số cột 2/3/4 của mọi lưới sản phẩm dùng component này; cũng là số thẻ khung chờ. */
+const GRID_CLASS = 'grid grid-cols-2 gap-3.5 sm:gap-5 md:grid-cols-3';
+/** Bội của số cột (2 → 3) của mọi lưới sản phẩm dùng component này; cũng là số thẻ khung chờ. */
 const FULL_ROW_MULTIPLE = 12;
 const LIST_CLASS = 'flex flex-col gap-3 sm:gap-4';
 /** Danh sách một cột: khung chờ vừa một màn hình, không cần bội số hàng. */
@@ -198,7 +198,7 @@ export function CatalogProductGrid({
       )}
 
       {showProgress && !hasMore && hasProducts && !isShowingPreviousResults && total !== undefined && total > 0 && (
-        <div className="mt-12 flex flex-col items-center gap-2 text-center text-xs font-semibold text-neutral-400">
+        <div className="mt-12 flex flex-col items-center gap-2 text-center text-xs font-semibold text-neutral-600">
           <div className="h-1 w-12 rounded-full bg-neutral-200" />
           <span>Đã hiển thị toàn bộ {total} sản phẩm</span>
         </div>

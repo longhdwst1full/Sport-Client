@@ -106,16 +106,27 @@ export function CatalogSortSelect({
 }
 
 export function CatalogSearchSortBar({
+  searchQuery,
+  onSearchQueryChange,
   displayedCount,
   total,
   activeSort,
   onSortChange,
   viewMode,
   onViewModeChange,
-}: Omit<CatalogQueryState, 'searchQuery' | 'onSearchQueryChange'> &
-  Partial<CatalogViewModeProps> & { displayedCount: number; total: number }) {
+}: CatalogQueryState & Partial<CatalogViewModeProps> & { displayedCount: number; total: number }) {
   return (
-    <div className="hidden lg:flex items-center justify-between gap-4 mb-4 rounded-2xl border border-neutral-200/80 bg-white p-3 shadow-xs">
+    <div className="hidden lg:flex items-center justify-between gap-4 mb-4 rounded-2xl border border-neutral-200/80 bg-white px-4 py-2.5 shadow-xs">
+      {/* Quick Search inside Catalog */}
+      <div className="w-72">
+        <CatalogSearchField
+          value={searchQuery}
+          onChange={onSearchQueryChange}
+          inputClassName="h-9 pl-9 text-xs placeholder:text-neutral-400 focus:border-neutral-900"
+          iconClassName="left-3 size-3.5 text-neutral-400"
+        />
+      </div>
+
       <span className="text-xs font-medium text-neutral-600" aria-live="polite">
         Hiển thị <strong className="text-neutral-900 font-bold">{displayedCount}</strong> / {total} sản phẩm
       </span>
@@ -127,10 +138,10 @@ export function CatalogSearchSortBar({
           value={activeSort}
           onChange={onSortChange}
           labelClassName="text-xs font-semibold text-neutral-600"
-          className="shadow-2xs"
+          className="shadow-2xs h-9"
         />
         {viewMode && onViewModeChange && (
-          <CatalogViewSwitcher value={viewMode} onChange={onViewModeChange} className="ml-2" />
+          <CatalogViewSwitcher value={viewMode} onChange={onViewModeChange} className="ml-1" />
         )}
       </div>
     </div>
