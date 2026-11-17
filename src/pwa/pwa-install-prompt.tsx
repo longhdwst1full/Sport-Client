@@ -85,12 +85,12 @@ export function PwaInstallPrompt() {
         onClick={dismiss}
         aria-label="Để sau"
         title="Để sau"
-        className="absolute right-1.5 top-1.5 size-9 text-neutral-500 hover:text-neutral-900"
+        className="absolute right-1 top-1 text-neutral-600 hover:text-neutral-900"
       >
         <X aria-hidden className="size-4" />
       </Button>
 
-      <div className="flex items-start gap-3 pr-8">
+      <div className="flex items-start gap-3 pr-10">
         <Image
           src="/images/favicon.png"
           alt=""

@@ -99,8 +99,10 @@ export function useFlashSaleCountdown({
   endsAtMs: number | undefined;
   serverTime: string | undefined;
   onExpired: () => unknown;
-}): FlashSaleCountdown {
-  const [countdown, setCountdown] = useState<FlashSaleCountdown>(FLASH_SALE_COUNTDOWN_ZERO);
+}): FlashSaleCountdown | undefined {
+  // `undefined` = chưa tính lần nào (SSR + lượt hydrate đầu): nơi hiển thị giữ khung với số "--" thay vì
+  // ẩn cả khung rồi hiện lại (dịch layout) hoặc hiện 00:00:00 rồi nhảy.
+  const [countdown, setCountdown] = useState<FlashSaleCountdown | undefined>(undefined);
   const clockOffsetRef = useRef(0);
   const onExpiredRef = useRef(onExpired);
   useEffect(() => {

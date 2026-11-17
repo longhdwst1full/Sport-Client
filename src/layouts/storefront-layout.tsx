@@ -1,5 +1,5 @@
 import type { ComponentProps, ReactNode } from 'react';
-import { SiteHeader, type MegaMenuEntry } from '@/widgets/site-header/site-header';
+import { SiteHeader, type MegaMenuEntry, type SiteHeaderProps } from '@/widgets/site-header/site-header';
 import { SiteFooter } from '@/widgets/site-footer/site-footer';
 import { FooterNewsletterBanner } from '@/widgets/site-footer/footer-newsletter-banner';
 import { NewsletterRouteGate } from '@/widgets/site-footer/newsletter-route-gate';
@@ -13,12 +13,15 @@ export function StorefrontLayout({
   children,
   categories,
   footerBanner,
+  flashSales,
 }: {
   children: ReactNode;
   /** Banner FOOTER đầu tiên (đã lấy ở route layout); không có thì chỉ hiện khối nhận tin. */
   footerBanner?: ComponentProps<typeof FooterNewsletterBanner>['banner'];
   /** Danh mục từ server cho mega-menu và cột "Sản phẩm nổi bật" ở footer; thiếu thì widget tự xử lý. */
   categories?: MegaMenuEntry[];
+  /** Flash sale từ server (cache dùng chung với trang chủ) cho nút Flash Sale ở header. */
+  flashSales?: SiteHeaderProps['initialFlashSales'];
 }) {
   return (
     <div className="min-h-screen">
@@ -28,7 +31,7 @@ export function StorefrontLayout({
       >
         Bỏ qua tới nội dung
       </a>
-      <SiteHeader initialCategories={categories} />
+      <SiteHeader initialCategories={categories} initialFlashSales={flashSales} />
       <div id={CONTENT_ANCHOR_ID} tabIndex={-1} className="outline-none">
         {children}
       </div>

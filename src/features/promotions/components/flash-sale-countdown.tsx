@@ -4,6 +4,8 @@ import { padTimeUnit, toCountdownLabel, type FlashSaleCountdown } from '../model
 
 type Tone = 'onBrand' | 'light';
 
+const PLACEHOLDER = '--';
+
 const TONE: Record<Tone, { box: string; unit: string; sep: string }> = {
   // Trên dải đỏ thương hiệu (khối trang chủ).
   onBrand: {
@@ -28,20 +30,22 @@ export function FlashSaleCountdownTimer({
   tone,
   className = '',
 }: {
-  countdown: FlashSaleCountdown;
+  /** `undefined`: chưa tính xong — vẫn vẽ khung đúng kích thước với số "--". */
+  countdown: FlashSaleCountdown | undefined;
   tone: Tone;
   className?: string;
 }) {
   const styles = TONE[tone];
+  const pad = (value: number | undefined) => (value === undefined ? PLACEHOLDER : padTimeUnit(value));
   const segments = [
-    ...(countdown.days > 0 ? [{ key: 'd', value: String(countdown.days), unit: 'Ngày' }] : []),
-    { key: 'h', value: padTimeUnit(countdown.hours), unit: 'Giờ' },
-    { key: 'm', value: padTimeUnit(countdown.minutes), unit: 'Phút' },
-    { key: 's', value: padTimeUnit(countdown.seconds), unit: 'Giây' },
+    ...(countdown && countdown.days > 0 ? [{ key: 'd', value: String(countdown.days), unit: 'Ngày' }] : []),
+    { key: 'h', value: pad(countdown?.hours), unit: 'Giờ' },
+    { key: 'm', value: pad(countdown?.minutes), unit: 'Phút' },
+    { key: 's', value: pad(countdown?.seconds), unit: 'Giây' },
   ];
 
   return (
-    <div role="timer" aria-label={toCountdownLabel(countdown)} className={`flex items-start gap-1 sm:gap-1.5 ${className}`}>
+    <div role="timer" aria-label={countdown ? toCountdownLabel(countdown) : 'Đang tính thời gian còn lại'} className={`flex items-start gap-1 sm:gap-1.5 ${className}`}>
       {segments.map((segment, index) => (
         <Fragment key={segment.key}>
           {index > 0 ? (
@@ -81,6 +85,6 @@ export function FlashSaleLiveCountdown({
   children: (timer: ReactNode) => ReactNode;
 }) {
   const countdown = useFlashSaleCountdown({ endsAtMs, serverTime, onExpired });
-  if (countdown.finished) return null;
+  if (countdown?.finished) return null;
   return <>{children(<FlashSaleCountdownTimer countdown={countdown} tone={tone} />)}</>;
 }

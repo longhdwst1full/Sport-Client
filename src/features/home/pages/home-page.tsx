@@ -134,14 +134,21 @@ export async function HomePage({
           />
         </section>
 
-        {/* 4. Khối danh mục: theo mục tiêu tập, theo bộ môn (danh mục gốc), theo ngân sách/nhóm con.
+        {/* 4. Smart Fit Advisor — Chuyên gia ảo tư vấn chọn thiết bị theo diện tích, mục tiêu & ngân sách ngay sau khi xem sản phẩm hot. */}
+        <SmartFitAdvisorLazy />
+
+        {/* 5. Khối danh mục: theo mục tiêu tập, theo bộ môn (danh mục gốc), theo ngân sách/nhóm con.
             QuickGoal và Budget giữ riêng: dữ liệu và mục đích khác nhau, gộp không đơn giản. */}
         <QuickGoalNavigation />
 
         {sportCards.length > 0 && (
           <section id="shop-by-sport" className="page-section">
             <Reveal {...HEADING_REVEAL}>
-              <SectionHeading eyebrow="Tìm nhanh theo bộ môn" title="Bạn muốn tập luyện bộ môn nào?" />
+              <SectionHeading
+                eyebrow="Bộ sưu tập chuyên sâu"
+                title="Trang Bị Chuẩn Thi Đấu & Rèn Luyện"
+                description="Bộ sưu tập thiết bị chuyên biệt cho từng bộ môn thể thao với độ hoàn thiện cao nhất"
+              />
             </Reveal>
             {/* Bento Grid: Khối 1 nổi bật mang phong cách thể thao tương phản cao, các khối kế tiếp bổ trợ nhịp nhàng */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -246,14 +253,11 @@ export async function HomePage({
 
         <BudgetNavigation quickLinks={quickLinks} />
 
-        {/* 5. Bằng chứng tin cậy & hệ thống showroom (dải cam kết đã đặt ngay dưới hero). */}
+        {/* 6. Bằng chứng tin cậy & hệ thống showroom (dải cam kết đã đặt ngay dưới hero). */}
         <TrustSocialProof />
 
         {/* Đã gỡ dải "thương hiệu đồng hành" và bộ đếm số liệu (showroom, khách hàng, sản phẩm):
             cả hai là số liệu/đối tác viết cứng, không có nguồn dữ liệu nào xác nhận. */}
-
-        {/* 6. Smart Fit Advisor — wizard client nặng, lazy-load dưới màn hình đầu (placeholder SSR giữ chiều cao). */}
-        <SmartFitAdvisorLazy />
 
         {/* 7. Tin tức — chỉ hiển thị khi có bài viết thật. */}
         {heroPosts.length > 0 && (

@@ -13,7 +13,7 @@ import { AnnouncementTicker } from './announcement-ticker';
 import { HeaderActions } from './header-actions';
 import { DesktopMegaMenu } from './desktop-mega-menu';
 import { useCustomerAuth } from '@/features/auth';
-import { useFlashSaleAvailability } from '@/features/promotions';
+import { useFlashSaleAvailability, type FlashSaleInitialData } from '@/features/promotions';
 import { preloadOnIdle, useIsMounted } from '@/shared/hooks';
 
 // Drawer chỉ hiện sau khi bấm nút menu nên không cần trong bundle đầu trang; chunk được tải sẵn
@@ -28,13 +28,15 @@ export type { MegaMenuEntry };
 export interface SiteHeaderProps {
   /** Danh mục dựng ở layout server (ISR) để link mega-menu có trong HTML đầu; `undefined` → tải ở client. */
   initialCategories?: MegaMenuEntry[];
+  /** Flash sale server lấy sẵn: nút "Flash Sale" trong menu có ngay ở HTML đầu, không hiện trễ làm dịch menu. */
+  initialFlashSales?: FlashSaleInitialData;
 }
 
-export function SiteHeader({ initialCategories }: SiteHeaderProps = {}) {
+export function SiteHeader({ initialCategories, initialFlashSales }: SiteHeaderProps = {}) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const { categories: megaMenuCategories } = useMegaMenuCategories(initialCategories);
-  const flashSale = useFlashSaleAvailability();
+  const flashSale = useFlashSaleAvailability(initialFlashSales);
   const isMounted = useIsMounted();
 
   useEffect(() => preloadOnIdle(loadMobileMenuDrawer), []);

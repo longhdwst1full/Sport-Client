@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { StorefrontLayout } from '@/layouts/storefront-layout';
 import { toMegaMenuEntries } from '@/features/catalog';
 import { BannerPlacement } from '@/generated/api/content/content.schemas';
-import { getActiveBannerViews, getPublicCategories } from './_data/public-data';
+import { getActiveBannerViews, getActiveFlashSales, getPublicCategories } from './_data/public-data';
 import { FlashPriceBridge } from './_components/flash-price-bridge';
 
 // Route group so every storefront-shell page (header/footer) shares one layout
@@ -17,14 +17,16 @@ export const revalidate = 300;
  * client, footer dùng danh sách dự phòng.
  */
 export default async function StorefrontRouteGroupLayout({ children }: { children: ReactNode }) {
-  const [categories, footerBanners] = await Promise.all([
+  const [categories, footerBanners, flashSales] = await Promise.all([
     getPublicCategories(),
     getActiveBannerViews(BannerPlacement.FOOTER),
+    getActiveFlashSales(),
   ]);
   return (
     <StorefrontLayout
       categories={categories ? toMegaMenuEntries(categories) : undefined}
       footerBanner={footerBanners[0]}
+      flashSales={flashSales}
     >
       {/* Giá flash sống cho thẻ sản phẩm và trang chi tiết (catalog ← promotions). */}
       <FlashPriceBridge>{children}</FlashPriceBridge>

@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, Flame, ShieldCheck } from 'lucide-react';
+import { ArrowRight, Flame, Truck } from 'lucide-react';
 import { BANNER_DEFAULT_CTA_TEXT, BannerPicture, type BannerView } from '@/features/content';
 
 /** Cột phải của hero chỉ có chỗ cho hai thẻ xếp chồng. */
@@ -68,16 +68,16 @@ export function HeroPromoCards({ banners = [] }: { banners?: BannerView[] }) {
   }
   return (
     <div className="grid grid-cols-2 lg:grid-cols-1 gap-3 sm:gap-4 lg:col-span-4">
-      {/* Promo Card 1: Chính sách bảo hành (trang CMS thật) */}
+      {/* Promo Card 1: Dịch vụ vận chuyển & lắp đặt tận nơi (trang CMS thật) */}
       <Link
-        href="/chinh-sach/chinh-sach-bao-hanh"
+        href="/chinh-sach/van-chuyen-giao-hang"
         className={CARD_CLASS}
       >
         {/* Background Cover */}
         <div className="relative size-full">
           <Image
             src="/images/banners/banner-bao-hanh.jpg"
-            alt="Chính sách bảo hành Bảo An Sport"
+            alt="Dịch vụ giao hàng và lắp đặt tận nơi Bảo An Sport"
             fill
             sizes="(max-width: 1024px) 50vw, 33vw"
             className="object-cover transition duration-500 group-hover:scale-105"
@@ -88,17 +88,17 @@ export function HeroPromoCards({ banners = [] }: { banners?: BannerView[] }) {
         {/* Text Info */}
         <div className="absolute inset-0 flex flex-col justify-end p-3 sm:p-5 text-white">
           <span className="hidden sm:inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-neutral-300">
-            <ShieldCheck className="size-3.5" aria-hidden="true" />
-            BẢO AN SPORT CHÍNH HÃNG
+            <Truck className="size-3.5" aria-hidden="true" />
+            DỊCH VỤ CHUYÊN NGHIỆP
           </span>
           <h3 className="mt-1 text-sm font-bold leading-snug sm:text-lg group-hover:text-neutral-300 transition">
-            Chính Sách Bảo Hành
+            Giao Lắp Tận Nơi Toàn Quốc
           </h3>
           <p className="mt-0.5 text-xs text-neutral-300 line-clamp-2 max-sm:hidden">
-            Điều kiện, thời hạn và cách gửi yêu cầu bảo hành
+            Vận chuyển thiết bị cồng kềnh, lắp đặt hoàn thiện & bảo hành chính hãng
           </p>
           <div className="mt-1.5 sm:mt-2.5 inline-flex items-center gap-1 text-xs font-bold text-neutral-300 group-hover:underline">
-            <span>Tra cứu chính sách</span>
+            <span>Tìm hiểu dịch vụ</span>
             <ArrowRight className="size-3 transition group-hover:translate-x-1" aria-hidden="true" />
           </div>
         </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
+import type { PublicFlashSaleListDto } from '@/generated/api/promotions/promotions.schemas';
 import { useFlashSaleCampaigns } from './use-flash-sale';
 
 export interface FlashSaleAvailability {
@@ -19,11 +20,14 @@ export interface FlashSaleAvailability {
  * khách bấm vào một trang trống khi không có chiến dịch nào chạy, và con số hiển thị không liên
  * quan gì tới giá thật.
  *
+ * `initialData`: danh sách server lấy sẵn (layout) để nút Flash Sale có trong HTML đầu; thiếu thì nút chỉ hiện
+ * sau khi query client về và đẩy các mục menu bên cạnh sang phải (nháy/dịch layout khi reload).
+ *
  * Dùng chung query với `useFlashSale`, nên react-query gộp lời gọi: thêm lối vào không tạo thêm
  * request nào; không kèm đồng hồ nên header không render lại mỗi giây.
  */
-export function useFlashSaleAvailability(): FlashSaleAvailability {
-  const { campaigns, isPending } = useFlashSaleCampaigns();
+export function useFlashSaleAvailability(initialData?: PublicFlashSaleListDto): FlashSaleAvailability {
+  const { campaigns, isPending } = useFlashSaleCampaigns({ initialData });
 
   return useMemo(() => {
     const discounts = campaigns
