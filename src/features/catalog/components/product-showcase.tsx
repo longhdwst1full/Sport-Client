@@ -63,6 +63,7 @@ export function ProductShowcase({
       <CatalogProductGrid
         gridClassName={GRID_CLASS}
         total={total}
+        showProgress
         errorTitle="Không thể tải sản phẩm lúc này."
         emptyState={
           <div className="rounded-3xl border border-dashed border-neutral-300 bg-white p-8 sm:p-12 text-center text-neutral-600">

@@ -22,6 +22,11 @@ interface CatalogProductGridProps {
   products: ProductShowcaseItem[];
   /** Tổng số sản phẩm từ API để tính thanh tiến độ (progress bar) khi tải thêm. */
   total?: number;
+  /**
+   * Hiện "Đang hiển thị X trên Y" + thanh tiến độ dưới lưới. Tắt ở màn đã có số đếm trên thanh công cụ
+   * (danh sách sản phẩm: `CatalogToolbar`) để không lặp hai lần.
+   */
+  showProgress?: boolean;
   hasActiveFilters?: boolean;
   onResetFilters?: () => void;
   hasMore: boolean;
@@ -51,6 +56,7 @@ export function CatalogProductGrid({
   refetch,
   products,
   total,
+  showProgress = false,
   hasActiveFilters = false,
   onResetFilters,
   hasMore,
@@ -154,7 +160,7 @@ export function CatalogProductGrid({
 
       {hasMore && !isShowingPreviousResults && (
         <div className="mt-10 flex flex-col items-center gap-3.5">
-          {total !== undefined && total > 0 && (
+          {showProgress && total !== undefined && total > 0 && (
             <div className="w-full max-w-xs text-center space-y-1.5">
               <div className="text-xs font-semibold text-neutral-500">
                 Đang hiển thị <span className="font-bold text-neutral-900">{visibleProducts.length}</span> trên <span className="font-bold text-neutral-900">{total}</span> sản phẩm
@@ -191,7 +197,7 @@ export function CatalogProductGrid({
         </div>
       )}
 
-      {!hasMore && hasProducts && !isShowingPreviousResults && total !== undefined && total > 0 && (
+      {showProgress && !hasMore && hasProducts && !isShowingPreviousResults && total !== undefined && total > 0 && (
         <div className="mt-12 flex flex-col items-center gap-2 text-center text-xs font-semibold text-neutral-400">
           <div className="h-1 w-12 rounded-full bg-neutral-200" />
           <span>Đã hiển thị toàn bộ {total} sản phẩm</span>
