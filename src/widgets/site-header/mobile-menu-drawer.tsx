@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { ChevronDown, ChevronRight, Dumbbell, MapPin, Phone, ShoppingBag, UserRound } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { Button } from '@/foundation/components/buttons';
@@ -6,6 +7,7 @@ import { useDialogA11y } from '@/foundation/components/overlay/use-dialog-a11y';
 import { IconList } from '@/foundation/components/structure';
 import { STORE_CONTACT, STORE_SHOWROOMS } from '@/shared/constants';
 import { AutocompleteSearch } from './autocomplete-search';
+import { isCategoryActive, isNavHrefActive } from './nav-active';
 import type { MegaMenuEntry } from '@/features/catalog';
 
 interface MobileMenuDrawerProps {
@@ -18,6 +20,10 @@ interface MobileMenuDrawerProps {
   onClose: () => void;
 }
 
+
+/** Mục drawer: thường / trang đang xem (token "đang chọn" + vạch đỏ bên trái, cùng nhận diện menu desktop). */
+const DRAWER_LINK_IDLE = 'text-neutral-800 hover:bg-neutral-50 hover:text-neutral-900';
+const DRAWER_LINK_CURRENT = 'bg-brand-50 text-brand-700 shadow-[inset_3px_0_0_theme(colors.brand.600)]';
 export function MobileMenuDrawer({
   megaMenuCategories,
   hasFlashSaleCampaign,
@@ -27,6 +33,7 @@ export function MobileMenuDrawer({
   cartQuantity,
   onClose,
 }: MobileMenuDrawerProps) {
+  const pathname = usePathname();
   const [expandedMobileCat, setExpandedMobileCat] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   // Non-modal: the header toggle stays reachable, so no focus trap; focus the container (not the
@@ -60,14 +67,20 @@ export function MobileMenuDrawer({
             </div>
             <Link
               href="/"
-              className="flex items-center gap-3 px-3 py-3 text-sm font-bold text-neutral-800 hover:bg-neutral-50 hover:text-neutral-900 rounded-xl transition"
+              aria-current={isNavHrefActive(pathname, '/') ? 'page' : undefined}
+              className={`flex items-center gap-3 px-3 py-3 text-sm font-bold rounded-xl transition ${
+                isNavHrefActive(pathname, '/') ? DRAWER_LINK_CURRENT : DRAWER_LINK_IDLE
+              }`}
               onClick={onClose}
             >
               Trang chủ
             </Link>
             <Link
               href="/products"
-              className="flex items-center gap-3 px-3 py-3 text-sm font-bold text-neutral-800 hover:bg-neutral-50 hover:text-neutral-900 rounded-xl transition"
+              aria-current={isNavHrefActive(pathname, '/products') ? 'page' : undefined}
+              className={`flex items-center gap-3 px-3 py-3 text-sm font-bold rounded-xl transition ${
+                isNavHrefActive(pathname, '/products') ? DRAWER_LINK_CURRENT : DRAWER_LINK_IDLE
+              }`}
               onClick={onClose}
             >
               Tất cả sản phẩm
@@ -78,15 +91,23 @@ export function MobileMenuDrawer({
             </div>
             {megaMenuCategories.map((cat, catIdx) => {
               const isExpanded = expandedMobileCat === cat.label;
+              const isCurrent = isCategoryActive(pathname, cat);
               return (
                 <div key={cat.label} className="rounded-xl border border-transparent overflow-hidden">
-                  <div className="flex items-center justify-between rounded-xl hover:bg-neutral-50 transition">
+                  <div
+                    className={`flex items-center justify-between rounded-xl transition ${
+                      isCurrent ? DRAWER_LINK_CURRENT : 'hover:bg-neutral-50'
+                    }`}
+                  >
                     <Link
                       href={cat.href}
-                      className="flex flex-1 items-center gap-3 px-3 py-3 text-sm font-bold text-neutral-800 hover:text-neutral-900"
+                      aria-current={isNavHrefActive(pathname, cat.href) ? 'page' : undefined}
+                      className={`flex flex-1 items-center gap-3 px-3 py-3 text-sm font-bold ${
+                        isCurrent ? 'text-brand-700' : 'text-neutral-800 hover:text-neutral-900'
+                      }`}
                       onClick={onClose}
                     >
-                      <Dumbbell className="size-4.5 text-neutral-900 shrink-0" />
+                      <Dumbbell className={`size-4.5 shrink-0 ${isCurrent ? 'text-brand-600' : 'text-neutral-900'}`} />
                       <span>{cat.label}</span>
                     </Link>
                     {cat.children && cat.children.length > 0 && (
@@ -121,7 +142,12 @@ export function MobileMenuDrawer({
                         <Link
                           key={child.label}
                           href={child.href}
-                          className="flex items-center justify-between py-2.5 text-sm font-medium text-neutral-600 hover:text-neutral-900"
+                          aria-current={isNavHrefActive(pathname, child.href) ? 'page' : undefined}
+                          className={`flex items-center justify-between py-2.5 text-sm ${
+                            isNavHrefActive(pathname, child.href)
+                              ? 'font-bold text-brand-700'
+                              : 'font-medium text-neutral-600 hover:text-neutral-900'
+                          }`}
                           onClick={onClose}
                         >
                           <span>{child.label}</span>
@@ -147,7 +173,10 @@ export function MobileMenuDrawer({
             {hasFlashSaleCampaign && (
               <Link
                 href="/flash-sale"
-                className="flex items-center justify-between rounded-xl px-3 py-3 text-sm font-bold text-neutral-900 hover:bg-neutral-50 transition"
+                aria-current={isNavHrefActive(pathname, '/flash-sale') ? 'page' : undefined}
+                className={`flex items-center justify-between rounded-xl px-3 py-3 text-sm font-bold transition ${
+                  isNavHrefActive(pathname, '/flash-sale') ? DRAWER_LINK_CURRENT : 'text-neutral-900 hover:bg-neutral-50'
+                }`}
                 onClick={onClose}
               >
                 <span className="flex items-center gap-2">

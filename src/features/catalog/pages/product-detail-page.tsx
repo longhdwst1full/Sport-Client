@@ -1,4 +1,3 @@
-import { Images } from 'lucide-react';
 import {
   ProductImageGallery,
   ProductPurchasePanel,
@@ -118,17 +117,6 @@ export function ProductDetailPage({ product, slug, relatedCategorySlug, flashPri
         <div className="page-container mt-4 grid gap-8 py-3 lg:grid-cols-[1.12fr_0.88fr] lg:grid-rows-[auto_1fr]">
           {/* Product media is image-first. Heavy 3D rendering is intentionally excluded here. */}
           <div className="overflow-hidden rounded-4xl border border-[var(--dc-border)] bg-white shadow-card">
-            <div className="flex items-center justify-between border-b border-[var(--dc-border)] px-5 py-3.5">
-              <span className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-[var(--dc-primary-700)]">
-                <Images className="size-4" aria-hidden="true" />
-                Hình ảnh sản phẩm
-              </span>
-              {gallery.length > 1 && (
-                <span className="text-xs font-semibold text-[var(--dc-text-secondary)]">
-                  {gallery.length} ảnh
-                </span>
-              )}
-            </div>
             <ProductImageGallery images={gallery} productName={product.name} />
           </div>
 

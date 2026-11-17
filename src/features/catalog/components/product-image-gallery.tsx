@@ -23,8 +23,8 @@ export function ProductImageGallery({
 }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isZooming, setIsZooming] = useState(false);
-  const [zoomPos, setZoomPos] = useState({ x: 50, y: 50 });
   const containerRef = useRef<HTMLDivElement>(null);
+  const zoomLayerRef = useRef<HTMLDivElement>(null);
 
   const active = images[activeIndex] ?? images[0];
   const hasMany = images.length > 1;
@@ -33,12 +33,15 @@ export function ProductImageGallery({
     setActiveIndex((current) => (current + delta + images.length) % images.length);
   };
 
+  // Tâm phóng to ghi thẳng vào DOM: đặt qua state thì mỗi lần chuột nhích lại render lại cả bộ ảnh + dải ảnh nhỏ.
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
+    const container = containerRef.current;
+    const layer = zoomLayerRef.current;
+    if (!container || !layer) return;
+    const rect = container.getBoundingClientRect();
     const x = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
     const y = Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100));
-    setZoomPos({ x, y });
+    layer.style.transformOrigin = `${x}% ${y}%`;
   };
 
   if (!active) return null;
@@ -53,22 +56,30 @@ export function ProductImageGallery({
         className="group relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-white to-[var(--dc-primary-50)] cursor-zoom-in sm:aspect-[16/11]"
       >
         <div
-          className="relative size-full pointer-events-none"
+          ref={zoomLayerRef}
+          className="relative size-full pointer-events-none will-change-transform"
           style={{
-            transformOrigin: `${zoomPos.x}% ${zoomPos.y}%`,
             transform: isZooming ? 'scale(2.2)' : 'scale(1)',
             transition: isZooming ? 'none' : 'transform 0.25s ease-out',
           }}
         >
-          <Image
-            key={active.url}
-            src={active.url}
-            alt={active.alt}
-            fill
-            priority={activeIndex === 0}
-            sizes="(max-width: 1024px) 100vw, (max-width: 1280px) 58vw, 740px"
-            className="object-contain p-4 sm:p-8 select-none"
-          />
+          {/* Mọi ảnh dựng sẵn chồng lên nhau, chỉ ảnh đang chọn hiện: ảnh sau tải nền (ưu tiên thấp) nên bấm
+              chuyển là có ngay, không phải tải lại và không bị trắng khung giữa hai ảnh. */}
+          {images.map((image, index) => (
+            <Image
+              key={image.id}
+              src={image.url}
+              alt={image.alt}
+              fill
+              priority={index === 0}
+              fetchPriority={index === 0 ? 'high' : 'low'}
+              aria-hidden={index !== activeIndex}
+              sizes="(max-width: 1024px) 100vw, (max-width: 1280px) 58vw, 740px"
+              className={`object-contain p-4 sm:p-8 select-none transition-opacity duration-150 ${
+                index === activeIndex ? 'opacity-100' : 'opacity-0'
+              }`}
+            />
+          ))}
         </div>
 
         {/* Zoom Hint Badge */}

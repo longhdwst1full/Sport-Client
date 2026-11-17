@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Flame, Zap } from 'lucide-react';
+import { Flame, Tag, Zap } from 'lucide-react';
 import { STORE_POLICY_FACTS, STORE_POLICY_PAGES } from '@/shared/constants';
 import { formatFlashEnd, type VariantFlashPrice } from '../model/variant-flash-price';
 import { useFlashCountdown } from '../hooks/use-flash-countdown';
@@ -51,20 +51,19 @@ export function ProductPriceHeader({
     <div>
       {/* Ngoài flash sale không hiển thị giá gạch hay "Tiết kiệm x%": contract chưa có giá gốc theo biến
           thể, bản trước tự nhân giá bán ×1,25 để dựng ra mức giảm không có thật. */}
-      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-        <div className="min-w-0">
-          <span className="eyebrow text-neutral-500">
-            {canAdd || outOfStock ? 'Giá bán niêm yết' : 'Giá bán'}
+      <div className="rounded-2xl border border-neutral-200 bg-neutral-50 px-4 py-3.5">
+        <span className="eyebrow inline-flex items-center gap-1.5 text-neutral-600">
+          <Tag className="size-3.5" aria-hidden="true" />
+          Giá bán
+        </span>
+        <strong className="mt-1 block break-words text-2xl font-bold tracking-tight text-neutral-950 min-[400px]:text-3xl sm:text-4xl">
+          {(canAdd || outOfStock) && priceLabel ? priceLabel : 'Liên hệ báo giá'}
+        </strong>
+        {outOfStock && (
+          <span className="mt-2 inline-block rounded-full border border-amber-200/80 bg-amber-50 px-3 py-1 text-xs font-bold text-amber-800">
+            Tạm hết hàng
           </span>
-          <strong className="mt-1 block break-words text-2xl font-bold text-neutral-950 min-[400px]:text-3xl sm:text-4xl">
-            {(canAdd || outOfStock) && priceLabel ? priceLabel : 'Liên hệ báo giá'}
-          </strong>
-          {outOfStock && (
-            <span className="mt-2 inline-block rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-800">
-              Tạm hết hàng
-            </span>
-          )}
-        </div>
+        )}
       </div>
 
       <ProductAvailability stock={stock} outOfStock={outOfStock} />
@@ -155,8 +154,8 @@ function FlashPriceBlock({ flash, priceLabel }: { flash: VariantFlashPrice; pric
           ) : null}
         </div>
         {flash.originalPriceLabel ? (
-          <p className="mt-2 text-sm text-neutral-500">
-            Giá thường <span className="text-neutral-400 line-through">{flash.originalPriceLabel}</span>
+          <p className="mt-2 text-sm text-neutral-600">
+            Giá thường <span className="text-neutral-600 line-through">{flash.originalPriceLabel}</span>
           </p>
         ) : null}
 

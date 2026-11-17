@@ -71,12 +71,25 @@ export async function ProductsPage({
   const initial = await loadCatalogFirstPage(filters, { includeFacets: true, requestHeaders });
   const initialCategoryName = categories?.find((item) => item.slug === filters.category)?.name;
 
+  const breadcrumbItems = initialCategoryName
+    ? [
+        { label: 'Trang chủ', href: '/' },
+        { label: 'Tất cả sản phẩm', href: '/products' },
+        { label: initialCategoryName },
+      ]
+    : [{ label: 'Trang chủ', href: '/' }, { label: 'Tất cả sản phẩm' }];
+
+  const pageTitle = initialCategoryName ? `${initialCategoryName} chính hãng` : 'Thiết bị & phụ kiện thể thao';
+  const pageDescription = initialCategoryName
+    ? `Khám phá các dòng sản phẩm ${initialCategoryName.toLowerCase()} chất lượng cao, bảo hành chính hãng, giao hàng & lắp đặt tận nơi toàn quốc.`
+    : 'Rèn luyện sức mạnh, cardio, bóng bàn, cầu lông, võ thuật và phụ kiện thể thao chính hãng.';
+
   return (
       <main className="bg-neutral-50/40 pb-20 pt-8">
         <div className="page-container">
           <Breadcrumb
             className="mb-6"
-            items={[{ label: 'Trang chủ', href: '/' }, { label: 'Tất cả sản phẩm' }]}
+            items={breadcrumbItems}
           />
 
           {/* Compact Catalog Hero Banner */}
@@ -85,10 +98,10 @@ export async function ProductsPage({
               Bảo An Sport — Thể thao chính hãng
             </div>
             <h1 className="mt-2.5 text-2xl font-bold tracking-tight text-neutral-950 sm:text-3xl lg:text-4xl">
-              Thiết bị & phụ kiện thể thao
+              {pageTitle}
             </h1>
             <p className="mt-1.5 text-xs sm:text-sm text-neutral-600 font-medium">
-              Rèn luyện sức mạnh, cardio, bóng bàn, cầu lông, võ thuật và phụ kiện thể thao chính hãng.
+              {pageDescription}
             </p>
           </div>
 
@@ -116,10 +129,8 @@ export async function ProductsPage({
             ))}
           </ul>
 
-          {/* Flash Deals Banner for Catalog */}
-          <div className="mt-16 overflow-hidden rounded-4xl">
-            <FlashSaleSectionLazy />
-          </div>
+          {/* Flash sale: dải trượt tự chạy, đặt thẳng trong lề trang (không khung lồng khung). */}
+          <FlashSaleSectionLazy layout="slider" embedded />
         </div>
       </main>
   );

@@ -3,13 +3,22 @@
 import type { ReactNode } from 'react';
 import dynamic from 'next/dynamic';
 import type { FlashSaleInitialData } from '@/features/promotions';
+import { FlashSaleSlotPlaceholder } from './flash-sale-slot-placeholder';
 
 /**
  * Query flash sale (TanStack + SDK) và khối deal tách chunk riêng, không tính vào First Load JS của `/`.
- * Vẫn SSR nên khi có chiến dịch HTML đầu đã có khối flash sale (LCP); lúc hydrate React giữ HTML server
- * tới khi chunk về. `loading` null giống `FlashSaleSection` (không giữ chỗ bằng skeleton).
+ * Vẫn SSR nên khi có chiến dịch HTML đầu đã có khối flash sale (LCP).
+ *
+ * Hai bản chỉ khác `loading`, vì không biết trước lúc render:
+ * - Server đã thấy chiến dịch → `loading` giữ chỗ đúng chiều cao khối, hero không nhảy khi chunk về.
+ * - Không có chiến dịch (đa số thời gian) → `loading` null: không chừa khoảng trống nào.
  */
-const HomeFlashSaleSlot = dynamic(
+// `import()` viết thẳng trong từng `dynamic` (Next cần thấy nó để preload chunk cho SSR).
+const HomeFlashSaleSlotWithPlaceholder = dynamic(
+  () => import('./home-flash-sale-slot').then((module) => module.HomeFlashSaleSlot),
+  { loading: () => <FlashSaleSlotPlaceholder /> },
+);
+const HomeFlashSaleSlotQuiet = dynamic(
   () => import('./home-flash-sale-slot').then((module) => module.HomeFlashSaleSlot),
   { loading: () => null },
 );
@@ -26,9 +35,11 @@ export function HomeTopSection({
   initialFlashSales?: FlashSaleInitialData;
   banner: ReactNode;
 }) {
+  const hasInitialCampaign = initialFlashSales?.items.some((campaign) => campaign.items.length > 0) ?? false;
+  const Slot = hasInitialCampaign ? HomeFlashSaleSlotWithPlaceholder : HomeFlashSaleSlotQuiet;
   return (
     <>
-      <HomeFlashSaleSlot initialFlashSales={initialFlashSales} />
+      <Slot initialFlashSales={initialFlashSales} />
       {banner}
     </>
   );

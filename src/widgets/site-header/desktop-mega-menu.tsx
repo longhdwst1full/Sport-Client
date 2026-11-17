@@ -1,12 +1,14 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { ChevronDown } from 'lucide-react';
 import { useCallback, useId, useRef, useState, type FocusEvent, type KeyboardEvent, type MouseEvent, type PointerEvent } from 'react';
 import type { MegaMenuEntry } from '@/features/catalog';
 import { MegaMenuPanel } from './mega-menu-panel';
 import { OverflowCategoryMenu } from './overflow-category-menu';
 import { HeaderQuickLinks } from './header-quick-links';
+import { isCategoryActive, isNavHrefActive } from './nav-active';
 
 interface DesktopMegaMenuProps {
   megaMenuCategories: MegaMenuEntry[];
@@ -18,7 +20,19 @@ interface DesktopMegaMenuProps {
 const NAV_ITEM_BASE =
   'inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg px-2.5 py-1.5 text-xs font-semibold transition-all duration-150 focus-ring-tight xl:px-3 xl:py-1.5 xl:text-sm';
 const NAV_ITEM_IDLE = 'text-neutral-700 hover:bg-neutral-100 hover:text-neutral-950';
+/** Đang mở mega menu (hover/focus). */
 const NAV_ITEM_ACTIVE = 'bg-neutral-100 text-neutral-950 font-bold';
+/**
+ * Trang đang xem: token "đang chọn" (nền brand-50, chữ brand-700) + vạch đỏ sát mép dưới thanh menu
+ * (thanh cao 44px, mục ~30px → vạch lùi 7px để nằm đúng đường viền dưới).
+ */
+const NAV_ITEM_CURRENT =
+  'relative bg-brand-50 font-bold text-brand-700 hover:bg-brand-50 hover:text-brand-700 after:pointer-events-none after:absolute after:inset-x-3 after:-bottom-[7px] after:h-0.5 after:rounded-full after:bg-brand-600';
+
+function navItemClass(current: boolean, open = false): string {
+  if (current) return `${NAV_ITEM_BASE} ${NAV_ITEM_CURRENT}`;
+  return `${NAV_ITEM_BASE} ${open ? NAV_ITEM_ACTIVE : NAV_ITEM_IDLE}`;
+}
 
 export function DesktopMegaMenu({
   megaMenuCategories,
@@ -26,6 +40,7 @@ export function DesktopMegaMenu({
   flashSaleMaxDiscountPercent,
 }: DesktopMegaMenuProps) {
   const menuId = useId();
+  const pathname = usePathname();
   const [activeMegaMenu, setActiveMegaMenu] = useState<string | null>(null);
   const megaMenuTimeout = useRef<ReturnType<typeof setTimeout>>(null);
 
@@ -91,17 +106,26 @@ export function DesktopMegaMenu({
       <div className="mx-auto flex h-11 max-w-7xl items-center justify-center gap-1 xl:gap-1.5 px-4 sm:px-6 lg:px-8 relative">
         {/* Main Centered Nav Row */}
         <div className="flex items-center gap-1 xl:gap-1.5">
-          <Link href="/" className={`${NAV_ITEM_BASE} ${NAV_ITEM_IDLE}`}>
+          <Link
+            href="/"
+            aria-current={isNavHrefActive(pathname, '/') ? 'page' : undefined}
+            className={navItemClass(isNavHrefActive(pathname, '/'))}
+          >
             Trang chủ
           </Link>
 
-          <Link href="/products" className={`${NAV_ITEM_BASE} ${NAV_ITEM_IDLE}`}>
+          <Link
+            href="/products"
+            aria-current={isNavHrefActive(pathname, '/products') ? 'page' : undefined}
+            className={navItemClass(isNavHrefActive(pathname, '/products'))}
+          >
             Sản phẩm
           </Link>
 
           {megaMenuCategories.slice(0, 4).map((cat, catIdx) => {
             const hasSubmenu = Boolean(cat.children && cat.children.length > 0);
             const isOpen = hasSubmenu && activeMegaMenu === cat.label;
+            const isCurrent = isCategoryActive(pathname, cat);
             const visibilityClass =
               catIdx === 2
                 ? 'hidden xl:block'
@@ -124,15 +148,16 @@ export function DesktopMegaMenu({
                   aria-controls={isOpen ? `${menuId}-${catIdx}` : undefined}
                   onPointerDown={hasSubmenu ? (event) => handleTriggerPointerDown(event, cat.label) : undefined}
                   onClick={hasSubmenu ? (event) => handleTriggerClick(event, cat.label) : undefined}
-                  className={`${NAV_ITEM_BASE} group ${isOpen ? NAV_ITEM_ACTIVE : NAV_ITEM_IDLE}`}
+                  aria-current={isCurrent ? 'page' : undefined}
+                  className={`${navItemClass(isCurrent, isOpen)} group`}
                 >
                   <span>{cat.label}</span>
                   {hasSubmenu && (
                     <ChevronDown
                       aria-hidden
-                      className={`size-3.5 text-neutral-400 transition-transform duration-200 group-hover:text-neutral-800 xl:size-4 ${
-                        isOpen ? 'rotate-180 text-neutral-900' : ''
-                      }`}
+                      className={`size-3.5 transition-transform duration-200 xl:size-4 ${
+                        isCurrent ? 'text-brand-600' : 'text-neutral-400 group-hover:text-neutral-800'
+                      } ${isOpen ? 'rotate-180' : ''} ${isOpen && !isCurrent ? 'text-neutral-900' : ''}`}
                     />
                   )}
                 </Link>
@@ -161,6 +186,9 @@ export function DesktopMegaMenu({
             triggerClassName={NAV_ITEM_BASE}
             triggerIdleClassName={NAV_ITEM_IDLE}
             triggerActiveClassName={NAV_ITEM_ACTIVE}
+            // Danh mục thứ 5 trở đi chỉ nằm trong menu này ở mọi cỡ màn hình.
+            isCurrent={megaMenuCategories.slice(4).some((cat) => isCategoryActive(pathname, cat))}
+            triggerCurrentClassName={NAV_ITEM_CURRENT}
           />
         </div>
 
@@ -169,6 +197,7 @@ export function DesktopMegaMenu({
 
         {/* Quick Features & Highlights */}
         <HeaderQuickLinks
+          pathname={pathname}
           hasFlashSaleCampaign={hasFlashSaleCampaign}
           flashSaleMaxDiscountPercent={flashSaleMaxDiscountPercent}
         />

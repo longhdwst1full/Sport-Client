@@ -20,6 +20,7 @@ export function FlashSaleSection({
   initialData,
   aboveTheFold = false,
   layout = 'grid',
+  embedded = false,
 }: {
   /** Danh sách server lấy sẵn để HTML SSR có khối ngay (trang chủ). */
   initialData?: PublicFlashSaleListDto;
@@ -27,6 +28,12 @@ export function FlashSaleSection({
   aboveTheFold?: boolean;
   /** `slider`: dải trượt ngang tự chạy, hiện mọi suất (trang chủ); `grid`: lưới cắt theo hàng đủ. */
   layout?: 'grid' | 'slider';
+  /**
+   * Khối đặt bên trong một trang đã có lề (`page-container`), vd. trang sản phẩm: bỏ dải nền và lề riêng của
+   * khối để không thành "khung lồng khung". Trang chủ giữ mặc định — khung đó phải khớp
+   * `FlashSaleSlotPlaceholder` (CLS = 0).
+   */
+  embedded?: boolean;
 }) {
   const { campaign, serverTime, retry } = useFlashSale({ initialData });
   const { addToCart, buyNow } = useFlashSaleCart();
@@ -35,10 +42,12 @@ export function FlashSaleSection({
   // rồi biến mất là cú dịch layout lớn nhất trang. Chỉ hiện khi đã có chiến dịch đang chạy.
   if (!campaign || campaign.deals.length === 0) return null;
 
-  return (
-    <section className="bg-brand-50/60 py-6 sm:py-10" aria-labelledby="flash-sale-heading">
-      <div className="page-container">
-        <div className="overflow-hidden rounded-2xl border border-brand-200 bg-white shadow-sm">
+  const card = (
+        <div
+          className={`overflow-hidden rounded-2xl border border-brand-200 bg-white ${
+            embedded ? 'shadow-lg shadow-brand-900/5' : 'shadow-sm'
+          }`}
+        >
           {/* Dải tiêu đề đỏ nhận diện flash sale + đồng hồ đếm ngược theo giờ server. */}
           <div className="relative overflow-hidden bg-gradient-to-br from-brand-500 via-brand-600 to-brand-700 px-4 py-4 text-white sm:px-6 sm:py-5">
             {/* Vệt sáng trang trí, không bắt sự kiện. */}
@@ -115,7 +124,19 @@ export function FlashSaleSection({
             </Link>
           </div>
         </div>
-      </div>
+  );
+
+  if (embedded) {
+    return (
+      <section className="mt-12 sm:mt-16" aria-labelledby="flash-sale-heading">
+        {card}
+      </section>
+    );
+  }
+
+  return (
+    <section className="bg-brand-50/60 py-6 sm:py-10" aria-labelledby="flash-sale-heading">
+      <div className="page-container">{card}</div>
     </section>
   );
 }

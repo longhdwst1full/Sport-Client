@@ -1,46 +1,12 @@
 'use client';
 
-import { Suspense, useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Breadcrumb } from '@/foundation/components/navigation';
 import { Search } from 'lucide-react';
-import { SearchBox } from '@/foundation/components/field-system';
 import { Skeleton } from '@/foundation/components/feedback';
 import { ProductShowcase } from '../components/product-showcase';
 import { ProductCardSkeleton } from '../components/product-card';
-
-/** Form tìm kiếm nội bộ trang kết quả: đồng bộ với từ khoá hiện tại, bấm Tìm là đổi kết quả ngay. */
-function InPageSearchForm({ currentQuery }: { currentQuery: string }) {
-  const router = useRouter();
-  const [val, setVal] = useState(currentQuery);
-
-  useEffect(() => {
-    setVal(currentQuery);
-  }, [currentQuery]);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const trimmed = val.trim();
-    if (trimmed) {
-      router.push(`/search?q=${encodeURIComponent(trimmed)}`);
-    } else {
-      router.push('/products');
-    }
-  };
-
-  return (
-    <SearchBox
-      value={val}
-      onValueChange={setVal}
-      onSubmit={handleSubmit}
-      placeholder="Tìm thiết bị tập luyện khác..."
-      submitLabel="Tìm"
-      submitIcon={false}
-      className="w-full hover:border-neutral-300"
-      iconClassName="group-focus-within:text-neutral-400"
-    />
-  );
-}
 
 function SearchContent() {
   const searchParams = useSearchParams();
@@ -54,8 +20,9 @@ function SearchContent() {
           items={[{ label: 'Trang chủ', href: '/' }, { label: 'Kết quả tìm kiếm' }]}
         />
 
+        {/* Tìm lại bằng ô tìm kiếm trên header (desktop + nút tìm trên mobile); không lặp thêm ô thứ hai ở đây. */}
         <div className="surface-card p-6 shadow-sm sm:p-8">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+          <div className="flex items-center">
             <div className="flex items-center gap-3.5">
               <span className="grid size-12 place-items-center rounded-2xl bg-neutral-100 text-neutral-700">
                 <Search aria-hidden className="size-6 text-red-600" />
@@ -75,11 +42,6 @@ function SearchContent() {
                 </h1>
               </div>
             </div>
-
-            {/* Quick in-page Search Refinement without duplicate popover collisions */}
-            <div className="w-full md:max-w-md">
-              <InPageSearchForm currentQuery={query} />
-            </div>
           </div>
         </div>
 
@@ -97,7 +59,7 @@ function SearchPageSkeleton() {
     <div className="page-shell" role="status" aria-label="Đang tải kết quả tìm kiếm">
       <div className="page-container">
         <Skeleton className="mb-6 h-4 w-48 rounded" />
-        <Skeleton className="h-32 rounded-3xl" />
+        <Skeleton className="h-24 rounded-3xl sm:h-28" />
         <div className="mt-10 grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3 lg:grid-cols-4">
           {Array.from({ length: 12 }, (_, i) => (
             <ProductCardSkeleton key={i} />

@@ -1,15 +1,18 @@
 'use client';
 
-import { FlashSaleSectionLazy, useFlashSaleCampaigns, type FlashSaleInitialData } from '@/features/promotions';
+import { FlashSaleSection, useFlashSaleCampaigns, type FlashSaleInitialData } from '@/features/promotions';
 
 /**
  * Khối flash sale đầu trang chủ. Server (ISR) quyết định lần render đầu từ `initialFlashSales` để HTML
  * SSR đúng khối, không nháy banner rồi đổi. Khi query client về thì theo dữ liệu mới nhất: chiến dịch
  * đã đóng trong cửa sổ ISR → ẩn khối, chiến dịch vừa mở → hiện khối.
+ *
+ * Dùng `FlashSaleSection` import tĩnh: slot này đã là một chunk lười (`HomeTopSection`), thêm tầng `dynamic` thứ
+ * hai (`FlashSaleSectionLazy`, `loading` null) làm khối biến mất rồi hiện lại lúc hydrate → hero nhảy.
  */
 export function HomeFlashSaleSlot({ initialFlashSales }: { initialFlashSales?: FlashSaleInitialData }) {
   const { campaigns } = useFlashSaleCampaigns({ initialData: initialFlashSales });
   const hasFlashSale = campaigns.some((campaign) => campaign.deals.length > 0);
 
-  return hasFlashSale ? <FlashSaleSectionLazy initialData={initialFlashSales} aboveTheFold layout="slider" /> : null;
+  return hasFlashSale ? <FlashSaleSection initialData={initialFlashSales} aboveTheFold layout="slider" /> : null;
 }

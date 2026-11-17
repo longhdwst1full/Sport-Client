@@ -15,6 +15,9 @@ interface OverflowCategoryMenuProps {
   triggerClassName: string;
   triggerIdleClassName: string;
   triggerActiveClassName: string;
+  /** Trang đang xem thuộc một danh mục chỉ có trong menu này. */
+  isCurrent?: boolean;
+  triggerCurrentClassName?: string;
 }
 
 export function OverflowCategoryMenu({
@@ -26,6 +29,8 @@ export function OverflowCategoryMenu({
   triggerClassName,
   triggerIdleClassName,
   triggerActiveClassName,
+  isCurrent = false,
+  triggerCurrentClassName = '',
 }: OverflowCategoryMenuProps) {
   const panelId = useId();
   if (categories.length <= 2) return null;
@@ -57,7 +62,10 @@ export function OverflowCategoryMenu({
         onClick={isOpen ? onClose : onOpen}
         aria-expanded={isOpen}
         aria-controls={panelId}
-        className={`group ${triggerClassName} ${isOpen ? triggerActiveClassName : triggerIdleClassName}`}
+        aria-current={isCurrent ? 'page' : undefined}
+        className={`group ${triggerClassName} ${
+          isCurrent ? triggerCurrentClassName : isOpen ? triggerActiveClassName : triggerIdleClassName
+        }`}
       >
         <span>Danh mục khác</span>
         <ChevronDown
