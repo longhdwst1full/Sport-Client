@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import {
   addCartItem,
@@ -17,10 +18,14 @@ export function useCartItems(): CartItem[] {
 
 export function useCartActions() {
   const dispatch = useAppDispatch();
-  return {
-    addItem: (item: Omit<CartItem, 'quantity'> & { quantity?: number }) => dispatch(addCartItem(item)),
-    removeItem: (variantId: string) => dispatch(removeCartItem(variantId)),
-    updateQuantity: (variantId: string, quantity: number) => dispatch(updateQuantity({ variantId, quantity })),
-    clear: () => dispatch(clearCart()),
-  };
+  // `dispatch` ổn định, nên object này cũng ổn định: nơi dùng đưa nó vào deps của hook/memo mà không bị đổi mỗi render.
+  return useMemo(
+    () => ({
+      addItem: (item: Omit<CartItem, 'quantity'> & { quantity?: number }) => dispatch(addCartItem(item)),
+      removeItem: (variantId: string) => dispatch(removeCartItem(variantId)),
+      updateQuantity: (variantId: string, quantity: number) => dispatch(updateQuantity({ variantId, quantity })),
+      clear: () => dispatch(clearCart()),
+    }),
+    [dispatch],
+  );
 }

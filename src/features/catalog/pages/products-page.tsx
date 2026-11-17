@@ -48,7 +48,6 @@ export async function loadCatalogFirstPage(
 }
 
 type SearchParamsRecord = Record<string, string | string[] | undefined>;
-import { FlashSaleSectionLazy } from '@/features/promotions';
 
 
 export async function ProductsPage({
@@ -80,6 +79,9 @@ export async function ProductsPage({
     : [{ label: 'Trang chủ', href: '/' }, { label: 'Tất cả sản phẩm' }];
 
   const pageTitle = initialCategoryName ? `${initialCategoryName} chính hãng` : 'Thiết bị & phụ kiện thể thao';
+  const pageDescription = initialCategoryName
+    ? `Khám phá các dòng sản phẩm ${initialCategoryName.toLowerCase()} chất lượng cao, bảo hành chính hãng, giao hàng & lắp đặt tận nơi toàn quốc.`
+    : 'Rèn luyện sức mạnh, cardio, bóng bàn, cầu lông, võ thuật và phụ kiện thể thao chính hãng uy tín toàn quốc.';
 
   return (
       <main className="bg-neutral-50/40 pb-20 pt-8">
@@ -89,16 +91,34 @@ export async function ProductsPage({
             items={breadcrumbItems}
           />
 
-          {/* Compact Catalog Hero Banner */}
-          <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-neutral-100 px-3 py-0.5 text-xs font-bold uppercase tracking-wider text-neutral-700 shadow-2xs">
-              Bảo An Sport — Thể thao chính hãng
+          {/* Catalog Hero Banner with Integrated Trust Badges */}
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between pb-6 border-b border-neutral-200/80">
+            <div className="max-w-2xl">
+              <div className="inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-neutral-100 px-3 py-0.5 text-xs font-bold uppercase tracking-wider text-neutral-700 shadow-2xs">
+                Bảo An Sport — Thể thao chính hãng
+              </div>
+              <h1 className="mt-2 text-2xl font-bold tracking-tight text-neutral-950 sm:text-3xl lg:text-4xl">
+                {pageTitle}
+              </h1>
+              <p className="mt-1.5 text-xs sm:text-sm text-neutral-600 font-medium leading-relaxed">
+                {pageDescription}
+              </p>
             </div>
-            <h1 className="mt-2.5 text-2xl font-bold tracking-tight text-neutral-950 sm:text-3xl lg:text-4xl">
-              {pageTitle}
-            </h1>
-          </div>
 
+            {/* Quick Trust Badges in Header */}
+            <div className="flex flex-wrap items-center gap-2 lg:justify-end">
+              {CATALOG_PROMISES.map(({ href, icon: Icon, label, iconClassName }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-neutral-200/90 bg-white px-3 py-1.5 text-xs font-bold text-neutral-700 shadow-2xs transition hover:border-neutral-300 hover:bg-neutral-50 hover:text-neutral-900 focus-ring"
+                >
+                  <Icon aria-hidden className={`size-3.5 shrink-0 ${iconClassName}`} />
+                  <span>{label}</span>
+                </Link>
+              ))}
+            </div>
+          </div>
 
           {/* Interactive Products Catalog View */}
           <div className="mt-6">
@@ -107,24 +127,6 @@ export async function ProductsPage({
                 sản phẩm) dù trên màn hình vẫn đúng thứ tự. */}
             <ProductsCatalogView initial={initial} initialCategoryName={initialCategoryName} />
           </div>
-
-          {/* Cam kết dịch vụ: đặt sau lưới để sản phẩm lên trước, khách xem xong mới đọc cam kết. */}
-          <ul className="mt-12 grid grid-cols-2 gap-2 rounded-2xl border border-neutral-200/90 bg-white p-1.5 shadow-2xs lg:grid-cols-4">
-            {CATALOG_PROMISES.map(({ href, icon: Icon, label, iconClassName }) => (
-              <li key={href}>
-                <Link
-                  href={href}
-                  className="flex h-full items-center justify-center gap-2 rounded-xl bg-neutral-50/80 px-3 py-2.5 text-xs font-semibold text-neutral-700 transition hover:bg-neutral-100 hover:text-neutral-900 focus-visible:outline-none focus-ring"
-                >
-                  <Icon aria-hidden className={`size-4 shrink-0 ${iconClassName}`} />
-                  <span>{label}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-
-          {/* Flash sale: dải trượt tự chạy, đặt thẳng trong lề trang (không khung lồng khung). */}
-          <FlashSaleSectionLazy layout="slider" embedded />
         </div>
       </main>
   );
