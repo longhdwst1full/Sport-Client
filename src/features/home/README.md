@@ -1,10 +1,10 @@
 # Storefront Home — maintenance note
 
-> **Document version:** 2.4.0
+> **Document version:** 2.5.0
 >
-> **Last updated:** 2026-10-20
+> **Last updated:** 2026-11-17
 >
-> **Change summary:** Island client nặng của `/` (flash sale, lưới sản phẩm, đánh giá, bài viết) tách chunk bằng bản `*Lazy`; First Load JS `/` 188 kB → 138 kB.
+> **Change summary (2.5.0):** Rà bố cục: `BenefitsStrip` lên ngay dưới hero (server component, không `Reveal`), bỏ cam kết giao hàng/đổi trả lặp ở `TrustSocialProof`, bỏ khối đánh giá một sản phẩm khỏi trang chủ, tiêu đề khối dùng `SectionHeading` (có `description`), giảm padding hộp mobile, bỏ số liệu cứng ở slide Home Gym. Bản 2.4.0: Island client nặng của `/` (flash sale, lưới sản phẩm, đánh giá, bài viết) tách chunk bằng bản `*Lazy`; First Load JS `/` 188 kB → 138 kB.
 
 ## Phạm vi
 
@@ -67,6 +67,7 @@ Hero không có bài viết lẫn flash sale thì hiển thị một slide thư�
 
 | Version | Date | Change summary |
 | --- | --- | --- |
+| 2.5.0 | 2026-11-17 | Rà bố cục trang chủ: dải cam kết lên dưới hero, bỏ cam kết lặp và khối đánh giá một sản phẩm, `SectionHeading` dùng chung, padding mobile gọn hơn, bỏ số liệu cứng ở slide Home Gym. | Rà soát UX 2026-11-17 |
 | 2.4.0 | 2026-10-20 | Tách chunk flash sale/lưới sản phẩm/đánh giá/bài viết bằng bản `*Lazy` (vẫn SSR); First Load JS `/` 188 kB → 138 kB. |
 | 2.3.0 | 2026-10-17 | `HomeTopSection` giữ hero dưới khối flash sale; thẻ bộ môn: ô icon đỏ, icon nền, "Xem ngay". |
 | 2.2.0 | 2026-10-17 | `HomeTopSection`: flash sale đang chạy thay hero ở đầu trang (server quyết định lần render đầu từ `getActiveFlashSales`, client theo query mới nhất); bỏ khối flash sale ở vị trí thứ 3. |

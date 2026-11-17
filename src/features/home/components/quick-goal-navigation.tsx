@@ -1,4 +1,5 @@
 import { Reveal } from '@/foundation/components/motion';
+import { SectionHeading } from '@/foundation/components/structure/section-heading';
 import Link from 'next/link';
 import { Building2, Dumbbell, Flame, Home, MoveUpRight } from 'lucide-react';
 
@@ -57,17 +58,13 @@ const GOALS: GoalItem[] = [
 export function QuickGoalNavigation() {
   return (
     <section className="page-section">
-      <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-6 sm:p-8 lg:p-10">
-        <Reveal rootMargin="-60px" className="mb-6 sm:mb-8">
-          <div>
-            <p className="eyebrow text-neutral-900">Định hướng tập luyện</p>
-            <h2 className="mt-2.5 text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-neutral-900">
-              Bạn Đang Tìm Thiết Bị Cho Mục Tiêu Nào?
-            </h2>
-            <p className="mt-1.5 text-xs sm:text-sm font-medium text-neutral-500 max-w-2xl">
-              Chọn nhanh giải pháp phù hợp với diện tích phòng và nhu cầu rèn luyện của bạn
-            </p>
-          </div>
+      <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-4 sm:p-8 lg:p-10">
+        <Reveal rootMargin="-60px">
+          <SectionHeading
+            eyebrow="Định hướng tập luyện"
+            title="Bạn Đang Tìm Thiết Bị Cho Mục Tiêu Nào?"
+            description="Chọn nhanh giải pháp phù hợp với diện tích phòng và nhu cầu rèn luyện của bạn"
+          />
         </Reveal>
 
         <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
@@ -79,7 +76,7 @@ export function QuickGoalNavigation() {
                 variant="zoom-in"
                 stagger
                 rootMargin="-60px"
-                className="transition-transform duration-300 ease-out hover:-translate-y-1.5 hover:scale-[1.02] motion-reduce:transition-none"
+                className="transition-transform duration-300 ease-out hover:-translate-y-1 motion-reduce:transition-none"
               >
                 <Link
                   href={goal.href}
@@ -100,7 +97,7 @@ export function QuickGoalNavigation() {
                     <h3 className="text-base sm:text-lg font-bold leading-snug text-neutral-900 transition-colors group-hover:text-neutral-950">
                       {goal.title}
                     </h3>
-                    <p className="mt-1.5 text-xs font-medium text-neutral-500 leading-relaxed max-sm:hidden">
+                    <p className="mt-1.5 text-xs font-medium text-neutral-600 leading-relaxed max-sm:hidden">
                       {goal.subtitle}
                     </p>
                   </div>

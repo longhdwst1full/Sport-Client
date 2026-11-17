@@ -15,7 +15,6 @@ import { CountUp, Reveal } from '@/foundation/components/motion';
 import {
   STORE_CONTACT,
   STORE_MARKETING_STATS,
-  STORE_POLICY_FACTS,
   STORE_SHOWROOMS,
 } from '@/shared/constants';
 
@@ -25,8 +24,6 @@ import {
  */
 const COMMITMENTS = [
   'Miễn phí tư vấn setup theo diện tích',
-  STORE_POLICY_FACTS.shippingSummary,
-  STORE_POLICY_FACTS.returnSummary,
   STORE_MARKETING_STATS.warrantyHighlight,
 ];
 
@@ -41,13 +38,13 @@ const STAT_ITEMS = [
   {
     icon: Award,
     iconColor: 'text-brand-400',
-    primary: '10+',
-    secondary: 'Năm',
+    primary: STORE_MARKETING_STATS.yearsLabel,
+    secondary: '',
     caption: 'Kinh nghiệm phân phối',
   },
   {
     icon: ShieldCheck,
-    iconColor: 'text-emerald-400',
+    iconColor: 'text-success-400',
     primary: '100%',
     secondary: '',
     caption: 'Hàng chính hãng',
@@ -65,7 +62,7 @@ export function TrustSocialProof() {
         durationMs={700}
         offsetY={12}
         rootMargin="-60px"
-        className="relative overflow-hidden rounded-3xl border border-neutral-800/80 bg-gradient-to-br from-neutral-950 via-[#111215] to-neutral-900 p-6 text-white shadow-2xl sm:p-10 lg:p-12"
+        className="relative overflow-hidden rounded-3xl border border-neutral-800/80 bg-gradient-to-br from-neutral-950 via-[#111215] to-neutral-900 p-5 text-white shadow-2xl sm:p-10 lg:p-12"
       >
         {/* Dynamic Athletic Ambient Glows */}
         <div

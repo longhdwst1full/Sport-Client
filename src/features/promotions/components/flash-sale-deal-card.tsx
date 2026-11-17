@@ -83,7 +83,7 @@ export function FlashSaleDealCard({
             label={formatVnd(deal.price)}
             className="text-lg font-bold text-brand-600 sm:text-xl"
             strikeLabel={deal.originalPrice !== null ? formatVnd(deal.originalPrice) : null}
-            strikeClassName="text-xs text-neutral-400 line-through"
+            strikeClassName="text-xs text-neutral-600 line-through"
           />
         </div>
 

@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { ChevronRight, Tag, Sparkles, ArrowRight } from 'lucide-react';
 import { priceRangeHref } from '@/features/catalog';
 import { Reveal } from '@/foundation/components/motion';
+import { SectionHeading } from '@/foundation/components/structure/section-heading';
 import { buttonVariants } from '@/foundation/components/buttons';
 
 interface BudgetTier {
@@ -61,24 +62,22 @@ export interface BudgetNavigationProps {
 export function BudgetNavigation({ quickLinks = [] }: BudgetNavigationProps) {
   return (
     <section className="page-section" aria-label="Tìm kiếm theo ngân sách">
-      <div className="relative rounded-2xl border border-neutral-200 bg-white p-5 sm:p-8 md:p-10">
+      <div className="relative rounded-2xl border border-neutral-200 bg-white p-4 sm:p-8 md:p-10">
 
         {/* Header */}
-        <Reveal rootMargin="-60px" className="relative z-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6 sm:mb-8">
-          <div>
-            <p className="eyebrow text-neutral-900">Theo ngân sách</p>
-            <h2 className="mt-2 text-2xl sm:text-3xl lg:text-4xl font-bold text-neutral-900 tracking-tight">
-              Tìm thiết bị theo mức ngân sách của bạn
-            </h2>
-            <p className="mt-1 text-xs sm:text-sm text-neutral-500 font-medium">
-              Dễ dàng lựa chọn giải pháp tập luyện phù hợp với khả năng chi trả và mục tiêu thể lực
-            </p>
-          </div>
-          {/* Lối "xem tất cả" của khối trang chủ: biến thể `link` (RULE-DS-01). */}
-          <Link href="/products" className={buttonVariants({ variant: 'link', className: 'group gap-1.5 self-start sm:self-auto' })}>
-            <span>Xem tất cả mức giá</span>
-            <ChevronRight className="size-4 transition-transform group-hover:translate-x-1" />
-          </Link>
+        <Reveal rootMargin="-60px" className="relative z-10">
+          <SectionHeading
+            eyebrow="Theo ngân sách"
+            title="Tìm thiết bị theo mức ngân sách của bạn"
+            description="Dễ dàng lựa chọn giải pháp tập luyện phù hợp với khả năng chi trả và mục tiêu thể lực"
+            action={
+              /* Lối "xem tất cả" của khối trang chủ: biến thể `link` (RULE-DS-01). */
+              <Link href="/products" className={buttonVariants({ variant: 'link', className: 'group shrink-0 gap-1.5' })}>
+                <span>Xem tất cả mức giá</span>
+                <ChevronRight className="size-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+              </Link>
+            }
+          />
         </Reveal>
 
         {/* 4 Budget Cards Grid */}

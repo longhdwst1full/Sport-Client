@@ -1,7 +1,9 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { Download, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { createBrowserStore } from '@/core/storage';
 import { Button } from '@/foundation/components/buttons';
@@ -73,19 +75,49 @@ export function PwaInstallPrompt() {
   };
 
   return (
-    <aside aria-label="Cài đặt ứng dụng Bảo An Sport" className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] left-3 right-20 z-40 rounded-2xl border border-neutral-200 bg-white p-4 text-sm text-ink shadow-card sm:left-5 sm:right-auto sm:max-w-sm">
-      <p className="font-bold">Thêm Bảo An Sport vào màn hình chính</p>
-      <p className="mt-2 text-neutral-600">
-        {failed ? 'Chưa mở được cửa sổ cài đặt. Bạn có thể cài từ menu trình duyệt.'
-          : mode === 'embedded' ? 'Hãy mở website bằng Safari hoặc Chrome bên ngoài app, sau đó thêm vào màn hình chính.'
-          : mode === 'ios' ? 'Trên iPhone/iPad: mở bằng Safari, chọn Chia sẻ → Thêm vào Màn hình chính → Thêm.'
-          : prompt ? 'Cài ứng dụng web để mở cửa hàng nhanh từ màn hình chính.'
-          : 'Trong Chrome, mở menu ⋮ → Thêm vào màn hình chính hoặc Cài đặt ứng dụng (nếu có).'}
-      </p>
-      <div className="mt-3 flex flex-wrap items-center gap-2">
-        {prompt && mode !== 'embedded' && <Button variant="primary" size="md" loading={installing} onClick={() => void install()}>Cài ứng dụng</Button>}
-        <Link className="text-link inline-flex min-h-11 items-center" href="/pwa">Hướng dẫn cài đặt</Link>
-        <Button variant="ghost" size="md" onClick={dismiss}>Để sau</Button>
+    <aside
+      aria-label="Cài đặt ứng dụng Bảo An Sport"
+      className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] left-3 right-20 z-40 rounded-2xl border border-neutral-200 bg-white p-4 text-sm text-ink shadow-xl shadow-neutral-900/10 sm:left-5 sm:right-auto sm:max-w-sm"
+    >
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={dismiss}
+        aria-label="Để sau"
+        title="Để sau"
+        className="absolute right-1.5 top-1.5 size-9 text-neutral-500 hover:text-neutral-900"
+      >
+        <X aria-hidden className="size-4" />
+      </Button>
+
+      <div className="flex items-start gap-3 pr-8">
+        <Image
+          src="/images/favicon.png"
+          alt=""
+          width={48}
+          height={48}
+          className="size-12 shrink-0 rounded-xl border border-neutral-200 bg-white object-contain p-1"
+        />
+        <div className="min-w-0">
+          <p className="text-base font-bold leading-snug text-neutral-950">Thêm Bảo An Sport vào màn hình chính</p>
+          <p className="mt-1 leading-relaxed text-neutral-600">
+            {failed ? 'Chưa mở được cửa sổ cài đặt. Bạn có thể cài từ menu trình duyệt.'
+              : mode === 'embedded' ? 'Hãy mở website bằng Safari hoặc Chrome bên ngoài app, sau đó thêm vào màn hình chính.'
+              : mode === 'ios' ? 'Trên iPhone/iPad: mở bằng Safari, chọn Chia sẻ → Thêm vào Màn hình chính → Thêm.'
+              : prompt ? 'Cài ứng dụng web để mở cửa hàng nhanh từ màn hình chính.'
+              : 'Trong Chrome, mở menu ⋮ → Thêm vào màn hình chính hoặc Cài đặt ứng dụng (nếu có).'}
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-3.5 flex flex-wrap items-center gap-x-4 gap-y-1">
+        {prompt && mode !== 'embedded' && (
+          <Button variant="primary" size="md" loading={installing} onClick={() => void install()} className="flex-1 sm:flex-none">
+            <Download aria-hidden />
+            Cài ứng dụng
+          </Button>
+        )}
+        <Link className="text-link inline-flex min-h-11 items-center text-xs font-semibold" href="/pwa">Hướng dẫn cài đặt</Link>
       </div>
     </aside>
   );

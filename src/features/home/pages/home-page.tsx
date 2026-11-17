@@ -9,7 +9,6 @@ import type { CatalogCategoryDto } from '@/generated/api/catalog/catalog.schemas
 import { listPublishedPosts } from '@/generated/api/content/content';
 import { ContentStoriesLazy } from '@/features/content';
 import { POLICY_POST_TYPE, toContentPostView, type BannerView } from '@/features/content';
-import { ProductReviewsLazy } from '@/features/reviews';
 import { HeroBannerSlider } from '../components/hero-banner-slider';
 import { QuickGoalNavigation } from '../components/quick-goal-navigation';
 import { BudgetNavigation } from '../components/budget-navigation';
@@ -26,9 +25,6 @@ const SPORT_CARD_COUNT = 4;
 /** Số danh mục lớn trên rail trang chủ. */
 const CATEGORY_RAIL_COUNT = 8;
 const QUICK_LINK_COUNT = 8;
-
-/** Nhãn nhỏ trên tiêu đề khối, cùng kiểu `SectionHeading`. */
-const EYEBROW_CLASS = 'eyebrow text-neutral-900';
 
 /** Hiện dần khối dưới màn hình đầu khi cuộn tới (một lần); hero không reveal để giữ LCP. */
 const SECTION_REVEAL = { durationMs: 650, rootMargin: '-60px' } as const;
@@ -47,9 +43,8 @@ async function loadHeroPosts() {
 
 /**
  * Trang 1 của lưới "Tất cả" lấy ở server để HTML SSR có sản phẩm thay vì chỉ có skeleton;
- * cùng `limit` với hook client nên client dùng lại làm `initialData`. Khối đánh giá trang chủ
- * cũng lấy slug sản phẩm thật từ đây (API chưa có endpoint tổng hợp đánh giá).
- * API lỗi thì trả undefined: lưới tự tải lại ở client, khối đánh giá ẩn.
+ * cùng `limit` với hook client nên client dùng lại làm `initialData`.
+ * API lỗi thì trả undefined: lưới tự tải lại ở client.
  */
 async function loadShowcaseFirstPage() {
   try {
@@ -83,7 +78,6 @@ export async function HomePage({
     .sort((left, right) => right.productCount - left.productCount)
     .slice(0, CATEGORY_RAIL_COUNT)
     .map(toCategoryRailView);
-  const featuredProductSlug = showcase?.page.items[0]?.slug;
   const byProductCount = (left: CatalogCategoryDto, right: CatalogCategoryDto) =>
     right.productCount - left.productCount;
   // Thẻ "theo bộ môn": danh mục gốc có sản phẩm, nhiều sản phẩm nhất. Chưa có ảnh danh mục trong
@@ -109,12 +103,15 @@ export async function HomePage({
         </h1>
 
         {/* Thứ tự: flash sale (nếu đang chạy) hoặc hero → rail danh mục → bán chạy → khối danh mục
-            → tin cậy/showroom → tin tức. */}
+            → tin cậy/showroom → tin tức. (Không có khối đánh giá: API chưa có tổng hợp đánh giá toàn shop, đặt đánh giá của một sản phẩm ở trang chủ dễ gây hiểu nhầm.) */}
         {/* 1. Có flash sale đang chạy thì khối flash sale đứng đầu, hero (banner CMS + bài viết) ngay dưới; không thì chỉ hero. */}
         <HomeTopSection
           initialFlashSales={flashSales}
           banner={<HeroBannerSlider posts={heroPosts} heroBanners={heroBanners} promoBanners={promoBanners} />}
         />
+
+        {/* Dải cam kết dịch vụ ngay dưới hero (vị trí quen thuộc; không lặp lại ở khối tin cậy phía dưới). */}
+        <BenefitsStrip />
 
         {/* 2. Rail icon danh mục (dữ liệu thật từ API). */}
         {categoryRail.length > 0 ? <CategoryVisualShowcase items={categoryRail} /> : null}
@@ -123,14 +120,12 @@ export async function HomePage({
         {/* Một lối "xem tất cả" cho khối này: banner cuối lưới (sang /products); bỏ link danh mục ở đầu khối
             vì rail danh mục ngay phía trên đã có. */}
         <section id="products" className="page-section">
-          <Reveal {...HEADING_REVEAL} className="mb-6">
-            <p className={EYEBROW_CLASS}>Thiết bị bán chạy</p>
-            <h2 className="mt-2 text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-neutral-900">
-              Sản Phẩm Nổi Bật & Bán Chạy
-            </h2>
-            <p className="mt-1 text-xs sm:text-sm text-neutral-500 max-w-2xl">
-              Khám phá trang thiết bị thể lực, cardio, bóng bàn, bóng rổ và võ thuật chính hãng được đông đảo khách hàng và huấn luyện viên tin chọn
-            </p>
+          <Reveal {...HEADING_REVEAL}>
+            <SectionHeading
+              eyebrow="Thiết bị bán chạy"
+              title="Sản Phẩm Nổi Bật & Bán Chạy"
+              description="Khám phá trang thiết bị thể lực, cardio, bóng bàn, bóng rổ và võ thuật chính hãng được đông đảo khách hàng và huấn luyện viên tin chọn"
+            />
           </Reveal>
 
           <ProductShowcaseLazy
@@ -251,16 +246,8 @@ export async function HomePage({
 
         <BudgetNavigation quickLinks={quickLinks} />
 
-        {/* 5. Cam kết dịch vụ + bằng chứng tin cậy & hệ thống showroom. */}
-        <BenefitsStrip />
-
+        {/* 5. Bằng chứng tin cậy & hệ thống showroom (dải cam kết đã đặt ngay dưới hero). */}
         <TrustSocialProof />
-
-        {/* Đánh giá sản phẩm — `ProductReviews` trả null khi chưa có đánh giá; `empty:hidden` để
-            section rỗng không còn chiếm 128–160px padding trước footer. */}
-        <section className="page-section empty:hidden">
-          {featuredProductSlug ? <ProductReviewsLazy productSlug={featuredProductSlug} /> : null}
-        </section>
 
         {/* Đã gỡ dải "thương hiệu đồng hành" và bộ đếm số liệu (showroom, khách hàng, sản phẩm):
             cả hai là số liệu/đối tác viết cứng, không có nguồn dữ liệu nào xác nhận. */}
