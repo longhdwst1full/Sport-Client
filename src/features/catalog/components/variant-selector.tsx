@@ -50,7 +50,7 @@ export function VariantSelector({ variants, selectedVariantId, onSelectVariant, 
                 </div>
                 <div className="min-w-0">
                   <span className="block break-words font-bold text-ink">{variant.name}</span>
-                  <span className="break-all text-xs text-neutral-500">Mã SKU: {variant.sku}</span>
+                  <span className="break-all text-xs text-neutral-600">Mã SKU: {variant.sku}</span>
                 </div>
               </div>
               <div className="shrink-0 text-right">

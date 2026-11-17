@@ -102,8 +102,8 @@ export function ContentStories({ initialPosts = [] }: { initialPosts?: ContentPo
             <div className="flex flex-col justify-between p-5 sm:p-6">
               <div>
                 {/* Meta info: date */}
-                <div className="flex items-center gap-1.5 text-xs text-neutral-400">
-                  <Calendar className="size-3.5 text-neutral-400" aria-hidden="true" />
+                <div className="flex items-center gap-1.5 text-xs text-neutral-600">
+                  <Calendar className="size-3.5 text-neutral-500" aria-hidden="true" />
                   <span>{post.publishedLabel}</span>
                 </div>
 
