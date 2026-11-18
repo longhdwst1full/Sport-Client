@@ -1,13 +1,13 @@
-import { cache } from 'react';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { ProductDetailPage } from '@/features/catalog/pages/product-detail-page';
 import { toProductSeoDescription } from '@/features/catalog';
 import { toVariantFlashPrices } from '@/features/promotions';
-import { getCatalogProduct } from '@/generated/api/catalog/catalog';
+import type { getCatalogProduct } from '@/generated/api/catalog/catalog';
 import { ApiError } from '@/lib/api/fetcher';
 import { buildPageMetadata } from '@/lib/seo/page-metadata';
 import { toOgImageUrl } from '@/lib/seo/og-image';
+import { loadCatalogProduct } from '../../_data/catalog-product';
 import { getActiveFlashSales, getPublicCategories } from '../../_data/public-data';
 
 // ISR 5 phút (= layout storefront và cache dữ liệu công khai; Next lấy giá trị nhỏ nhất): trang public
@@ -21,8 +21,8 @@ export function generateStaticParams() {
   return [];
 }
 
-// `generateMetadata` và page chạy trong cùng một request; `cache` gộp hai lượt gọi làm một.
-const loadProduct = cache((slug: string) => getCatalogProduct(slug));
+// Layout, `generateMetadata` và page chạy trong cùng một request; `cache` (trong `_data/catalog-product`) gộp làm một.
+const loadProduct = loadCatalogProduct;
 
 /**
  * `ProductDetailDto` chỉ có tên danh mục chính, trong khi lọc sản phẩm liên quan cần slug.

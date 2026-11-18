@@ -1,7 +1,7 @@
 import { ProductsPage } from '@/features/catalog';
 import { buildPageMetadata } from '@/lib/seo/page-metadata';
 import { storefrontClientIpHeaders } from '@/lib/api/server/proxy-to-backend';
-import { getPublicCategories } from '../_data/public-data';
+import { getPublicCategories } from '../../_data/public-data';
 
 // `/catalog` re-export metadata này nên canonical của nó cũng trỏ về `/products`.
 export const metadata = buildPageMetadata({
