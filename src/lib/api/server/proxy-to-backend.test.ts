@@ -81,7 +81,7 @@ describe('proxyToBackend', () => {
         }),
       ),
     );
-    const res = await proxyToBackend(new Request('https://shop.test/api/v1/x', { method: 'POST', body: '{}' }), '/api/v1/x');
+    const res = await proxyToBackend(new Request('https://shop.test/api/v1/x', { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{}' }), '/api/v1/x');
     expect(res.status).toBe(429);
     expect(res.headers.get('retry-after')).toBe('30');
     expect(res.headers.getSetCookie()).toEqual(['a=1; Path=/; HttpOnly', 'b=2; Path=/; HttpOnly']);
@@ -140,7 +140,7 @@ describe('proxyToBackend', () => {
     const timeoutSpy = vi.spyOn(AbortSignal, 'timeout');
     const fetchMock = vi.fn().mockImplementation(async () => upstream());
     vi.stubGlobal('fetch', fetchMock);
-    await proxyToBackend(new Request('https://shop.test/api/v1/assistant/conversations/1/messages', { method: 'POST', body: '{}' }), '/api/v1/assistant/conversations/1/messages');
+    await proxyToBackend(new Request('https://shop.test/api/v1/assistant/conversations/1/messages', { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{}' }), '/api/v1/assistant/conversations/1/messages');
     await proxyToBackend(new Request('https://shop.test/api/v1/catalog/products'), '/api/v1/catalog/products');
     expect(timeoutSpy.mock.calls.map((c) => c[0])).toEqual([85_000, 30_000]);
     timeoutSpy.mockRestore();
@@ -151,5 +151,80 @@ describe('proxyToBackend', () => {
     const res = await proxyToBackend(new Request('https://shop.test/api/v1/shipping/quote'), '/api/v1/shipping/quote');
     expect(res.status).toBe(504);
     expect((await res.json()).code).toBe('UPSTREAM_TIMEOUT');
+  });
+
+  describe('kiểm tra đầu vào tại proxy', () => {
+    const setup = () => {
+      vi.stubEnv('API_URL', 'https://be.internal');
+      const fetchMock = vi.fn().mockResolvedValue(upstream());
+      vi.stubGlobal('fetch', fetchMock);
+      return fetchMock;
+    };
+
+    it('URL quá 4 KB → 414, không gọi backend', async () => {
+      const fetchMock = setup();
+      const res = await proxyToBackend(new Request(`https://shop.test/api/v1/catalog/products?q=${'a'.repeat(5000)}`), '/api/v1/catalog/products');
+      expect(res.status).toBe(414);
+      expect(fetchMock).not.toHaveBeenCalled();
+    });
+
+    it('content-type không phải JSON → 415', async () => {
+      const fetchMock = setup();
+      const res = await proxyToBackend(
+        new Request('https://shop.test/api/v1/carts', { method: 'POST', headers: { 'content-type': 'multipart/form-data; boundary=x' }, body: 'x' }),
+        '/api/v1/carts',
+      );
+      expect(res.status).toBe(415);
+      expect(fetchMock).not.toHaveBeenCalled();
+    });
+
+    it('content-length khai quá trần → 413', async () => {
+      const fetchMock = setup();
+      const res = await proxyToBackend(
+        new Request('https://shop.test/api/v1/carts', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json', 'content-length': String(10 * 1024 * 1024) },
+          body: '{}',
+        }),
+        '/api/v1/carts',
+      );
+      expect(res.status).toBe(413);
+      expect(fetchMock).not.toHaveBeenCalled();
+    });
+
+    it('body thật vượt trần dù không khai content-length (stream) → 413', async () => {
+      const fetchMock = setup();
+      const big = new ReadableStream<Uint8Array>({
+        start(controller) {
+          for (let i = 0; i < 40; i += 1) controller.enqueue(new Uint8Array(10 * 1024));
+          controller.close();
+        },
+      });
+      const res = await proxyToBackend(
+        new Request('https://shop.test/api/v1/carts', { method: 'POST', headers: { 'content-type': 'application/json' }, body: big, duplex: 'half' } as RequestInit),
+        '/api/v1/carts',
+      );
+      expect(res.status).toBe(413);
+      expect(fetchMock).not.toHaveBeenCalled();
+    });
+
+    it('text/plain (kiểu request "đơn giản" dùng cho CSRF qua form) → 415', async () => {
+      const fetchMock = setup();
+      const res = await proxyToBackend(new Request('https://shop.test/api/v1/carts', { method: 'POST', body: '{}' }), '/api/v1/carts');
+      expect(res.status).toBe(415);
+      expect(fetchMock).not.toHaveBeenCalled();
+    });
+
+    it('JSON hợp lệ vẫn được chuyển nguyên byte', async () => {
+      const fetchMock = setup();
+      const payload = JSON.stringify({ name: 'Nguyễn Văn A', quantity: 2 });
+      const res = await proxyToBackend(
+        new Request('https://shop.test/api/v1/carts', { method: 'POST', headers: { 'content-type': 'application/json; charset=utf-8' }, body: payload }),
+        '/api/v1/carts',
+      );
+      expect(res.status).toBe(200);
+      const [, init] = fetchMock.mock.calls[0];
+      expect(new TextDecoder().decode(init.body as ArrayBuffer)).toBe(payload);
+    });
   });
 });

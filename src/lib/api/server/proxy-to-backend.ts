@@ -81,6 +81,63 @@ function isAllowedTarget(path: string, target: URL, origin: string): boolean {
   return !hasDotSegment && !nonStorefront && target.origin === new URL(origin).origin && pathname.startsWith('/api/v1/');
 }
 
+/**
+ * SECURITY: kiểm tra đầu vào ngay tại proxy, trước khi tốn một lượt gọi backend (và thời gian chạy hàm).
+ * - URL (path + query) tối đa 4 KB: chặn query khổng lồ làm phình log/cache-busting.
+ * - Thân request chỉ nhận JSON: ảnh/video upload thẳng lên Cloudinary bằng chữ ký
+ *   (`lib/api/signed-media-upload.ts`), không đi qua proxy.
+ * - Thân tối đa 256 KB, đếm theo byte thật khi đọc stream (không tin `content-length` — chunked không có).
+ *   Backend mặc định nhận 100 KB JSON; trần ở đây chỉ để cắt sớm request bất thường.
+ */
+export const PROXY_MAX_URL_LENGTH = 4096;
+export const PROXY_MAX_BODY_BYTES = 256 * 1024;
+
+function proxyError(status: number, code: string, message: string): Response {
+  return NextResponse.json({ statusCode: status, code, message }, { status });
+}
+
+export function validateProxyRequest(request: Request): Response | null {
+  const url = new URL(request.url);
+  if (url.pathname.length + url.search.length > PROXY_MAX_URL_LENGTH) {
+    return proxyError(414, 'URI_TOO_LONG', 'Yêu cầu quá dài.');
+  }
+  if (request.method === 'GET' || request.method === 'HEAD' || request.method === 'DELETE') return null;
+  const declaredLength = Number(request.headers.get('content-length') ?? '0');
+  if (Number.isFinite(declaredLength) && declaredLength > PROXY_MAX_BODY_BYTES) {
+    return proxyError(413, 'PAYLOAD_TOO_LARGE', 'Dữ liệu gửi lên quá lớn.');
+  }
+  const contentType = request.headers.get('content-type')?.split(';')[0].trim().toLowerCase();
+  if (contentType && contentType !== 'application/json') {
+    return proxyError(415, 'UNSUPPORTED_MEDIA_TYPE', 'Định dạng dữ liệu không được hỗ trợ.');
+  }
+  return null;
+}
+
+/** Đọc thân request, dừng ngay khi vượt `limit` byte (kể cả khi không có `content-length`). */
+export async function readBodyWithLimit(request: Request, limit = PROXY_MAX_BODY_BYTES): Promise<ArrayBuffer | null> {
+  if (!request.body) return new ArrayBuffer(0);
+  const reader = request.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let total = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    total += value.byteLength;
+    if (total > limit) {
+      await reader.cancel();
+      return null;
+    }
+    chunks.push(value);
+  }
+  const body = new Uint8Array(total);
+  let offset = 0;
+  for (const chunk of chunks) {
+    body.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  return body.buffer;
+}
+
 /** Header backend → trình duyệt (`set-cookie` xử lý riêng vì có thể nhiều dòng). */
 const FORWARDED_RESPONSE_HEADERS = [
   'content-type',
@@ -128,6 +185,9 @@ export async function proxyToBackend(request: Request, path: string): Promise<Re
     return NextResponse.json({ statusCode: 404, code: 'NOT_FOUND', message: 'Không tìm thấy.' }, { status: 404 });
   }
 
+  const rejected = validateProxyRequest(request);
+  if (rejected) return rejected;
+
   const headers = new Headers();
   for (const name of FORWARDED_REQUEST_HEADERS) {
     const value = request.headers.get(name);
@@ -150,13 +210,15 @@ export async function proxyToBackend(request: Request, path: string): Promise<Re
   }
 
   const hasBody = request.method !== 'GET' && request.method !== 'HEAD';
+  // Giữ nguyên byte JSON thay vì ép qua chuỗi; cắt ngay khi vượt trần.
+  const body = hasBody ? await readBodyWithLimit(request) : undefined;
+  if (body === null) return proxyError(413, 'PAYLOAD_TOO_LARGE', 'Dữ liệu gửi lên quá lớn.');
 
   try {
     const response = await fetch(target, {
       method: request.method,
       headers,
-      // arrayBuffer: giữ nguyên byte (JSON, multipart) thay vì ép qua chuỗi.
-      body: hasBody ? await request.arrayBuffer() : undefined,
+      body,
       // Proxy tự quản lý phiên qua header; không để fetch tự đính cookie của server.
       credentials: 'omit',
       cache: 'no-store',
