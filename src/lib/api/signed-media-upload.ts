@@ -1,3 +1,5 @@
+import { imageUploadQueue } from '../media/concurrency';
+import { optimizeImageForUpload, PRODUCT_IMAGE_MAX_EDGE } from '../media/image-optimize';
 import { ApiError } from './fetcher';
 
 /**
@@ -77,6 +79,30 @@ export function buildSignedUploadForm(file: File, ticket: SignedMediaUploadTicke
   return form;
 }
 
+const FORMATS_BY_IMAGE_TYPE: Record<SignedImageMimeType, readonly string[]> = {
+  'image/jpeg': ['jpg', 'jpeg'],
+  'image/png': ['png'],
+  'image/webp': ['webp'],
+  'image/avif': ['avif'],
+};
+
+/**
+ * Sau khi có chữ ký: giữ bản đã nén nếu định dạng của nó nằm trong `allowedFormats` đã ký, ngược lại
+ * quay về bản gốc (API xác minh định dạng thật của tài nguyên trên Cloudinary, không tin `contentType`).
+ */
+export function chooseSignedUploadFile(original: File, prepared: File, allowedFormats: readonly string[]): File {
+  if (prepared === original || !isSignedImageMimeType(prepared.type)) return original;
+  const allowed = allowedFormats.map((format) => format.toLowerCase());
+  return FORMATS_BY_IMAGE_TYPE[prepared.type].some((format) => allowed.includes(format)) ? prepared : original;
+}
+
+export interface SignedMediaUploadOptions {
+  /** Cạnh dài tối đa khi thu nhỏ trên trình duyệt (mặc định 2048 px). */
+  maxEdge?: number;
+  /** Bước thu nhỏ/nén; tiêm được trong test. Mặc định `optimizeImageForUpload` (lỗi thì trả bản gốc). */
+  optimize?: (file: File, maxEdge: number) => Promise<File>;
+}
+
 async function readJson(response: Response): Promise<unknown> {
   try {
     return await response.json();
@@ -90,7 +116,9 @@ function isAbort(error: unknown, signal: AbortSignal | undefined): boolean {
 }
 
 /**
- * Kiểm định dạng → xin chữ ký → kiểm dung lượng theo `maxBytes` của chữ ký → POST multipart.
+ * Kiểm định dạng → thu nhỏ/nén trên trình duyệt (cạnh dài 2048 px, JPEG/WebP q≈0.82; ảnh nhỏ, ảnh động
+ * hoặc lỗi canvas thì giữ bản gốc) → xin chữ ký với tệp sẽ gửi → kiểm dung lượng theo `maxBytes` → POST.
+ * Tối đa 3 lượt chạy cùng lúc trên toàn trang (`imageUploadQueue`); lượt dư xếp hàng và huỷ được qua `signal`.
  *
  * Lỗi: định dạng/dung lượng ném `Error` (thông báo hiển thị được); lỗi xin chữ ký giữ nguyên lỗi của
  * SDK (`ApiError`); lỗi HTTP/mạng khi upload chuẩn hoá thành `ApiError(status, { message, provider })`
@@ -101,9 +129,28 @@ export async function uploadSignedMedia(
   file: File,
   requestTicket: (request: SignedMediaUploadRequest) => Promise<SignedMediaUploadTicket>,
   signal?: AbortSignal,
+  options: SignedMediaUploadOptions = {},
 ): Promise<SignedMediaUploadResult> {
-  const contentType = signedImageContentType(file);
-  const ticket = await requestTicket({ fileName: file.name, contentType, sizeBytes: file.size });
+  signedImageContentType(file);
+  return imageUploadQueue.run(() => uploadPrepared(file, requestTicket, signal, options), signal);
+}
+
+async function uploadPrepared(
+  original: File,
+  requestTicket: (request: SignedMediaUploadRequest) => Promise<SignedMediaUploadTicket>,
+  signal: AbortSignal | undefined,
+  { maxEdge = PRODUCT_IMAGE_MAX_EDGE, optimize = (file, edge) => optimizeImageForUpload(file, { maxEdge: edge }) }: SignedMediaUploadOptions,
+): Promise<SignedMediaUploadResult> {
+  let prepared = original;
+  try {
+    prepared = await optimize(original, maxEdge);
+  } catch {
+    prepared = original;
+  }
+  if (!isSignedImageMimeType(prepared.type)) prepared = original;
+  const contentType = signedImageContentType(prepared);
+  const ticket = await requestTicket({ fileName: prepared.name, contentType, sizeBytes: prepared.size });
+  const file = chooseSignedUploadFile(original, prepared, ticket.allowedFormats);
   if (file.size > ticket.maxBytes) throw new Error(SIGNED_UPLOAD_MESSAGES.tooLarge(ticket.maxBytes));
 
   let response: Response;

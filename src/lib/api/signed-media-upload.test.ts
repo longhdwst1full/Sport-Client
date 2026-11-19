@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ApiError } from './fetcher';
 import {
   buildSignedUploadForm,
+  chooseSignedUploadFile,
   SIGNED_UPLOAD_MESSAGES,
   uploadSignedMedia,
   type SignedMediaUploadTicket,
@@ -115,5 +116,57 @@ describe('uploadSignedMedia', () => {
     }));
 
     await expect(uploadSignedMedia(image(), async () => ticket, controller.signal)).rejects.toBe(abortError);
+  });
+});
+
+describe('uploadSignedMedia with client-side optimization', () => {
+  const optimized = new File([new Uint8Array(4)], 'proof.webp', { type: 'image/webp' });
+
+  it('requests the signature for and uploads the optimized file', async () => {
+    const fetchMock = vi.fn(async (_url: string, _init: RequestInit) => okResponse());
+    vi.stubGlobal('fetch', fetchMock);
+    const requestTicket = vi.fn(async () => ticket);
+    const optimize = vi.fn(async () => optimized);
+
+    await uploadSignedMedia(image(2048), requestTicket, undefined, { optimize, maxEdge: 512 });
+
+    expect(optimize).toHaveBeenCalledWith(expect.any(File), 512);
+    expect(requestTicket).toHaveBeenCalledWith({ fileName: 'proof.webp', contentType: 'image/webp', sizeBytes: 4 });
+    const form = fetchMock.mock.calls[0][1].body as FormData;
+    expect((form.get('file') as File).name).toBe('proof.webp');
+  });
+
+  it('falls back to the original when optimization throws or yields a type outside the allowlist', async () => {
+    for (const optimize of [
+      async () => Promise.reject(new Error('canvas')),
+      async () => new File([new Uint8Array(1)], 'x.bmp', { type: 'image/bmp' }),
+    ]) {
+      const fetchMock = vi.fn(async (_url: string, _init: RequestInit) => okResponse());
+      vi.stubGlobal('fetch', fetchMock);
+      const requestTicket = vi.fn(async () => ticket);
+      await uploadSignedMedia(image(10), requestTicket, undefined, { optimize });
+      expect(requestTicket).toHaveBeenCalledWith({ fileName: 'proof.png', contentType: 'image/png', sizeBytes: 10 });
+    }
+  });
+
+  it('sends the original when the signed allowlist excludes the optimized format', async () => {
+    const fetchMock = vi.fn(async (_url: string, _init: RequestInit) => okResponse());
+    vi.stubGlobal('fetch', fetchMock);
+    await uploadSignedMedia(image(10), async () => ({ ...ticket, allowedFormats: ['png'] }), undefined, {
+      optimize: async () => optimized,
+    });
+    const form = fetchMock.mock.calls[0][1].body as FormData;
+    expect((form.get('file') as File).name).toBe('proof.png');
+  });
+});
+
+describe('chooseSignedUploadFile', () => {
+  const original = new File([new Uint8Array(10)], 'a.png', { type: 'image/png' });
+  const jpeg = new File([new Uint8Array(5)], 'a.jpg', { type: 'image/jpeg' });
+
+  it('accepts jpg/jpeg aliases case-insensitively and keeps the original otherwise', () => {
+    expect(chooseSignedUploadFile(original, jpeg, ['JPG'])).toBe(jpeg);
+    expect(chooseSignedUploadFile(original, jpeg, ['png'])).toBe(original);
+    expect(chooseSignedUploadFile(original, original, [])).toBe(original);
   });
 });
