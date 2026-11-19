@@ -1,3 +1,4 @@
+import { sanitizeRichText } from '@/lib/security/sanitize-rich-text';
 import {
   ProductImageGallery,
   ProductPurchasePanel,
@@ -49,10 +50,11 @@ export function ProductDetailPage({ product, slug, relatedCategorySlug, flashPri
   const purchaseView = toProductPurchaseView(product);
   const gallery = toProductGalleryView(product);
   // SECURITY/CONTRACT: `description` là HTML đã được API làm sạch theo allowlist (CKEditor ở Admin
-  // lưu HTML tuỳ ý) — chỉ render HTML từ trường này, không từ trường văn bản thuần nào khác.
+  // lưu HTML tuỳ ý) — chỉ render HTML từ trường này, không từ trường văn bản thuần nào khác. Chạy lại
+  // allowlist ở server (`sanitizeRichText`) làm lớp thứ hai vì CSP còn `unsafe-inline`; không tốn JS client.
   // Bỏ phần mô tả dài nếu nội dung chữ trùng nguyên văn mô tả ngắn.
   const shortDescription = product.shortDescription?.trim();
-  const longDescriptionHtml = product.description?.trim();
+  const longDescriptionHtml = sanitizeRichText(product.description) || undefined;
   const longDescriptionText = longDescriptionHtml?.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
   const showLongDescription = Boolean(
     longDescriptionHtml && longDescriptionText !== shortDescription?.replace(/\s+/g, ' '),

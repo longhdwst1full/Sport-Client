@@ -57,7 +57,27 @@ export const apiClient = axios.create({
   paramsSerializer: { indexes: null },
 });
 
+/**
+ * SECURITY: Orval ghép tham số đường dẫn không mã hoá (`/catalog/products/${slug}`) và Next đã giải mã
+ * `[slug]`, nên `/products/..%2F..%2Fhealth` thành slug `../../health`; `new URL` của Axios chuẩn hoá dấu
+ * chấm và lời gọi SSR (có secret proxy) sẽ tới endpoint khác — vòng qua bộ lọc của proxy. Chặn mọi
+ * segment `.`/`..` (kể cả `%2e`) ở một điểm duy nhất: coi như không tìm thấy.
+ */
+export function hasDotSegment(url: string | undefined): boolean {
+  if (!url) return false;
+  return url
+    .split(/[?#]/)[0]
+    .split(/[/\\]/)
+    .some((segment) => {
+      const decoded = segment.replace(/%2e/gi, '.');
+      return decoded === '.' || decoded === '..';
+    });
+}
+
 apiClient.interceptors.request.use((config) => {
+  if (hasDotSegment(config.url)) {
+    return Promise.reject(new ApiError(404, { statusCode: 404, code: 'NOT_FOUND', message: 'Không tìm thấy.' }));
+  }
   config.baseURL = resolveApiBaseURL();
   // Server component gọi thẳng backend: kèm secret để backend nhận ra storefront (không có ở trình duyệt).
   const proxySecret = typeof window === 'undefined' ? process.env.STOREFRONT_PROXY_SECRET : undefined;

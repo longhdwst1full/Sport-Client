@@ -45,6 +45,7 @@
     "react-hook-form": "7.86.0",
     "react-redux": "9.3.0",
     "redux-saga": "1.5.1",
+    "sanitize-html": "2.18.2",
     "tailwind-merge": "3.3.1"
   },
   "devDependencies": {
@@ -57,6 +58,7 @@
     "@types/node": "22.18.0",
     "@types/react": "19.1.12",
     "@types/react-dom": "19.1.9",
+    "@types/sanitize-html": "2.16.2",
     "autoprefixer": "10.4.21",
     "eslint": "9.39.5",
     "eslint-import-resolver-typescript": "4.4.5",
