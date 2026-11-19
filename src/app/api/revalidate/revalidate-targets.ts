@@ -7,7 +7,7 @@
  * mới cả tag — chỉ `revalidatePath` thì trang dựng lại vẫn đọc cây danh mục cũ trong cache.
  */
 import { PUBLIC_DATA_TAGS } from '../../(storefront)/_data/public-data-tags';
-export const REVALIDATE_RESOURCES = ['post', 'product', 'category', 'all'] as const;
+export const REVALIDATE_RESOURCES = ['post', 'product', 'category', 'banner', 'flash-sale', 'system-parameter', 'all'] as const;
 export type RevalidateResource = (typeof REVALIDATE_RESOURCES)[number];
 
 export interface RevalidateTarget {
@@ -68,7 +68,15 @@ export function revalidateTargets({ resource, slug }: RevalidateRequest): Revali
         { path: '/products/[slug]', type: 'page' },
         { path: '/sitemap.xml' },
       ];
+    case 'banner':
+      // Banner chỉ hiện ở trang chủ (slider + thẻ khuyến mãi); dữ liệu đi qua tag `banners`.
+      return [{ path: '/' }];
+    case 'flash-sale':
+      // Giá flash hiện ở trang chủ, trang flash sale và trang chi tiết; suất/giá cuối vẫn do checkout chốt.
+      return [{ path: '/' }, { path: '/flash-sale' }, { path: '/products/[slug]', type: 'page' }];
+    case 'system-parameter':
     case 'all':
+      // Tham số công khai (hotline, phí giao…) dùng ở layout nên làm mới cả cây.
       return [{ path: '/', type: 'layout' }];
   }
 }
@@ -82,7 +90,13 @@ export function revalidateTags({ resource }: RevalidateRequest): string[] {
     case 'category':
       // Số sản phẩm của danh mục (`productCount`) đổi theo sản phẩm.
       return [PUBLIC_DATA_TAGS.categories];
+    case 'banner':
+      return [PUBLIC_DATA_TAGS.banners];
+    case 'flash-sale':
+      return [PUBLIC_DATA_TAGS.flashSales];
+    case 'system-parameter':
+      return [];
     case 'all':
-      return [PUBLIC_DATA_TAGS.categories, PUBLIC_DATA_TAGS.banners];
+      return [PUBLIC_DATA_TAGS.categories, PUBLIC_DATA_TAGS.banners, PUBLIC_DATA_TAGS.flashSales];
   }
 }

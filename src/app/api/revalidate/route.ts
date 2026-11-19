@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic';
  * Webhook làm mới ISR ngay khi Admin/API đăng hoặc sửa nội dung công khai.
  *
  * `POST /api/revalidate` với header `x-revalidate-secret: <REVALIDATE_SECRET>` (hoặc
- * `Authorization: Bearer <REVALIDATE_SECRET>`) và body `{ "resource": "post"|"product"|"category"|"all",
+ * `Authorization: Bearer <REVALIDATE_SECRET>`) và body `{ "resource": "post"|"product"|"category"|"banner"|"flash-sale"|"system-parameter"|"all",
  * "slug"?: string }`. Không gọi thì nội dung mới vẫn hiện sau cửa sổ `revalidate` của từng trang
  * (5 phút).
  *

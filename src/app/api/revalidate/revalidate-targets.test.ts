@@ -68,6 +68,19 @@ describe('revalidateTags', () => {
 
   it('bài viết không đụng cache danh mục/banner; all làm mới cả hai', () => {
     expect(revalidateTags({ resource: 'post' })).toEqual([]);
-    expect(revalidateTags({ resource: 'all' })).toEqual(['public:catalog-categories', 'public:content-banners']);
+    expect(revalidateTags({ resource: 'all' })).toEqual(['public:catalog-categories', 'public:content-banners', 'public:flash-sales']);
+  });
+
+  it('banner / flash-sale / system-parameter làm mới đúng trang và tag', () => {
+    expect(parseRevalidateRequest({ resource: 'flash-sale' })).toEqual({ resource: 'flash-sale', slug: undefined });
+    expect(revalidateTargets({ resource: 'banner' })).toEqual([{ path: '/' }]);
+    expect(revalidateTags({ resource: 'banner' })).toEqual(['public:content-banners']);
+    expect(revalidateTargets({ resource: 'flash-sale' })).toEqual([
+      { path: '/' },
+      { path: '/flash-sale' },
+      { path: '/products/[slug]', type: 'page' },
+    ]);
+    expect(revalidateTags({ resource: 'flash-sale' })).toEqual(['public:flash-sales']);
+    expect(revalidateTargets({ resource: 'system-parameter' })).toEqual([{ path: '/', type: 'layout' }]);
   });
 });
