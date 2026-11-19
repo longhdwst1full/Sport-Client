@@ -29,7 +29,6 @@
     "push:safe": "bash scripts/git-sync-push.sh"
   },
   "dependencies": {
-    "@fontsource/noto-sans": "5.3.0",
     "@reduxjs/toolkit": "2.12.0",
     "@tanstack/react-query": "5.87.1",
     "@types/canvas-confetti": "^1.9.0",
@@ -37,7 +36,6 @@
     "@vercel/speed-insights": "^2.1.0",
     "axios": "1.20.0",
     "canvas-confetti": "^1.9.4",
-    "clsx": "2.1.1",
     "lucide-react": "0.468.0",
     "next": "15.5.29",
     "react": "19.1.1",
